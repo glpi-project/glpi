@@ -190,6 +190,13 @@ class Calendar extends CommonDropdown
                             $input = ['calendars_id' => $id,
                                 'holidays_id'  => $input['holidays_id'],
                             ];
+
+                            if (!$calendar_holiday->can(-1, CREATE, $input)) {
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                                $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                                continue;
+                            }
+
                             if ($calendar_holiday->add($input)) {
                                 $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {

@@ -57,6 +57,7 @@ use function Safe\file_put_contents;
 use function Safe\iconv;
 use function Safe\mb_convert_encoding;
 use function Safe\preg_match;
+use function Safe\preg_match_all;
 use function Safe\preg_replace;
 use function Safe\strtotime;
 
@@ -74,9 +75,14 @@ class MailCollector extends CommonDBTM
 {
     // Specific one
     /**
-     * IMAP / POP connection
+     * IMAP connection
      */
     private ?AbstractStorage $storage = null;
+    /**
+     * Notification subject tags used across entities, memoized for the current run.
+     * @var ?string[]
+     */
+    private ?array $notification_subject_tags = null;
     /**
      * UID of the current message
      */
@@ -308,8 +314,9 @@ class MailCollector extends CommonDBTM
         }
 
         TemplateRenderer::getInstance()->display('pages/setup/mailcollector/setup_form.html.twig', [
-            'item'             => $this,
-            'protocol_choices' => $protocol_choices,
+            'item'              => $this,
+            'protocol_choices'  => $protocol_choices,
+            'uses_pop_protocol' => Toolbox::isPopMailServerConnectString((string) ($this->fields['host'] ?? '')),
         ]);
         return true;
     }
@@ -735,7 +742,7 @@ class MailCollector extends CommonDBTM
 
                         if (!$tkt['_blacklisted']) {
                             $rejinput['from']              = $requester ?? '';
-                            $rejinput['to']                = $headers['to'] ?? '';
+                            $rejinput['to']                = mb_substr($headers['to'] ?? '', 0, 255);
                             $rejinput['users_id']          = $tkt['_users_id_requester'];
                             $rejinput['subject']           = $this->cleanSubject($headers['subject']);
                             $rejinput['messageid']         = $headers['message_id'];
@@ -1509,13 +1516,14 @@ class MailCollector extends CommonDBTM
                     if ($email === null) {
                         continue;
                     }
-                    $mailto = Toolbox::strtolower($email);
-                    if ($mailto === $this->fields['name']) {
-                        $to = $mailto;
-                    }
-                    $tos[] = $mailto;
+                    $tos[] = Toolbox::strtolower($email);
                 }
             }
+        }
+        // Use the whole recipients list (not just the first one) so that rule criteria
+        // matching against the "To" address work regardless of the recipient's position.
+        if ($tos !== []) {
+            $to = implode(', ', $tos);
         }
 
         $ccs     = [];
@@ -1936,12 +1944,6 @@ class MailCollector extends CommonDBTM
      **/
     public function deleteMails($uid, $folder = '')
     {
-
-        // Disable move support, POP protocol only has the INBOX folder
-        if (strstr($this->fields['host'], "/pop")) {
-            $folder = '';
-        }
-
         if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
             $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP", "UTF-8");
             try {
@@ -2288,18 +2290,70 @@ class MailCollector extends CommonDBTM
         // Check in subject
         if ($message->getHeaders()->has('subject')) {
             $subject = $message->getHeader('subject')->getFieldValue();
-            $matches = [];
 
             $ticket = new Ticket();
-            if (
-                preg_match('/\[.+#(\d+)\]/', $subject, $matches) === 1
-                && $ticket->getFromDB($matches[1])
-            ) {
-                return $ticket;
+
+            // GLPI prefixes ITIL notification subjects with `[<tag> #<id>]`, where the
+            // id is zero-padded to at least 7 digits and always preceded by a space
+            // (see NotificationTargetCommonITILObject::getSubjectPrefix()). Requiring
+            // that shape prevents foreign references such as `[Ticket#123]` from being
+            // mistaken for a ticket id.
+            if (preg_match_all('/\[([^\]]*)\s#(\d{7,})\]/', $subject, $matches, PREG_SET_ORDER) > 0) {
+                $candidate = null;
+                if (count($matches) === 1) {
+                    // Single match: trust it, even if the entity tag has been edited
+                    // since the notification was sent.
+                    $candidate = $matches[0][2];
+                } else {
+                    // Multiple matches: prefer the one whose prefix matches a known
+                    // notification subject tag, and fall back to the last match.
+                    $known_tags = $this->getNotificationSubjectTags();
+                    foreach ($matches as $match) {
+                        // Keep the last seen id as fallback, but stop as soon as a
+                        // known notification subject tag is found.
+                        $candidate = $match[2];
+                        if (in_array(trim($match[1]), $known_tags, true)) {
+                            break;
+                        }
+                    }
+                }
+
+                if ($candidate !== null && $ticket->getFromDB($candidate)) {
+                    return $ticket;
+                }
             }
         }
 
         return null;
+    }
+
+    /**
+     * Get the notification subject tags (`[<tag> #<id>]`) configured across the
+     * entities, plus the default `GLPI` tag. Computed once per collector instance.
+     *
+     * @return string[]
+     */
+    private function getNotificationSubjectTags(): array
+    {
+        if ($this->notification_subject_tags === null) {
+            /** @var DBmysql $DB */
+            global $DB;
+
+            $tags = ['GLPI'];
+            $iterator = $DB->request([
+                'SELECT'   => 'notification_subject_tag',
+                'DISTINCT' => true,
+                'FROM'     => Entity::getTable(),
+                'WHERE'    => ['notification_subject_tag' => ['<>', '']],
+            ]);
+            foreach ($iterator as $row) {
+                $tags[] = trim((string) $row['notification_subject_tag']);
+            }
+
+            $this->notification_subject_tags = array_values(array_unique(array_filter($tags)));
+        }
+
+        return $this->notification_subject_tags;
     }
 
     /**

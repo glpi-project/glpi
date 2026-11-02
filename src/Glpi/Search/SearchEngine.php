@@ -53,6 +53,7 @@ use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Debug\Profiler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Features\TreeBrowseInterface;
+use Glpi\Form\Form;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\Input\SearchInputInterface;
@@ -100,6 +101,12 @@ use function Safe\preg_match;
  */
 final class SearchEngine
 {
+    /**
+     * Indicates whether the search results anchor, targeted by the "Go to search results" skip link,
+     * has already been rendered (it must be unique in the page).
+     */
+    private static bool $is_search_results_anchor_rendered = false;
+
     /**
      * @param int $output_type
      * @param array $data
@@ -183,6 +190,10 @@ final class SearchEngine
                     $linked[] = $config_itemtype::getType();
                 }
             }
+        }
+
+        if ($item instanceof CommonITILObject && Form::canView()) {
+            $linked[] = Form::class;
         }
 
         // Add entity meta if needed
@@ -632,7 +643,10 @@ final class SearchEngine
         TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
             'itemtype' => $itemtype,
         ]);
-        echo "<div class='col search-container' data-glpi-search-container>";
+        // Only the first search of the page is targeted by the "Go to search results" skip link
+        $anchor_id = self::$is_search_results_anchor_rendered ? '' : " id='search-results'";
+        self::$is_search_results_anchor_rendered = true;
+        echo "<div class='col search-container'{$anchor_id} data-glpi-search-container data-testid='search-container' tabindex='-1'>";
 
         $output = self::getOutputForLegacyKey($params['display_type'], $params);
         if ($output instanceof HTMLSearchOutput) {

@@ -41,7 +41,7 @@ final class CurrentTranslationEvent implements HistoryEventInterface
 {
     public function __construct(
         private string $language,
-        private string $date,
+        private ?string $date,
         private int $author,
     ) {}
 
@@ -59,7 +59,7 @@ final class CurrentTranslationEvent implements HistoryEventInterface
     }
 
     #[Override]
-    public function getDate(): string
+    public function getDate(): ?string
     {
         return $this->date;
     }

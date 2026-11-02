@@ -138,6 +138,11 @@ class NotificationAjax implements NotificationInterface
 
             if ($iterator->numrows()) {
                 foreach ($iterator as $row) {
+                    if ((bool) $row['is_body_encrypted']) {
+                        $glpi_key = new GLPIKey();
+                        $row['body_text'] = $glpi_key->decrypt($row['body_text']);
+                    }
+
                     $url = null;
                     if (is_a($row['itemtype'], CommonGLPI::class, true)) {
                         $item = new $row['itemtype']();

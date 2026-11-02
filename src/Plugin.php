@@ -1262,7 +1262,7 @@ class Plugin extends CommonDBTM
                                 mb_strtolower(_x('button', 'Enable')),
                                 ['id' => $ID],
                                 '',
-                                'class="pointer"'
+                                'class="pointer btn-as-link"'
                             ),
                             __s('Do you want to %activate_link it?')
                         );
@@ -3110,7 +3110,6 @@ class Plugin extends CommonDBTM
         return str_replace('\\', '/', $directory);
     }
 
-
     public static function getIcon()
     {
         return "ti ti-puzzle";
@@ -3196,6 +3195,12 @@ class Plugin extends CommonDBTM
         CommonDBTM $item,
         array $ids
     ) {
+        if (!Config::canUpdate()) {
+            $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
+            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+            return;
+        }
+
         $plugin = new self();
         switch ($ma->getAction()) {
             case 'install':

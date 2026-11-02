@@ -96,4 +96,26 @@ class AsideActionsControllerTest extends DbTestCase
         $this->expectException(AccessDeniedHttpException::class);
         $this->callController($id);
     }
+
+    public function testUnviewableArticleReturnsNotFoundToAnonymousVisitor(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $id = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'Private article',
+            'answer'       => '<p>Secret</p>',
+            'entities_id'  => $this->getTestRootEntity(only_id: true),
+            'is_recursive' => 1,
+        ])->getID();
+
+        $this->logOut();
+        $CFG_GLPI['use_public_faq'] = true;
+        try {
+            $this->expectException(NotFoundHttpException::class);
+            $this->callController($id);
+        } finally {
+            $CFG_GLPI['use_public_faq'] = false;
+        }
+    }
 }

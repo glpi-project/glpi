@@ -42,6 +42,7 @@ use Glpi\Security\Attribute\SecurityStrategy;
 use Glpi\Security\ReAuth\ReAuthManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 
 class ReAuthController extends AbstractController
@@ -50,13 +51,16 @@ class ReAuthController extends AbstractController
         private readonly ReAuthManager $reAuthManager,
     ) {}
 
+    /**
+     * @param bool $failed Set by out of band strategies coming back from a failed verification
+     */
     #[Route(
         path: "/ReAuth/Prompt",
         name: "reauth_prompt",
         methods: ['GET']
     )]
     #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
-    public function prompt(bool $failed = false): Response
+    public function prompt(#[MapQueryParameter] bool $failed = false): Response
     {
         return $this->render(
             'pages/reauth/prompt.html.twig',

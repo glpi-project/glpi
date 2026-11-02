@@ -920,7 +920,7 @@ abstract class ITILTemplate extends CommonDropdown
             $this->check($ID, READ);
         } else {
             // Create item
-            $this->check(-1, CREATE);
+            $this->checkGlobal(CREATE);
         }
 
         $fields = $this->getAdditionalFields();

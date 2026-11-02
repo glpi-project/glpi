@@ -6427,6 +6427,7 @@ CREATE TABLE `glpi_queuednotifications` (
   `attach_documents` tinyint NOT NULL DEFAULT '0',
   `itemtype_trigger` varchar(255) DEFAULT NULL,
   `items_id_trigger` int unsigned NOT NULL DEFAULT '0',
+  `is_body_encrypted` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `item` (`itemtype`,`items_id`,`notificationtemplates_id`),
   KEY `is_deleted` (`is_deleted`),
@@ -10056,6 +10057,7 @@ CREATE TABLE `glpi_oauth_access_tokens` (
    `user_identifier` varchar(255) DEFAULT NULL,
    `scopes` text DEFAULT NULL,
    `ip_address` varchar(45) DEFAULT NULL,
+   `user_agent` varchar(512) DEFAULT NULL,
    PRIMARY KEY (`identifier`),
    UNIQUE KEY `uuid` (`uuid`),
    KEY `client` (`client`)

@@ -80,44 +80,65 @@ $migrate_conditions_column = static function (?string $raw_conditions): ?string 
     return $updated ? json_encode($conditions) : null;
 };
 
-$iterator = $DB->request([
-    'FROM'  => 'glpi_forms_questions',
-    'WHERE' => ['type' => $item_question_types],
-]);
+// Only JSON encoded values still holding the legacy `items_id` key need to be migrated.
+// This marker is used to filter out, at the SQL level, rows that do not need any
+// processing, to avoid loading the whole tables in memory.
+$legacy_key_marker = ['LIKE', '%"items_id"%'];
 
-foreach ($iterator as $row) {
-    $updated = false;
-    $data    = [];
+$last_forms_questions_id = 0;
 
-    // Migrate default_value
-    $default_value = $row['default_value'] ?? null;
-    if ($default_value !== null) {
-        $decoded = json_decode($default_value, true) ?? [];
-        if (isset($decoded['items_id']) && !isset($decoded['items_ids'])) {
-            $decoded['items_ids'] = [(int) $decoded['items_id']];
-            unset($decoded['items_id']);
-            $data['default_value'] = json_encode($decoded);
-            $updated = true;
+do {
+    $iterator = $DB->request([
+        'SELECT' => ['id', 'default_value', 'conditions', 'validation_conditions'],
+        'FROM' => 'glpi_forms_questions',
+        'WHERE' => [
+            'id'   => ['>', $last_forms_questions_id],
+            'type' => $item_question_types,
+            'OR'   => [
+                'default_value'         => $legacy_key_marker,
+                'conditions'             => $legacy_key_marker,
+                'validation_conditions'  => $legacy_key_marker,
+            ],
+        ],
+        'ORDER' => 'id ASC',
+        'LIMIT' => 250,
+    ]);
+
+    foreach ($iterator as $row) {
+        $last_forms_questions_id = $row['id'];
+        $updated = false;
+        $data    = [];
+
+        // Migrate default_value
+        $default_value = $row['default_value'] ?? null;
+        if ($default_value !== null) {
+            $decoded = json_decode($default_value, true) ?? [];
+            if (isset($decoded['items_id']) && !isset($decoded['items_ids'])) {
+                $decoded['items_ids'] = [(int) $decoded['items_id']];
+                unset($decoded['items_id']);
+                $data['default_value'] = json_encode($decoded);
+                $updated = true;
+            }
+        }
+
+        // Migrate conditions columns
+        foreach (['conditions', 'validation_conditions'] as $column) {
+            if (!isset($row[$column])) {
+                continue;
+            }
+
+            $migrated = $migrate_conditions_column($row[$column]);
+            if ($migrated !== null) {
+                $data[$column] = $migrated;
+                $updated = true;
+            }
+        }
+
+        if ($updated) {
+            $DB->update('glpi_forms_questions', $data, ['id' => $row['id']]);
         }
     }
-
-    // Migrate conditions columns
-    foreach (['conditions', 'validation_conditions'] as $column) {
-        if (!isset($row[$column])) {
-            continue;
-        }
-
-        $migrated = $migrate_conditions_column($row[$column]);
-        if ($migrated !== null) {
-            $data[$column] = $migrated;
-            $updated = true;
-        }
-    }
-
-    if ($updated) {
-        $DB->update('glpi_forms_questions', $data, ['id' => $row['id']]);
-    }
-}
+} while ($iterator->count() > 0);
 
 // Migrate conditions that may reference an item question in the other form tables:
 //   - glpi_forms_forms.submit_button_conditions
@@ -132,52 +153,80 @@ $conditions_tables = [
 ];
 
 foreach ($conditions_tables as $table => $column) {
-    $iterator = $DB->request(['FROM' => $table]);
-    foreach ($iterator as $row) {
-        if (!isset($row[$column])) {
-            continue;
-        }
+    $last_id = 0;
+    do {
+        $iterator = $DB->request([
+            'SELECT' => ['id', $column],
+            'FROM' => $table,
+            'WHERE' => [
+                'id'     => ['>', $last_id],
+                $column  => $legacy_key_marker,
+            ],
+            'ORDER' => 'id ASC',
+            'LIMIT' => 250,
+        ]);
+        foreach ($iterator as $row) {
+            $last_id = $row['id'];
 
-        $migrated = $migrate_conditions_column($row[$column]);
-        if ($migrated !== null) {
-            $DB->update($table, [$column => $migrated], ['id' => $row['id']]);
+            if (!isset($row[$column])) {
+                continue;
+            }
+
+            $migrated = $migrate_conditions_column($row[$column]);
+            if ($migrated !== null) {
+                $DB->update($table, [$column => $migrated], ['id' => $row['id']]);
+            }
         }
-    }
+    } while ($iterator->count() > 0);
 }
 
 // Migrate glpi_forms_answerssets:
 //   - answers: raw_answer {"itemtype":X,"items_id":Y} → {"itemtype":X,"items_ids":[Y]}
 //     for answers whose raw_question_type is QuestionTypeItem or QuestionTypeItemDropdown
-$iterator = $DB->request(['FROM' => 'glpi_forms_answerssets']);
 
-foreach ($iterator as $row) {
-    $answers  = json_decode($row['answers'], true) ?? [];
-    $updated  = false;
+$last_answerssets_id = 0;
+do {
+    $iterator = $DB->request([
+        'SELECT' => ['id', 'answers'],
+        'FROM' => 'glpi_forms_answerssets',
+        'WHERE' => [
+            'id'      => ['>', $last_answerssets_id],
+            'answers' => $legacy_key_marker,
+        ],
+        'ORDER' => 'id ASC',
+        'LIMIT' => 250,
+    ]);
 
-    foreach ($answers as &$answer) {
-        if (!in_array($answer['raw_question_type'] ?? null, $item_question_types, true)) {
-            continue;
+    foreach ($iterator as $row) {
+        $last_answerssets_id = $row['id'];
+        $answers = json_decode($row['answers'], true) ?? [];
+        $updated = false;
+
+        foreach ($answers as &$answer) {
+            if (!in_array($answer['raw_question_type'] ?? null, $item_question_types, true)) {
+                continue;
+            }
+
+            $raw = $answer['raw_answer'] ?? null;
+            if (
+                is_array($raw)
+                && isset($raw['items_id'])
+                && !isset($raw['items_ids'])
+            ) {
+                $raw['items_ids'] = [(int) $raw['items_id']];
+                unset($raw['items_id']);
+                $answer['raw_answer'] = $raw;
+                $updated = true;
+            }
         }
+        unset($answer);
 
-        $raw = $answer['raw_answer'] ?? null;
-        if (
-            is_array($raw)
-            && isset($raw['items_id'])
-            && !isset($raw['items_ids'])
-        ) {
-            $raw['items_ids'] = [(int) $raw['items_id']];
-            unset($raw['items_id']);
-            $answer['raw_answer'] = $raw;
-            $updated = true;
+        if ($updated) {
+            $DB->update(
+                'glpi_forms_answerssets',
+                ['answers' => json_encode($answers)],
+                ['id' => $row['id']]
+            );
         }
     }
-    unset($answer);
-
-    if ($updated) {
-        $DB->update(
-            'glpi_forms_answerssets',
-            ['answers' => json_encode($answers)],
-            ['id' => $row['id']]
-        );
-    }
-}
+} while ($iterator->count() > 0);

@@ -102,6 +102,15 @@ class Item_SoftwareVersion extends CommonDBRelation
             'field'              => 'itemtype',
             'name'               => _x('software', 'Request source'),
             'datatype'           => 'dropdown',
+            'massiveaction'      => false,
+        ];
+
+        $tab[] = [
+            'id'                 => '6',
+            'table'              => static::getTable(),
+            'field'              => 'date_install',
+            'name'               => __('Installation date'),
+            'datatype'           => 'date',
         ];
 
         return $tab;
@@ -228,14 +237,16 @@ class Item_SoftwareVersion extends CommonDBRelation
                 $itemtoadd = new Item_SoftwareVersion();
                 if (isset($_POST['peer_softwareversions_id'])) {
                     foreach ($ids as $id) {
-                        if ($item->can($id, UPDATE)) {
+                        $add_input = [
+                            'items_id'              => $id,
+                            'itemtype'              => $item::class,
+                            'softwareversions_id'   => $_POST['peer_softwareversions_id'],
+                        ];
+
+                        if ($itemtoadd->can(-1, CREATE, $add_input)) {
                             //Process rules
                             if (
-                                $itemtoadd->add([
-                                    'items_id'              => $id,
-                                    'itemtype'              => $item::class,
-                                    'softwareversions_id'   => $_POST['peer_softwareversions_id'],
-                                ])
+                                $itemtoadd->add($add_input)
                             ) {
                                 $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
@@ -735,7 +746,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             foreach ($columns as $key => $val) {
                 $header_end .= "<th" . ($sort == "`$key`" ? " class='order_$order'" : '') . ">";
                 $header_end .= $key !== 'lname'
-                    ? "<a href='javascript:reloadTab(\"sort=$key&amp;order=" . (($order == "ASC") ? "DESC" : "ASC") . "&amp;start=0\");'>" . htmlescape($val) . "</a>"
+                    ? "<button type='button' class='btn-as-link' data-glpi-reload-tab='" . htmlescape("sort=$key&order=" . (($order == "ASC") ? "DESC" : "ASC") . "&start=0") . "'>" . htmlescape($val) . "</button>"
                     : htmlescape($val);
                 $header_end .= "</th>";
             }
@@ -1070,7 +1081,9 @@ class Item_SoftwareVersion extends CommonDBRelation
         SoftwareCategory::dropdown(['value'      => $crit,
             'toadd'      => ['-1' =>  __('All categories')],
             'emptylabel' => __('Uncategorized software'),
-            'on_change'  => 'reloadTab("start=0&criterion="+this.value)',
+            'specific_tags' => [
+                'data-glpi-reload-tab-on-change' => 'start=0&criterion=%value%',
+            ],
         ]);
         echo "</td></tr></table></div>";
         $number = count($iterator);

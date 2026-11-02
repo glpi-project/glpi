@@ -59,16 +59,11 @@ const doSetShowSearchForm = async (
     request: APIRequestContext,
     value: number,
 ): Promise<void> => {
-    // Sent as an ajax request so the CSRF token is preserved and can be
-    // reused, like the other session switchers of `utils/` do.
     const response = await request.post('/front/preference.php', {
         form: {
             'id': getWorkerUserId(),
             'update': 1,
             'show_search_form': value,
-        },
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
         },
     });
     expect(response.ok()).toBe(true);

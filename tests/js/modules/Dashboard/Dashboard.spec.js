@@ -104,6 +104,11 @@ describe('Dashboard', () => {
         expect(dashboard.current_name).toBe('current_dashboard');
     });
 
+    test('Init with an empty dashboard select', () => {
+        $('#dashboard-12345 .dashboard_select').empty();
+        expect(() => new GLPIDashboard({'rand': '12345'})).not.toThrow();
+    });
+
     test('saveMarkdown', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         $('body').find('.grid-stack-item').first().append(`<textarea name="markdown">test</textarea>`);
@@ -1813,6 +1818,52 @@ describe('Dashboard', () => {
         expect(dashboard.resetComputedWidth).toHaveBeenCalledTimes(2);
         expect(dashboard.fitNumbers).toHaveBeenCalledTimes(1);
         expect(dashboard.animateNumbers).toHaveBeenCalledTimes(1);
+    });
+
+    test('Resize the charts with their card', () => {
+        const default_observer = window.ResizeObserver;
+        const observed = [];
+        let resize_callback;
+        window.ResizeObserver = class {
+            constructor(callback) {
+                resize_callback = callback;
+            }
+            observe(el) {
+                observed.push(el);
+            }
+            unobserve(el) {
+                observed.splice(observed.indexOf(el), 1);
+            }
+        };
+        const grid_handlers = {};
+        window.GridStack = {
+            init: () => ({
+                setStatic: vi.fn(),
+                on: (event, callback) => {
+                    grid_handlers[event] = callback;
+                },
+            }),
+        };
+        const chart = {resize: vi.fn()};
+        window.echarts = {getInstanceByDom: vi.fn().mockReturnValue(chart)};
+
+        try {
+            new GLPIDashboard({'rand': '12345'});
+            const card = $('<div class="grid-stack-item"><div class="chart" _echarts_instance_="ec_1"></div></div>')[0];
+
+            grid_handlers['added'](new Event('added'), [{el: card}]);
+            expect(observed).toEqual([card]);
+
+            resize_callback([{target: card}]);
+            expect(window.echarts.getInstanceByDom).toHaveBeenCalledWith(card.querySelector('.chart'));
+            expect(chart.resize).toHaveBeenCalledTimes(1);
+
+            grid_handlers['removed'](new Event('removed'), [{el: card}]);
+            expect(observed).toEqual([]);
+        } finally {
+            window.ResizeObserver = default_observer;
+            delete window.echarts;
+        }
     });
 
     test('Add/Update Widget after Form Submit', () => {

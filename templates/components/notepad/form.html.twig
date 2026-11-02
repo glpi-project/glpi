@@ -50,9 +50,6 @@
     {% if notes|length > 0 %}
         <small class="me-2">
             <a href="#" class="text-decoration-none text-secondary toggle-all-notes d-flex align-items-center gap-1"
-               style="cursor: pointer; transition: color 0.2s ease;"
-               onmouseover="this.style.color='#0d6efd'"
-               onmouseout="this.style.color=''"
                data-expand-text="{{ __('Expand all') }}"
                data-collapse-text="{{ __('Collapse all') }}"
                data-expand-title="{{ __('Expand all') }}"
@@ -159,7 +156,7 @@
                                         name="purge"
                                         type="submit"
                                         value="1"
-                                        onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');"
+                                        data-glpi-confirm="{{ __('Confirm the final deletion?') }}"
                                         data-id="{{ id }}"
                                         aria-label="{{ __("Delete") }}"
                                     >
@@ -235,7 +232,7 @@
 
                                     <div class="modal-footer">
                                         <button class="btn btn-outline-danger" type="submit" name="purge" value="1"
-                                                onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');"
+                                                data-glpi-confirm="{{ __('Confirm the final deletion?') }}"
                                                 data-bs-toggle="tooltip" data-bs-position="top"
                                                 title="{{ _x('button', 'Delete permanently') }}">
                                             <i class="ti ti-trash" aria-hidden="true"></i>

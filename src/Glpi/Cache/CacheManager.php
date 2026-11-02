@@ -610,13 +610,14 @@ PHP;
 
         // Execute the `cache:clear` command provided by Symfony itself, not our own `cache:clear` command.
         // This command will clear the Symfony cache gracefully.
+        //
+        // The warmup is disabled on purpose: plugins autoloaders are registered in the current process, and the
+        // FrameworkBundle enables some features depending on the classes availability (e.g. translator, validator, ...).
+        // Warming up the cache here would compile classes provided by plugins dependencies into the container,
+        // resulting in fatal errors once the plugin is deactivated.
+        // The container will be compiled during the next kernel boot, before the plugins initialization.
         $app = new Application($kernel);
         $app->setAutoExit(false);
-        // Skip optional cache warmers (e.g. Twig templates, more than 400 to cache so cause memory exception - default 128M).
-        // Templates are compiled lazily on first render.
-        $app->run(
-            new ArrayInput(['command' => 'cache:clear', '--no-optional-warmers' => true]),
-            new NullOutput()
-        );
+        $app->run(new ArrayInput(['command' => 'cache:clear', '--no-warmup' => true]), new NullOutput());
     }
 }

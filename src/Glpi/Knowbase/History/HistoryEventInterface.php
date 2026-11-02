@@ -40,7 +40,7 @@ interface HistoryEventInterface
 
     public function getDescription(): string;
 
-    public function getDate(): string;
+    public function getDate(): ?string;
 
     public function getAuthor(): int;
 }

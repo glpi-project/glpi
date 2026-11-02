@@ -49,6 +49,13 @@ await import('lodash').then((lodash) => {
 // Add a flag variable to know in other scripts if they are run in tests. Should not affect how they behave, just how functions/vars in non-modules are bound.
 window.GLPI_TEST_ENV = true;
 
+// jsdom does not implement ResizeObserver
+window.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+};
+
 Object.defineProperty(window, 'location', {
     value: new URL('http://localhost'),
     configurable: true,

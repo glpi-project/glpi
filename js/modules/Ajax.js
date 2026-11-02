@@ -86,10 +86,14 @@ export async function post(url, values = null, handled_statuses = [])
  * Perform a GET request to a GLPI endpoint.
  *
  * @param {string} url - The relative URL path (without root_doc prefix).
+ * @param {Object} [options]
+ * @param {boolean} [options.quiet=false] Suppress the generic error toast on failure.
+ *   For a speculative/background request whose caller already degrades gracefully on failure,
+ *   where a toast would be noise the reader never asked to see, not signal.
  * @returns {Promise<Response>} The fetch Response object.
  * @throws {Error} If the request fails or returns a non-ok status.
  */
-export async function get(url)
+export async function get(url, { quiet = false } = {})
 {
     try {
         const params = {
@@ -106,7 +110,9 @@ export async function get(url)
 
         return response;
     } catch (e) {
-        glpi_toast_error(__("An unexpected error occurred."));
+        if (!quiet) {
+            glpi_toast_error(__("An unexpected error occurred."));
+        }
         throw e;
     }
 }

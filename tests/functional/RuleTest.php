@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\ITILTrait;
 use Glpi\Tests\RuleBuilder;
@@ -1216,6 +1217,66 @@ class RuleTest extends DbTestCase
 
         // assert
         $this->assertEquals($initial_priority, $ticket->fields['priority']);
+    }
+
+    /**
+     * Rules of every type share the same table, the rule form of a type must only handle rules of this type.
+     */
+    public function testRuleFormRefusesRulesOfAnotherType(): void
+    {
+        $this->login();
+        $foreign_rule = $this->createItem(\RuleRight::class, [
+            'name'        => 'Authorization rule',
+            'sub_type'    => \RuleRight::class,
+            'match'       => 'AND',
+            'is_active'   => 1,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $own_rule = $this->createItem(RuleTicket::class, [
+            'name'        => 'Ticket rule',
+            'sub_type'    => RuleTicket::class,
+            'match'       => 'AND',
+            'is_active'   => 1,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        // A user that manages the ticket rules but not the authorization rules
+        $_SESSION['glpiactiveprofile'][RuleTicket::$rightname] = READ | UPDATE | CREATE | PURGE;
+        $_SESSION['glpiactiveprofile'][\RuleRight::$rightname] = 0;
+
+        $submit = function (array $post): ?\Throwable {
+            $_POST = $post;
+            $exception = null;
+            try {
+                include GLPI_ROOT . '/front/ruleticket.form.php';
+            } catch (\Throwable $e) {
+                $exception = $e;
+            } finally {
+                $_POST = [];
+            }
+            return $exception;
+        };
+
+        // The rule of another type can neither be updated nor purged
+        $this->assertInstanceOf(
+            AccessDeniedHttpException::class,
+            $submit(['update' => 1, 'id' => $foreign_rule->getID(), 'name' => 'Tampered', 'is_active' => 0])
+        );
+        $this->assertInstanceOf(
+            AccessDeniedHttpException::class,
+            $submit(['purge' => 1, 'id' => $foreign_rule->getID(), 'ranking' => 0])
+        );
+        $this->assertTrue($foreign_rule->getFromDB($foreign_rule->getID()));
+        $this->assertSame('Authorization rule', $foreign_rule->fields['name']);
+        $this->assertSame(1, (int) $foreign_rule->fields['is_active']);
+
+        // A rule of the same type can still be updated
+        $this->assertNotInstanceOf(
+            AccessDeniedHttpException::class,
+            $submit(['update' => 1, 'id' => $own_rule->getID(), 'name' => 'Renamed', 'is_active' => 1])
+        );
+        $this->assertTrue($own_rule->getFromDB($own_rule->getID()));
+        $this->assertSame('Renamed', $own_rule->fields['name']);
     }
 }
 

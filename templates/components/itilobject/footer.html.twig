@@ -197,7 +197,7 @@
 
                         <button class="btn btn-outline-danger btn-square" type="submit" name="purge" form="itil-form"
                               title="{{ _x('button', 'Delete permanently') }}"
-                              onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');">
+                              data-glpi-confirm="{{ __('Confirm the final deletion?') }}">
                            <i class="ti ti-trash" aria-hidden="true"></i>
                            <span class="d-none d-lg-block">{{ _x('button', 'Delete permanently') }}</span>
                         </button>

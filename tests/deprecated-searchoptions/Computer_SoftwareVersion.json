@@ -50,5 +50,23 @@
             "empty"
         ],
         "uid": "Computer_SoftwareVersion.SoftwareVersion.name"
+    },
+    "6": {
+        "name": "Installation date",
+        "table": "glpi_computers_softwareversions",
+        "field": "date_install",
+        "datatype": "date",
+        "nosearch": false,
+        "nodisplay": false,
+        "available_searchtypes": [
+            "equals",
+            "notequals",
+            "lessthan",
+            "morethan",
+            "contains",
+            "notcontains",
+            "empty"
+        ],
+        "uid": "Computer_SoftwareVersion.date_install"
     }
 }

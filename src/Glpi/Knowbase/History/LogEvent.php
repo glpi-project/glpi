@@ -44,8 +44,8 @@ class LogEvent implements HistoryEventInterface
     public function __construct(
         private string $label,
         private string $description,
-        private string $date,
-        private string $author,
+        private ?string $date,
+        private ?string $author,
         private ?string $old_value = null,
         private ?string $new_value = null,
     ) {}
@@ -63,7 +63,7 @@ class LogEvent implements HistoryEventInterface
     }
 
     #[Override]
-    public function getDate(): string
+    public function getDate(): ?string
     {
         return $this->date;
     }
@@ -74,7 +74,7 @@ class LogEvent implements HistoryEventInterface
         // Try to get the user ID from the raw text entry.
         // Not as easy as it seems, see LogEventTest::authorProvider() for all cases to cover.
         try {
-            preg_match('/.*[(\x{FF08}]\s*([0-9]+)\s*[)\x{FF09}]/us', $this->author, $matches);
+            preg_match('/.*[(\x{FF08}]\s*([0-9]+)\s*[)\x{FF09}]/us', $this->author ?? '', $matches);
         } catch (PcreException $e) {
             // The /u flag can fail if the content is not valid UTF-8.
             // Prevent an unlikely failure by returning 0.

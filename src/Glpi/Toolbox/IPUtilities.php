@@ -34,76 +34,88 @@
 
 namespace Glpi\Toolbox;
 
+use Glpi\Kernel\Kernel;
 use LogicException;
 use Safe\Exceptions\NetworkException;
+use Symfony\Component\HttpFoundation\Exception\ConflictingHeadersException;
+use Symfony\Component\HttpFoundation\IpUtils;
+use Symfony\Component\HttpFoundation\Request;
+use Toolbox;
 
 use function Safe\inet_ntop;
 use function Safe\inet_pton;
 
-/**
- * @final Only open for extension for use within tests.
- */
-class IPUtilities
+final class IPUtilities
 {
     /**
-     * @return string[]
+     * Headers that can be trusted when they are sent by a trusted reverse proxy.
      */
-    protected static function getTrustedReverseProxies(): array
-    {
-        return GLPI_TRUSTED_REVERSE_PROXIES;
-    }
+    private const TRUSTED_HEADERS = [
+        'forwarded'          => Request::HEADER_FORWARDED,
+        'x-forwarded-for'    => Request::HEADER_X_FORWARDED_FOR,
+        'x-forwarded-host'   => Request::HEADER_X_FORWARDED_HOST,
+        'x-forwarded-proto'  => Request::HEADER_X_FORWARDED_PROTO,
+        'x-forwarded-port'   => Request::HEADER_X_FORWARDED_PORT,
+        'x-forwarded-prefix' => Request::HEADER_X_FORWARDED_PREFIX,
+    ];
 
     /**
-     * @return string[]
+     * Configure the reverse proxies whose forwarding headers are trusted.
+     *
+     * @param string[] $proxies IPs or CIDR ranges of the trusted reverse proxies
+     *                          (`REMOTE_ADDR` and `PRIVATE_SUBNETS` special values are supported)
+     * @param string[] $headers Names of the trusted headers
      */
-    protected static function getTrustedReverseProxyHeaders(): array
+    public static function configureTrustedProxies(array $proxies, array $headers): void
     {
-        return GLPI_REVERSE_PROXY_HEADERS;
-    }
-
-    public static function isTrustedReverseProxy(?string $ip): bool
-    {
-        if ($ip === null) {
-            return false;
-        }
-        return in_array($ip, static::getTrustedReverseProxies(), true);
-    }
-
-    public static function getClientIP(): ?string
-    {
-        $remote_addr = $_SERVER['REMOTE_ADDR'] ?? null;
-        if ($remote_addr === null) {
-            return null;
-        }
-        if (!static::isTrustedReverseProxy($remote_addr)) {
-            return $remote_addr;
-        }
-        $proxy_ip_headers = static::getTrustedReverseProxyHeaders();
-        foreach ($proxy_ip_headers as $header) {
-            $server_header = 'HTTP_' . str_replace('-', '_', strtoupper($header));
-            if (isset($_SERVER[$server_header])) {
-                if ($server_header === 'HTTP_FORWARDED') {
-                    $forwarded_header = $_SERVER[$server_header];
-                    $forwarded_header_parts = explode(';', $forwarded_header);
-                    foreach ($forwarded_header_parts as $part) {
-                        $part = trim($part);
-                        if (str_starts_with($part, 'for=')) {
-                            $ip = substr($part, 4);
-                            // IP may be quoted and IPv6 IPs are supposed to be enclosed in square brackets.
-                            return trim($ip, '"[]');
-                        }
-                    }
-                }
-                // handle standard headers (X-Forwarded-For, etc.)
-                $ip_list = explode(',', $_SERVER[$server_header]);
-                $ip_list = array_map('trim', $ip_list);
-                // return the first IP in the list, which should be the original client IP
-                return $ip_list[0];
+        foreach ($headers as $header) {
+            if (!array_key_exists(strtolower($header), self::TRUSTED_HEADERS)) {
+                trigger_error(
+                    sprintf('The "%s" reverse proxy header is not supported and will be ignored.', $header),
+                    E_USER_WARNING
+                );
             }
         }
 
-        // At this point, the remote address is a trusted proxy but none of the expected headers were found, so we return the remote address as a fallback
-        return $remote_addr;
+        $headers = array_map(strtolower(...), $headers);
+
+        $header_set = 0;
+        foreach (self::TRUSTED_HEADERS as $name => $flag) {
+            if (in_array($name, $headers, true)) {
+                $header_set |= $flag;
+            }
+        }
+
+        Request::setTrustedProxies($proxies, $header_set);
+    }
+
+    /**
+     * @deprecated 12.0.0
+     */
+    public static function isTrustedReverseProxy(?string $ip): bool
+    {
+        Toolbox::deprecated('Use `Symfony\\Component\\HttpFoundation\\Request::isFromTrustedProxy()` instead.');
+
+        return $ip !== null && IpUtils::checkIp($ip, Request::getTrustedProxies());
+    }
+
+    /**
+     * Get the IP of the client, ignoring the trusted reverse proxies.
+     */
+    public static function getClientIP(): ?string
+    {
+        /** @var Kernel $kernel */
+        global $kernel;
+
+        try {
+            $ip = $kernel->getMainRequest()->getClientIp();
+        } catch (ConflictingHeadersException) {
+            // The trusted headers contain different client IPs.
+            return null;
+        }
+
+        // Once the conflict has been reported, Symfony returns `0.0.0.0` on the next calls on the same request.
+        return $ip !== '0.0.0.0' ? $ip : null;
     }
 
     /**
@@ -113,16 +125,7 @@ class IPUtilities
      */
     public static function isIPInList(string $ip, array $allowed_ips): bool
     {
-        foreach ($allowed_ips as $allowed_ip) {
-            if (str_contains($allowed_ip, '/')) {
-                if (self::isCidrMatch($ip, $allowed_ip)) {
-                    return true;
-                }
-            } elseif ($ip === $allowed_ip) {
-                return true;
-            }
-        }
-        return false;
+        return IpUtils::checkIp($ip, $allowed_ips);
     }
 
     /**
@@ -130,12 +133,14 @@ class IPUtilities
      * @param string $ip The IP to check
      * @param string $range The CIDR notation range
      * @return bool
+     *
+     * @deprecated 12.0.0
      */
     public static function isCidrMatch(string $ip, string $range): bool
     {
-        [$start, $end] = self::cidrToRange($range);
-        $ip = inet_pton($ip);
-        return $ip >= inet_pton($start) && $ip <= inet_pton($end);
+        Toolbox::deprecated('Use `Glpi\\Toolbox\\IPUtilities::isIPInList()` instead.');
+
+        return IpUtils::checkIp($ip, $range);
     }
 
     /**

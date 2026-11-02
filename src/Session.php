@@ -187,11 +187,16 @@ class Session
                 $_SESSION["glpifirstname"]       = $auth->user->fields['firstname'];
                 $_SESSION["glpidefault_entity"]  = $auth->user->fields['entities_id'];
                 $_SESSION["glpiextauth"]         = $auth->extauth;
-                if (isset($_SESSION['phpCAS']['user'])) {
-                    $_SESSION["glpiauthtype"]     = Auth::CAS;
+                $_SESSION["glpiauthtype"]        = $auth->getAuthType();
+                if ($_SESSION["glpiauthtype"] === Auth::COOKIE) {
+                    // Keep the method the user originally logged in with
+                    $_SESSION["glpiauthtype"] = SessionTracker::getLoginSessionAuthType(
+                        $_SESSION['login_session_uid'],
+                        $auth->user->getID()
+                    );
+                }
+                if ($_SESSION["glpiauthtype"] === Auth::CAS) {
                     $_SESSION["glpiextauth"]      = 0;
-                } else {
-                    $_SESSION["glpiauthtype"]     = $auth->user->fields['authtype'];
                 }
                 $_SESSION["glpi_use_mode"]       = $auth->user->fields['use_mode'];
                 $_SESSION["glpi_plannings"]      = importArrayFromDB($auth->user->fields['plannings']);
@@ -358,6 +363,10 @@ class Session
      **/
     public static function isMultiEntitiesMode()
     {
+        // No login refreshes an anonymous session, so do not cache the mode for it.
+        if (!isset($_SESSION['glpiID'])) {
+            return countElementsInTable("glpi_entities") > 1;
+        }
 
         if (!isset($_SESSION['glpi_multientitiesmode'])) {
             if (countElementsInTable("glpi_entities") > 1) {
@@ -1744,71 +1753,6 @@ class Session
     }
 
     /**
-     * Get new CSRF token
-     *
-     * @param bool $standalone
-     *    Generates a standalone token that will not be shared with other component of current request.
-     *
-     * @since 0.83.3
-     * @deprecated Csrf protection is now handled without tokens.
-     *
-     * @return string
-     **/
-    public static function getNewCSRFToken(bool $standalone = false)
-    {
-        Toolbox::deprecated("Csrf protection is now handled without tokens.");
-        return "";
-    }
-
-    /**
-     * Clean expired CSRF tokens
-     *
-     * @since 0.83.3
-     * @deprecated Csrf protection is now handled without tokens.
-     *
-     * @return void
-     **/
-    public static function cleanCSRFTokens()
-    {
-        Toolbox::deprecated("Csrf protection is now handled without tokens.");
-    }
-
-    /**
-     * Validate that the page has a CSRF token in the POST data
-     * and that the token is legit/not expired.  If the token is valid
-     * it will be removed from the list of valid tokens.
-     *
-     * @since 0.83.3
-     * @deprecated Csrf protection is now handled without tokens.
-     *
-     * @param array<string, mixed> $data           $_POST data
-     * @param bool  $preserve_token Whether to preserve token after it has been validated.
-     *
-     * @return bool
-     **/
-    public static function validateCSRF($data, bool $preserve_token = false)
-    {
-        Toolbox::deprecated("Csrf protection is now handled without tokens.");
-        return true;
-    }
-
-    /**
-     * Check CSRF data
-     *
-     * @since 0.84.2
-     * @deprecated Csrf protection is now handled without tokens.
-     *
-     * @param array<string, mixed> $data           $_POST data
-     * @param bool  $preserve_token Whether to preserve token after it has been validated.
-     *
-     * @return void
-     **/
-    public static function checkCSRF($data, bool $preserve_token = false)
-    {
-        Toolbox::deprecated("Csrf protection is now handled without tokens.");
-    }
-
-    /**
      * Get new IDOR token
      * This token validates the itemtype used by an ajax request is the one asked by a dropdown.
      * So, we avoid IDOR request where an attacker asks for another itemtype
@@ -2078,6 +2022,8 @@ class Session
         $auth = new Auth();
         $auth->auth_succeded = true;
         $auth->user = $user;
+        // The session is still the one opened by the impersonator
+        $auth->setAuthType($_SESSION['glpiauthtype'] ?? Auth::NOT_YET_AUTHENTIFIED);
         Session::init($auth);
 
         // The impersonated user must not inherit the impersonator's re-authentication token
@@ -2124,6 +2070,7 @@ class Session
         $auth = new Auth();
         $auth->auth_succeded = true;
         $auth->user = $user;
+        $auth->setAuthType($_SESSION['glpiauthtype'] ?? Auth::NOT_YET_AUTHENTIFIED);
         Session::init($auth);
 
         // Restore previous user values

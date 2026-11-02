@@ -36,6 +36,7 @@ namespace Glpi\Toolbox;
 
 use CommonGLPI;
 use GLPIKey;
+use Safe\Exceptions\NetworkException;
 use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Component\HttpClient\Exception\RedirectionException;
 use Symfony\Component\HttpClient\Exception\ServerException;
@@ -49,6 +50,8 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Contracts\HttpClient\ResponseStreamInterface;
+
+use function Safe\dns_get_record;
 
 final class HttpClient
 {
@@ -88,7 +91,22 @@ final class HttpClient
 
         $inner_client = HttpClientFactory::create();
         if (!$allow_private_networks) {
-            $inner_client = new NoPrivateNetworkHttpClient($inner_client);
+            // The connected IP is the proxy IP when a proxy is used, so it must not be checked against private networks.
+            $proxy_ips = [];
+            if ($use_proxy && !empty($CFG_GLPI['proxy_name'])) {
+                $proxy_host = trim($CFG_GLPI['proxy_name'], '[]');
+                if (filter_var($proxy_host, FILTER_VALIDATE_IP) !== false) {
+                    $proxy_ips = [$proxy_host];
+                } else {
+                    try {
+                        $proxy_ipv6 = array_column(@dns_get_record($proxy_host, DNS_AAAA), 'ipv6');
+                    } catch (NetworkException) {
+                        $proxy_ipv6 = [];
+                    }
+                    $proxy_ips = array_merge(gethostbynamel($proxy_host) ?: [], $proxy_ipv6);
+                }
+            }
+            $inner_client = new NoPrivateNetworkHttpClient($inner_client, null, $proxy_ips);
         }
 
         $this->client = $inner_client->withOptions($client_options);

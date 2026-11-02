@@ -139,9 +139,11 @@ class AssetTest extends DbTestCase
             'entities_id' => $this->getTestRootEntity(true),
         ]);
 
-        $this->expectExceptionMessage('Definition cannot be changed.');
+        // The item of another definition cannot be loaded, so it cannot be updated
         $asset_2 = new $classname_2();
-        $asset_2->update(['id' => $asset->getID(), 'name' => 'updated']);
+        $this->assertFalse($asset_2->update(['id' => $asset->getID(), 'name' => 'updated']));
+        $this->assertTrue($asset->getFromDB($asset->getID()));
+        $this->assertSame('new asset', $asset->fields['name']);
     }
 
     public function testSearchOptionsUnicity(): void
@@ -448,5 +450,20 @@ class AssetTest extends DbTestCase
             '/front/setup.templates.php?itemtype=Computer&add=0',
             $menu['links']['template']
         );
+    }
+
+    public function testCannotLoadItemOfAnotherDefinition(): void
+    {
+        $foo_classname = $this->initAssetDefinition()->getAssetClassName();
+        $bar_classname = $this->initAssetDefinition()->getAssetClassName();
+
+        $bar_asset = $this->createItem($bar_classname, ['name' => 'Bar asset', 'entities_id' => $this->getTestRootEntity(true)]);
+
+        // Definitions share the same table, an item must only be loaded by the class of its definition
+        $foo_asset = new $foo_classname();
+        $this->assertFalse($foo_asset->getFromDB($bar_asset->getID()));
+        $this->assertSame([], $foo_asset->fields);
+
+        $this->assertTrue((new $bar_classname())->getFromDB($bar_asset->getID()));
     }
 }

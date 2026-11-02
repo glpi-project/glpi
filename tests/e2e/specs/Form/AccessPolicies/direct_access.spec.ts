@@ -276,8 +276,6 @@ test.describe('Form access policy', () => {
         await expect(page.getByTestId('form-title')).toBeAttached();
         await form.getTextbox('Question 1').fill('My answer');
         await form.getButton('Submit').click();
-        await expect(form.getAlert('Item successfully created'))
-            .toBeVisible()
-        ;
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
     });
 });

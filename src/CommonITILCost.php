@@ -501,40 +501,16 @@ abstract class CommonITILCost extends CommonDBChild
                 $item->getSolvedStatusArray()
             ))
         ) {
-            $twig_params = [
-                'id'        => $ID,
-                'rand'      => $rand,
-                'type'      => static::class,
-                'parenttype' => static::$itemtype,
-                'items_id'  => static::$items_id,
-            ];
-            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <div id='viewcost{{ id }}_{{ rand }}'></div>
-                <script>
-                    function viewAddCost{{ id }}_{{ rand }} (btn) {
-                        // Hide the triggering button
-                        $(btn).hide();
-                        {% do call('Ajax::updateItemJsCode', [
-                            'viewcost' ~ id ~ '_' ~ rand,
-                            config('root_doc') ~ '/ajax/viewsubitem.php',
-                            {
-                                'type': type,
-                                'parenttype': parenttype,
-                                (items_id): id,
-                                'id': -1
-                            }
-                        ]) %}
-                    }
-                </script>
-TWIG, $twig_params);
-
-            TemplateRenderer::getInstance()->display(
-                'components/tab/addlink_block.html.twig',
-                [
-                    'add_link' => 'javascript:viewAddCost' . $ID . '_' . $rand . '(this);',
-                    'button_label' => __('Add a new cost'),
-                ]
-            );
+            TemplateRenderer::getInstance()->display('components/form/viewsubitem.html.twig', [
+                'type'                  => static::class,
+                'parenttype'            => static::$itemtype,
+                'items_id'              => static::$items_id,
+                'id'                    => $ID,
+                'rand'                  => $rand,
+                'subitem_container_id'  => 'viewcost' . $ID . '_' . $rand,
+                'cancreate'             => true,
+                'add_new_label'         => __('Add a new cost'),
+            ]);
         }
 
         $total          = 0.;

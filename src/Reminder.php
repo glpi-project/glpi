@@ -221,6 +221,7 @@ class Reminder extends CommonDBVisible implements
                 0,
             ];
         }
+        $where['OR'] ??= [];
 
         // Groups
         if (
@@ -244,10 +245,10 @@ class Reminder extends CommonDBVisible implements
             if (count($restrict)) {
                 $or += $restrict;
             }
+            $groups_id = $_SESSION["glpigroups"] !== [] ? Group::getGroupsAncestorsIds($_SESSION["glpigroups"]) : [-1];
             $where['OR'][] = [
-                'glpi_groups_reminders.groups_id' => count($_SESSION["glpigroups"])
-                                                      ? $_SESSION["glpigroups"]
-                                                      : [-1],
+                // A user member of a sub-group must also see reminders made visible to a parent group
+                'glpi_groups_reminders.groups_id' => $groups_id,
                 'OR' => $or,
             ];
         }
@@ -565,6 +566,56 @@ class Reminder extends CommonDBVisible implements
             'parent_link' => $parent->getLink(['icon' => true, 'forceid' => true]),
             'parent_entity_badge' => Entity::badgeCompletenameById($parent->getEntityID()),
         ]);
+    }
+
+    /**
+     * @param array<array<string, mixed>> $events
+     *
+     * @return array<array<string, mixed>>
+     */
+    protected static function translatePlanningEvents(array $events): array
+    {
+        global $DB;
+
+        $language = $_SESSION['glpilanguage'] ?? null;
+        $reminders_ids = array_unique(array_column($events, 'reminders_id'));
+        if (empty($language) || $reminders_ids === []) {
+            return $events;
+        }
+
+        // Use the translations of the current language, if any.
+        // Order by id and keep the first row per reminder so the result is deterministic.
+        $translations = [];
+        $iterator = $DB->request([
+            'SELECT' => ['reminders_id', 'name', 'text'],
+            'FROM'   => ReminderTranslation::getTable(),
+            'WHERE'  => [
+                'reminders_id' => $reminders_ids,
+                'language'     => $language,
+            ],
+            'ORDER'  => 'id',
+        ]);
+        foreach ($iterator as $data) {
+            if (!isset($translations[$data['reminders_id']])) {
+                $translations[$data['reminders_id']] = $data;
+            }
+        }
+
+        foreach ($events as &$event) {
+            $translation = $translations[$event['reminders_id'] ?? 0] ?? null;
+            if ($translation === null) {
+                continue;
+            }
+            if (!empty($translation['name'])) {
+                $event['name'] = $translation['name'];
+            }
+            if (!empty($translation['text'])) {
+                $event['text'] = RichText::getSafeHtml($translation['text']);
+            }
+        }
+        unset($event);
+
+        return $events;
     }
 
     final public static function getListCriteria(): array

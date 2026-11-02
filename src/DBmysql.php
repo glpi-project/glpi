@@ -1815,6 +1815,13 @@ class DBmysql
         }
     }
 
+    public function setTimezoneForUser(User $user): void
+    {
+        if (!empty($user->fields['timezone']) && 'null' !== strtolower($user->fields['timezone'])) {
+            $this->setTimezone($user->fields['timezone']);
+        }
+    }
+
     /**
      * Defines timezone to use.
      *
@@ -1848,29 +1855,19 @@ class DBmysql
 
         if (!$GLPI_CACHE->has('timezones')) {
             $timezones = DateTimeZone::listIdentifiers();
-            $results_queries = [];
-            foreach ($timezones as $index => $timezone) {
-                $results_queries[] =  new QuerySubQuery([
-                    'SELECT' => ['name', 'value'],
-                    'FROM' => new QueryExpression(
-                        sprintf(
-                            '(SELECT %1$s as %2$s, CONVERT_TZ(%3$s, %4$s, %5$s) as %6$s) as %7$s',
-                            self::quoteValue($timezone),
-                            self::quoteName('name'),
-                            self::quoteValue('2000-01-01 00:00:00'),
-                            self::quoteValue('GMT'),
-                            self::quoteValue($timezone),
-                            self::quoteName('value'),
-                            self::quoteName(sprintf('timezone_%d', $index)),
-                        )
-                    ),
-                    'WHERE' => [
-                        ['NOT' => ['value' => null]],
-                    ],
-                ]);
-            }
+            $iterator = $this->request([
+                'SELECT' => [
+                    'tz.name',
+                    new QueryExpression('CONVERT_TZ(' . self::quoteValue('2000-01-01 00:00:00') . ', ' . self::quoteValue('GMT') . ', tz.name) AS ' . self::quoteName('value')),
+                ],
+                'FROM' => new QueryExpression(
+                    '(SELECT ' . implode(' UNION ALL SELECT ', array_map(fn($tz) => self::quoteValue($tz) . ' AS name', $timezones)) . ') AS tz'
+                ),
+                'HAVING' => [
+                    ['NOT' => ['value' => null]],
+                ],
+            ]);
 
-            $iterator = $this->request(['FROM' => new QueryUnion($results_queries)]);
             foreach ($iterator as $row) {
                 $now = new DateTime();
                 $now->setTimezone(new DateTimeZone($row['name']));
@@ -2080,6 +2077,18 @@ class DBmysql
      */
     private function bindStatementParams(mysqli_stmt $stmt, array $params, string|array|null $types = null): void
     {
+        // Rely on the server count: a "?" inside a quoted literal is not a placeholder.
+        if ($stmt->param_count !== count($params)) {
+            throw new StatementException(
+                sprintf(
+                    'Number of placeholders (%d) in SQL statement does not match number of values (%d). SQL: %s',
+                    $stmt->param_count,
+                    count($params),
+                    $this->getStatementQuery($stmt)
+                )
+            );
+        }
+
         if (count($params) === 0) {
             return;
         }

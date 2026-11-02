@@ -36,6 +36,8 @@ namespace tests\units;
 
 use AuthLDAP;
 use Glpi\DBAL\QueryExpression;
+use Glpi\OAuth\Client;
+use Glpi\OAuth\UserRepository;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\RuleBuilder;
 use GLPIKey;
@@ -70,9 +72,6 @@ class AuthLdapTest extends DbTestCase
     {
         parent::setUp();
         $this->ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
-
-        // remove the `_e2e_ldap` server
-        $this->deleteItem(AuthLDAP::class, getItemByTypeName(AuthLDAP::class, '_e2e_ldap', true));
 
         //make sure bootstrapped ldap is active and is default
         $this->assertTrue(
@@ -687,6 +686,66 @@ class AuthLdapTest extends DbTestCase
 
         $infos = ['ms-ds-consistencyguid' => [$guid]];
         $this->assertSame($guid, AuthLDAP::getFieldValue($infos, 'ms-ds-consistencyguid'));
+    }
+
+    public static function formatValueForDisplayProvider(): iterable
+    {
+        $bin      = hex2bin('d318577c54c4214190e3a7f7e8e1d9f1');
+        $guid_str = '7c5718d3-c454-4121-90e3-a7f7e8e1d9f1';
+
+        yield 'objectguid binary is converted to canonical GUID string' => [
+            'key'      => 'objectguid',
+            'value'    => $bin,
+            'expected' => $guid_str,
+        ];
+
+        yield 'ms-ds-consistencyguid binary is converted to canonical GUID string' => [
+            'key'      => 'ms-ds-consistencyguid',
+            'value'    => $bin,
+            'expected' => $guid_str,
+        ];
+
+        yield 'guid attribute name is matched case-insensitively' => [
+            'key'      => 'ms-DS-ConsistencyGuid',
+            'value'    => $bin,
+            'expected' => $guid_str,
+        ];
+
+        yield 'guid attribute already in string form is left unchanged' => [
+            'key'      => 'objectguid',
+            'value'    => $guid_str,
+            'expected' => $guid_str,
+        ];
+
+        yield 'guid attribute with bytes that cannot form a valid GUID keeps its raw value' => [
+            'key'      => 'objectguid',
+            'value'    => 'short',
+            'expected' => 'short',
+        ];
+
+        yield 'guid attribute with binary bytes that cannot form a valid GUID is converted to uppercase hexadecimal' => [
+            'key'      => 'objectguid',
+            'value'    => hex2bin('ffd8ffe0'),
+            'expected' => 'FFD8FFE0',
+        ];
+
+        yield 'non-guid binary attribute is converted to uppercase hexadecimal' => [
+            'key'      => 'jpegphoto',
+            'value'    => hex2bin('ffd8ffe0'),
+            'expected' => 'FFD8FFE0',
+        ];
+
+        yield 'plain UTF-8 attribute is left unchanged' => [
+            'key'      => 'cn',
+            'value'    => 'Jean Dupont',
+            'expected' => 'Jean Dupont',
+        ];
+    }
+
+    #[DataProvider('formatValueForDisplayProvider')]
+    public function testFormatValueForDisplay(string $key, string $value, string $expected): void
+    {
+        $this->assertSame($expected, AuthLDAP::formatValueForDisplay($key, $value));
     }
 
     public function testPassword()
@@ -1499,6 +1558,77 @@ class AuthLdapTest extends DbTestCase
             ['sync_field' => null],
             ['id' => $ldap->getID()]
         );
+    }
+
+    /**
+     * A LDAP user that is not known by GLPI yet must be imported when logging in through the
+     * OAuth password grant, exactly like it is when logging in through the login form.
+     *
+     * The OAuth server only calls `Auth::validateLogin()`, which validates the credentials but
+     * does not write anything to the database, so it has to call `Auth::applyValidatedLogin()`
+     * too. Otherwise the user entity is built with an empty identifier.
+     *
+     * @return void
+     */
+    #[RequiresPhpExtension('ldap')]
+    public function testOAuthPasswordGrantImportsUnknownLdapUser()
+    {
+        global $CFG_GLPI;
+
+        $user = new \User();
+        $this->assertFalse($user->getFromDBbyName('brazil9'));
+
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['is_users_auto_add'] = 1;
+
+        $user_entity = (new UserRepository())->getUserEntityByUserCredentials(
+            'brazil9',
+            'password',
+            'password',
+            new Client()
+        );
+
+        $CFG_GLPI = $cfg_backup;
+
+        $this->assertNotNull($user_entity);
+        $this->assertGreaterThan(0, $user_entity->getIdentifier());
+
+        // The user must now exist in GLPI, with the LDAP data.
+        $this->assertTrue($user->getFromDB($user_entity->getIdentifier()));
+        $this->assertSame('brazil9', $user->fields['name']);
+        $this->assertSame('uid=brazil9,ou=people,ou=R&D,dc=glpi,dc=org', $user->fields['user_dn']);
+        $this->assertEquals(\Auth::LDAP, $user->fields['authtype']);
+        $this->assertEquals($this->ldap->getID(), $user->fields['auths_id']);
+    }
+
+    /**
+     * When the auto add feature is disabled, the OAuth password grant must reject a LDAP user
+     * that is unknown to GLPI instead of issuing a token with an empty subject.
+     *
+     * @return void
+     */
+    #[RequiresPhpExtension('ldap')]
+    public function testOAuthPasswordGrantRejectsUnknownLdapUserWhenAutoAddIsDisabled()
+    {
+        global $CFG_GLPI;
+
+        $user = new \User();
+        $this->assertFalse($user->getFromDBbyName('brazil10'));
+
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['is_users_auto_add'] = 0;
+
+        $user_entity = (new UserRepository())->getUserEntityByUserCredentials(
+            'brazil10',
+            'password',
+            'password',
+            new Client()
+        );
+
+        $CFG_GLPI = $cfg_backup;
+
+        $this->assertNull($user_entity);
+        $this->assertFalse($user->getFromDBbyName('brazil10'));
     }
 
     /**
@@ -2565,6 +2695,40 @@ class AuthLdapTest extends DbTestCase
             Group_User::isUserInGroup($users_id, $group_id),
             'Dynamic group synced from the LDAP directory was purged on Auth::EXTERNAL reapplyRightRules()'
         );
+    }
+
+    #[RequiresPhpExtension('ldap')]
+    public function testGetFromLDAPGroupDiscretCachedCollectsMembers(): void
+    {
+        $auth = $this->createItem(AuthLDAP::class, [
+            'name'   => $this->getUniqueString(),
+            'host'   => 'openldap',
+            'basedn' => 'dc=glpi,dc=org',
+        ]);
+        $group_id = $this->createItem(Group::class, [
+            'name'          => __FUNCTION__,
+            'ldap_group_dn' => 'inetOrgPerson',
+        ])->getID();
+
+        $ldap_method = [
+            'id'                 => $auth->getID(),
+            'basedn'             => 'dc=glpi,dc=org',
+            'condition'          => '(uid=brazil10*)',
+            'group_field'        => 'objectClass',
+            'group_member_field' => 'objectClass',
+        ];
+
+        $user = new \User();
+        $result = $this->callPrivateMethod(
+            $user,
+            'getFromLDAPGroupDiscretCached',
+            $this->ldap->connect(),
+            $ldap_method,
+            'uid=brazil109,ou=people,ou=R&D,dc=glpi,dc=org'
+        );
+
+        $this->assertTrue($result);
+        $this->assertContains($group_id, $user->fields['_groups'] ?? []);
     }
 
 

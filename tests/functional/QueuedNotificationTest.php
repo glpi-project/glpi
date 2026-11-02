@@ -35,14 +35,19 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
+use GLPIKey;
 use Notification_NotificationTemplate;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Project;
+use QueuedNotification;
+use Ticket;
+use User;
 
 class QueuedNotificationTest extends DbTestCase
 {
     public function testAddProjectNotification()
     {
-        $queued_notification = new \QueuedNotification();
+        $queued_notification = new QueuedNotification();
 
         $root_entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
@@ -135,7 +140,7 @@ class QueuedNotificationTest extends DbTestCase
 
     public function testAddTicketNotification()
     {
-        $queued_notification = new \QueuedNotification();
+        $queued_notification = new QueuedNotification();
 
         $root_entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
@@ -236,7 +241,7 @@ class QueuedNotificationTest extends DbTestCase
         $t1 = date('Y-m-d H:i:s', strtotime('-2 minutes'));
         $t0 = date('Y-m-d H:i:s', strtotime('-5 minutes'));
 
-        $queued = new \QueuedNotification();
+        $queued = new QueuedNotification();
         $make = static function (string $name, string $send_time) use ($recipient) {
             return [
                 'itemtype'   => 'Ticket',
@@ -262,12 +267,87 @@ class QueuedNotificationTest extends DbTestCase
 
         // Earliest send_time first (C), then the two same-time ones in creation
         // order (A before B) thanks to the id tie-breaker.
-        $pendings = \QueuedNotification::getPendings(null, 20, [Notification_NotificationTemplate::MODE_MAIL], ['recipient' => $recipient]);
+        $pendings = QueuedNotification::getPendings(null, 20, [Notification_NotificationTemplate::MODE_MAIL], ['recipient' => $recipient]);
         $ids = array_map('intval', array_column($pendings[Notification_NotificationTemplate::MODE_MAIL], 'id'));
         $this->assertSame([$id_c, $id_a, $id_b], $ids);
 
         // The batch limit is respected and keeps the same ordering.
-        $limited = \QueuedNotification::getPendings(null, 2, [Notification_NotificationTemplate::MODE_MAIL], ['recipient' => $recipient]);
+        $limited = QueuedNotification::getPendings(null, 2, [Notification_NotificationTemplate::MODE_MAIL], ['recipient' => $recipient]);
         $this->assertSame([$id_c, $id_a], array_map('intval', array_column($limited[Notification_NotificationTemplate::MODE_MAIL], 'id')));
+    }
+
+    public static function sensitiveNotificationEventsProvider(): iterable
+    {
+        yield [
+            'itemtype'            => Ticket::class,
+            'event'               => 'new',
+            'expected_encryption' => false,
+        ];
+
+        yield [
+            'itemtype'            => User::class,
+            'event'               => 'passwordforget',
+            'expected_encryption' => true,
+        ];
+
+        yield [
+            'itemtype'            => User::class,
+            'event'               => 'passwordinit',
+            'expected_encryption' => true,
+        ];
+    }
+
+    #[DataProvider('sensitiveNotificationEventsProvider')]
+    public function testPrepareInputForAddEncryptsSentitiveData(string $itemtype, string $event, bool $expected_encryption)
+    {
+        $input = [
+            'itemtype'  => $itemtype,
+            'event'     => $event,
+            'body_text' => 'Content of the notification',
+            'body_html' => '<p>Content of the notification</p>',
+        ];
+
+        $queued_notification = new QueuedNotification();
+        $output = $queued_notification->prepareInputForAdd($input);
+
+        if ($expected_encryption) {
+            $this->assertArrayHasKey('is_body_encrypted', $output);
+            $this->assertTrue($output['is_body_encrypted']);
+
+            $glpi_key = new GLPIKey();
+            $this->assertEquals($input['body_text'], $glpi_key->decrypt($output['body_text']));
+            $this->assertEquals($input['body_html'], $glpi_key->decrypt($output['body_html']));
+        } else {
+            $this->assertArrayNotHasKey('is_body_encrypted', $output);
+            $this->assertEquals($input['body_text'], $output['body_text']);
+            $this->assertEquals($input['body_html'], $output['body_html']);
+        }
+    }
+
+    #[DataProvider('sensitiveNotificationEventsProvider')]
+    public function testPrepareInputForUpdateEncryptsSentitiveData(string $itemtype, string $event, bool $expected_encryption)
+    {
+        $input = [
+            'itemtype'  => $itemtype,
+            'event'     => $event,
+            'body_text' => 'Content of the notification',
+            'body_html' => '<p>Content of the notification</p>',
+        ];
+
+        $queued_notification = new QueuedNotification();
+        $output = $queued_notification->prepareInputForUpdate($input);
+
+        if ($expected_encryption) {
+            $this->assertArrayHasKey('is_body_encrypted', $output);
+            $this->assertTrue($output['is_body_encrypted']);
+
+            $glpi_key = new GLPIKey();
+            $this->assertEquals($input['body_text'], $glpi_key->decrypt($output['body_text']));
+            $this->assertEquals($input['body_html'], $glpi_key->decrypt($output['body_html']));
+        } else {
+            $this->assertArrayNotHasKey('is_body_encrypted', $output);
+            $this->assertEquals($input['body_text'], $output['body_text']);
+            $this->assertEquals($input['body_html'], $output['body_html']);
+        }
     }
 }

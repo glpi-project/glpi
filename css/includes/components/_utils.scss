@@ -156,3 +156,34 @@
 .cursor-wait {
     cursor: wait !important;
 }
+
+// Button that looks like a regular link
+.btn-as-link {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    letter-spacing: inherit;
+    text-align: inherit;
+    text-transform: inherit;
+    color: color-mix(in srgb, transparent, var(--tblr-link-color) var(--tblr-link-opacity, 100%));
+
+    &:hover {
+        color: color-mix(in srgb, transparent, var(--tblr-link-hover-color) var(--tblr-link-opacity, 100%));
+    }
+}
+
+// One-way collapse trigger: hide it once its target is expanded
+.collapse-trigger-once[aria-expanded="true"] {
+    display: none;
+}
+
+// Notepad "Expand all / Collapse all" link
+.toggle-all-notes {
+    transition: color 0.2s ease;
+
+    &:hover {
+        // `.text-secondary` is `!important`
+        color: var(--tblr-link-hover-color) !important;
+    }
+}

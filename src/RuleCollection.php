@@ -544,7 +544,9 @@ class RuleCollection extends CommonDBTM
                 {% import 'components/form/fields_macros.html.twig' as fields %}
                 <div class="d-flex justify-content-center">
                     {{ fields.dropdownArrayField('condition', p.condition, conditions, label, {
-                        on_change: 'reloadTab("start=0&inherited=' ~ p.inherited ~ '&childrens=' ~ p.childrens ~ '&condition=" + this.value)'
+                        add_data_attributes: {
+                            'glpi-reload-tab-on-change': 'start=0&inherited=' ~ p.inherited ~ '&childrens=' ~ p.childrens ~ '&condition=%value%',
+                        }
                     }) }}
                 </div>
 TWIG, $twig_params);
@@ -1136,7 +1138,7 @@ TWIG, $twig_params);
      * @since 0.85
      *
      * @param array   $available_criteria available criteria for this rule
-     * @param int $condition          the rulecriteria condition
+     * @param int|string $condition   the rulecriteria condition
      * @param string  $criterion          the criterion
      *
      * @return bool true if a criterion is a dropdown, false otherwise
@@ -1144,7 +1146,8 @@ TWIG, $twig_params);
     public static function isCriteraADropdown($available_criteria, $condition, $criterion)
     {
         $type = $available_criteria[$criterion]['type'] ?? false;
-        return (in_array($condition, [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT, Rule::PATTERN_UNDER], true)
+        return (is_numeric($condition)
+              && in_array((int) $condition, [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT, Rule::PATTERN_UNDER], true)
               && ($type === 'dropdown'));
     }
 

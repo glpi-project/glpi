@@ -1388,10 +1388,7 @@ EOT,
     public function searchCosts(Request $request): Response
     {
         $schema = $this->getKnownSchema('ContractCost', $this->getAPIVersion($request));
-        $parameters = $request->getParameters();
-        $filters = $parameters['filter'] ?? '';
-        $filters .= 'contract.id==' . $request->getAttribute('id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'contract.id==' . $request->getAttribute('id'));
         return ResourceAccessor::searchBySchema($schema, $request->getParameters());
     }
 
@@ -1558,9 +1555,7 @@ EOT,
     )]
     public function searchDomainItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('Domain_Item', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -1576,9 +1571,7 @@ EOT,
     )]
     public function getDomainItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id'));
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('Domain_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -1649,9 +1642,7 @@ EOT,
     )]
     public function searchCertificateItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id'));
         return ResourceAccessor::searchBySchema((new AssetController())->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -1667,9 +1658,7 @@ EOT,
     )]
     public function getCertificateItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id'));
         return ResourceAccessor::getOneBySchema((new AssetController())->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -1737,9 +1726,7 @@ EOT,
     )]
     public function searchKBArticleItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==Budget;items_id==' . $request->getAttribute('items_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==Budget;items_id==' . $request->getAttribute('items_id'));
         return ResourceAccessor::searchBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -1754,9 +1741,7 @@ EOT,
     )]
     public function getKBArticleItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==Budget;items_id==' . $request->getAttribute('items_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==Budget;items_id==' . $request->getAttribute('items_id'));
         return ResourceAccessor::getOneBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -1824,9 +1809,7 @@ EOT,
     )]
     public function searchContractItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -1842,9 +1825,7 @@ EOT,
     )]
     public function getContractItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id'));
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 

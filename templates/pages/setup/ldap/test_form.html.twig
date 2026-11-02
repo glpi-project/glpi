@@ -45,7 +45,7 @@
                                 {% for test in tests %}
                                     <li class="step-item {{ (test['active'] ?? false) ? 'active' : '' }}">
                                         <div class="h4 m-0">{{ test['title'] }}</div>
-                                        <div class="{{ test['success'] ? 'text-success' : 'text-warning' }}">{{ test['message'] }}</div>
+                                        <div class="{{ test['success'] ? 'text-success' : 'text-warning' }}" data-testid="ldap-test-message">{{ test['message'] }}</div>
                                     </li>
                                 {% endfor %}
                             </ul>

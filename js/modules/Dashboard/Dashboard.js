@@ -164,13 +164,36 @@ class GLPIDashboard {
             float: true, // widget can be placed anywhere on the grid, not only on top
             animate: false, // as we don't move widget automatically, we don't need animation
             draggable: { // override jquery ui draggable options
-                'cancel': 'textarea' // avoid draggable on some child elements
+                'cancel': 'textarea', // avoid draggable on some child elements
+                // GridStack auto-scrolls as long as the dragged card is clipped by the viewport, not when the cursor
+                // nears an edge: dragging a card whose top is scrolled out scrolls the page up to the top.
+                'scroll': false,
             },
             // columnOpts is intentionally NOT used: GridStack v12 triggers GridStackEngine._fixCollisions
             // during the column change, which causes infinite recursion (moveNode <-> _fixCollisions)
             // when float:true is enabled. Mobile layout is managed manually via this.switchColumnLayout().
         };
         this.grid = GridStack.init(gridstack_options, `#grid-stack-${options.rand}`);
+
+        // ECharts keeps the size it had when it was initialized: resize the charts with their card
+        // (browser zoom, window or sidebar resized, card resized in edit mode)
+        this.cards_observer = new ResizeObserver((entries) => {
+            entries.forEach((entry) => {
+                entry.target.querySelectorAll('[_echarts_instance_]').forEach((chart_el) => {
+                    window.echarts?.getInstanceByDom(chart_el)?.resize();
+                });
+            });
+        });
+        this.grid.on('added', (event, items) => {
+            items.forEach((item) => {
+                this.cards_observer.observe(item.el);
+            });
+        });
+        this.grid.on('removed', (event, items) => {
+            items.forEach((item) => {
+                this.cards_observer.unobserve(item.el);
+            });
+        });
 
         // set grid in static to prevent edition (unless user click on edit button)
         // previously in option, but current version of gridstack has a bug with one column mode (responsive)
@@ -1272,7 +1295,8 @@ class GLPIDashboard {
             return;
         }
 
-        const filters = this.getFiltersFromDB();
+        // copy: avoid mutating the cached filters used by later ajax calls
+        const filters = { ...this.getFiltersFromDB() };
 
         // replace empty array by empty string to avoid jquery remove the corresponding key
         // when sending ajax query
@@ -1389,6 +1413,9 @@ class GLPIDashboard {
         }
 
         select.addEventListener('change', (event) => {
+            if (event.target.selectedIndex < 0) {
+                return;
+            }
             const tempSelect = document.createElement('select');
             const tempOption = document.createElement('option');
             tempOption.textContent = event.target.options[event.target.selectedIndex].text;

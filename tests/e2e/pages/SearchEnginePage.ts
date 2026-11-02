@@ -40,6 +40,7 @@ export class SearchEnginePage extends GlpiPage
     public readonly search_sorts_button: Locator;
     public readonly search_filters_panel: Locator;
     public readonly search_sorts_panel: Locator;
+    public readonly search_criteria_fields: Locator;
     public readonly datetime_time_toggle: Locator;
     public readonly datetime_calendar_button: Locator;
 
@@ -51,6 +52,9 @@ export class SearchEnginePage extends GlpiPage
         this.search_sorts_button      = page.getByTestId('search-sorts-button');
         this.search_filters_panel     = page.getByTestId('search-filters-panel');
         this.search_sorts_panel       = page.getByTestId('search-sorts-panel');
+        // Select2-hidden selects have no accessible name, match on submitted `name`
+        // eslint-disable-next-line playwright/no-raw-locators
+        this.search_criteria_fields   = this.search_filters_panel.locator('select[name$="[field]"]');
         this.datetime_time_toggle     = page.getByRole('checkbox', { name: 'Specify a time' });
         this.datetime_calendar_button = page.getByRole('button', { name: 'Enter or select a date' });
     }
@@ -76,6 +80,13 @@ export class SearchEnginePage extends GlpiPage
     public async doOpenSearchFilters(): Promise<void>
     {
         await this.search_filters_button.click();
+    }
+
+    public async doSubmitSearchFilters(): Promise<void>
+    {
+        await this.doOpenSearchFilters();
+        await this.search_filters_panel.getByRole('button', { name: /Search$/ }).click();
+        await this.page.waitForURL((url) => url.searchParams.has('criteria[0][field]'));
     }
 
     public async doOpenSearchSorts(): Promise<void>

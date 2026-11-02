@@ -141,6 +141,77 @@ class ReservationTest extends DbTestCase
         $this->assertEquals(5, count($reservation->find()));
     }
 
+    /**
+     * When the repetition end date is earlier than the first occurrence, no repetition
+     * is created and the user must be told about it.
+     */
+    public function testAddRecurrentReservationWithoutAnyOccurrence(): void
+    {
+        $this->login();
+        $computer = $this->createItem("Computer", [
+            "name"        => "test",
+            "entities_id" => 0,
+        ]);
+        $res_item = $this->createItem("ReservationItem", [
+            "itemtype"    => "Computer",
+            "items_id"    => $computer->getID(),
+            "is_active"   => true,
+            "entities_id" => 0,
+        ]);
+
+        \Reservation::handleAddForm([
+            "itemtype"  => "Computer",
+            "items" => [
+                0       => (string) $res_item->fields["id"],
+            ],
+            "resa" => [
+                "begin" => "2026-08-11 14:30:00",
+                "end"   => "2026-08-12 14:30:00",
+            ],
+            "periodicity" => [
+                "type"  => "week",
+                "end"   => "2026-08-12",
+                "days"  => [
+                    "Tuesday" => "on",
+                ],
+            ],
+            "users_id"  => getItemByTypeName('User', TU_USER, true),
+            "comment"   => "",
+        ]);
+
+        $this->hasSessionMessages(
+            WARNING,
+            ['No repetition matches the repetition settings']
+        );
+
+        // The reservation itself is still created.
+        $reservation = new \Reservation();
+        $this->assertCount(1, $reservation->find());
+    }
+
+    public static function periodicityProvider(): iterable
+    {
+        yield 'daily' => [['type' => 'day']];
+        yield 'weekly, no day' => [['type' => 'week']];
+        yield 'weekly, day before start' => [['type' => 'week', 'days' => ['Monday' => 'on']]];
+        yield 'weekly, same day as start' => [['type' => 'week', 'days' => ['Tuesday' => 'on']]];
+        yield 'weekly, day after start' => [['type' => 'week', 'days' => ['Sunday' => 'on']]];
+        yield 'monthly, same date' => [['type' => 'month', 'subtype' => 'date']];
+        yield 'monthly, same day of week' => [['type' => 'month', 'subtype' => 'day']];
+    }
+
+    #[DataProvider('periodicityProvider')]
+    public function testDefaultPeriodicityEndCreatesRepetition(array $periodicity): void
+    {
+        // Tuesday, 2026-09-22 is the worst case for "same day of week": next Tuesday after +1 month is 2026-10-27
+        $begin = '2026-09-22 14:30:00';
+        $periodicity['end'] = \Reservation::getDefaultPeriodicityEnd($begin, $periodicity['type']);
+
+        $this->assertNotEmpty(
+            \Reservation::computePeriodicities($begin, '2026-09-22 15:30:00', $periodicity)
+        );
+    }
+
     public static function dataAddReservationTest(): array
     {
         return [

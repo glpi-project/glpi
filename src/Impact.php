@@ -390,7 +390,7 @@ JS);
         // Toolbar
         echo '<div class="impact-list-toolbar">';
         if ($has_impact) {
-            echo '<a target="_blank" href="' . htmlescape($CFG_GLPI['root_doc'] . '/front/impactcsv.php?itemtype=' . $impact_item->fields['itemtype'] . '&items_id=' . $impact_item->fields['items_id']) . '">';
+            echo '<a target="_blank" href="' . htmlescape($CFG_GLPI['root_doc'] . '/front/impactcsv.php?itemtype=' . rawurlencode($impact_item->fields['itemtype']) . '&items_id=' . $impact_item->fields['items_id']) . '">';
             echo '<i class="ti ti-download impact-pointer impact-list-tools" title="' . __s('Export to CSV') . '"></i>';
             echo '</a>';
         }

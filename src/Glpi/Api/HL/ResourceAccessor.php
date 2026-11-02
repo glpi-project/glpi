@@ -269,6 +269,34 @@ final class ResourceAccessor
             }
         }
 
+        $fn_filter_properties = static function (array $props, string $parent_path = '', array &$removed_paths = []) use (&$fn_filter_properties) {
+            foreach ($props as $key => $prop) {
+                if (isset($prop['x-rights-conditions']['read'])) {
+                    $check_result = $prop['x-rights-conditions']['read']();
+                    if (is_array($check_result)) {
+                        throw new \LogicException('SQL condition field right checks are not currently supported.');
+                    }
+                    if ((bool) $check_result === false) {
+                        $removed_paths[] = $parent_path === '' ? $key : $parent_path . '.' . $key;
+                        unset($props[$key]);
+                        continue;
+                    }
+                }
+                if (isset($prop['properties'])) {
+                    $props[$key]['properties'] = $fn_filter_properties($prop['properties'], $parent_path === '' ? $key : $parent_path . '.' . $key, $removed_paths);
+                } elseif (isset($prop['items']['properties'])) {
+                    $props[$key]['items']['properties'] = $fn_filter_properties($prop['items']['properties'], $parent_path === '' ? $key : $parent_path . '.' . $key, $removed_paths);
+                }
+            }
+            return $props;
+        };
+        $removed_paths = [];
+        if (isset($filtered_schema['properties'])) {
+            $filtered_schema['properties'] = $fn_filter_properties($filtered_schema['properties'], '', $removed_paths);
+        } elseif (isset($filtered_schema['items']['properties'])) {
+            $filtered_schema['items']['properties'] = $fn_filter_properties($filtered_schema['items']['properties'], '', $removed_paths);
+        }
+
         return $filtered_schema;
     }
 
@@ -436,11 +464,12 @@ final class ResourceAccessor
         if (($itemtype !== null) && !$itemtype::canView()) {
             return AbstractController::getAccessDeniedErrorResponse();
         }
-        // Shortcut implementation using the search functionality with an injected RSQL filter and returning the first result.
+        // Shortcut implementation using the search functionality with a mandatory RSQL scope and returning the first result.
         // This shouldn't have much if any unneeded overhead as the filter would be mapped to a SQL condition.
-        $filters = $request_params['filter'] ?? '';
-        $filters .= ';' . $field . '==' . $request_attrs[$field];
-        $request_params['filter'] = $filters;
+        // The scope is passed as a mandatory filter (not appended to the user filter) so it cannot be escaped.
+        $scope = $field . '==' . $request_attrs[$field];
+        $existing_scope = $request_params[Search::MANDATORY_FILTER_PARAM] ?? '';
+        $request_params[Search::MANDATORY_FILTER_PARAM] = $existing_scope !== '' ? $existing_scope . ';' . $scope : $scope;
         $request_params['limit'] = 1;
         unset($request_params['start']);
         try {

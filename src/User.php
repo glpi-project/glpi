@@ -40,6 +40,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryValue;
 use Glpi\Exception\AuthenticationFailedException;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Exception\PasswordTooWeakException;
@@ -97,6 +98,8 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     public static string $rightname = 'user';
 
+    private const DB_KEEPALIVE_INTERVAL = 30;
+
     public static array $undisclosedFields = [
         'password',
         'password_history',
@@ -110,8 +113,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
     public function getCloneRelations(): array
     {
         return [
-            Profile_User::class,
-            Group_User::class,
             Certificate_Item::class,
             ManualLink::class,
         ];
@@ -145,7 +146,27 @@ class User extends CommonDBTM implements TreeBrowseInterface
      */
     public function post_clone($source, $history)
     {
-        //FIXME? clone config
+        // Only copy the profiles the current session user could grant directly
+        $profile_user = new Profile_User();
+        foreach ($profile_user->find(['users_id' => $source->getID()]) as $data) {
+            unset($data['id']);
+            $data['users_id'] = $this->getID();
+            if (!$profile_user->can(-1, CREATE, $data)) {
+                continue;
+            }
+            $profile_user->add($data, [], $history);
+        }
+
+        // Only copy the group memberships the current session user could grant directly
+        $group_user = new Group_User();
+        foreach ($group_user->find(['users_id' => $source->getID()]) as $data) {
+            unset($data['id']);
+            $data['users_id'] = $this->getID();
+            if (!$group_user->can(-1, CREATE, $data)) {
+                continue;
+            }
+            $group_user->add($data, [], $history);
+        }
     }
 
     public static function getTypeName($nb = 0)
@@ -260,6 +281,11 @@ class User extends CommonDBTM implements TreeBrowseInterface
         //prevent delete / purge from API
         global $CFG_GLPI;
         if ($this->fields['id'] == $CFG_GLPI['system_user']) {
+            return false;
+        }
+
+        // Prevent deleting a user that has more rights than the current user
+        if (!$this->currentUserHaveMoreRightThan($this->fields['id'])) {
             return false;
         }
 
@@ -881,7 +907,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     public function prepareInputForAdd($input)
     {
-        global $DB;
+        global $CFG_GLPI, $DB;
 
         $input = $this->cleanInput($input);
 
@@ -985,6 +1011,17 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
         if (!isset($input["profiles_id"])) {
             $input["profiles_id"] = 0;
+        }
+
+        if (
+            array_key_exists('language', $input)
+            && (
+                !is_string($input['language'])
+                || !LanguageRegistry::has($input['language'])
+                || $input['language'] === $CFG_GLPI['language']
+            )
+        ) {
+            unset($input['language']);
         }
 
         $glpi_key = new GLPIKey();
@@ -1254,6 +1291,10 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 'is_active',
                 'begin_date',
                 'end_date',
+
+                // Prevent changing 2fa settings
+                '2fa',
+                '2fa_unenforced',
             ];
             if (
                 count(array_intersect($protected_input_keys, array_keys($input))) > 0
@@ -1275,6 +1316,21 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         sprintf(
                             __s('You are not allowed to update the following fields: %s'),
                             htmlescape(implode(', ', $ignored_fields))
+                        ),
+                        false,
+                        ERROR
+                    );
+                    return false;
+                }
+            }
+
+            foreach (['2fa', '2fa_unenforced'] as $mfa_field) {
+                if (array_key_exists($mfa_field, $input) && !Session::haveRight(User::$rightname, User::UPDATEAUTHENT)) {
+                    // similar check than the `disable_2fa` form action
+                    Session::addMessageAfterRedirect(
+                        sprintf(
+                            __s('You are not allowed to update the following fields: %s'),
+                            $mfa_field
                         ),
                         false,
                         ERROR
@@ -2193,9 +2249,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         $lgroups = [];
                         foreach ($v[$i][$field] as $lgroup) {
                             $lgroups[] = [
-                                new QueryExpression($DB->quoteValue($lgroup)
-                                             . " LIKE "
-                                             . $DB->quoteName('ldap_value')),
+                                new QueryExpression('? LIKE `ldap_value`', values: [$lgroup]),
                             ];
                         }
                         $group_iterator = $DB->request([
@@ -2333,6 +2387,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             ]);
 
             $ldap_error = false;
+            $last_db_activity = time();
 
             foreach ($groups_iterator as $group_row) {
                 $group_id = (int) $group_row['id'];
@@ -2342,6 +2397,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 $cookie   = '';
 
                 do {
+                    $last_db_activity = self::keepDbConnectionAlive($last_db_activity);
                     if (!empty($ldap_method['pagesize'])) {
                         $controls = [[
                             'oid'        => LDAP_CONTROL_PAGEDRESULTS,
@@ -2401,6 +2457,19 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
 
         return true;
+    }
+
+    // Long LDAP-only phases would otherwise exceed the DB server wait_timeout.
+    private static function keepDbConnectionAlive(int $last_db_activity): int
+    {
+        global $DB;
+
+        if (time() - $last_db_activity < self::DB_KEEPALIVE_INTERVAL) {
+            return $last_db_activity;
+        }
+
+        $DB->getVersion();
+        return time();
     }
 
 
@@ -2638,11 +2707,18 @@ class User extends CommonDBTM implements TreeBrowseInterface
                             $this->fields[$k] = Dropdown::importExternal('UserTitle', $val);
                             break;
                         case 'locations_id':
+                            // Import the location in the entity assigned to the user by the LDAP
+                            // rules, so an existing location in that entity is reused instead of
+                            // creating a duplicate in the root entity. It is created as recursive so
+                            // it stays usable in the sub-entities of that entity, as it was when
+                            // created in the root entity.
+                            $location_entity = $this->getLdapImportLocationEntity();
+
                             // use import to build the location tree
                             $this->fields[$k] = Dropdown::import(
                                 'Location',
                                 ['completename' => $val,
-                                    'entities_id'  => 0,
+                                    'entities_id'  => $location_entity,
                                     'is_recursive' => 1,
                                 ]
                             );
@@ -3084,6 +3160,7 @@ HTML;
             'item' => $this,
             'params' => $options,
             'show_sync_field' => $extauth && $this->fields['auths_id'] && AuthLDAP::isSyncFieldConfigured($this->fields['auths_id']),
+            'identity_readonly_fields' => $this->getIdentityReadonlyFields(),
             'use_timezones' => $DB->use_timezones,
             'timezones' => $DB->use_timezones ? $DB->getTimezones() : [],
             'higher_rights' => $higherrights,
@@ -3098,6 +3175,52 @@ HTML;
         return true;
     }
 
+
+    /**
+     * User identity fields are read-only only when the auth source maps them
+     * for synchronization.
+     *
+     * @return array<string, bool>
+     */
+    private function getIdentityReadonlyFields(): array
+    {
+        $readonly = [
+            'realname'  => false,
+            'firstname' => false,
+            'middlename' => false,
+        ];
+
+        $authtype = $this->fields['authtype'] ?? Auth::NOT_YET_AUTHENTIFIED;
+        $password = $this->fields['password'] ?? '';
+
+        $internal_auth = ($authtype == Auth::DB_GLPI)
+                     || (($authtype == Auth::NOT_YET_AUTHENTIFIED)
+                         && !empty($password));
+        // Mirror original template: not item.isNewItem() and not internal_auth
+        $extauth = !$this->isNewItem() && !$internal_auth;
+        if (!$extauth) {
+            return $readonly;
+        }
+
+        // External sources without a per-field mapping stay fully locked
+        $readonly['realname']   = true;
+        $readonly['firstname']  = true;
+        $readonly['middlename'] = true;
+
+        if ($this->fields['authtype'] == Auth::LDAP
+            && !empty($this->fields['auths_id'])
+        ) {
+            $readonly['middlename'] = false;
+            $ldap = new AuthLDAP();
+            if ($ldap->getFromDB($this->fields['auths_id'])) {
+                $sync_fields = AuthLDAP::getSyncFields($ldap->fields);
+                $readonly['realname']  = isset($sync_fields['realname']);
+                $readonly['firstname'] = isset($sync_fields['firstname']);
+            }
+        }
+
+        return $readonly;
+    }
 
     /**
      * Print the user preference form.
@@ -3136,6 +3259,7 @@ HTML;
             'is_administrator' => Config::canUpdate(),
             'item' => $this,
             'is_preference_form' => true,
+            'identity_readonly_fields' => $this->getIdentityReadonlyFields(),
             'use_timezones' => $DB->use_timezones,
             'timezones' => $DB->use_timezones ? $DB->getTimezones() : [],
             'entities' => $this->getEntities(),
@@ -3420,8 +3544,12 @@ HTML;
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         continue;
                     }
-                    $totp->disable2FAForUser($id);
-                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
+                    if ($totp->disable2FAForUser($id)) {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
+                    } else {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                    }
                 }
                 break;
             case 'send_pw_reset':
@@ -3451,6 +3579,12 @@ HTML;
             case 'reapply_rights':
                 $user = new self();
                 foreach ($ids as $id) {
+                    if (!$user->can($id, UPDATE)) {
+                        $ma->itemDone(self::class, $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($user->getErrorMessage(ERROR_RIGHT));
+                        continue;
+                    }
+
                     if ($user->getFromDB($id)) {
                         $user->reapplyRightRules();
                         $ma->itemDone(self::class, $id, MassiveAction::ACTION_OK);
@@ -4378,13 +4512,15 @@ HTML;
             if (((string) $search) !== '') {
                 $txt_search = Search::makeTextSearchValue($search);
 
-                $firstname_field = new QueryIdentifier(self::getTableField('firstname'));
-                $realname_field = new QueryIdentifier(self::getTableField('realname'));
-                $fields = $_SESSION["glpinames_format"] == self::FIRSTNAME_BEFORE
-                ? [$firstname_field, new QueryExpression($DB::quoteValue(' ')), $realname_field]
-                : [$realname_field, new QueryExpression($DB::quoteValue(' ')), $firstname_field];
-
-                $concat = new QueryExpression(QueryFunction::concat($fields) . ' LIKE ' . $DB::quoteValue($txt_search));
+                $concat = $_SESSION["glpinames_format"] == self::FIRSTNAME_BEFORE
+                    ? new QueryExpression(
+                        'CONCAT(`glpi_users`.`firstname`, ?, `glpi_users`.`realname`) LIKE ?',
+                        values: [' ', $txt_search]
+                    )
+                    : new QueryExpression(
+                        'CONCAT(`glpi_users`.`realname`, ?, `glpi_users`.`firstname`) LIKE ?',
+                        values: [' ', $txt_search]
+                    );
                 $WHERE[] = [
                     'OR' => [
                         'glpi_users.name'                => ['LIKE', $txt_search],
@@ -5145,8 +5281,12 @@ HTML;
                 $iterator_params = [
                     'SELECT'  => [
                         "$itemtable.*",
-                        new QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName($relation_table . '.groups_id') . ') AS ' . $DB->quoteName('groups_ids')),
-                        new QueryExpression($DB::quoteValue($itemtype), 'itemtype'),
+                        QueryFunction::groupConcat(
+                            expression: new QueryIdentifier($relation_table . '.groups_id'),
+                            distinct: true,
+                            alias: 'groups_ids'
+                        ),
+                        new QueryExpression(new QueryValue($itemtype), 'itemtype'),
                     ],
                     'FROM'    => $itemtable,
                     'LEFT JOIN' => [
@@ -5962,6 +6102,8 @@ HTML;
                         foreach ($values as $value) {
                             if (str_contains($key, 'password')) {
                                 $value = '********';
+                            } else {
+                                $value = AuthLDAP::formatValueForDisplay($key, $value);
                             }
                             $printed_values[] = htmlescape($value);
                         }
@@ -6294,6 +6436,37 @@ HTML;
     }
 
     /**
+     * Compute the entity in which an LDAP imported user location must be created.
+     *
+     * The location is created in the entity assigned to the user by the LDAP
+     * rules (`_ldap_rules`), so an existing location in that entity is reused
+     * instead of creating a duplicate in the root entity. When no single entity
+     * can be determined (none assigned, or several different ones), the root
+     * entity (0) is returned.
+     *
+     * @return int
+     */
+    private function getLdapImportLocationEntity(): int
+    {
+        $ldap_entities = [];
+        foreach (
+            array_merge(
+                $this->fields['_ldap_rules']['rules_entities_rights'] ?? [],
+                $this->fields['_ldap_rules']['rules_entities'] ?? []
+            ) as $rule
+        ) {
+            // A single rule may assign several entities at once,
+            // in which case $rule[0] is an array of entity ids.
+            foreach (is_array($rule[0]) ? $rule[0] : [$rule[0]] as $entity_id) {
+                $ldap_entities[] = (int) $entity_id;
+            }
+        }
+        $ldap_entities = array_values(array_unique($ldap_entities));
+
+        return count($ldap_entities) === 1 ? $ldap_entities[0] : 0;
+    }
+
+    /**
      * Print the switch language form.
      *
      * @return string
@@ -6395,13 +6568,11 @@ HTML;
                     self::getTableField('is_deleted') => 0,
                     self::getTableField('is_active')  => 1,
                     self::getTableField('authtype')   => Auth::DB_GLPI,
-                    new QueryExpression(
-                        QueryFunction::now() . ' > ' . QueryFunction::dateAdd(
-                            date: self::getTableField('password_last_update'),
-                            interval: $expiration_delay - $notice_time,
-                            interval_unit: 'DAY'
-                        )
-                    ),
+                    self::getTableField('password_last_update') => ['<', QueryFunction::dateSub(
+                        date: QueryFunction::now(),
+                        interval: new QueryValue($expiration_delay - $notice_time),
+                        interval_unit: 'DAY'
+                    )],
                     // Get only users that has not yet been notified within last day
                     'OR'                              => [
                         [Alert::getTableField('date') => null],
@@ -6480,13 +6651,11 @@ HTML;
                 'is_deleted' => 0,
                 'is_active'  => 1,
                 'authtype'   => Auth::DB_GLPI,
-                new QueryExpression(
-                    QueryFunction::now() . ' > ' . QueryFunction::dateAdd(
-                        date: new QueryIdentifier('password_last_update'),
-                        interval: $expiration_delay + $lock_delay,
-                        interval_unit: 'DAY'
-                    )
-                ),
+                'password_last_update' => ['<', QueryFunction::dateSub(
+                    date: QueryFunction::now(),
+                    interval: new QueryValue($expiration_delay + $lock_delay),
+                    interval_unit: 'DAY'
+                )],
             ];
 
             $DB->delete('glpi_usertokens', [
@@ -6607,40 +6776,29 @@ HTML;
 
     public static function getFriendlyNameSearchCriteria(string $filter): array
     {
-        global $DB;
-
-        $table     = self::getTable();
-
         $filter = strtolower($filter);
         $filter_no_spaces = str_replace(" ", "", $filter);
-        $concat_names_first_last = QueryFunction::lower(
-            QueryFunction::replace(
-                expression: QueryFunction::concat([new QueryIdentifier("$table.firstname"), new QueryIdentifier("$table.realname")]),
-                search: new QueryExpression($DB::quoteValue(' ')),
-                replace: new QueryExpression($DB::quoteValue(''))
-            )
-        );
-        $concat_names_last_first = QueryFunction::lower(
-            QueryFunction::replace(
-                expression: QueryFunction::concat([new QueryIdentifier("$table.realname"), new QueryIdentifier("$table.firstname")]),
-                search: new QueryExpression($DB::quoteValue(' ')),
-                replace: new QueryExpression($DB::quoteValue(''))
-            )
-        );
 
         return [
             'OR' => [
-                new QueryExpression(QueryFunction::lower(new QueryIdentifier("$table.name")) . ' LIKE ' . $DB::quoteValue("%$filter%")),
-                new QueryExpression($concat_names_first_last . ' LIKE ' . $DB::quoteValue("%$filter_no_spaces%")),
-                new QueryExpression($concat_names_last_first . ' LIKE ' . $DB::quoteValue("%$filter_no_spaces%")),
+                new QueryExpression(
+                    'LOWER(`glpi_users`.`name`) LIKE ?',
+                    values: ["%$filter%"]
+                ),
+                new QueryExpression(
+                    'LOWER(REPLACE(CONCAT(`glpi_users`.`firstname`, `glpi_users`.`realname`), ?, ?)) LIKE ?',
+                    values: [' ', '', "%$filter_no_spaces%"]
+                ),
+                new QueryExpression(
+                    'LOWER(REPLACE(CONCAT(`glpi_users`.`realname`, `glpi_users`.`firstname`), ?, ?)) LIKE ?',
+                    values: [' ', '', "%$filter_no_spaces%"]
+                ),
             ],
         ];
     }
 
     public static function getFriendlyNameFields(string $alias = "name")
     {
-        global $DB;
-
         $config = Config::getConfigurationValues('core');
         if ($config['names_format'] == User::FIRSTNAME_BEFORE) {
             $first = "firstname";
@@ -6652,17 +6810,30 @@ HTML;
 
         $table  = self::getTable();
 
-        $first  = new QueryIdentifier("$table.$first");
-        $second = new QueryIdentifier("$table.$second");
-        $alias  = new QueryIdentifier($alias);
-        $name   = new QueryIdentifier($table . '.' . self::getNameField());
+        $first_field  = "$table.$first";
+        $second_field = "$table.$second";
 
-        return new QueryExpression("CASE
-            WHEN $first <> '' AND $second <> '' THEN CONCAT($first, ' ', $second)
-            WHEN $first <> '' THEN $first
-            WHEN $second <> '' THEN $second
-            ELSE $name
-        END AS $alias");
+        $first_id  = new QueryIdentifier($first_field);
+        $second_id = new QueryIdentifier($second_field);
+        $name_id   = new QueryIdentifier($table . '.' . self::getNameField());
+
+        return QueryFunction::if(
+            condition: [
+                $first_field  => ['<>', ''],
+                $second_field => ['<>', ''],
+            ],
+            true_expression: QueryFunction::concat([$first_id, new QueryValue(' '), $second_id]),
+            false_expression: QueryFunction::if(
+                condition: [$first_field => ['<>', '']],
+                true_expression: $first_id,
+                false_expression: QueryFunction::if(
+                    condition: [$second_field => ['<>', '']],
+                    true_expression: $second_id,
+                    false_expression: $name_id
+                )
+            ),
+            alias: $alias
+        );
     }
 
     public static function getIcon()
@@ -6988,13 +7159,11 @@ HTML;
             'SELECT' => ['id', 'password_forget_token'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                new QueryExpression(
-                    QueryFunction::now() . ' < ' . QueryFunction::dateAdd(
-                        date: new QueryIdentifier('password_forget_token_date'),
-                        interval: $CFG_GLPI['password_init_token_delay'],
-                        interval_unit: 'SECOND'
-                    )
-                ),
+                'password_forget_token_date' => ['>', QueryFunction::dateSub(
+                    date: QueryFunction::now(),
+                    interval: new QueryValue($CFG_GLPI['password_init_token_delay']),
+                    interval_unit: 'SECOND'
+                )],
             ],
         ]);
 

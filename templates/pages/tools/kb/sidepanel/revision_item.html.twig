@@ -83,13 +83,18 @@
                 {% endif %}
             </div>
             <div class="text-secondary small">
-                <span
-                    title="{{ event.date }}"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="bottom"
-                >
-                    {{ event.date|relative_datetime }}
-                </span>
+                {# The date may be unknown, the database allows null values here #}
+                {% if event.date is not null %}
+                    <span
+                        title="{{ event.date }}"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                    >
+                        {{ event.date|relative_datetime }}
+                    </span>
+                {% else %}
+                    <span>{{ __("Unknown") }}</span>
+                {% endif %}
             </div>
         </div>
         {% if is_translation_revision and can_revert %}

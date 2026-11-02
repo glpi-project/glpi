@@ -250,6 +250,22 @@ abstract class ITILTemplateField extends CommonDBChild
                 'task_order_label' => is_subclass_of(static::class, ITILTemplatePredefinedField::class)
                     ? __('Predefined task templates will be added according to their creation order')
                     : null,
+                'date_variables_label' => is_subclass_of(static::class, ITILTemplatePredefinedField::class)
+                    && in_array(static::$itiltype, [Ticket::class, Change::class], true)
+                    ? sprintf(
+                        //TRANS: %1$s is the list of date variables, %2$s is an example of shifted date variable
+                        __('Date variables for recurrent tickets and changes, based on the occurrence date: %1$s. Shift with +N or -N, e.g. %2$s.'),
+                        '{YEAR}, {MONTH}, {MONTH_NAME}, {MONTH_SHORT}, {DAY}, {WEEKDAY}, {WEEK}, {YEAR_OF_WEEK}, {QUARTER}',
+                        '{MONTH_NAME+1}'
+                    ) . ' ' . sprintf(
+                        //TRANS: %1$s is the week variable, %2$s is the year of week variable, %3$s is the calendar year variable
+                        __('%1$s is the ISO week number: use it with %2$s, not %3$s. On 2025-12-29, "%1$s %2$s" gives "01 2026", while "%1$s %3$s" gives "01 2025".'),
+                        '{WEEK}',
+                        '{YEAR_OF_WEEK}',
+                        '{YEAR}'
+                    )
+                    : null,
+                'name_field_num' => $itil_object->getSearchOptionIDByField('field', 'name', $itil_object::getTable()),
             ];
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 {% import 'components/form/fields_macros.html.twig' as fields %}
@@ -275,6 +291,14 @@ abstract class ITILTemplateField extends CommonDBChild
                                 <div class="ms-2">{{ inputs.submit('add', _x('button', 'Add')) }}</div>
                             {% endif %}
                         </div>
+                        {% if date_variables_label is not null %}
+                            <div id="date_variables_help{{ rand }}" class="alert alert-info mt-2 d-none">{{ date_variables_label }}</div>
+                            <script>
+                                $('#dropdown_num{{ rand }}').on('change', function () {
+                                    $('#date_variables_help{{ rand }}').toggleClass('d-none', $(this).val() !== '{{ name_field_num }}');
+                                });
+                            </script>
+                        {% endif %}
                     </form>
                 </div>
 TWIG, $twig_params);

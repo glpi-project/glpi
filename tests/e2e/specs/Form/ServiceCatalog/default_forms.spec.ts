@@ -124,11 +124,10 @@ test.describe('Default forms', () => {
 
             await glpi_page.getButton("Submit").click();
 
-            const alert = glpi_page.getAlert('Item successfully created');
-            await expect(alert).toBeVisible();
+            // Check that the user is redirected to the created ticket
+            await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
 
-            const href = await alert.getByRole('link').getAttribute('href');
-            const id = /\?id=(.*)/.exec(href ?? '')?.[1];
+            const id = new URL(page.url()).searchParams.get('id');
             const fields = await api.getItem('Ticket', Number(id));
             expect(fields.urgency).toEqual(4);
             expect(fields.name).toEqual('My title');

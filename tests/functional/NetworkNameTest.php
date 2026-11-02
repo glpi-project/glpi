@@ -36,10 +36,73 @@ namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
 
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+
 /* Test for inc/networkport.class.php */
 
 class NetworkNameTest extends DbTestCase
 {
+    public function testAssociateMassiveActionTargetsNetworkPort(): void
+    {
+        $this->login();
+
+        $massive_action = new \MassiveAction(
+            [
+                'action' => 'affect',
+                'action_name' => 'Associate',
+                'items' => [\NetworkName::class => [1 => 'on']],
+            ],
+            [],
+            'process'
+        );
+
+        ob_start();
+        $result = \CommonDBConnexity::showMassiveActionsSubForm($massive_action);
+        $html = ob_get_clean();
+
+        $this->assertTrue($result);
+        $this->assertStringNotContainsString('Unable to reaffect given elements!', $html);
+        $this->assertStringContainsString('name="peertype" value="NetworkPort"', $html);
+        $this->assertStringContainsString('name="peers_id"', $html);
+    }
+
+    public function testAssociateMassiveActionRejectsNonexistentNetworkPort(): void
+    {
+        $this->login();
+
+        $network_name = $this->createItem(\NetworkName::class, [
+            'name' => 'network-name-with-forged-association',
+            'entities_id' => 0,
+            'items_id' => 0,
+            'itemtype' => '',
+        ]);
+        $network_name_id = $network_name->getID();
+
+        $massive_action = new \MassiveAction(
+            [
+                'action' => 'affect',
+                'action_name' => 'Associate',
+                'items' => [\NetworkName::class => [$network_name_id => $network_name_id]],
+                'processor' => \CommonDBConnexity::class,
+                'peertype' => \NetworkPort::class,
+                'peers_id' => 999999999,
+            ],
+            [],
+            'process'
+        );
+
+        \CommonDBConnexity::processMassiveActionsForOneItemtype(
+            $massive_action,
+            $network_name,
+            [$network_name_id]
+        );
+
+        $this->assertTrue($network_name->getFromDB($network_name_id));
+        $this->assertSame('', $network_name->fields['itemtype']);
+        $this->assertSame(0, $network_name->fields['items_id']);
+    }
+
     public function testAddSimpleNetworkName()
     {
         $this->login();

@@ -323,6 +323,24 @@ class ToolboxTest extends DbTestCase
         $this->assertSame($out, \Toolbox::ucfirst($in));
     }
 
+    public static function isPopMailServerConnectStringProvider(): iterable
+    {
+        yield ['{mail.example.org/pop}', true];
+        yield ['{mail.example.org:995/pop/ssl/novalidate-cert}INBOX', true];
+        yield ['{mail.example.org/imap}', false];
+        yield ['{mail.example.org:993/imap/ssl}INBOX', false];
+        yield ['{pop.example.org/imap}', false];
+        yield ['{mail.example.org/popular}', false];
+        yield ['{mail.example.org/pop', false];
+        yield ['', false];
+    }
+
+    #[DataProvider('isPopMailServerConnectStringProvider')]
+    public function testIsPopMailServerConnectString(string $connect_string, bool $expected): void
+    {
+        $this->assertSame($expected, \Toolbox::isPopMailServerConnectString($connect_string));
+    }
+
     public static function shortcutProvider()
     {
         return [

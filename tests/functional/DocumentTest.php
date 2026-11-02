@@ -37,15 +37,27 @@ namespace tests\units;
 use DocumentCategory;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
+use Glpi\Form\Destination\CommonITILField\EntityField;
+use Glpi\Form\Destination\CommonITILField\EntityFieldConfig;
+use Glpi\Form\Destination\CommonITILField\EntityFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\RequesterField;
+use Glpi\Form\Destination\CommonITILField\RequesterFieldConfig;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeFile;
+use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
+use Glpi\Form\QuestionType\QuestionTypeRequester;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Profile;
 use User;
+
+use function Safe\json_encode;
 
 /* Test for inc/document.class.php */
 
@@ -782,8 +794,49 @@ class DocumentTest extends DbTestCase
         $this->assertFalse($unrelatedDocument->canViewFile());
     }
 
+    public function testCannotViewFileOfAnExpiredFaqItem(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $kb_item = $this->createItem(\KnowbaseItem::class, [
+            'name'     => __FUNCTION__,
+            'answer'   => '<p>Text</p>',
+            'is_faq'   => 1,
+            'users_id' => getItemByTypeName(User::class, 'glpi', true),
+            'end_date' => date('Y-m-d H:i:s', strtotime('-1 day')),
+        ]);
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $kb_item->getID(),
+            'entities_id'      => 0,
+            'is_recursive'     => 1,
+        ]);
+        $document = $this->createItem(\Document::class, [
+            'name'     => __FUNCTION__,
+            'filename' => 'doc.xls',
+        ], ['filename']);
+        $this->createItem(\Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'items_id'     => $kb_item->getID(),
+            'itemtype'     => \KnowbaseItem::class,
+        ]);
+
+        $this->login('post-only', 'postonly');
+        $this->assertFalse($document->canViewFile());
+
+        $this->logOut();
+        $CFG_GLPI['use_public_faq'] = 1;
+        $this->assertFalse($document->canViewFile());
+
+        // Back in the publication window, the file is readable again.
+        $this->login();
+        $this->updateItem(\KnowbaseItem::class, $kb_item->getID(), ['end_date' => null]);
+        $this->logOut();
+        $this->assertTrue($document->canViewFile());
+    }
+
     /**
-     * Data provider for self::testCanViewItilFile().
+     * Data provider for self::testCanViewItilFile() and self::testCanViewPrivateItilFile().
      */
     public static function itilTypeProvider()
     {
@@ -887,6 +940,93 @@ class DocumentTest extends DbTestCase
         $this->assertTrue($inlinedDocument->canViewFile([$fkey => $item->getID()]));
         $this->assertTrue($basicDocument->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]));
         $this->assertTrue($inlinedDocument->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]));
+    }
+
+    /**
+     * Check that a document privately attached to an ITIL object cannot be downloaded by a user
+     * that does not hold the `Document_Item::SEEPRIVATE` right, even when it can read that object.
+     */
+    #[DataProvider('itilTypeProvider')]
+    public function testCanViewPrivateItilFile($itemtype)
+    {
+        // --- arrange : glpi user creates private documents ---
+        $this->login('glpi', 'glpi');
+
+        // Create documents
+        [$private_document, $own_document] = $this->createItems(\Document::class, [
+            ['name' => 'private document', 'filename' => 'private.xls'],
+            ['name' => 'own private document', 'filename' => 'own.xls'],
+        ]);
+
+        // Create itilobject
+        $item = $this->createItem($itemtype, [
+            'name'    => 'New ' . $itemtype,
+            'content' => 'content',
+        ]);
+        $fkey = $item->getForeignKeyField();
+
+        // Associate created itilobject and document
+        $this->createItem(\Document_Item::class, [
+            'documents_id' => $private_document->getID(),
+            'items_id'     => $item->getID(),
+            'itemtype'     => $itemtype,
+            'is_private'   => 1,
+        ]);
+
+        // --- arrange : post-only observes the itilobject, with no right on documents ---
+        $this->login('post-only', 'postonly');
+        $_SESSION["glpiactiveprofile"][$item::$rightname] = READ; // force READ right for tested ITIL type
+        assert(
+            !\Session::haveRight(\Document::$rightname, \Document_Item::SEEPRIVATE),
+            'post-only should not hold the SEEPRIVATE right to start test'
+        );
+
+        // Make post-only an observer of the itilobject
+        $this->createItem($itemtype . '_User', [
+            $fkey      => $item->getID(),
+            'type'     => \CommonITILActor::OBSERVER,
+            'users_id' => \Session::getLoginUserID(),
+        ]);
+
+        // Associate the same itilobject and another document, this time as post-only
+        $this->createItem(\Document_Item::class, [
+            'documents_id' => $own_document->getID(),
+            'items_id'     => $item->getID(),
+            'itemtype'     => $itemtype,
+            'is_private'   => 1,
+        ]);
+
+        // --- act + assert ---
+        // A document someone else attached privately stays out of reach ...
+        $this->assertFalse(
+            $private_document->canViewFile([$fkey => $item->getID()]),
+            'Private document should not be visible using the legacy option'
+        );
+        $this->assertFalse(
+            $private_document->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]),
+            'Private document should not be visible using the itemtype/items_id options'
+        );
+
+        // ... unless post-only attached it itself ...
+        $this->assertTrue(
+            $own_document->canViewFile([$fkey => $item->getID()]),
+            'Author of the private link should see its document using the legacy option'
+        );
+        $this->assertTrue(
+            $own_document->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]),
+            'Author of the private link should see its document using the itemtype/items_id options'
+        );
+
+        // ... or unless post-only is allowed to see private documents
+        $_SESSION["glpiactiveprofile"][\Document::$rightname] = \Document_Item::SEEPRIVATE;
+        $this->assertTrue(
+            $private_document->canViewFile([$fkey => $item->getID()]),
+            'SEEPRIVATE right should grant access using the legacy option'
+        );
+        $this->assertTrue(
+            $private_document->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]),
+            'SEEPRIVATE right should grant access using the itemtype/items_id options'
+        );
     }
 
     /**
@@ -1077,6 +1217,19 @@ class DocumentTest extends DbTestCase
         $this->assertFalse($document_2->canViewFile());
         $this->assertFalse($document_2->canViewFile(['items_id' => $computer_id, 'itemtype' => \Computer::class]));
         $this->assertFalse($document_2->canViewFile(['items_id' => $printer_id, 'itemtype' => \Printer::class]));
+    }
+
+    public function testGetDownloadLinkEncodesNamespacedItemtype(): void
+    {
+        $this->login();
+
+        $form = $this->createForm(new FormBuilder());
+        $document = $this->addDocumentToItem('doc.txt', 'content', $form);
+
+        $link = $document->getDownloadLink($form);
+
+        $this->assertStringContainsString('itemtype=Glpi%5CForm%5CForm&amp;items_id=' . $form->getID(), $link);
+        $this->assertStringNotContainsString('\\', $link);
     }
 
     public function testCronCleanOrphansDocument()
@@ -1901,5 +2054,218 @@ class DocumentTest extends DbTestCase
         // are not linked to the form he is allowed to see.
         $this->assertFalse($can_view_3);
         $this->assertFalse($can_view_4);
+    }
+
+    public static function formFileQuestionDestinationEntityProvider(): iterable
+    {
+        $cases = [
+            [EntityFieldStrategy::FORM_FILLER, '_test_root_entity', 'Root entity'],
+            [EntityFieldStrategy::FROM_FORM, '_test_child_1', '_test_child_1'],
+            [EntityFieldStrategy::SPECIFIC_VALUE, '_test_child_2', '_test_child_2'],
+            [EntityFieldStrategy::SPECIFIC_ANSWER, '_test_child_2', '_test_child_2'],
+            [EntityFieldStrategy::LAST_VALID_ANSWER, '_test_child_2', '_test_child_2'],
+            [EntityFieldStrategy::REQUESTER_ENTITY, '_test_child_3', '_test_child_3'],
+        ];
+
+        foreach ($cases as $case) {
+            [$strategy, $expected_entity_name, $expected_anonymous_entity_name] = $case;
+            yield [$strategy, $expected_entity_name, false];
+            yield [$strategy, $expected_anonymous_entity_name, true];
+        }
+    }
+
+    #[DataProvider('formFileQuestionDestinationEntityProvider')]
+    public function testFormFileQuestionDoesNotDuplicateDocumentWithDestinationEntity(
+        EntityFieldStrategy $strategy,
+        string $expected_entity_name,
+        bool $anonymous,
+    ): void {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        // Define a default heading for documents attached to tickets
+        $document_category = $this->createItem(DocumentCategory::class, ['name' => 'Default Category']);
+        $CFG_GLPI['documentcategories_id_forticket'] = $document_category->getID();
+
+        $root_entities_id = $this->getTestRootEntity(only_id: true);
+        $child_1_entities_id = getItemByTypeName(\Entity::class, '_test_child_1', true);
+        $child_2_entities_id = getItemByTypeName(\Entity::class, '_test_child_2', true);
+        $child_3_entities_id = getItemByTypeName(\Entity::class, '_test_child_3', true);
+
+        // Create a form with a file question, an entity question, and a requester question
+        $builder = new FormBuilder();
+        $builder->setEntitiesId($child_1_entities_id);
+        $builder->addQuestion('Attachment', QuestionTypeFile::class);
+        $builder->addQuestion('Entity', QuestionTypeItem::class, 0, json_encode([
+            'itemtype'             => \Entity::class,
+            'root_items_id'        => 0,
+            'subtree_depth'        => 0,
+            'selectable_tree_root' => false,
+        ]));
+        $builder->addQuestion('Requester', QuestionTypeRequester::class);
+        $form = $this->createForm($builder);
+        $question_id = $this->getQuestionId($form, 'Attachment');
+
+        $requester = $this->createItem(User::class, [
+            'name'          => 'Form file question requester',
+            '_profiles_id'  => getItemByTypeName(Profile::class, 'Self-Service', true),
+            '_entities_id'  => $child_3_entities_id,
+            '_is_recursive' => false,
+        ]);
+
+        // Set the destination field configuration for the requester and entity questions
+        $this->setDestinationFieldConfig(
+            form: $form,
+            key: RequesterField::getKey(),
+            config: new RequesterFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [$this->getQuestionId($form, 'Requester')]
+            ),
+        );
+
+        $this->setDestinationFieldConfig(
+            form: $form,
+            key: EntityField::getKey(),
+            config: new EntityFieldConfig(
+                strategy: $strategy,
+                specific_question_id: $this->getQuestionId($form, 'Entity'),
+                specific_entity_id: $child_2_entities_id,
+            ),
+        );
+
+        // Logout the user if we are testing the anonymous case
+        if ($anonymous) {
+            $this->logOut();
+        } else {
+            $this->assertTrue(\Session::changeActiveEntities($root_entities_id, false));
+        }
+
+        // Copy the test file
+        $prefix = 'testFormFileQuestionDoesNotDuplicateDocumentWithDestinationEntity';
+        $tag = \Rule::getUuid();
+        $filename = $prefix . 'foo.txt';
+        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        $_POST['_prefix_answers_' . $question_id] = $prefix;
+
+        // Submit the form and get the created ticket
+        $ticket = $this->sendFormAndGetCreatedTicket(
+            $form,
+            [
+                'Attachment' => [$filename],
+                'Entity'     => ['itemtype' => \Entity::class, 'items_ids' => [$child_2_entities_id]],
+                'Requester'  => ["users_id-{$requester->getID()}"],
+            ],
+            ['filename' => [$filename], 'prefix' => [$prefix], 'tag' => [$tag], 'question_id' => [$question_id]],
+        );
+        unset($_POST['_prefix_answers_' . $question_id]);
+
+        // Assert that the ticket was created and has the expected entity
+        $this->assertEquals(
+            getItemByTypeName(\Entity::class, $expected_entity_name, true),
+            (int) $ticket->fields['entities_id']
+        );
+
+        // Assert that the document was created and linked to the ticket with the default category
+        $document = new \Document();
+        $documents = $document->find([
+            'sha1sum' => sha1_file(FIXTURE_DIR . '/uploads/foo.txt'),
+        ]);
+        $this->assertCount(
+            1,
+            $documents,
+            'Submitting a form file question must not create a duplicate, orphaned Document.'
+        );
+        $document = current($documents);
+        $this->assertEquals($document_category->getID(), $document['documentcategories_id']);
+
+        $docitem = new \Document_Item();
+        $this->assertTrue($docitem->getFromDBByCrit([
+            'documents_id' => $document['id'],
+            'itemtype'     => \Ticket::class,
+            'items_id'     => $ticket->getID(),
+        ]));
+    }
+
+    public function testFormFileQuestionWithMultipleFilesDoesNotDuplicateDocuments(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        // Define a default heading for documents attached to tickets
+        $document_category = $this->createItem(DocumentCategory::class, ['name' => 'Default Category']);
+        $CFG_GLPI['documentcategories_id_forticket'] = $document_category->getID();
+
+        // Form is in a sub-entity, the ticket is created in the form entity
+        $child_1_entities_id = getItemByTypeName(\Entity::class, '_test_child_1', true);
+        $builder = new FormBuilder();
+        $builder->setEntitiesId($child_1_entities_id);
+        $builder->addQuestion('Attachment', QuestionTypeFile::class);
+        $form = $this->createForm($builder);
+        $question_id = $this->getQuestionId($form, 'Attachment');
+        $this->setDestinationFieldConfig(
+            form: $form,
+            key: EntityField::getKey(),
+            config: new EntityFieldConfig(strategy: EntityFieldStrategy::FROM_FORM),
+        );
+
+        $this->assertTrue(\Session::changeActiveEntities($this->getTestRootEntity(only_id: true), false));
+
+        // Copy the test files
+        $prefixes = [
+            'testFormFileQuestionWithMultipleFiles1',
+            'testFormFileQuestionWithMultipleFiles2',
+        ];
+        $filenames = [
+            $prefixes[0] . 'foo.txt',
+            $prefixes[1] . 'bar.txt',
+        ];
+        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filenames[0]);
+        copy(FIXTURE_DIR . '/uploads/bar.txt', GLPI_TMP_DIR . '/' . $filenames[1]);
+        $_POST['_prefix_answers_' . $question_id] = $prefixes;
+
+        // Submit the form with multiple files and get the created ticket
+        $ticket = $this->sendFormAndGetCreatedTicket(
+            $form,
+            ['Attachment' => $filenames],
+            [
+                'filename'    => $filenames,
+                'prefix'      => $prefixes,
+                'tag'         => [\Rule::getUuid(), \Rule::getUuid()],
+                'question_id' => [$question_id, $question_id],
+            ],
+        );
+        unset($_POST['_prefix_answers_' . $question_id]);
+
+        // Assert that the ticket was created and has the expected entity
+        $this->assertEquals($child_1_entities_id, (int) $ticket->fields['entities_id']);
+
+        // Assert that the documents were created and linked to the ticket with the default category
+        $documents = (new \Document())->find([
+            'sha1sum' => [
+                sha1_file(FIXTURE_DIR . '/uploads/foo.txt'),
+                sha1_file(FIXTURE_DIR . '/uploads/bar.txt'),
+            ],
+        ]);
+        $this->assertCount(
+            2,
+            $documents,
+            'Submitting two files in a form file question must create exactly two Documents.'
+        );
+        $this->assertEqualsCanonicalizing(
+            ['foo.txt', 'bar.txt'],
+            array_column($documents, 'filename')
+        );
+
+        $docitem = new \Document_Item();
+        foreach ($documents as $document) {
+            $this->assertEquals($document_category->getID(), $document['documentcategories_id']);
+            $this->assertTrue($docitem->getFromDBByCrit([
+                'documents_id' => $document['id'],
+                'itemtype'     => \Ticket::class,
+                'items_id'     => $ticket->getID(),
+            ]));
+        }
     }
 }

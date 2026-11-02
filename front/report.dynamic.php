@@ -35,19 +35,25 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Plugin\Hooks;
 
 if (!isset($_GET['item_type']) || !is_string($_GET['item_type']) || !is_a($_GET['item_type'], CommonGLPI::class, true)) {
     return;
 }
 
-/** @var class-string<AllAssets|CommonDBTM> $itemtype */
+/** @var class-string<AllAssets|CommonDBTM|Stat> $itemtype */
 $itemtype = $_GET['item_type'];
 $item = getItemForItemtype($itemtype);
+if (!$item) {
+    throw new AccessDeniedHttpException();
+}
 if ($item instanceof AllAssets) {
     Session::checkCentralAccess();
-} else {
+} elseif ($item instanceof CommonDBTM) {
     $item->checkGlobal(READ);
+} elseif (!$item::canView()) {
+    throw new AccessDeniedHttpException();
 }
 
 if (isset($_GET["display_type"])) {
@@ -56,8 +62,8 @@ if (isset($_GET["display_type"])) {
         $_GET["export_all"]   = 1;
     }
 
-    switch ($itemtype) {
-        case 'Stat':
+    switch ($item::class) {
+        case Stat::class:
             if (isset($_GET["item_type_param"])) {
                 $params = Toolbox::decodeArrayFromInput($_GET["item_type_param"]);
                 switch ($params["type"]) {
@@ -106,12 +112,12 @@ if (isset($_GET["display_type"])) {
 
         default:
             // Plugin case
-            if ($plug = isPluginItemType($itemtype)) {
+            if ($plug = isPluginItemType($item::class)) {
                 if (Plugin::doOneHook($plug['plugin'], Hooks::AUTO_DYNAMIC_REPORT, $_GET)) {
                     return;
                 }
             }
-            $params = Search::manageParams($itemtype, $_GET);
-            Search::showList($itemtype, $params);
+            $params = Search::manageParams($item::class, $_GET);
+            Search::showList($item::class, $params);
     }
 }

@@ -216,6 +216,7 @@ TEXT,
             'attach_documents' => 0,
             'itemtype_trigger' => null,
             'items_id_trigger' => 0,
+            'is_body_encrypted' => 0,
         ];
         $this->assertSame($expected, $data);
 

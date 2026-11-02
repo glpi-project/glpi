@@ -838,4 +838,69 @@ class CustomFieldDefinitionTest extends DbTestCase
             $row['ITEM_' . $asset_classname . '_' . $multiple_dropdown_opt]
         );
     }
+
+    /**
+     * A dropdown custom field may target the custom asset's own itemtype (self-reference).
+     * In this case, the joined table alias is the same for the JOIN, SELECT, WHERE and
+     * ORDER BY clauses, and they must all be computed the same way.
+     *
+     * @see https://github.com/glpi-project/glpi/issues/25026
+     */
+    public function testSearchDropdownFieldOnCustomAssetSelfReference(): void
+    {
+        $asset_definition = $this->initAssetDefinition();
+        $asset_classname  = $asset_definition->getAssetClassName();
+
+        $this->createItem(CustomFieldDefinition::class, [
+            'assets_assetdefinitions_id' => $asset_definition->getID(),
+            'system_name' => 'linkedasset',
+            'label' => 'Linked asset',
+            'type' => DropdownType::class,
+            'itemtype' => $asset_classname,
+        ]);
+
+        // Login after the definition creation to get the corresponding rights in the session
+        $this->login();
+
+        $opts = SearchOption::getOptionsForItemtype($asset_classname);
+        $dropdown_opt = null;
+        foreach ($opts as $num => $opt) {
+            if (is_array($opt) && $opt['name'] === 'Linked asset') {
+                $dropdown_opt = $num;
+            }
+        }
+        $this->assertNotNull($dropdown_opt);
+
+        $linked_id = $this->createItem($asset_classname, [
+            'entities_id' => $this->getTestRootEntity(true),
+            'name' => __FUNCTION__ . '_linked',
+        ])->getID();
+
+        $this->createItem($asset_classname, [
+            'entities_id' => $this->getTestRootEntity(true),
+            'name' => __FUNCTION__ . '_main',
+            'custom_linkedasset' => $linked_id,
+        ], ['custom_linkedasset']);
+
+        // Filtering (WHERE) and sorting (ORDER BY) on the self-referencing field must not
+        // trigger a "Unknown column" SQL error caused by a mismatched table alias.
+        $data = SearchEngine::getData($asset_classname, [
+            'sort' => [$dropdown_opt],
+            'criteria' => [
+                [
+                    'link' => 'AND',
+                    'field' => $dropdown_opt,
+                    'searchtype' => 'contains',
+                    'value' => __FUNCTION__ . '_linked',
+                ],
+            ],
+        ], [$dropdown_opt]);
+
+        $this->assertCount(1, $data['data']['rows']);
+        $row = reset($data['data']['rows'])['raw'];
+        $this->assertEquals(
+            __FUNCTION__ . '_linked',
+            $row['ITEM_' . $asset_classname . '_' . $dropdown_opt]
+        );
+    }
 }

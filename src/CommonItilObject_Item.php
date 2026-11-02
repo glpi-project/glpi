@@ -154,6 +154,10 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         /** @var CommonITILObject $itil */
         $itil = new static::$itemtype_1();
         $item = getItemForItemtype($input["itemtype"]);
+        if (!($item instanceof CommonDBTM)) {
+            // Unknown itemtype (e.g. relation from an uninstalled plugin)
+            return false;
+        }
 
         // Process rules based on linked item location if needed
         if (
@@ -785,7 +789,12 @@ TWIG, $twig_params);
         if (count($linkeditems)) {
             foreach ($linkeditems as $ltype => $tab) {
                 foreach ($tab as $lID) {
-                    $restrict[] = ['AND' => ['itemtype' => $ltype, 'items_id' => $lID]];
+                    $restrict[] = [
+                        'AND' => [
+                            static::getTable() . '.' . static::$itemtype_2 => $ltype,
+                            static::getTable() . '.' . static::$items_id_2 => $lID,
+                        ],
+                    ];
                 }
             }
         }

@@ -164,6 +164,7 @@ test('Aside dots menu is reachable and operable with the keyboard', async ({ pag
     });
 
     await kb.goto(viewed_id);
+    await kb.waitForAsideReady();
 
     // Tabbing off the article link walks the row's actions in visual order:
     // the "create child article" (+) affordance first...

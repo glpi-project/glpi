@@ -65,6 +65,7 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
                 'projects_id'   => $project->getID(),
                 'plan_end_date' => date('Y-m-d H:i:s', strtotime($end_date)),
                 'recall'        => $recall,
+                'entities_id'   => $this->getTestRootEntity(true),
             ]
         );
         return [$project, $task];
@@ -119,46 +120,6 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
             ]),
             "Expected no planning recall for user #$users_id on task #$task_id"
         );
-    }
-
-    // -------------------------------------------------------------------------
-    // Task recall field — creation
-    // -------------------------------------------------------------------------
-
-    public function testRecallCreatedForTeamUserOnTaskAdd(): void
-    {
-        $this->login();
-        $users_id = Session::getLoginUserID();
-
-        [, $task] = $this->createProjectAndTask(HOUR_TIMESTAMP);
-        $this->addUserToTeam($task, $users_id);
-
-        $this->assertHasRecall($task->getID(), $users_id, HOUR_TIMESTAMP);
-    }
-
-    public function testNoRecallCreatedWhenRecallIsNone(): void
-    {
-        $this->login();
-        $users_id = Session::getLoginUserID();
-
-        [, $task] = $this->createProjectAndTask(null);
-        $this->addUserToTeam($task, $users_id);
-
-        $this->assertNoRecall($task->getID(), $users_id);
-    }
-
-    public function testRecallCreatedForAllTeamMembersOnTaskAdd(): void
-    {
-        $this->login();
-        $current_user_id = Session::getLoginUserID();
-        $tech            = getItemByTypeName(User::class, 'tech');
-
-        [, $task] = $this->createProjectAndTask(2 * HOUR_TIMESTAMP);
-        $this->addUserToTeam($task, $current_user_id);
-        $this->addUserToTeam($task, $tech->getID());
-
-        $this->assertHasRecall($task->getID(), $current_user_id, 2 * HOUR_TIMESTAMP);
-        $this->assertHasRecall($task->getID(), $tech->getID(), 2 * HOUR_TIMESTAMP);
     }
 
     // -------------------------------------------------------------------------

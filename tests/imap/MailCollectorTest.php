@@ -39,7 +39,6 @@ use Glpi\Socket;
 use Glpi\Tests\DbTestCase;
 use ITILFollowup;
 use Laminas\Mail\Protocol\Imap;
-use Laminas\Mail\Protocol\Pop3;
 use Laminas\Mail\Storage\Message;
 use NotificationTarget;
 use NotificationTargetSoftwareLicense;
@@ -48,6 +47,9 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use SoftwareLicense;
 use Ticket;
+
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
 
 class MailCollectorTest extends DbTestCase
 {
@@ -218,6 +220,37 @@ class MailCollectorTest extends DbTestCase
         $this->hasSessionMessages(ERROR, [
             'Mandatory fields are not filled. Please correct: Server, Connection options',
         ]);
+    }
+
+    public function testShowFormWarnsAboutPopProtocol(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        // POP items cannot be created anymore, insert it as it would exist after the migration
+        $DB->insert(\MailCollector::getTable(), [
+            'name'      => 'pop-collector',
+            'host'      => '{pop.example.org:110/pop}',
+            'is_active' => 0,
+        ]);
+        $pop_collector_id = $DB->insertId();
+        $imap_collector = $this->createItem(\MailCollector::class, [
+            'name' => 'imap-collector',
+            'host' => '{imap.example.org/imap/novalidate-cert}',
+        ]);
+
+        $warning = 'This mails receiver uses the POP protocol, which is no longer supported.';
+
+        $collector = new \MailCollector();
+        $this->assertTrue($collector->getFromDB($pop_collector_id));
+        ob_start();
+        $collector->showForm($pop_collector_id);
+        $this->assertStringContainsString($warning, ob_get_clean());
+
+        ob_start();
+        $imap_collector->showForm($imap_collector->getID());
+        $this->assertStringNotContainsString($warning, ob_get_clean());
     }
 
     public function testCounts()
@@ -420,6 +453,7 @@ class MailCollectorTest extends DbTestCase
         $root_ent_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
         $ticket_id = getItemByTypeName('Ticket', '_ticket01', true);
+        $padded_ticket_id = sprintf('%07d', $ticket_id);
         $ticket_notif = new NotificationTargetTicket($root_ent_id, 'test_event', getItemByTypeName('Ticket', '_ticket01'));
 
         $soft_id   = getItemByTypeName('SoftwareLicense', '_test_softlic_1', true);
@@ -632,6 +666,42 @@ class MailCollectorTest extends DbTestCase
                 'expected_itemtype' => null,
                 'expected_items_id' => null,
                 'accepted'          => false,
+            ],
+            // Subject fallback - single GLPI tag, foreign `[Ticket#...]` (no space) ignored
+            [
+                'headers'           => [
+                    'subject' => "Re: [GLPI #{$padded_ticket_id}] [Ticket#2026072803024161] Foo",
+                ],
+                'expected_itemtype' => Ticket::class,
+                'expected_items_id' => $ticket_id,
+                'accepted'          => true,
+            ],
+            // Subject fallback - a too-short foreign `[Case #4711]` reference is ignored (< 7 digits)
+            [
+                'headers'           => [
+                    'subject' => "[Case #4711] Re: [GLPI #{$padded_ticket_id}] Foo",
+                ],
+                'expected_itemtype' => Ticket::class,
+                'expected_items_id' => $ticket_id,
+                'accepted'          => true,
+            ],
+            // Subject fallback - multiple matches: the configured tag (GLPI) wins over a foreign one
+            [
+                'headers'           => [
+                    'subject' => "[Foreign #1234567] Re: [GLPI #{$padded_ticket_id}] Foo",
+                ],
+                'expected_itemtype' => Ticket::class,
+                'expected_items_id' => $ticket_id,
+                'accepted'          => true,
+            ],
+            // Subject fallback - multiple matches, none with a known tag: falls back to the last one
+            [
+                'headers'           => [
+                    'subject' => "[Foreign #7777777] Re: [Unknown #{$padded_ticket_id}] Foo",
+                ],
+                'expected_itemtype' => Ticket::class,
+                'expected_items_id' => $ticket_id,
+                'accepted'          => true,
             ],
         ];
     }
@@ -1305,17 +1375,12 @@ HTML,
                 'expected_protocol' => Imap::class,
                 'expected_storage'  => \Laminas\Mail\Storage\Imap::class,
             ],
+            // POP protocol is not supported anymore
             [
                 'cnx_string'        => '{mail.domain.org/pop}',
-                'expected_type'     => 'pop',
-                'expected_protocol' => Pop3::class,
-                'expected_storage'  => \Laminas\Mail\Storage\Pop3::class,
-            ],
-            [
-                'cnx_string'        => '{mail.domain.org/pop/ssl/tls}',
-                'expected_type'     => 'pop',
-                'expected_protocol' => Pop3::class,
-                'expected_storage'  => \Laminas\Mail\Storage\Pop3::class,
+                'expected_type'     => '',
+                'expected_protocol' => null,
+                'expected_storage'  => null,
             ],
             [
                 'cnx_string'        => '{mail.domain.org/unknown-type/ssl}',
@@ -1382,22 +1447,6 @@ HTML,
             'expected_warning'          => 'Protocol "imap" is already defined and cannot be overwritten.',
             'expected_protocol'         => Imap::class,
             'expected_storage'          => \Laminas\Mail\Storage\Imap::class,
-        ];
-
-        // Check that hook cannot alter core POP3 protocol
-        yield [
-            'allow_plugins_protocols'   => true,
-            'hook_result'               => [
-                'pop' => [
-                    'label'    => 'Override test',
-                    'protocol' => 'SomeClass',
-                    'storage'  => 'SomeClass',
-                ],
-            ],
-            'type'                      => 'pop',
-            'expected_warning'          => 'Protocol "pop" is already defined and cannot be overwritten.',
-            'expected_protocol'         => Pop3::class,
-            'expected_storage'          => \Laminas\Mail\Storage\Pop3::class,
         ];
 
         // Check that class must exist
@@ -1764,6 +1813,37 @@ HTML,
             "\r\n",
             $extracted_content,
             'Extracted EML attachment must use CRLF line endings as required by RFC 2822'
+        );
+    }
+
+    /**
+     * See https://github.com/glpi-project/glpi/issues/20892
+     * The "To" header value used for rule criteria matching must contain every
+     * recipient, not just the first one, otherwise a "contains" criterion fails
+     * to match when the targeted address is not listed first.
+     */
+    public function testGetHeadersToContainsAllRecipients()
+    {
+        $raw = implode("\r\n", [
+            'From: sender@example.com',
+            'To: First Recipient <first@glpi-project.org>, Second Recipient <second@glpi-project.org>',
+            'Subject: Multiple recipients',
+            'Date: ' . date('r'),
+            'Message-ID: <multi-to-test@glpi-project.org>',
+            '',
+            'Body',
+            '',
+        ]);
+
+        $message = new Message(['raw' => $raw]);
+        $collector = new \MailCollector();
+        $headers = $collector->getHeaders($message);
+
+        $this->assertStringContainsString('first@glpi-project.org', $headers['to']);
+        $this->assertStringContainsString('second@glpi-project.org', $headers['to']);
+        $this->assertSame(
+            ['first@glpi-project.org', 'second@glpi-project.org'],
+            $headers['tos']
         );
     }
 

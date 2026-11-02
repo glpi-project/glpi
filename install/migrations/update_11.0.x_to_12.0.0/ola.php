@@ -97,13 +97,26 @@ function migrate_items_olas_data(Migration $migration, DBmysql $DB): void
         return;
     }
 
+    // The OLA fields are `NOT NULL DEFAULT 0`: a ticket without OLA holds 0, not NULL.
+    // Only fetch the tickets that have one, and only the fields used below, to not load
+    // every ticket in memory on large databases.
     $tickets_with_ola = $DB->request(
         [
+            'SELECT' => [
+                'id',
+                'olas_id_tto',
+                'olas_id_ttr',
+                'ola_tto_begin_date',
+                'ola_ttr_begin_date',
+                'internal_time_to_own',
+                'internal_time_to_resolve',
+                'ola_waiting_duration',
+            ],
             'FROM'  => 'glpi_tickets',
             'WHERE' => [
                 'OR' => [
-                    ['NOT' => ['olas_id_tto' => null]],
-                    ['NOT' => ['olas_id_ttr' => null]],
+                    ['olas_id_tto' => ['>', 0]],
+                    ['olas_id_ttr' => ['>', 0]],
                 ],
             ],
         ]

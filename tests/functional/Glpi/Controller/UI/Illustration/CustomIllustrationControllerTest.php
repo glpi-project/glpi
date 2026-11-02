@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Controller\UI\Illustration;
 
 use Glpi\Controller\UI\Illustration\CustomIllustrationController;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\SessionExpiredException;
 use Glpi\Tests\DbTestCase;
 use Glpi\UI\IllustrationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -53,11 +54,12 @@ final class CustomIllustrationControllerTest extends DbTestCase
     {
         $id = 'custom-illustration-controller-test.png';
         $this->saveFixtureIllustration('foo.png', $id);
+        $this->login();
 
         $controller = new CustomIllustrationController(new IllustrationManager());
         $response = $controller->__invoke($id, new Request());
 
-        // private: route is authenticated, must not be cached by shared/proxy caches
+        // private: must not be cached by shared/proxy caches
         $this->assertTrue($response->headers->hasCacheControlDirective('private'));
         $this->assertTrue($response->headers->hasCacheControlDirective('immutable'));
         $this->assertEquals(
@@ -68,8 +70,39 @@ final class CustomIllustrationControllerTest extends DbTestCase
         $this->assertNotNull($response->getLastModified());
     }
 
+    public function testAnonymousAccessWithPublicFaq(): void
+    {
+        global $CFG_GLPI;
+
+        $id = 'custom-illustration-controller-test.png';
+        $this->saveFixtureIllustration('foo.png', $id);
+        $this->logOut();
+        $CFG_GLPI['use_public_faq'] = 1;
+
+        $controller = new CustomIllustrationController(new IllustrationManager());
+        $response = $controller->__invoke($id, new Request());
+
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    public function testAnonymousAccessWithoutPublicFaq(): void
+    {
+        global $CFG_GLPI;
+
+        $id = 'custom-illustration-controller-test.png';
+        $this->saveFixtureIllustration('foo.png', $id);
+        $this->logOut();
+        $CFG_GLPI['use_public_faq'] = 0;
+
+        $this->expectException(SessionExpiredException::class);
+
+        $controller = new CustomIllustrationController(new IllustrationManager());
+        $controller->__invoke($id, new Request());
+    }
+
     public function testUnknownIdThrowsBadRequest(): void
     {
+        $this->login();
         $this->expectException(BadRequestHttpException::class);
 
         $controller = new CustomIllustrationController(new IllustrationManager());

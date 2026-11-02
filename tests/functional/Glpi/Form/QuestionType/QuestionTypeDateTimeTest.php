@@ -43,6 +43,37 @@ final class QuestionTypeDateTimeTest extends DbTestCase
 {
     use FormTesterTrait;
 
+    public function testQuestionWithoutExtraDataDoesNotRaise(): void
+    {
+        // `glpi_forms_questions.extra_data` is nullable, and anything that
+        // creates a question without supplying it -- the REST API, an import,
+        // a migration -- leaves NULL there. Reading it must not raise.
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "When did it start?",
+            type: QuestionTypeDateTime::class,
+            extra_data: null,
+        );
+        $form = $this->createForm($builder);
+
+        // getQuestions() preserves ids as keys, so getQuestionId() addresses
+        // the question directly -- and keeps the type as Question rather than
+        // Question|false.
+        $question = $form->getQuestions()[$this->getQuestionId($form, "When did it start?")];
+        $this->assertNull($question->fields['extra_data']);
+
+        $type = new QuestionTypeDateTime();
+
+        // Each of these reads extra_data; with a NULL value they used to raise
+        // a TypeError out of Safe\json_decode(), which the surrounding
+        // `catch (JsonException)` does not catch -- taking the whole form
+        // render down with an HTTP 500 rather than just this question.
+        $this->assertFalse($type->isDefaultValueCurrentTime($question));
+        $this->assertTrue($type->isDateEnabled($question));
+        $this->assertFalse($type->isTimeEnabled($question));
+        $this->assertSame('date', $type->getInputType($question));
+    }
+
     public function testDateTimeAnswerIsDisplayedInTicketDescription(): void
     {
         $builder = new FormBuilder();

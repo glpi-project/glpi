@@ -37,6 +37,9 @@ namespace tests\units;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+
 class ITILCategoryTest extends DbTestCase
 {
     public function testPrepareInputForAdd()
@@ -252,5 +255,25 @@ class ITILCategoryTest extends DbTestCase
         $this->assertSame('glpi_knowbaseitems', $kb_option['table']);
         $this->assertSame('name', $kb_option['field']);
         $this->assertSame('knowbaseitems_id', $kb_option['linkfield']);
+    }
+
+    public function testDropdownTicketCategoriesWithoutCategory(): void
+    {
+        $this->login();
+
+        $_POST = [
+            'value'           => 0,
+            'type'            => \Ticket::DEMAND_TYPE,
+            'entity_restrict' => $this->getTestRootEntity(true),
+        ];
+        try {
+            ob_start();
+            include GLPI_ROOT . '/ajax/dropdownTicketCategories.php';
+            $output = ob_get_clean();
+        } finally {
+            $_POST = [];
+        }
+
+        $this->assertStringContainsString('itilcategories_id', $output);
     }
 }

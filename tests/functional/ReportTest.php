@@ -50,4 +50,19 @@ class ReportTest extends DbTestCase
         // Assert: make sure no errors are some html was generated
         $this->assertNotEmpty($output);
     }
+
+    public function testTitleEmptyOptionUsesRootDoc(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $CFG_GLPI['root_doc'] = '/glpi';
+        $_SERVER['REQUEST_URI'] = '/glpi/front/report.php';
+
+        ob_start();
+        Report::title();
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString("value='/glpi/front/report.php'", $output);
+    }
 }

@@ -38,6 +38,7 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Migration\ConditionHandlerDataConverterInterface;
+use Glpi\Form\Migration\UnresolvedConditionValueException;
 use Override;
 
 final class MultipleChoiceFromValuesConditionHandler implements
@@ -77,13 +78,24 @@ final class MultipleChoiceFromValuesConditionHandler implements
         mixed $b,
         ?JsonFieldInterface $config,
     ): bool {
+        // During form rendering, applyValueOperator is called to compute items
+        // visibility using the question default value, which is stored as a
+        // comma separated list of options.
+        if (is_string($a)) {
+            $a = explode(',', $a);
+        }
+
         return $this->applyArrayValueOperator($a, $operator, $b);
     }
 
     #[Override]
     public function convertConditionValue(string $value): array
     {
-        $value = array_search($value, $this->values, true) ?: 0;
-        return [$value];
+        $index = array_search($value, $this->values, true);
+        if ($index === false) {
+            throw new UnresolvedConditionValueException();
+        }
+
+        return [$index];
     }
 }

@@ -3,14 +3,71 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
+## [13.0.0] unreleased
 
-## [12.0.0] unreleased
+### Added
+- Documents, contracts and notes on cables.
+- Date variables (e.g. `{YEAR}`, `{MONTH_NAME+1}`, `{WEEK}` with `{YEAR_OF_WEEK}`) in the predefined title of recurrent tickets and changes, computed from the occurrence date.
+
+### Changes
+
+### Deprecated
+
+### Removed
+- `itemtype` criteria for Ticket and Change rules. This has been non-operational since 0.85 (over 11 years ago).
+- POP protocol support for mails receivers and mail authentication servers. Existing mails receivers and authentication servers using it are disabled during the update.
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+- `Session::getNewCSRFToken()`
+- `Session::validateCSRF()`
+- `Session::checkCSRF()`
+- `Session::cleanCSRFTokens()`
+- `csrf_token()` Twig function.
+- `getAjaxCsrfToken()` JavaScript function.
+- `fields.csrfField()` Twig macro in `fields_macros.html.twig`.
+- Support of `javascript:` values for the `add_link` parameter of `components/tab/addlink_block.html.twig`.
+- `Html::addConfirmationOnAction()`. Use the `data-glpi-confirm="<message>"` attribute instead.
+- `Html::getConfirmationOnActionScript()`. Use the `data-glpi-confirm="<message>"` attribute instead.
+- `Html::link()`.
+- `confirmaction` option of `Html::submit()`. Confirmation is now handled through the `data-glpi-confirm` attribute, so no additional action can be run on confirmation.
+
+## [12.0.1] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [12.0.0] 2026-10-07
 
 ### Added
 - `morethan` and `lessthan` search operators for numeric fields (number, integer, decimal, count, mio).
 - Sessions tab for OAuth Clients to display non-expired sessions associated with the client and allow revoking them.
 - Improved client IP detection.
-  If your GLPI instance is behind a reverse proxy, you should add its IP(s) the new `GLPI_TRUSTED_REVERSE_PROXIES` constant and modify the new `GLPI_REVERSE_PROXY_HEADERS` constant to include the headers your proxy uses to forward the client IP.
+  If your GLPI instance is behind a reverse proxy, you should add its IP(s) or CIDR range(s) to the new `GLPI_TRUSTED_REVERSE_PROXIES` constant and modify the new `GLPI_REVERSE_PROXY_HEADERS` constant to include the headers your proxy uses to forward the client IP (`X-Forwarded-For` by default, `Forwarded` and the other `X-Forwarded-*` headers are also supported).
+  When several proxies are chained, all of them must be listed in `GLPI_TRUSTED_REVERSE_PROXIES`.
   Only the required HTTP headers should be listed for better security as any header not handled by the proxy could be spoofed by the client.
 - Remember me support for multiple devices at the same time.
 - `Setup > Data and Privacy` menu item to centralize all data policies and privacy related settings.
@@ -20,6 +77,7 @@ The present file will list all changes made to the project; according to the
 - Knowledge base articles can also be moved from the "Move" entry of an article's menu in the aside tree, which opens a searchable list of parent articles.
 - High-Level API version 3.0.0.
 - `=istruthy=` and `=isnottruthy=` RSQL operators.
+- New "Assignment of a project task" notification event, raised when a member is added to a project task team, with a "New project task team member" recipient.
 
 ### Changed
 - "Computer" search option (ID 12) for Databases has been replaced by "Associated item type" (ID 14) and "Associated item" (ID 12) options. These are not searchable but can be displayed.
@@ -108,6 +166,14 @@ The present file will list all changes made to the project; according to the
 - `escapeMarkupText()` javascript function.
 - `Html::link()`
 - Inclusion of the `inc/includes.php` file.
+- `Knowbase` class. The knowledge base is browsed from the side panel of `KnowbaseItem`.
+- `KnowbaseItem::SEEALL` constant.
+- `KnowbaseItem::searchForm()`
+- `KnowbaseItem::showList()`
+- `KnowbaseItem::showRecentPopular()`
+- `knowbaseitems_id_parent` parameter and `allmy`, `myunpublished`, `allunpublished`, `allpublished` types of `KnowbaseItem::getListRequest()`.
+- `Glpi\Toolbox\IPUtilities::isCidrMatch()`, use `Glpi\Toolbox\IPUtilities::isIPInList()` instead.
+- `Glpi\Toolbox\IPUtilities::isTrustedReverseProxy()`, use `Symfony\Component\HttpFoundation\Request::isFromTrustedProxy()` instead.
 
 #### Removed
 
@@ -228,7 +294,58 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::stripslashes_deep()`
 
 
-## [11.0.10] unreleased
+## [11.0.12] unreleased
+
+### Added
+
+### Changed
+- The "Other financial and administrative information" report now includes the licenses that are not linked to any software, so its totals can change.
+
+- Default behavior when submitting a Form that has only one destination is now redirecting to created item instead of showing the feedback page. Previous behavior is obtained by unchecking "Go to created item after creation" in General configuration > Default values.
+
+- Webhooks on ITIL tasks now match the entity of their parent item. A non-recursive task webhook defined in the root entity is no longer triggered by tasks of sub-entities: enable "Sub-entities" on the webhook to keep the previous behavior.
+
+- The "Refused equipments" setting of the logs purge now purges the history of refused equipments instead of the refused equipments themselves.
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+- `Glpi\Application\Environment::shouldAddExtraCypressDataDuringInstallation()`
+- `Glpi\Application\Environment::shouldAddExtraE2EDataDuringInstallation()`
+
+#### Removed
+
+
+## [11.0.11] 2026-10-01
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.10] 2026-09-30
 
 ### Added
 

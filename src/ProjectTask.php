@@ -363,11 +363,15 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                     $type
                 );
                 foreach ($ids as $id) {
-                    $taskteam->add([
+                    $team_input = [
                         'projecttasks_id' => $this->fields['id'],
                         'itemtype'        => $type,
                         'items_id'        => $id,
-                    ]);
+                    ];
+                    if (isset($this->input['_disablenotif'])) {
+                        $team_input['_disablenotif'] = true;
+                    }
+                    $taskteam->add($team_input);
                 }
             }
         }
@@ -2141,6 +2145,9 @@ TWIG, $twig_params);
         if (count($iterator)) {
             foreach ($iterator as $data) {
                 $task->getFromResultSet($data);
+                if (!$task->can($task->getID(), READ)) {
+                    continue;
+                }
                 if (isset($data['notp_date'])) {
                     $data['plan_start_date'] = $data['notp_date'];
                     $data['plan_end_date'] = $data['notp_edate'];

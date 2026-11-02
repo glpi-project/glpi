@@ -889,16 +889,23 @@ abstract class CommonDBChild extends CommonDBConnexity
             $lower_name         = preg_replace('/[^\w]/', '_', strtolower(static::class));
             $child_count_js_var = 'nb' . $lower_name . 's';
             $div_id             = "add_" . $lower_name . "_to_" . preg_replace('/[^\w]/', '_', strtolower($item::class)) . "_" . $items_id;
+            $button_id          = "button_" . $div_id;
             $add_label          = htmlescape(sprintf(__('Add a new %s'), static::getTypeName()));
+            $row_js             = static::getJSCodeToAddForItemChild($field_name, $child_count_js_var);
 
-            // Beware : -1 is for the first element added ...
-            $result = "&nbsp;<script type='text/javascript'>var $child_count_js_var=2; </script>";
-            $result .= "<button type='button' id='add" . $lower_name . "button' class='ti ti-plus cursor-pointer border-0 bg-transparent p-0 text-reset'"
+            $result = "&nbsp;<button type='button' id='$button_id' class='ti ti-plus cursor-pointer border-0 bg-transparent p-0 text-reset'"
               . " title=\"" . __s('Add') . "\" aria-label=\"" . $add_label . "\""
-                . " onClick=\"var row = $('#" . $div_id . "');
-                             row.append('" . static::getJSCodeToAddForItemChild($field_name, $child_count_js_var) . "');
-                            $child_count_js_var++;\""
                . "><span class='visually-hidden'>" . __s('Add') . "</span></button>";
+            $result .= Html::scriptBlock(<<<JAVASCRIPT
+                (() => {
+                    // Beware : -1 is for the first element added...
+                    let $child_count_js_var = 2;
+                    document.getElementById('$button_id').addEventListener('click', () => {
+                        $('#$div_id').append('$row_js');
+                        $child_count_js_var++;
+                    });
+                })();
+            JAVASCRIPT);
         }
         if ($display) {
             echo $result;

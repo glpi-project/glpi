@@ -246,6 +246,6 @@ class CategoryTest extends DbTestCase
             'language' => $lang,
             '_entities_id' => $this->getTestRootEntity(only_id: true),
             '_profiles_id' => 1,
-        ]);
+        ], ['language']); // stored as NULL when matching the global default language
     }
 }

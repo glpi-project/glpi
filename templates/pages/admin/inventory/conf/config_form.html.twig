@@ -82,7 +82,7 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    {{ fields.dropdownArrayField('auth_required', config['auth_required'], auth_required_options, __('Authorization header'),
+                    {{ fields.dropdownArrayField('auth_required', config['auth_required']|default(''), auth_required_options, __('Authorization header'),
                         field_options|merge({
                             required: true,
                         })) }}
@@ -116,7 +116,7 @@
                     </div>
                 </div>
                 <div id="basic_auth_fields" class="row" style="display: none;">
-                    {{ fields.textField('basic_auth_login', config['basic_auth_login'], __('Login'),
+                    {{ fields.textField('basic_auth_login', config['basic_auth_login']|default(''), __('Login'),
                         field_options|merge({
                             required: true
                         })) }}

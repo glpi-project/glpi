@@ -562,9 +562,11 @@ TWIG, $twig_params);
                             {% set domain_dropdown = call('Domain::dropdownDomains', [{
                                 entity: entities,
                                 used: used,
-                                display: false
+                                display: false,
+                                rand: rand
                             }]) %}
                             {{ fields.htmlField('', domain_dropdown, 'Domain'|itemtype_name, {
+                                id: 'dropdown_domains_id' ~ rand,
                                 helper: helper
                             }) }}
                             {{ fields.dropdownField('DomainRelation', 'domainrelations_id', constant('DomainRelation::BELONGS'), 'DomainRelation'|itemtype_name, {

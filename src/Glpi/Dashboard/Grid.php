@@ -40,6 +40,7 @@ use Dropdown;
 use Entity;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Dashboard\Filters\TicketStatusFilter;
 use Glpi\Debug\Profiler;
 use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
@@ -1252,6 +1253,12 @@ HTML;
             if ($html === '') {
                 return $notfound_html;
             }
+        } catch (AccessDeniedHttpException $e) {
+            // Rights denial is not an application error, do not log it
+            $html = "<div class='empty-card card-warning '>
+         <i class='ti ti-lock' aria-hidden='true'></i>"
+         . \htmlescape($e->getMessageToDisplay() ?? __("You don't have permission to perform this action.")) . "
+      </div>";
         } catch (Throwable $e) {
             $html = $render_error_html;
             // Log the error message without exiting
@@ -1561,6 +1568,27 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
+            // The month granularity is covered by the "ticket_status" card
+            foreach (
+                [
+                    'day'  => __("Tickets status by day"),
+                    'week' => __("Tickets status by week"),
+                    'year' => __("Tickets status by year"),
+                ] as $period => $label
+            ) {
+                $cards["report_ticket_lifetime_$period"] = [
+                    'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
+                    'itemtype'   => "\\Ticket",
+                    'group'      => __('Assistance'),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::ticketsLifetime",
+                    'args'       => [
+                        'period' => $period,
+                    ],
+                    'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+                ];
+            }
+
             $cards["ticket_by_category_and_entity"] = [
                 'widgettype' => ['hBars', 'stackedHBars'],
                 'itemtype'   => "\\Ticket",
@@ -1570,12 +1598,73 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
+            foreach (
+                [
+                    'day'   => __("SLA compliance of solved tickets by day"),
+                    'week'  => __("SLA compliance of solved tickets by week"),
+                    'month' => __("SLA compliance of solved tickets by month"),
+                    'year'  => __("SLA compliance of solved tickets by year"),
+                ] as $period => $label
+            ) {
+                $cards["report_ticket_by_sla_evolution_$period"] = [
+                    'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
+                    'itemtype'   => "\\Ticket",
+                    'group'      => __('Assistance'),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::ticketsBySlaEvolution",
+                    'args'       => [
+                        'period' => $period,
+                    ],
+                    'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+                ];
+            }
+
+            foreach (
+                [
+                    'open'  => __("Number of opened tickets by category and type"),
+                    'close' => __("Number of closed tickets by category and type"),
+                ] as $case => $label
+            ) {
+                $cards["ticket_by_category_and_type_$case"] = [
+                    'widgettype' => ['hBars', 'stackedHBars'],
+                    'itemtype'   => "\\Ticket",
+                    'group'      => __('Assistance'),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::ticketsByCategoryAndType",
+                    'args'       => [
+                        'case' => $case,
+                    ],
+                    'filters'    => array_values(array_diff(
+                        Filter::getAppliableFilters(Ticket::getTable()),
+                        [TicketStatusFilter::getId()]
+                    )),
+                ];
+            }
+
+            $cards["opened_ticket_by_category_and_status"] = [
+                'widgettype' => ['hBars', 'stackedHBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of opened tickets by category and status"),
+                'provider'   => "Glpi\\Dashboard\\Provider::openedTicketsByCategoryAndStatus",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
             $cards["ticket_times"] = [
                 'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
                 'itemtype'   => "\\Ticket",
                 'group'      => __('Assistance'),
                 'label'      => __("Tickets times (in hours)"),
                 'provider'   => "Glpi\\Dashboard\\Provider::averageTicketTimes",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["report_ticket_by_assigned_group_changes"] = [
+                'widgettype' => ['bar', 'hbar', 'pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by number of assigned group changes"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByAssignedGroupChanges",
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
@@ -1604,6 +1693,24 @@ HTML;
                 'group'      => __('Assistance'),
                 'label'      => __("Number of tickets by SLA status and technician group"),
                 'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsByAgreementStatusAndTechnicianGroup",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["report_ticket_by_sla"] = [
+                'widgettype' => ['stackedbars', 'bars', 'stackedHBars', 'hBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of solved tickets by SLA"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsBySla",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["report_ticket_by_sla_and_category"] = [
+                'widgettype' => ['stackedHBars', 'hBars', 'stackedbars', 'bars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of solved tickets with SLA by category"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsBySlaAndCategory",
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
@@ -1657,6 +1764,33 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
+            $cards["report_ticket_opened_and_closed"] = [
+                'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of not solved and solved tickets"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsOpenedAndClosed",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["report_ticket_by_assigned_group_and_statuses"] = [
+                'widgettype' => ['stackedHBars', 'hBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by assigned group and status"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByAssignedGroupAndStatuses",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["report_computers_by_agent_version"] = [
+                'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Computer",
+                'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
+                'label'      => __("Number of computers by agent version"),
+                'provider'   => "Glpi\\Dashboard\\Provider::computersByAgentVersion",
+                'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
+            ];
+
             $cards["report_computers_by_os"] = [
                 'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
                 'itemtype'   => "\\Computer",
@@ -1666,12 +1800,44 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
             ];
 
+            foreach (
+                [
+                    'windows_version' => ['windows', 'version', __("Number of Windows computers by version")],
+                    'linux_version'   => ['linux', 'version', __("Number of Linux computers by version")],
+                    'linux_name'      => ['linux', 'name', __("Number of Linux computers by distribution")],
+                    'macos_version'   => ['macos', 'version', __("Number of macOS computers by version")],
+                    'macos_major'     => ['macos', 'major', __("Number of macOS computers by major version")],
+                ] as $key => [$family, $group_by, $label]
+            ) {
+                $cards["report_computers_by_os_$key"] = [
+                    'widgettype' => ['hbar', 'bar', 'pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber'],
+                    'itemtype'   => "\\Computer",
+                    'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::computersByOperatingSystemVersion",
+                    'args'       => [
+                        'family'   => $family,
+                        'group_by' => $group_by,
+                    ],
+                    'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
+                ];
+            }
+
             $cards["report_computers_by_age"] = [
                 'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
                 'itemtype'   => "\\Computer",
                 'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
                 'label'      => __("Number of computers by age"),
                 'provider'   => "Glpi\\Dashboard\\Provider::computersByAge",
+                'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
+            ];
+
+            $cards["report_computers_by_monitors_number"] = [
+                'widgettype' => ['bar', 'hbar', 'pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber'],
+                'itemtype'   => "\\Computer",
+                'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
+                'label'      => __("Number of computers by number of monitors"),
+                'provider'   => "Glpi\\Dashboard\\Provider::computersByMonitorsNumber",
                 'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
             ];
 
@@ -1683,6 +1849,84 @@ HTML;
                 'provider'   => "Glpi\\Dashboard\\Provider::ticketsByGroupAndStatus",
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
+
+            $cards["report_ticket_by_category_tree"] = [
+                'widgettype' => ['sunburst'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by category and sub-category"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByCategoryTree",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["report_ticket_by_requester_group_and_status"] = [
+                'widgettype' => ['hBars', 'stackedHBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of opened and solved tickets by requester group"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByRequesterGroupAndStatus",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["report_ticket_by_requester_location"] = [
+                'widgettype' => ['summaryNumbers', 'pie', 'donut', 'halfpie', 'halfdonut', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by requester location"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByRequesterLocation",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["report_ticket_by_status_and_technician"] = [
+                'widgettype' => ['stackedHBars', 'hBars', 'stackedbars', 'bars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by status and technician"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByStatusAndTechnician",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            foreach (
+                [
+                    'day'   => __("Tickets backlog by day"),
+                    'week'  => __("Tickets backlog by week"),
+                    'month' => __("Tickets backlog by month"),
+                    'year'  => __("Tickets backlog by year"),
+                ] as $period => $label
+            ) {
+                $cards["report_ticket_backlog_$period"] = [
+                    'widgettype' => ['lines', 'areas', 'bars'],
+                    'itemtype'   => "\\Ticket",
+                    'group'      => __('Assistance'),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::ticketsBacklog",
+                    'args'       => [
+                        'period' => $period,
+                    ],
+                    'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+                ];
+            }
+
+            foreach (
+                [
+                    'day'   => __("Tasks duration compared to solve delay by day"),
+                    'week'  => __("Tasks duration compared to solve delay by week"),
+                    'month' => __("Tasks duration compared to solve delay by month"),
+                    'year'  => __("Tasks duration compared to solve delay by year"),
+                ] as $period => $label
+            ) {
+                $cards["report_ticket_actiontime_vs_solvedelay_$period"] = [
+                    'widgettype' => ['lines', 'areas', 'bars'],
+                    'itemtype'   => "\\Ticket",
+                    'group'      => __('Assistance'),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::ticketsActionTimeVsSolveDelay",
+                    'args'       => [
+                        'period' => $period,
+                    ],
+                    'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+                ];
+            }
 
             $cards["RemindersList"] = [
                 'widgettype' => ["articleList"],

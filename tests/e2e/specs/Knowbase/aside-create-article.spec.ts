@@ -33,6 +33,7 @@
 import { randomUUID } from 'crypto';
 import { expect, test } from '../../fixtures/glpi_fixture';
 import { KnowbaseItemPage } from '../../pages/KnowbaseItemPage';
+import { LoginPage } from '../../pages/LoginPage';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
@@ -58,14 +59,12 @@ test('the aside "+" opens an inline input under a parent article; an empty submi
     await kb.goto(parent_id);
 
     // The "+" is handled by AsideController (a dynamically imported module).
-    // Wait for the controller to finish initializing before clicking it, using
-    // the same readiness signal doSearchAside() relies on, otherwise the click
-    // can race the module load and do nothing.
-    await expect(kb.asideSearchInput).not.toHaveClass(/pe-none/);
+    // Wait for the controller to finish initializing before clicking it,
+    // otherwise the click can race the module load and do nothing.
+    await kb.waitForAsideReady();
 
     const add_button = kb.getAsideCategoryAddButton(parent_name);
-    await kb.getAsideArticleTitleLink(parent_name).hover();
-    await expect(add_button).toBeVisible();
+    await kb.doRevealAsideCategoryAddButton(parent_name);
     await add_button.click();
 
     // No navigation: the "+" now opens an inline input instead of a full page.
@@ -77,7 +76,9 @@ test('the aside "+" opens an inline input under a parent article; an empty submi
     await inline_input.press('Escape');
     await expect(inline_input).toBeHidden();
 
-    // Re-open and blur while empty: same result.
+    // Re-open and blur while empty: same result. Removing the input reflows
+    // the row, so the "+" has to be revealed again before it can be clicked.
+    await kb.doRevealAsideCategoryAddButton(parent_name);
     await add_button.click();
     await expect(kb.getAsideCategoryCreateInput(parent_name)).toBeFocused();
     await page.keyboard.press('Tab');
@@ -106,10 +107,15 @@ test('hovering a child article does not reveal its parent\'s add-article button'
 
     await kb.goto(child_id);
 
+    // The tree is still being built until AsideController signals readiness;
+    // hovering before that reveals nothing, and the rows shifting under the
+    // pointer cancels the hover.
+    await kb.waitForAsideReady();
+
     const parent_add = kb.getAsideCategoryAddButton(parent_name);
     const child_add = kb.getAsideCategoryAddButton(child_name);
 
-    await kb.getAsideArticleTitleLink(child_name).hover();
+    await kb.doRevealAsideCategoryAddButton(child_name);
 
     // visibility:hidden removes the parent button from the a11y tree, so the
     // role-based locator resolves to nothing — assert visibility, not CSS.
@@ -134,13 +140,12 @@ test('typing a title and pressing Enter creates the child article and navigates 
     await kb.goto(parent_id);
 
     // The "+" is handled by AsideController (a dynamically imported module).
-    // Wait for the controller to finish initializing before clicking it, using
-    // the same readiness signal doSearchAside() relies on, otherwise the click
-    // can race the module load and do nothing.
-    await expect(kb.asideSearchInput).not.toHaveClass(/pe-none/);
+    // Wait for the controller to finish initializing before clicking it,
+    // otherwise the click can race the module load and do nothing.
+    await kb.waitForAsideReady();
 
     const add_button = kb.getAsideCategoryAddButton(parent_name);
-    await kb.getAsideArticleTitleLink(parent_name).hover();
+    await kb.doRevealAsideCategoryAddButton(parent_name);
     await add_button.click();
 
     const inline_input = kb.getAsideCategoryCreateInput(parent_name);
@@ -199,7 +204,7 @@ test('the "+" on a folded article expands it, so the inline input is usable', as
     // The "+" must expand the node before inserting the inline input, else the
     // input lands in a hidden subtree: invisible, and impossible to focus.
     const add_button = kb.getAsideCategoryAddButton(parent_name);
-    await kb.getAsideArticleTitleLink(parent_name).hover();
+    await kb.doRevealAsideCategoryAddButton(parent_name);
     await add_button.click();
 
     await expect(parent_toggle).toHaveAttribute('aria-expanded', 'true');
@@ -267,7 +272,7 @@ test('the inline input survives the lazy load of a folded article\'s children', 
     await expect(parent_toggle).toHaveAttribute('aria-expanded', 'false');
 
     const add_button = kb.getAsideCategoryAddButton(parent_name);
-    await kb.getAsideArticleTitleLink(parent_name).hover();
+    await kb.doRevealAsideCategoryAddButton(parent_name);
     await add_button.click();
 
     const inline_input = kb.getAsideCategoryCreateInput(parent_name);
@@ -284,4 +289,40 @@ test('the inline input survives the lazy load of a folded article\'s children', 
     await inline_input.press('Enter');
     await expect(page).toHaveURL(/knowbaseitem\.form\.php\?id=\d+/);
     await expect(page.getByTestId('subject')).toHaveText(article_title);
+});
+
+test('without the update right, the "+" is only offered on the root article', async ({ anonymousPage, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+
+    const unique = randomUUID().slice(0, 8);
+    const login = `e2e_kb_creator_${unique}`;
+
+    const profile_id = await api.createItem('Profile', {
+        name: `E2E KB creator ${unique}`,
+        interface: 'central',
+        knowbase: 1 | 4,
+    });
+    await api.createItem('User', {
+        name: login,
+        password: login,
+        password2: login,
+        _profiles_id: profile_id,
+        _entities_id: getWorkerEntityId(),
+        _is_recursive: 1,
+    });
+
+    const parent_id = await api.knowbase.createArticle({ name: `E2E Not Editable Parent ${unique}` });
+    await api.knowbase.addEntityVisibility(parent_id, getWorkerEntityId(), true);
+
+    const login_page = new LoginPage(anonymousPage);
+    await login_page.goto();
+    await login_page.doLogin(login, login);
+
+    const kb = new KnowbaseItemPage(anonymousPage);
+    await kb.goto(parent_id);
+    await kb.waitForAsideReady();
+
+    await kb.doRevealAsideCategoryAddButton('Home');
+    await expect(kb.getAsideTreeArticleRow(parent_id)).toBeVisible();
+    await expect(kb.getAsideArticleAddChildTrigger(parent_id)).toHaveCount(0);
 });

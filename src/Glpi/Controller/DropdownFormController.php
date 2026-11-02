@@ -193,6 +193,7 @@ class DropdownFormController extends AbstractController
                 true,
                 ...$dropdown->getSectorizedDetails()
             );
+            $dropdown->initObjectOnCreation($request->query->all());
             $dropdown->showForm($id);
             Html::popFooter();
             $content = ob_get_clean();

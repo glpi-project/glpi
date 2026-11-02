@@ -55,6 +55,7 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
     // From CommonDBTM
     public bool $dohistory         = true;
     public static string $rightname         = 'cable_management';
+    protected bool $usenotepad              = true;
 
     public static function getTypeName($nb = 0)
     {
@@ -81,9 +82,12 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
         $ong = [];
         $this->addDefaultFormTab($ong)
          ->addStandardTab(Infocom::class, $ong, $options)
+         ->addStandardTab(Contract_Item::class, $ong, $options)
+         ->addStandardTab(Document_Item::class, $ong, $options)
          ->addStandardTab(Item_Ticket::class, $ong, $options)
          ->addStandardTab(Item_Problem::class, $ong, $options)
          ->addStandardTab(Change_Item::class, $ong, $options)
+         ->addStandardTab(Notepad::class, $ong, $options)
          ->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
@@ -100,6 +104,9 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
     {
         return [
             Infocom::class,
+            Contract_Item::class,
+            Document_Item::class,
+            Notepad::class,
             Item_Ticket::class,
             Item_Problem::class,
             Change_Item::class,
@@ -406,6 +413,8 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
             'nosort'             => true,
             'massiveaction'      => false,
         ];
+
+        $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         return $tab;
     }

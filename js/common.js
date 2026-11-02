@@ -42,6 +42,7 @@
 /* global glpi_toast_info, glpi_toast_warning, glpi_toast_error */
 /* global _ */
 /* global uploaded_images, removeFailedUploadImage */
+/* global reloadTab */
 
 var timeoutglobalvar;
 
@@ -189,6 +190,13 @@ function checkAsCheckboxes(reference, container_id, checkboxes_selector = 'input
     return true;
 }
 
+document.addEventListener('click', (e) => {
+    const element = e.target.closest('[data-glpi-check-all]');
+    if (element) {
+        checkAsCheckboxes(element, element.dataset.glpiCheckAll, '.massive_action_checkbox');
+    }
+}, true);
+
 /**
  * Permit to use Shift key on a group of checkboxes
  * Usage: $form.find('input[type="checkbox"]').shiftSelectable();
@@ -237,6 +245,7 @@ $.fn.shiftSelectable = function() {
  * @param img_src_close    url of the close img
  * @param img_src_open     url of the open img
  * @todo Remove - Not very useful and only used by plugins since the removal of the old debug toolbar.
+ * @deprecated Will be removed in GLPI 14.
 **/
 function showHideDiv(id, img_name = '', img_src_close = '', img_src_open = '') {
     var _elt = $('#' + id);
@@ -364,6 +373,18 @@ function submitGetLink(target, fields) {
     myForm.submit();
     document.body.removeChild(myForm);
 }
+
+document.addEventListener('click', (e) => {
+    const element = e.target.closest('[data-glpi-submit-get-link]');
+    if (element === null || e.defaultPrevented) {
+        return;
+    }
+    e.preventDefault();
+    submitGetLink(
+        element.dataset.glpiSubmitGetLink,
+        JSON.parse(element.dataset.glpiSubmitGetLinkFields ?? '{}')
+    );
+});
 
 
 /**
@@ -913,6 +934,30 @@ var templateSelection = function (selection) {
     }
     var _elt = $('<span></span>');
     _elt.html(_.escape(text));
+
+    // Fix tooltip RTL rendering issue by using First Strong Isolate
+    selection.title = '\u2068' + text + '\u2069';
+
+    return _elt;
+};
+
+window.glpiGroupCommentPopovers = window.glpiGroupCommentPopovers || {};
+var templateGroupSelection = function (selection) {
+    var _elt = templateSelection(selection);
+
+    if (selection.element && selection.id) {
+        var select_id = selection.element.parentElement.id;
+        import('/js/modules/Form/ItemtypeCommentPopover.js').then((m) => {
+            if (!window.glpiGroupCommentPopovers[select_id]) {
+                window.glpiGroupCommentPopovers[select_id] = new m.default(
+                    $('#' + CSS.escape(select_id)).parent(),
+                    ['.group-info-card']
+                );
+            }
+            window.glpiGroupCommentPopovers[select_id].attachTo(_elt, 'Group', selection.id);
+        });
+    }
+
     return _elt;
 };
 
@@ -969,6 +1014,9 @@ var templateItilStatus = function(option) {
             break;
     }
 
+    // Fix tooltip RTL rendering issue by using First Strong Isolate
+    option.title = '\u2068' + option.text + '\u2069';
+
     return $(`<span><i class="itilstatus ${classes}" aria-hidden="true"></i> ${_.escape(option.text)}</span>`);
 };
 
@@ -993,6 +1041,9 @@ var templateValidation = function(option) {
             break;
     }
 
+    // Fix tooltip RTL rendering issue by using First Strong Isolate
+    option.title = '\u2068' + option.text + '\u2069';
+
     return $(`<span><i class="validationstatus ${classes}" aria-hidden="true"></i> ${_.escape(option.text)}</span>`);
 };
 
@@ -1009,6 +1060,9 @@ var templateItilPriority = function(option) {
     if (priority_color.length > 0) {
         color_badge += `<i class='ti ti-circle-filled' style='color: ${_.escape(priority_color)}' aria-hidden='true'></i>`;
     }
+
+    // Fix tooltip RTL rendering issue by using First Strong Isolate
+    option.title = '\u2068' + option.text + '\u2069';
 
     return $(`<span>${color_badge}&nbsp;${_.escape(option.text)}</span>`);
 };
@@ -1067,6 +1121,10 @@ function updateProgress(progressid) {
         }
     });
 }
+
+$(document).on('change', '[data-progressid]', function () {
+    updateProgress(this.dataset.progressid);
+});
 
 // fullscreen api
 function GoInFullscreen(element) {
@@ -1320,17 +1378,6 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-/**
- * Returns CSRF token that can be used for AJAX requests.
- *
- * @deprecated
- * @returns {string}
- */
-function getAjaxCsrfToken() {
-    console.warn('Csrf protection is now handled without tokens.');
-    return "";
-}
-
 // init tooltips
 $(
     function() {
@@ -1386,6 +1433,9 @@ function tableToDetails(table) {
 
 function flashIconButton(button, button_classes, icon_classes, duration) {
     const btn = $(button);
+    if (btn.data('flashing-timeout')) {
+        return;
+    }
     const ico = btn.find('i').eq(0);
     const original_btn_classes = btn.attr('class');
     const original_ico_classes = ico.attr('class');
@@ -1393,12 +1443,14 @@ function flashIconButton(button, button_classes, icon_classes, duration) {
     ico.removeClass();
     btn.addClass(button_classes);
     ico.addClass(icon_classes);
-    window.setTimeout(() => {
+    const timeout = window.setTimeout(() => {
         btn.removeClass();
         ico.removeClass();
         btn.addClass(original_btn_classes);
         ico.addClass(original_ico_classes);
+        btn.removeData('flashing-timeout');
     }, duration);
+    btn.data('flashing-timeout', timeout);
 }
 
 /**
@@ -1535,9 +1587,27 @@ $(() => {
         } else {
             navigator.clipboard.writeText(text);
             glpi_toast_info(__("Copied to clipboard"));
+            flashIconButton($(this), $(this).attr('class'), 'ti ti-check', 1500);
         }
     });
+
+    // Reload the active tab with the given query parameters
+    $(document).on('click', '[data-glpi-reload-tab]', function() {
+        reloadTab($(this).attr('data-glpi-reload-tab'));
+    });
+    // Same on change, with `%value%` replaced by the field value (attribute may be on an ancestor)
+    $(document).on('change', '[data-glpi-reload-tab-on-change]', function(e) {
+        reloadTab($(this).attr('data-glpi-reload-tab-on-change').replace('%value%', encodeURIComponent($(e.target).val() ?? '')));
+    });
 });
+
+document.addEventListener('click', (e) => {
+    const element = e.target.closest('[data-glpi-confirm]');
+    if (element && !confirm(element.dataset.glpiConfirm)) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+}, true);
 
 /**
  * Strip html tags from a string
@@ -1590,7 +1660,8 @@ function toggleDisclosablePasswordField(button, item) {
     const label = reveal ? button.dataset.hideLabel : button.dataset.showLabel;
     if (label !== undefined) {
         button.setAttribute("aria-label", label);
-        button.setAttribute("title", label);
+        button.setAttribute("data-bs-original-title", label);
+        bootstrap.Tooltip.getInstance(button)?.setContent({ '.tooltip-inner': label });
     }
 
     const icon = button.querySelector("i.disclose");
@@ -1616,7 +1687,7 @@ function showDisclosablePasswordField(item) {
  */
 function hideDisclosablePasswordField(item) {
     $("#" + CSS.escape(item)).prop("type", "password");
-}
+};
 
 /**
  * Copies the password from a disclosable password field to the clipboard
@@ -1628,18 +1699,33 @@ function copyDisclosablePasswordFieldToClipboard(item) {
         return;
     }
 
-    const is_password_input = field.type === "password";
-    if (is_password_input) {
-        field.type = "text";
-    }
-    field.select();
-    try {
-        document.execCommand("copy");
-    } catch {
-        alert("Copy to clipboard failed");
-    }
-    if (is_password_input) {
-        field.type = "password";
+    const text = field.value;
+
+    const success_callback = () => {
+        glpi_toast_info(__("Copied to clipboard"));
+        const btn = $("#" + CSS.escape(item)).closest('.btn-group').find('.ti-clipboard-copy').closest('button');
+        flashIconButton(btn, btn.attr('class'), 'ti ti-check', 1500);
+    };
+
+    if (navigator.clipboard !== undefined) {
+        navigator.clipboard.writeText(text).then(success_callback).catch(() => {
+            alert("Copy to clipboard failed");
+        });
+    } else {
+        const is_password_input = field.type === "password";
+        if (is_password_input) {
+            field.type = "text";
+        }
+        field.select();
+        try {
+            document.execCommand("copy");
+            success_callback();
+        } catch {
+            alert("Copy to clipboard failed");
+        }
+        if (is_password_input) {
+            field.type = "password";
+        }
     }
 }
 
@@ -2103,19 +2189,17 @@ window.displaySessionMessages = () => {
 
 // Add/remove a special data attribute to bootstrap's modals when they are
 // displayed/hidden.
-// This is needed for e2e testing as bootstrap have some compatibility issues
-// with cypress.
-// See https://github.com/cypress-io/cypress/issues/25202.
+// This is used by the e2e tests to wait for the end of the modal animations.
 document.addEventListener('shown.bs.modal', (e) => {
     const modal = e.target.closest('.modal');
     if (modal) {
-        modal.setAttribute('data-cy-shown', 'true');
+        modal.setAttribute('data-glpi-modal-shown', 'true');
     }
 });
 document.addEventListener('hidden.bs.modal', (e) => {
     const modal = e.target.closest('.modal');
     if (modal) {
-        modal.setAttribute('data-cy-shown', 'false');
+        modal.setAttribute('data-glpi-modal-shown', 'false');
     }
 });
 
@@ -2177,7 +2261,6 @@ if (typeof module !== 'undefined' && module.exports) {
         setHasUnsavedChanges,
         hasUnsavedChanges,
         getFlatPickerLocale,
-        getAjaxCsrfToken,
         tableToDetails,
     };
 }

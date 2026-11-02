@@ -106,7 +106,8 @@ class KnowbaseItem_Item extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if (!$item instanceof CommonDBTM) {
+        // KB articles show their linked items in the main article view, not in a tab
+        if (!$item instanceof CommonDBTM || $item::class === KnowbaseItem::class) {
             return false;
         }
         self::showForItem($item, $withtemplate);

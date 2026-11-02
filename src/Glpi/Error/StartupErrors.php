@@ -43,7 +43,7 @@ namespace Glpi\Error;
  *
  * As their most visible effect is to silently truncate the input superglobals, not reporting them
  * leads to very confusing symptoms (e.g. a massive action processing only a part of the selected
- * items, or a CSRF token missing from the submitted data).
+ * items).
  *
  * ⚠ This class is loaded manually, before the Composer autoloader, so it must not have any
  * dependency that would be needed at load time.

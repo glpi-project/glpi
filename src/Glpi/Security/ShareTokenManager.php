@@ -69,6 +69,19 @@ final class ShareTokenManager
     }
 
     /**
+     * Get the item shared by the given token, without granting access to it.
+     */
+    public function getSharedItem(string $token): (CommonDBTM&ShareableInterface)|null
+    {
+        $row = $this->findValidTokenRowByPlaintext($token);
+        if ($row === null) {
+            return null;
+        }
+
+        return $this->loadItemFromRow($row);
+    }
+
+    /**
      * Check whether the current session has shared access to an item.
      *
      * @param class-string<CommonDBTM> $itemtype The item class name
@@ -198,6 +211,27 @@ final class ShareTokenManager
      */
     private function openSessionAccessFromRow(array $row): (CommonDBTM&ShareableInterface)|null
     {
+        $item = $this->loadItemFromRow($row);
+        if ($item === null) {
+            return null;
+        }
+
+        // allow access for the next 5 minutes
+        $_SESSION[self::SESSION_KEY][$item::class][$item->getID()] = [
+            'sharetoken_id' => (int) $row['id'],
+            'expires_at'    => \date('Y-m-d H:i:s', strtotime('+5 minutes', strtotime($_SESSION['glpi_currenttime']))),
+        ];
+
+        return $item;
+    }
+
+    /**
+     * Load the shared item of a token row, if it can still be shared.
+     *
+     * @param array<string, mixed> $row Token row containing at least `itemtype`, `items_id`.
+     */
+    private function loadItemFromRow(array $row): (CommonDBTM&ShareableInterface)|null
+    {
         $item = \getItemForItemtype($row['itemtype']);
 
         if (
@@ -212,12 +246,6 @@ final class ShareTokenManager
         ) {
             return null;
         }
-
-        // allow access for the next 5 minutes
-        $_SESSION[self::SESSION_KEY][$item::class][$item->getID()] = [
-            'sharetoken_id' => (int) $row['id'],
-            'expires_at'    => \date('Y-m-d H:i:s', strtotime('+5 minutes', strtotime($_SESSION['glpi_currenttime']))),
-        ];
 
         return $item;
     }

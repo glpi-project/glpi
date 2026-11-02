@@ -136,11 +136,10 @@ final class ReAuthManager
     }
 
     /**
-     * Make the user reauthenticated
+     * Mark the current user as reauthenticated.
      *
-     * Consider current user as reauthenticated
      * Set the reauth session validity to now + delay (self::REAUTH_DELAY_SECONDS).
-     * Used to make user reauthenticated just after login.
+     * To be called once the strategy verification succeeded.
      */
     public function authenticate(): void
     {
@@ -259,6 +258,19 @@ final class ReAuthManager
     }
 
     /**
+     * Whether the strategy selected for the current user is of the given class.
+     *
+     * An endpoint dedicated to one strategy must check it: being available for the user is not
+     * enough, a higher priority strategy may be the one they have to pass.
+     *
+     * @param class-string<ReAuthStrategyInterface> $strategy_class
+     */
+    public function isSelectedStrategy(string $strategy_class): bool
+    {
+        return $this->getStrategy() instanceof $strategy_class;
+    }
+
+    /**
      * Register a new strategy in available strategies
      */
     public function registerStrategy(ReAuthStrategyInterface $strategy): void
@@ -280,9 +292,13 @@ final class ReAuthManager
         // browser on replay, so it must be stored. For GET requests, the browser rebuilds
         // the query string from the form fields on submit, so keeping it here would be
         // both useless and misleading.
-        $current_url = $is_post
-            ? $request->getUri()
-            : $request->getSchemeAndHttpHost() . $request->getBaseUrl() . $request->getPathInfo();
+        // Root-relative, as PHP may not see the browser scheme behind a proxy;
+        // one leading slash only, so "//host" cannot become a protocol-relative URL.
+        $current_url = '/' . ltrim($request->getBaseUrl() . $request->getPathInfo(), '/\\');
+        $query_string = $request->getQueryString();
+        if ($is_post && $query_string !== null) {
+            $current_url .= '?' . $query_string;
+        }
 
         $this->setRequestedURL($current_url);
         $this->setRequestedMethod($is_post ? 'POST' : 'GET');

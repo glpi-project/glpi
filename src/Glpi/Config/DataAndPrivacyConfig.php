@@ -66,7 +66,7 @@ final class DataAndPrivacyConfig extends Config
         $menu = [];
         if (self::canView()) {
             $menu['title'] = self::getTypeName();
-            $menu['page'] = self::getFormURL();
+            $menu['page'] = self::getFormURL(false);
             $menu['icon'] = self::getIcon();
         }
         if (count($menu)) {

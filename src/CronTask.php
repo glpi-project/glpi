@@ -411,7 +411,7 @@ class CronTask extends CommonDBTM
 
         if ($this->fields['error_count'] >= self::MAX_ERROR_COUNT) {
             $this->fields['state'] = self::STATE_ERROR;
-        } else {
+        } elseif ($this->fields['state'] !== self::STATE_DISABLE) {
             $this->fields['state'] = self::STATE_WAITING;
         }
 
@@ -711,7 +711,7 @@ class CronTask extends CommonDBTM
         if (empty($this->fields['lastrun'])) {
             $next_run_display = __('As soon as possible');
         } else {
-            $next = strtotime($this->fields['next_run']);
+            $next = strtotime($this->fields['next_run'] ?? $this->fields['lastrun']);
             $h    = date('H', $next);
             $deb  = ($this->fields['hourmin'] < 10 ? "0" . $this->fields['hourmin']
                                                 : $this->fields['hourmin']);
@@ -1274,8 +1274,8 @@ class CronTask extends CommonDBTM
                 'itemtype' => CronTaskLog::class,
                 'id'       => $data['id'],
                 'date'     => sprintf(
-                    '<a href="javascript:reloadTab(\'crontasklogs_id=%s\');">%s</a>',
-                    (int) $data['id'],
+                    '<button type="button" class="btn-as-link" data-glpi-reload-tab="crontasklogs_id=%s">%s</button>',
+                    (int) $data['crontasklogs_id'],
                     htmlescape(Html::convDateTime($data['date']))
                 ),
                 'elapsed'  => $data['elapsed'],
@@ -1319,7 +1319,7 @@ class CronTask extends CommonDBTM
 
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             <div class="my-2 text-center">
-                <button class="btn btn-outline-secondary" onclick="reloadTab('crontasklogs_id=0')">
+                <button type="button" class="btn btn-outline-secondary" data-glpi-reload-tab="crontasklogs_id=0">
                     {{ msg }}
                 </button>
             </div>
@@ -1662,10 +1662,9 @@ TWIG, ['msg' => __('Last run list')]);
         SessionTracker::revokeSessionsByAge($maxlifetime);
 
         // Clean expired remember me tokens
-        $cookie_lifetime = time() + $CFG_GLPI['login_remember_time'];
         $DB->delete('glpi_usertokens', [
             'type' => 'rememberme',
-            'date_expiration' => ['<', $cookie_lifetime],
+            'date_expiration' => ['<=', date('Y-m-d H:i:s')],
         ]);
 
         $task->setVolume($nb);

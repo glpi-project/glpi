@@ -114,6 +114,7 @@ use SLM;
 use Ticket;
 
 use function PHPUnit\Framework\assertEquals;
+use function Safe\json_decode;
 
 final class FormSerializerDestinationTest extends DbTestCase
 {
@@ -300,6 +301,51 @@ final class FormSerializerDestinationTest extends DbTestCase
                     end($imported_destinations)->getConfig()[ValidationField::getKey()]
                 );
             },
+        ];
+
+        yield 'ValidationField with specific validation templates' => [
+            'field_key'        => ValidationField::getKey(),
+            'config_fn'        => fn($created_items) => new ValidationFieldConfig([
+                new ValidationFieldStrategyConfig(
+                    strategy: ValidationFieldStrategy::SPECIFIC_VALUES,
+                    specific_validationtemplate_ids: [$created_items[0]->getId()],
+                    specific_validation_step_id: $created_items[1]->getId()
+                ),
+            ]),
+            'items_to_create'  => [
+                [
+                    'itemtype' => \ITILValidationTemplate::class,
+                    'input'    => [
+                        'name' => 'My validation template',
+                    ],
+                ],
+                [
+                    'itemtype' => \ValidationStep::class,
+                    'input'    => [
+                        'name'                                => 'My validation step',
+                        'minimal_required_validation_percent' => 100,
+                    ],
+                ],
+            ],
+        ];
+
+        yield 'ValidationField without validation step' => [
+            'field_key'        => ValidationField::getKey(),
+            'config_fn'        => fn($created_items) => new ValidationFieldConfig([
+                new ValidationFieldStrategyConfig(
+                    strategy: ValidationFieldStrategy::SPECIFIC_VALUES,
+                    specific_validationtemplate_ids: [$created_items[0]->getId()],
+                    specific_validation_step_id: 0
+                ),
+            ]),
+            'items_to_create'  => [
+                [
+                    'itemtype' => \ITILValidationTemplate::class,
+                    'input'    => [
+                        'name' => 'My validation template',
+                    ],
+                ],
+            ],
         ];
 
         yield 'ITILTaskField' => [
@@ -602,6 +648,59 @@ final class FormSerializerDestinationTest extends DbTestCase
         } else {
             $check_fn($imported_destinations, $created_items);
         }
+    }
+
+    public function testExportValidationFieldWithSpecificValidationTemplates(): void
+    {
+        // Arrange: create a form whose destination uses a specific validation template and step
+        $this->login();
+        $template = $this->createItem(\ITILValidationTemplate::class, [
+            'name'        => 'My validation template',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $step = $this->createItem(\ValidationStep::class, [
+            'name'                                => 'My validation step',
+            'minimal_required_validation_percent' => 100,
+        ]);
+        $form = $this->createForm($this->getFormBuilderWithTicketDestination());
+        $destinations = $form->getDestinations();
+        $destination = end($destinations);
+        $config = new ValidationFieldConfig([
+            new ValidationFieldStrategyConfig(
+                strategy: ValidationFieldStrategy::SPECIFIC_VALUES,
+                specific_validationtemplate_ids: [$template->getId()],
+                specific_validation_step_id: $step->getId()
+            ),
+        ]);
+        $this->updateItem(
+            $destination::getType(),
+            $destination->getId(),
+            ['config' => [ValidationField::getKey() => $config->jsonSerialize()]],
+            ["config"],
+        );
+
+        // Act: export to JSON
+        $data = json_decode($this->exportForm($form), true);
+
+        // Assert: the template and step are exported by name and declared as requirements
+        $exported_config = $data['forms'][0]['destinations'][0]['config'][ValidationField::getKey()];
+        $exported_strategy_config = $exported_config[ValidationFieldConfig::STRATEGY_CONFIGS][0];
+        $this->assertEquals(
+            ['My validation template'],
+            $exported_strategy_config[ValidationFieldStrategyConfig::SPECIFIC_VALIDATION_TEMPLATE_IDS]
+        );
+        $this->assertEquals(
+            'My validation step',
+            $exported_strategy_config[ValidationFieldStrategyConfig::SPECIFIC_VALIDATION_STEP_ID]
+        );
+        $this->assertContains(
+            ['itemtype' => \ITILValidationTemplate::class, 'name' => 'My validation template'],
+            $data['forms'][0]['data_requirements']
+        );
+        $this->assertContains(
+            ['itemtype' => \ValidationStep::class, 'name' => 'My validation step'],
+            $data['forms'][0]['data_requirements']
+        );
     }
 
     public static function getFieldDestinationsWithSpecificQuestionProvider(): iterable

@@ -45,11 +45,7 @@
 {% if button_id %}
         id="{{ button_id }}"
 {% endif %}
-{% if add_link starts with 'javascript:' %}
-        onclick="{{ add_link }}"
-{% else %}
         href="{{ add_link }}"
-{% endif %}
 {% for attribute, value in button_attributes %}
         {{ attribute }}="{{ value }}"
 {% endfor %}

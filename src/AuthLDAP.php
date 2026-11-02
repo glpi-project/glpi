@@ -2000,7 +2000,9 @@ TWIG, $twig_params);
                         }
                         $glpi_users[] = ['id'         => $user['id'],
                             'user'       => $userfound['name'],
-                            $field_for_sync => ($userfound[$config_ldap->fields['sync_field']] ?? 'NULL'),
+                            $field_for_sync => $config_ldap->isSyncFieldEnabled()
+                                ? ($userfound[$config_ldap->fields['sync_field']] ?? 'NULL')
+                                : 'NULL',
                             'timestamp'  => $user_infos[$userfound[$field_for_sync]]['timestamp'],
                             'date_sync'  => $tmpuser->fields['date_sync'],
                             'dn'         => $user['user_dn'],
@@ -3238,6 +3240,7 @@ TWIG, $twig_params);
 
         if ($user_dn) {
             $auth->auth_succeded            = true;
+            $auth->setAuthType(Auth::LDAP);
             // try by login+auth_id and next by dn
             if (
                 $auth->user->getFromDBbyNameAndAuth($login, Auth::LDAP, $ldap_method['id'])
@@ -4281,6 +4284,35 @@ TWIG, $twig_params);
     public static function isValidGuid($guid_str)
     {
         return (bool) preg_match('/^([0-9a-fA-F]){8}(-([0-9a-fA-F]){4}){3}-([0-9a-fA-F]){12}$/', $guid_str);
+    }
+
+    /**
+     * Format a raw LDAP attribute value for display, converting binary GUID
+     * attributes to their canonical string form and any other non-UTF-8
+     * binary value to its uppercase hexadecimal representation.
+     *
+     * @param string $key   LDAP attribute name
+     * @param string $value Raw attribute value
+     *
+     * @return string
+     */
+    public static function formatValueForDisplay(string $key, string $value): string
+    {
+        $guid_fields = ['objectguid', 'ms-ds-consistencyguid'];
+        $is_guid_field = in_array(strtolower($key), $guid_fields, true);
+
+        if ($is_guid_field && !self::isValidGuid($value)) {
+            $guid = self::guidToString($value);
+            if (self::isValidGuid($guid)) {
+                $value = $guid;
+            }
+        }
+
+        if (!mb_check_encoding($value, 'UTF-8')) {
+            return strtoupper(bin2hex($value));
+        }
+
+        return $value;
     }
 
     /**

@@ -42,7 +42,9 @@
       {% if menu[sector] is defined %}
       <li class="breadcrumb-item text-truncate">
       <a href="{{ path(menu[sector]['default'] ?? '/front/central.php') }}" class="d-inline-flex align-items-center gap-1">
-            <i class="{{ menu[sector]['icon'] ?? '' }}" aria-hidden="true"></i>
+            {% if menu[sector]['icon'] is defined and menu[sector]['icon'] is not empty %}
+                <i class="{{ menu[sector]['icon'] }}" aria-hidden="true"></i>
+            {% endif %}
             {{ menu[sector]['title'] }}
          </a>
       </li>
@@ -56,7 +58,9 @@
             <a href="{{ path(menu[sector]['content'][item]['page']) }}"
                class="d-inline-flex align-items-center gap-1"
                {% if not with_option %}aria-current="page"{% endif %}>
-               <i class="{{ menu[sector]['content'][item]['icon'] ?? '' }}" aria-hidden="true"></i>
+               {% if menu[sector]['content'][item]['icon'] is defined and menu[sector]['content'][item]['icon'] is not empty %}
+                   <i class="{{ menu[sector]['content'][item]['icon'] }}" aria-hidden="true"></i>
+               {% endif %}
                {{ menu[sector]['content'][item]['title'] }}
             </a>
          </li>
@@ -69,7 +73,9 @@
                aria-current="page"
                data-bs-toggle="tooltip" data-bs-placement="bottom"
                title="{{ menu[sector]['content'][item]['options'][option]['title'] }}" >
-               <i class="{{ menu[sector]['content'][item]['options'][option]['icon'] ?? '' }}" aria-hidden="true"></i>
+               {% if menu[sector]['content'][item]['options'][option]['icon'] is defined and menu[sector]['content'][item]['options'][option]['icon'] is not empty %}
+                   <i class="{{ menu[sector]['content'][item]['options'][option]['icon'] }}" aria-hidden="true"></i>
+               {% endif %}
                {{ menu[sector]['content'][item]['options'][option]['title']|u.truncate(17, '...') }}
             </a>
          </li>

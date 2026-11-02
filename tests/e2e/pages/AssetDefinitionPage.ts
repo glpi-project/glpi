@@ -78,7 +78,7 @@ export class AssetDefinitionPage extends GlpiPage
 
         const dialog = this.page.getByRole('dialog');
         await expect(dialog).toBeVisible();
-        await expect(dialog).toHaveAttribute('data-cy-shown', 'true');
+        await expect(dialog).toHaveAttribute('data-glpi-modal-shown', 'true');
 
         await dialog.getByLabel('Label').fill(label);
         const type_dropdown = this.getDropdownByLabel('Type', dialog);

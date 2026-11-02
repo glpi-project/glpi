@@ -475,16 +475,22 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
     public function showForm($ID, array $options = [])
     {
-        if ($this->fields === [] && $ID > 0) {
+        if ($ID > 0) {
             $this->getFromDB($ID);
         }
         // If this form is used to edit a saved search from the search screen
         $is_ajax = $options['ajax'] ?? false;
-        if ($is_ajax && $this->getID() > 0) {
-            // Allow an extra option to save as a new search instead of editing the current one
-            $options['addbuttons'] = ["add" => __("Save as a new search")];
-            // Do not allow delete from this modal
-            $options['candel'] = false;
+        if ($is_ajax) {
+            if ($this->isNewItem()) {
+                // FIXME: Cannot rely on `canCreate()` for simplified interface,
+                // the `canCreate()` method should probably fixed to handle this.
+                $options['canedit'] = $this->canCreateItem();
+            } else {
+                // Allow an extra option to save as a new search instead of editing the current one
+                $options['addbuttons'] = ["add" => __("Save as a new search")];
+                // Do not allow delete from this modal
+                $options['candel'] = false;
+            }
         }
 
         TemplateRenderer::getInstance()->display('pages/tools/savedsearch/form.html.twig', [
@@ -1171,7 +1177,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $notif->getFromDBByCrit(['event' => 'alert_' . $this->getID()]);
 
         if ($notif->isNewItem()) {
-            $notif->check(-1, CREATE);
+            $notif->checkGlobal(CREATE);
             $notif->add(['name'            => SavedSearch::getTypeName(1) . ' ' . $this->getName(),
                 // Fall back to the saved search entity when there is no default
                 // entity, so the insertion does not fail on the NOT NULL column.

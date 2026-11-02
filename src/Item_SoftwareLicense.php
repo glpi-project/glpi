@@ -338,7 +338,7 @@ class Item_SoftwareLicense extends CommonDBRelation
                             ];
                         }
 
-                        if ($item_licence->can(-1, UPDATE, $input_data)) {
+                        if ($item_licence->can(-1, CREATE, $input_data)) {
                             if ($item_licence->add($input_data)) {
                                 $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
@@ -994,8 +994,8 @@ JAVASCRIPT;
             foreach ($columns as $key => $val) {
                 $val = htmlescape($val);
                 $header_end .= "<th" . ($sort == "`$key`" ? " class='order_$order'" : '') . ">"
-                            . "<a href='javascript:reloadTab(\"sort=$key&amp;order="
-                            . (($order == "ASC") ? "DESC" : "ASC") . "&amp;start=0\");'>$val</a></th>";
+                            . "<button type='button' class='btn-as-link' data-glpi-reload-tab='"
+                            . htmlescape("sort=$key&order=" . (($order == "ASC") ? "DESC" : "ASC") . "&start=0") . "'>$val</button></th>";
             }
 
             $header_end .= "</tr>\n";

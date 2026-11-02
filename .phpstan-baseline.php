@@ -50,6 +50,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/dashboard.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/dropdownConnectNetworkPort.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Offset \'toupdate\' might not exist on array\\{name\\: non\\-falsy\\-string, entity\\: array\\<int\\>\\|int, rand\\: int\\<0, max\\>, to_update\\: null, toupdate\\?\\: array\\{value_fieldname\\: \'value\', to_update\\: non\\-falsy\\-string, url\\: non\\-falsy\\-string, moreparams\\: array\\{value\\: \'__VALUE__\', allow_email\\: bool, field\\: non\\-falsy\\-string, typefield\\: \'supplier\', use_notification\\: mixed\\}\\}\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -362,6 +368,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/ruleaction.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 2,
+	'path' => __DIR__ . '/ajax/selectUnaffectedOrNewItem_Device.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Part \\$parents_itemtype \\(class\\-string\\<CommonITILObject\\>\\|CommonITILObject\\) of encapsed string cannot be cast to string\\.$#',
 	'identifier' => 'encapsedStringPart.nonString',
 	'count' => 1,
@@ -390,12 +402,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/ajax/timeline.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method rawSearchOptions\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/treebrowse.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
@@ -680,12 +686,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/report.dynamic.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method checkGlobal\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/front/report.dynamic.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$by_itemtype of static method Report\\:\\:showNetworkReport\\(\\) expects \'Glpi\\\\\\\\Socket\'\\|\'Location\'\\|\'NetworkEquioment\'\\|null, \'Glpi\\\\\\\\Socket\'\\|\'Location\'\\|\'NetworkEquipment\'\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -707,6 +707,12 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot call method add\\(\\) on Rule\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
+	'path' => __DIR__ . '/front/rule.common.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method check\\(\\) on Rule\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 2,
 	'path' => __DIR__ . '/front/rule.common.form.php',
 ];
 $ignoreErrors[] = [
@@ -812,7 +818,19 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/user.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\.\\.\\.\\$arg1 of function max expects non\\-empty\\-array, list given\\.$#',
+	'message' => '#^Parameter \\#1 \\$array of function array_replace expects array, false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
+	'path' => __DIR__ . '/install/empty_data.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$array of function array_replace expects array, null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/install/empty_data.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\.\\.\\.\\$arg1 of function max expects non\\-empty\\-array, array\\{\\} given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 3,
 	'path' => __DIR__ . '/install/empty_data.php',
@@ -824,6 +842,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/install.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 2,
+	'path' => __DIR__ . '/install/migrations/update_0.90.x_to_9.1.0.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 2,
+	'path' => __DIR__ . '/install/migrations/update_10.0.1_to_10.0.2/dates.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$string of function strlen expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -836,6 +866,36 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/migrations/update_10.0.20_to_10.0.21/tokens.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 2,
+	'path' => __DIR__ . '/install/migrations/update_10.0.7_to_10.0.8/dates.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.7_to_10.0.8/ram_field.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 2,
+	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/assignable_items.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/changesatisfactions.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/mailcollector_rules.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$string of function strlen expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -846,6 +906,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/install/migrations/update_11.0.2_to_11.0.3/tokens.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 21,
+	'path' => __DIR__ . '/install/migrations/update_9.1.x_to_9.2.0.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Offset \'Non_unique\' might not exist on array\\<string\\>\\|null\\.$#',
@@ -866,8 +932,20 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/migrations/update_9.1.x_to_9.2.0.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_9.4.1_to_9.4.2.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Argument of an invalid type array\\|null supplied for foreach, only iterables are supported\\.$#',
 	'identifier' => 'foreach.nonIterable',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
 	'count' => 1,
 	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
 ];
@@ -878,10 +956,40 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 3,
+	'path' => __DIR__ . '/install/migrations/update_9.5.5_to_9.5.6.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_9.5.6_to_9.5.7.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Argument of an invalid type array\\|null supplied for foreach, only iterables are supported\\.$#',
 	'identifier' => 'foreach.nonIterable',
 	'count' => 1,
 	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/domains.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 2,
+	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/entity.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 2,
+	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/native_inventory.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 2,
+	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/slm.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Offset \'dolog_method\' might not exist on array\\<string, mixed\\>\\|string\\.$#',
@@ -922,12 +1030,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Agent\\:\\:getLinkedItem\\(\\) should return CommonDBTM but returns CommonDBTM\\|false\\.$#',
 	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Agent.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Static property Agent\\:\\:\\$found_address \\(bool\\) does not accept string\\|true\\.$#',
-	'identifier' => 'assign.propertyType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Agent.php',
 ];
@@ -1202,42 +1304,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$auth_succeded\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/AuthMail.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$authtypes\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 3,
-	'path' => __DIR__ . '/src/AuthMail.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$extauth\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthMail.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$user\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 4,
-	'path' => __DIR__ . '/src/AuthMail.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$user_present\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthMail.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method object\\:\\:connection_imap\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthMail.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$serial\\.$#',
 	'identifier' => 'property.notFound',
 	'count' => 1,
@@ -1266,6 +1332,12 @@ $ignoreErrors[] = [
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/BlacklistedMailContent.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Budget.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
@@ -1344,6 +1416,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Calendar.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 6,
+	'path' => __DIR__ . '/src/CalendarSegment.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Cartridge\\:\\:prepareInputForClone\\(\\) should return array but returns array\\|false\\.$#',
@@ -1448,6 +1526,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Cluster.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonDBChild.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$history of method CommonDBTM\\:\\:post_updateItem\\(\\) expects bool, bool\\|int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -1464,6 +1548,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBConnexity.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 2,
+	'path' => __DIR__ . '/src/CommonDBRelation.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on CommonDBTM\\|false\\.$#',
@@ -1634,30 +1724,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBRelation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$itemtype of static method CommonDBConnexity\\:\\:canConnexity\\(\\) expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
-	'path' => __DIR__ . '/src/CommonDBRelation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$items_id of static method CommonDBConnexity\\:\\:canConnexity\\(\\) expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
-	'path' => __DIR__ . '/src/CommonDBRelation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$itemtype of method CommonDBConnexity\\:\\:canConnexityItem\\(\\) expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
-	'path' => __DIR__ . '/src/CommonDBRelation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#5 \\$items_id of method CommonDBConnexity\\:\\:canConnexityItem\\(\\) expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
-	'path' => __DIR__ . '/src/CommonDBRelation.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Argument of an invalid type list\\<list\\<string\\>\\|string\\>\\|string supplied for foreach, only iterables are supported\\.$#',
 	'identifier' => 'foreach.nonIterable',
 	'count' => 3,
@@ -1672,17 +1738,11 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'id\' on array\\<string, mixed\\>\\|false\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 2,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access offset mixed on array\\<string, mixed\\>\\|false\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access offset string on array\\<string, mixed\\>\\|false\\.$#',
+	'message' => '#^Cannot access offset mixed on array\\<string, mixed\\>\\|false\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
@@ -2006,15 +2066,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILActor.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to an undefined method CommonITILObject\\|Project\\:\\:getClosedStatusArray\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILCost.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method CommonITILObject\\|Project\\:\\:getSolvedStatusArray\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 6,
 	'path' => __DIR__ . '/src/CommonITILCost.php',
 ];
 $ignoreErrors[] = [
@@ -2046,6 +2100,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILCost.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 5,
+	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on CommonITILValidation\\|null\\.$#',
@@ -2432,16 +2492,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILRecurrent.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$timestamp of function date expects int\\|null, int\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILRecurrent.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$specifictime of static method Html\\:\\:computeGenericDateTimeSearch\\(\\) expects int\\|string, int\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/CommonITILRecurrent.php',
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 3,
+	'path' => __DIR__ . '/src/CommonITILSatisfaction.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method CommonITILSatisfaction\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
@@ -2454,6 +2508,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILSatisfaction.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 4,
+	'path' => __DIR__ . '/src/CommonITILTask.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method object\\:\\:add\\(\\)\\.$#',
@@ -2756,6 +2816,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a bare SQL identifier is forbidden\\. Use `QueryIdentifier` instead\\.$#',
+	'identifier' => 'glpi.forbidSqlExpressionIdentifier',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to an undefined method CommonITILObject\\|CommonITILRecurrent\\:\\:getClosedStatusArray\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
 	'count' => 1,
@@ -2770,7 +2836,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on CommonDBTM\\|false\\.$#',
 	'identifier' => 'property.nonObject',
-	'count' => 3,
+	'count' => 2,
 	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
 ];
 $ignoreErrors[] = [
@@ -2782,7 +2848,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 3,
+	'count' => 2,
 	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
 ];
 $ignoreErrors[] = [
@@ -2801,12 +2867,6 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot call method getNameID\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 2,
-	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method maybeLocated\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
 	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
 ];
 $ignoreErrors[] = [
@@ -3044,6 +3104,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Consumable.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 2,
+	'path' => __DIR__ . '/src/ConsumableItem.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method ConsumableItem\\:\\:prepareInputForClone\\(\\) should return array but returns array\\|false\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -3066,6 +3132,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Contact.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 16,
+	'path' => __DIR__ . '/src/Contract.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Contract\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
@@ -3152,6 +3224,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Contract_User.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 3,
+	'path' => __DIR__ . '/src/CronTask.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'plugin\' on non\\-empty\\-array\\|true\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 1,
@@ -3180,6 +3258,12 @@ $ignoreErrors[] = [
 	'identifier' => 'assign.propertyType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CronTask.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CronTaskLog.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$dbhost on DBmysql\\|null\\.$#',
@@ -3221,6 +3305,12 @@ $ignoreErrors[] = [
 	'message' => '#^Binary operation "\\." between non\\-falsy\\-string and array\\<string\\>\\|string results in an error\\.$#',
 	'identifier' => 'binaryOp.invalid',
 	'count' => 1,
+	'path' => __DIR__ . '/src/DBmysql.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 5,
 	'path' => __DIR__ . '/src/DBmysql.php',
 ];
 $ignoreErrors[] = [
@@ -3290,18 +3380,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DBmysqlIterator.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method numrows\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysqlIterator.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$ong of method CommonGLPI\\:\\:addDefaultFormTab\\(\\) expects array\\<string, string\\>, array\\<string, bool\\|string\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DCRoom.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on Agent\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 4,
@@ -3330,6 +3408,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Datacenter.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 4,
+	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'class\' on non\\-empty\\-array\\|true\\.$#',
@@ -3686,6 +3770,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Document.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Document.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on CommonDBTM\\|null\\.$#',
 	'identifier' => 'classConstant.nonObject',
 	'count' => 2,
@@ -3818,6 +3908,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Document_Item.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Domain.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Domain\\:\\:prepareInputForClone\\(\\) should return array but returns array\\|false\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -3840,6 +3936,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/DomainRecordType.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 8,
+	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'count\' on array\\|string\\|false\\.$#',
@@ -4240,6 +4342,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Binary operation "\\.\\=" between array\\|string and non\\-falsy\\-string results in an error\\.$#',
 	'identifier' => 'assignOp.invalid',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/API.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/API.php',
 ];
@@ -4766,19 +4874,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AbstractController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Binary operation "\\.\\=" between 0\\|0\\.0\\|array\\{\\}\\|string\\|false and non\\-falsy\\-string results in an error\\.$#',
-	'identifier' => 'assignOp.invalid',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\AdministrationController\\:\\:getEmailDataForUser\\(\\) should return array\\<array\\{id\\: int, email\\: string, is_default\\: int, _links\\: array\\{self\\: array\\{href\\: non\\-empty\\-string\\}\\}\\}\\> but returns list\\<array\\{id\\: int, email\\: string, is_default\\: int, _links\\: array\\{self\\: array\\{href\\: string\\}\\}\\}\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$users_id of method Glpi\\\\Api\\\\HL\\\\Controller\\\\AdministrationController\\:\\:getUsedOrManagedItems\\(\\) expects int, int\\|null given\\.$#',
+	'message' => '#^Parameter \\#2 \\$users_id of method Glpi\\\\Api\\\\HL\\\\Controller\\\\AdministrationController\\:\\:getUsedOrManagedItems\\(\\) expects int, int\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
@@ -4800,6 +4902,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CoreController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CustomAssetController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\ITILController\\:\\:getSubitemType\\(\\) should return string but returns string\\|null\\.$#',
@@ -4982,6 +5090,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 6,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/RSQL/Parser.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Offset \'field\' might not exist on array\\{operator\\: mixed, value_expected\\?\\: mixed, property\\: mixed, field\\?\\: string\\|null\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -5114,6 +5228,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 6,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method hydrate\\(\\) on Glpi\\\\Api\\\\HL\\\\Search\\\\RecordSet\\|int\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -5142,6 +5262,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Search/RecordSet.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Offset \'itemtype\' might not exist on array\\{ids\\: non\\-empty\\-list\\<string\\>\\}\\|array\\{table\\: string, itemtype\\: class\\-string\\<CommonDBTM\\>\\|null, ids\\: list\\<string\\>\\}\\.$#',
@@ -5510,10 +5636,34 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Asset/Capacity/IsRackableCapacity.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/CustomFieldDefinition.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$definition of method Glpi\\\\CustomObject\\\\AbstractDefinitionManager\\<Glpi\\\\Asset\\\\AssetDefinition\\>\\:\\:registerDefinition\\(\\) expects Glpi\\\\Asset\\\\AssetDefinition, Glpi\\\\Asset\\\\AssetDefinition\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Asset/CustomFieldDefinition.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Asset/CustomFieldType/AbstractType.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Asset/CustomFieldType/BooleanType.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Asset/CustomFieldType/DropdownType.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Binary operation "\\." between 0\\|0\\.0\\|array\\{\\}\\|string\\|false and \'translations\' results in an error\\.$#',
@@ -5556,6 +5706,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Cache/SimpleCache.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$LAST\\-MODIFIED on Sabre\\\\VObject\\\\Component\\|null\\.$#',
@@ -5618,6 +5774,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Principal.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\CalDAV\\\\Backend\\\\Principal\\:\\:getPrincipalByPath\\(\\) should return array but returns array\\|null\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -5648,6 +5810,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Principal.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Acl.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$ID of method CommonDBTM\\:\\:getFromDB\\(\\) expects int\\|string, int\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -5672,6 +5840,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Acl.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Browser.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$ID of method CommonDBTM\\:\\:getFromDB\\(\\) expects int\\|string, int\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -5682,6 +5856,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Browser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/CalDAV.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\CalDAV\\\\Plugin\\\\CalDAV\\:\\:getCalendarHomeForPrincipal\\(\\) should return string but returns string\\|null\\.$#',
@@ -5826,6 +6006,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Console/Task/UnlockCommand.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method find\\(\\) on CommonDBTM\\|false\\.$#',
@@ -6110,12 +6296,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/Security/MFAController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$algorithm of method Glpi\\\\Security\\\\TOTPManager\\:\\:setSecretForUser\\(\\) expects string\\|null, string\\|false\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Security/MFAController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Property Glpi\\\\Controller\\\\ServiceCatalog\\\\IndexController\\:\\:\\$interface \\(string\\) does not accept string\\|false\\.$#',
 	'identifier' => 'assign.propertyType',
 	'count' => 1,
@@ -6200,16 +6380,16 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/CustomObject/AbstractDefinition.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$id of static method Gettext\\\\Languages\\\\Language\\:\\:getById\\(\\) expects string, string\\|null given\\.$#',
+	'message' => '#^Parameter \\#2 \\$array of function array_key_exists expects array, array\\<string, mixed\\>\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/CustomObject/AbstractDefinition.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$array of function array_key_exists expects array, array\\<string, mixed\\>\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CustomObject/AbstractDefinition.php',
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 17,
+	'path' => __DIR__ . '/src/Glpi/DBAL/QueryFunction.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$json of function Safe\\\\json_decode expects string, string\\|null given\\.$#',
@@ -6306,6 +6486,18 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Dashboard/Grid.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a bare SQL identifier is forbidden\\. Use `QueryIdentifier` instead\\.$#',
+	'identifier' => 'glpi.forbidSqlExpressionIdentifier',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 6,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on CommonDBTM\\|null\\.$#',
@@ -6548,6 +6740,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Error/ErrorHandler.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Event.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Event\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 2,
@@ -6698,10 +6896,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Condition/ConditionData.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Condition\\\\ConditionHandler\\\\SingleChoiceFromValuesConditionHandler\\:\\:convertConditionValue\\(\\) should return int but returns int\\|string\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Method Glpi\\\\Form\\\\Condition\\\\ConditionHandler\\\\ItemConditionHandler\\:\\:convertConditionValue\\(\\) never returns int so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Condition/ConditionHandler/SingleChoiceFromValuesConditionHandler.php',
+	'path' => __DIR__ . '/src/Glpi/Form/Condition/ConditionHandler/ItemConditionHandler.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\Condition\\\\ConditionHandler\\\\UserDevicesConditionHandler\\:\\:getSupportedDeviceTypes\\(\\) should return array\\<class\\-string\\<CommonDBTM\\>\\> but returns array\\<int\\<0, max\\>, class\\-string\\>\\.$#',
@@ -7136,6 +7334,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/FormTranslation.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a bare SQL identifier is forbidden\\. Use `QueryIdentifier` instead\\.$#',
+	'identifier' => 'glpi.forbidSqlExpressionIdentifier',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Migration/FormMigration.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Form/Migration/FormMigration.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot assign new offset to list\\<array\\<string, mixed\\>\\>\\|string\\.$#',
 	'identifier' => 'offsetAssign.dimType',
 	'count' => 2,
@@ -7260,12 +7470,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/AbstractQuestionTypeActors.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Binary operation "\\+" between int\\|string\\|false and 1 results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/AbstractQuestionTypeSelectable.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on Group\\|false\\.$#',
@@ -7923,12 +8127,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method isGlobal\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/InventoryAsset.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method isNewItem\\(\\) on CommonDBTM\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/InventoryAsset.php',
@@ -9920,6 +10118,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/NetworkEquipment.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Inventory\\\\MainAsset\\\\PDU\\:\\:prepare\\(\\) should return array\\<int, stdClass\\> but returns array\\<int, object\\>\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/PDU.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$agent of method Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:setAgent\\(\\) expects Agent, Agent\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/PDU.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$autoupdatesystems_id\\.$#',
 	'identifier' => 'property.notFound',
 	'count' => 1,
@@ -10430,7 +10640,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Migration/AbstractPluginMigration.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Migration\\\\GenericobjectPluginMigration\\:\\:getCustomFieldSpecs\\(\\) should return array\\{system_name\\: string, label\\: string, type\\: class\\-string\\<Glpi\\\\Asset\\\\CustomFieldType\\\\AbstractType\\>, itemtype\\?\\: class\\-string\\<CommonDBTM\\>, options\\?\\: array\\{min\\?\\: int, max\\?\\: int, step\\?\\: int\\}\\} but returns array\\{system_name\\: string\\|null, label\\: string, type\\: \'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\BooleanType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\DateTimeType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\DateType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\DropdownType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\NumberType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\StringType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\TextType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\URLType\', itemtype\\?\\: class\\-string\\<CommonDBTM\\>, options\\?\\: array\\{\\}\\|array\\{min\\?\\: int, max\\?\\: int, step\\?\\: int\\}\\|array\\{step\\: \'any\'\\}, translations\\?\\: array\\{\\}\\}\\.$#',
+	'message' => '#^Method Glpi\\\\Migration\\\\GenericobjectPluginMigration\\:\\:getCustomFieldSpecs\\(\\) should return array\\{system_name\\: string, label\\: string, type\\: class\\-string\\<Glpi\\\\Asset\\\\CustomFieldType\\\\AbstractType\\>, itemtype\\?\\: class\\-string\\<CommonDBTM\\>, options\\?\\: array\\{min\\?\\: int, max\\?\\: int, step\\?\\: int\\}\\} but returns array\\{system_name\\: string, label\\: string, type\\: \'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\BooleanType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\DateTimeType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\DateType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\NumberType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\TextType\', options\\?\\: array\\{step\\: \'any\'\\}, translations\\?\\: array\\{\\}\\}\\|array\\{system_name\\: string\\|null, label\\: string, type\\: \'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\BooleanType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\DateTimeType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\DateType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\DropdownType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\NumberType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\StringType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\TextType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\URLType\', itemtype\\?\\: class\\-string\\<CommonDBTM\\>, options\\?\\: array\\{\\}\\|array\\{min\\?\\: int, max\\?\\: int, step\\?\\: int\\}, translations\\?\\: array\\{\\}\\}\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Migration/GenericobjectPluginMigration.php',
@@ -10694,6 +10904,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 86,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'plugin\' on non\\-empty\\-array\\|true\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 9,
@@ -10745,12 +10961,6 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot call method isField\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method isField\\(\\) on CommonDBTM\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
@@ -10926,6 +11136,18 @@ $ignoreErrors[] = [
 	'identifier' => 'assign.propertyType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Search/SearchOption.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a bare SQL identifier is forbidden\\. Use `QueryIdentifier` instead\\.$#',
+	'identifier' => 'glpi.forbidSqlExpressionIdentifier',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Security/SessionTracker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 13,
+	'path' => __DIR__ . '/src/Glpi/Security/SessionTracker.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Security\\\\TOTPManager\\:\\:getGracePeriodDaysLeft\\(\\) should return int but returns int\\|false\\.$#',
@@ -11246,6 +11468,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/UI/IllustrationManager.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Group.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Group\\:\\:prepareInputForClone\\(\\) should return array but returns array\\|false\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -11280,12 +11508,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/HTMLTableBase.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$start of method HTMLTableCell\\:\\:computeStartEnd\\(\\) expects int, int\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/HTMLTableCell.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$totalNumberOflines of static method HTMLTableCell\\:\\:updateCellSteps\\(\\) expects int, int\\|null given\\.$#',
@@ -11408,12 +11630,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$string of static method Html\\:\\:addConfirmationOnAction\\(\\) expects string, array\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\.\\.\\.\\$arrays of function array_merge expects array, array\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -11466,6 +11682,12 @@ $ignoreErrors[] = [
 	'identifier' => 'encapsedStringPart.nonString',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/IPAddress.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on CommonDBTM\\|false\\.$#',
@@ -11564,6 +11786,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/IPAddress_IPNetwork.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/IPAddress_IPNetwork.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$address of method IPAddress\\:\\:setAddressFromBinary\\(\\) expects array\\<int\\>, array\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -11609,6 +11837,12 @@ $ignoreErrors[] = [
 	'message' => '#^Binary operation "&" between int\\|non\\-empty\\-string and int\\|non\\-empty\\-string results in an error\\.$#',
 	'identifier' => 'binaryOp.invalid',
 	'count' => 3,
+	'path' => __DIR__ . '/src/IPNetwork.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 6,
 	'path' => __DIR__ . '/src/IPNetwork.php',
 ];
 $ignoreErrors[] = [
@@ -11966,6 +12200,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Infocom.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Infocom.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot assign new offset to list\\<string\\>\\|string\\.$#',
 	'identifier' => 'offsetAssign.dimType',
 	'count' => 1,
@@ -12236,6 +12476,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Devices.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Item_Disk.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Item_Disk\\:\\:getEncryptionStatusDropdown\\(\\) should return string but returns int\\|string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -12458,10 +12704,22 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Rack.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 24,
+	'path' => __DIR__ . '/src/Item_SoftwareLicense.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$value of function getEntitiesRestrictCriteria expects \'\'\\|array\\<int\\>\\|int, int\\<min, \\-2\\>\\|int\\<0, max\\>\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_SoftwareLicense.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 11,
+	'path' => __DIR__ . '/src/Item_SoftwareVersion.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of function getItemForItemtype expects string, class\\-string\\<CommonDBTM\\>\\|CommonDBTM given\\.$#',
@@ -12492,6 +12750,18 @@ $ignoreErrors[] = [
 	'identifier' => 'encapsedStringPart.nonString',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_SoftwareVersion.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Itil_Project.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 6,
+	'path' => __DIR__ . '/src/KnowbaseItem.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method KnowbaseItem\\:\\:prepareInputForClone\\(\\) should return array but returns array\\|false\\.$#',
@@ -12674,6 +12944,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Link.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Location.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method getEntityID\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 4,
@@ -12759,6 +13035,12 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of function getTableForItemType expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Lock.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$object_or_class of function is_a expects object\\|string, CommonDBRelation\\|string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Lock.php',
@@ -12885,12 +13167,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Offset \'uuid\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, uuid\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, 2\\?\\: string, itemtype\\?\\: string, 3\\?\\: string, items_id\\?\\: numeric\\-string, 4\\?\\: numeric\\-string\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/MailCollector.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset 1 might not exist on array\\{\\}\\|array\\{non\\-falsy\\-string, numeric\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MailCollector.php',
@@ -13106,6 +13382,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Migration.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Migration.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of function getTableForItemType expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
@@ -13128,18 +13410,6 @@ $ignoreErrors[] = [
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Monitor.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getLink\\(\\) on Agent\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Plug.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getLink\\(\\) on Agent\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/PDU.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Monitor\\:\\:prepareInputForClone\\(\\) should return array but returns array\\|false\\.$#',
@@ -13172,18 +13442,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkEquipment.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$fields on Agent\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 4,
-	'path' => __DIR__ . '/src/Plug.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$fields on Agent\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 4,
-	'path' => __DIR__ . '/src/PDU.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method getLink\\(\\) on Agent\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -13214,6 +13472,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkEquipmentModelStencil.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 2,
+	'path' => __DIR__ . '/src/NetworkName.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method addCell\\(\\) on HTMLTableRow\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 3,
@@ -13242,6 +13506,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkName.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NetworkPort.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'_no_history\' on array\\<string, mixed\\>\\|false\\.$#',
@@ -13490,7 +13760,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkPort_NetworkPort.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method NetworkPort_Vlan\\:\\:displayTabContentForItem\\(\\) should return bool but returns bool\\|null\\.$#',
+	'message' => '#^Method NetworkPort_Vlan\\:\\:displayTabContentForItem\\(\\) should return bool but returns bool\\|void\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkPort_Vlan.php',
@@ -13524,6 +13794,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Notification.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NotificationAjax.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method NotificationEvent\\:\\:dropdownEvents\\(\\) should return string but returns int\\|string\\.$#',
@@ -14492,12 +14768,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Notification_NotificationTemplate.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'notifications_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Notification_NotificationTemplate.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -14516,16 +14786,16 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/OlaLevel.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Inventory\\\\MainAsset\\\\PDU\\:\\:prepare\\(\\) should return array\\<int, stdClass\\> but returns array\\<int, object\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/PDU.php',
+	'message' => '#^Cannot access property \\$fields on Agent\\|null\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 4,
+	'path' => __DIR__ . '/src/PDU.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$agent of method Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:setAgent\\(\\) expects Agent, Agent\\|null given\\.$#',
-	'identifier' => 'argument.type',
+	'message' => '#^Cannot call method getLink\\(\\) on Agent\\|null\\.$#',
+	'identifier' => 'method.nonObject',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/PDU.php',
+	'path' => __DIR__ . '/src/PDU.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method PDU\\:\\:prepareInputForClone\\(\\) should return array but returns array\\|false\\.$#',
@@ -14716,17 +14986,11 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 5,
+	'count' => 4,
 	'path' => __DIR__ . '/src/Planning.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDBByCrit\\(\\) on CommonITILTask\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getLinkURL\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Planning.php',
@@ -14804,6 +15068,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Planning.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 3,
+	'path' => __DIR__ . '/src/PlanningExternalEvent.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to an undefined method object\\:\\:add\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
 	'count' => 1,
@@ -14876,6 +15146,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/PlanningExternalEvent.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/PlanningExternalEventTemplate.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to an undefined method object\\:\\:add\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
 	'count' => 1,
@@ -14936,6 +15212,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/PlanningExternalEventTemplate.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/PlanningRecall.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method addVolume\\(\\) on CronTask\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -14946,6 +15228,18 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/PlanningRecall.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$fields on Agent\\|null\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method getLink\\(\\) on Agent\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Plug.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Plugin\\:\\:getInformationsFromDirectory\\(\\) should return array but returns array\\|string\\.$#',
@@ -15062,6 +15356,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ProblemTemplate.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Profile.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'id\' on array\\<string, mixed\\>\\|false\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 2,
@@ -15086,7 +15386,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Profile.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Profile\\:\\:displayTabContentForItem\\(\\) should return bool but returns false\\|null\\.$#',
+	'message' => '#^Method Profile\\:\\:displayTabContentForItem\\(\\) should return bool but returns void\\|false\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Profile.php',
@@ -15114,6 +15414,18 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Profile.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a bare SQL identifier is forbidden\\. Use `QueryIdentifier` instead\\.$#',
+	'identifier' => 'glpi.forbidSqlExpressionIdentifier',
+	'count' => 1,
+	'path' => __DIR__ . '/src/ProfileRight.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/ProfileRight.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access offset mixed on array\\<\'\'\\>\\|Countable\\.$#',
@@ -15242,6 +15554,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Project.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 2,
+	'path' => __DIR__ . '/src/ProjectTask.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$DESCRIPTION on Sabre\\\\VObject\\\\Component\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 2,
@@ -15362,6 +15680,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ProjectTask_Ticket.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 2,
+	'path' => __DIR__ . '/src/QueuedNotification.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on CronTask\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 3,
@@ -15384,6 +15708,12 @@ $ignoreErrors[] = [
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 2,
 	'path' => __DIR__ . '/src/QueuedNotification.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 3,
+	'path' => __DIR__ . '/src/QueuedWebhook.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method setVolume\\(\\) on CronTask\\|null\\.$#',
@@ -15428,12 +15758,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Rack.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$ong of method CommonGLPI\\:\\:addDefaultFormTab\\(\\) expects array\\<string, string\\>, array\\<string, bool\\|string\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Rack.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$array of function array_key_exists expects array, array\\<string, mixed\\>\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -15470,6 +15794,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RefusedEquipment.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Reminder.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to an undefined method object\\:\\:add\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
 	'count' => 1,
@@ -15502,12 +15832,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Reminder\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
 	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Reminder.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'OR\' might not exist on non\\-empty\\-array\\{0\\?\\: 0, OR\\?\\: array\\{\'glpi_reminders\\.users_id\'\\: int\\<min, \\-1\\>\\|int\\<1, max\\>\\|non\\-falsy\\-string, \'glpi_reminders_users\\.users_id\'\\: int\\<min, \\-1\\>\\|int\\<1, max\\>\\|non\\-falsy\\-string, 0\\?\\: array\\{\'glpi_groups_reminders\\.groups_id\'\\: mixed, OR\\: non\\-empty\\-array\\<mixed\\>\\}\\|array\\{\'glpi_profiles_reminders\\.profiles_id\'\\: mixed, OR\\: non\\-empty\\-array\\<mixed\\>\\}, 1\\?\\: array\\{\'glpi_profiles_reminders\\.profiles_id\'\\: mixed, OR\\: non\\-empty\\-array\\<mixed\\>\\}\\}\\|array\\{0\\: array\\{\'glpi_groups_reminders\\.groups_id\'\\: mixed, OR\\: non\\-empty\\-array\\<mixed\\>\\}, 1\\?\\: array\\{\'glpi_profiles_reminders\\.profiles_id\'\\: mixed, OR\\: non\\-empty\\-array\\<mixed\\>\\}\\}\\|array\\{array\\{\'glpi_profiles_reminders\\.profiles_id\'\\: mixed, OR\\: non\\-empty\\-array\\<mixed\\>\\}\\}\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Reminder.php',
 ];
@@ -15552,6 +15876,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Reminder.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 10,
+	'path' => __DIR__ . '/src/Report.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
@@ -15684,6 +16014,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Reservation.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 2,
+	'path' => __DIR__ . '/src/ReservationItem.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$id of static method CommonDBTM\\:\\:getById\\(\\) expects int\\|null, int\\|string\\|false given\\.$#',
@@ -15950,6 +16286,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleAction.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a bare SQL identifier is forbidden\\. Use `QueryIdentifier` instead\\.$#',
+	'identifier' => 'glpi.forbidSqlExpressionIdentifier',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleAction.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method RuleAction\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -16008,6 +16350,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleAsset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleCollection.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on CommonDBTM\\|null\\.$#',
@@ -16358,6 +16706,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleDictionnarySoftware.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleDictionnarySoftwareCollection.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Argument of an invalid type array\\<SimpleXMLElement\\>\\|false\\|null supplied for foreach, only iterables are supported\\.$#',
 	'identifier' => 'foreach.nonIterable',
 	'count' => 1,
@@ -16542,6 +16896,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/SNMPCredential.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 2,
+	'path' => __DIR__ . '/src/SavedSearch.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'users_id\' on array\\<string, mixed\\>\\|false\\.$#',
@@ -16736,6 +17096,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Software.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Software.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on CommonDBTM\\|null\\.$#',
 	'identifier' => 'classConstant.nonObject',
 	'count' => 2,
@@ -16832,6 +17198,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Software.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/SoftwareLicense.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method SoftwareLicense\\:\\:prepareInputForClone\\(\\) should return array but returns array\\|false\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -16846,7 +17218,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$nb of static method CommonGLPI\\:\\:createTabEntry\\(\\) expects int, int\\<0, max\\>\\|string given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/SoftwareLicense.php',
 ];
 $ignoreErrors[] = [
@@ -16854,6 +17226,12 @@ $ignoreErrors[] = [
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/SolutionTemplate.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Stat.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access an offset on array\\<int, array\\<string, array\\<string, mixed\\>\\|int\\|string\\>\\>\\|int\\|string\\.$#',
@@ -16910,12 +17288,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Stat.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$value of static method Glpi\\\\Search\\\\Output\\\\HTMLSearchOutput\\:\\:showItem\\(\\) expects string, float\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Stat.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$id of static method Dropdown\\:\\:getDropdownName\\(\\) expects int, int\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 3,
@@ -16934,6 +17306,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Stat.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a bare SQL identifier is forbidden\\. Use `QueryIdentifier` instead\\.$#',
+	'identifier' => 'glpi.forbidSqlExpressionIdentifier',
+	'count' => 20,
+	'path' => __DIR__ . '/src/State.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/State.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method State\\:\\:prepareInputForClone\\(\\) should return array but returns array\\|false\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -16950,6 +17334,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Stencil.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Supplier.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'linktype\' on array\\{linktype\\: class\\-string\\<CommonDBTM\\>, entities_id\\: int, name\\: string, id\\: int, serial\\: string\\|null, otherserial\\: string\\|null, is_deleted\\: 0\\|1\\}\\|false\\.$#',
@@ -16988,6 +17378,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/TaskTemplate.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Telemetry.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Offset \'engine\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, engine\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, 2\\?\\: string, version\\?\\: string, 3\\?\\: string, 4\\?\\: string, comment\\?\\: non\\-falsy\\-string, \\.\\.\\.\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -17010,6 +17406,18 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Telemetry.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a bare SQL identifier is forbidden\\. Use `QueryIdentifier` instead\\.$#',
+	'identifier' => 'glpi.forbidSqlExpressionIdentifier',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Ticket.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 9,
+	'path' => __DIR__ . '/src/Ticket.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on CommonDBTM\\|false\\.$#',
@@ -17158,12 +17566,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Offset 2 might not exist on array\\{0\\: int\\<0, max\\>, 1\\: int\\<0, max\\>, 2\\: int, 3\\: string, mime\\: string, channels\\: int, bits\\: int\\}\\|null\\.$#',
 	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset 2 on array\\{non\\-empty\\-string, non\\-empty\\-string, string\\} in isset\\(\\) always exists and is not nullable\\.$#',
-	'identifier' => 'isset.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
@@ -17432,6 +17834,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/User.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 3,
+	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot access an offset on array\\|Countable\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 1,
@@ -17512,6 +17920,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method User\\:\\:getUsersFromDelegatedGroups\\(\\) should return array\\<int, string\\> but returns array\\<int\\|string, string\\>\\.$#',
 	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset int\\<1, max\\> on array\\<array\\|string\\> on left side of \\?\\? always exists and is not nullable\\.$#',
+	'identifier' => 'nullCoalesce.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/User.php',
 ];
@@ -17612,12 +18026,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Webhook.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot assign offset \'name\' to array\\<string, \\(int\\|string\\)\\>\\|string\\.$#',
-	'identifier' => 'offsetAssign.dimType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Webhook.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call static method getTypeName\\(\\) on class\\-string\\<CommonITILTask\\>\\|null\\.$#',
 	'identifier' => 'staticMethod.nonObject',
 	'count' => 1,
@@ -17666,7 +18074,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Webhook.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset class\\-string\\<Glpi\\\\Api\\\\HL\\\\Controller\\\\AbstractController\\>\\|null might not exist on array\\<class\\-string\\<Glpi\\\\Api\\\\HL\\\\Controller\\\\AbstractController\\>, array\\{main\\: array\\<class\\-string\\<CommonDBTM\\>, array\\{name\\: string\\}\\>, subtypes\\?\\: array\\<class\\-string\\<CommonDBTM\\>, array\\{\\}\\|array\\{name\\: string, parent\\: class\\-string\\<CommonDBTM\\>\\}\\>\\}\\>\\.$#',
+	'message' => '#^Offset class\\-string\\<Glpi\\\\Api\\\\HL\\\\Controller\\\\AbstractController\\>\\|null might not exist on non\\-empty\\-array\\<class\\-string\\<Glpi\\\\Api\\\\HL\\\\Controller\\\\AbstractController\\>, array\\{main\\: array\\<class\\-string\\<CommonDBTM\\>, array\\{name\\: string\\}\\>, subtypes\\?\\: array\\<class\\-string\\<CommonDBTM\\>, array\\{\\}\\|array\\{name\\: string, parent\\: class\\-string\\<CommonDBTM\\>\\}\\>\\}\\>\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 4,
 	'path' => __DIR__ . '/src/Webhook.php',
@@ -17712,12 +18120,6 @@ $ignoreErrors[] = [
 	'identifier' => 'offsetAccess.invalidOffset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Webhook.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$string of function strtolower expects string, array\\<int\\|string, array\\<int\\|string, list\\<string\\>\\|string\\>\\|int\\|string\\>\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/autoload/CFG_GLPI.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Function getItemForItemtype\\(\\) should return \\(T of CommonDBTM\\)\\|false but returns CommonDBTM\\|false\\.$#',

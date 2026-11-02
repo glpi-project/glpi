@@ -293,10 +293,13 @@ abstract class LevelAgreement extends CommonDBChild
                         $('#levelagreement{{ instID }}').on('click', 'tbody tr', function () {
                             viewAddEditLa{{ instID }}{{ rand }}($(this).data('id'));
                         });
+                        document.getElementById('new_la{{ instID }}{{ rand }}').addEventListener('click', () => {
+                            viewAddEditLa{{ instID }}{{ rand }}();
+                        });
                     });
                 </script>
                 <div class="text-center mb-3">
-                    <button name="new_la" type="button" class="btn btn-primary" onclick="viewAddEditLa{{ instID }}{{ rand }}();">{{ btn_msg }}</button>
+                    <button id="new_la{{ instID }}{{ rand }}" name="new_la" type="button" class="btn btn-primary">{{ btn_msg }}</button>
                 </div>
 TWIG, $twig_params);
         }

@@ -77,6 +77,10 @@ if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FIL
     $GLPI_CACHE = new SimpleCache(new ArrayAdapter());
 }
 
+// Translations cache is persisted on disk and may contain stale data from a previous run.
+(new CacheManager())->getTranslationsCacheInstance()->clear();
+Session::loadLanguage();
+
 loadDataset();
 
 $tu_oauth_client = new OAuthClient();

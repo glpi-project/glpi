@@ -424,15 +424,19 @@ TWIG, $twig_params);
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             {% if not reserve %}
-                <div id="makesearch" class="text-center mb-3">
-                    <a class="btn btn-secondary" href="{{ path('front/reservation.php?reservationitems_id=0') }}">
-                        <i class="{{ 'Reservation'|itemtype_icon }} me-2" aria-hidden="true"></i>{{ view_calendar_label }}
-                    </a>
-                    <button type="button" class="btn btn-secondary mw-100 d-inline-block text-truncate" onClick="$('#viewresasearch').toggleClass('d-none');$('#makesearch').toggleClass('d-none')">
-                        <i class="ti ti-search me-2" aria-hidden="true"></i>{{ find_free_item_label }}
-                    </button>
+                <div id="makesearch" class="collapse show resa-search-toggle">
+                    <div class="text-center mb-3">
+                        <a class="btn btn-secondary" href="{{ path('front/reservation.php?reservationitems_id=0') }}">
+                            <i class="{{ 'Reservation'|itemtype_icon }} me-2" aria-hidden="true"></i>{{ view_calendar_label }}
+                        </a>
+                        <button type="button" class="btn btn-secondary mw-100 d-inline-block text-truncate"
+                                data-bs-toggle="collapse" data-bs-target=".resa-search-toggle"
+                                aria-expanded="false" aria-controls="makesearch viewresasearch">
+                            <i class="ti ti-search me-2" aria-hidden="true"></i>{{ find_free_item_label }}
+                        </button>
+                    </div>
                 </div>
-                <div id="viewresasearch" class="d-none text-center">
+                <div id="viewresasearch" class="collapse resa-search-toggle text-center">
             {% endif %}
 TWIG, $twig_params);
 

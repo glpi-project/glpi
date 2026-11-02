@@ -74,14 +74,27 @@ class Central extends CommonGLPI
         if ($item instanceof self) {
             $tabs = [
                 1 => self::createTabEntry(__('Personal View'), 0, null, User::getIcon()),
-                2 => self::createTabEntry(__('Group View'), 0, null, Group::getIcon()),
                 3 => self::createTabEntry(__('Global View'), 0, null, 'ti ti-world'),
-                4 => self::createTabEntry(_n('RSS feed', 'RSS feeds', Session::getPluralNumber()), 0, null, RSSFeed::getIcon()),
             ];
 
-            if (Grid::canViewOneDashboard()) {
-                array_unshift($tabs, self::createTabEntry(__('Dashboard'), 0, null, Dashboard::getIcon()));
+            if (self::canViewGroupView()) {
+                $tabs[2] = self::createTabEntry(__('Group View'), 0, null, Group::getIcon());
             }
+
+            if (RSSFeed::canView()) {
+                $tabs[4] = self::createTabEntry(
+                    _n('RSS feed', 'RSS feeds', Session::getPluralNumber()),
+                    0,
+                    null,
+                    RSSFeed::getIcon(),
+                );
+            }
+
+            if (Grid::canViewOneDashboard()) {
+                $tabs[0] = self::createTabEntry(__('Dashboard'), 0, null, Dashboard::getIcon());
+            }
+
+            ksort($tabs);
 
             return $tabs;
         }
@@ -314,14 +327,16 @@ class Central extends CommonGLPI
             ],
         ];
 
-        $idor = Session::getNewIDORToken(Reminder::class);
-        $twig_params['cards'][] = [
-            'itemtype'  => Reminder::class,
-            'widget'    => 'central_list',
-            'params'    => [
-                '_idor_token'  => $idor,
-            ],
-        ];
+        if (Reminder::canView()) {
+            $idor = Session::getNewIDORToken(Reminder::class);
+            $twig_params['cards'][] = [
+                'itemtype'  => Reminder::class,
+                'widget'    => 'central_list',
+                'params'    => [
+                    '_idor_token'  => $idor,
+                ],
+            ];
+        }
 
         if (Session::haveRight(Reminder::$rightname, READ)) {
             $idor = Session::getNewIDORToken(Reminder::class, [
@@ -417,6 +432,9 @@ class Central extends CommonGLPI
      */
     public static function showGroupView()
     {
+        if (!self::canViewGroupView()) {
+            return;
+        }
 
         $showticket = Session::haveRightsOr(Ticket::$rightname, [Ticket::READALL, Ticket::READASSIGN]);
 
@@ -527,6 +545,19 @@ class Central extends CommonGLPI
         }
 
         TemplateRenderer::getInstance()->display('central/widget_tab.html.twig', $twig_params);
+    }
+
+    private static function canViewGroupView(): bool
+    {
+        if (empty($_SESSION['glpigroups'])) {
+            return false;
+        }
+
+        return Session::haveRightsOr(Ticket::$rightname, [Ticket::READALL, Ticket::READASSIGN, Ticket::READGROUP])
+            || Session::haveRightsOr(Problem::$rightname, [Problem::READALL, Problem::READMY])
+            || Session::haveRightsOr(Change::$rightname, [Change::READALL, Change::READMY])
+            || Session::haveRight(Project::$rightname, Project::READMY)
+            || Session::haveRight(ProjectTask::$rightname, ProjectTask::READMY);
     }
 
     private static function getMessages(): array
@@ -659,6 +690,35 @@ class Central extends CommonGLPI
                     __s('Re-authentication on sensitive actions is disabled by the "%s" constant.'),
                     'GLPI_DISABLE_REAUTH'
                 ) . ' ' . __s('Remove it from your configuration to restore the expected security level.');
+            }
+
+            // POP protocol is no longer supported, mails receivers and authentication servers using it are disabled.
+            $pop_itemtypes = [
+                MailCollector::class => 'host',
+                AuthMail::class      => 'connect_string',
+            ];
+            foreach ($pop_itemtypes as $itemtype => $connect_string_field) {
+                $iterator = $DB->request([
+                    'SELECT' => ['id', 'name', $connect_string_field],
+                    'FROM'   => $itemtype::getTable(),
+                    'WHERE'  => [
+                        $connect_string_field => ['LIKE', '%/pop%'],
+                    ],
+                ]);
+                foreach ($iterator as $data) {
+                    if (!Toolbox::isPopMailServerConnectString((string) $data[$connect_string_field])) {
+                        continue;
+                    }
+                    $link = '<a href="' . htmlescape($itemtype::getFormURLWithID($data['id'])) . '">'
+                        . htmlescape($data['name'])
+                        . '</a>';
+                    $messages['warnings'][] = sprintf(
+                        $itemtype === MailCollector::class
+                            ? __s('The "%s" mails receiver uses the POP protocol, which is no longer supported. It has been disabled, please reconfigure it to use the IMAP protocol.')
+                            : __s('The "%s" mail authentication server uses the POP protocol, which is no longer supported. It has been disabled, please reconfigure it to use the IMAP protocol.'),
+                        $link
+                    );
+                }
             }
 
             // Check for available plugin updates

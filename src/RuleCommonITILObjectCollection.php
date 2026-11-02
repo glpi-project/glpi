@@ -114,6 +114,9 @@ abstract class RuleCommonITILObjectCollection extends RuleCollection
             if ($itilcategory) {
                 $input['itilcategories_id_code'] = $itilcategory->fields['code'];
             }
+        } elseif (isset($input['itilcategories_id'])) {
+            // Category was cleared by a previous rule, do not keep a stale code
+            unset($input['itilcategories_id_code']);
         }
 
         return $input;

@@ -21,6 +21,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/migrations/update_11.0.2_to_11.0.3/tokens.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$codepoint of function chr expects int\\<0, 255\\>, int\\<0, 510\\> given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_11.0.x_to_12.0.0/notifications.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type string\\|null\\.$#',
 	'identifier' => 'array.invalidKey',
 	'count' => 1,

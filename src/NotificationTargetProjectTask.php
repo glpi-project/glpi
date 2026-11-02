@@ -51,6 +51,7 @@ class NotificationTargetProjectTask extends NotificationTarget
             'update'            => __('Update of a project task'),
             'delete'            => __('Deletion of a project task'),
             'planningrecall'    => _n('Planning reminder', 'Planning reminders', 0),
+            'assign'            => __('Assignment of a project task'),
         ];
         asort($events);
         return $events;
@@ -69,6 +70,10 @@ class NotificationTargetProjectTask extends NotificationTarget
         );
         $this->addTarget(Notification::TEAM_CONTACT, __('Contact of project team'));
         $this->addTarget(Notification::TEAM_SUPPLIER, __('Supplier of project team'));
+
+        if ($event === 'assign') {
+            $this->addTarget(Notification::NEW_TEAM_MEMBER, __('New project task team member'));
+        }
     }
 
     #[Override]
@@ -106,6 +111,11 @@ class NotificationTargetProjectTask extends NotificationTarget
                         // Send to the suppliers in project team
                     case Notification::TEAM_SUPPLIER:
                         $this->addTeamSuppliers();
+                        break;
+
+                        // Send to the member just added to the project task team
+                    case Notification::NEW_TEAM_MEMBER:
+                        $this->addNewTeamMember($options);
                         break;
                 }
         }
@@ -249,6 +259,64 @@ class NotificationTargetProjectTask extends NotificationTarget
                 ]);
             }
         }
+    }
+
+    /**
+     * Add the member just added to the project task team to the notified user list
+     *
+     * @param array<string, mixed> $options Options passed to the event (team_member_itemtype, team_member_items_id)
+     *
+     * @return void
+     **/
+    public function addNewTeamMember(array $options)
+    {
+        global $CFG_GLPI;
+
+        $member = $this->getNewTeamMember($options);
+
+        if ($member instanceof User) {
+            $this->addToRecipientsList([
+                'language' => $member->fields['language'],
+                'users_id' => $member->getID(),
+            ]);
+        } elseif ($member instanceof Group) {
+            $this->addForGroup(0, $member->getID());
+        } elseif ($member instanceof Contact || $member instanceof Supplier) {
+            $this->addToRecipientsList([
+                'email'    => $member->fields['email'],
+                'name'     => $member->getName(),
+                'language' => $CFG_GLPI['language'],
+                'usertype' => NotificationTarget::ANONYMOUS_USER,
+            ]);
+        }
+    }
+
+    /**
+     * Get the member just added to the project task team, from the event options
+     *
+     * @param array<string, mixed> $options Options passed to the event (team_member_itemtype, team_member_items_id)
+     *
+     * @return CommonDBTM|null
+     **/
+    private function getNewTeamMember(array $options): ?CommonDBTM
+    {
+        $itemtype = $options['team_member_itemtype'] ?? null;
+        $items_id = (int) ($options['team_member_items_id'] ?? 0);
+
+        if (
+            !is_string($itemtype)
+            || !in_array($itemtype, ProjectTaskTeam::$available_types, true)
+            || $items_id <= 0
+        ) {
+            return null;
+        }
+
+        $member = getItemForItemtype($itemtype);
+        if (!$member instanceof CommonDBTM || !$member->getFromDB($items_id)) {
+            return null;
+        }
+
+        return $member;
     }
 
     #[Override]
@@ -404,6 +472,15 @@ class NotificationTargetProjectTask extends NotificationTarget
         }
 
         $this->data['##projecttask.numberofteammembers##'] = (string) count($this->data['teammembers']);
+
+        // New team member infos (assign event)
+        $this->data['##newteammember.name##']     = '';
+        $this->data['##newteammember.itemtype##'] = '';
+        $new_member = $this->getNewTeamMember($options);
+        if ($new_member !== null) {
+            $this->data['##newteammember.name##']     = $new_member->getName();
+            $this->data['##newteammember.itemtype##'] = $new_member->getTypeName(1);
+        }
 
         // Task infos
         $tasks                = getAllDataFromTable(
@@ -720,6 +797,16 @@ class NotificationTargetProjectTask extends NotificationTarget
             'teammember.itemtype'    => sprintf(
                 __('%1$s: %2$s'),
                 _n('Team member', 'Team members', 1),
+                _n('Type', 'Types', 1)
+            ),
+            'newteammember.name'     => sprintf(
+                __('%1$s: %2$s'),
+                __('New team member'),
+                __('Name')
+            ),
+            'newteammember.itemtype' => sprintf(
+                __('%1$s: %2$s'),
+                __('New team member'),
                 _n('Type', 'Types', 1)
             ),
         ];

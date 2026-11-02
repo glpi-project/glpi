@@ -63,7 +63,11 @@
                                 <input type="hidden" name="id" value="{{ item.getID() }}" />
                             {% endif %}
                             {% if (item.isNewItem() or internal_auth) and not is_preference_form %}
-                                {{ fields.textField('name', item.fields['name'], __('Login')) }}
+                                {{ fields.textField('name', item.fields['name'], __('Login'), {
+                                    additional_attributes: {
+                                        autocomplete: 'off'
+                                    }
+                                }) }}
                             {% else %}
                                 {% set login_field %}
                                     <span class="fw-bold">{{ item.fields['name'] }}</span>
@@ -92,15 +96,15 @@
                             {% endif %}
 
                             {{ fields.textField('realname', item.fields['realname'], __('Surname'), {
-                                readonly: external_auth,
+                                readonly: identity_readonly_fields.realname,
                                 additional_attributes: is_preference_form ? {autocomplete: 'family-name'} : {},
                             }) }}
                             {{ fields.textField('firstname', item.fields['firstname'], __('First name'), {
-                                readonly: external_auth,
+                                readonly: identity_readonly_fields.firstname,
                                 additional_attributes: is_preference_form ? {autocomplete: 'given-name'} : {},
                             }) }}
                             {{ fields.textField('middlename', item.fields['middlename'], __('Middle name / Patronymic'), {
-                                readonly: external_auth,
+                                readonly: identity_readonly_fields.middlename,
                                 additional_attributes: is_preference_form ? {autocomplete: 'additional-name'} : {},
                             }) }}
 
@@ -112,6 +116,13 @@
                             {% elseif has_profile_right('config', constant('READ')) %}
                                 {% set tz_not_config = __('Timezone usage has not been activated.') ~ ' ' ~ __('Run the "%1$s" command to activate it.')|format('php bin/console database:enable_timezones') %}
                                 {{ fields.htmlField('', tz_not_config|e, __('Timezone'), field_options) }}
+                            {% endif %}
+
+                            {% if item.isNewItem() and not is_preference_form %}
+                                {{ fields.dropdownArrayField('language', '', call('Dropdown::getLanguages'), __('Language'), field_options|merge({
+                                    display_emptychoice: true,
+                                    emptylabel: __('Use server configuration'),
+                                })) }}
                             {% endif %}
 
                             {% if not is_preference_form %}

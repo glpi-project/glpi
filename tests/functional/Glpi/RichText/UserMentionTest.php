@@ -200,7 +200,7 @@ HTML,
         array $update_expected_notified,
         ?bool $is_private = null
     ) {
-        global $CFG_GLPI;
+        global $CFG_GLPI, $DB;
         $CFG_GLPI['use_notifications'] = 1;
         $CFG_GLPI['notifications_mailing'] = 1;
 
@@ -208,8 +208,8 @@ HTML,
         $normal_id = getItemByTypeName('User', 'normal', true);
 
         // Delete existing notifications targets (to prevent sending of notifications not related to user_mention)
-        $notification_targets = new NotificationTarget();
-        $notification_targets->deleteByCriteria(['NOT' => ['items_id' => Notification::MENTIONNED_USER]]);
+        // Use a direct query, as deleting them one by one using `deleteByCriteria()` is very slow
+        $DB->delete(NotificationTarget::getTable(), ['NOT' => ['items_id' => Notification::MENTIONNED_USER]]);
 
         // Add email to users for notifications
         $this->login(); // must be authenticated to update emails
@@ -447,7 +447,7 @@ HTML,
         array $update_expected_observers,
         array $update_expected_notified
     ) {
-        global $CFG_GLPI;
+        global $CFG_GLPI, $DB;
         $CFG_GLPI['use_notifications'] = 1;
         $CFG_GLPI['notifications_mailing'] = 1;
 
@@ -455,8 +455,8 @@ HTML,
         $normal_id = getItemByTypeName('User', 'normal', true);
 
         // Delete existing notifications targets (to prevent sending of notifications not related to user_mention)
-        $notification_targets = new NotificationTarget();
-        $notification_targets->deleteByCriteria(['NOT' => ['items_id' => Notification::MENTIONNED_USER]]);
+        // Use a direct query, as deleting them one by one using `deleteByCriteria()` is very slow
+        $DB->delete(NotificationTarget::getTable(), ['NOT' => ['items_id' => Notification::MENTIONNED_USER]]);
 
         // Add email to users for notifications
         $this->login(); // must be authenticated to update emails

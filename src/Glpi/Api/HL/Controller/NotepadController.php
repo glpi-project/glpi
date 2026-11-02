@@ -150,9 +150,7 @@ final class NotepadController extends AbstractController
     #[Doc\SearchRoute(schema_name: 'Note')]
     public function searchNote(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('Note', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -165,9 +163,7 @@ final class NotepadController extends AbstractController
     #[Doc\GetRoute(schema_name: 'Note')]
     public function getNote(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id'));
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('Note', $this->getAPIVersion($request)),
             $request->getAttributes(),

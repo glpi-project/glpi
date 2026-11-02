@@ -38,6 +38,7 @@ use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Dashboard\Grid;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Event;
 use Glpi\Features\Clonable;
 use Glpi\Form\Form;
@@ -362,6 +363,14 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         // PROFILES and UNIQUE_PROFILE in RuleMailcollector
         Rule::cleanForItemCriteria($this, 'PROFILES');
         Rule::cleanForItemCriteria($this, 'UNIQUE_PROFILE');
+
+        $profile_id = $this->getID();
+        foreach (AssetDefinitionManager::getInstance()->getDefinitions() as $definition) {
+            $definition->removeProfileFromField($profile_id);
+        }
+        foreach (DropdownDefinitionManager::getInstance()->getDefinitions() as $definition) {
+            $definition->removeProfileFromField($profile_id);
+        }
     }
 
     public function getCloneRelations(): array
@@ -996,6 +1005,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                                 $fn_get_rights(Phone::class, 'central'),
                                 $fn_get_rights(Peripheral::class, 'central'),
                                 $fn_get_rights(Enclosure::class, 'central'),
+                                $fn_get_rights(Cable::class, 'central'),
                                 $fn_get_rights(NetworkName::class, 'central', [
                                     'label' => __('Internet'),
                                 ]),
@@ -1023,7 +1033,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                                 $fn_get_rights(Domain::class, 'central'),
                                 $fn_get_rights(Appliance::class, 'central'),
                                 $fn_get_rights(DatabaseInstance::class, 'central'),
-                                $fn_get_rights(Cable::class, 'central'),
                             ],
                         ],
                         'admin' => [

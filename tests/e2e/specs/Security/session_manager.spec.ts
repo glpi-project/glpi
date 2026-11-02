@@ -86,7 +86,7 @@ test('Can terminate sessions', async ({
     const confirm_dialog = page.getByRole('dialog'); // Confirmation dialog
     // Bootstrap ignores a `hide()` requested while the modal is still fading in,
     // which would leave the dialog open forever, so wait for it to be shown.
-    await expect(confirm_dialog).toHaveAttribute('data-cy-shown', 'true');
+    await expect(confirm_dialog).toHaveAttribute('data-glpi-modal-shown', 'true');
     const session_revoked = page.waitForResponse(
         (response) => response.url().endsWith('/Revoke')
             && response.request().method() === 'POST'

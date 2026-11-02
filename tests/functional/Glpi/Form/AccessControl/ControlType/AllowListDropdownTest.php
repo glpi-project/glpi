@@ -48,7 +48,7 @@ class AllowListDropdownTest extends DbTestCase
     {
         $this->checkCountUserForCriteria(
             criteria: ['users' => [AbstractRightsDropdown::ALL_USERS]],
-            expected_users_count: 7,
+            expected_users_count: 6,
         );
     }
 
@@ -102,11 +102,11 @@ class AllowListDropdownTest extends DbTestCase
         $this->checkCountUserForCriteria(
             criteria: [
                 'profiles' => [
-                    getItemByTypeName(Profile::class, 'Technician', true), // Users with this profile: tech + e2e_tests
-                    getItemByTypeName(Profile::class, 'Observer', true), // Users with this profile: normal + e2e_tests
+                    getItemByTypeName(Profile::class, 'Technician', true), // Users with this profile: tech
+                    getItemByTypeName(Profile::class, 'Observer', true), // Users with this profile: normal
                 ],
             ],
-            expected_users_count: 3,
+            expected_users_count: 2,
         );
     }
 
@@ -123,13 +123,13 @@ class AllowListDropdownTest extends DbTestCase
                 ],
                 'groups' => [getItemByTypeName(Group::class, '_test_group_1', true)],
                 'profiles' => [
-                    getItemByTypeName(Profile::class, 'Technician', true), // Users with this profile: tech + e2e_tests
-                    getItemByTypeName(Profile::class, 'Observer', true), // Users with this profile: normal + e2e_tests
+                    getItemByTypeName(Profile::class, 'Technician', true), // Users with this profile: tech
+                    getItemByTypeName(Profile::class, 'Observer', true), // Users with this profile: normal
                 ],
             ],
-            // Total = 7 (2 specifics users + 3 from group + 3 from profiles)
+            // Total = 7 (2 specifics users + 3 from group + 2 from profiles)
             // But _test_user is in both users and groups criteria, so we expect 6.
-            expected_users_count: 7,
+            expected_users_count: 6,
         );
     }
 

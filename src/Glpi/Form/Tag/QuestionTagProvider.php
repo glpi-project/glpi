@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\Tag;
 
+use Glpi\Form\Answer;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
@@ -71,6 +72,17 @@ final class QuestionTagProvider implements TagProviderInterface, TagWithIdValueI
         if (!$question) {
             return '';
         }
+
+        // Questions without answer were not displayed to the requester (hidden
+        // by a visibility condition), so they must not be displayed either.
+        $answers = array_filter(
+            $answers_set->getAnswers(),
+            fn(Answer $answer) => $answer->getQuestionId() === $id
+        );
+        if ($answers === []) {
+            return '';
+        }
+
         return FormTranslation::translate($question, Question::TRANSLATION_KEY_NAME) ?? $question->fields['name'];
     }
 

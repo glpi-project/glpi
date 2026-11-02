@@ -161,6 +161,8 @@ class QueuedNotification extends CommonDBTM
     #[Override]
     public function prepareInputForAdd($input)
     {
+        $input = $this->prepareInput($input);
+
         if (empty($input['create_time'])) {
             $input['create_time'] = $_SESSION["glpi_currenttime"];
         }
@@ -195,6 +197,39 @@ class QueuedNotification extends CommonDBTM
         // Force items_id to integer
         if (empty($input['items_id'])) {
             $input['items_id'] = 0;
+        }
+
+        return $input;
+    }
+
+    #[Override]
+    public function prepareInputForUpdate($input)
+    {
+        $input = $this->prepareInput($input);
+
+        return $input;
+    }
+
+    /**
+     * @param array<mixed> $input
+     * @return array<mixed>
+     */
+    private function prepareInput(array $input): array
+    {
+        // Encrypt sensitive notifications body
+        $itemtype = (string) ($input['itemtype'] ?? null);
+        if (
+            is_a($itemtype, CommonGLPI::class, true)
+            && ($target = NotificationTarget::getInstanceByType($itemtype)) instanceof NotificationTarget
+            && !$target->canNotificationContentBeDisclosed((string) ($input['event'] ?? null))
+        ) {
+            $glpi_key = new GLPIKey();
+            foreach (['body_text', 'body_html'] as $field) {
+                if (!empty($input[$field])) {
+                    $input[$field] = $glpi_key->encrypt($input[$field]);
+                }
+            }
+            $input['is_body_encrypted'] = true;
         }
 
         return $input;
@@ -324,7 +359,6 @@ class QueuedNotification extends CommonDBTM
             'field'              => 'body_html',
             'name'               => __('Email HTML body'),
             'datatype'           => 'specific',
-            'nosearch'           => true, // can contain sensitive data, fine-grain filtering would be too complex
             'additionalfields'   => ['itemtype', 'event'],
             'massiveaction'      => false,
         ];
@@ -335,7 +369,6 @@ class QueuedNotification extends CommonDBTM
             'field'              => 'body_text',
             'name'               => __('Email text body'),
             'datatype'           => 'specific',
-            'nosearch'           => true, // can contain sensitive data, fine-grain filtering would be too complex
             'additionalfields'   => ['itemtype', 'event'],
             'massiveaction'      => false,
         ];

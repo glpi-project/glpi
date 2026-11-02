@@ -74,6 +74,7 @@ class ProjectTaskTest extends DbTestCase
             0,
             (int) $ptask->add([
                 'name'                     => 'first test, whole period',
+                'entities_id'              => $this->getTestRootEntity(true),
                 'projects_id'              => $pid,
                 'plan_start_date'          => '2019-08-10',
                 'plan_end_date'            => '2019-08-20',
@@ -96,6 +97,7 @@ class ProjectTaskTest extends DbTestCase
             0,
             (int) $ptask->add([
                 'name'                     => 'test, subperiod',
+                'entities_id'              => $this->getTestRootEntity(true),
                 'projects_id'              => $pid,
                 'plan_start_date'          => '2019-08-13',
                 'plan_end_date'            => '2019-08-14',
@@ -126,6 +128,7 @@ class ProjectTaskTest extends DbTestCase
             0,
             (int) $ptask->add([
                 'name'                     => 'test subperiod, out of bounds',
+                'entities_id'              => $this->getTestRootEntity(true),
                 'projects_id'              => $pid,
                 'plan_start_date'          => '2018-08-13',
                 'plan_end_date'            => '2018-08-24',
@@ -1312,37 +1315,6 @@ class ProjectTaskTest extends DbTestCase
         $this->assertSame(1, countElementsInTable(ProjectTaskTeam::getTable(), $criteria));
     }
 
-    public function testPlanningRecallCreatedOnAdd(): void
-    {
-        $this->login();
-        $users_id = Session::getLoginUserID();
-
-        $project = $this->createItem(Project::class, ['name' => 'Test project for recall']);
-        $task    = $this->createItem(ProjectTask::class, [
-            'name'            => 'Task with recall',
-            'projects_id'     => $project->getID(),
-            'plan_start_date' => date('Y-m-d H:i:s', strtotime('+1 day')),
-            'plan_end_date'   => date('Y-m-d H:i:s', strtotime('+2 days')),
-            'recall'          => HOUR_TIMESTAMP,
-        ]);
-
-        $this->createItem(ProjectTaskTeam::class, [
-            'projecttasks_id' => $task->getID(),
-            'itemtype'        => \User::class,
-            'items_id'        => $users_id,
-        ]);
-
-        $recall = new PlanningRecall();
-        $this->assertTrue(
-            $recall->getFromDBByCrit([
-                'itemtype' => ProjectTask::class,
-                'items_id' => $task->getID(),
-                'users_id' => $users_id,
-            ])
-        );
-        $this->assertSame(HOUR_TIMESTAMP, (int) $recall->fields['before_time']);
-    }
-
     public function testPlanningRecallUpdatedOnPlanEndDateChange(): void
     {
         $this->login();
@@ -1356,7 +1328,7 @@ class ProjectTaskTest extends DbTestCase
             'projects_id'     => $project->getID(),
             'plan_start_date' => date('Y-m-d H:i:s', strtotime('+1 day')),
             'plan_end_date'   => $end_date,
-            'recall'          => HOUR_TIMESTAMP,
+            'entities_id'     => $this->getTestRootEntity(true),
         ]);
 
         $this->createItem(ProjectTaskTeam::class, [
@@ -1364,6 +1336,12 @@ class ProjectTaskTest extends DbTestCase
             'itemtype'        => \User::class,
             'items_id'        => $users_id,
         ]);
+        $this->assertTrue($task->can($task->getID(), READ));
+
+        $new_end_date      = date('Y-m-d H:i:s', strtotime('+5 days'));
+        $new_expected_when = date('Y-m-d H:i:s', strtotime($new_end_date) - HOUR_TIMESTAMP);
+
+        $task->update(['id' => $task->getID(), 'plan_end_date' => $new_end_date, 'recall' => HOUR_TIMESTAMP,]);
 
         $recall = new PlanningRecall();
         $this->assertTrue(
@@ -1373,15 +1351,6 @@ class ProjectTaskTest extends DbTestCase
                 'users_id' => $users_id,
             ])
         );
-        $expected_when = date('Y-m-d H:i:s', strtotime($end_date) - HOUR_TIMESTAMP);
-        $this->assertSame($expected_when, $recall->fields['when']);
-
-        $new_end_date      = date('Y-m-d H:i:s', strtotime('+5 days'));
-        $new_expected_when = date('Y-m-d H:i:s', strtotime($new_end_date) - HOUR_TIMESTAMP);
-
-        $task->update(['id' => $task->getID(), 'plan_end_date' => $new_end_date]);
-
-        $recall->getFromDB($recall->getID());
         $this->assertSame($new_expected_when, $recall->fields['when']);
     }
 

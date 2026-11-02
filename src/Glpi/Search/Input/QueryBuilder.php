@@ -105,6 +105,13 @@ final class QueryBuilder implements SearchInputInterface
         }
         $p['target'] = URL::sanitizeURL($p['target']);
 
+        // Virtual criteria are internal to the search engine (e.g. tree browse category filter)
+        // and must neither be displayed nor submitted back by the search form.
+        $p['criteria'] = array_filter(
+            $p['criteria'],
+            static fn($criterion) => !($criterion['virtual'] ?? false)
+        );
+
         // Itemtype name used in JS function names, etc
         $normalized_itemtype = Toolbox::getNormalizedItemtype($itemtype);
         $linked = SearchEngine::getMetaItemtypeAvailable($itemtype);
