@@ -420,4 +420,235 @@ class SlaLevel_TicketTest extends DbTestCase
         ]));
     }
 
+    public function testRecallActionSendsOnlyItsNotification(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $entities_id = $this->getTestRootEntity(true);
+
+        $users_ids = [];
+        foreach (['assigned', 'other'] as $name) {
+            $user = $this->createItem(\User::class, [
+                'name'          => __FUNCTION__ . $name,
+                '_profiles_id'  => getItemByTypeName('Profile', 'Technician', true),
+                '_entities_id'  => $entities_id,
+                '_is_recursive' => 1,
+            ]);
+            $this->createItem(\UserEmail::class, [
+                'users_id'   => $user->getID(),
+                'email'      => $name . '@localhost',
+                'is_default' => 1,
+            ]);
+            $users_ids[$name] = $user->getID();
+        }
+        $group = $this->createItem(\Group::class, ['name' => __FUNCTION__, 'entities_id' => $entities_id]);
+        $this->createItem(\Group_User::class, [
+            'groups_id' => $group->getID(),
+            'users_id'  => $users_ids['other'],
+        ]);
+
+        // Two notifications on the SLA reminder event, with distinct recipients as a recipient is notified once per event
+        $notifications_ids = [];
+        $templates_ids = [];
+        $targets = [
+            'sent'     => [\Notification::USER_TYPE, \Notification::ASSIGN_TECH],
+            'not_sent' => [\Notification::GROUP_TYPE, $group->getID()],
+        ];
+        foreach ($targets as $name => [$target_type, $target_items_id]) {
+            $notification = $this->createItem(\Notification::class, [
+                'name'         => __FUNCTION__ . $name,
+                'entities_id'  => $entities_id,
+                'is_recursive' => 1,
+                'is_active'    => 1,
+                'itemtype'     => Ticket::class,
+                'event'        => 'recall',
+            ]);
+            $template = $this->createItem(\NotificationTemplate::class, [
+                'name'     => __FUNCTION__ . $name,
+                'itemtype' => Ticket::class,
+            ]);
+            $this->createItem(\NotificationTemplateTranslation::class, [
+                'notificationtemplates_id' => $template->getID(),
+                'language'                 => '',
+                'subject'                  => $name,
+                'content_text'             => $name,
+                'content_html'             => $name,
+            ]);
+            $this->createItem(\Notification_NotificationTemplate::class, [
+                'notifications_id'         => $notification->getID(),
+                'mode'                     => \Notification_NotificationTemplate::MODE_MAIL,
+                'notificationtemplates_id' => $template->getID(),
+            ]);
+            $this->createItem(\NotificationTarget::class, [
+                'notifications_id' => $notification->getID(),
+                'type'             => $target_type,
+                'items_id'         => $target_items_id,
+            ]);
+            $notifications_ids[$name] = $notification->getID();
+            $templates_ids[$name] = $template->getID();
+        }
+
+        ['sla' => $sla] = $this->createSLA(['entities_id' => $entities_id], SLM::TTR);
+        $level = $this->createItem(SlaLevel::class, [
+            'name'           => __FUNCTION__,
+            'execution_time' => 0,
+            'is_active'      => 1,
+            'match'          => 'AND',
+            'slas_id'        => $sla->getID(),
+        ]);
+        $action_field = 'recall_notification_' . $notifications_ids['sent'];
+        $this->assertArrayHasKey($action_field, $level->getActions());
+        $this->createItem(\SlaLevelAction::class, [
+            'slalevels_id' => $level->getID(),
+            'action_type'  => 'send',
+            'field'        => $action_field,
+            'value'        => 1,
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'             => __FUNCTION__,
+            'content'          => __FUNCTION__,
+            'entities_id'      => $entities_id,
+            'slas_id_ttr'      => $sla->getID(),
+            '_users_id_assign' => $users_ids['assigned'],
+        ]);
+
+        $level_ticket = new SlaLevel_Ticket();
+        $this->assertTrue($level_ticket->getFromDBByCrit([
+            'tickets_id'   => $ticket->getID(),
+            'slalevels_id' => $level->getID(),
+        ]));
+        $this->updateItem(SlaLevel_Ticket::class, $level_ticket->getID(), [
+            'date' => date('Y-m-d H:i:s', time() - HOUR_TIMESTAMP),
+        ]);
+
+        $CFG_GLPI['use_notifications']     = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+        $this->runSlaCron();
+
+        $queued = (new \QueuedNotification())->find([
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'event'    => 'recall',
+        ]);
+        $this->assertSame([$templates_ids['sent']], array_values(array_unique(array_column($queued, 'notificationtemplates_id'))));
+    }
+
+    public function testSlaStatusAction(): void
+    {
+        $this->login();
+
+        $entities_id = $this->getTestRootEntity(true);
+        $status = $this->createItem(\SlaStatus::class, ['name' => __FUNCTION__]);
+
+        ['sla' => $sla] = $this->createSLA(['entities_id' => $entities_id], SLM::TTR);
+        $level = $this->createItem(SlaLevel::class, [
+            'name'           => __FUNCTION__,
+            'execution_time' => 0,
+            'is_active'      => 1,
+            'match'          => 'AND',
+            'slas_id'        => $sla->getID(),
+        ]);
+        $this->assertArrayHasKey('slastatuses_id', $level->getActions());
+        $this->createItem(\SlaLevelAction::class, [
+            'slalevels_id' => $level->getID(),
+            'action_type'  => 'assign',
+            'field'        => 'slastatuses_id',
+            'value'        => $status->getID(),
+        ]);
+
+        $tickets = [];
+        foreach (['with_sla' => $sla->getID(), 'without_sla' => 0] as $name => $slas_id) {
+            $tickets[$name] = $this->createItem(Ticket::class, [
+                'name'        => __FUNCTION__ . $name,
+                'content'     => __FUNCTION__,
+                'entities_id' => $entities_id,
+                'slas_id_ttr' => $slas_id,
+            ]);
+        }
+        $this->assertSame(0, $tickets['with_sla']->fields['slastatuses_id']);
+
+        $level_ticket = new SlaLevel_Ticket();
+        $this->assertTrue($level_ticket->getFromDBByCrit([
+            'tickets_id'   => $tickets['with_sla']->getID(),
+            'slalevels_id' => $level->getID(),
+        ]));
+        $this->updateItem(SlaLevel_Ticket::class, $level_ticket->getID(), [
+            'date' => date('Y-m-d H:i:s', time() - HOUR_TIMESTAMP),
+        ]);
+        $this->runSlaCron();
+
+        $this->assertTrue($tickets['with_sla']->getFromDB($tickets['with_sla']->getID()));
+        $this->assertSame($status->getID(), $tickets['with_sla']->fields['slastatuses_id']);
+
+        // The SLA status is searchable
+        $results = \Search::getDatas(Ticket::class, [
+            'criteria' => [
+                ['field' => 199, 'searchtype' => 'equals', 'value' => $status->getID()],
+            ],
+        ]);
+        $this->assertSame(
+            [$tickets['with_sla']->getID()],
+            array_column($results['data']['rows'], 'id')
+        );
+    }
+
+    public function testSlaStatusRequiresSlmAssignRight(): void
+    {
+        $this->login();
+
+        $status = $this->createItem(\SlaStatus::class, ['name' => __FUNCTION__]);
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $slm_right = $_SESSION['glpiactiveprofile'][SLM::$rightname];
+        $_SESSION['glpiactiveprofile'][SLM::$rightname] = $slm_right & ~SLM::RIGHT_ASSIGN;
+        $this->assertTrue($ticket->update(['id' => $ticket->getID(), 'slastatuses_id' => $status->getID()]));
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertSame(0, $ticket->fields['slastatuses_id']);
+
+        $_SESSION['glpiactiveprofile'][SLM::$rightname] = $slm_right | SLM::RIGHT_ASSIGN;
+        $this->updateItem(Ticket::class, $ticket->getID(), ['slastatuses_id' => $status->getID()]);
+    }
+
+    public function testNotificationPurgeDeletesItsRecallActions(): void
+    {
+        $this->login();
+
+        ['sla' => $sla] = $this->createSLA(['entities_id' => $this->getTestRootEntity(true)], SLM::TTR);
+        $level = $this->createItem(SlaLevel::class, [
+            'name'           => __FUNCTION__,
+            'execution_time' => 0,
+            'is_active'      => 1,
+            'match'          => 'AND',
+            'slas_id'        => $sla->getID(),
+        ]);
+
+        $notifications = [];
+        $actions = [];
+        foreach (['purged', 'kept'] as $name) {
+            $notification = $this->createItem(\Notification::class, [
+                'name'     => __FUNCTION__ . $name,
+                'itemtype' => Ticket::class,
+                'event'    => 'recall',
+            ]);
+            $actions[$name] = $this->createItem(\SlaLevelAction::class, [
+                'slalevels_id' => $level->getID(),
+                'action_type'  => 'send',
+                'field'        => 'recall_notification_' . $notification->getID(),
+                'value'        => 1,
+            ]);
+            $notifications[$name] = $notification;
+        }
+
+        $this->assertTrue($notifications['purged']->delete(['id' => $notifications['purged']->getID()], true));
+        $this->assertFalse(\SlaLevelAction::getById($actions['purged']->getID()));
+        $this->assertNotFalse(\SlaLevelAction::getById($actions['kept']->getID()));
+    }
+
 }

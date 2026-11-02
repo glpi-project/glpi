@@ -1265,6 +1265,7 @@ HTML;
                     'SolutionTemplate' => null,
                     'ITILValidationTemplate' => null,
                     'RequestType' => null,
+                    'SlaStatus' => null,
                     'ITILFollowupTemplate' => null,
                     'ProjectState' => null,
                     'ProjectType' => null,

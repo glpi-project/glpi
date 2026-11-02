@@ -214,6 +214,29 @@ abstract class LevelAgreementLevel extends RuleTicket
         return $actions;
     }
 
+    /**
+     * Get one action per ticket notification of the given reminder event, each one sending only its notification.
+     *
+     * @param string $event Reminder event (`recall` or `recall_ola`)
+     * @param string $label Label of the reminder action sending all the notifications of the event
+     *
+     * @return array<string, array{name: string, type: string, force_actions: string[]}>
+     */
+    protected function getNotificationRecallActions(string $event, string $label): array
+    {
+        $actions = [];
+        $notifications = (new Notification())->find(['itemtype' => Ticket::class, 'event' => $event], ['name']);
+        foreach ($notifications as $notification) {
+            $actions[$event . '_notification_' . $notification['id']] = [
+                'name'          => sprintf(__('%1$s: %2$s'), $label, $notification['name']),
+                'type'          => 'yesonly',
+                'force_actions' => ['send'],
+            ];
+        }
+
+        return $actions;
+    }
+
     public function getCriterias()
     {
         $criteria = parent::getCriterias();
