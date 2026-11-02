@@ -340,7 +340,7 @@ class CustomFieldDefinitionTest extends DbTestCase
         $opt = $custom_field_definition_4->getFieldType()->getSearchOption();
         $this->assertEquals($opt_id_offset + $field_id, $opt['id']);
         $this->assertEquals('Test number', $opt['name']);
-        $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '420')", (string) $opt['computation']);
+        $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '420') + 0", (string) $opt['computation']);
         $this->assertEquals('number', $opt['datatype']);
         $this->assertEquals(0, $opt['decimals']);
 
@@ -356,7 +356,7 @@ class CustomFieldDefinitionTest extends DbTestCase
         $opt = $custom_field_definition_4b->getFieldType()->getSearchOption();
         $this->assertEquals($opt_id_offset + $field_id, $opt['id']);
         $this->assertEquals('Test decimal number', $opt['name']);
-        $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '4.2')", (string) $opt['computation']);
+        $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '4.2') + 0", (string) $opt['computation']);
         $this->assertEquals('number', $opt['datatype']);
         $this->assertEquals(2, $opt['decimals']);
 
@@ -871,6 +871,62 @@ class CustomFieldDefinitionTest extends DbTestCase
             );
             sort($names);
             $this->assertEquals($expected_names, $names, "Search '{$searchtype}' '{$value}'");
+        }
+    }
+
+    public function testSortDecimalNumberField(): void
+    {
+        $asset_definition = $this->initAssetDefinition();
+        $asset_classname  = $asset_definition->getAssetClassName();
+
+        $this->createItem(CustomFieldDefinition::class, [
+            'assets_assetdefinitions_id' => $asset_definition->getID(),
+            'system_name' => 'decimalnumber',
+            'label' => 'Decimal number',
+            'type' => NumberType::class,
+            'field_options' => ['step' => 0.01],
+        ], ['field_options']); // JSON encoded field cannot be automatically checked
+
+        // Login after the definition creation to get the corresponding rights in the session
+        $this->login();
+
+        $opts = SearchOption::getOptionsForItemtype($asset_classname);
+        $number_opt = null;
+        foreach ($opts as $num => $opt) {
+            if (is_array($opt) && $opt['name'] === 'Decimal number') {
+                $number_opt = $num;
+                break;
+            }
+        }
+        $this->assertNotNull($number_opt);
+
+        // Values whose alphabetical order ("100" < "112.79" < "12.75") differs from their numeric order
+        foreach ([100, 112.79, 12.75] as $value) {
+            $this->createItem($asset_classname, [
+                'entities_id' => $this->getTestRootEntity(true),
+                'name' => __FUNCTION__ . '_' . $value,
+                'custom_decimalnumber' => $value,
+            ], ['custom_decimalnumber']);
+        }
+
+        foreach (['ASC' => [12.75, 100.0, 112.79], 'DESC' => [112.79, 100.0, 12.75]] as $order => $expected_values) {
+            $data = SearchEngine::getData($asset_classname, [
+                'criteria' => [
+                    [
+                        'link' => 'AND',
+                        'field' => 1,
+                        'searchtype' => 'contains',
+                        'value' => __FUNCTION__,
+                    ],
+                ],
+                'sort' => [$number_opt],
+                'order' => [$order],
+            ], [1, $number_opt]);
+            $values = array_map(
+                static fn($row) => (float) $row['raw']['ITEM_' . $asset_classname . '_' . $number_opt],
+                $data['data']['rows']
+            );
+            $this->assertSame($expected_values, $values, "Sort {$order}");
         }
     }
 

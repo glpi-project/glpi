@@ -36,6 +36,7 @@ namespace Glpi\Asset\CustomFieldType;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldOption\NumberOption;
+use Glpi\DBAL\QueryExpression;
 use InvalidArgumentException;
 
 class NumberType extends AbstractType
@@ -111,6 +112,8 @@ TWIG, $twig_params);
     public function getSearchOption(): ?array
     {
         $opt = $this->getCommonSearchOptionData();
+        // JSON_UNQUOTE() returns a string, convert it to a number to get a numeric sort and comparison
+        $opt['computation'] = new QueryExpression($opt['computation'] . ' + 0');
         $opt['datatype'] = 'number';
         $field_opts = $this->custom_field->fields['field_options'] ?? [];
         $opt['min'] = $field_opts['min'] ?? 0;
