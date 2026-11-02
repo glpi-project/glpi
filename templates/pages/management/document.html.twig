@@ -61,7 +61,8 @@
     {{ fields.textField('link', item.fields['link'], __('Web link')) }}
     {{ fields.textareaField('comment', item.fields['comment'], _n('Comment', 'Comments', get_plural_number())) }}
 
-    {{ fields.textField('mime', item.fields['mime'], __('MIME type')) }}
+    {# Set from the uploaded file, not editable #}
+    {{ fields.textField('mime', item.fields['mime'], __('MIME type'), {readonly: true}) }}
     {{ fields.dropdownYesNo('is_blacklisted', item.fields['is_blacklisted'], __('Blacklisted for import')) }}
 
     {{ fields.dropdownArrayField('upload_file', 0, uploaded_files, __('Use a file uploaded on server'), {

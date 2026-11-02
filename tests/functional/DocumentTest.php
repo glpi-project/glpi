@@ -139,28 +139,32 @@ class DocumentTest extends DbTestCase
 
     public function testPrepareInputForAdd()
     {
+        // filename/mime are set by GLPI from the uploaded file, never kept from client input.
         $input = [
+            'name'       => 'A_name.pdf',
             'filename'   => 'A_name.pdf',
+            'mime'       => 'text/html',
         ];
 
         $doc = new \Document();
         $prepare = $doc->prepareInputForAdd($input);
         $this->assertArrayHasKey('tag', $prepare);
-        $this->assertArrayHasKey('filename', $prepare);
+        $this->assertArrayNotHasKey('filename', $prepare);
+        $this->assertArrayNotHasKey('mime', $prepare);
         $this->assertArrayHasKey('name', $prepare);
-        $this->assertSame('A_name.pdf', $prepare['filename']);
         $this->assertSame('A_name.pdf', $prepare['name']);
-        $this->assertCount(3, $prepare);
+        $this->assertCount(2, $prepare);
 
         $this->login();
         $uid = getItemByTypeName('User', TU_USER, true);
         $prepare = $doc->prepareInputForAdd($input);
         $this->assertArrayHasKey('users_id', $prepare);
         $this->assertArrayHasKey('tag', $prepare);
-        $this->assertArrayHasKey('filename', $prepare);
+        $this->assertArrayNotHasKey('filename', $prepare);
+        $this->assertArrayNotHasKey('mime', $prepare);
         $this->assertArrayHasKey('name', $prepare);
         $this->assertSame($uid, $prepare['users_id']);
-        $this->assertCount(4, $prepare);
+        $this->assertCount(3, $prepare);
 
         $item = new \Computer();
         $cid = $item->add([
@@ -186,13 +190,14 @@ class DocumentTest extends DbTestCase
         $this->assertArrayHasKey('tag', $prepare);
         $this->assertArrayHasKey('itemtype', $prepare);
         $this->assertArrayHasKey('items_id', $prepare);
-        $this->assertArrayHasKey('filename', $prepare);
+        // The mock does not move a real file, so filename stays unset (the client value is dropped).
+        $this->assertArrayNotHasKey('filename', $prepare);
         $this->assertArrayHasKey('name', $prepare);
         $this->assertSame($uid, $prepare['users_id']);
         $this->assertSame('Computer', $prepare['itemtype']);
         $this->assertSame($cid, $prepare['items_id']);
         $this->assertSame('A_name.pdf', $prepare['name']);
-        $this->assertCount(6, $prepare);
+        $this->assertCount(5, $prepare);
     }
 
     public function testPrepareInputForAddIgnoreBlacklistedFields(): void
@@ -200,6 +205,8 @@ class DocumentTest extends DbTestCase
         $_ignored = 'should_be_ignored';
         $input = [
             'name'              => 'legit name',
+            'filename'          => "evil\r\n.html",
+            'mime'              => 'text/html',
             'filepath'          => $_ignored,
             'sha1sum'           => $_ignored,
             'current_filename'  => $_ignored,
@@ -207,6 +214,8 @@ class DocumentTest extends DbTestCase
         ];
         $prepare = (new \Document())->prepareInputForAdd($input);
 
+        $this->assertArrayNotHasKey('filename', $prepare);
+        $this->assertArrayNotHasKey('mime', $prepare);
         $this->assertArrayNotHasKey('filepath', $prepare);
         $this->assertArrayNotHasKey('sha1sum', $prepare);
         $this->assertArrayNotHasKey('current_filename', $prepare);
@@ -1030,8 +1039,7 @@ class DocumentTest extends DbTestCase
         $computer_id = \getItemByTypeName(\Computer::class, '_test_pc01', true);
         $printer_id  = \getItemByTypeName(\Printer::class, '_test_printer_all', true);
 
-        $document_1 = $this->createItem(
-            \Document::class,
+        $document_1 = $this->createDocumentWithFilename(
             [
                 'name'     => 'document 1',
                 'filename' => 'doc.xls',
@@ -1047,8 +1055,7 @@ class DocumentTest extends DbTestCase
                 'users_id'     => $glpi_user_id,
             ]
         );
-        $document_2 = $this->createItem(
-            \Document::class,
+        $document_2 = $this->createDocumentWithFilename(
             [
                 'name'     => 'document 2',
                 'filename' => 'whatever.xls',
