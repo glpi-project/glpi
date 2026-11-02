@@ -4734,7 +4734,14 @@ class CommonDBTM extends CommonGLPI
                                 ],
                             ];
                         }
-                        $where[] = $entities_criteria;
+                        // User default entity is not an ownership entity, see $entities_id above
+                        if (!($this instanceof User)) {
+                            $entities = $fields['entities_id'];
+                            if ($fields['is_recursive']) {
+                                $entities = getSonsOf('glpi_entities', $fields['entities_id']);
+                            }
+                            $where[] = getEntitiesRestrictCriteria(static::getTable(), '', $entities);
+                        }
 
                         $tmp = clone $this;
                         if ($tmp->maybeTemplate()) {
