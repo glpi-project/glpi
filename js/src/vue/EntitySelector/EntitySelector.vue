@@ -220,8 +220,9 @@
 <template>
     <div ref="entity_selector">
         <a ref="entity_dropdown_toggle" href="#" class="dropdown-item dropdown-toggle entity-dropdown-toggle" data-bs-toggle="dropdown"
-           data-bs-auto-close="outside" :title="current_entity" :aria-label="__('Select the desired entity')">
+           data-bs-auto-close="outside" :title="current_entity">
             <i class="fa-fw ti ti-stack" aria-hidden="true"></i>
+            <span class="visually-hidden">{{ __('Select the desired entity') }}, </span>
             <span v-text="current_entity_short"></span>
         </a>
         <div class="dropdown-menu p-3" :aria-labelledby="header_id" role="dialog" data-testid="entity-menu-dropdown">
