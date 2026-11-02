@@ -98,7 +98,7 @@ class SearchCommand extends AbstractCommand
 
         // Output table of results with the key, name, and short description (user's language, default en, or which ever description is first
         $rows = [];
-        $lang = strtolower($_SESSION['glpilanguage']);
+        $lang = strtolower(\Session::getLanguage());
         $main_lang = explode('_', $lang)[0];
         foreach ($result as $plugin) {
             $short_description = $plugin['descriptions'][0]['short_description'] ?? __('No description');

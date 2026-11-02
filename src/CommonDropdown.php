@@ -861,7 +861,7 @@ abstract class CommonDropdown extends CommonDBTM
         if (
             $isadmin
             &&  $this->maybeRecursive()
-            && (count($_SESSION['glpiactiveentities']) > 1)
+            && (count(Session::getActiveEntities()) > 1)
             && !in_array('merge', $forbidden_actions)
         ) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge'] = __s('Merge and assign to current entity');
@@ -894,7 +894,7 @@ abstract class CommonDropdown extends CommonDBTM
                 $fk = $item->getForeignKeyField();
                 foreach ($ids as $key) {
                     if ($item->can($key, UPDATE)) {
-                        if ($item->getEntityID() == $_SESSION['glpiactive_entity']) {
+                        if ($item->getEntityID() == Session::getActiveEntity()) {
                             if (
                                 $item->update(['id'           => $key,
                                     'is_recursive' => 1,
@@ -914,7 +914,7 @@ abstract class CommonDropdown extends CommonDBTM
                                 unset($input2['id']);
                             }
                             // Change entity
-                            $input2['entities_id']  = $_SESSION['glpiactive_entity'];
+                            $input2['entities_id']  = Session::getActiveEntity();
                             $input2['is_recursive'] = 1;
                             // Import new
                             if ($newid = $item->import($input2)) {

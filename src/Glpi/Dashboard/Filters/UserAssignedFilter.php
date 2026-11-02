@@ -75,7 +75,7 @@ class UserAssignedFilter extends AbstractFilter
         if ((int) $value > 0) {
             $users_id = (int) $value;
         } elseif ($value === 'myself') {
-            $users_id = $_SESSION['glpiID'];
+            $users_id = Session::getLoginUserID();
         }
 
         if ($users_id !== null) {

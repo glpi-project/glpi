@@ -466,7 +466,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                 );
                 $processed[] = $current->getID();
                 $current->update(['id'        => $current->fields['id'],
-                    'sent_time' => $_SESSION['glpi_currenttime'],
+                    'sent_time' => Session::getCurrentTime(),
                 ]);
                 $current->delete(['id'        => $current->fields['id']]);
             }

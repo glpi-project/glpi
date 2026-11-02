@@ -47,7 +47,7 @@ if (!empty($_POST['type']) && isset($_POST['items_id']) && ($_POST['items_id'] >
     switch ($_POST['type']) {
         case 'Group':
         case 'Profile':
-            $params = ['value' => $_SESSION['glpiactive_entity'],
+            $params = ['value' => Session::getActiveEntity(),
                 'name'  => $prefix . 'entities_id' . $suffix,
             ];
             if (Session::canViewAllEntities()) {

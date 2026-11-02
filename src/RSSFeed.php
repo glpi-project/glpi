@@ -246,7 +246,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         // Entities
         if (
             $forceall
-            || (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"]))
+            || (isset($_SESSION["glpiactiveentities"]) && count(Session::getActiveEntities()))
         ) {
             $join['glpi_entities_rssfeeds'] = [
                 'ON' => [
@@ -256,7 +256,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             ];
         }
 
-        if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
+        if (isset($_SESSION["glpiactiveentities"]) && count(Session::getActiveEntities())) {
             // Force complete SQL not summary when access to all entities
             $restrict = getEntitiesRestrictCriteria('glpi_entities_rssfeeds', '', '', true, true);
             if (count($restrict)) {

@@ -589,7 +589,7 @@ abstract class ITILTemplate extends CommonDropdown
         if (
             $isadmin
             &&  $this->maybeRecursive()
-            && (count($_SESSION['glpiactiveentities']) > 1)
+            && (count(Session::getActiveEntities()) > 1)
         ) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge'] = __s('Merge and assign to current entity');
         }
@@ -625,7 +625,7 @@ abstract class ITILTemplate extends CommonDropdown
                         ($item instanceof ITILTemplate)
                         && $item->can($key, UPDATE)
                     ) {
-                        if ($item->getEntityID() == $_SESSION['glpiactive_entity']) {
+                        if ($item->getEntityID() == Session::getActiveEntity()) {
                             if (
                                 $item->update(['id'           => $key,
                                     'is_recursive' => 1,
@@ -639,7 +639,7 @@ abstract class ITILTemplate extends CommonDropdown
                         } else {
                             $input2 = $item->fields;
                             // Change entity
-                            $input2['entities_id']  = $_SESSION['glpiactive_entity'];
+                            $input2['entities_id']  = Session::getActiveEntity();
                             $input2['is_recursive'] = 1;
 
                             if (!$item->import($input2)) {
@@ -758,7 +758,7 @@ abstract class ITILTemplate extends CommonDropdown
                 $template->getFromDB($target_id);
                 if (
                     !array_key_exists($key, $target[$merge])
-                    && in_array($val['entities_id'], $_SESSION['glpiactiveentities'])
+                    && in_array($val['entities_id'], Session::getActiveEntities())
                 ) {
                     $DB->update(
                         'glpi_itilcategories',

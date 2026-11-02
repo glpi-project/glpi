@@ -188,7 +188,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
     public function prepareInputForUpdate($input)
     {
         if (array_key_exists('satisfaction', $input) && $input['satisfaction'] >= 0) {
-            $input["date_answered"] = $_SESSION["glpi_currenttime"];
+            $input["date_answered"] = Session::getCurrentTime();
         }
 
         if (array_key_exists('satisfaction', $input) || array_key_exists('comment', $input)) {

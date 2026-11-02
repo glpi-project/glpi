@@ -1261,7 +1261,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             && !$this->isNew()
         ) {
             $this->updates[]                            = "takeintoaccountdate";
-            $this->fields['takeintoaccountdate']        = $_SESSION["glpi_currenttime"];
+            $this->fields['takeintoaccountdate']        = Session::getCurrentTime();
             $this->updates[]                            = "takeintoaccount_delay_stat";
             $this->fields['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
         }
@@ -1299,11 +1299,11 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             if (($calendars_id > 0) && $calendar->getFromDB($calendars_id)) {
                 return max(1, $calendar->getActiveTimeBetween(
                     $this->fields['date'],
-                    $_SESSION["glpi_currenttime"]
+                    Session::getCurrentTime()
                 ));
             }
             // Not calendar defined
-            return max(1, strtotime($_SESSION["glpi_currenttime"]) - strtotime($this->fields['date']));
+            return max(1, strtotime(Session::getCurrentTime()) - strtotime($this->fields['date']));
         }
         return 0;
     }
@@ -1931,7 +1931,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                     [
                         'id'                         => $ID,
                         'takeintoaccount_delay_stat' => $this->computeTakeIntoAccountDelayStat(),
-                        'takeintoaccountdate'        => $_SESSION["glpi_currenttime"],
+                        'takeintoaccountdate'        => Session::getCurrentTime(),
                         '_disablenotif'              => true,
                     ]
                 );
@@ -2038,12 +2038,12 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         }
 
         // if the connected user is the ticket requester, we can create
-        if ($requester_id == $_SESSION['glpiID']) {
+        if ($requester_id == Session::getLoginUserID()) {
             return true;
         }
 
         if ($entity_restrict === null) {
-            $entity_restrict = $_SESSION["glpiactive_entity"] ?? 0;
+            $entity_restrict = Session::getActiveEntity();
         }
 
         // if user has no delegate groups, he can't create ticket for another user
@@ -3182,10 +3182,10 @@ JAVASCRIPT;
                 if ($calendars_id) {
                     $calendar = new Calendar();
                     $calendar->getFromDB($calendars_id);
-                    $time = $calendar->getActiveTimeBetween($values['date'], $_SESSION["glpi_currenttime"]);
+                    $time = $calendar->getActiveTimeBetween($values['date'], Session::getCurrentTime());
                 } else {
                     $ticket_date = new DateTime($values['date']);
-                    $now = new DateTime($_SESSION["glpi_currenttime"]);
+                    $now = new DateTime(Session::getCurrentTime());
                     $time = $now->getTimestamp() - $ticket_date->getTimestamp();
                 }
 
@@ -3429,7 +3429,7 @@ JAVASCRIPT;
                 $users_id_assign = 0;
                 $assignee_notification_enable = 1; // no default assign reset to true
             }
-            $entity      = $_SESSION['glpiactive_entity'];
+            $entity      = Session::getActiveEntity();
             $requesttype = $_SESSION['glpidefault_requesttypes_id'];
         } else {
             $requester_notification_enable = 1;
@@ -4113,7 +4113,7 @@ JAVASCRIPT;
 
                 // Is the survey still valid?
                 $is_valid = $duration_cache[$entities_id] === 0
-                    || (strtotime($result['date_begin']) + $duration_cache[$entities_id] * DAY_TIMESTAMP) > strtotime($_SESSION['glpi_currenttime']);
+                    || (strtotime($result['date_begin']) + $duration_cache[$entities_id] * DAY_TIMESTAMP) > strtotime(Session::getCurrentTime());
                 if (!$is_valid) {
                     // Remove the result from the list
                     unset($results[$k]);

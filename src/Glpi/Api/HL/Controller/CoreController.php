@@ -646,7 +646,7 @@ HTML;
         }
 
         $session['active_entity'] = [
-            'id' => $_SESSION['glpiactive_entity'],
+            'id' => Session::getActiveEntity(),
             'short_name' => $_SESSION['glpiactive_entity_shortname'],
             'complete_name' => $_SESSION['glpiactive_entity_name'],
             'recursive' => $_SESSION['glpiactive_entity_recursive'],
@@ -947,7 +947,7 @@ HTML;
         $po_file = GLPI_ROOT . '/locales/' . preg_replace(
             '/\.mo$/',
             '.po',
-            LanguageRegistry::get($_SESSION['glpilanguage'])->mo_file
+            LanguageRegistry::get(Session::getLanguage())->mo_file
         );
         $po_file_handle = fopen(
             $po_file,

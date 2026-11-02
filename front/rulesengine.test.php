@@ -59,7 +59,7 @@ if (isset($_GET['refusedequipments_id'])) {
 
 $rulecollection = RuleCollection::getClassByType($sub_type);
 if ($rulecollection->isRuleRecursive()) {
-    $rulecollection->setEntity($_SESSION['glpiactive_entity']);
+    $rulecollection->setEntity(Session::getActiveEntity());
 }
 $rulecollection->checkGlobal(READ);
 

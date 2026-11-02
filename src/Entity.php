@@ -424,7 +424,7 @@ class Entity extends CommonTreeDropdown implements
 
         $input = $this->handleConfigStrategyFields($input);
 
-        $input['max_closedate'] = $_SESSION["glpi_currenttime"];
+        $input['max_closedate'] = Session::getCurrentTime();
 
         if (
             empty($input['latitude']) && empty($input['longitude']) && empty($input['altitude'])
@@ -638,7 +638,7 @@ class Entity extends CommonTreeDropdown implements
                     && $input[$config_key] != $this->fields[$config_key]
                 )
             ) {
-                $input[$max_key] = $_SESSION['glpi_currenttime'];
+                $input[$max_key] = Session::getCurrentTime();
             }
 
             // `max_closedate` cannot be empty (cron would not work).
@@ -3244,7 +3244,7 @@ class Entity extends CommonTreeDropdown implements
     public static function getEntitySelectorTree(): array
     {
         Profiler::getInstance()->start('Generate entity tree');
-        $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
+        $ancestors = getAncestorsOf('glpi_entities', Session::getActiveEntity());
         $entitiestree = [];
         foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
             $default_entity_id = $default_entity['id'];
@@ -3270,7 +3270,7 @@ class Entity extends CommonTreeDropdown implements
                 if (isset($ancestors[$entity['key']])) {
                     $entity['expanded'] = true;
                 }
-                if ((int) $entity['key'] === (int) $_SESSION['glpiactive_entity']) {
+                if ((int) $entity['key'] === (int) Session::getActiveEntity()) {
                     $entity['selected'] = true;
                 }
                 if (isset($entity['children'])) {

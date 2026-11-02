@@ -367,7 +367,7 @@ class Application extends BaseApplication
             $lang = 'en_GB';
         }
 
-        if ($lang !== $_SESSION['glpilanguage']) {
+        if ($lang !== Session::getLanguage()) {
             $_SESSION['glpilanguage'] = $lang;
 
             Session::loadLanguage();

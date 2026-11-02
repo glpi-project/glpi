@@ -842,7 +842,7 @@ final class SearchOption implements ArrayAccess
             && $entity_check
             && (isset($CFG_GLPI["union_search_type"][$itemtype])
                 || ($item && $item->maybeRecursive())
-                || isset($_SESSION['glpiactiveentities']) && (count($_SESSION["glpiactiveentities"]) > 1))
+                || isset($_SESSION['glpiactiveentities']) && (count(Session::getActiveEntities()) > 1))
         ) {
             if ($itemtype !== AllAssets::class) {
                 $entity_opt = self::getOptionNumber($itemtype, 'completename', 'Entity');

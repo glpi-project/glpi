@@ -376,7 +376,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $actortypestring = self::getActorFieldNameType($actortype);
 
         if ($this->isNewItem()) {
-            $entities_id = $params['entities_id'] ?? $_SESSION['glpiactive_entity'];
+            $entities_id = $params['entities_id'] ?? Session::getActiveEntity();
             $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $entities_id, '', 1);
 
             // load default user from preference only at the first load of new ticket form
@@ -949,7 +949,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
         }
 
-        $entities = $_SESSION['glpiactiveentities'] ?? [];
+        $entities = Session::getActiveEntities();
         foreach ($requesters as $users_id) {
             $user_entities = Profile_User::getUserEntities($users_id, true, true);
             $entities = array_intersect($user_entities, $entities);
@@ -2111,7 +2111,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
                 if ($docitem->add($docitem_input)) {
                     // Force date_mod of tracking
-                    $input["date_mod"]     = $_SESSION["glpi_currenttime"];
+                    $input["date_mod"]     = Session::getCurrentTime();
                     $input['_doc_added'][] = $doc->fields["name"];
                 }
             }
@@ -2568,7 +2568,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             ) {
                 $this->updates[]              = "solvedate";
                 $this->oldvalues['solvedate'] = $this->fields["solvedate"];
-                $this->fields["solvedate"]    = $_SESSION["glpi_currenttime"];
+                $this->fields["solvedate"]    = Session::getCurrentTime();
                 // If invalid date : set open date
                 if ($this->fields["solvedate"] < $this->fields["date"]) {
                     $this->fields["solvedate"] = $this->fields["date"];
@@ -2582,7 +2582,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             ) {
                 $this->updates[]              = "closedate";
                 $this->oldvalues['closedate'] = $this->fields["closedate"];
-                $this->fields["closedate"]    = $_SESSION["glpi_currenttime"];
+                $this->fields["closedate"]    = Session::getCurrentTime();
                 // If invalid date : set open date
                 if ($this->fields["closedate"] < $this->fields["date"]) {
                     $this->fields["closedate"] = $this->fields["date"];
@@ -2714,10 +2714,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             ) {
                 $delay_time = $calendar->getActiveTimeBetween(
                     $this->fields['begin_waiting_date'],
-                    $_SESSION["glpi_currenttime"]
+                    Session::getCurrentTime()
                 );
             } else { // Not calendar defined
-                $delay_time = strtotime($_SESSION["glpi_currenttime"])
+                $delay_time = strtotime(Session::getCurrentTime())
                            - strtotime($this->fields['begin_waiting_date']);
             }
 
@@ -2730,7 +2730,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $sla->setTicketCalendar($calendars_id);
                     $delay_time_sla  = $sla->getActiveTimeBetween(
                         $this->fields['begin_waiting_date'],
-                        $_SESSION["glpi_currenttime"]
+                        Session::getCurrentTime()
                     );
                     $this->updates[] = "sla_waiting_duration";
                     $this->fields["sla_waiting_duration"] += $delay_time_sla;
@@ -2790,7 +2790,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
               || in_array($this->fields["status"], static::getSolvedStatusArray()))
         ) {
             $this->updates[]                    = "begin_waiting_date";
-            $this->fields["begin_waiting_date"] = $_SESSION["glpi_currenttime"];
+            $this->fields["begin_waiting_date"] = Session::getCurrentTime();
 
             // Specific for tickets
             if ($this instanceof Ticket) { // TODO: rewrite with polymorphism...
@@ -3147,7 +3147,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         if (!isset($input["date"]) || empty($input["date"]) || $input["date"] == 'NULL') {
-            $input["date"] = $_SESSION["glpi_currenttime"];
+            $input["date"] = Session::getCurrentTime();
         }
 
         if (in_array($input["status"], static::getSolvedStatusArray())) {
@@ -5462,7 +5462,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         if ($this->getFromDB($ID)) {
             // Force date mod and lastupdater
-            $update = ['date_mod' => $_SESSION['glpi_currenttime']];
+            $update = ['date_mod' => Session::getCurrentTime()];
 
             // set last updater if interactive user
             if (!Session::isCron()) {
@@ -6693,7 +6693,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             echo $output::showItem($fifth_col, $item_num, $p['row_num'], $align . " width=90");
 
             // sixth column
-            if (count($_SESSION["glpiactiveentities"]) > 1) {
+            if (count(Session::getActiveEntities()) > 1) {
                 $sixth_col = htmlescape(Dropdown::getDropdownName('glpi_entities', $item->fields['entities_id']));
                 echo $output::showItem(
                     $sixth_col,
@@ -6941,7 +6941,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $items[_n('Date', 'Dates', 1)]               = "date";
         $items[__('Last update')]        = "date_mod";
 
-        if (count($_SESSION["glpiactiveentities"]) > 1) {
+        if (count(Session::getActiveEntities()) > 1) {
             $items[Entity::getTypeName(Session::getPluralNumber())] = "glpi_entities.completename";
         }
 
@@ -6988,7 +6988,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'date'    => _n('Date', 'Dates', 1),
             'date_mod' => __('Last update'),
         ];
-        if (count($_SESSION["glpiactiveentities"]) > 1) {
+        if (count(Session::getActiveEntities()) > 1) {
             $columns['entity'] = Entity::getTypeName(1);
         }
         $columns['priority'] = __('Priority');
@@ -7118,7 +7118,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             };
             $entry['date_mod'] = $item->fields["date_mod"];
 
-            if (count($_SESSION["glpiactiveentities"]) > 1) {
+            if (count(Session::getActiveEntities()) > 1) {
                 if (!isset($entity_cache[$item->fields['entities_id']])) {
                     $entity_cache[$item->fields['entities_id']] = Dropdown::getDropdownName(
                         table: 'glpi_entities',
@@ -8570,7 +8570,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             ],
             'ORDERBY'            => "$table.date_mod DESC",
         ];
-        if (count($_SESSION["glpiactiveentities"]) > 1) {
+        if (count(Session::getActiveEntities()) > 1) {
             $criteria['LEFT JOIN']['glpi_entities'] = [
                 'ON' => [
                     'glpi_entities'   => 'id',
@@ -10316,7 +10316,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                                 'AND' => [
                                     $trans_table . '.itemtype' => ITILCategory::class,
                                     $trans_table . '.field' => 'name',
-                                    $trans_table . '.language' => $_SESSION['glpilanguage'],
+                                    $trans_table . '.language' => Session::getLanguage(),
                                 ],
                             ],
                         ],
@@ -10374,7 +10374,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 ],
                 'users_id'  => [
                     'type'         => 'hidden',
-                    'value'        => $_SESSION['glpiID'],
+                    'value'        => Session::getLoginUserID(),
                 ],
             ],
             'team_itemtypes'  => static::getTeamItemtypes(),
@@ -10985,7 +10985,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     if (
                         $inquest->add([
                             $fk             => $itil_item['id'],
-                            'date_begin'    => $_SESSION["glpi_currenttime"],
+                            'date_begin'    => Session::getCurrentTime(),
                             'entities_id'   => $itil_item['entities_id'],
                             'type'          => $type,
                         ])
@@ -11111,7 +11111,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $satisfaction->add(
                 [
                     $fkey           => $this->fields['id'],
-                    'date_begin'    => $_SESSION["glpi_currenttime"],
+                    'date_begin'    => Session::getCurrentTime(),
                     'entities_id'   => $this->fields['entities_id'],
                     'type'          => $type,
                     'max_closedate' => $max_closedate,

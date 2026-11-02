@@ -247,7 +247,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
 
         if (
-            ($_SESSION['glpiactive_entity'] > 0)
+            (Session::getActiveEntity() > 0)
             && (Profile::getDefault() == 0)
         ) {
             echo "<div class='tab_cadre_fixe warning'>"
@@ -379,7 +379,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
     {
         Toolbox::deprecated();
 
-        if (isset($this->fields['id']) && !isset($_SESSION["glpiID"])) {
+        if (isset($this->fields['id']) && !Session::isAuthenticated()) {
             Session::destroy();
             Session::start();
             $_SESSION["glpiID"]                      = $this->fields['id'];
@@ -967,7 +967,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         $input["password"]
                         = Auth::getPasswordHash($input["password"]);
 
-                        $input['password_last_update'] = $_SESSION['glpi_currenttime'];
+                        $input['password_last_update'] = Session::getCurrentTime();
                     } else {
                         Session::addMessagesAfterRedirect(
                             array_map('htmlescape', $password_errors),
@@ -1100,7 +1100,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     // use _entities_id for default right
                     $affectation["entities_id"] = $this->input["_entities_id"];
                 } elseif (isset($_SESSION['glpiactive_entity'])) {
-                    $affectation["entities_id"] = $_SESSION['glpiactive_entity'];
+                    $affectation["entities_id"] = Session::getActiveEntity();
                 } else {
                     $affectation["entities_id"] = 0;
                 }
@@ -1226,12 +1226,12 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         || $this->currentUserHaveMoreRightThan($input['id'])
                         // Permit to change password with token and email
                         || (isset($this->fields['password_forget_token']) && ($input['password_forget_token'] == $glpi_key->decrypt($this->fields['password_forget_token']))
-                           && (strtotime($_SESSION["glpi_currenttime"]) < strtotime($this->fields['password_forget_token_date']))))
+                           && (strtotime(Session::getCurrentTime()) < strtotime($this->fields['password_forget_token_date']))))
                     ) {
                         $input["password"]
                         = Auth::getPasswordHash($input["password"]);
 
-                        $input['password_last_update'] = $_SESSION["glpi_currenttime"];
+                        $input['password_last_update'] = Session::getCurrentTime();
                     } else {
                         if ($password_errors === []) {
                             $password_errors = [__('An error occurred during password update')];
@@ -1441,7 +1441,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             && $input['_reset_personal_token']
         ) {
             $input['personal_token']      = self::getUniqueToken('personal_token');
-            $input['personal_token_date'] = $_SESSION['glpi_currenttime'];
+            $input['personal_token_date'] = Session::getCurrentTime();
         }
 
         if (isset($input['_reset_api_token'])) {
@@ -1453,7 +1453,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             && $input['_regenerate_api_token']
         ) {
             $input['api_token']      = self::getUniqueToken('api_token');
-            $input['api_token_date'] = $_SESSION['glpi_currenttime'];
+            $input['api_token_date'] = Session::getCurrentTime();
         }
 
         // Manage preferences fields
@@ -1481,7 +1481,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         $_SESSION["glpi$f"] = $pref_value;
                         // reinit translations
                         if ($f == 'language') {
-                            $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
+                            $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations(Session::getLanguage());
                             unset($_SESSION['glpimenu']);
                         }
                     }
@@ -2014,7 +2014,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         if ($userUpdated) {
             // calling $this->update() here leads to loss in $this->input
             $user = new User();
-            $user->update(['id' => $this->fields['id'], 'date_mod' => $_SESSION['glpi_currenttime']]);
+            $user->update(['id' => $this->fields['id'], 'date_mod' => Session::getCurrentTime()]);
         }
     }
 
@@ -2101,7 +2101,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         if ($userUpdated) {
             // calling $this->update() here leads to loss in $this->input
             $user = new User();
-            $user->update(['id' => $this->fields['id'], 'date_mod' => $_SESSION['glpi_currenttime']]);
+            $user->update(['id' => $this->fields['id'], 'date_mod' => Session::getCurrentTime()]);
         }
     }
 
@@ -2534,7 +2534,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             //Store user's dn
             $this->fields['user_dn']    = $userdn;
             //Store date_sync
-            $this->fields['date_sync']  = $_SESSION['glpi_currenttime'];
+            $this->fields['date_sync']  = Session::getCurrentTime();
             // Empty array to ensure than syncDynamicEmails will be done
             $this->fields["_emails"]    = [];
             // force authtype as we retrieve this user by ldap (we could have login with SSO)
@@ -2854,7 +2854,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
         $this->fields['name']      = $name;
         //Store date_sync
-        $this->fields['date_sync'] = $_SESSION['glpi_currenttime'];
+        $this->fields['date_sync'] = Session::getCurrentTime();
         // force authtype as we retrieve this user by imap (we could have login with SSO)
         $this->fields["authtype"] = Auth::MAIL;
 
@@ -4198,7 +4198,7 @@ HTML;
 
         // No entity define : use active ones
         if (!is_array($entity_restrict) && $entity_restrict < 0) {
-            $entity_restrict = $_SESSION["glpiactiveentities"];
+            $entity_restrict = Session::getActiveEntities();
         }
 
         $joinprofile      = false;
@@ -4569,7 +4569,7 @@ HTML;
         global $DB;
 
         if (!is_array($entity_restrict) && $entity_restrict < 0) {
-            $entity_restrict = $_SESSION["glpiactiveentities"];
+            $entity_restrict = Session::getActiveEntities();
         }
 
         $config = Config::getConfigurationValues('core');
@@ -4885,14 +4885,14 @@ HTML;
         if (
             Session::haveRight(User::$rightname, self::IMPORTEXTAUTHUSERS)
             && $p['ldap_import']
-            && Entity::isEntityDirectoryConfigured($_SESSION['glpiactive_entity'])
+            && Entity::isEntityDirectoryConfigured(Session::getActiveEntity())
         ) {
             $icons .= '<div class="btn btn-outline-secondary">';
             $icons .= Ajax::createIframeModalWindow(
                 'userimport' . $rand,
                 $CFG_GLPI["root_doc"]
                                                       . "/front/ldap.import.php?entity="
-                                                      . $_SESSION['glpiactive_entity'],
+                                                      . Session::getActiveEntity(),
                 ['title'   => __s('Import a user'),
                     'display' => false,
                 ]
@@ -5786,8 +5786,8 @@ HTML;
 
         // Same check but for the account activation dates
         if (
-            ($user->fields['begin_date'] !== null && $user->fields['begin_date'] > $_SESSION['glpi_currenttime'])
-            || ($user->fields['end_date'] !== null && $user->fields['end_date'] < $_SESSION['glpi_currenttime'])
+            ($user->fields['begin_date'] !== null && $user->fields['begin_date'] > Session::getCurrentTime())
+            || ($user->fields['end_date'] !== null && $user->fields['end_date'] < Session::getCurrentTime())
         ) {
             throw new ForgetPasswordException(
                 __("Unable to reset password, please contact your administrator")
@@ -5957,10 +5957,10 @@ HTML;
         global $CFG_GLPI;
         if ($firstpassword) {
             $event = 'passwordinit';
-            $token_date = strtotime($_SESSION["glpi_currenttime"]) + $CFG_GLPI['password_init_token_delay'];
+            $token_date = strtotime(Session::getCurrentTime()) + $CFG_GLPI['password_init_token_delay'];
         } else {
             $event = 'passwordforget';
-            $token_date = strtotime($_SESSION["glpi_currenttime"]) + DAY_TIMESTAMP;
+            $token_date = strtotime(Session::getCurrentTime()) + DAY_TIMESTAMP;
         }
         $condition = [
             'glpi_users.is_active'  => 1,
@@ -6225,7 +6225,7 @@ HTML;
         // save this token in db
         $this->update(['id' => $this->getID(),
             $field => $token,
-            $field . "_date" => $_SESSION['glpi_currenttime'],
+            $field . "_date" => Session::getCurrentTime(),
         ]);
 
         return $token;
@@ -6474,7 +6474,7 @@ HTML;
     public static function showSwitchLangForm()
     {
         $params = [
-            'value'     => $_SESSION["glpilanguage"],
+            'value'     => Session::getLanguage(),
             'display'   => false,
             'on_change' => 'this.form.submit()',
         ];
@@ -7029,7 +7029,7 @@ HTML;
     {
         if (
             $enable_anonymization
-            && $this->fields['id'] != $_SESSION['glpiID']
+            && $this->fields['id'] != Session::getLoginUserID()
             && Session::getCurrentInterface() == 'helpdesk'
             && ($anon = $this->getAnonymizedName()) !== null
         ) {

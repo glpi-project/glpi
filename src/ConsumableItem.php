@@ -135,7 +135,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
         if (isset($_SESSION['glpiactive_entity'])) {
             $this->fields["alarm_threshold"] = Entity::getUsedConfig(
                 "consumables_alert_repeat",
-                $_SESSION['glpiactive_entity'],
+                Session::getActiveEntity(),
                 "default_consumables_alarm_threshold",
                 10
             );

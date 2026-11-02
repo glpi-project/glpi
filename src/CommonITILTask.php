@@ -863,7 +863,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         }
 
         if (!isset($input["date"]) || empty($input["date"])) {
-            $input["date"] = $_SESSION["glpi_currenttime"];
+            $input["date"] = Session::getCurrentTime();
         }
         if (!isset($input["is_private"])) {
             $input['is_private'] = 0;
@@ -1549,7 +1549,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                     ],
                     'WHERE'           => [
                         'glpi_profiles.interface'  => 'central',
-                    ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $_SESSION['glpiactive_entity'], true),
+                    ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', Session::getActiveEntity(), true),
                 ]),
             ];
         }
@@ -1864,7 +1864,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 $prep_req['WHERE'][] = new QueryExpression('false');
             }
         } else {
-            $prep_req['WHERE'][self::getTable() . '.users_id_tech'] = $_SESSION['glpiID'];
+            $prep_req['WHERE'][self::getTable() . '.users_id_tech'] = Session::getLoginUserID();
         }
 
         $prep_req['WHERE'] += getEntitiesRestrictCriteria($fk_table);
@@ -1927,7 +1927,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                         $options['criteria'][] = [
                             'field'      => 95, // tech in charge of task
                             'searchtype' => 'equals',
-                            'value'      => $_SESSION['glpiID'],
+                            'value'      => Session::getLoginUserID(),
                             'link'       => 'AND',
                         ];
                     }

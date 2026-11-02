@@ -114,7 +114,7 @@ class RuleCriteria extends CommonDBChild
             && ($realrule = Rule::getRuleObjectByID($this->input['rules_id']))
         ) {
             $realrule->update(['id'       => $this->input['rules_id'],
-                'date_mod' => $_SESSION['glpi_currenttime'],
+                'date_mod' => Session::getCurrentTime(),
             ]);
         }
     }
@@ -127,7 +127,7 @@ class RuleCriteria extends CommonDBChild
             && ($realrule = Rule::getRuleObjectByID($this->fields['rules_id']))
         ) {
             $realrule->update(['id'       => $this->fields['rules_id'],
-                'date_mod' => $_SESSION['glpi_currenttime'],
+                'date_mod' => Session::getCurrentTime(),
             ]);
         }
     }

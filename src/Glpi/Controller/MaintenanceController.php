@@ -52,7 +52,7 @@ class MaintenanceController extends AbstractController
         return $this->render(
             'maintenance.html.twig',
             [
-                'lang'      => LanguageRegistry::get($_SESSION['glpilanguage'])->getPageLang(),
+                'lang'      => LanguageRegistry::get(\Session::getLanguage())->getPageLang(),
             ]
         );
     }

@@ -161,7 +161,7 @@ class GLPINetwork extends CommonGLPI
         global $GLPI_CACHE;
 
         $registration_key = self::getRegistrationKey();
-        $lang = preg_replace('/^([a-z]+)_.+$/', '$1', $_SESSION["glpilanguage"]);
+        $lang = preg_replace('/^([a-z]+)_.+$/', '$1', Session::getLanguage());
 
         $cache_key = sprintf('registration_%s_%s_informations', sha1($registration_key), $lang);
         if (!$force_refresh && ($informations = $GLPI_CACHE->get($cache_key)) !== null) {
@@ -297,7 +297,7 @@ class GLPINetwork extends CommonGLPI
     {
         global $GLPI_CACHE;
 
-        $lang = preg_replace('/^([a-z]+)_.+$/', '$1', $_SESSION["glpilanguage"]);
+        $lang = preg_replace('/^([a-z]+)_.+$/', '$1', Session::getLanguage());
         $cache_key = 'glpi_network_offers_' . $lang;
 
         if (!$force_refresh && ($offers = $GLPI_CACHE->get($cache_key)) !== null) {

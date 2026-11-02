@@ -1579,7 +1579,7 @@ TWIG, $twig_params);
                         ProjectState::getTable()   => 'id', [
                             'AND' => [
                                 'namet2.itemtype' => ProjectState::class,
-                                'namet2.language' => $_SESSION['glpilanguage'],
+                                'namet2.language' => Session::getLanguage(),
                                 'namet2.field'    => 'name',
                             ],
                         ],
@@ -1987,11 +1987,11 @@ TWIG, $twig_params);
                 ],
                 'users_id'  => [
                     'type'         => 'hidden',
-                    'value'        => $_SESSION['glpiID'],
+                    'value'        => Session::getLoginUserID(),
                 ],
                 'entities_id' => [
                     'type'   => 'hidden',
-                    'value'  => $ID > 0 ? $project->fields["entities_id"] : $_SESSION['glpiactive_entity'],
+                    'value'  => $ID > 0 ? $project->fields["entities_id"] : Session::getActiveEntity(),
                 ],
                 'is_recursive' => [
                     'type'   => 'hidden',
@@ -2037,7 +2037,7 @@ TWIG, $twig_params);
                 ],
                 'entities_id' => [
                     'type'   => 'hidden',
-                    'value'  => $ID > 0 ? $project->fields["entities_id"] : $_SESSION['glpiactive_entity'],
+                    'value'  => $ID > 0 ? $project->fields["entities_id"] : Session::getActiveEntity(),
                 ],
                 'is_recursive' => [
                     'type'   => 'hidden',

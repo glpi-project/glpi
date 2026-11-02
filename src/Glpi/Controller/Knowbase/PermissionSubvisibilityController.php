@@ -68,7 +68,7 @@ final class PermissionSubvisibilityController extends AbstractController
 
         $rand = mt_rand();
         $entity_dropdown_options = [
-            'value' => $_SESSION['glpiactive_entity'],
+            'value' => Session::getActiveEntity(),
             'name'  => 'entities_id',
             'width' => '100%',
             'rand'  => $rand,

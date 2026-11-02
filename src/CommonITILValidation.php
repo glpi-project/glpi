@@ -384,7 +384,7 @@ abstract class CommonITILValidation extends CommonDBChild
             $input["users_id"] = Session::getLoginUserID();
         }
 
-        $input["submission_date"] = $_SESSION["glpi_currenttime"];
+        $input["submission_date"] = Session::getCurrentTime();
         $input["status"]          = self::WAITING;
 
         if (
@@ -523,7 +523,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 // $input["comment_validation"] = '';
                 $input["validation_date"] = 'NULL';
             } else {
-                $input["validation_date"] = $_SESSION["glpi_currenttime"];
+                $input["validation_date"] = Session::getCurrentTime();
             }
         }
 
@@ -948,7 +948,7 @@ abstract class CommonITILValidation extends CommonDBChild
         $paramsmassaction = [
             'validation_class' => static::class,
             'validatortype'    => '__VALUE__',
-            'entity'           => $_SESSION['glpiactive_entity'],
+            'entity'           => Session::getActiveEntity(),
             'right'            => static::$itemtype == Ticket::class ? ['validate_request', 'validate_incident'] : 'validate',
         ];
 
@@ -1858,7 +1858,7 @@ HTML;
             'prefix'             => null,
             'id'                 => 0,
             'parents_id'         => null,
-            'entity'             => $_SESSION['glpiactive_entity'],
+            'entity'             => Session::getActiveEntity(),
             'right'              => $default_right,
             'groups_id'          => 0,
             'itemtype_target'    => '',
@@ -1950,7 +1950,7 @@ HTML;
     public static function getGroupUserHaveRights(array $options = [])
     {
         $params = [
-            'entity' => $_SESSION['glpiactive_entity'],
+            'entity' => Session::getActiveEntity(),
         ];
         if (static::$itemtype == Ticket::class) {
             $params['right']  = ['validate_request', 'validate_incident'];

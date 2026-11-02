@@ -133,7 +133,7 @@ trait CalDAVPrincipalsTrait
         $groups_criteria = getEntitiesRestrictCriteria(
             Group::getTable(),
             'entities_id',
-            $_SESSION['glpiactiveentities'],
+            Session::getActiveEntities(),
             true
         );
 

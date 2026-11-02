@@ -493,7 +493,7 @@ class NetworkPort extends CommonDBChild
     {
         $unicity_input = [
             'networkports_id' => $this->fields['id'],
-            'date'            => date('Y-m-d', strtotime($_SESSION['glpi_currenttime'])),
+            'date'            => date('Y-m-d', strtotime(Session::getCurrentTime())),
         ];
         $input = array_merge(
             [
@@ -1385,7 +1385,7 @@ class NetworkPort extends CommonDBChild
             $lastItem             = $recursiveItems[count($recursiveItems) - 1];
             $options['entities_id'] = $lastItem->fields['entities_id'];
         } else {
-            $options['entities_id'] = $_SESSION['glpiactive_entity'];
+            $options['entities_id'] = Session::getActiveEntity();
         }
 
         TemplateRenderer::getInstance()->display('pages/assets/networkport/form.html.twig', [

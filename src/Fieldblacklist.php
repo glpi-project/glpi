@@ -290,7 +290,7 @@ class Fieldblacklist extends CommonDropdown
         }
 
         if (!isset($this->fields['entities_id'])) {
-            $this->fields['entities_id'] = $_SESSION['glpiactive_entity'];
+            $this->fields['entities_id'] = Session::getActiveEntity();
         }
 
         if (

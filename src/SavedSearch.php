@@ -125,8 +125,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 break;
 
             case 'change_entity':
-                Entity::dropdown(['entity' => $_SESSION['glpiactiveentities'],
-                    'value'  => $_SESSION['glpiactive_entity'],
+                Entity::dropdown(['entity' => Session::getActiveEntities(),
+                    'value'  => Session::getActiveEntity(),
                     'name'   => 'entities_id',
                 ]);
                 echo '<br/>';

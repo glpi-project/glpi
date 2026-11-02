@@ -44,7 +44,7 @@ if ($_POST["actortype"] > 0) {
     $ticket->showActorAddForm(
         $_POST["actortype"],
         $rand,
-        $_SESSION['glpiactive_entity'],
+        Session::getActiveEntity(),
         [],
         true,
         true,

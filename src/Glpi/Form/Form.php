@@ -365,7 +365,7 @@ final class Form extends CommonDBTM implements
         // Insert date_mod even if the framework would handle it by itself
         // This avoid "empty" updates when the form itself is not modified but
         // its questions are
-        $input['date_mod'] = $_SESSION['glpi_currenttime'];
+        $input['date_mod'] = Session::getCurrentTime();
 
         $input = $this->prepareInput($input);
         return parent::prepareInputForUpdate($input);

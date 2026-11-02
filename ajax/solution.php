@@ -84,7 +84,7 @@ if ($parents_id > 0 && !empty($parents_itemtype) && is_a($parents_itemtype, Comm
         $template->getID(),
         $template::class,
         'content',
-        $_SESSION['glpilanguage'],
+        Session::getLanguage(),
         $template->fields['content']
     );
     $template->fields['content'] = RichText::getSafeHtml($content);

@@ -296,7 +296,7 @@ class Document_Item extends CommonDBRelation
             $ticket = new Ticket();
             $input  = [
                 'id'              => $this->fields['items_id'],
-                'date_mod'        => $_SESSION["glpi_currenttime"],
+                'date_mod'        => Session::getCurrentTime(),
                 '_do_update_date_mod' => true,
             ];
 
@@ -338,7 +338,7 @@ class Document_Item extends CommonDBRelation
             $ticket = new Ticket();
             $input = [
                 'id'              => $this->fields['items_id'],
-                'date_mod'        => $_SESSION["glpi_currenttime"],
+                'date_mod'        => Session::getCurrentTime(),
             ];
 
             if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
@@ -658,7 +658,7 @@ TWIG, $twig_params);
         ) {
             // Restrict entity for knowbase
             $entities = "";
-            $entity   = $_SESSION["glpiactive_entity"];
+            $entity   = Session::getActiveEntity();
 
             if ($item->isEntityAssign()) {
                 // Item's entity when the user may write there, otherwise their active entity.

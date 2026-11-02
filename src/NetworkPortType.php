@@ -120,8 +120,8 @@ class NetworkPortType extends CommonDropdown
             'comment'            => null,
             'is_importable'      => 0,
             'instantiation_type' => null,
-            'date_creation'      => $_SESSION['glpi_currenttime'],
-            'date_mod'           => $_SESSION['glpi_currenttime'],
+            'date_creation'      => Session::getCurrentTime(),
+            'date_mod'           => Session::getCurrentTime(),
         ];
 
         $defaults = [];

@@ -233,7 +233,7 @@ class Log extends CommonDBTM
     {
         global $DB;
 
-        $date_mod = $_SESSION["glpi_currenttime"];
+        $date_mod = Session::getCurrentTime();
         if (empty($changes)) {
             return false;
         }

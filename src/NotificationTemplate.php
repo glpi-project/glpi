@@ -252,7 +252,7 @@ class NotificationTemplate extends CommonDBTM
             $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($language);
 
             Session::loadLanguage($language);
-            $bak_language = $_SESSION["glpilanguage"];
+            $bak_language = Session::getLanguage();
             $_SESSION["glpilanguage"] = $language;
 
             $bak_date_format = ($_SESSION["glpidate_format"] ?? 0);

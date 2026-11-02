@@ -84,7 +84,7 @@ class InstallController extends AbstractController
         return $this->getProgressInitResponse(
             $progress_indicator,
             function () use ($progress_indicator) {
-                Toolbox::createSchema($_SESSION["glpilanguage"], null, $progress_indicator);
+                Toolbox::createSchema(\Session::getLanguage(), null, $progress_indicator);
             }
         );
     }
