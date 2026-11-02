@@ -841,6 +841,76 @@ class UserTest extends DbTestCase
         }
     }
 
+    public function testPrepareInputForUpdatePasswordForgetTokenTypeJuggling(): void
+    {
+        global $DB;
+
+        $target_user = \getItemByTypeName(User::class, 'glpi');
+        $token = \bin2hex(\random_bytes(16));
+        $this->assertTrue(
+            $DB->update(
+                User::getTable(),
+                [
+                    'password_forget_token'      => (new \GLPIKey())->encrypt($token),
+                    'password_forget_token_date' => date('Y-m-d H:i:s', strtotime('+1 day')),
+                ],
+                ['id' => $target_user->getID()]
+            )
+        );
+        $this->assertTrue($target_user->getFromDB($target_user->getID()));
+
+        $password_input = [
+            'id'        => $target_user->getID(),
+            'password'  => 'Takeover-2026!',
+            'password2' => 'Takeover-2026!',
+        ];
+
+        // A less privileged user must not be able to change the password with a non-matching token,
+        // whatever its type (JSON payloads of the API keep native types).
+        $this->login('tech', 'tech');
+        foreach ([true, 1, '', 'wrong-token', [$token]] as $forged_token) {
+            $output = $target_user->prepareInputForUpdate($password_input + ['password_forget_token' => $forged_token]);
+            $this->assertFalse($output, 'Token ' . var_export($forged_token, true) . ' must be refused');
+            $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+        }
+
+        // A non-numeric ID must not be considered as the ID of the logged-in user.
+        $output = $target_user->prepareInputForUpdate(['id' => true] + $password_input);
+        $this->assertFalse($output, 'ID `true` must not match the logged-in user');
+        $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+
+        // Without session (password reset form), only the exact token is accepted.
+        $this->logout();
+        $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s');
+        foreach ([true, 1, '', 'wrong-token'] as $forged_token) {
+            $output = $target_user->prepareInputForUpdate($password_input + ['password_forget_token' => $forged_token]);
+            $this->assertFalse($output, 'Token ' . var_export($forged_token, true) . ' must be refused');
+            $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+        }
+        $output = $target_user->prepareInputForUpdate($password_input + ['password_forget_token' => $token]);
+        $this->assertIsArray($output);
+        $this->assertTrue(\Auth::checkPassword('Takeover-2026!', $output['password']));
+    }
+
+    public function testPrepareInputForUpdateUnchangedProtectedFields(): void
+    {
+        $this->login('tech', 'tech');
+        $target_user = \getItemByTypeName(User::class, 'glpi');
+
+        // Empty or unchanged values of protected fields are silently ignored (`end_date` and `api_token` are NULL,
+        // `is_active` is 1)...
+        foreach (['end_date' => false, 'api_token' => 0, 'is_active' => true] as $key => $value) {
+            $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), $key => $value]);
+            $this->assertIsArray($output, "Unchanged `{$key}` must not block the update");
+            $this->assertArrayNotHasKey($key, $output);
+        }
+
+        // ... but an actual change is refused.
+        $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), 'is_active' => false]);
+        $this->assertFalse($output);
+        $this->hasSessionMessages(ERROR, ['You are not allowed to update the following fields: is_active']);
+    }
+
     public function testPrepareInputForUpdate2fa(): void
     {
         $this->login('glpi', 'glpi');

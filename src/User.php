@@ -1121,6 +1121,25 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
     }
 
+    /**
+     * Strictly compare an input value with a stored field value.
+     * Booleans are handled as integers (DB representation); non-scalar input never matches.
+     * An empty stored value (NULL or '') matches an empty input (false, 0 or '').
+     */
+    private function isSameScalarValue(mixed $input_value, mixed $field_value): bool
+    {
+        if (!is_scalar($input_value)) {
+            return false;
+        }
+        if (is_bool($input_value)) {
+            $input_value = (int) $input_value;
+        }
+        if ($field_value === null || $field_value === '') {
+            return in_array((string) $input_value, ['', '0'], true);
+        }
+        return (string) $input_value === (string) $field_value;
+    }
+
 
     public function prepareInputForUpdate($input)
     {
@@ -1216,11 +1235,20 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     if (
                         isset($input['id'])
                         && $this->validatePassword($input["password"] ?? '', $password_errors)
-                        && (($input['id'] == Session::getLoginUserID())
+                        // Compared as integers: a loose comparison would let a non-numeric value (e.g. a JSON `true`
+                        // sent through the API) match any logged-in user ID.
+                        && ((Session::getLoginUserID() !== false && (int) $input['id'] === (int) Session::getLoginUserID())
                         || $this->currentUserHaveMoreRightThan($input['id'])
                         // Permit to change password with token and email
-                        || (isset($this->fields['password_forget_token']) && ($input['password_forget_token'] == $glpi_key->decrypt($this->fields['password_forget_token']))
-                           && (strtotime($_SESSION["glpi_currenttime"]) < strtotime($this->fields['password_forget_token_date']))))
+                        // The token must be a non-empty string compared strictly: a non-string value (e.g. a JSON `true`
+                        // sent through the API) would otherwise loosely match any token.
+                        || (
+                            isset($this->fields['password_forget_token'])
+                            && is_string($input['password_forget_token'] ?? null)
+                            && $input['password_forget_token'] !== ''
+                            && hash_equals((string) $glpi_key->decrypt($this->fields['password_forget_token']), $input['password_forget_token'])
+                            && (strtotime($_SESSION["glpi_currenttime"]) < strtotime($this->fields['password_forget_token_date']))
+                        ))
                     ) {
                         $input["password"]
                         = Auth::getPasswordHash($input["password"]);
@@ -1303,7 +1331,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     if (
                         isset($input[$input_key])
                         && !str_starts_with($input_key, '_') // virtual field
-                        && $input[$input_key] != $this->fields[$input_key]
+                        && !$this->isSameScalarValue($input[$input_key], $this->fields[$input_key])
                     ) {
                         $ignored_fields[] = $input_key;
                     }
