@@ -4720,20 +4720,6 @@ class CommonDBTM extends CommonGLPI
                         $continue
                         && count($where)
                     ) {
-                        $entities = $fields['entities_id'];
-                        if ($fields['is_recursive']) {
-                            $entities = getSonsOf('glpi_entities', $fields['entities_id']);
-                        }
-                        $entities_criteria = getEntitiesRestrictCriteria(static::getTable(), '', $entities);
-                        if ($this instanceof User) {
-                            // "Full structure" default entity is stored as NULL
-                            $entities_criteria = [
-                                'OR' => [
-                                    $entities_criteria,
-                                    [static::getTable() . '.entities_id' => null],
-                                ],
-                            ];
-                        }
                         // User default entity is not an ownership entity, see $entities_id above
                         if (!($this instanceof User)) {
                             $entities = $fields['entities_id'];

@@ -1706,13 +1706,23 @@ class CommonDBTMTest extends DbTestCase
 
     public static function userDefaultEntityProvider(): iterable
     {
-        yield 'root entity' => [0, 0];
-        yield 'full structure' => [-1, null];
+        $child_entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // "Full structure" default entity (-1) is stored as NULL
+        yield 'root entity, recursive rule'        => [0, 0, true];
+        yield 'root entity, non-recursive rule'    => [0, 0, false];
+        yield 'full structure, recursive rule'     => [-1, null, true];
+        yield 'full structure, non-recursive rule' => [-1, null, false];
+        yield 'child entity, recursive rule'       => [$child_entity, $child_entity, true];
+        yield 'child entity, non-recursive rule'   => [$child_entity, $child_entity, false];
     }
 
     #[DataProvider('userDefaultEntityProvider')]
-    public function testCheckUnicityForUserFromAnotherLdapDirectory(int $default_entity, ?int $stored_entity): void
-    {
+    public function testCheckUnicityForUserFromAnotherLdapDirectory(
+        int $default_entity,
+        ?int $stored_entity,
+        bool $is_recursive
+    ): void {
         $this->login();
 
         $this->createItem(FieldUnicity::class, [
@@ -1720,7 +1730,7 @@ class CommonDBTMTest extends DbTestCase
             'itemtype'      => User::class,
             '_fields'       => ['name'],
             'entities_id'   => 0,
-            'is_recursive'  => 1,
+            'is_recursive'  => (int) $is_recursive,
             'is_active'     => 1,
             'action_refuse' => 1,
         ], ['_fields']);
