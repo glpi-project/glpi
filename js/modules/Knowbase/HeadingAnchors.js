@@ -30,7 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-export const HEADING_SELECTOR = 'h1, h2, h3, h4, h5, h6';
+// The editor UI only creates these levels; deeper ones stay out of the outline.
+export const MAX_HEADING_LEVEL = 3;
+export const HEADING_SELECTOR = 'h1, h2, h3';
 
 /**
  * @param {string} text
@@ -69,8 +71,8 @@ export function getHeadingIds(texts) {
 }
 
 /**
- * The copy-link icon shown on a heading. It holds no text node, so the
- * plain-text index used to anchor comments is not changed.
+ * The copy-link anchor shown on a heading. Its `#` comes from CSS, so it adds
+ * no text node to the plain-text index used to anchor comments.
  * @param {string} id
  * @returns {HTMLAnchorElement}
  */
@@ -82,11 +84,6 @@ export function createHeadingAnchor(id) {
     anchor.dataset.glpiKbHeadingAnchor = '';
     anchor.setAttribute('aria-label', __('Copy link to this section'));
     anchor.title = __('Copy link to this section');
-
-    const icon = document.createElement('i');
-    icon.className = 'ti ti-link';
-    icon.setAttribute('aria-hidden', 'true');
-    anchor.append(icon);
 
     return anchor;
 }

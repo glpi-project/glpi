@@ -116,6 +116,29 @@
                 data-placeholder="{{ __('Untitled article') }}"
                 spellcheck="true"
             >{{ subject }}</h1>
+            {% if mode == "view" or mode == "edit" %}
+                {# Table of contents toggle, shown by JS when the content has headings.
+                   Becomes a dropdown when there is no space for the column. #}
+                <div class="dropdown flex-shrink-0 ms-2 d-none" data-glpi-kb-toc-toggle-container>
+                    <button
+                        type="button"
+                        class="btn btn-ghost-secondary btn-icon kb-toc-toggle"
+                        aria-label="{{ __('Show contents') }}"
+                        aria-pressed="false"
+                        aria-keyshortcuts="Control+Alt+H"
+                        data-bs-toggle="dropdown"
+                        data-bs-auto-close="true"
+                        data-glpi-kb-toc-toggle
+                    >
+                        <i class="ti ti-align-right" aria-hidden="true"></i>
+                    </button>
+                    <div class="dropdown-menu kb-toc-dropdown p-2">
+                        <nav aria-label="{{ __('Table of contents') }}">
+                            <ul class="kb-toc list-unstyled mb-0" data-glpi-kb-toc-list></ul>
+                        </nav>
+                    </div>
+                </div>
+            {% endif %}
             <div class="ms-auto d-flex align-items-center gap-2">
                 {# Share (publish to web) #}
                 {% if can_edit and mode != 'add' %}
@@ -234,28 +257,6 @@
                     >
                         {{ _n("%s translation", "%s translations", translations_count)|format(translations_count) }}
                     </a>
-                </div>
-
-                {# Table of contents toggle, shown by JS when the content has headings.
-                   Becomes a dropdown when there is no space for the column. #}
-                <div class="dropdown d-none" data-glpi-kb-toc-toggle-container>
-                    <button
-                        type="button"
-                        class="btn btn-sm btn-ghost-secondary btn-icon kb-toc-toggle"
-                        aria-label="{{ __('Show contents') }}"
-                        aria-pressed="false"
-                        aria-keyshortcuts="Control+Alt+H"
-                        data-bs-toggle="dropdown"
-                        data-bs-auto-close="true"
-                        data-glpi-kb-toc-toggle
-                    >
-                        <i class="ti ti-align-right" aria-hidden="true"></i>
-                    </button>
-                    <div class="dropdown-menu kb-toc-dropdown p-2">
-                        <nav aria-label="{{ __('Table of contents') }}">
-                            <ul class="kb-toc list-unstyled mb-0" data-glpi-kb-toc-list></ul>
-                        </nav>
-                    </div>
                 </div>
 
                 {# Documents count #}

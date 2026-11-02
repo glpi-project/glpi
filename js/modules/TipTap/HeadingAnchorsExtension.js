@@ -32,7 +32,7 @@
 
 /* global TiptapCore, TiptapPMState, TiptapPMView */
 
-import { createHeadingAnchor, getHeadingIds } from '/js/modules/Knowbase/HeadingAnchors.js';
+import { MAX_HEADING_LEVEL, createHeadingAnchor, getHeadingIds } from '/js/modules/Knowbase/HeadingAnchors.js';
 
 const { Extension } = TiptapCore;
 const { Plugin, PluginKey } = TiptapPMState;
@@ -47,7 +47,7 @@ const heading_anchors_key = new PluginKey('headingAnchors');
 function collectHeadings(doc) {
     const headings = [];
     doc.descendants((node, pos) => {
-        if (node.type.name === 'heading') {
+        if (node.type.name === 'heading' && node.attrs.level <= MAX_HEADING_LEVEL) {
             headings.push({ pos, node });
         }
         // No heading inside a text block: skip its inline content.

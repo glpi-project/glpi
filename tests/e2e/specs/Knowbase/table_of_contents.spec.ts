@@ -36,7 +36,7 @@ import { Profiles } from "../../utils/Profiles";
 import { getWorkerEntityId } from "../../utils/WorkerEntities";
 
 const filler = `<p>${'Lorem ipsum dolor sit amet. '.repeat(120)}</p>`;
-const answer = `<h2>Installation</h2>${filler}<h3>Requirements</h3>${filler}<h2>Usage</h2>${filler}`;
+const answer = `<h2>Installation</h2>${filler}<h3>Requirements</h3>${filler}<h4>Details</h4>${filler}<h2>Usage</h2>${filler}`;
 
 test.describe('Knowledge base table of contents', () => {
     test.beforeEach(async ({ profile }) => {

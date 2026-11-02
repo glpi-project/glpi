@@ -195,7 +195,7 @@ body.in_modal .kb-article {
 #kb-tiptap-editor {
     min-width: 0;
 
-    :is(h1, h2, h3, h4, h5, h6) {
+    :is(h1, h2, h3) {
         position: relative;
         scroll-margin-top: 1rem;
     }
@@ -203,20 +203,30 @@ body.in_modal .kb-article {
 
 .kb-heading-anchor {
     position: absolute;
-    inset-inline-start: -1.25em;
-    padding-inline-end: 0.25em;
+
+    // Centered in the 1.5rem article padding (`px-4`): same gap on both sides.
+    inset-inline-start: -1.5rem;
+    width: 1.5rem;
+    text-align: center;
     color: var(--tblr-muted);
-    font-size: 0.8em;
+    font-size: 0.85em;
+    font-weight: 400;
+    line-height: inherit;
+    text-decoration: none;
     opacity: 0;
     transition: opacity 0.15s ease;
 
-    :is(h1, h2, h3, h4, h5, h6):hover > &,
+    &::before {
+        content: "#";
+    }
+
+    :is(h1, h2, h3):hover > &,
     &:focus-visible {
         opacity: 1;
     }
 
     &:hover {
-        color: var(--tblr-primary);
+        color: var(--tblr-body-color);
     }
 }
 
@@ -236,8 +246,24 @@ body.in_modal .kb-article {
     padding-inline-start: 0.75rem;
 }
 
-.kb-toc-toggle[aria-pressed="true"] {
-    background-color: var(--tblr-secondary-lt);
+.kb-toc-toggle {
+    --tblr-btn-color: var(--tblr-body-color);
+    --tblr-btn-hover-color: var(--tblr-body-color);
+    --tblr-btn-hover-bg: var(--tblr-secondary-lt);
+    --tblr-btn-hover-border-color: transparent;
+    --tblr-btn-active-color: var(--tblr-body-color);
+    --tblr-btn-active-bg: var(--tblr-secondary-lt);
+    --tblr-btn-active-shadow: none;
+
+    padding: 0.25rem;
+
+    .ti {
+        font-size: 1.5rem;
+    }
+
+    &[aria-pressed="true"] {
+        background-color: var(--tblr-secondary-lt);
+    }
 }
 
 .kb-toc-tooltip .tooltip-inner {
