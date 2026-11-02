@@ -856,10 +856,8 @@ class Document_ItemTest extends DbTestCase
         // --- arrange : glpi user attaches a private and a public document to a ticket ---
         $this->login('glpi', 'glpi');
 
-        [$private_document, $public_document] = $this->createItems(\Document::class, [
-            ['name' => 'private document', 'filename' => 'private.xls'],
-            ['name' => 'public document', 'filename' => 'public.xls'],
-        ]);
+        $private_document = $this->createDocumentWithFilename(['name' => 'private document', 'filename' => 'private.xls']);
+        $public_document  = $this->createDocumentWithFilename(['name' => 'public document', 'filename' => 'public.xls']);
 
         $ticket = $this->createItem(\Ticket::class, [
             'name'    => 'New ticket',
@@ -917,7 +915,7 @@ class Document_ItemTest extends DbTestCase
 
         $this->login('glpi', 'glpi');
 
-        $document = $this->createItem(\Document::class, [
+        $document = $this->createDocumentWithFilename([
             'name'     => 'private document',
             'filename' => 'private.xls',
         ]);
@@ -961,10 +959,8 @@ class Document_ItemTest extends DbTestCase
         // --- arrange : a private link whose document is the browsed one ---
         $this->login('glpi', 'glpi');
 
-        [$browsed_document, $linked_document] = $this->createItems(\Document::class, [
-            ['name' => 'browsed document', 'filename' => 'browsed.xls'],
-            ['name' => 'privately linked document', 'filename' => 'linked.xls'],
-        ]);
+        $browsed_document = $this->createDocumentWithFilename(['name' => 'browsed document', 'filename' => 'browsed.xls']);
+        $linked_document  = $this->createDocumentWithFilename(['name' => 'privately linked document', 'filename' => 'linked.xls']);
 
         // `filepath` is derived from the upload, so it is set aside of the add(). Without it the
         // rendering emits a deprecation, which the test case treats as a failure.
