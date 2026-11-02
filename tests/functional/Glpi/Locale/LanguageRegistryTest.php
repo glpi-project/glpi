@@ -194,6 +194,7 @@ final class LanguageRegistryTest extends GLPITestCase
             'kn'      => ['ಕನ್ನಡ', 'kn.mo', 'en-GB', 'en', 'kannada', 2],
             'lv_LV'   => ['Latviešu', 'lv_LV.mo', 'lv', 'lv', 'latvian', 2],
             'lt_LT'   => ['Lietuvių', 'lt_LT.mo', 'lt', 'lt', 'lithuanian', 2],
+            'mk_MK'   => ['Македонски', 'mk_MK.mo', 'mk', 'mk', 'macedonian', 2],
             'mn_MN'   => ['Монгол хэл', 'mn_MN.mo', 'mn', 'mn', 'mongolian', 2],
             'nl_NL'   => ['Nederlands', 'nl_NL.mo', 'nl', 'nl', 'dutch', 2],
             'nl_BE'   => ['Vlaams', 'nl_BE.mo', 'nl', 'nl', 'flemish', 2],
