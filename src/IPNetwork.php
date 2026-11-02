@@ -675,7 +675,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
         }
 
         if ($entityID < 0) {
-            $entityID = $_SESSION['glpiactive_entity'];
+            $entityID = Session::getActiveEntity();
         }
         $entitiesID = [];
         $ORDER_ORIENTATION = '';

@@ -243,7 +243,7 @@ class FieldUnicity extends CommonDropdown
         }
 
         if (!isset($unicity->fields['entities_id'])) {
-            $unicity->fields['entities_id'] = $_SESSION['glpiactive_entity'];
+            $unicity->fields['entities_id'] = Session::getActiveEntity();
         }
 
         $unicity_fields = explode(',', $unicity->fields['fields']);

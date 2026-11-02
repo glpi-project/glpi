@@ -180,7 +180,7 @@ trait PlanningEvent
         }
 
         // set new date.
-        $input["date"] = $_SESSION["glpi_currenttime"];
+        $input["date"] = Session::getCurrentTime();
 
         // encode rrule
         if (isset($input['rrule']) && is_array($input['rrule'])) {

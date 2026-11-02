@@ -1452,7 +1452,7 @@ TWIG, $twig_params);
                     'glpi_projecttasks'  => 'projecttasktypes_id', [
                         'AND' => [
                             'namet2.itemtype' => 'ProjectTaskType',
-                            'namet2.language' => $_SESSION['glpilanguage'],
+                            'namet2.language' => Session::getLanguage(),
                             'namet2.field'    => 'name',
                         ],
                     ],
@@ -1468,7 +1468,7 @@ TWIG, $twig_params);
                     'glpi_projectstates' => 'id', [
                         'AND' => [
                             'namet3.itemtype' => 'ProjectState',
-                            'namet3.language' => $_SESSION['glpilanguage'],
+                            'namet3.language' => Session::getLanguage(),
                             'namet3.field'    => 'name',
                         ],
                     ],
@@ -2069,7 +2069,7 @@ TWIG, $twig_params);
                     ],
                     'WHERE'           => [
                         'glpi_profiles.interface'  => 'central',
-                    ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $_SESSION['glpiactive_entity'], true),
+                    ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', Session::getActiveEntity(), true),
                 ]),
             ];
         }

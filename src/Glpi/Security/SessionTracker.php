@@ -157,7 +157,7 @@ final class SessionTracker
         $session_exists = $it->count() > 0;
         if ($session_exists) {
             $DB->update('glpi_users_sessions', [
-                'users_id' => $_SESSION['glpiID'],
+                'users_id' => Session::getLoginUserID(),
                 'session_file' => 'sess_' . session_id(),
                 'ip_address' => $ip, // Update IP in case it changed (mobile users, VPNs, etc)
                 'user_agent' => substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 512),
@@ -168,7 +168,7 @@ final class SessionTracker
 
         try {
             $DB->insert('glpi_users_sessions', [
-                'users_id' => $_SESSION['glpiID'],
+                'users_id' => Session::getLoginUserID(),
                 'login_session_uid' => Session::getLoginSessionUID(),
                 'session_file' => 'sess_' . session_id(),
                 'ip_address' => $ip,
@@ -178,7 +178,7 @@ final class SessionTracker
                 'last_activity_at' => Session::getCurrentTime(),
             ]);
             $DB->insert('glpi_users_sessionhistories', [
-                'users_id' => $_SESSION['glpiID'],
+                'users_id' => Session::getLoginUserID(),
                 'login_session_uid' => Session::getLoginSessionUID(),
                 'ip_address' => $ip,
                 'user_agent' => substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 512),

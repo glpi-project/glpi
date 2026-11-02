@@ -924,7 +924,7 @@ JS;
      */
     public static function getLocalizedDescription(array $plugin = [], string $version = 'short_description'): string
     {
-        $userlang = LanguageRegistry::get($_SESSION['glpilanguage'] ?? 'en')->getPageLang();
+        $userlang = LanguageRegistry::get(\Session::getLanguage() ?? 'en')->getPageLang();
 
         if (!isset($plugin['descriptions'])) {
             return "";

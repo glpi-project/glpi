@@ -374,7 +374,7 @@ class Calendar extends AbstractBackend
                 && $item->isField('entities_id')
                 && array_key_exists('glpiactive_entity', $_SESSION)
             ) {
-                $input['entities_id'] = $_SESSION['glpiactive_entity'];
+                $input['entities_id'] = Session::getActiveEntity();
             }
             if (!$item->can(-1, CREATE, $input)) {
                 throw new Forbidden();

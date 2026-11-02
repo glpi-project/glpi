@@ -359,7 +359,7 @@ final class ResourceAccessor
     {
         $schema = self::applyFieldReadRestrictions($schema);
         if (!isset($request_params['entity']) && isset($_SESSION['glpiactive_entity'])) {
-            $request_params['entity'] = $_SESSION['glpiactive_entity'];
+            $request_params['entity'] = Session::getActiveEntity();
         }
         $errors = self::validateInputParamsBySchema($schema, $request_params, true);
         if ($errors !== []) {

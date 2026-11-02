@@ -102,7 +102,7 @@ final class ShareTokenManager
             return false;
         }
 
-        if (strtotime($session_data['expires_at']) > strtotime($_SESSION['glpi_currenttime'])) {
+        if (strtotime($session_data['expires_at']) > strtotime(\Session::getCurrentTime())) {
             return true;
         }
 
@@ -219,7 +219,7 @@ final class ShareTokenManager
         // allow access for the next 5 minutes
         $_SESSION[self::SESSION_KEY][$item::class][$item->getID()] = [
             'sharetoken_id' => (int) $row['id'],
-            'expires_at'    => \date('Y-m-d H:i:s', strtotime('+5 minutes', strtotime($_SESSION['glpi_currenttime']))),
+            'expires_at'    => \date('Y-m-d H:i:s', strtotime('+5 minutes', strtotime(\Session::getCurrentTime()))),
         ];
 
         return $item;

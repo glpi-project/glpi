@@ -129,7 +129,7 @@ class CommonITILValidationCron extends CommonDBTM
                         if (NotificationEvent::raiseEvent('validation_reminder', $item, $options, $validation)) {
                             $validation->update([
                                 'id'            => $validation->getID(),
-                                'last_reminder_date' => $_SESSION["glpi_currenttime"],
+                                'last_reminder_date' => Session::getCurrentTime(),
                             ]);
                             $task->addVolume(1);
                         }

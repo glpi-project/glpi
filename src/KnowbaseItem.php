@@ -965,7 +965,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $is_public_faq_context = !Session::getLoginUserID() && $CFG_GLPI["use_public_faq"];
         $has_session_groups = count(($_SESSION["glpigroups"] ?? []));
         $has_active_profile = isset($_SESSION["glpiactiveprofile"]['id']);
-        $has_active_entity = count(($_SESSION["glpiactiveentities"] ?? []));
+        $has_active_entity = count((Session::getActiveEntities()));
 
         // Add user restriction data
         if ($forceall || Session::getLoginUserID()) {
@@ -1832,7 +1832,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $frontier = $next_frontier;
         }
 
-        $collator = collator_create($_SESSION['glpilanguage'] ?? 'en_GB');
+        $collator = collator_create(Session::getLanguage() ?? 'en_GB');
         if ($collator) {
             $collator->setStrength(Collator::PRIMARY);
         }
@@ -2355,7 +2355,7 @@ TWIG, $twig_params);
                     'glpi_knowbaseitemtranslations'  => 'knowbaseitems_id',
                     [
                         'AND'                            => [
-                            'glpi_knowbaseitemtranslations.language' => $_SESSION['glpilanguage'],
+                            'glpi_knowbaseitemtranslations.language' => Session::getLanguage(),
                         ],
                     ],
                 ],
@@ -2969,7 +2969,7 @@ TWIG, $twig_params);
                     'glpi_knowbaseitemtranslations'  => 'knowbaseitems_id',
                     [
                         'AND'                            => [
-                            'glpi_knowbaseitemtranslations.language' => $_SESSION['glpilanguage'],
+                            'glpi_knowbaseitemtranslations.language' => Session::getLanguage(),
                         ],
                     ],
                 ],

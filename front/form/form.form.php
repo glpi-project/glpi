@@ -49,7 +49,7 @@ if (($_REQUEST['id'] ?? 0) == 0) {
     $form = new Form();
     $id = $form->add([
         'name'         => __("Untitled form"),
-        'entities_id'  => $_SESSION['glpiactive_entity'],
+        'entities_id'  => Session::getActiveEntity(),
         'is_recursive' => true,
         'is_draft'     => true,
     ]);

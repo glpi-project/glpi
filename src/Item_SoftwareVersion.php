@@ -177,7 +177,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             case 'add':
                 Software::dropdownSoftwareToInstall(
                     'peer_softwareversions_id',
-                    $_SESSION["glpiactive_entity"]
+                    Session::getActiveEntity()
                 );
                 echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']) . "</span>";
                 return true;

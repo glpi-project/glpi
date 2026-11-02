@@ -91,7 +91,7 @@ final class AdministrationController extends AbstractController
                                     ],
                                 ],
                                 'WHERE' => [
-                                    'glpi_profiles_users.entities_id' => $_SESSION['glpiactiveentities'],
+                                    'glpi_profiles_users.entities_id' => Session::getActiveEntities(),
                                 ],
                             ];
                         }

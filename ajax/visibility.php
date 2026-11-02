@@ -87,7 +87,7 @@ if (
 
         case 'Entity':
             Entity::dropdown([
-                'value'       => $_SESSION['glpiactive_entity'],
+                'value'       => Session::getActiveEntity(),
                 'name'        => $prefix . 'entities_id' . $suffix,
                 'entity'      => $_POST['entity'] ?? -1,
                 'entity_sons' => $_POST['is_recursive'] ?? false,

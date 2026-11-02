@@ -159,7 +159,7 @@ class Item_SoftwareLicense extends CommonDBRelation
             case 'add':
                 Software::dropdownLicenseToInstall(
                     'peer_softwarelicenses_id',
-                    $_SESSION["glpiactive_entity"]
+                    Session::getActiveEntity()
                 );
                 echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']) . "</span>";
                 return true;

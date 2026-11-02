@@ -519,7 +519,7 @@ EOT;
     {
         $routes = $this->getAllRoutes();
         $paths = [];
-        $is_user_authenticated = isset($_SESSION['glpiID']);
+        $is_user_authenticated = Session::isAuthenticated();
         foreach ($routes as $route) {
             if (!$force_all && !$is_user_authenticated && $route->getRouteSecurityLevel() !== Route::SECURITY_NONE) {
                 continue;
@@ -838,7 +838,7 @@ EOT;
             // Make sure language header is set in SERVER superglobal so that Session::getPreferredLanguage() works
             $_SERVER['HTTP_ACCEPT_LANGUAGE'] = $request->getHeaderLine('Accept-Language');
             $_SESSION['glpilanguage'] = Session::getPreferredLanguage();
-            $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
+            $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations(Session::getLanguage());
         }
     }
 

@@ -389,7 +389,7 @@ class AuthLDAP extends CommonDBTM
                         if (isset($input["ldap_import_entities"][$id])) {
                             $entity = (int) $input["ldap_import_entities"][$id];
                         } else {
-                            $entity = $_SESSION["glpiactive_entity"];
+                            $entity = Session::getActiveEntity();
                         }
                         // Is recursive is in the main form and thus, don't pass through
                         // zero_on_empty mechanism inside massive action form ...
@@ -2705,7 +2705,7 @@ TWIG, $twig_params);
 
                         // Add the auth method
                         // Force date sync
-                        $user->fields["date_sync"] = $_SESSION["glpi_currenttime"];
+                        $user->fields["date_sync"] = Session::getCurrentTime();
                         $user->fields['is_deleted_ldap'] = 0;
 
                         //Save information in database !
@@ -3567,7 +3567,7 @@ TWIG, $twig_params);
             if (!isset($_REQUEST['authldaps_id']) || (int) $_REQUEST['authldaps_id'] <= 0) {
                 // Use default from the current entity or global default
                 $entity = new Entity();
-                $entity->getFromDB($_SESSION['glpiactive_entity']);
+                $entity->getFromDB(Session::getActiveEntity());
                 $_REQUEST['authldaps_id'] = $entity->fields['authldaps_id'];
                 if ((int) $_REQUEST['authldaps_id'] <= 0) {
                     $defaultAuth = Auth::getDefaultAuth();
@@ -3605,7 +3605,7 @@ TWIG, $twig_params);
 
         $_REQUEST['mode'] = (int) ($_REQUEST['mode'] ?? self::ACTION_IMPORT);
 
-        $_REQUEST['entities_id'] ??= $_SESSION['glpiactive_entity'];
+        $_REQUEST['entities_id'] ??= Session::getActiveEntity();
 
         unset($_REQUEST['entity_filter']); //Not meant to be set from request; this is calculated later
 

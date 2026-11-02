@@ -68,7 +68,7 @@ final class CASController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     public function casStart(): Response
     {
-        return new RedirectResponse($this->getCasStrategy()->start($_SESSION['glpiID']));
+        return new RedirectResponse($this->getCasStrategy()->start(\Session::getLoginUserID()));
     }
 
     /**
@@ -84,7 +84,7 @@ final class CASController extends AbstractController
     {
         global $CFG_GLPI;
 
-        if ($this->getCasStrategy()->complete($_SESSION['glpiID'], $request)) {
+        if ($this->getCasStrategy()->complete(\Session::getLoginUserID(), $request)) {
             $this->reauth_manager->authenticate();
 
             return $this->render('pages/redirect_post.html.twig', [

@@ -558,7 +558,7 @@ class Plugin extends CommonDBTM
 
         $trytoload = 'en_GB';
         if (isset($_SESSION['glpilanguage'])) {
-            $trytoload = $_SESSION["glpilanguage"];
+            $trytoload = Session::getLanguage();
         }
         // Force to load a specific lang
         if (!empty($forcelang)) {

@@ -1134,7 +1134,7 @@ TWIG, $avatar_params) . $username;
             && ($peer_number == 2)
         ) {
             echo "<br><br>" . htmlescape(sprintf(__('%1$s: %2$s'), Entity::getTypeName(1), ''));
-            Entity::dropdown(['entity' => $_SESSION['glpiactiveentities']]);
+            Entity::dropdown(['entity' => Session::getActiveEntities()]);
             echo "<br><br>" . htmlescape(sprintf(__('%1$s: %2$s'), __('Recursive'), ''));
             Html::showCheckbox(['name' => 'is_recursive']);
         }

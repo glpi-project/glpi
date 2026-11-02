@@ -333,7 +333,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation
             'networkports_id_source'      => $netports_id,
             'networkports_id_destination' => $opposite_port,
             'connected'                   => ($action === 'add'),
-            'date'                        => $_SESSION['glpi_currenttime'],
+            'date'                        => Session::getCurrentTime(),
         ];
 
         $log->add($input);

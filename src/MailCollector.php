@@ -637,7 +637,7 @@ class MailCollector extends CommonDBTM
                 // crontask process queue.
                 $this->update([
                     'id' => $this->getID(),
-                    'last_collect_date' => $_SESSION["glpi_currenttime"],
+                    'last_collect_date' => Session::getCurrentTime(),
                 ]);
 
                 return;
@@ -723,7 +723,7 @@ class MailCollector extends CommonDBTM
                         'from'              => '',
                         'to'                => '',
                         'messageid'         => '',
-                        'date'              => $_SESSION["glpi_currenttime"],
+                        'date'              => Session::getCurrentTime(),
                     ];
 
                     try {
@@ -926,7 +926,7 @@ class MailCollector extends CommonDBTM
 
                 $this->update([
                     'id' => $this->getID(),
-                    'last_collect_date' => $_SESSION["glpi_currenttime"],
+                    'last_collect_date' => Session::getCurrentTime(),
                 ]);
 
                 //TRANS: %1$d, %2$d, %3$d, %4$d %5$d and %6$d are number of messages
@@ -2008,7 +2008,7 @@ class MailCollector extends CommonDBTM
                     // crontask process queue, and therefore to prevent other collectors to be processed.
                     $mc->update([
                         'id'                => $data['id'],
-                        'last_collect_date' => $_SESSION["glpi_currenttime"],
+                        'last_collect_date' => Session::getCurrentTime(),
                     ]);
 
                     $message = sprintf(

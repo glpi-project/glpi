@@ -758,7 +758,7 @@ class Software extends InventoryAsset
 
                 $software->handleCategoryRules($stmt_columns, true);
                 //set create date
-                $stmt_columns['date_creation'] = $_SESSION["glpi_currenttime"];
+                $stmt_columns['date_creation'] = \Session::getCurrentTime();
                 $stmt_columns['is_helpdesk_visible'] = $CFG_GLPI["default_software_helpdesk_visible"];
 
                 if ($stmt === null) {
@@ -824,7 +824,7 @@ class Software extends InventoryAsset
                 $stmt_columns['name'] = $version_name;
                 $stmt_columns['softwares_id'] = $softwares_id;
                 //set create date
-                $stmt_columns['date_creation'] = $_SESSION["glpi_currenttime"];
+                $stmt_columns['date_creation'] = \Session::getCurrentTime();
                 if ($stmt === null) {
                     $reference = array_fill_keys(
                         array_keys($stmt_columns),

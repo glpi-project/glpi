@@ -131,7 +131,7 @@ class Dropdown
         $table = $item->getTable();
 
         $params['name']                 = $item->getForeignKeyField();
-        $params['value']                = (($itemtype == 'Entity') ? $_SESSION['glpiactive_entity'] : '');
+        $params['value']                = (($itemtype == 'Entity') ? Session::getActiveEntity() : '');
         $params['comments']             = true;
         $params['entity']               = -1;
         $params['entity_sons']          = false;
@@ -590,7 +590,7 @@ class Dropdown
                                 $table   => 'id', [
                                     'AND' => [
                                         'namet.itemtype'  => getItemTypeForTable($table),
-                                        'namet.language'  => $_SESSION['glpilanguage'],
+                                        'namet.language'  => Session::getLanguage(),
                                         'namet.field'     => 'name',
                                     ],
                                 ],
@@ -703,7 +703,7 @@ class Dropdown
                     [
                         'AND' => [
                             'comment_translations.itemtype' => $itemtype,
-                            'comment_translations.language' => $_SESSION['glpilanguage'],
+                            'comment_translations.language' => Session::getLanguage(),
                             'comment_translations.field'    => 'comment',
                         ],
                     ],
@@ -726,7 +726,7 @@ class Dropdown
                     [
                         'AND' => [
                             'completename_translations.itemtype' => $itemtype,
-                            'completename_translations.language' => $_SESSION['glpilanguage'],
+                            'completename_translations.language' => Session::getLanguage(),
                             'completename_translations.field'    => 'completename',
                         ],
                     ],
@@ -2897,7 +2897,7 @@ HTML;
         }
 
         if (isset($post['entity_restrict']) && 'default' === $post['entity_restrict']) {
-            $post['entity_restrict'] = $_SESSION['glpiactiveentities'];
+            $post['entity_restrict'] = Session::getActiveEntities();
         } elseif (
             isset($post["entity_restrict"])
             && !is_array($post["entity_restrict"])
@@ -3110,7 +3110,7 @@ HTML;
                     if (!$item->maybePrivate()) {
                         $where += getEntitiesRestrictCriteria($table, '', '', $recur);
 
-                        if (count($_SESSION['glpiactiveentities']) > 1) {
+                        if (count(Session::getActiveEntities()) > 1) {
                             $multi = true;
                         }
                     } else {
@@ -3148,7 +3148,7 @@ HTML;
                         $table   => 'id', [
                             'AND' => [
                                 'namet.itemtype'  => $post['itemtype'],
-                                'namet.language'  => $_SESSION['glpilanguage'],
+                                'namet.language'  => Session::getLanguage(),
                                 'namet.field'     => 'completename',
                             ],
                         ],
@@ -3163,7 +3163,7 @@ HTML;
                         $table   => 'id', [
                             'AND' => [
                                 'namet2.itemtype' => $post['itemtype'],
-                                'namet2.language' => $_SESSION['glpilanguage'],
+                                'namet2.language' => Session::getLanguage(),
                                 'namet2.field'    => 'name',
                             ],
                         ],
@@ -3178,7 +3178,7 @@ HTML;
                         $table      => 'id', [
                             'AND' => [
                                 'commentt.itemtype'  => $post['itemtype'],
-                                'commentt.language'  => $_SESSION['glpilanguage'],
+                                'commentt.language'  => Session::getLanguage(),
                                 'commentt.field'     => 'comment',
                             ],
                         ],
@@ -3304,7 +3304,7 @@ HTML;
                                                     $ID,
                                                     $post['itemtype'],
                                                     'comment',
-                                                    $_SESSION['glpilanguage'],
+                                                    Session::getLanguage(),
                                                     $item->fields['comment']
                                                 );
                                                 $title = sprintf(__('%1$s - %2$s'), $title, $addcomment);
@@ -3313,7 +3313,7 @@ HTML;
                                                 $item->fields['id'],
                                                 $post['itemtype'],
                                                 'name',
-                                                $_SESSION['glpilanguage'],
+                                                Session::getLanguage(),
                                                 $item->fields['name']
                                             );
 
@@ -3436,7 +3436,7 @@ HTML;
                     if (!$item->maybePrivate()) {
                         $where += getEntitiesRestrictCriteria($table, '', '', $multi);
 
-                        if (count($_SESSION['glpiactiveentities']) > 1) {
+                        if (count(Session::getActiveEntities()) > 1) {
                             $multi = true;
                         }
                     } else {
@@ -3492,7 +3492,7 @@ HTML;
                         $table   => 'id', [
                             'AND' => [
                                 'namet.itemtype'  => $post['itemtype'],
-                                'namet.language'  => $_SESSION['glpilanguage'],
+                                'namet.language'  => Session::getLanguage(),
                                 'namet.field'     => $field,
                             ],
                         ],
@@ -3507,7 +3507,7 @@ HTML;
                         $table      => 'id', [
                             'AND' => [
                                 'commentt.itemtype'  => $post['itemtype'],
-                                'commentt.language'  => $_SESSION['glpilanguage'],
+                                'commentt.language'  => Session::getLanguage(),
                                 'commentt.field'     => 'comment',
                             ],
                         ],
@@ -3884,7 +3884,7 @@ HTML;
             }
         } else {
             $where += getEntitiesRestrictCriteria($table, '', '', $multi);
-            if (count($_SESSION['glpiactiveentities']) > 1) {
+            if (count(Session::getActiveEntities()) > 1) {
                 $multi = true;
             }
         }
@@ -5009,7 +5009,7 @@ HTML;
         }
         $default_use_notif = Entity::getUsedConfig(
             'is_notif_enable_default',
-            $post['item']['entities_id'] ?? $_SESSION['glpiactive_entity'],
+            $post['item']['entities_id'] ?? Session::getActiveEntity(),
             '',
             1
         );

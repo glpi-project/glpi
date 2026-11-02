@@ -67,7 +67,7 @@ if (isset($_POST["rubdoc"])) {
     }
 
     if (!isset($_POST['entity']) || $_POST['entity'] === '' || $_POST['entity'] === []) {
-        $_POST['entity'] = $_SESSION['glpiactive_entity'];
+        $_POST['entity'] = Session::getActiveEntity();
     }
 
     // `entity` may be a single entity id (scalar) or a list of entity ids

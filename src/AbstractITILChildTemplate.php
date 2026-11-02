@@ -132,7 +132,7 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
             $this->getID(),
             static::class,
             'content',
-            $_SESSION['glpilanguage'],
+            Session::getLanguage(),
             $content
         );
 

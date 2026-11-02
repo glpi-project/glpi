@@ -35,6 +35,6 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-$rulecollection = new RuleProblemCollection($_SESSION['glpiactive_entity']);
+$rulecollection = new RuleProblemCollection(Session::getActiveEntity());
 
 include(GLPI_ROOT . "/front/rule.common.php");

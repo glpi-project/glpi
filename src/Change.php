@@ -909,7 +909,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
             $users_id_requester = 0;
         }
 
-        $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $_SESSION['glpiactive_entity'], '', 1);
+        $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', Session::getActiveEntity(), '', 1);
         return [
             '_users_id_requester'        => $users_id_requester,
             '_users_id_requester_notif'  => [
@@ -938,7 +938,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
             'urgency'                    => 3,
             'impact'                     => 3,
             'content'                    => '',
-            'entities_id'                => $_SESSION['glpiactive_entity'],
+            'entities_id'                => Session::getActiveEntity(),
             'name'                       => '',
             'itilcategories_id'          => 0,
             'actiontime'                 => 0,

@@ -198,7 +198,7 @@ class Item_Ola extends CommonDBRelation
             ) {
                 $item_ola_data['waiting_time'] += $ola->getActiveTimeBetween(
                     $item_ola_data['waiting_start'],
-                    $_SESSION["glpi_currenttime"]
+                    Session::getCurrentTime()
                 );
                 $item_ola_data['waiting_start'] = null; // 0 ou null ?
             }

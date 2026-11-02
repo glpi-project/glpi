@@ -236,7 +236,7 @@ class APIClient extends CommonDBTM
 
         if (isset($input['_reset_app_token']) && $input['_reset_app_token']) {
             $input['app_token']      = self::getUniqueAppToken();
-            $input['app_token_date'] = $_SESSION['glpi_currenttime'];
+            $input['app_token_date'] = Session::getCurrentTime();
         }
 
         if (isset($input['app_token'])) {

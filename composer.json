@@ -118,7 +118,7 @@
         "friendsofphp/php-cs-fixer": "^3.95",
         "friendsoftwig/twigcs": "^6.6",
         "glpi-project/phpstan-glpi": "^1.4",
-        "glpi-project/rector-glpi": "^1.1",
+        "glpi-project/rector-glpi": "^1.2",
         "mikey179/vfsstream": "^1.6",
         "php-parallel-lint/php-parallel-lint": "^1.4",
         "phpstan/phpstan": "^2.3",
@@ -135,7 +135,7 @@
         "symfony/var-dumper": "^7.4",
         "symfony/web-profiler-bundle": "^7.4",
         "thecodingmachine/phpstan-safe-rule": "^1.4",
-        "vimeo/psalm": "^6.16"
+        "vimeo/psalm": "^6.20"
     },
     "provide": {
         "ext-sodium": "*"

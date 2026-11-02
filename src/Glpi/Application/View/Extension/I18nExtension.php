@@ -67,7 +67,7 @@ class I18nExtension extends AbstractExtension
 
     public function getCurrentLocale(): array
     {
-        return Locale::parseLocale($_SESSION['glpilanguage'] ?? 'en_GB');
+        return Locale::parseLocale(Session::getLanguage() ?? 'en_GB');
     }
 
     public function translateFormItemKey(

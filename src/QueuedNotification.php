@@ -164,7 +164,7 @@ class QueuedNotification extends CommonDBTM
         $input = $this->prepareInput($input);
 
         if (empty($input['create_time'])) {
-            $input['create_time'] = $_SESSION["glpi_currenttime"];
+            $input['create_time'] = Session::getCurrentTime();
         }
         if (empty($input['send_time'])) {
             $toadd = 0;
@@ -174,11 +174,11 @@ class QueuedNotification extends CommonDBTM
             if ($toadd > 0) {
                 $input['send_time'] = date(
                     "Y-m-d H:i:s",
-                    strtotime($_SESSION["glpi_currenttime"])
+                    strtotime(Session::getCurrentTime())
                     + $toadd * MINUTE_TIMESTAMP
                 );
             } else {
-                $input['send_time'] = $_SESSION["glpi_currenttime"];
+                $input['send_time'] = Session::getCurrentTime();
             }
         }
         $input['sent_try'] = 0;
