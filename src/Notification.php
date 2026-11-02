@@ -157,6 +157,10 @@ class Notification extends CommonDBTM implements FilterableInterface
     public const OLD_ASSIGN_SUPPLIER                 = 47;
     // Notification to the member just added to a project task team
     public const NEW_TEAM_MEMBER                     = 48;
+    // Notification to the technician in charge of the contracts linked to the ticket
+    public const CONTRACT_TECH_IN_CHARGE             = 49;
+    // Notification to the group in charge of the contracts linked to the ticket
+    public const CONTRACT_TECH_GROUP_IN_CHARGE       = 50;
 
     // From CommonDBTM
     public bool $dohistory = true;
@@ -613,6 +617,10 @@ class Notification extends CommonDBTM implements FilterableInterface
                 NotificationTarget::class,
             ]
         );
+
+        // Escalation level actions sending only this notification
+        (new SlaLevelAction())->deleteByCriteria(['field' => 'recall_notification_' . $this->getID()]);
+        (new OlaLevelAction())->deleteByCriteria(['field' => 'recall_ola_notification_' . $this->getID()]);
     }
 
     /**

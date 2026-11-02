@@ -1033,6 +1033,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 [$dateField, $slaField] = SLA::getFieldNames($slmType);
                 unset($input[$dateField], $input[$slaField]);
             }
+            unset($input['slastatuses_id']);
         }
 
         //must be handled here for tickets. @see CommonITILObject::prepareInputForUpdate()
@@ -1526,6 +1527,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 [$dateField, $slaField] = SLA::getFieldNames($slmType);
                 unset($input[$dateField], $input[$slaField]);
             }
+            unset($input['slastatuses_id']);
         }
 
         // Set default contract if not specified
@@ -2517,6 +2519,14 @@ JAVASCRIPT;
             'field'              => 'externalid',
             'datatype'           => 'string',
             'name'               =>  __('External ID'),
+        ];
+
+        $tab[] = [
+            'id'                 => '199',
+            'table'              => SlaStatus::getTable(),
+            'field'              => 'name',
+            'name'               => SlaStatus::getTypeName(1),
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [

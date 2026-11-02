@@ -188,6 +188,17 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
         </div>
     {% endif %}
 
+    {% if field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slastatuses_id') %}
+        <div class="text-end pe-2 align-self-center p-1">{{ 'SlaStatus'|itemtype_name }}</div>
+        <div class="d-flex p-1">
+            {% do call('SlaStatus::dropdown', [{
+                'name': 'slastatuses_id',
+                'value': item.fields['slastatuses_id'] ?? 0,
+                'width': '100%',
+                'readonly': not (canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN'))),
+            }]) %}
+        </div>
+    {% endif %}
 </div>{# end SLA grid #}
 
 {# --------- OLA section ---------- #}

@@ -977,4 +977,79 @@ class NotificationTargetTicketTest extends DbTestCase
             $recipients
         );
     }
+
+    public function testContractTechInChargeTargets(): void
+    {
+        $this->login();
+
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $users_ids = [];
+        foreach (['contract_a', 'contract_b', 'group_member', 'unlinked'] as $name) {
+            $user = $this->createItem(\User::class, [
+                'name'          => __FUNCTION__ . $name,
+                '_profiles_id'  => getItemByTypeName('Profile', 'Technician', true),
+                '_entities_id'  => $entities_id,
+                '_is_recursive' => 1,
+            ]);
+            $this->createItem(\UserEmail::class, [
+                'users_id'   => $user->getID(),
+                'email'      => $name . '@localhost',
+                'is_default' => 1,
+            ]);
+            $users_ids[$name] = $user->getID();
+        }
+
+        $group = $this->createItem(Group::class, ['name' => __FUNCTION__, 'entities_id' => $entities_id]);
+        $this->createItem(\Group_User::class, [
+            'groups_id' => $group->getID(),
+            'users_id'  => $users_ids['group_member'],
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $entities_id,
+        ]);
+
+        // Ticket linked to two contracts, a third contract is not linked
+        $contracts_fields = [
+            ['users_id_tech' => $users_ids['contract_a'], 'groups_id_tech' => $group->getID()],
+            ['users_id_tech' => $users_ids['contract_b']],
+        ];
+        foreach ($contracts_fields as $i => $fields) {
+            $contract = $this->createItem(\Contract::class, [
+                'name'        => __FUNCTION__ . $i,
+                'entities_id' => $entities_id,
+            ] + $fields);
+            $this->createItem(\Ticket_Contract::class, [
+                'tickets_id'   => $ticket->getID(),
+                'contracts_id' => $contract->getID(),
+            ]);
+        }
+        $this->createItem(\Contract::class, [
+            'name'          => __FUNCTION__ . 'unlinked',
+            'entities_id'   => $entities_id,
+            'users_id_tech' => $users_ids['unlinked'],
+        ]);
+
+        $expected = [
+            \Notification::CONTRACT_TECH_IN_CHARGE       => [$users_ids['contract_a'], $users_ids['contract_b']],
+            \Notification::CONTRACT_TECH_GROUP_IN_CHARGE => [$users_ids['group_member']],
+        ];
+        foreach ($expected as $items_id => $expected_users_ids) {
+            $target = new NotificationTargetTicket($entities_id, 'recall', $ticket);
+            $this->assertArrayHasKey(
+                \Notification::USER_TYPE . '_' . $items_id,
+                $target->notification_targets
+            );
+
+            $target->setMode(\Notification_NotificationTemplate::MODE_MAIL);
+            $target->setEvent(\NotificationEventMailing::class);
+            $target->addForTarget(['type' => \Notification::USER_TYPE, 'items_id' => $items_id, 'notifications_id' => 0]);
+            $actual = array_column($target->getTargets(), 'users_id');
+            sort($actual);
+            $this->assertEquals($expected_users_ids, $actual);
+        }
+    }
 }

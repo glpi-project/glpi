@@ -84,6 +84,7 @@ class OlaLevel extends LevelAgreementLevel
         $actions['recall_ola']['name']          = __('Automatic reminders of OLA');
         $actions['recall_ola']['type']          = 'yesonly';
         $actions['recall_ola']['force_actions'] = ['send'];
+        $actions += $this->getNotificationRecallActions('recall_ola', $actions['recall_ola']['name']);
 
         return $actions;
     }
