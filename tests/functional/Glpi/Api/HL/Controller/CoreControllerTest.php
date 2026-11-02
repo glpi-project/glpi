@@ -421,6 +421,66 @@ class CoreControllerTest extends HLAPITestCase
         }, false);
     }
 
+    public function testAuthorizeConsentRequiresPostWithCsrfToken(): void
+    {
+        $client = $this->createItem(\OAuthClient::class, [
+            'name' => __FUNCTION__,
+            'is_active' => 1,
+            'is_confidential' => 1,
+            'grants' => ['authorization_code'],
+        ]);
+        $this->loginWeb();
+
+        $build_request = function (string $method, array $parameters, array $query = []) use ($client): Request {
+            $request = (new Request($method, '/authorize'))->withQueryParams([
+                'response_type' => 'code',
+                'client_id'     => $client->fields['identifier'],
+                'redirect_uri'  => '/api.php/oauth2/redirection',
+                'scope'         => 'user',
+            ] + $query);
+            // The router seeds the parameters from $_REQUEST, query string included
+            foreach ($query as $name => $value) {
+                $request->setParameter($name, $value);
+            }
+            foreach ($parameters as $name => $value) {
+                $request->setParameter($name, $value);
+            }
+            return $request;
+        };
+
+        // A GET carrying the decision only displays the consent form
+        $this->api->call($build_request('GET', ['accept' => '1']), function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->headers(fn($headers) => $this->assertArrayNotHasKey('Location', $headers));
+        }, false);
+
+        // A POST without a valid CSRF token is refused
+        $this->api->call($build_request('POST', ['accept' => '']), function ($call) {
+            $call->response->isAccessDenied();
+        }, false);
+        $this->api->call($build_request('POST', ['accept' => '', '_glpi_csrf_token' => 'invalid']), function ($call) {
+            $call->response->isAccessDenied();
+        }, false);
+
+        // A decision passed in the query string is ignored: clicking "Deny" on a crafted URL does not approve
+        $this->api->call($build_request('POST', ['deny' => '', '_glpi_csrf_token' => \Session::getNewCSRFToken()], ['accept' => '1']), function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(302, $status))
+                ->headers(function ($headers) {
+                    $this->assertStringContainsString('error=access_denied', $headers['Location']);
+                    $this->assertStringNotContainsString('code=', $headers['Location']);
+                });
+        }, false);
+
+        // A POST with a valid CSRF token issues the code
+        $this->api->call($build_request('POST', ['accept' => '', '_glpi_csrf_token' => \Session::getNewCSRFToken()]), function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(302, $status))
+                ->headers(fn($headers) => $this->assertStringContainsString('code=', $headers['Location']));
+        }, false);
+    }
+
     public function testStatusScope()
     {
         $this->login(api_options: ['scope' => 'api']);
