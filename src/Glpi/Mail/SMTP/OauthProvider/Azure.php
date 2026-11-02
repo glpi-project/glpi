@@ -60,7 +60,8 @@ final class Azure extends \TheNetworg\OAuth2\Client\Provider\Azure implements Pr
         unset($options['type']);
 
         $this->requestedScopes = $options['scopes'] ?? $this->getScopesForType($type);
-        unset($options['scopes']);
+        // Forwarded to the parent, which uses them as default scopes for token requests (code exchange, refresh).
+        $options['scopes'] = $this->requestedScopes;
         $options['defaultEndPointVersion'] = self::ENDPOINT_VERSION_2_0;
 
         parent::__construct($options);
