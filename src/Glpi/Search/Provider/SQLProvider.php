@@ -1922,7 +1922,7 @@ final class SQLProvider implements SearchProviderInterface
                                 return self::getDateTimeRangeCriteria("$table.$field", $boundaries, $nott);
                             }
 
-                            return self::getTextCriteria($table . '.' . $field, $val, $nott, Operator::NONE);
+                            return self::getTextCriteria($table . '.' . $field, $val, $nott, Operator::NONE, null);
                         }
                     }
                     if ($searchtype === 'lessthan') {
@@ -2417,7 +2417,15 @@ final class SQLProvider implements SearchProviderInterface
             }
         }
 
-        return [self::getTextCriteria($tocompute, $val, $nott, Operator::NONE)];
+        return [
+            self::getTextCriteria(
+                $tocompute,
+                $val,
+                $nott,
+                Operator::NONE,
+                self::getEmptyValue($searchopt[$ID]['datatype'] ?? null)
+            ),
+        ];
     }
 
     /**
@@ -3100,6 +3108,8 @@ final class SQLProvider implements SearchProviderInterface
                         $value_string = $value->getValue();
                         $new_value = strtr($value_string, $placeholders);
                         $new_criteria[$new_key] = new QueryExpression($new_value, values: $value->getParams());
+                    } elseif ($value instanceof QueryIdentifier) {
+                        $new_criteria[$new_key] = new QueryExpression(strtr($value->getValue(), $placeholders));
                     } elseif ($value !== null) {
                         $new_criteria[$new_key] = strtr($value, $placeholders);
                     } else {
@@ -4331,7 +4341,15 @@ final class SQLProvider implements SearchProviderInterface
             }
         }
 
-        return [self::getTextCriteria($NAME, $val, $NOT, Operator::NONE)];
+        return [
+            self::getTextCriteria(
+                $NAME,
+                $val,
+                $NOT,
+                Operator::NONE,
+                self::getEmptyValue($searchopt[$ID]['datatype'] ?? null)
+            ),
+        ];
     }
 
 
@@ -5958,7 +5976,7 @@ final class SQLProvider implements SearchProviderInterface
         $DBread->execution_time = true;
         $stmt = $DBread->prepare($data['sql']['search']->getQuery());
         $DBread->executeStatement($stmt, $data['sql']['search']->getParams());
-        $result = $stmt->get_result();
+        $result = $DBread->getStatementResult($stmt);
 
         if ($result) {
             $data['data']['execution_time'] = $DBread->execution_time;
@@ -5982,7 +6000,7 @@ final class SQLProvider implements SearchProviderInterface
                 foreach ($data['sql']['count'] as $sqlcount) {
                     $stmt = $DBread->prepare($sqlcount->getQuery());
                     $DBread->executeStatement($stmt, $sqlcount->getParams());
-                    if ($sqlcount_result = $stmt->get_result()) {
+                    if ($sqlcount_result = $DBread->getStatementResult($stmt)) {
                         $data['data']['totalcount'] += $DBread->result($sqlcount_result, 0, 0);
                     }
                 }
@@ -6004,7 +6022,7 @@ final class SQLProvider implements SearchProviderInterface
                     self::constructSQL($data);
                     $stmt = $DBread->prepare($data['sql']['search']->getQuery());
                     $DBread->executeStatement($stmt, $data['sql']['search']->getParams());
-                    if ($rebuilt_result = $stmt->get_result()) {
+                    if ($rebuilt_result = $DBread->getStatementResult($stmt)) {
                         $result = $rebuilt_result;
                     }
                 }
@@ -6277,17 +6295,40 @@ final class SQLProvider implements SearchProviderInterface
     }
 
     /**
+     * Get the value matching an empty field of given datatype, in addition to `NULL`.
+     *
+     * Only text columns can store an empty string; comparing other columns to `''` produces SQL warnings.
+     * Numeric columns were matching `0`, as the server casts `''` to `0`: this is kept explicitly.
+     * Date columns have no empty value.
+     */
+    private static function getEmptyValue(?string $datatype): string|int|null
+    {
+        return match ($datatype) {
+            'bool', 'integer', 'number', 'decimal', 'count', 'mio', 'percentage', 'timestamp', 'progressbar' => 0,
+            'date', 'datetime', 'date_delay' => null,
+            default => '',
+        };
+    }
+
+    /**
      * Create SQL search condition
      *
      * @param string|QueryExpression $field Name (should **NOT** be ` protected)
      * @param string|int|null        $val   Value to search
      * @param bool                   $not   Is a negative search ? (false by default)
      * @param Operator               $link  With previous criteria (default 'AND')
+     * @param string|int|null        $empty_value Value also matched by a `NULL` search, `null` to only match `NULL`,
+     *                                            see self::getEmptyValue().
      *
      * @return array<string|int, mixed>
      */
-    public static function getTextCriteria(string|QueryExpression $field, string|int|null $val, bool $not = false, Operator $link = Operator::AND): array
-    {
+    public static function getTextCriteria(
+        string|QueryExpression $field,
+        string|int|null $val,
+        bool $not = false,
+        Operator $link = Operator::AND,
+        string|int|null $empty_value = ''
+    ): array {
         if (!is_string($field)) {
             //This case seems often not realistic; but let's keep for backward compatibility
             // Collect the values bound to the placeholders produced by makeTextCriteria(),
@@ -6298,11 +6339,14 @@ final class SQLProvider implements SearchProviderInterface
             if ($search_val != null) {
                 // makeTextSearch() produces a `LIKE ?` placeholder
                 $values[] = $search_val;
-            } elseif (strtolower((string) ($val ?? 'null')) === 'null') {
+            } elseif ($empty_value !== null && strtolower((string) ($val ?? 'null')) === 'null') {
                 // makeTextCriteria() produces an `= ?`/`<> ?` placeholder for the NULL case
-                $values[] = '';
+                $values[] = $empty_value;
             }
-            $qexpr = new QueryExpression(self::makeTextCriteria($field, $val, $not, $link->value), values: $values);
+            $qexpr = new QueryExpression(
+                self::makeTextCriteria($field, $val, $not, $link->value, $empty_value !== null),
+                values: $values
+            );
             return [$qexpr];
         }
         $field = str_replace('`', '', $field);
@@ -6313,11 +6357,11 @@ final class SQLProvider implements SearchProviderInterface
             $criteria = [$field => ['LIKE', $search_val]];
         }
 
-        if (strtolower((string) ($val ?? 'null')) == 'null') {
+        if ($empty_value !== null && strtolower((string) ($val ?? 'null')) == 'null') {
             $criteria = [
                 'OR' => [
                     [$criteria],
-                    [$field => ''],
+                    [$field => $empty_value],
                 ],
             ];
         }
@@ -6352,31 +6396,17 @@ final class SQLProvider implements SearchProviderInterface
      * @param string|int|null $val    Value to search
      * @param bool $not    Is a negative search ? (false by default)
      * @param string  $link   With previous criteria (default 'AND')
+     * @param bool    $match_empty_value Whether a `NULL` search also matches the empty value,
+     *                                   bound to the added placeholder, see self::getTextCriteria().
      *
      * @return string Search SQL string
      **/
-    public static function makeTextCriteria($field, $val, $not = false, $link = 'AND')
+    public static function makeTextCriteria($field, $val, $not = false, $link = 'AND', bool $match_empty_value = true)
     {
 
         $sql = $field . self::makeTextSearch($val, $not);
 
-        if (strtolower((string) ($val ?? 'null')) == "null") {
-            // FIXME
-            // `OR field = ''` condition is not supposed to be relevant, and can sometimes result in SQL performances issues/warnings/errors,
-            // when following datatype are used:
-            //  - integer
-            //  - number
-            //  - decimal
-            //  - count
-            //  - mio
-            //  - percentage
-            //  - timestamp
-            //  - datetime
-            //  - date_delay
-            //
-            // Removing this condition requires, at least, to use the `int`/`float`/`double`/`timestamp`/`date` types in DB,
-            // to ensure that the `''` value will not be stored in DB.
-
+        if ($match_empty_value && strtolower((string) ($val ?? 'null')) == "null") {
             if ($not) {
                 $sql .= " AND $field <> ?";
             } else {

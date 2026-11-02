@@ -357,7 +357,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             'massiveaction' => false,
             'joinparams'    => [
                 'jointype'  => 'child',
-                'condition' => ['NEWTABLE.users_id' => Session::getLoginUserID()],
+                'condition' => ['NEWTABLE.users_id' => (int) Session::getLoginUserID()],
             ],
             'datatype'      => 'specific',
             'searchtype'    => [

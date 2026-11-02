@@ -214,6 +214,15 @@ class DBmysql
      */
     private ?WeakMap $statement_queries = null;
 
+    /**
+     * Number of the debug profile SQL query data registered on the last execution of each prepared statement.
+     *
+     * Used to add the warnings that are only known once the statement result set has been read.
+     *
+     * @var ?WeakMap<mysqli_stmt, int>
+     */
+    private ?WeakMap $statement_profile_queries = null;
+
     private DBmysqlIterator $iterator;
 
     /**
@@ -377,9 +386,9 @@ class DBmysql
             $this->executeStatement($stmt, $params);
             $this->affected_rows = (int) $stmt->affected_rows;
 
-            // get_result() returns a mysqli_result for SELECT queries, and
+            // getStatementResult() returns a mysqli_result for SELECT queries, and
             // false for queries that do not produce a result set (add/delete/update).
-            $res = $stmt->get_result();
+            $res = $this->getStatementResult($stmt);
             if ($res === false) {
                 $res = true;
             }
@@ -404,7 +413,10 @@ class DBmysql
         $debug_data['rows'] = $this->getAffectedRows();
 
         // Trigger warning errors if any SQL warnings was produced by the query
-        $debug_data['warnings'] = $this->getSQLWarnings($query);
+        // (prepared statements warnings are checked by executeStatement() and getStatementResult() methods)
+        if (!$is_stmt) {
+            $debug_data['warnings'] = $this->getSQLWarnings($query);
+        }
 
         //query data for prepared statements are added in executeStatement method
         if (!$is_stmt && isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
@@ -2139,6 +2151,9 @@ class DBmysql
     /**
      * Executes a prepared statement
      *
+     * Warnings raised while the rows are read (e.g. implicit casts in WHERE clauses) are not known yet
+     * when the statement is executed, so the result set must be retrieved using self::getStatementResult().
+     *
      * @param mysqli_stmt $stmt Statement to execute
      * @param ?array<int|string, mixed> $params Parameters to bind
      * @param list<'i'|'d'|'s'>|null $types Types array (e.g. ['i', 's', 's', 'd']), or null for all types as string
@@ -2179,7 +2194,7 @@ class DBmysql
         $debug_data['warnings'] = $this->getSQLWarnings($query);
 
         if (isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
-            Profile::getCurrent()->addSQLQueryData(
+            $profile_query_num = Profile::getCurrent()->addSQLQueryData(
                 $debug_data['query'],
                 $params,
                 $debug_data['time'],
@@ -2187,7 +2202,36 @@ class DBmysql
                 $debug_data['errors'],
                 $debug_data['warnings']
             );
+            if ($profile_query_num !== null) {
+                $this->statement_profile_queries ??= new WeakMap();
+                $this->statement_profile_queries[$stmt] = $profile_query_num;
+            }
         }
+    }
+
+    /**
+     * Get the result set of an executed prepared statement, and check the SQL warnings it produced.
+     *
+     * @param mysqli_stmt $stmt Executed statement
+     *
+     * @return mysqli_result|false A result for queries that produce a result set (e.g. SELECT), false otherwise
+     */
+    public function getStatementResult(mysqli_stmt $stmt): mysqli_result|false
+    {
+        $res = $stmt->get_result();
+        if ($res !== false) {
+            // Warnings are sent by the server after the rows, they are only available once the result set has been read
+            $warnings = $this->getSQLWarnings($this->getStatementQuery($stmt));
+
+            $profile_query_num = $this->statement_profile_queries[$stmt] ?? null;
+            if ($profile_query_num !== null) {
+                unset($this->statement_profile_queries[$stmt]);
+                if ($warnings !== '') {
+                    Profile::getCurrent()->addSQLQueryWarnings($profile_query_num, $warnings);
+                }
+            }
+        }
+        return $res;
     }
 
     /**
