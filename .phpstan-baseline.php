@@ -1978,7 +1978,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Binary operation "\\+" between int\\|string and 1 results in an error\\.$#',
 	'identifier' => 'binaryOp.invalid',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/CommonGLPI.php',
 ];
 $ignoreErrors[] = [
@@ -1990,7 +1990,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Binary operation "\\-" between int\\|string and 1 results in an error\\.$#',
 	'identifier' => 'binaryOp.invalid',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/CommonGLPI.php',
 ];
 $ignoreErrors[] = [
