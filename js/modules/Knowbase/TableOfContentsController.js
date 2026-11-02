@@ -45,9 +45,10 @@ export class GlpiKnowbaseTableOfContentsController
 
     /**
      * @type {number} Below this body width, in rem, the column does not show:
-     * 56.25rem of text plus the 18rem of `.kb-toc-column` and its gap.
+     * 37.5rem of text plus the 18rem of `.kb-toc-column` and its gap. Low
+     * enough for the fixed-width helpdesk and public FAQ layouts.
      */
-    static #MIN_BODY_WIDTH = 74.25;
+    static #MIN_BODY_WIDTH = 55.5;
 
     /** @type {HTMLElement} */
     #container;
