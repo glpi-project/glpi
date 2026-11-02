@@ -236,6 +236,28 @@
                     </a>
                 </div>
 
+                {# Table of contents toggle, shown by JS when the content has headings.
+                   Becomes a dropdown when there is no space for the column. #}
+                <div class="dropdown d-none" data-glpi-kb-toc-toggle-container>
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-ghost-secondary btn-icon kb-toc-toggle"
+                        aria-label="{{ __('Show contents') }}"
+                        aria-pressed="false"
+                        aria-keyshortcuts="Control+Alt+H"
+                        data-bs-toggle="dropdown"
+                        data-bs-auto-close="true"
+                        data-glpi-kb-toc-toggle
+                    >
+                        <i class="ti ti-align-right" aria-hidden="true"></i>
+                    </button>
+                    <div class="dropdown-menu kb-toc-dropdown p-2">
+                        <nav aria-label="{{ __('Table of contents') }}">
+                            <ul class="kb-toc list-unstyled mb-0" data-glpi-kb-toc-list></ul>
+                        </nav>
+                    </div>
+                </div>
+
                 {# Documents count #}
                 <div class="d-flex align-items-center {{ documents_count == 0 ? 'd-none' : '' }}" data-kb-documents-count-container>
                     <i class="ti ti-paperclip me-1 fs-3" aria-hidden="true"></i>
@@ -297,16 +319,33 @@
 
         {% endif %}
 
-        {# Tiptap editor container #}
-        <div
-            id="kb-tiptap-editor"
-            class="rich_text_container article-container mt-4 {{ mode in ['add', 'edit'] ? 'kb-editor-reserved' }}"
-            data-glpi-kb-content
-            data-glpi-comment-anchors="{{ (comment_anchors ?? [])|json_encode|e('html_attr') }}"
-            data-glpi-comment-anchor-max-length="{{ comment_anchor_max_length ?? 0 }}"
-            data-testid="content"
-        >
-            {{ answer|enhanced_html({text_maxsize: 0}) }}
+        <div class="kb-article-body d-flex mt-4" data-glpi-kb-article-body>
+            {# Tiptap editor container #}
+            <div
+                id="kb-tiptap-editor"
+                class="rich_text_container article-container flex-grow-1 {{ mode in ['add', 'edit'] ? 'kb-editor-reserved' }}"
+                data-glpi-kb-content
+                data-glpi-comment-anchors="{{ (comment_anchors ?? [])|json_encode|e('html_attr') }}"
+                data-glpi-comment-anchor-max-length="{{ comment_anchor_max_length ?? 0 }}"
+                data-testid="content"
+            >
+                {{ answer|enhanced_html({text_maxsize: 0}) }}
+            </div>
+
+            {% if mode == "view" or mode == "edit" %}
+                {# Filled and shown by JS #}
+                <nav
+                    class="kb-toc-column d-none"
+                    aria-label="{{ __('Table of contents') }}"
+                    data-glpi-kb-toc-column
+                >
+                    <div class="kb-toc-title text-muted fw-bold mb-2">{{ __('Contents') }}</div>
+                    <p class="text-muted small mb-0 d-none" data-glpi-kb-toc-empty>
+                        {{ __('This article has no headings.') }}
+                    </p>
+                    <ul class="kb-toc list-unstyled mb-0" data-glpi-kb-toc-list></ul>
+                </nav>
+            {% endif %}
         </div>
 
         {# Sub-articles, Documents and Related Items section #}

@@ -36,6 +36,8 @@ import { get, post } from "/js/modules/Ajax.js";
 import { DocumentLinkController } from "/js/modules/Knowbase/DocumentLinkController.js";
 import { LinkItemFormController } from "/js/modules/Knowbase/LinkItemFormController.js";
 import { GlpiKnowbaseArticleSidePanelController } from "/js/modules/Knowbase/ArticleSidePanelController.js";
+import { GlpiKnowbaseArticleOutline } from "/js/modules/Knowbase/ArticleOutline.js";
+import { GlpiKnowbaseTableOfContentsController } from "/js/modules/Knowbase/TableOfContentsController.js";
 import { GlpiKnowbaseServiceCatalogPanelController } from "/js/modules/Knowbase/ServiceCatalogPanelController.js";
 import { highlightComments } from "/js/modules/Knowbase/CommentHighlighter.js";
 import { ReadModeSelectionBubble } from "/js/modules/Knowbase/ReadModeSelectionBubble.js";
@@ -66,6 +68,9 @@ export class GlpiKnowbaseArticleController
      * @type {KnowbaseEditor|null}
      */
     #editor = null;
+
+    /** @type {GlpiKnowbaseTableOfContentsController|null} */
+    #toc = null;
 
     /**
      * @type {string}
@@ -180,6 +185,9 @@ export class GlpiKnowbaseArticleController
         }
         this.#initEventListeners();
         this.#initEditor();
+        if (mode !== "add") {
+            this.#initTableOfContents();
+        }
         this.#initDiffListeners();
         this.#initIllustrationPicker();
         this.#initRecursiveToggle();
@@ -274,6 +282,17 @@ export class GlpiKnowbaseArticleController
                 link.addEventListener('click', () => bootstrap.Tab.getOrCreateInstance(tab).show());
             }
         }
+    }
+
+    #initTableOfContents()
+    {
+        const outline = new GlpiKnowbaseArticleOutline(
+            this.#container.querySelector('#kb-tiptap-editor'),
+            this.#container.querySelector('[data-glpi-knowbase-article-content]'),
+        );
+        this.#toc = new GlpiKnowbaseTableOfContentsController(this.#container, outline);
+        // After #initEditor(): the article HTML is read before headings get ids and icons.
+        outline.start();
     }
 
     #initDiffListeners()
@@ -524,6 +543,10 @@ export class GlpiKnowbaseArticleController
                 break;
             case EditorActionType.OPEN_MODAL:
                 this.#openModal(params.id, params.key, params.title, params.icon ?? null);
+                break;
+            case EditorActionType.TOGGLE_TABLE_OF_CONTENTS:
+                event.stopPropagation();
+                this.#toc?.toggle();
                 break;
         }
     }

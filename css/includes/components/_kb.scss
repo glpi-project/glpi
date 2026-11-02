@@ -190,6 +190,97 @@ body.in_modal .kb-article {
     }
 }
 
+// Heading anchors and table of contents
+
+#kb-tiptap-editor {
+    min-width: 0;
+
+    :is(h1, h2, h3, h4, h5, h6) {
+        position: relative;
+        scroll-margin-top: 1rem;
+    }
+}
+
+.kb-heading-anchor {
+    position: absolute;
+    inset-inline-start: -1.25em;
+    padding-inline-end: 0.25em;
+    color: var(--tblr-muted);
+    font-size: 0.8em;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+
+    :is(h1, h2, h3, h4, h5, h6):hover > &,
+    &:focus-visible {
+        opacity: 1;
+    }
+
+    &:hover {
+        color: var(--tblr-primary);
+    }
+}
+
+// Width + margin are counted in MIN_BODY_WIDTH of TableOfContentsController.js
+.kb-toc-column {
+    position: sticky;
+    top: 1rem;
+    align-self: flex-start;
+    flex: 0 0 16rem;
+    margin-inline-start: 2rem;
+    max-height: calc(100vh - 150px - 2rem);
+    overflow-y: auto;
+}
+
+.kb-toc-title {
+    font-size: 0.75rem;
+    padding-inline-start: 0.75rem;
+}
+
+.kb-toc-toggle[aria-pressed="true"] {
+    background-color: var(--tblr-secondary-lt);
+}
+
+.kb-toc-tooltip .tooltip-inner {
+    max-width: none;
+    white-space: nowrap;
+
+    kbd {
+        padding: 0.05rem 0.3rem;
+        border: 0;
+        background-color: rgb(255 255 255 / 20%);
+        color: inherit;
+        box-shadow: none;
+    }
+}
+
+.kb-toc-dropdown {
+    min-width: 16rem;
+    max-width: min(24rem, 90vw);
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.kb-toc-link {
+    display: block;
+    padding-block: 0.25rem;
+    padding-inline: calc(0.75rem + var(--kb-toc-depth, 0) * 1rem) 0.5rem;
+    border-inline-start: 2px solid transparent;
+    color: var(--tblr-secondary);
+    text-decoration: none;
+    overflow-wrap: anywhere;
+
+    &:hover {
+        color: var(--tblr-body-color);
+        text-decoration: none;
+    }
+
+    &[aria-current="location"] {
+        border-inline-start-color: var(--tblr-primary);
+        color: var(--tblr-primary);
+        font-weight: 500;
+    }
+}
+
 // KB Documents footer section
 
 .kb-documents-footer {

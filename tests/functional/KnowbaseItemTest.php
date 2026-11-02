@@ -39,6 +39,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profile as DebugProfile;
 use Glpi\Knowbase\EditorAction;
+use Glpi\Knowbase\EditorActionSeparator;
 use Glpi\Knowbase\EditorActionType;
 use Glpi\Tests\DbTestCase;
 use InvalidArgumentException;
@@ -880,30 +881,15 @@ HTML,
         $this->assertNotContains($articles['future']->fields['name'], $names);
     }
 
-    public function testGetAnswerAnchors(): void
+    public function testGetAnswerKeepsHeadingsUnchanged(): void
     {
-        // Create test KB with multiple headers
-        $kb_name = 'Test testGetAnswerAnchors' . mt_rand();
-        $input = [
-            'name' => $kb_name,
-            'answer' => '<h1>title 1a</h1><h2>title2</h2><h1>title 1b</h1><h1>title 1c</h1>',
-        ];
-        $this->createItems('KnowbaseItem', [$input]);
+        $answer = '<h1>title 1a</h1><h2>title2</h2><h1>title 1b</h1>';
+        $kbi = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__,
+            'answer' => $answer,
+        ]);
 
-        // Load KB
-        /** @var KnowbaseItem */
-        $kbi = getItemByTypeName("KnowbaseItem", $kb_name);
-        $answer = $kbi->getAnswer();
-
-        // Test anchors, there should be one per header
-        $this->assertStringContainsString('<h1 id="title-1a">', $answer);
-        $this->assertStringContainsString('<a href="#title-1a">', $answer);
-        $this->assertStringContainsString('<h2 id="title2">', $answer);
-        $this->assertStringContainsString('<a href="#title2">', $answer);
-        $this->assertStringContainsString('<h1 id="title-1b">', $answer);
-        $this->assertStringContainsString('<a href="#title-1b">', $answer);
-        $this->assertStringContainsString('<h1 id="title-1c">', $answer);
-        $this->assertStringContainsString('<a href="#title-1c">', $answer);
+        $this->assertSame($answer, $kbi->getAnswer());
     }
 
     public function testCreateWithParents()
@@ -3970,6 +3956,50 @@ HTML,
         $this->assertContains('Permissions', $labels);
         $this->assertContains('Schedule visibility', $labels);
         $this->assertContains('Service catalog', $labels);
+    }
+
+    public function testTableOfContentsActionComesFirstForAnyReader(): void
+    {
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $entity = $this->getTestRootEntity(only_id: true);
+
+        $this->login();
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__,
+            'answer'      => '<h2>Section</h2><p>Text</p>',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+        ]);
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $article->getID(),
+            'entities_id'      => $entity,
+            'is_recursive'     => 1,
+        ]);
+
+        $actions = $this->callPrivateMethod($article, 'getEditorActions');
+        $this->assertInstanceOf(EditorAction::class, $actions[0]);
+        $this->assertSame(EditorActionType::TOGGLE_TABLE_OF_CONTENTS, $actions[0]->type);
+        $this->assertInstanceOf(EditorActionSeparator::class, $actions[1]);
+
+        $this->login('post-only', 'postonly');
+
+        $item = new KnowbaseItem();
+        $this->assertTrue($item->getFromDB($article->getID()));
+        $this->assertTrue($item->can($article->getID(), READ));
+        $this->assertFalse($item->can($article->getID(), UPDATE));
+
+        $types = array_map(
+            static fn(EditorAction $action): EditorActionType => $action->type,
+            array_values(array_filter(
+                $this->callPrivateMethod($item, 'getEditorActions'),
+                static fn(object $action): bool => $action instanceof EditorAction,
+            )),
+        );
+        $this->assertSame(
+            [EditorActionType::TOGGLE_TABLE_OF_CONTENTS, EditorActionType::TOGGLE_FAVORITE],
+            $types,
+        );
     }
 
     /**
