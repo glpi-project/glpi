@@ -448,6 +448,66 @@ class CoreControllerTest extends HLAPITestCase
         $this->assertEquals($user_agent, $token['user_agent']);
     }
 
+    public function testAuthorizeConsentRequiresSameOriginPost(): void
+    {
+        $client = $this->createItem(\OAuthClient::class, [
+            'name' => __FUNCTION__,
+            'is_active' => 1,
+            'is_confidential' => 1,
+            'grants' => ['authorization_code'],
+        ]);
+        $this->loginWeb();
+
+        $build_request = function (string $method, array $parameters, array $query = [], array $headers = []) use ($client): Request {
+            $request = (new Request($method, '/authorize', $headers))->withQueryParams([
+                'response_type' => 'code',
+                'client_id'     => $client->fields['identifier'],
+                'redirect_uri'  => '/api.php/oauth2/redirection',
+                'scope'         => 'user',
+            ] + $query);
+            // The router seeds the parameters from $_REQUEST, query string included
+            foreach ($query as $name => $value) {
+                $request->setParameter($name, $value);
+            }
+            foreach ($parameters as $name => $value) {
+                $request->setParameter($name, $value);
+            }
+            return $request;
+        };
+
+        // A GET carrying the decision only displays the consent form
+        $this->api->call($build_request('GET', ['accept' => '1'], [], ['Sec-Fetch-Site' => 'cross-site']), function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->headers(fn($headers) => $this->assertArrayNotHasKey('Location', $headers));
+        }, false);
+
+        // A POST coming from another site is refused
+        $this->api->call($build_request('POST', ['accept' => ''], [], ['Sec-Fetch-Site' => 'cross-site']), function ($call) {
+            $call->response->isAccessDenied();
+        }, false);
+        $this->api->call($build_request('POST', ['accept' => ''], [], ['Origin' => 'https://attacker.example', 'Host' => 'glpi.example']), function ($call) {
+            $call->response->isAccessDenied();
+        }, false);
+
+        // A decision passed in the query string is ignored: clicking "Deny" on a crafted URL does not approve
+        $this->api->call($build_request('POST', ['deny' => ''], ['accept' => '1'], ['Sec-Fetch-Site' => 'same-origin']), function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(302, $status))
+                ->headers(function ($headers) {
+                    $this->assertStringContainsString('error=access_denied', $headers['Location']);
+                    $this->assertStringNotContainsString('code=', $headers['Location']);
+                });
+        }, false);
+
+        // A same-origin POST issues the code
+        $this->api->call($build_request('POST', ['accept' => ''], [], ['Sec-Fetch-Site' => 'same-origin']), function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(302, $status))
+                ->headers(fn($headers) => $this->assertStringContainsString('code=', $headers['Location']));
+        }, false);
+    }
+
     public function testStatusScope()
     {
         $this->login(api_options: ['scope' => 'api']);
