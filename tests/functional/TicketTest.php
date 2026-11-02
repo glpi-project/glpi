@@ -7423,20 +7423,25 @@ HTML,
 
     public static function assignToMeWithoutUpdateRightProvider(): iterable
     {
-        yield 'steal' => [Ticket::READALL + Ticket::STEAL];
-        yield 'steal and assign' => [Ticket::READALL + Ticket::STEAL + Ticket::ASSIGN];
+        yield 'steal' => [Ticket::READALL + Ticket::STEAL, true, true];
+        yield 'steal and assign' => [Ticket::READALL + Ticket::STEAL + Ticket::ASSIGN, true, true];
+        yield 'own on unassigned ticket' => [Ticket::READALL + Ticket::OWN, false, true];
+        yield 'own on assigned ticket' => [Ticket::READALL + Ticket::OWN, true, false];
+        yield 'no assign right' => [Ticket::READALL, false, false];
     }
 
     #[DataProvider('assignToMeWithoutUpdateRightProvider')]
-    public function testAssignToMeWithoutUpdateRight(int $rights): void
+    public function testAssignToMeWithoutUpdateRight(int $rights, bool $already_assigned, bool $expected): void
     {
         $this->login();
+        $glpi_id = getItemByTypeName('User', 'glpi', true);
         $ticket = $this->createItem(Ticket::class, [
             'name'                => __METHOD__,
             'content'             => __METHOD__,
             'entities_id'         => 0,
             '_skip_auto_assign'   => true,
             '_users_id_requester' => getItemByTypeName('User', 'normal', true),
+            '_users_id_assign'    => $already_assigned ? $glpi_id : 0,
         ]);
 
         $this->changeTechRights(['ticket' => $rights]);
@@ -7452,12 +7457,27 @@ HTML,
             ],
         ]));
 
+        // Self-assignment never removes the existing assignee
         $ticket->getFromDB($ticket->getID());
-        $this->assertTrue($ticket->isUser(CommonITILActor::ASSIGN, $tech_id));
+        $this->assertSame($expected, $ticket->isUser(CommonITILActor::ASSIGN, $tech_id));
+        $this->assertSame($already_assigned, $ticket->isUser(CommonITILActor::ASSIGN, $glpi_id));
     }
 
-    #[DataProvider('assignToMeWithoutUpdateRightProvider')]
-    public function testAssignOtherUserWithoutUpdateRight(int $rights): void
+    public static function assignOtherActorWithoutUpdateRightProvider(): iterable
+    {
+        $actors = [
+            'user'     => fn() => ['_type' => 'user', 'users_id' => getItemByTypeName('User', 'glpi', true)],
+            'group'    => fn() => ['_type' => 'group', 'groups_id' => getItemByTypeName('Group', '_test_group_1', true)],
+            'supplier' => fn() => ['_type' => 'supplier', 'suppliers_id' => getItemByTypeName('Supplier', '_suplier01_name', true)],
+        ];
+        foreach ($actors as $type => $actor) {
+            yield "$type with steal" => [Ticket::READALL + Ticket::STEAL, $actor, false];
+            yield "$type with assign" => [Ticket::READALL + Ticket::ASSIGN, $actor, true];
+        }
+    }
+
+    #[DataProvider('assignOtherActorWithoutUpdateRightProvider')]
+    public function testAssignOtherActorWithoutUpdateRight(int $rights, callable $actor, bool $expected): void
     {
         $this->login();
         $ticket = $this->createItem(Ticket::class, [
@@ -7472,15 +7492,11 @@ HTML,
 
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
         $ticket->update(array_merge($ticket->fields, [
-            '_itil_assign' => [
-                '_type'            => 'user',
-                'users_id'         => getItemByTypeName('User', 'glpi', true),
-                'use_notification' => 1,
-            ],
+            '_itil_assign' => $actor() + ['use_notification' => 1],
         ]));
 
         $ticket->getFromDB($ticket->getID());
-        $this->assertCount(0, $ticket->getActorsForType(CommonITILActor::ASSIGN));
+        $this->assertCount($expected ? 1 : 0, $ticket->getActorsForType(CommonITILActor::ASSIGN));
     }
 
     public static function mailCollectorFollowupSetAssigneeProvider(): array
