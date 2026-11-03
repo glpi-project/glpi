@@ -226,6 +226,7 @@
                                     id="enable-pending-reasons-{{ rand }}"
                                     role="button"
                                     {{ (item.fields['status'] == constant('CommonITILObject::WAITING') or is_default_pending) and not add_reopen ? 'checked' : '' }}
+                                    aria-controls="pending-reasons-setup-{{ rand }}"
                                     data-testid="pending-checkbox" />
                            </label>
                         </span>
