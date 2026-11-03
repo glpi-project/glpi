@@ -833,9 +833,9 @@ class NetworkPort extends InventoryAsset
     {
         $mainasset = $this->extra_data[$this->main_asset::class];
 
-        //remove management port for Printer on netinventory
+        //remove management port on netinventory
         //to prevent twice IP (NetworkPortAggregate / NetworkPortEthernet)
-        if ($mainasset instanceof Printer && !$this->item->isNewItem()) {
+        if ($mainasset instanceof NetworkEquipment && !$this->item->isNewItem()) {
             if (empty($mainasset->getManagementPorts())) {
                 //remove all port management ports
                 $networkport = new GlobalNetworkPort();

@@ -5128,4 +5128,102 @@ Build Time: Mon Jan 27 10:02:25 2020</COMMENTS>
             $this->assertCount($nb_port, $found_np, 'Must have ' . $nb_port . ' ports');
         }
     }
+
+    public function testManagementIpNotDuplicatedOnImportedPort(): void
+    {
+        $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/huawei-ibmc.xml');
+
+        $inventory = $this->doInventory($xml_source, true);
+
+        $this->assertSame(
+            ['eth2' => ['192.0.2.10']],
+            $this->getPortsIps($inventory->getItem())
+        );
+    }
+
+    public function testManagementPortKeepsIpNotCarriedByImportedPort(): void
+    {
+        $xml_source = preg_replace(
+            '#<IP>192\.0\.2\.10</IP>#',
+            '<IP>192.0.2.10</IP><IP>192.0.2.20</IP>',
+            file_get_contents(FIXTURE_DIR . '/inventories/huawei-ibmc.xml'),
+            1
+        );
+
+        $inventory = $this->doInventory($xml_source, true);
+
+        $this->assertSame(
+            ['eth2' => ['192.0.2.10'], 'Management' => ['192.0.2.20']],
+            $this->getPortsIps($inventory->getItem())
+        );
+    }
+
+    public function testManagementPortRemovedWhenImportedPortCarriesItsIp(): void
+    {
+        $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/huawei-ibmc.xml');
+        $xml_source_without_eth2_ip = preg_replace(
+            '#(<IFNAME>eth2</IFNAME>.*?)<IP>192\.0\.2\.10</IP>\s*<IPS>.*?</IPS>#s',
+            '$1',
+            $xml_source
+        );
+
+        $first_inventory = $this->doInventory($xml_source_without_eth2_ip, true);
+        $this->assertSame(
+            ['Management' => ['192.0.2.10']],
+            $this->getPortsIps($first_inventory->getItem())
+        );
+
+        $second_inventory = $this->doInventory($xml_source, true);
+        $this->assertSame($first_inventory->getItem()->getID(), $second_inventory->getItem()->getID());
+        $this->assertSame(
+            ['eth2' => ['192.0.2.10']],
+            $this->getPortsIps($second_inventory->getItem())
+        );
+        $this->assertSame(
+            0,
+            countElementsInTable(\NetworkPort::getTable(), [
+                'itemtype' => \NetworkEquipment::class,
+                'items_id' => $second_inventory->getItem()->getID(),
+                'name'     => 'Management',
+            ])
+        );
+    }
+
+    /** @return array<string, array<int, string>> */
+    private function getPortsIps(\CommonDBTM $item): array
+    {
+        global $DB;
+
+        $ports_ips = [];
+        $iterator = $DB->request([
+            'SELECT'     => ['glpi_networkports.name AS port', 'glpi_ipaddresses.name AS ip'],
+            'FROM'       => \NetworkPort::getTable(),
+            'INNER JOIN' => [
+                \NetworkName::getTable() => [
+                    'ON' => [
+                        \NetworkName::getTable() => 'items_id',
+                        \NetworkPort::getTable() => 'id',
+                        ['AND' => [\NetworkName::getTable() . '.itemtype' => \NetworkPort::class]],
+                    ],
+                ],
+                \IPAddress::getTable() => [
+                    'ON' => [
+                        \IPAddress::getTable()   => 'items_id',
+                        \NetworkName::getTable() => 'id',
+                        ['AND' => [\IPAddress::getTable() . '.itemtype' => \NetworkName::class]],
+                    ],
+                ],
+            ],
+            'WHERE'      => [
+                \NetworkPort::getTable() . '.itemtype' => $item::class,
+                \NetworkPort::getTable() . '.items_id' => $item->getID(),
+            ],
+            'ORDER'      => ['port', 'ip'],
+        ]);
+        foreach ($iterator as $row) {
+            $ports_ips[$row['port']][] = $row['ip'];
+        }
+
+        return $ports_ips;
+    }
 }

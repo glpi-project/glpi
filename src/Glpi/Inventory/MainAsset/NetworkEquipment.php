@@ -43,6 +43,7 @@ use IPAddress;
 use NetworkEquipmentModel;
 use NetworkEquipmentType;
 use NetworkName;
+use NetworkPortType;
 use RuntimeException;
 use stdClass;
 
@@ -129,7 +130,12 @@ class NetworkEquipment extends MainAsset
                     }
                 }
 
-                $this->management_ports[$portkey] = $port;
+                $management_ips = array_values(array_diff($port->ipaddress, $this->getImportedPortsIps()));
+                // Management port only holds IPs no imported port carries, to avoid registering them twice
+                if ($management_ips !== [] || $port->ipaddress === []) {
+                    $port->ipaddress = $management_ips;
+                    $this->management_ports[$portkey] = $port;
+                }
             }
         }
 
@@ -279,6 +285,23 @@ class NetworkEquipment extends MainAsset
                 'name'      => $port->name,
             ]);
         }
+    }
+
+    /** @return array<int, string> */
+    private function getImportedPortsIps(): array
+    {
+        $ips = [];
+        foreach ($this->raw_data->content->network_ports ?? [] as $network_port) {
+            if (!property_exists($network_port, 'ifnumber') && !property_exists($network_port, 'logical_number')) {
+                continue;
+            }
+            if (property_exists($network_port, 'iftype') && NetworkPortType::getInstantiationType($network_port->iftype) === false) {
+                continue;
+            }
+            array_push($ips, ...($network_port->ips ?? []));
+        }
+
+        return $ips;
     }
 
     /**
