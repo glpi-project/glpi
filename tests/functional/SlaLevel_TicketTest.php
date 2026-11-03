@@ -37,9 +37,13 @@ namespace tests\units;
 use CommonITILObject;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\SLMTrait;
+use OlaLevel;
+use OlaLevelAction;
+use PHPUnit\Framework\Attributes\DataProvider;
 use SLA;
 use SlaLevel;
 use SlaLevel_Ticket;
+use SlaLevelAction;
 use SLM;
 use Ticket;
 
@@ -171,7 +175,7 @@ class SlaLevel_TicketTest extends DbTestCase
         ];
 
         $scrit    = new \SlaLevelCriteria();
-        $saction  = new \SlaLevelAction();
+        $saction  = new SlaLevelAction();
 
         $scrit_id   = $scrit->add($scrit_in);
         $saction_id = $saction->add($saction_in);
@@ -300,7 +304,7 @@ class SlaLevel_TicketTest extends DbTestCase
         ];
 
         $scrit    = new \SlaLevelCriteria();
-        $saction  = new \SlaLevelAction();
+        $saction  = new SlaLevelAction();
 
         $scrit_id   = $scrit->add($scrit_in);
         $saction_id_1 = $saction->add($saction1_in);
@@ -420,7 +424,45 @@ class SlaLevel_TicketTest extends DbTestCase
         ]));
     }
 
-    public function testRecallActionSendsOnlyItsNotification(): void
+    public static function recallLevelProvider(): iterable
+    {
+        yield 'SLA' => ['level_class' => SlaLevel::class, 'action_class' => SlaLevelAction::class, 'event' => 'recall'];
+        yield 'OLA' => ['level_class' => OlaLevel::class, 'action_class' => OlaLevelAction::class, 'event' => 'recall_ola'];
+    }
+
+    /**
+     * Create a TTR level agreement with one immediate level.
+     *
+     * @param class-string<SlaLevel|OlaLevel> $level_class
+     *
+     * @return array{level: SlaLevel|OlaLevel, ticket_input: array<string, mixed>}
+     */
+    private function createTtrLevel(string $level_class, string $name, int $entities_id): array
+    {
+        if ($level_class === SlaLevel::class) {
+            $la = $this->createSLA(['entities_id' => $entities_id], SLM::TTR)['sla'];
+            $ticket_input = ['slas_id_ttr' => $la->getID()];
+        } else {
+            $la = $this->createOLA(['entities_id' => $entities_id], SLM::TTR)['ola'];
+            $ticket_input = ['_la_update' => true, '_olas_id' => [$la->getID()]];
+        }
+        $level = $this->createItem($level_class, [
+            'name'                     => $name,
+            'execution_time'           => 0,
+            'is_active'                => 1,
+            'match'                    => 'AND',
+            $la::getForeignKeyField()  => $la->getID(),
+        ]);
+
+        return ['level' => $level, 'ticket_input' => $ticket_input];
+    }
+
+    /**
+     * @param class-string<SlaLevel|OlaLevel> $level_class
+     * @param class-string<SlaLevelAction|OlaLevelAction> $action_class
+     */
+    #[DataProvider('recallLevelProvider')]
+    public function testRecallActionSendsOnlyItsNotification(string $level_class, string $action_class, string $event): void
     {
         global $CFG_GLPI;
 
@@ -463,7 +505,7 @@ class SlaLevel_TicketTest extends DbTestCase
                 'is_recursive' => 1,
                 'is_active'    => 1,
                 'itemtype'     => Ticket::class,
-                'event'        => 'recall',
+                'event'        => $event,
             ]);
             $template = $this->createItem(\NotificationTemplate::class, [
                 'name'     => __FUNCTION__ . $name,
@@ -490,48 +532,45 @@ class SlaLevel_TicketTest extends DbTestCase
             $templates_ids[$name] = $template->getID();
         }
 
-        ['sla' => $sla] = $this->createSLA(['entities_id' => $entities_id], SLM::TTR);
-        $level = $this->createItem(SlaLevel::class, [
-            'name'           => __FUNCTION__,
-            'execution_time' => 0,
-            'is_active'      => 1,
-            'match'          => 'AND',
-            'slas_id'        => $sla->getID(),
-        ]);
-        $action_field = 'recall_notification_' . $notifications_ids['sent'];
+        ['level' => $level, 'ticket_input' => $ticket_input] = $this->createTtrLevel($level_class, __FUNCTION__, $entities_id);
+        $action_field = $event . '_notification_' . $notifications_ids['sent'];
         $this->assertArrayHasKey($action_field, $level->getActions());
-        $this->createItem(\SlaLevelAction::class, [
-            'slalevels_id' => $level->getID(),
-            'action_type'  => 'send',
-            'field'        => $action_field,
-            'value'        => 1,
+        $this->createItem($action_class, [
+            $level::getForeignKeyField() => $level->getID(),
+            'action_type'                => 'send',
+            'field'                      => $action_field,
+            'value'                      => 1,
         ]);
 
         $ticket = $this->createItem(Ticket::class, [
             'name'             => __FUNCTION__,
             'content'          => __FUNCTION__,
             'entities_id'      => $entities_id,
-            'slas_id_ttr'      => $sla->getID(),
             '_users_id_assign' => $users_ids['assigned'],
-        ]);
-
-        $level_ticket = new SlaLevel_Ticket();
-        $this->assertTrue($level_ticket->getFromDBByCrit([
-            'tickets_id'   => $ticket->getID(),
-            'slalevels_id' => $level->getID(),
-        ]));
-        $this->updateItem(SlaLevel_Ticket::class, $level_ticket->getID(), [
-            'date' => date('Y-m-d H:i:s', time() - HOUR_TIMESTAMP),
-        ]);
+        ] + $ticket_input);
 
         $CFG_GLPI['use_notifications']     = 1;
         $CFG_GLPI['notifications_mailing'] = 1;
-        $this->runSlaCron();
+        if ($level_class === SlaLevel::class) {
+            $level_ticket = new SlaLevel_Ticket();
+            $this->assertTrue($level_ticket->getFromDBByCrit([
+                'tickets_id'   => $ticket->getID(),
+                'slalevels_id' => $level->getID(),
+            ]));
+            $this->updateItem(SlaLevel_Ticket::class, $level_ticket->getID(), [
+                'date' => date('Y-m-d H:i:s', time() - HOUR_TIMESTAMP),
+            ]);
+            $this->runSlaCron();
+        } else {
+            // OLA levels todo are rebuilt by the cron from the due time
+            $this->setCurrentTime(date('Y-m-d H:i:s', strtotime('+1 month')));
+            $this->runOlaCron();
+        }
 
         $queued = (new \QueuedNotification())->find([
             'itemtype' => Ticket::class,
             'items_id' => $ticket->getID(),
-            'event'    => 'recall',
+            'event'    => $event,
         ]);
         $this->assertSame([$templates_ids['sent']], array_values(array_unique(array_column($queued, 'notificationtemplates_id'))));
     }
@@ -552,7 +591,7 @@ class SlaLevel_TicketTest extends DbTestCase
             'slas_id'        => $sla->getID(),
         ]);
         $this->assertArrayHasKey('slastatuses_id', $level->getActions());
-        $this->createItem(\SlaLevelAction::class, [
+        $this->createItem(SlaLevelAction::class, [
             'slalevels_id' => $level->getID(),
             'action_type'  => 'assign',
             'field'        => 'slastatuses_id',
@@ -618,18 +657,16 @@ class SlaLevel_TicketTest extends DbTestCase
         $this->updateItem(Ticket::class, $ticket->getID(), ['slastatuses_id' => $status->getID()]);
     }
 
-    public function testNotificationPurgeDeletesItsRecallActions(): void
+    /**
+     * @param class-string<SlaLevel|OlaLevel> $level_class
+     * @param class-string<SlaLevelAction|OlaLevelAction> $action_class
+     */
+    #[DataProvider('recallLevelProvider')]
+    public function testNotificationPurgeDeletesItsRecallActions(string $level_class, string $action_class, string $event): void
     {
         $this->login();
 
-        ['sla' => $sla] = $this->createSLA(['entities_id' => $this->getTestRootEntity(true)], SLM::TTR);
-        $level = $this->createItem(SlaLevel::class, [
-            'name'           => __FUNCTION__,
-            'execution_time' => 0,
-            'is_active'      => 1,
-            'match'          => 'AND',
-            'slas_id'        => $sla->getID(),
-        ]);
+        ['level' => $level] = $this->createTtrLevel($level_class, __FUNCTION__, $this->getTestRootEntity(true));
 
         $notifications = [];
         $actions = [];
@@ -637,20 +674,20 @@ class SlaLevel_TicketTest extends DbTestCase
             $notification = $this->createItem(\Notification::class, [
                 'name'     => __FUNCTION__ . $name,
                 'itemtype' => Ticket::class,
-                'event'    => 'recall',
+                'event'    => $event,
             ]);
-            $actions[$name] = $this->createItem(\SlaLevelAction::class, [
-                'slalevels_id' => $level->getID(),
-                'action_type'  => 'send',
-                'field'        => 'recall_notification_' . $notification->getID(),
-                'value'        => 1,
+            $actions[$name] = $this->createItem($action_class, [
+                $level::getForeignKeyField() => $level->getID(),
+                'action_type'                => 'send',
+                'field'                      => $event . '_notification_' . $notification->getID(),
+                'value'                      => 1,
             ]);
             $notifications[$name] = $notification;
         }
 
         $this->assertTrue($notifications['purged']->delete(['id' => $notifications['purged']->getID()], true));
-        $this->assertFalse(\SlaLevelAction::getById($actions['purged']->getID()));
-        $this->assertNotFalse(\SlaLevelAction::getById($actions['kept']->getID()));
+        $this->assertFalse($action_class::getById($actions['purged']->getID()));
+        $this->assertNotFalse($action_class::getById($actions['kept']->getID()));
     }
 
 }

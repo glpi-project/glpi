@@ -8,6 +8,9 @@ The present file will list all changes made to the project; according to the
 ### Added
 - Documents, contracts and notes on cables.
 - Date variables (e.g. `{YEAR}`, `{MONTH_NAME+1}`, `{WEEK}` with `{YEAR_OF_WEEK}`) in the predefined title of recurrent tickets and changes, computed from the occurrence date.
+- Contract technician in charge and group in charge, usable as ticket notification recipients.
+- SLA and OLA escalation actions sending a single notification of the automatic reminder event.
+- SLA status dropdown on tickets, assignable by SLA escalation levels.
 
 ### Changes
 
@@ -22,6 +25,7 @@ The present file will list all changes made to the project; according to the
 #### Added
 
 #### Changes
+- `NotificationEvent::raiseEvent()` has a new optional `$notifications_id` parameter to send only one notification of the event.
 
 #### Deprecated
 
