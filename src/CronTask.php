@@ -1945,6 +1945,8 @@ TWIG, ['msg' => __('Last run list')]);
      **/
     public static function cronWatcher(self $task): int
     {
+        global $DB;
+
         // CronTasks running for more than 1 hour or 2 frequency
         $iterator = self::getZombieCrontasks();
         $crontasks = [];
@@ -1957,6 +1959,40 @@ TWIG, ['msg' => __('Last run list')]);
             $task->getFromDBByCrit(['itemtype' => self::class, 'name' => 'watcher']);
             if (NotificationEvent::raiseEvent("alert", $task, ['items' => $crontasks])) {
                 $task->addVolume(1);
+            }
+        }
+
+        // CronTasks still running after 10 frequency and 1 hour are considered as dead
+        // (e.g. process killed or database restarted during the run), unlock them
+        $iterator = $DB->request([
+            'SELECT' => ['id', 'itemtype', 'name', 'error_count'],
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'state' => self::STATE_RUNNING,
+                new QueryExpression(QueryFunction::unixTimestamp('lastrun') . ' + 10 * '
+                    . $DB::quoteName('frequency') . ' < ' . QueryFunction::unixTimestamp()),
+                new QueryExpression(QueryFunction::unixTimestamp('lastrun') . ' + '
+                    . HOUR_TIMESTAMP . ' < ' . QueryFunction::unixTimestamp()),
+            ],
+        ]);
+        $crontask = new self();
+        foreach ($iterator as $data) {
+            // Count the dead run as an error, so a task failing repeatedly is stopped in error state
+            $error_count = $data['error_count'] + 1;
+            if (
+                $crontask->update([
+                    'id'          => $data['id'],
+                    'state'       => $error_count >= self::MAX_ERROR_COUNT ? self::STATE_ERROR : self::STATE_WAITING,
+                    'error_count' => $error_count,
+                ])
+            ) {
+                Event::log(
+                    $data['id'],
+                    'CronTask',
+                    5,
+                    'Configuration',
+                    sprintf(__('Task "%s" unlocked.'), $data['itemtype'] . '::' . $data['name'])
+                );
             }
         }
 
