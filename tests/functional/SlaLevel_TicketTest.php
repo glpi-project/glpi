@@ -436,9 +436,11 @@ class SlaLevel_TicketTest extends DbTestCase
      *
      * @param class-string<SlaLevel|OlaLevel> $level_class
      *
+     * @param array<string, mixed> $level_input
+     *
      * @return array{level: SlaLevel|OlaLevel, ticket_input: array<string, mixed>}
      */
-    private function createTtrLevel(string $level_class, string $name, int $entities_id): array
+    private function createTtrLevel(string $level_class, string $name, int $entities_id, array $level_input = []): array
     {
         if ($level_class === SlaLevel::class) {
             $la = $this->createSLA(['entities_id' => $entities_id], SLM::TTR)['sla'];
@@ -453,9 +455,72 @@ class SlaLevel_TicketTest extends DbTestCase
             'is_active'                => 1,
             'match'                    => 'AND',
             $la::getForeignKeyField()  => $la->getID(),
-        ]);
+        ] + $level_input);
 
         return ['level' => $level, 'ticket_input' => $ticket_input];
+    }
+
+    #[DataProvider('recallLevelProvider')]
+    public function testRecallActionListsActiveNotificationsOfLevelEntity(string $level_class, string $action_class, string $event): void
+    {
+        $this->login();
+
+        $root_entity  = $this->getTestRootEntity(true);
+        $child_entity = getItemByTypeName(\Entity::class, '_test_child_1', true);
+
+        $notifications_ids = [];
+        $notifications = [
+            'level_entity'  => ['entities_id' => $root_entity, 'is_active' => 1],
+            'inactive'      => ['entities_id' => $root_entity, 'is_active' => 0],
+            'child_entity'  => ['entities_id' => $child_entity, 'is_active' => 1],
+            'recursive_ancestor' => ['entities_id' => 0, 'is_recursive' => 1, 'is_active' => 1],
+        ];
+        foreach ($notifications as $name => $input) {
+            $notifications_ids[$name] = $this->createItem(\Notification::class, [
+                'name'     => __FUNCTION__ . $name,
+                'itemtype' => Ticket::class,
+                'event'    => $event,
+            ] + $input)->getID();
+        }
+
+        foreach ([0 => ['level_entity', 'recursive_ancestor'], 1 => ['level_entity', 'recursive_ancestor', 'child_entity']] as $is_recursive => $expected) {
+            $level = $this->createTtrLevel($level_class, __FUNCTION__ . $is_recursive, $root_entity, [
+                'entities_id'  => $root_entity,
+                'is_recursive' => $is_recursive,
+            ])['level'];
+
+            ob_start();
+            (new \RuleAction($level_class))->displayActionSelectPattern([
+                'action_type'                => 'send',
+                'field'                      => $event . LevelAgreementLevel::NOTIFICATION_RECALL_SUFFIX,
+                'sub_type'                   => $level_class,
+                $level::getForeignKeyField() => $level->getID(),
+            ]);
+            $html = ob_get_clean();
+
+            // Query the dropdown with the AJAX parameters it was rendered with
+            $this->assertMatchesRegularExpression('/params: (\{.*\})\n/', $html);
+            preg_match('/params: (\{.*\})\n/', $html, $matches);
+            $params = json_decode($matches[1], true);
+            $values = \Dropdown::getDropdownValue([
+                'display_emptychoice' => 0,
+                'page_limit'          => 1000,
+            ] + $params, false);
+            $listed_ids = [];
+            array_walk_recursive($values['results'], static function ($value, $key) use (&$listed_ids) {
+                if ($key === 'id') {
+                    $listed_ids[] = $value;
+                }
+            });
+
+            foreach ($notifications_ids as $name => $id) {
+                if (in_array($name, $expected, true)) {
+                    $this->assertContains($id, $listed_ids, $name);
+                } else {
+                    $this->assertNotContains($id, $listed_ids, $name);
+                }
+            }
+        }
     }
 
     /**
