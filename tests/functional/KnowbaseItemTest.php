@@ -500,6 +500,20 @@ HTML,
             'search'   => '+прогр~аммное Беспл>атное обесп<ечение',
             'expected' => '+прогр аммное Беспл атное обесп ечение',
         ];
+        yield [
+            'search'   => "+search\t-with\n~whitespaces\u{00A0}>before\r\n<operators",
+            'expected' => '+search -with ~whitespaces >before <operators',
+        ];
+
+        // Symbols located at the end of a search term are not handled as words separators
+        yield [
+            'search'   => 'test.**',
+            'expected' => 'test*',
+        ];
+        yield [
+            'search'   => '"test-"',
+            'expected' => '"test"',
+        ];
 
         // Parenthesis are removed when inside texts, when odd or when empty
         yield [
