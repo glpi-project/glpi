@@ -60,7 +60,17 @@ function isFormattingWhitespace(node) {
 export function buildDomTextIndex(root) {
     const segments = [];
     let text = '';
-    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, {
+        acceptNode: (node) => {
+            if (node.nodeType === Node.TEXT_NODE) {
+                return NodeFilter.FILTER_ACCEPT;
+            }
+            // A drawn diagram is not article text, its source is: skip its whole subtree.
+            return node.matches('.kb-mermaid-preview, .kb-mermaid-tabs, .kb-mermaid-diagram')
+                ? NodeFilter.FILTER_REJECT
+                : NodeFilter.FILTER_SKIP;
+        },
+    });
     let node = walker.nextNode();
     while (node) {
         if (!isFormattingWhitespace(node)) {

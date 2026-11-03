@@ -1882,6 +1882,14 @@ HTML;
                     'where'     => 'ticket_12345_Ticket$main#TicketValidation_1',
                     'result'    => $root_doc . '/front/ticket.form.php?id=12345&forcetab=Ticket$main#TicketValidation_1',
                 ];
+
+                // Redirect to a knowledge base article.
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => 'knowbaseitem_42',
+                    'result'    => $root_doc . ($interface === 'central' ? '/front/knowbaseitem.form.php?id=42&' : '/front/helpdesk.faq.php?id=42&'),
+                ];
             }
         }
     }
@@ -1897,6 +1905,23 @@ HTML;
         $instance = new \Toolbox();
 
         $this->assertSame($result, $instance->computeRedirect($where));
+    }
+
+    public function testComputeRedirectToKnowbaseItemChangesEntityInHelpdesk(): void
+    {
+        $this->login();
+        $kbitem = $this->createItem(\KnowbaseItem::class, [
+            'name'        => 'Article in another entity',
+            'answer'      => 'Answer',
+            'is_faq'      => 1,
+            'entities_id' => getItemByTypeName('Entity', '_test_child_2', true),
+        ]);
+        $this->setEntity('_test_child_1', false);
+        $_SESSION['glpiactiveprofile']['interface'] = 'helpdesk';
+
+        (new \Toolbox())->computeRedirect('knowbaseitem_' . $kbitem->getID());
+
+        $this->assertSame(getItemByTypeName('Entity', '_test_child_2', true), $_SESSION['glpiactive_entity']);
     }
 
     public function test_LogInFile_SeeExpectedContentsInLogFile(): void

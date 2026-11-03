@@ -37,6 +37,7 @@
 import { SlashCommands } from '/js/modules/TipTap/SlashCommandsExtension.js';
 import { Base64ImageHandler } from '/js/modules/TipTap/Base64ImageHandlerExtension.js';
 import { VideoEmbed } from '/js/modules/TipTap/VideoEmbedExtension.js';
+import { MermaidBlock } from '/js/modules/TipTap/MermaidBlockExtension.js';
 import { TableGrips } from '/js/modules/TipTap/TableGripsExtension.js';
 import { post } from '/js/modules/Ajax.js';
 import { FileUploader } from '/js/modules/FileUploader.js';
@@ -157,6 +158,8 @@ class KnowbaseEditor {
                     && !state.selection.empty
                     && (view.hasFocus() || this.#bubbleMenuElement.contains(document.activeElement))
                     && !editor.isActive('image')
+                    // Its formats do not apply to a diagram, and a heading would replace it.
+                    && !editor.isActive('mermaidBlock')
                     && !(state.selection instanceof TiptapPMTables.CellSelection),
                 options: {
                     placement: 'top',
@@ -170,6 +173,7 @@ class KnowbaseEditor {
             }),
             TableGrips,
             VideoEmbed,
+            MermaidBlock,
             CommentHighlight.configure({ anchors: this.#options.comment_anchors }),
         ];
 
