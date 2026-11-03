@@ -340,6 +340,7 @@
                             id="enable-pending-reasons-{{ rand }}"
                             role="button"
                             {{ item.fields['status'] == constant('CommonITILObject::WAITING') ? 'checked' : '' }}
+                            {% if not has_pending_reason %}aria-controls="pending-reasons-setup-{{ rand }}"{% endif %}
                         />
                         </label>
                     </span>
