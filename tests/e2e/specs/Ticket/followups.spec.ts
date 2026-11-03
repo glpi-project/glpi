@@ -69,4 +69,35 @@ test.describe('ITIL Followups', () => {
         await ticket.goto(id);
         await expect(ticket.getButton('Answer')).not.toBeAttached();
     });
+
+    test('Pending reasons visibility follows the pending switch on double click', async ({
+        profile,
+        page,
+        api,
+    }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const id = await api.createItem('Ticket', {
+            name: 'Ticket for pending switch',
+            content: '',
+            entities_id: getWorkerEntityId(),
+        });
+
+        const ticket = new TicketPage(page);
+        await ticket.goto(id);
+        await ticket.getButton('Answer').click();
+
+        const followup_block = page.getByTestId('new-ITILFollowup-block');
+        const pending_checkbox = followup_block.getByTestId('pending-checkbox');
+        // eslint-disable-next-line playwright/no-raw-locators
+        const pending_reasons = followup_block.locator('[id^="pending-reasons-setup-"]');
+
+        // The second click happens while the collapse transition is still running
+        await pending_checkbox.dblclick();
+        await expect(pending_checkbox).not.toBeChecked();
+        await expect(pending_reasons).toBeHidden();
+
+        await pending_checkbox.click();
+        await expect(pending_checkbox).toBeChecked();
+        await expect(pending_reasons).toBeVisible();
+    });
 });
