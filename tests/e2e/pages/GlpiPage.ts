@@ -145,7 +145,7 @@ export class GlpiPage
 
         // We have no control on select2 selectors
         // eslint-disable-next-line playwright/no-raw-locators
-        await expect(this.page.locator('.loading-results')).toHaveCount(0);
+        await expect(listbox.getByRole('option', { name: 'Searching…' })).toHaveCount(0);
 
         // Values of the tree dropdowns are prefixed by a "»"
         await expect(
