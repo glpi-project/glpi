@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use function Safe\preg_match;
-
 class RuleTicket extends RuleCommonITILObject
 {
     // From Rule
@@ -61,9 +59,10 @@ class RuleTicket extends RuleCommonITILObject
                         //recall & recall_ola, optionally restricted to a single notification
                         $ticket = new Ticket();
                         if ($ticket->getFromDB($output['id'])) {
-                            preg_match('/^(recall(?:_ola)?)_notification_(\d+)$/', $action->fields['field'], $matches);
-                            if (isset($matches[1], $matches[2])) {
-                                NotificationEvent::raiseEvent($matches[1], $ticket, notifications_id: (int) $matches[2]);
+                            $field = $action->fields['field'];
+                            if (str_ends_with($field, LevelAgreementLevel::NOTIFICATION_RECALL_SUFFIX)) {
+                                $event = substr($field, 0, -strlen(LevelAgreementLevel::NOTIFICATION_RECALL_SUFFIX));
+                                NotificationEvent::raiseEvent($event, $ticket, notifications_id: (int) $action->fields['value']);
                             } else {
                                 NotificationEvent::raiseEvent($action->fields['field'], $ticket);
                             }

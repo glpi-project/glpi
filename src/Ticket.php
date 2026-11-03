@@ -97,6 +97,10 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      * Is a hardware found in getHardwareData / getFromDBwithData : hardware link to the job
      */
     public int $computerfound = 0;
+    /**
+     * Whether the current update is performed by an SLA escalation level; set server side only, never from input.
+     */
+    public bool $is_sla_level_update = false;
 
     // Request type
     public const INCIDENT_TYPE = 1;
@@ -944,6 +948,16 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
+    #[Override]
+    public function prepareInputForClone($input)
+    {
+        $input = parent::prepareInputForClone($input);
+        // The status reflects the escalation history of the source ticket
+        unset($input['slastatuses_id']);
+
+        return $input;
+    }
+
     public function prepareInputForUpdate($input)
     {
         $this->failsWithOlaRemovedFields($input);
@@ -1033,7 +1047,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 [$dateField, $slaField] = SLA::getFieldNames($slmType);
                 unset($input[$dateField], $input[$slaField]);
             }
-            if (!isset($input['_auto_update'])) {
+            if (!$this->is_sla_level_update) {
                 // Escalation levels may run in the session of a user without this right
                 unset($input['slastatuses_id']);
             }
@@ -2529,6 +2543,7 @@ JAVASCRIPT;
             'table'              => SlaStatus::getTable(),
             'field'              => 'name',
             'name'               => SlaStatus::getTypeName(1),
+            'massiveaction'      => false,
             'datatype'           => 'dropdown',
         ];
 

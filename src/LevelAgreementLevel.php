@@ -47,6 +47,11 @@ abstract class LevelAgreementLevel extends RuleTicket
     public static string $rightname            = 'slm';
 
     /**
+     * Suffix appended to a reminder event to build the action sending only the notification stored in its value.
+     */
+    public const NOTIFICATION_RECALL_SUFFIX = '_notification';
+
+    /**
      * LevelAgreement parent class.
      * Have to be redefined by concrete class.
      * @var class-string<LevelAgreement>
@@ -215,26 +220,25 @@ abstract class LevelAgreementLevel extends RuleTicket
     }
 
     /**
-     * Get one action per ticket notification of the given reminder event, each one sending only its notification.
+     * Get the action sending one ticket notification of the given reminder event, instead of all of them.
      *
      * @param string $event Reminder event (`recall` or `recall_ola`)
      * @param string $label Label of the reminder action sending all the notifications of the event
      *
-     * @return array<string, array{name: string, type: string, force_actions: string[]}>
+     * @return array<string, array<string, mixed>>
      */
-    protected function getNotificationRecallActions(string $event, string $label): array
+    protected function getNotificationRecallAction(string $event, string $label): array
     {
-        $actions = [];
-        $notifications = (new Notification())->find(['itemtype' => Ticket::class, 'event' => $event], ['name']);
-        foreach ($notifications as $notification) {
-            $actions[$event . '_notification_' . $notification['id']] = [
-                'name'          => sprintf(__('%1$s: %2$s'), $label, $notification['name']),
-                'type'          => 'yesonly',
+        return [
+            $event . self::NOTIFICATION_RECALL_SUFFIX => [
+                'name'          => sprintf(__('%1$s: %2$s'), $label, Notification::getTypeName(1)),
+                'type'          => 'dropdown',
+                'table'         => Notification::getTable(),
+                'condition'     => ['itemtype' => Ticket::class, 'event' => $event],
                 'force_actions' => ['send'],
-            ];
-        }
-
-        return $actions;
+                'permitseveral' => ['send'],
+            ],
+        ];
     }
 
     public function getCriterias()
