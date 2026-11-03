@@ -195,7 +195,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
                 'name': 'slastatuses_id',
                 'value': item.fields['slastatuses_id'] ?? 0,
                 'width': '100%',
-                'readonly': not (canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN'))),
+                'readonly': not (canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN'))) or (field_options.fields_template is defined and field_options.fields_template.isReadonlyField('slastatuses_id')),
             }]) %}
         </div>
     {% endif %}
