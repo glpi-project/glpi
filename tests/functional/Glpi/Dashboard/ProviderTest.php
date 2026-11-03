@@ -2840,6 +2840,44 @@ class ProviderTest extends DbTestCase
         }
     }
 
+    public function testFakeTicketsByGroupAndStatus(): void
+    {
+        // Demo mode must not run the real query
+        $method = new \ReflectionMethod(FakeProvider::class, 'ticketsByGroupAndStatus');
+        $this->assertSame(FakeProvider::class, $method->getDeclaringClass()->getName());
+
+        $result = FakeProvider::ticketsByGroupAndStatus(['label' => 'test']);
+        $this->assertSame('test', $result['label']);
+        $this->assertCount(2, $result['data']['series']);
+        foreach ($result['data']['series'] as $serie) {
+            $this->assertCount(count($result['data']['labels']), $serie['data']);
+        }
+    }
+
+    public static function fakePieProvider(): iterable
+    {
+        yield ['ticketsByStatus'];
+        yield ['computersByOperatingSystem'];
+        yield ['computersByAge'];
+    }
+
+    #[DataProvider('fakePieProvider')]
+    public function testFakePie(string $provider): void
+    {
+        // Demo mode must not run the real query
+        $method = new \ReflectionMethod(FakeProvider::class, $provider);
+        $this->assertSame(FakeProvider::class, $method->getDeclaringClass()->getName());
+
+        $result = FakeProvider::$provider(['label' => 'test']);
+        $this->assertSame('test', $result['label']);
+        $this->assertNotEmpty($result['data']);
+        foreach ($result['data'] as $entry) {
+            $this->assertArrayHasKey('number', $entry);
+            $this->assertArrayHasKey('label', $entry);
+            $this->assertArrayHasKey('url', $entry);
+        }
+    }
+
     public function testTicketsByRequesterLocation(): void
     {
         $this->login();
