@@ -161,7 +161,7 @@ class NetworkPort extends InventoryAsset
         return $this->data;
     }
 
-    public static function isImportable(stdClass $port): bool
+    public static function isImportable(object $port): bool
     {
         if (!property_exists($port, 'logical_number') && !property_exists($port, 'ifnumber')) {
             return false;
@@ -172,7 +172,7 @@ class NetworkPort extends InventoryAsset
             || NetworkPortType::getInstantiationType($port->iftype) !== false;
     }
 
-    private static function isAggregateMember(stdClass $port): bool
+    private static function isAggregateMember(object $port): bool
     {
         return property_exists($port, 'aggregate')
             && property_exists($port, 'ifnumber')

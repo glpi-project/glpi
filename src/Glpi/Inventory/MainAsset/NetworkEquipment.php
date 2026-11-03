@@ -43,7 +43,6 @@ use IPAddress;
 use NetworkEquipmentModel;
 use NetworkEquipmentType;
 use NetworkName;
-use NetworkPortType;
 use RuntimeException;
 use stdClass;
 
