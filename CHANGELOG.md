@@ -27,6 +27,7 @@ The present file will list all changes made to the project; according to the
 #### Deprecated
 - `Glpi\Application\Environment::shouldAddExtraCypressDataDuringInstallation()`
 - `Glpi\Application\Environment::shouldAddExtraE2EDataDuringInstallation()`
+- `Glpi\Api\HL\Doc\Schema::isValid()`. Use `Glpi\Api\HL\Doc\SchemaValidator::validate()` instead.
 
 #### Removed
 
