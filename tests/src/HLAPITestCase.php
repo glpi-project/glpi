@@ -1171,7 +1171,11 @@ final class HLAPIResponseAsserter
 
         foreach ($items as $item) {
             // Verify the JSON content matches the OpenAPI schema (type and format only)
-            $errors = Doc\SchemaValidator::validate($schema, $item, ['type_format_only' => true]);
+            $errors = Doc\SchemaValidator::validate($schema, $item, [
+                'allow_coercion' => false,
+                'check_constraints' => false,
+                'check_required' => false,
+            ]);
             $matches = $errors === [];
             if (!$matches) {
                 $fail_msg ??= 'Response content does not match the schema';

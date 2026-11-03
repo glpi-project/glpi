@@ -79,6 +79,23 @@ class ResourceAccessorTest extends DbTestCase
         $this->assertEquals($expected, ResourceAccessor::getInputParamsBySchema($schema, $request_params));
     }
 
+    public function testGetInputParamsBySchemaDecodesJsonInput(): void
+    {
+        $schema = [
+            'type' => 'object',
+            'properties' => [
+                'options' => ['type' => 'string', 'x-json-input' => true],
+                'empty' => ['type' => 'string', 'x-json-input' => true],
+                'raw' => ['type' => 'string'],
+            ],
+        ];
+
+        $this->assertSame(
+            ['options' => ['a' => 1, 'b' => [true]], 'empty' => '', 'raw' => '{"a":1}'],
+            ResourceAccessor::getInputParamsBySchema($schema, ['options' => '{"a":1,"b":[true]}', 'empty' => '', 'raw' => '{"a":1}'])
+        );
+    }
+
     public function testCreateWithInvalidProperties()
     {
         $schema_with_validation = [
@@ -380,7 +397,7 @@ class ResourceAccessorTest extends DbTestCase
     private function validateInputParams(array $properties, array $input, bool $is_create): array
     {
         $rm = new ReflectionMethod(ResourceAccessor::class, 'validateInputParamsBySchema');
-        return $rm->invoke(null, ['type' => 'object', 'properties' => $properties], $input, $is_create);
+        return $rm->invokeArgs(null, [['type' => 'object', 'properties' => $properties], &$input, $is_create]);
     }
 
     public function testValidateInputPatternError(): void
@@ -430,7 +447,7 @@ class ResourceAccessorTest extends DbTestCase
         $this->assertSame([], $this->validateInputParams($props, ['status' => ['name' => 'abc']], true));
     }
 
-    public function testValidateInputNestedConstraintsOnlyCheckedForDottedInputKeys(): void
+    public function testValidateInputNestedConstraints(): void
     {
         $props = [
             'status' => [
@@ -441,9 +458,7 @@ class ResourceAccessorTest extends DbTestCase
             ],
         ];
 
-        // Current behavior: the input is matched against the flattened schema by top-level key, so a nested
-        // array is not walked. Only a literal dotted key is validated.
-        $this->assertSame([], $this->validateInputParams($props, ['status' => ['name' => 'too long']], true));
+        $this->assertSame([], $this->validateInputParams($props, ['status' => ['name' => 'abc']], true));
         $this->assertSame([
             'status.name' => [
                 [
@@ -452,7 +467,7 @@ class ResourceAccessorTest extends DbTestCase
                     'maxLength' => 3,
                 ],
             ],
-        ], $this->validateInputParams($props, ['status.name' => 'too long'], true));
+        ], $this->validateInputParams($props, ['status' => ['name' => 'too long']], true));
     }
 
     public function testValidateInputUnknownKeysAreIgnored(): void
@@ -491,7 +506,7 @@ class ResourceAccessorTest extends DbTestCase
         ], $this->validateInputParams($props, ['age' => '500'], true));
     }
 
-    public function testValidateInputDoesNotCheckTypeFormatOrEnumBeforeStrictVersion(): void
+    public function testValidateInputChecksTypeFormatAndEnum(): void
     {
         $props = [
             'age' => ['type' => 'integer'],
@@ -499,19 +514,46 @@ class ResourceAccessorTest extends DbTestCase
             'when' => ['type' => 'string', 'format' => 'date-time'],
             'day' => ['type' => 'string', 'format' => 'date'],
             'level' => ['type' => 'string', 'enum' => ['low', 'high']],
-            'name' => ['type' => 'string', 'maxLength' => 2],
         ];
 
-        // These are not validated for the current API versions, so they must not be rejected
-        // until a new API version explicitly changes it.
-        $this->assertSame([], $this->validateInputParams($props, [
+        $errors = $this->validateInputParams($props, [
             'age' => 'abc',
             'active' => 'maybe',
-            'when' => '2024-01-31 10:00:00',
-            'day' => '31/01/2024',
+            'when' => 'not a date',
+            'day' => 'not a date',
             'level' => 'not-in-enum',
-            'name' => 12345, // maxLength only applies to strings
-        ], true));
+        ], true);
+
+        $this->assertSame(['age', 'active', 'when', 'day', 'level'], array_keys($errors));
+        $this->assertSame(['type'], array_column($errors['age'], 'error'));
+        $this->assertSame(['type'], array_column($errors['active'], 'error'));
+        $this->assertSame(['format'], array_column($errors['when'], 'error'));
+        $this->assertSame(['format'], array_column($errors['day'], 'error'));
+        $this->assertSame(['enum'], array_column($errors['level'], 'error'));
+    }
+
+    public function testValidateInputCoercesValues(): void
+    {
+        $props = [
+            'age' => ['type' => 'integer'],
+            'weight' => ['type' => 'number'],
+            'active' => ['type' => 'boolean'],
+            'name' => ['type' => 'string'],
+            'serial' => ['type' => 'string'],
+            'when' => ['type' => 'string', 'format' => 'date-time'],
+        ];
+        $input = ['age' => '5', 'weight' => '1.234', 'active' => 'yes', 'name' => 'abc', 'serial' => 354235, 'when' => '2024-01-31 10:00:00 UTC'];
+
+        $rm = new ReflectionMethod(ResourceAccessor::class, 'validateInputParamsBySchema');
+        $this->assertSame([], $rm->invokeArgs(null, [['type' => 'object', 'properties' => $props], &$input, true]));
+        $this->assertSame([
+            'age' => 5,
+            'weight' => 1.234,
+            'active' => true,
+            'name' => 'abc',
+            'serial' => '354235',
+            'when' => '2024-01-31T10:00:00+00:00',
+        ], $input);
     }
 
     public function testValidateInputMultipleErrorsAreAggregated(): void
@@ -524,7 +566,7 @@ class ResourceAccessorTest extends DbTestCase
 
         $errors = $this->validateInputParams($props, ['name' => 'abcdef', 'age' => -1], true);
 
-        $this->assertSame(['code', 'name', 'age'], array_keys($errors));
+        $this->assertEqualsCanonicalizing(['code', 'name', 'age'], array_keys($errors));
         $this->assertSame([['error' => 'required', 'message' => 'This field is required']], $errors['code']);
         $this->assertSame(['maxLength', 'pattern'], array_column($errors['name'], 'error'));
         $this->assertSame(['minimum'], array_column($errors['age'], 'error'));

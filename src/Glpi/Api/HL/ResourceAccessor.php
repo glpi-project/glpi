@@ -56,6 +56,7 @@ use Safe\DateTime;
 use Session;
 use Throwable;
 
+use function Safe\json_decode;
 use function Safe\preg_match;
 
 /**
@@ -228,7 +229,15 @@ final class ResourceAccessor
             }
 
             if (ArrayPathAccessor::hasElementByArrayPath($request_params, $prop_name)) {
-                $params[$internal_name] = ArrayPathAccessor::getElementByArrayPath($request_params, $prop_name);
+                $value = ArrayPathAccessor::getElementByArrayPath($request_params, $prop_name);
+                if (($prop['x-json-input'] ?? false) && !empty($value) && is_string($value)) {
+                    try {
+                        $value = json_decode($value, true);
+                    } catch (Throwable) {
+                        // Invalid JSON. Keep the raw value so it is handled when trying to add or update the item.
+                    }
+                }
+                $params[$internal_name] = $value;
             }
         }
 
@@ -237,22 +246,17 @@ final class ResourceAccessor
 
     /**
      * @param array<string, mixed> $schema
-     * @param array<string, mixed> $input
+     * @param array<mixed> $input The input. Values are replaced by their coerced value (like "yes" to true for a boolean property).
      * @param bool $is_create_input Whether the input is for a create or update action.
      * @return array<string, array{error: string, message: string}[]>
      */
-    private static function validateInputParamsBySchema(array $schema, array $input, bool $is_create_input): array
+    private static function validateInputParamsBySchema(array $schema, array &$input, bool $is_create_input): array
     {
         global $CFG_GLPI;
 
         $max_file_size_bytes = $CFG_GLPI['document_max_size'] * 1024 * 1024;
-        $request = Router::getInstance()->getFinalRequest();
-        $api_version = Router::normalizeAPIVersion($request?->getHeaderLine('GLPI-API-Version') ?: Router::API_VERSION);
-        $errors = Doc\SchemaValidator::validate($schema, $input, [
-            'api_version' => $api_version,
-            'check_required' => $is_create_input,
-        ]);
-        $uploaded_files = $request?->getUploadedFiles() ?? [];
+        $errors = Doc\SchemaValidator::validate($schema, $input, ['check_required' => $is_create_input]);
+        $uploaded_files = Router::getInstance()->getFinalRequest()?->getUploadedFiles() ?? [];
 
         // File uploads must be read from the raw schema properties. See self::getFileUploadSpecification().
         foreach ($schema['properties'] as $key => $prop) {

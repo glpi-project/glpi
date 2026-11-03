@@ -36,59 +36,37 @@
 namespace Glpi\Api\HL\Middleware;
 
 use Glpi\Api\HL\Controller\AbstractController;
-use Glpi\Api\HL\Doc\Parameter;
 use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Doc\SchemaValidator;
-use Glpi\Api\HL\Router;
 
 /**
  * Validate the parameters declared by the matched route (first stage of the input validation).
  * The body is validated later against the resolved schema by {@link \Glpi\Api\HL\ResourceAccessor}.
  *
- * Missing required parameters are always reported. Before API v4, they are reported in the original format.
- * From API v4, the type, format and enum of query and header parameters are also validated and all the problems are
- * reported at once in the same format as the validation of the body.
- *
- * Constraints other than the type, format and enum (like `maxLength`) are not validated here as they are not kept by {@link Schema}.
+ * Constraints other than the enum, pattern and type/format (like `maxLength`) are not validated here as they are not kept by {@link Schema}.
  */
 class ParameterValidationRequestMiddleware extends AbstractMiddleware implements RequestMiddlewareInterface
 {
     public function process(MiddlewareInput $input, callable $next): void
     {
         $request = $input->request;
-        $api_version = Router::normalizeAPIVersion($request->getHeaderLine('GLPI-API-Version') ?: Router::API_VERSION);
-        $is_strict = SchemaValidator::isStrictVersion($api_version);
-
-        $params = $input->route_path->getRouteDoc($request->getMethod())?->getParameters() ?? [];
-        $missing = [];
-        $errors = [];
-        foreach ($params as $param) {
-            $name = $param->getName();
-            if (!$request->hasParameter($name)) {
-                if ($param->getRequired()) {
-                    $missing[] = $name;
-                    $errors[$name][] = [
-                        'error' => 'required',
-                        'message' => 'This field is required',
-                    ];
-                }
-                continue;
-            }
-
-            $schema = $param->getSchema();
-            if ($is_strict && $schema instanceof Schema && in_array($param->getLocation(), [Parameter::LOCATION_QUERY, Parameter::LOCATION_HEADER], true)) {
-                $param_errors = SchemaValidator::validateValue($schema->toArray(), $request->getParameter($name), ['api_version' => $api_version]);
-                if ($param_errors !== []) {
-                    $errors[$name] = $param_errors;
-                }
+        $properties = [];
+        foreach ($input->route_path->getRouteDoc($request->getMethod())?->getParameters() ?? [] as $param) {
+            // Body parameters reference a schema that is only resolved later (see ResourceAccessor)
+            if ($param->getSchema() instanceof Schema) {
+                $properties[$param->getName()] = [...$param->getSchema()->toArray(), 'required' => $param->getRequired()];
             }
         }
 
+        $parameters = $request->getParameters();
+        $errors = SchemaValidator::validate(['properties' => $properties], $parameters);
         if ($errors !== []) {
-            $input->response = $is_strict
-                ? AbstractController::getInvalidInputErrorResponse($errors)
-                : AbstractController::getInvalidParametersErrorResponse(['missing' => $missing]);
+            $input->response = AbstractController::getInvalidInputErrorResponse($errors);
             return;
+        }
+        // Use the values that were coerced to the type of their parameter
+        foreach (array_intersect_key($parameters, $properties) as $name => $value) {
+            $request->setParameter($name, $value);
         }
 
         $next($input);

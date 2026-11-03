@@ -41,262 +41,339 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class SchemaValidatorTest extends GLPITestCase
 {
-    private const LEGACY = ['api_version' => '2.4.0'];
-    private const STRICT = ['api_version' => '4.0.0'];
+    /** Options used to validate the content of a response: only the type and format are checked and nothing is converted */
+    private const RESPONSE_OPTIONS = ['check_required' => false, 'check_constraints' => false, 'allow_coercion' => false];
 
-    public static function strictVersionProvider(): iterable
+    /**
+     * @param array<string, mixed> $props
+     * @param array<string, mixed> $content
+     * @param array<string, bool> $options
+     * @return array<string, array>
+     */
+    private function validate(array $props, array &$content, array $options = []): array
     {
-        yield ['1', false];
-        yield ['2.4.0', false];
-        yield ['3.0.0', false];
-        yield ['3.9.9', false];
-        yield ['4', true];
-        yield ['4.0.0', true];
-        yield ['4.1.0', true];
+        return SchemaValidator::validate(['type' => 'object', 'properties' => $props], $content, $options);
     }
 
-    #[DataProvider('strictVersionProvider')]
-    public function testIsStrictVersion(string $version, bool $expected): void
+    /**
+     * @param array<string, mixed> $props
+     * @param array<string, mixed> $content
+     * @param array<string, bool> $options
+     * @return string[] The error ids by property path (like `name:maxLength`)
+     */
+    private function errorIds(array $props, array $content, array $options = []): array
     {
-        $this->assertSame($expected, SchemaValidator::isStrictVersion($version));
+        $ids = [];
+        foreach ($this->validate($props, $content, $options) as $path => $errors) {
+            foreach ($errors as $error) {
+                $ids[] = $path . ':' . $error['error'];
+            }
+        }
+        return $ids;
     }
 
-    public static function typeFormatProvider(): iterable
+    public function testAllChecksAreEnabledByDefault(): void
     {
-        // [property, value, expected error ids on API v4]
-        yield 'string ok' => [['type' => 'string'], 'abc', []];
-        yield 'string given int' => [['type' => 'string'], 5, ['type']];
-        yield 'integer ok' => [['type' => 'integer'], 5, []];
-        yield 'integer numeric string' => [['type' => 'integer'], '5', []];
-        yield 'integer negative numeric string' => [['type' => 'integer'], '-5', []];
-        yield 'integer integral float' => [['type' => 'integer'], 5.0, []];
-        yield 'integer non integral float' => [['type' => 'integer'], 5.5, ['type']];
-        yield 'integer non integral string' => [['type' => 'integer'], '5.5', ['type']];
-        yield 'integer text' => [['type' => 'integer'], 'abc', ['type']];
-        yield 'integer int32 overflow' => [['type' => 'integer', 'format' => 'int32'], 2147483648, ['format']];
-        yield 'integer int32 overflow string' => [['type' => 'integer', 'format' => 'int32'], '3000000000', ['format']];
-        yield 'integer int64' => [['type' => 'integer', 'format' => 'int64'], '3000000000', []];
-        yield 'number int' => [['type' => 'number'], 3, []];
-        yield 'number float' => [['type' => 'number'], 1.5, []];
-        yield 'number numeric string' => [['type' => 'number'], '1.5', []];
-        yield 'number text' => [['type' => 'number'], 'abc', ['type']];
-        // The two decimal places restriction of the double format is only for response content
-        yield 'number double many decimals' => [['type' => 'number', 'format' => 'double'], 1.234, []];
-        yield 'boolean true' => [['type' => 'boolean'], true, []];
-        yield 'boolean false' => [['type' => 'boolean'], false, []];
-        yield 'boolean "true"' => [['type' => 'boolean'], 'true', []];
-        yield 'boolean "false"' => [['type' => 'boolean'], 'false', []];
-        yield 'boolean "on"' => [['type' => 'boolean'], 'on', []];
-        yield 'boolean "off"' => [['type' => 'boolean'], 'off', []];
-        yield 'boolean "yes"' => [['type' => 'boolean'], 'yes', []];
-        yield 'boolean "no"' => [['type' => 'boolean'], 'no', []];
-        yield 'boolean "1"' => [['type' => 'boolean'], '1', []];
-        yield 'boolean "0"' => [['type' => 'boolean'], '0', []];
-        yield 'boolean 1' => [['type' => 'boolean'], 1, []];
-        yield 'boolean 0' => [['type' => 'boolean'], 0, []];
-        yield 'boolean maybe' => [['type' => 'boolean'], 'maybe', ['type']];
-        yield 'boolean 5' => [['type' => 'boolean'], 5, ['type']];
-        yield 'array ok' => [['type' => 'array', 'items' => ['type' => 'string']], ['a'], []];
-        yield 'array given string' => [['type' => 'array', 'items' => ['type' => 'string']], 'a', ['type']];
-        yield 'date ok' => [['type' => 'string', 'format' => 'date'], '2024-01-31', []];
-        yield 'date invalid' => [['type' => 'string', 'format' => 'date'], '31/01/2024', ['format']];
-        yield 'date-time ok' => [['type' => 'string', 'format' => 'date-time'], '2024-01-31T10:00:00Z', []];
-        yield 'date-time invalid' => [['type' => 'string', 'format' => 'date-time'], '2024-01-31 10:00:00', ['format']];
-        yield 'byte ok' => [['type' => 'string', 'format' => 'byte'], 'SGVsbG8=', []];
-        yield 'byte invalid' => [['type' => 'string', 'format' => 'byte'], 'not base64!', ['format']];
-        yield 'email not checked' => [['type' => 'string', 'format' => 'email'], 'not-an-email', []];
+        $props = [
+            'id' => ['type' => 'integer', 'required' => true],
+            'name' => ['type' => 'string', 'maxLength' => 3],
+            'age' => ['type' => 'integer'],
+        ];
+        $content = ['name' => 'abcdef', 'age' => '5'];
+
+        $this->assertSame(['id:required', 'name:maxLength'], $this->errorIds($props, $content));
+        $this->validate($props, $content);
+        $this->assertSame(5, $content['age']);
     }
 
-    #[DataProvider('typeFormatProvider')]
-    public function testTypeAndFormatOnStrictVersion(array $prop, mixed $value, array $expected_errors): void
+    public function testCheckRequiredOption(): void
     {
-        $errors = SchemaValidator::validateValue($prop, $value, self::STRICT);
-        $this->assertSame($expected_errors, array_column($errors, 'error'));
+        $props = ['name' => ['type' => 'string', 'required' => true]];
+
+        $this->assertSame(['name:required'], $this->errorIds($props, []));
+        $this->assertSame([], $this->errorIds($props, [], ['check_required' => false]));
+        $this->assertSame([], $this->errorIds($props, ['name' => 'a']));
     }
 
-    #[DataProvider('typeFormatProvider')]
-    public function testTypeAndFormatAreNotValidatedOnInputBeforeStrictVersion(array $prop, mixed $value): void
+    public function testCheckTypeFormatOption(): void
     {
-        $this->assertSame([], SchemaValidator::validateValue($prop, $value, self::LEGACY));
+        $props = ['when' => ['type' => 'string', 'format' => 'date-time'], 'age' => ['type' => 'integer', 'maximum' => 10]];
+        $content = ['when' => 'not a date', 'age' => 'abc'];
+
+        $this->assertSame(['when:format', 'age:type'], $this->errorIds($props, $content));
+        $this->assertSame([], $this->errorIds($props, $content, ['check_type_format' => false]));
     }
 
-    public function testNullIsAlwaysValid(): void
+    public function testCheckConstraintsOption(): void
     {
-        $prop = ['type' => 'integer', 'format' => 'int32', 'minimum' => 5, 'enum' => [5, 6]];
+        $props = [
+            'name' => ['type' => 'string', 'maxLength' => 3, 'pattern' => '^[0-9]+$'],
+            'level' => ['type' => 'string', 'enum' => ['low', 'high']],
+        ];
+        $content = ['name' => 'abcdef', 'level' => 'other'];
 
-        $this->assertSame([], SchemaValidator::validateValue($prop, null, self::STRICT));
-        $this->assertSame([], SchemaValidator::validateValue($prop, null, self::LEGACY));
-        $this->assertSame([], SchemaValidator::validateValue($prop, null, ['type_format_only' => true]));
+        $this->assertSame(['name:maxLength', 'name:pattern', 'level:enum'], $this->errorIds($props, $content));
+        $this->assertSame([], $this->errorIds($props, $content, ['check_constraints' => false]));
     }
 
-    public function testErrorFormatForTypeAndFormat(): void
+    public static function coercionProvider(): iterable
     {
-        $this->assertSame([
-            ['error' => 'type', 'message' => 'This field must be of type integer', 'type' => 'integer'],
-        ], SchemaValidator::validateValue(['type' => 'integer'], 'abc', self::STRICT));
+        yield 'integer from string' => ['integer', '5', 5];
+        yield 'integer from negative string' => ['integer', '-5', -5];
+        yield 'integer from integral float' => ['integer', 5.0, 5];
+        yield 'integer from integral numeric string' => ['integer', '5.0', 5];
+        yield 'number from string' => ['number', '1.5', 1.5];
+        yield 'number from integer string' => ['number', '3', 3];
+        yield 'boolean from "true"' => ['boolean', 'true', true];
+        yield 'boolean from "false"' => ['boolean', 'false', false];
+        yield 'boolean from "yes"' => ['boolean', 'yes', true];
+        yield 'boolean from "no"' => ['boolean', 'no', false];
+        yield 'boolean from "on"' => ['boolean', 'on', true];
+        yield 'boolean from "off"' => ['boolean', 'off', false];
+        yield 'boolean from "1"' => ['boolean', '1', true];
+        yield 'boolean from "0"' => ['boolean', '0', false];
+        yield 'boolean from 1' => ['boolean', 1, true];
+        yield 'boolean from 0' => ['boolean', 0, false];
+        yield 'string from integer' => ['string', 354235, '354235'];
+        yield 'string from float' => ['string', 1.5, '1.5'];
+        yield 'array from scalar' => ['array', 'a', ['a']];
+        yield 'array from integer' => ['array', 5, [5]];
+        yield 'array is kept' => ['array', ['a', 'b'], ['a', 'b']];
+    }
 
-        $this->assertSame([
-            ['error' => 'format', 'message' => 'This field must match the format date', 'format' => 'date'],
-        ], SchemaValidator::validateValue(['type' => 'string', 'format' => 'date'], 'abc', self::STRICT));
+    #[DataProvider('coercionProvider')]
+    public function testCoercionModifiesTheContent(string $type, mixed $value, mixed $expected): void
+    {
+        $content = ['p' => $value];
+
+        $this->assertSame([], $this->validate(['p' => ['type' => $type]], $content));
+        $this->assertSame($expected, $content['p']);
+    }
+
+    public static function uncoercibleProvider(): iterable
+    {
+        yield 'integer from text' => ['integer', 'abc'];
+        yield 'integer from non integral float' => ['integer', 5.5];
+        yield 'integer from non integral string' => ['integer', '5.5'];
+        yield 'integer from boolean' => ['integer', true];
+        yield 'number from text' => ['number', 'abc'];
+        yield 'boolean from text' => ['boolean', 'maybe'];
+        yield 'boolean from 5' => ['boolean', 5];
+        yield 'string from boolean' => ['string', true];
+        yield 'string from array' => ['string', ['a']];
+    }
+
+    #[DataProvider('uncoercibleProvider')]
+    public function testValueThatCannotBeCoercedIsKeptAndRejected(string $type, mixed $value): void
+    {
+        $props = ['p' => ['type' => $type, 'items' => ['type' => 'string']]];
+        $content = ['p' => $value];
+
+        $this->assertSame(['p:type'], $this->errorIds($props, $content));
+        $this->validate($props, $content);
+        $this->assertSame($value, $content['p']);
+    }
+
+    public function testCoercionDisabled(): void
+    {
+        $props = ['age' => ['type' => 'integer'], 'active' => ['type' => 'boolean']];
+        $content = ['age' => '5', 'active' => 'yes'];
+
+        $this->assertSame(['age:type', 'active:type'], $this->errorIds($props, $content, ['allow_coercion' => false]));
+        $this->validate($props, $content, ['allow_coercion' => false]);
+        $this->assertSame(['age' => '5', 'active' => 'yes'], $content);
+    }
+
+    public function testCoercedValueIsWrittenToNestedContent(): void
+    {
+        $props = ['status' => ['type' => 'object', 'properties' => [
+            'id' => ['type' => 'integer'],
+            'name' => ['type' => 'string'],
+        ]]];
+        $content = ['status' => ['id' => '3', 'name' => 'a'], 'extra' => '1'];
+
+        $this->assertSame([], $this->validate($props, $content));
+        $this->assertSame(['status' => ['id' => 3, 'name' => 'a'], 'extra' => '1'], $content);
+    }
+
+    public function testNestedPathsAreReportedByFullPath(): void
+    {
+        $props = ['status' => ['type' => 'object', 'properties' => [
+            'id' => ['type' => 'integer'],
+            'name' => ['type' => 'string', 'required' => true, 'maxLength' => 2],
+        ]]];
+
+        $this->assertSame(['status.id:type', 'status.name:maxLength'], $this->errorIds($props, ['status' => ['id' => 'x', 'name' => 'abc']]));
+        $this->assertSame(['status.name:required'], $this->errorIds($props, ['status' => ['id' => 1]]));
+    }
+
+    public function testNullAndUnknownPropertiesAreValid(): void
+    {
+        $props = ['age' => ['type' => 'integer', 'format' => 'int32', 'minimum' => 5, 'enum' => [5, 6]]];
+
+        $this->assertSame([], $this->errorIds($props, ['age' => null]));
+        $this->assertSame([], $this->errorIds($props, ['unknown' => 'abc']));
+    }
+
+    public static function formatProvider(): iterable
+    {
+        yield 'int32 ok' => [['type' => 'integer', 'format' => 'int32'], 2147483647, true];
+        yield 'int32 overflow' => [['type' => 'integer', 'format' => 'int32'], 2147483648, false];
+        yield 'int32 is the default format of integers' => [['type' => 'integer'], 2147483648, false];
+        yield 'int64 beyond int32' => [['type' => 'integer', 'format' => 'int64'], 2147483648, true];
+        yield 'float' => [['type' => 'number', 'format' => 'float'], 1.23456, true];
+        yield 'byte ok' => [['type' => 'string', 'format' => 'byte'], 'SGVsbG8=', true];
+        yield 'byte invalid' => [['type' => 'string', 'format' => 'byte'], 'not base64!', false];
+        yield 'date ok' => [['type' => 'string', 'format' => 'date'], '2024-01-31', true];
+        yield 'date invalid' => [['type' => 'string', 'format' => 'date'], 'not a date', false];
+        yield 'date-time Z' => [['type' => 'string', 'format' => 'date-time'], '2024-01-31T10:00:00Z', true];
+        yield 'date-time offset and fraction' => [['type' => 'string', 'format' => 'date-time'], '2024-01-31T10:00:00.123+02:00', true];
+        yield 'date-time with space' => [['type' => 'string', 'format' => 'date-time'], '2024-01-31 10:00:00', true];
+        yield 'date-time invalid' => [['type' => 'string', 'format' => 'date-time'], 'not a date', false];
+        yield 'email is not checked' => [['type' => 'string', 'format' => 'email'], 'not-an-email', true];
+    }
+
+    #[DataProvider('formatProvider')]
+    public function testFormat(array $prop, mixed $value, bool $valid): void
+    {
+        $this->assertSame($valid ? [] : ['p:format'], $this->errorIds(['p' => $prop], ['p' => $value]));
+    }
+
+    public function testDatesInAnyFormatAreCoercedToTheCanonicalFormat(): void
+    {
+        $props = [
+            'when' => ['type' => 'string', 'format' => 'date-time'],
+            'day' => ['type' => 'string', 'format' => 'date'],
+        ];
+        $content = ['when' => '2024-01-31 10:00:00 UTC', 'day' => '31 January 2024'];
+
+        $this->assertSame([], $this->validate($props, $content));
+        $this->assertSame(['when' => '2024-01-31T10:00:00+00:00', 'day' => '2024-01-31'], $content);
+    }
+
+    public function testInvalidDateIsKeptAndRejected(): void
+    {
+        $props = ['when' => ['type' => 'string', 'format' => 'date-time']];
+        $content = ['when' => 'not a date'];
+
+        $this->assertSame(['when:format'], $this->errorIds($props, $content));
+        $this->validate($props, $content);
+        $this->assertSame('not a date', $content['when']);
+    }
+
+    public function testDatesAreNotCoercedWhenCoercionIsDisabled(): void
+    {
+        $props = ['when' => ['type' => 'string', 'format' => 'date-time']];
+        $content = ['when' => '2024-01-31 10:00:00'];
+
+        $this->assertSame(['when:format'], $this->errorIds($props, $content, ['allow_coercion' => false]));
+        $this->validate($props, $content, ['allow_coercion' => false]);
+        $this->assertSame('2024-01-31 10:00:00', $content['when']);
     }
 
     public function testEnum(): void
     {
-        $prop = ['type' => 'string', 'enum' => ['a', 'b', 'c']];
+        $props = ['level' => ['type' => 'string', 'enum' => ['a', 'b', 'c']]];
+        $content = ['level' => 'z'];
 
-        $this->assertSame([], SchemaValidator::validateValue($prop, 'b', self::STRICT));
+        $this->assertSame([], $this->errorIds($props, ['level' => 'b']));
         $this->assertSame([
-            ['error' => 'enum', 'message' => 'This field must be one of: a, b, c', 'enum' => ['a', 'b', 'c']],
-        ], SchemaValidator::validateValue($prop, 'z', self::STRICT));
-        // Not validated before the strict version
-        $this->assertSame([], SchemaValidator::validateValue($prop, 'z', self::LEGACY));
+            'level' => [['error' => 'enum', 'message' => 'This field must be one of: a, b, c', 'enum' => ['a', 'b', 'c']]],
+        ], $this->validate($props, $content));
     }
 
-    public function testEnumUsesCoercedValue(): void
+    public function testEnumIsComparedWithTheCoercedValue(): void
     {
-        $this->assertSame([], SchemaValidator::validateValue(['type' => 'integer', 'enum' => [1, 2]], '2', self::STRICT));
-        $this->assertSame(['enum'], array_column(SchemaValidator::validateValue(['type' => 'integer', 'enum' => [1, 2]], '3', self::STRICT), 'error'));
+        $props = ['level' => ['type' => 'integer', 'enum' => [1, 2]]];
+
+        $this->assertSame([], $this->errorIds($props, ['level' => '2']));
+        $this->assertSame(['level:enum'], $this->errorIds($props, ['level' => '3']));
+        $this->assertSame(['level:type'], $this->errorIds($props, ['level' => 'abc']));
     }
 
-    public function testEnumIsNotCheckedWhenTheTypeIsInvalid(): void
+    public function testTypeAndFormatErrorFormat(): void
     {
-        $errors = SchemaValidator::validateValue(['type' => 'integer', 'enum' => [1, 2]], 'abc', self::STRICT);
+        $content = ['age' => 'abc', 'day' => 'not a date'];
 
-        $this->assertSame(['type'], array_column($errors, 'error'));
-    }
-
-    public function testConstraintsAreValidatedForAllVersions(): void
-    {
-        $prop = ['type' => 'string', 'maxLength' => 3, 'pattern' => '^[0-9]+$'];
-
-        foreach ([self::LEGACY, self::STRICT] as $options) {
-            $this->assertSame(['maxLength', 'pattern'], array_column(SchemaValidator::validateValue($prop, 'abcdef', $options), 'error'));
-            $this->assertSame([], SchemaValidator::validateValue($prop, '123', $options));
-        }
+        $this->assertSame([
+            'age' => [['error' => 'type', 'message' => 'This field must be of type integer', 'type' => 'integer']],
+            'day' => [['error' => 'format', 'message' => 'This field must match the format date', 'format' => 'date']],
+        ], $this->validate(['age' => ['type' => 'integer'], 'day' => ['type' => 'string', 'format' => 'date']], $content));
     }
 
     public function testConstraintErrorFormat(): void
     {
-        $this->assertSame([
-            ['error' => 'maxLength', 'message' => 'This field must be at most 3 characters long', 'maxLength' => 3],
-        ], SchemaValidator::validateValue(['type' => 'string', 'maxLength' => 3], 'abcd'));
-        $this->assertSame([
-            ['error' => 'range', 'message' => 'This field must be between 0 and 120', 'minimum' => 0, 'maximum' => 120],
-        ], SchemaValidator::validateValue(['type' => 'integer', 'minimum' => 0, 'maximum' => 120], 121));
-        $this->assertSame([
-            ['error' => 'minimum', 'message' => 'This field must be at least 10', 'minimum' => 10],
-        ], SchemaValidator::validateValue(['type' => 'integer', 'minimum' => 10], 5));
-        $this->assertSame([
-            ['error' => 'maximum', 'message' => 'This field must be at most 300', 'maximum' => 300],
-        ], SchemaValidator::validateValue(['type' => 'integer', 'maximum' => 300], 350));
-        $this->assertSame([
-            ['error' => 'multipleOf', 'message' => 'This field must be a multiple of 0.5', 'multipleOf' => 0.5],
-        ], SchemaValidator::validateValue(['type' => 'number', 'multipleOf' => 0.5], 1.7));
-        $this->assertSame([
-            ['error' => 'pattern', 'message' => 'This field must match the pattern ^[A-Z]{3}$', 'pattern' => '^[A-Z]{3}$'],
-        ], SchemaValidator::validateValue(['type' => 'string', 'pattern' => '^[A-Z]{3}$'], 'abc'));
-    }
-
-    public function testAllProblemsOfAValueAreReported(): void
-    {
-        $errors = SchemaValidator::validateValue(['type' => 'string', 'format' => 'date', 'maxLength' => 3], 'not a date', self::STRICT);
-
-        $this->assertSame(['format', 'maxLength'], array_column($errors, 'error'));
-    }
-
-    public function testItemsOfArrayInputAreValidatedOnStrictVersion(): void
-    {
-        $prop = ['type' => 'integer', 'maximum' => 10];
-
-        $this->assertSame([], SchemaValidator::validateValue($prop, [1, '2'], self::STRICT));
-        $this->assertSame(['type', 'maximum'], array_column(SchemaValidator::validateValue($prop, [1, 'x', 11], self::STRICT), 'error'));
-        // Before the strict version the items were never validated
-        $this->assertSame([], SchemaValidator::validateValue($prop, [1, 'x', 11], self::LEGACY));
-    }
-
-    public function testArrayInputIsValidatedAgainstItemsSchema(): void
-    {
-        // Properties of array input are flattened to the schema of their items, so each item is checked against it
-        $this->assertSame([], SchemaValidator::validateValue(['type' => 'string'], ['a', 'b'], self::STRICT));
-        $this->assertSame(['type'], array_column(SchemaValidator::validateValue(['type' => 'string'], ['a', 5], self::STRICT), 'error'));
-    }
-
-    public function testValidateRequired(): void
-    {
-        $schema = ['type' => 'object', 'properties' => [
-            'name' => ['type' => 'string', 'required' => true],
-            'comment' => ['type' => 'string'],
-        ]];
+        $props = [
+            'name' => ['type' => 'string', 'maxLength' => 3],
+            'age' => ['type' => 'integer', 'minimum' => 0, 'maximum' => 120],
+            'height' => ['type' => 'integer', 'minimum' => 10],
+            'weight' => ['type' => 'integer', 'maximum' => 300],
+            'step' => ['type' => 'number', 'multipleOf' => 0.5],
+            'code' => ['type' => 'string', 'pattern' => '^[A-Z]{3}$'],
+        ];
+        $content = ['name' => 'abcd', 'age' => 121, 'height' => 5, 'weight' => 350, 'step' => 1.7, 'code' => 'abc'];
 
         $this->assertSame([
-            'name' => [['error' => 'required', 'message' => 'This field is required']],
-        ], SchemaValidator::validate($schema, ['comment' => 'a'], ['check_required' => true]));
-        $this->assertSame([], SchemaValidator::validate($schema, ['comment' => 'a']));
-        $this->assertSame([], SchemaValidator::validate($schema, ['name' => 'a'], ['check_required' => true]));
+            'name' => [['error' => 'maxLength', 'message' => 'This field must be at most 3 characters long', 'maxLength' => 3]],
+            'age' => [['error' => 'range', 'message' => 'This field must be between 0 and 120', 'minimum' => 0, 'maximum' => 120]],
+            'height' => [['error' => 'minimum', 'message' => 'This field must be at least 10', 'minimum' => 10]],
+            'weight' => [['error' => 'maximum', 'message' => 'This field must be at most 300', 'maximum' => 300]],
+            'step' => [['error' => 'multipleOf', 'message' => 'This field must be a multiple of 0.5', 'multipleOf' => 0.5]],
+            'code' => [['error' => 'pattern', 'message' => 'This field must match the pattern ^[A-Z]{3}$', 'pattern' => '^[A-Z]{3}$']],
+        ], $this->validate($props, $content));
     }
 
-    public function testValidateIgnoresUnknownKeysAndAggregatesErrors(): void
+    public function testAllProblemsOfAPropertyAreReported(): void
     {
-        $schema = ['type' => 'object', 'properties' => [
-            'name' => ['type' => 'string', 'maxLength' => 3, 'required' => true],
-            'age' => ['type' => 'integer', 'minimum' => 0],
-            'code' => ['type' => 'string', 'required' => true],
-        ]];
+        $props = ['p' => ['type' => 'string', 'format' => 'date', 'maxLength' => 3]];
 
-        $errors = SchemaValidator::validate($schema, ['name' => 'abcdef', 'age' => '-1', 'extra' => 'x'], [...self::STRICT, 'check_required' => true]);
-
-        $this->assertSame(['code', 'name', 'age'], array_keys($errors));
-        $this->assertSame(['required'], array_column($errors['code'], 'error'));
-        $this->assertSame(['maxLength'], array_column($errors['name'], 'error'));
-        $this->assertSame(['minimum'], array_column($errors['age'], 'error'));
+        $this->assertSame(['p:format', 'p:maxLength'], $this->errorIds($props, ['p' => 'not a date']));
     }
 
-    public function testValidateWithCollapsedArrayItems(): void
+    public static function responseContentProvider(): iterable
     {
-        $schema = ['type' => 'object', 'properties' => [
-            'tags' => ['type' => 'array', 'items' => ['type' => 'string', 'maxLength' => 3]],
-        ]];
-
-        $this->assertSame([], SchemaValidator::validate($schema, ['tags' => ['a', 'b']], self::STRICT));
-        $this->assertSame(['tags'], array_keys(SchemaValidator::validate($schema, ['tags' => ['a', 'toolong']], self::STRICT)));
+        yield 'string ok' => [['type' => 'string'], 'abc', []];
+        yield 'string given int' => [['type' => 'string'], 1, ['p:type']];
+        yield 'integer given numeric string' => [['type' => 'integer'], '5', ['p:type']];
+        yield 'integer given float' => [['type' => 'integer'], 5.0, ['p:type']];
+        // JSON decoding may turn 0 and 1 into booleans
+        yield 'integer given boolean' => [['type' => 'integer'], true, []];
+        yield 'boolean given string' => [['type' => 'boolean'], 'yes', ['p:type']];
+        yield 'number given numeric string' => [['type' => 'number'], '1.5', ['p:type']];
+        yield 'number with two decimals' => [['type' => 'number'], 1.25, []];
+        yield 'number with three decimals (double is the default format)' => [['type' => 'number'], 1.234, ['p:format']];
+        yield 'float with many decimals' => [['type' => 'number', 'format' => 'float'], 1.234, []];
+        yield 'array ok' => [['type' => 'array', 'items' => ['type' => 'string']], ['a'], []];
+        yield 'array items are not validated' => [['type' => 'array', 'items' => ['type' => 'string']], [1, 2], []];
+        yield 'array given string' => [['type' => 'array', 'items' => ['type' => 'string']], 'a', ['p:type']];
     }
 
-    public function testTypeFormatOnlyUsesDefaultFormats(): void
+    #[DataProvider('responseContentProvider')]
+    public function testResponseContent(array $prop, mixed $value, array $expected_errors): void
     {
-        $schema = ['type' => 'object', 'properties' => [
+        $content = ['p' => $value];
+
+        $this->assertSame($expected_errors, $this->errorIds(['p' => $prop], $content, self::RESPONSE_OPTIONS));
+        $this->validate(['p' => $prop], $content, self::RESPONSE_OPTIONS);
+        $this->assertSame($value, $content['p'], 'Response content must not be modified');
+    }
+
+    public function testResponseContentIgnoresRequiredAndConstraints(): void
+    {
+        $props = ['name' => ['type' => 'string', 'required' => true, 'maxLength' => 1, 'pattern' => '^[0-9]+$', 'enum' => ['x']]];
+
+        $this->assertSame([], $this->errorIds($props, ['name' => 'abc'], self::RESPONSE_OPTIONS));
+        $this->assertSame([], $this->errorIds($props, [], self::RESPONSE_OPTIONS));
+    }
+
+    public function testResponseContentNestedObjects(): void
+    {
+        $props = ['status' => ['type' => 'object', 'properties' => [
             'id' => ['type' => 'integer'],
-            'price' => ['type' => 'number'],
             'name' => ['type' => 'string'],
-        ]];
+        ]]];
 
-        $this->assertSame([], SchemaValidator::validate($schema, ['id' => 5, 'price' => 1.25, 'name' => 'a'], ['type_format_only' => true]));
-        // int32 and double (two decimal places) are the default formats
-        $this->assertSame(['id', 'price'], array_keys(SchemaValidator::validate($schema, ['id' => 2147483648, 'price' => 1.234, 'name' => 'a'], ['type_format_only' => true])));
-    }
-
-    public function testTypeFormatOnlyDoesNotCoerceAndWalksNestedContent(): void
-    {
-        $schema = ['type' => 'object', 'properties' => [
-            'id' => ['type' => 'integer'],
-            'status' => ['type' => 'object', 'properties' => [
-                'id' => ['type' => 'integer'],
-                'name' => ['type' => 'string'],
-            ]],
-        ]];
-        $options = ['type_format_only' => true];
-
-        $this->assertSame(['id'], array_keys(SchemaValidator::validate($schema, ['id' => '5'], $options)));
-        $this->assertSame([], SchemaValidator::validate($schema, ['status' => ['id' => 1, 'name' => 'a']], $options));
-        $this->assertSame(['status.id'], array_keys(SchemaValidator::validate($schema, ['status' => ['id' => 'x']], $options)));
-    }
-
-    public function testTypeFormatOnlyIgnoresConstraintsEnumAndRequired(): void
-    {
-        $schema = ['type' => 'object', 'properties' => [
-            'name' => ['type' => 'string', 'maxLength' => 1, 'pattern' => '^[0-9]+$', 'enum' => ['x'], 'required' => true],
-        ]];
-
-        $this->assertSame([], SchemaValidator::validate($schema, ['name' => 'abc'], ['type_format_only' => true, 'check_required' => true]));
-        $this->assertSame([], SchemaValidator::validate($schema, [], ['type_format_only' => true, 'check_required' => true]));
+        $this->assertSame([], $this->errorIds($props, ['status' => ['id' => 1, 'name' => 'a']], self::RESPONSE_OPTIONS));
+        $this->assertSame(['status.id:type'], $this->errorIds($props, ['status' => ['id' => 'x', 'name' => 'a']], self::RESPONSE_OPTIONS));
     }
 }

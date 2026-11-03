@@ -426,10 +426,15 @@ class Schema implements ArrayAccess
      * @param string|null $operation Unused. The readOnly/writeOnly flags are not kept by this class and null values are always valid.
      * @return bool
      * @see SchemaValidator::validate() To get the details of what is invalid
+     * @deprecated
      */
     public function isValid(array $content, ?string $operation = null): bool
     {
-        return SchemaValidator::validate($this->toArray(), $content, ['type_format_only' => true]) === [];
+        return SchemaValidator::validate($this->toArray(), $content, [
+            'allow_coercion' => false,
+            'check_constraints' => false,
+            'check_required' => false,
+        ]) === [];
     }
 
     /**
