@@ -267,21 +267,21 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         const diagram = page.getByRole('figure', { name: 'Diagram' });
         await expect(diagram).toContainText('Finish');
 
-        await kb.placeCaretInEditMode('After', 'start');
+        await kb.doPlaceCaretInEditMode('After', 'start');
         await kb.editor.pressKey('Backspace');
         await expect(page.getByText('After', { exact: true })).toBeVisible();
         await expect(diagram).toContainText('Finish');
 
-        await kb.placeCaretInEditMode('Before', 'end');
+        await kb.doPlaceCaretInEditMode('Before', 'end');
         await kb.editor.pressKey('Delete');
         await expect(page.getByText('Before', { exact: true })).toBeVisible();
         await expect(diagram).toContainText('Finish');
 
         await page.getByRole('tab', { name: 'Source' }).click();
-        await kb.placeCaretInEditMode('flowchart TD', 'start');
+        await kb.doPlaceCaretInEditMode('flowchart TD', 'start');
         await kb.editor.pressKey('Backspace');
         await expect(page.getByText('Before', { exact: true })).toBeVisible();
-        await kb.placeCaretInEditMode('B[Finish]', 'end');
+        await kb.doPlaceCaretInEditMode('B[Finish]', 'end');
         await kb.editor.pressKey('Delete');
         await expect(page.getByText('After', { exact: true })).toBeVisible();
         await page.getByRole('tab', { name: 'Diagram' }).click();
@@ -405,16 +405,7 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         const diagrams = page.getByRole('figure', { name: 'Diagram' });
         await expect(diagrams).toHaveCount(1);
 
-        // The system clipboard is not used: the same DataTransfer goes from the copy to the paste.
-        const clipboard = await kb.editor.contentContainer.evaluateHandle((content) => {
-            const range = document.createRange();
-            range.selectNodeContents(content);
-            document.getSelection()?.removeAllRanges();
-            document.getSelection()?.addRange(range);
-            const data = new DataTransfer();
-            content.dispatchEvent(new ClipboardEvent('copy', { clipboardData: data, bubbles: true, cancelable: true }));
-            return data;
-        });
+        const clipboard = await kb.doCopyContentInReadMode();
         const copied = await clipboard.evaluate((data) => ({
             html: data.getData('text/html'),
             text: data.getData('text/plain'),
@@ -426,9 +417,7 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         const editor = await kb.editor.enterEditMode();
         await kb.editor.clearContent();
         await expect(diagrams).toHaveCount(0);
-        await editor.evaluate((element, data) => {
-            element.dispatchEvent(new ClipboardEvent('paste', { clipboardData: data, bubbles: true, cancelable: true }));
-        }, clipboard);
+        await kb.doPasteInEditMode(clipboard);
 
         await expect(diagrams).toHaveCount(1);
         await expect(diagrams).toContainText('Finish');

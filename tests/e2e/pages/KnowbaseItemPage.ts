@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-import { expect, Locator, Page } from "@playwright/test";
+import { expect, JSHandle, Locator, Page } from "@playwright/test";
 import path from 'path';
 import { GlpiPage } from "./GlpiPage";
 import { TipTapEditorHelper } from "../utils/TipTapEditorHelper";
@@ -529,10 +529,35 @@ export class KnowbaseItemPage extends GlpiPage
     /**
      * Put the caret at the start or the end of `text` inside the editor.
      */
-    public async placeCaretInEditMode(text: string, at: 'start' | 'end'): Promise<void>
+    public async doPlaceCaretInEditMode(text: string, at: 'start' | 'end'): Promise<void>
     {
         await this.editor.contentContainer.getByRole('textbox').focus();
         await this.selectTextIn('.ProseMirror[contenteditable="true"]', text, true, at);
+    }
+
+    /**
+     * Copy the whole read-only article content. The system clipboard is not used:
+     * the returned DataTransfer is given back to doPasteInEditMode().
+     */
+    public async doCopyContentInReadMode(): Promise<JSHandle<DataTransfer>>
+    {
+        await this.waitForArticleReady();
+        return this.editor.contentContainer.evaluateHandle((content) => {
+            const range = document.createRange();
+            range.selectNodeContents(content);
+            document.getSelection()?.removeAllRanges();
+            document.getSelection()?.addRange(range);
+            const data = new DataTransfer();
+            content.dispatchEvent(new ClipboardEvent('copy', { clipboardData: data, bubbles: true, cancelable: true }));
+            return data;
+        });
+    }
+
+    public async doPasteInEditMode(data: JSHandle<DataTransfer>): Promise<void>
+    {
+        await this.editor.getEditor().evaluate((element, clipboard_data) => {
+            element.dispatchEvent(new ClipboardEvent('paste', { clipboardData: clipboard_data, bubbles: true, cancelable: true }));
+        }, data);
     }
 
     /**
