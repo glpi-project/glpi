@@ -134,7 +134,10 @@ export class GlpiKnowbaseArticleOutline extends EventTarget
         this.#article.addEventListener('scroll', on_scroll, { passive: true });
         window.addEventListener('scroll', on_scroll, { passive: true, signal });
         window.addEventListener('resize', on_scroll, { passive: true, signal });
-        window.addEventListener('hashchange', () => this.#scrollToHash(true), { signal });
+        // The hash of the page that embeds the article is not for the article.
+        if (this.#article_url === null) {
+            window.addEventListener('hashchange', () => this.#scrollToHash(true), { signal });
+        }
 
         this.#content.addEventListener('click', (e) => {
             const anchor = e.target.closest('[data-glpi-kb-heading-anchor]');
@@ -148,7 +151,7 @@ export class GlpiKnowbaseArticleOutline extends EventTarget
             }
         });
 
-        if (this.#scrollToHash(false)) {
+        if (this.#article_url === null && this.#scrollToHash(false)) {
             // Else, on reload, the browser restores the previous position after this scroll.
             history.scrollRestoration = 'manual';
         }
