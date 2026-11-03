@@ -103,10 +103,13 @@ export function annotateHeadings(root) {
 
         if (id === null) {
             heading.removeAttribute('id');
+            heading.removeAttribute('aria-label');
             anchor?.remove();
             return;
         }
         heading.id = id;
+        // Else the label of the link becomes part of the heading name.
+        heading.setAttribute('aria-label', heading.textContent.trim());
         if (anchor === null) {
             heading.append(createHeadingAnchor(id));
         } else {

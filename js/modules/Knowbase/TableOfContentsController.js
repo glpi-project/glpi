@@ -111,6 +111,14 @@ export class GlpiKnowbaseTableOfContentsController
                 this.#listeners.abort();
                 return;
             }
+            // On Windows, AltGr sends Ctrl+Alt: AltGr+H can type a character.
+            if (e.getModifierState('AltGraph')) {
+                return;
+            }
+            // Keep the keys of the other fields of the page, such as a ticket form.
+            if (e.target.closest?.('input, textarea, select, [contenteditable="true"]') && !container.contains(e.target)) {
+                return;
+            }
             // `code`, not `key`: with Alt, the produced character depends on the layout.
             if (e.ctrlKey && e.altKey && !e.shiftKey && !e.metaKey && e.code === 'KeyH') {
                 e.preventDefault();
@@ -242,10 +250,13 @@ export class GlpiKnowbaseTableOfContentsController
         this.#column.querySelector('[data-glpi-kb-toc-empty]')
             .classList.toggle('d-none', has_headings);
 
+        // A menu button when narrow, a toggle button else: never both states at once.
         if (this.#is_narrow) {
             this.#button.removeAttribute('aria-pressed');
+            this.#button.setAttribute('aria-expanded', this.#button.classList.contains('show') ? 'true' : 'false');
         } else {
             bootstrap.Dropdown.getInstance(this.#button)?.hide();
+            this.#button.removeAttribute('aria-expanded');
             this.#button.setAttribute('aria-pressed', this.#is_visible ? 'true' : 'false');
         }
         bootstrap.Tooltip.getInstance(this.#toggle_container)?.setContent({ '.tooltip-inner': this.#getTooltip() });

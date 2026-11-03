@@ -90,7 +90,12 @@ export const HeadingAnchors = Extension.create({
                             if (id === null) {
                                 continue;
                             }
-                            decorations.push(Decoration.node(pos, pos + node.nodeSize, { id }));
+                            // The label keeps the name of the link out of the heading name.
+                            decorations.push(Decoration.node(
+                                pos,
+                                pos + node.nodeSize,
+                                show_links ? { id, 'aria-label': node.textContent.trim() } : { id },
+                            ));
                             if (show_links) {
                                 decorations.push(Decoration.widget(
                                     pos + node.nodeSize - 1,

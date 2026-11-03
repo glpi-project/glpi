@@ -58,7 +58,8 @@ test.describe('Knowledge base table of contents', () => {
         const toggle = page.getByRole('button', { name: 'Table of contents' });
         await toggle.click();
         await expect(toc.getByRole('link')).toHaveText(['Installation', 'Requirements', 'Usage']);
-        await expect(page.getByRole('button', { name: 'Table of contents' })).toHaveAttribute('aria-pressed', 'true');
+        await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+        await expect(toggle).not.toHaveAttribute('aria-expanded');
 
         await page.reload();
         await expect(toc.getByRole('link')).toHaveText(['Installation', 'Requirements', 'Usage']);
@@ -146,6 +147,11 @@ test.describe('Knowledge base table of contents', () => {
         await page.keyboard.press('Control+Alt+KeyH');
         await expect(toc).toBeHidden();
         await expect(kb.getButton('Show table of contents').getByRole('checkbox')).not.toBeChecked();
+
+        // A field outside the article keeps the keys.
+        await page.getByPlaceholder('Search…').focus();
+        await page.keyboard.press('Control+Alt+KeyH');
+        await expect(toc).toBeHidden();
     });
 
     test('Hides the toggle and the column when the article has no headings', async ({ page, api }) => {
@@ -202,7 +208,8 @@ test.describe('Knowledge base table of contents', () => {
         });
 
         await kb.goto(id);
-        const heading = page.getByRole('heading', { name: 'Requirements' });
+        // The name of the link must not be part of the heading name.
+        const heading = page.getByRole('heading', { name: 'Requirements', exact: true });
         await heading.hover();
         await heading.getByRole('link', { name: 'Copy link to this section' }).click();
 
@@ -221,7 +228,10 @@ test.describe('Knowledge base table of contents', () => {
 
         await page.setViewportSize({ width: 1100, height: 800 });
         await kb.goto(id);
-        await page.getByRole('button', { name: 'Table of contents' }).click();
+        const toggle = page.getByRole('button', { name: 'Table of contents' });
+        await expect(toggle).not.toHaveAttribute('aria-pressed');
+        await toggle.click();
+        await expect(toggle).toHaveAttribute('aria-expanded', 'true');
 
         const toc = page.getByRole('navigation', { name: 'Table of contents' });
         await expect(toc).toHaveCount(1);
@@ -229,5 +239,10 @@ test.describe('Knowledge base table of contents', () => {
 
         await expect(page).toHaveURL(/#h-usage$/);
         await expect(toc).toBeHidden();
+
+        // Back to a toggle button, without the menu state.
+        await page.setViewportSize({ width: 1600, height: 800 });
+        await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+        await expect(toggle).not.toHaveAttribute('aria-expanded');
     });
 });
