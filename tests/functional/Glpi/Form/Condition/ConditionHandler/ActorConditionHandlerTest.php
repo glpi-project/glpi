@@ -41,6 +41,9 @@ use Glpi\Form\QuestionType\QuestionTypeAssignee;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
 use Glpi\Tests\AbstractConditionHandlerTest;
+use Group;
+use Supplier;
+use User;
 
 final class ActorConditionHandlerTest extends AbstractConditionHandlerTest
 {
@@ -348,7 +351,74 @@ final class ActorConditionHandlerTest extends AbstractConditionHandlerTest
                     'expected_result'     => true,
                     'question_extra_data' => $extra_data,
                 ];
+
+                // Default values are supplied by `EngineInput::fromForm()` as the raw
+                // `default_value` database column, i.e. a JSON encoded actors config.
+                $default_value = json_encode([
+                    'users_ids'     => $actor_type === User::class ? [1, 2] : [],
+                    'groups_ids'    => $actor_type === Group::class ? [1, 2] : [],
+                    'suppliers_ids' => $actor_type === Supplier::class ? [1, 2] : [],
+                ]);
+                yield "Equals check with a default value for $type with $actor_type" => [
+                    'question_type'       => $type,
+                    'condition_operator'  => ValueOperator::EQUALS,
+                    'condition_value'     => [
+                        sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
+                    ],
+                    'submitted_answer'    => $default_value,
+                    'expected_result'     => true,
+                    'question_extra_data' => $extra_data,
+                ];
+                yield "Not equals check with a default value for $type with $actor_type" => [
+                    'question_type'       => $type,
+                    'condition_operator'  => ValueOperator::NOT_EQUALS,
+                    'condition_value'     => [
+                        sprintf('%s-3', getForeignKeyFieldForItemType($actor_type)),
+                    ],
+                    'submitted_answer'    => $default_value,
+                    'expected_result'     => true,
+                    'question_extra_data' => $extra_data,
+                ];
+                yield "Contains check with a default value for $type with $actor_type" => [
+                    'question_type'       => $type,
+                    'condition_operator'  => ValueOperator::CONTAINS,
+                    'condition_value'     => [
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
+                    ],
+                    'submitted_answer'    => $default_value,
+                    'expected_result'     => true,
+                    'question_extra_data' => $extra_data,
+                ];
+                yield "Not contains check with a default value for $type with $actor_type" => [
+                    'question_type'       => $type,
+                    'condition_operator'  => ValueOperator::NOT_CONTAINS,
+                    'condition_value'     => [
+                        sprintf('%s-3', getForeignKeyFieldForItemType($actor_type)),
+                    ],
+                    'submitted_answer'    => $default_value,
+                    'expected_result'     => true,
+                    'question_extra_data' => $extra_data,
+                ];
             }
+
+            // A JSON value that is not an actors config must not match any actor
+            yield "Contains check with a JSON scalar value for $type" => [
+                'question_type'       => $type,
+                'condition_operator'  => ValueOperator::CONTAINS,
+                'condition_value'     => ['users_id-1'],
+                'submitted_answer'    => 'true',
+                'expected_result'     => false,
+                'question_extra_data' => $extra_data,
+            ];
+            yield "Not contains check with malformed actors ids for $type" => [
+                'question_type'       => $type,
+                'condition_operator'  => ValueOperator::NOT_CONTAINS,
+                'condition_value'     => ['users_id-1'],
+                'submitted_answer'    => '{"users_ids":"1"}',
+                'expected_result'     => true,
+                'question_extra_data' => $extra_data,
+            ];
         }
     }
 }

@@ -73,8 +73,8 @@
         "spin.js": "^4.1.2",
         "swagger-ui-dist": "^5.32.15",
         "tinycolor2": "^1.6.0",
-        "tinymce": "^8.8.2",
-        "tinymce-i18n": "^26.8.2",
+        "tinymce": "^8.10.1",
+        "tinymce-i18n": "^26.11.2",
         "vue": "^3.5.44",
         "wunderbaum": "^0.14.1"
     },
