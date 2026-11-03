@@ -62,7 +62,7 @@ function header_html(string $etape): void
     header("Content-Type: text/html; charset=UTF-8");
 
     TemplateRenderer::getInstance()->display('layout/parts/head.html.twig', [
-        'lang'  => $_SESSION['glpilanguage'],
+        'lang'  => Session::getLanguage(),
         'title' => __('GLPI setup'),
         'css_files' => [
             ['path' => 'lib/tabler.css'],
@@ -112,7 +112,7 @@ function choose_language(): void
     TemplateRenderer::getInstance()->display('install/choose_language.html.twig', [
         'languages_dropdown'  => Dropdown::showLanguages('language', [
             'display' => false,
-            'value'   => $_SESSION['glpilanguage'],
+            'value'   => Session::getLanguage(),
             'width'   => '100%',
         ]),
     ]);

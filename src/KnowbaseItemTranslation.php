@@ -77,7 +77,7 @@ class KnowbaseItemTranslation extends CommonDBChild
         $obj   = new self();
         $found = $obj->find([
             'knowbaseitems_id'   => $item->getID(),
-            'language'           => $_SESSION['glpilanguage'],
+            'language'           => Session::getLanguage(),
         ]);
 
         if (

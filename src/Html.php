@@ -596,7 +596,7 @@ TWIG,
         self::header_nocache();
 
         $theme = ThemeManager::getInstance()->getCurrentTheme();
-        $lang = $_SESSION['glpilanguage'] ?? Session::getPreferredLanguage();
+        $lang = Session::getLanguage() ?? Session::getPreferredLanguage();
 
         $tpl_vars = [
             'lang'               => LanguageRegistry::get($lang)->getPageLang(),
@@ -1262,7 +1262,7 @@ TWIG,
             // select2
             $filename = sprintf(
                 'lib/select2/js/i18n/%s.js',
-                LanguageRegistry::get($_SESSION['glpilanguage'])->jquery_code
+                LanguageRegistry::get(Session::getLanguage())->jquery_code
             );
             if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                 $tpl_vars['js_files'][] = ['path' => $filename];
@@ -2194,7 +2194,7 @@ HTML;
 
         $value = json_encode($p['value']);
 
-        $locale = Locale::parseLocale($_SESSION['glpilanguage']);
+        $locale = Locale::parseLocale(Session::getLanguage());
         $locale_language = jsescape($locale['language']);
         $locale_region   = jsescape($locale['region']);
         $js = <<<JS
@@ -2380,7 +2380,7 @@ HTML;
         $max_attr = !empty($p['maxdate']) ? sprintf("maxDate: '%s',", jsescape($p['maxdate'])) : "";
         $timestep = (int) $p['timestep'];
 
-        $locale = Locale::parseLocale($_SESSION['glpilanguage']);
+        $locale = Locale::parseLocale(Session::getLanguage());
         $locale_language = jsescape($locale['language']);
         $locale_region   = jsescape($locale['region']);
         $js = <<<JS
@@ -2662,7 +2662,7 @@ JS;
     {
 
         if (empty($specifictime)) {
-            $specifictime = strtotime($_SESSION["glpi_currenttime"]);
+            $specifictime = strtotime(Session::getCurrentTime());
         }
 
         $format_use = "Y-m-d H:i:s";
@@ -3093,8 +3093,8 @@ JS;
 
         $pluginsjs = json_encode(array_values($plugins));
 
-        $language_RFC5646    = str_replace('_', '-', $_SESSION['glpilanguage']);      // convert to RFC5646 format (fr_FR -> fr-FR)
-        $language_regionless = preg_replace('/_.*$/', '', $_SESSION['glpilanguage']); // fallback to regionless locale (fr_FR -> fr)
+        $language_RFC5646    = str_replace('_', '-', Session::getLanguage());      // convert to RFC5646 format (fr_FR -> fr-FR)
+        $language_regionless = preg_replace('/_.*$/', '', Session::getLanguage()); // fallback to regionless locale (fr_FR -> fr)
         $expected_languages  = [$language_RFC5646, $language_regionless];
         $main_language       = LanguageRegistry::getMainLanguage($language_regionless);
         if ($main_language !== null) {
@@ -5383,7 +5383,7 @@ JS);
                 $_SESSION['glpi_js_toload'][$name][] = 'js/flatpickr_buttons_plugin.js';
                 if (isset($_SESSION['glpilanguage'])) {
                     $filename = "lib/flatpickr/l10n/"
-                    . strtolower(LanguageRegistry::get($_SESSION['glpilanguage'])->js_code) . ".js";
+                    . strtolower(LanguageRegistry::get(Session::getLanguage())->js_code) . ".js";
                     if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                         $_SESSION['glpi_js_toload'][$name][] = $filename;
                         break;
@@ -5483,7 +5483,7 @@ JS);
         if (isset($_SESSION['glpilanguage'])) {
             // select2
             $filename = "lib/select2/js/i18n/"
-                     . LanguageRegistry::get($_SESSION['glpilanguage'])->jquery_code . ".js";
+                     . LanguageRegistry::get(Session::getLanguage())->jquery_code . ".js";
             if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                 echo Html::script($filename);
             }
@@ -6027,9 +6027,9 @@ CSS;
         $ts_date = new DateTime();
         $ts_date->setTimestamp($ts);
 
-        $diff = strtotime($_SESSION['glpi_currenttime']) - $ts;
+        $diff = strtotime(Session::getCurrentTime()) - $ts;
         $date = new DateTime(date('Y-m-d', $ts));
-        $today = new DateTime(date('Y-m-d', strtotime($_SESSION['glpi_currenttime'])));
+        $today = new DateTime(date('Y-m-d', strtotime(Session::getCurrentTime())));
         if ($diff == 0) {
             return __('Now');
         } elseif ($diff > 0) {
@@ -6094,7 +6094,7 @@ CSS;
             }
         }
 
-        return IntlDateFormatter::formatObject($ts_date, 'MMMM y', $_SESSION['glpilanguage'] ?? 'en_GB');
+        return IntlDateFormatter::formatObject($ts_date, 'MMMM y', Session::getLanguage() ?? 'en_GB');
     }
 
     /**

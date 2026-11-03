@@ -295,10 +295,10 @@ class Group_User extends CommonDBRelation
 
             // active entity could be a child of object entity
             if (
-                ($_SESSION['glpiactive_entity'] != $group->fields['entities_id'])
-                && in_array($_SESSION['glpiactive_entity'], $entityrestrict)
+                (Session::getActiveEntity() != $group->fields['entities_id'])
+                && in_array(Session::getActiveEntity(), $entityrestrict)
             ) {
-                $entityrestrict = getSonsOf('glpi_entities', $_SESSION['glpiactive_entity']);
+                $entityrestrict = getSonsOf('glpi_entities', Session::getActiveEntity());
             }
         } else {
             $entityrestrict = $group->fields['entities_id'];

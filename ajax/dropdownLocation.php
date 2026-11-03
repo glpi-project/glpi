@@ -47,7 +47,7 @@ $item->getFromDB((int) $_REQUEST['items_id']);
 
 $locations_id = $item->fields['locations_id'] ?? 0;
 
-$entities_id = $item->fields['entities_id'] ?? $_SESSION['glpiactive_entity'];
+$entities_id = $item->fields['entities_id'] ?? Session::getActiveEntity();
 
 $is_recursive = $_SESSION['glpiactive_entity_recursive'];
 if (isset($_REQUEST['is_recursive'])) {

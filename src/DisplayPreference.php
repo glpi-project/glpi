@@ -690,7 +690,7 @@ class DisplayPreference extends CommonDBTM
 
         // Sort by display name rather than by itemtype
         $sorted_preferences = iterator_to_array($iterator);
-        $collator = collator_create($_SESSION['glpilanguage']);
+        $collator = collator_create(Session::getLanguage());
         if ($collator) {
             $collator->setStrength(Collator::PRIMARY);
         }

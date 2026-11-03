@@ -487,7 +487,7 @@ TWIG, $params);
                 'cache_key'     => $cache_key,
                 'embed'         => self::$embed,
                 'token'         => $token,
-                'entities_id'   => $_SESSION['glpiactive_entity'],
+                'entities_id'   => Session::getActiveEntity(),
                 'is_recursive'  => $_SESSION['glpiactive_entity_recursive'] ? 1 : 0,
                 'profiles_id'   => self::$embed ? ($_SESSION['glpiactiveprofile']['id'] ?? 0) : 0,
                 'users_id'      => self::$embed ? ($_SESSION['glpiID'] ?? 0) : 0,
@@ -1047,7 +1047,7 @@ HTML;
     {
         global $CFG_GLPI;
 
-        $entities_id  = $_SESSION['glpiactive_entity'];
+        $entities_id  = Session::getActiveEntity();
         $is_recursive = $_SESSION['glpiactive_entity_recursive'];
         // Bind the link to the current user's active profile, so the embedded
         // dashboard later restores that exact profile's rights and groups

@@ -367,7 +367,7 @@ class Config extends CommonDBTM
             $enforced = $input['2fa_enforced'] ?? $CFG_GLPI['2fa_enforced'];
             $grace_period = $input['2fa_grace_days'] ?? $CFG_GLPI['2fa_grace_days'];
             if ($enforced && $grace_period > 0) {
-                $input['2fa_grace_date_start'] = $_SESSION['glpi_currenttime'];
+                $input['2fa_grace_date_start'] = Session::getCurrentTime();
             } else {
                 $input['2fa_grace_date_start'] = null;
             }
@@ -790,7 +790,7 @@ class Config extends CommonDBTM
     {
         global $CFG_GLPI, $DB;
 
-        $oldlang = $_SESSION['glpilanguage'];
+        $oldlang = Session::getLanguage();
         // Keep this, for some function call which still use translation (ex showAllReplicateDelay)
         Session::loadLanguage('en_GB');
 
@@ -1525,9 +1525,9 @@ class Config extends CommonDBTM
         }
 
         //reload config for logged user
-        if ($_SESSION['glpiID'] ?? false) {
+        if (Session::getLoginUserID()) {
             $user = new User();
-            if ($user->getFromDB($_SESSION['glpiID'])) {
+            if ($user->getFromDB(Session::getLoginUserID())) {
                 $user->loadPreferencesInSession();
             }
         }
@@ -1714,7 +1714,7 @@ class Config extends CommonDBTM
             // As passwords will now expire, consider that "now" is the reference date of expiration delay
             $DB->update(
                 User::getTable(),
-                ['password_last_update' => $_SESSION['glpi_currenttime']],
+                ['password_last_update' => Session::getCurrentTime()],
                 ['authtype' => Auth::DB_GLPI]
             );
 

@@ -119,7 +119,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
                     'itemtype_name'   => 'itemtype_2',
                     'itemtypes'       => $CFG_GLPI['itil_types'],
                     'checkright'      => true,
-                    'entity_restrict' => $_SESSION['glpiactive_entity'],
+                    'entity_restrict' => Session::getActiveEntity(),
                 ]);
                 self::dropdownLinks('link');
                 echo "<br><input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
@@ -130,7 +130,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
                     'itemtype_name'   => 'itemtype_2',
                     'itemtypes'       => $CFG_GLPI['itil_types'],
                     'checkright'      => true,
-                    'entity_restrict' => $_SESSION['glpiactive_entity'],
+                    'entity_restrict' => Session::getActiveEntity(),
                 ]);
                 echo "<br><input type='submit' name='delete' value=\"" . _sx('button', 'Delete permanently') . "\" class='btn btn-primary'>";
                 return true;

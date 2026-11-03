@@ -88,7 +88,7 @@ abstract class RuleCommonITILObjectCollection extends RuleCollection
     public function showChildrensTab()
     {
         return (Session::haveRight(self::$rightname, READ)
-            && (count($_SESSION['glpiactiveentities']) > 1));
+            && (count(Session::getActiveEntities()) > 1));
     }
 
     public function prepareInputDataForProcess($input, $params)

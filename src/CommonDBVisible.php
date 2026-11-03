@@ -109,7 +109,7 @@ abstract class CommonDBVisible extends CommonDBTM
         // Entities
         if (
             count($this->entities)
-            && isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])
+            && isset($_SESSION["glpiactiveentities"]) && count(Session::getActiveEntities())
         ) {
             foreach ($this->entities as $data) {
                 foreach ($data as $entity) {

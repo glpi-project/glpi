@@ -505,12 +505,12 @@ abstract class API
     protected function getActiveEntities()
     {
         $actives_entities = [];
-        foreach (array_values($_SESSION['glpiactiveentities']) as $active_entity) {
+        foreach (array_values(Session::getActiveEntities()) as $active_entity) {
             $actives_entities[] = ['id' => $active_entity];
         }
 
         return ["active_entity" => [
-            "id"                      => $_SESSION['glpiactive_entity'],
+            "id"                      => Session::getActiveEntity(),
             "active_entity_recursive" => $_SESSION['glpiactive_entity_recursive'],
             "active_entities"         => $actives_entities,
         ],
@@ -1930,7 +1930,7 @@ abstract class API
                 } else {
                     // add missing entity
                     if (!isset($object['entities_id'])) {
-                        $object['entities_id'] = $_SESSION['glpiactive_entity'];
+                        $object['entities_id'] = Session::getActiveEntity();
                     }
 
                     // add an entry to match gui post (which contains submit button)
@@ -2271,7 +2271,7 @@ abstract class API
             $this->returnError(__("email parameter missing"));
         }
 
-        if (isset($_SESSION['glpiID'])) {
+        if (Session::isAuthenticated()) {
             $this->returnError(__("A session is active"));
         }
 
@@ -2429,7 +2429,7 @@ abstract class API
         if (
             $this->parameters['session_token'] != $current
             && !empty($current)
-            || !isset($_SESSION['glpiID'])
+            || !Session::isAuthenticated()
         ) {
             $this->messageSessionError();
         }

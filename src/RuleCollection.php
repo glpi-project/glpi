@@ -2008,7 +2008,7 @@ TWIG, $twig_params);
                         __('Rules applied: %s'),
                         Dropdown::getDropdownName(
                             'glpi_entities',
-                            $_SESSION['glpiactive_entity']
+                            Session::getActiveEntity()
                         )
                     )
                 );
@@ -2021,7 +2021,7 @@ TWIG, $twig_params);
                         __('Local rules: %s'),
                         Dropdown::getDropdownName(
                             'glpi_entities',
-                            $_SESSION['glpiactive_entity']
+                            Session::getActiveEntity()
                         )
                     )
                 );
@@ -2054,7 +2054,7 @@ TWIG, $twig_params);
                     break;
             }
             if ($item->isRuleEntityAssigned()) {
-                $item->setEntity($_SESSION['glpiactive_entity']);
+                $item->setEntity(Session::getActiveEntity());
             }
             $item->title();
             $item->showEngineSummary();

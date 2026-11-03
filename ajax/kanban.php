@@ -260,7 +260,7 @@ if (($_POST['action'] ?? null) === 'update') {
     header("Content-Type: application/json; charset=UTF-8", true);
     $response = [
         'state'     => Item_Kanban::loadStateForItem($_REQUEST['itemtype'], $_REQUEST['items_id'], $_REQUEST['last_load']),
-        'timestamp' => $_SESSION['glpi_currenttime'],
+        'timestamp' => Session::getCurrentTime(),
     ];
     echo json_encode($response, JSON_FORCE_OBJECT);
 } elseif ($_REQUEST['action'] === 'clear_column_state') {

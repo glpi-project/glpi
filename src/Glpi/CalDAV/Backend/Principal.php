@@ -149,7 +149,7 @@ class Principal extends AbstractBackend
                 ] + getEntitiesRestrictCriteria(
                     Group::getTable(),
                     'entities_id',
-                    $_SESSION['glpiactiveentities'],
+                    \Session::getActiveEntities(),
                     true
                 ),
             ]
@@ -196,7 +196,7 @@ class Principal extends AbstractBackend
             ] + getEntitiesRestrictCriteria(
                 Group::getTable(),
                 'entities_id',
-                $_SESSION['glpiactiveentities'],
+                \Session::getActiveEntities(),
                 true
             ),
         ];

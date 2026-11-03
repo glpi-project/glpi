@@ -93,7 +93,7 @@ class Contract extends CommonDBTM implements StateInterface
         if (isset($_SESSION['glpiactive_entity'])) {
             $this->fields["alert"] = Entity::getUsedConfig(
                 "use_contracts_alert",
-                $_SESSION['glpiactive_entity'],
+                Session::getActiveEntity(),
                 "default_contract_alert",
                 0
             );

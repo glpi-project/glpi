@@ -76,7 +76,7 @@ class Printer extends NetworkEquipment
             $this->data = [];
             foreach ($this->raw_data as $val) {
                 $val->autoupdatesystems_id = $autoupdatesystems_id;
-                $val->last_inventory_update = $_SESSION['glpi_currenttime'];
+                $val->last_inventory_update = \Session::getCurrentTime();
                 $this->data[] = $val;
             }
         }
@@ -212,7 +212,7 @@ class Printer extends NetworkEquipment
         $unicity_input = [
             'itemtype' => $this->item::class,
             'items_id' => $this->item->fields['id'],
-            'date' => date('Y-m-d', strtotime($_SESSION['glpi_currenttime'])),
+            'date' => date('Y-m-d', strtotime(\Session::getCurrentTime())),
         ];
         $input = array_merge((array) $this->counters, $unicity_input);
 

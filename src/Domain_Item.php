@@ -509,7 +509,7 @@ TWIG, $twig_params);
         ) {
             // Restrict entity for knowbase
             $entities = "";
-            $entity   = $_SESSION["glpiactive_entity"];
+            $entity   = Session::getActiveEntity();
 
             if ($item->isEntityAssign()) {
                 // Case of personal items : entity = -1 : create on active entity (Reminder case))

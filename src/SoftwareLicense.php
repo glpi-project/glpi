@@ -266,7 +266,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
             $soft                         = new Software();
             if (
                 $soft->getFromDB($softwares_id)
-                && in_array($_SESSION['glpiactive_entity'], getAncestorsOf(
+                && in_array(Session::getActiveEntity(), getAncestorsOf(
                     'glpi_entities',
                     $soft->getEntityID()
                 ))

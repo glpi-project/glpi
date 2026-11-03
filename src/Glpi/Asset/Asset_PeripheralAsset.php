@@ -279,7 +279,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $specificities              = parent::getRelationMassiveActionsSpecificities();
         $specificities['itemtypes'] = self::getPeripheralHostItemtypes();
         $specificities['select_items_options_1']['itemtypes']       = self::getPeripheralHostItemtypes();
-        $specificities['select_items_options_2']['entity_restrict'] = $_SESSION['glpiactive_entity'];
+        $specificities['select_items_options_2']['entity_restrict'] = Session::getActiveEntity();
         $specificities['select_items_options_2']['itemtypes']       = $CFG_GLPI['directconnect_types'];
         $specificities['select_items_options_2']['onlyglobal']      = true;
         $specificities['only_remove_all_at_once']                   = true;

@@ -531,10 +531,10 @@ TWIG, $twig_params);
         }
 
         if ($language === '') {
-            $language = $_SESSION['glpilanguage'];
+            $language = Session::getLanguage();
         }
 
-        $translated_fields = $language === $_SESSION['glpilanguage'] && isset($_SESSION['glpi_dropdowntranslations'])
+        $translated_fields = $language === Session::getLanguage() && isset($_SESSION['glpi_dropdowntranslations'])
             ? $_SESSION['glpi_dropdowntranslations']
             : self::getAvailableTranslations($language);
 

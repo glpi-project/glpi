@@ -350,6 +350,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/priority.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#4 \\$language of static method DropdownTranslation\\:\\:getTranslatedValue\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/projecttask.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$post of static method ReservationItem\\:\\:ajaxDropdown\\(\\) expects array\\{idtable\\: string, name\\: string\\}, array\\<mixed\\> given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -372,6 +378,12 @@ $ignoreErrors[] = [
 	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
 	'count' => 2,
 	'path' => __DIR__ . '/ajax/selectUnaffectedOrNewItem_Device.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#4 \\$language of static method DropdownTranslation\\:\\:getTranslatedValue\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/solution.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Part \\$parents_itemtype \\(class\\-string\\<CommonITILObject\\>\\|CommonITILObject\\) of encapsed string cannot be cast to string\\.$#',
@@ -1001,6 +1013,12 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$input of method AbstractITILChildTemplate\\:\\:validateContentInput\\(\\) expects array, array\\<string, mixed\\>\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
+	'path' => __DIR__ . '/src/AbstractITILChildTemplate.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#4 \\$language of static method DropdownTranslation\\:\\:getTranslatedValue\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
 	'path' => __DIR__ . '/src/AbstractITILChildTemplate.php',
 ];
 $ignoreErrors[] = [
@@ -1978,7 +1996,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Binary operation "\\+" between int\\|string and 1 results in an error\\.$#',
 	'identifier' => 'binaryOp.invalid',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/CommonGLPI.php',
 ];
 $ignoreErrors[] = [
@@ -1990,7 +2008,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Binary operation "\\-" between int\\|string and 1 results in an error\\.$#',
 	'identifier' => 'binaryOp.invalid',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/CommonGLPI.php',
 ];
 $ignoreErrors[] = [
@@ -2258,6 +2276,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$datetime of function Safe\\\\strtotime expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILObject.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$haystack of function str_contains expects string, bool\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -2381,6 +2405,18 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$array of function array_key_exists expects array, array\\<string, mixed\\>\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 3,
+	'path' => __DIR__ . '/src/CommonITILObject.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$end of method Calendar\\:\\:getActiveTimeBetween\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILObject.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$end of method LevelAgreement\\:\\:getActiveTimeBetween\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
@@ -3056,6 +3092,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Config.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$forcelang of static method Session\\:\\:loadLanguage\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Config.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -3440,6 +3482,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Comparison operation "\\=\\=" between \'\'\\|array\\<int\\>\\|int and array\\<int\\> results in an error\\.$#',
+	'identifier' => 'equal.invalid',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DbUtils.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method DbUtils\\:\\:getItemTypeForTable\\(\\) should return class\\-string\\<CommonDBTM\\>\\|null but returns class\\-string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -3508,12 +3556,18 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of method DbUtils\\:\\:getAncestorsOf\\(\\) expects array\\<int\\>\\|int, int\\|string given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 1,
+	'count' => 2,
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$offset of function substr_replace expects array\\|int, int\\|false given\\.$#',
 	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DbUtils.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between int\\|non\\-empty\\-string and \'\' will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
@@ -3749,6 +3803,12 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of static method Glpi\\\\Search\\\\SearchOption\\:\\:getDefaultToView\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
+	'path' => __DIR__ . '/src/DisplayPreference.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$locale of function collator_create expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
 	'path' => __DIR__ . '/src/DisplayPreference.php',
 ];
 $ignoreErrors[] = [
@@ -4028,6 +4088,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#4 \\$language of static method DropdownTranslation\\:\\:getTranslatedValue\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Dropdown.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type float\\|int\\.$#',
 	'identifier' => 'offsetAccess.invalidOffset',
 	'count' => 2,
@@ -4036,6 +4102,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method DropdownTranslation\\:\\:dropdownFields\\(\\) should return int but returns int\\|string\\.$#',
 	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DropdownTranslation.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$language of static method DropdownTranslation\\:\\:getAvailableTranslations\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DropdownTranslation.php',
 ];
@@ -4260,6 +4332,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/GLPIMailer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#3 \\$subject of function Safe\\\\preg_replace expects array\\<string\\>\\|string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/GLPINetwork.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$display\\.$#',
@@ -4898,6 +4976,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$code of static method Glpi\\\\Locale\\\\LanguageRegistry\\:\\:get\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CoreController.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$identifier of method Glpi\\\\OAuth\\\\User\\:\\:setIdentifier\\(\\) expects non\\-empty\\-string, int\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -4949,6 +5033,12 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$array of function array_values expects array, array\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 10,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ReportController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$datetime of function Safe\\\\strtotime expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 4,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ReportController.php',
 ];
 $ignoreErrors[] = [
@@ -5216,6 +5306,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$language of static method DropdownTranslation\\:\\:getAvailableTranslations\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\$class of class Glpi\\\\Api\\\\HL\\\\RoutePath constructor expects class\\-string\\<Glpi\\\\Api\\\\HL\\\\Controller\\\\AbstractController\\>, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -5387,6 +5483,12 @@ $ignoreErrors[] = [
 	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Application/View/Extension/FrontEndAssetsExtension.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$code of static method Glpi\\\\Locale\\\\LanguageRegistry\\:\\:get\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Application/View/Extension/FrontEndAssetsExtension.php',
 ];
 $ignoreErrors[] = [
@@ -5966,6 +6068,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Ldap/SynchronizeUsersCommand.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$string of function strtolower expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Marketplace/SearchCommand.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$name of method Symfony\\\\Component\\\\Console\\\\Command\\\\Command\\:\\:setName\\(\\) expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -6230,6 +6338,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/Helpdesk/Translation/AddNewHelpdeskTranslationController.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$code of static method Glpi\\\\Locale\\\\LanguageRegistry\\:\\:get\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Controller/IndexController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$lang of static method Toolbox\\:\\:createSchema\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Controller/InstallController.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$connect_string of static method AuthMail\\:\\:testAuth\\(\\) expects string, bool\\|float\\|int\\|string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -6278,6 +6398,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/LegacyFileLoadController.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$code of static method Glpi\\\\Locale\\\\LanguageRegistry\\:\\:get\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Controller/MaintenanceController.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$code of method Glpi\\\\Security\\\\TOTPManager\\:\\:verifyBackupCodeForUser\\(\\) expects string, bool\\|float\\|int\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -6294,6 +6420,18 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/Security/MFAController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$users_id of method Glpi\\\\Security\\\\ReAuth\\\\CasReAuthStrategy\\:\\:complete\\(\\) expects int, int\\|string\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Controller/Security/Reauth/CASController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$users_id of method Glpi\\\\Security\\\\ReAuth\\\\CasReAuthStrategy\\:\\:start\\(\\) expects int, int\\|string\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Controller/Security/Reauth/CASController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Property Glpi\\\\Controller\\\\ServiceCatalog\\\\IndexController\\:\\:\\$interface \\(string\\) does not accept string\\|false\\.$#',
@@ -6474,6 +6612,18 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Dashboard/Filters/AbstractGroupFilter.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$users_id of static method Glpi\\\\Dashboard\\\\Filters\\\\UserAssignedFilter\\:\\:getAssignedITILUserCriteria\\(\\) expects int, int\\|string\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Filters/UserAssignedFilter.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$users_id of static method Glpi\\\\Dashboard\\\\Filters\\\\UserTechFilter\\:\\:getAssignedITILUserCriteria\\(\\) expects int, int\\|string\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Filters/UserTechFilter.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Dashboard\\\\Grid\\:\\:dropdownDashboard\\(\\) should return string but returns int\\|string\\.$#',
@@ -10262,6 +10412,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Printer.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$datetime of function Safe\\\\strtotime expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Printer.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Property Glpi\\\\Inventory\\\\MainAsset\\\\Printer\\:\\:\\$counters \\(stdClass\\) does not accept object\\.$#',
 	'identifier' => 'assign.propertyType',
 	'count' => 1,
@@ -10548,6 +10704,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Mail/SMTP/OauthConfig.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$code of static method Glpi\\\\Locale\\\\LanguageRegistry\\:\\:get\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/Api/Plugins.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method addVolume\\(\\) on CronTask\\|null\\.$#',
@@ -10964,6 +11126,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$datetime of function Safe\\\\strtotime expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$haystack of function str_contains expects string, int\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 3,
@@ -11037,6 +11205,18 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$child_itemtype of static method Glpi\\\\Search\\\\SearchEngine\\:\\:isPossibleMetaSubitemOf\\(\\) expects string, class\\-string\\<CommonDBTM\\>\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$end of method Calendar\\:\\:getActiveTimeBetween\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$end of method LevelAgreement\\:\\:getActiveTimeBetween\\(\\) expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
@@ -11138,6 +11318,24 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/SearchOption.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$datetime of class Safe\\\\DateTime constructor expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Security/ReAuth/ReAuthManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$users_id of method Glpi\\\\Security\\\\ReAuth\\\\ReAuthManager\\:\\:resolvePreferred\\(\\) expects int, int\\|string\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Security/ReAuth/ReAuthManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$users_id of method Glpi\\\\Security\\\\ReAuth\\\\ReAuthStrategyInterface\\:\\:verify\\(\\) expects int, int\\|string\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Security/ReAuth/ReAuthManager.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a bare SQL identifier is forbidden\\. Use `QueryIdentifier` instead\\.$#',
 	'identifier' => 'glpi.forbidSqlExpressionIdentifier',
 	'count' => 2,
@@ -11148,6 +11346,12 @@ $ignoreErrors[] = [
 	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
 	'count' => 13,
 	'path' => __DIR__ . '/src/Glpi/Security/SessionTracker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$datetime of function Safe\\\\strtotime expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Security/ShareTokenManager.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Security\\\\TOTPManager\\:\\:getGracePeriodDaysLeft\\(\\) should return int but returns int\\|false\\.$#',
@@ -11594,6 +11798,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$code of static method Glpi\\\\Locale\\\\LanguageRegistry\\:\\:get\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$datetime of function Safe\\\\strtotime expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$dest of static method Html\\:\\:redirect\\(\\) expects string, string\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -11615,6 +11831,12 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of static method Dropdown\\:\\:showOutputFormat\\(\\) expects class\\-string\\<CommonDBTM\\>\\|null, int\\<min, \\-1\\>\\|int\\<1, max\\>\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$locale of static method Locale\\:\\:parseLocale\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
@@ -11655,6 +11877,18 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$length of static method Toolbox\\:\\:substr\\(\\) expects int, int\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#3 \\$subject of function Safe\\\\preg_replace expects array\\<string\\>\\|string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#3 \\$subject of function str_replace expects array\\<string\\>\\|string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Html.php',
@@ -12218,6 +12452,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Infocom.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$datetime of class Safe\\\\DateTime constructor expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Infocom.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$datetime of function Safe\\\\strtotime expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Infocom.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$item of static method Infocom\\:\\:showForItem\\(\\) expects CommonDBTM, CommonDBTM\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -12591,6 +12837,12 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of method CommonDBConnexity\\:\\:getConnexityItem\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Item_Ola.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$end of method LevelAgreement\\:\\:getActiveTimeBetween\\(\\) expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_Ola.php',
@@ -13556,6 +13808,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkPort.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$datetime of function Safe\\\\strtotime expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NetworkPort.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$input of method CommonDBChild\\:\\:prepareInputForAdd\\(\\) expects array\\<string, mixed\\>, array\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -14026,7 +14284,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on \\(T of CommonITILObject\\)\\|null\\.$#',
 	'identifier' => 'property.nonObject',
-	'count' => 5,
+	'count' => 4,
 	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
 ];
 $ignoreErrors[] = [
@@ -14182,6 +14440,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Offset \'label\' might not exist on array\\|string\\.$#',
 	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NotificationTargetContract.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$time of static method Html\\:\\:convDate\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationTargetContract.php',
 ];
@@ -14846,6 +15110,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/PendingReason.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$locale of class NumberFormatter constructor expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/PendingReason.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on PendingReason_Item\\|false\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 2,
@@ -15015,6 +15285,12 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$classname of function isPluginItemType expects string, class\\-string\\<CommonDBTM\\>\\|CommonDBTM given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Planning.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$fullview of static method Planning\\:\\:showPlanning\\(\\) expects bool, int\\|string\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Planning.php',
@@ -15276,6 +15552,24 @@ $ignoreErrors[] = [
 	'identifier' => 'array.invalidKey',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Plugin.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$users_id of method Glpi\\\\Security\\\\TOTPManager\\:\\:is2FAEnabled\\(\\) expects int, int\\|string\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Preference.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$users_id of method Glpi\\\\Security\\\\TOTPManager\\:\\:isBackupCodesAvailable\\(\\) expects int, int\\|string\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Preference.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$users_id of method Glpi\\\\Security\\\\TOTPManager\\:\\:showTOTPConfigForm\\(\\) expects int, int\\|string\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Preference.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on Agent\\|null\\.$#',
@@ -15710,6 +16004,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/QueuedNotification.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$datetime of function Safe\\\\strtotime expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/QueuedNotification.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
 	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
 	'count' => 3,
@@ -15724,6 +16024,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method QueuedWebhook\\:\\:canCreate\\(\\) should return bool but returns int\\|string\\|false\\.$#',
 	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/QueuedWebhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$datetime of function Safe\\\\strtotime expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/QueuedWebhook.php',
 ];
@@ -17444,6 +17750,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Ticket.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$datetime of class Safe\\\\DateTime constructor expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Ticket.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$datetime of function Safe\\\\strtotime expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Ticket.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$input of method CommonITILObject\\:\\:isTakeIntoAccountComputationBlocked\\(\\) expects array, array\\<string, mixed\\>\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -17471,6 +17789,12 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$delay of method Calendar\\:\\:computeEndDate\\(\\) expects int, float\\|int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Ticket.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$end of method Calendar\\:\\:getActiveTimeBetween\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
 	'path' => __DIR__ . '/src/Ticket.php',
 ];
 $ignoreErrors[] = [
@@ -17930,6 +18254,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/User.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$datetime of function Safe\\\\strtotime expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 3,
+	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$entities_id of static method User\\:\\:getDelegateGroupsForUser\\(\\) expects int\\|string, array\\|int\\<0, max\\> given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$filename of function Safe\\\\sha1_file expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -17955,6 +18291,12 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of static method User\\:\\:getTreeCategoryList\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$language of static method DropdownTranslation\\:\\:getAvailableTranslations\\(\\) expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/User.php',

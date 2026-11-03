@@ -251,7 +251,7 @@ class FrontEndAssetsExtension extends AbstractExtension
             $entity = new Entity();
             if (isset($_SESSION['glpiactive_entity'])) {
                 // Apply active entity styles
-                $entity->getFromDB($_SESSION['glpiactive_entity']);
+                $entity->getFromDB(Session::getActiveEntity());
             } else {
                 // Apply root entity styles
                 $entity->getFromDB('0');
@@ -282,12 +282,12 @@ class FrontEndAssetsExtension extends AbstractExtension
 
         $script = "
             $(function() {
-                i18n.setLocale('" . \jsescape($_SESSION['glpilanguage']) . "');
+                i18n.setLocale('" . \jsescape(Session::getLanguage()) . "');
             });
 
             $.fn.select2.defaults.set(
                 'language',
-                '" . \jsescape(LanguageRegistry::get($_SESSION['glpilanguage'])->jquery_code) . "',
+                '" . \jsescape(LanguageRegistry::get(Session::getLanguage())->jquery_code) . "',
             );
         ";
 
@@ -295,7 +295,7 @@ class FrontEndAssetsExtension extends AbstractExtension
             $locales_path = Html::getPrefixedUrl(
                 '/front/locale.php'
                 . '?domain=' . $locale_domain
-                . '&lang=' . $_SESSION['glpilanguage']
+                . '&lang=' . Session::getLanguage()
                 . '&v=' . FrontEnd::getVersionCacheKey($locale_version)
             );
             $script .= "

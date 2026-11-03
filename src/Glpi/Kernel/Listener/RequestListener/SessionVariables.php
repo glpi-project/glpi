@@ -112,7 +112,7 @@ final class SessionVariables implements EventSubscriberInterface
         // Reload entities if necessary.
         if ($check_entities && Session::shouldReloadActiveEntities()) {
             Session::changeActiveEntities(
-                $_SESSION["glpiactive_entity"],
+                Session::getActiveEntity(),
                 $_SESSION["glpiactive_entity_recursive"]
             );
         }

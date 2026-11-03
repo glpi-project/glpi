@@ -143,7 +143,7 @@ class QueuedWebhook extends CommonDBChild
         global $DB;
 
         if (!isset($input['create_time']) || empty($input['create_time'])) {
-            $input['create_time'] = $_SESSION["glpi_currenttime"];
+            $input['create_time'] = Session::getCurrentTime();
         }
         if (!isset($input['send_time']) || empty($input['send_time'])) {
             $toadd = 0;
@@ -153,11 +153,11 @@ class QueuedWebhook extends CommonDBChild
             if ($toadd > 0) {
                 $input['send_time'] = date(
                     "Y-m-d H:i:s",
-                    strtotime($_SESSION["glpi_currenttime"])
+                    strtotime(Session::getCurrentTime())
                     + $toadd * MINUTE_TIMESTAMP
                 );
             } else {
-                $input['send_time'] = $_SESSION["glpi_currenttime"];
+                $input['send_time'] = Session::getCurrentTime();
             }
         }
         $input['sent_try'] = 0;
@@ -283,7 +283,7 @@ class QueuedWebhook extends CommonDBChild
         $input = [
             'id' => $ID,
             'sent_try' => $queued_webhook->fields['sent_try'] + 1,
-            'sent_time' => $_SESSION["glpi_currenttime"],
+            'sent_time' => Session::getCurrentTime(),
         ];
         if ($response !== null) {
             $input['last_status_code'] = $response->getStatusCode();

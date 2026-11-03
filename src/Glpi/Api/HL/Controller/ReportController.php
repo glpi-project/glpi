@@ -426,7 +426,7 @@ class ReportController extends AbstractController
     public function getITILGlobalStats(Request $request): Response
     {
         $itemtype = $request->getAttribute('assistance_type');
-        $date_end = $request->getQueryParams()['date_end'] ?? date('Y-m-d', strtotime($_SESSION['glpi_currenttime']));
+        $date_end = $request->getQueryParams()['date_end'] ?? date('Y-m-d', strtotime(\Session::getCurrentTime()));
         $date_start = $request->getQueryParams()['date_start'] ?? date('Y-m-d', strtotime('-1 year', strtotime($date_end)));
 
         $nb_open_stats = Stat::constructEntryValues($itemtype, 'inter_total', $date_start, $date_end);
@@ -492,7 +492,7 @@ class ReportController extends AbstractController
         $itemtype = $request->getAttribute('assistance_type');
         $date_end = $request->hasParameter('date_end')
             ? $request->getParameter('date_end')
-            : date('Y-m-d', strtotime($_SESSION['glpi_currenttime']));
+            : date('Y-m-d', strtotime(\Session::getCurrentTime()));
         $date_start = $request->hasParameter('date_start')
             ? $request->getParameter('date_start')
             : date('Y-m-d', strtotime('-1 year', strtotime($date_end)));
@@ -685,7 +685,7 @@ class ReportController extends AbstractController
         $itemtype = $request->getAttribute('assistance_type');
         $date_end = $request->hasParameter('date_end')
             ? $request->getParameter('date_end')
-            : date('Y-m-d', strtotime($_SESSION['glpi_currenttime']));
+            : date('Y-m-d', strtotime(\Session::getCurrentTime()));
         $date_start = $request->hasParameter('date_start')
             ? $request->getParameter('date_start')
             : date('Y-m-d', strtotime('-1 year', strtotime($date_end)));
@@ -833,7 +833,7 @@ class ReportController extends AbstractController
         $itemtype = $request->getAttribute('assistance_type');
         $date_end = $request->hasParameter('date_end')
             ? $request->getParameter('date_end')
-            : date('Y-m-d', strtotime($_SESSION['glpi_currenttime']));
+            : date('Y-m-d', strtotime(\Session::getCurrentTime()));
         $date_start = $request->hasParameter('date_start')
             ? $request->getParameter('date_start')
             : date('Y-m-d', strtotime('-1 year', strtotime($date_end)));

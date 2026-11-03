@@ -229,7 +229,7 @@ class Planning extends CommonGLPI
         if ($item::class === self::class) {
             switch ($tabnum) {
                 case 1: // all
-                    self::showPlanning($_SESSION['glpiID']);
+                    self::showPlanning(Session::getLoginUserID());
                     break;
             }
         }
@@ -735,7 +735,7 @@ JAVASCRIPT;
         // new user in planning, init session
         if (!isset($_SESSION['glpi_plannings']['filters'])) {
             $_SESSION['glpi_plannings']['filters']   = [];
-            $_SESSION['glpi_plannings']['plannings'] = ['user_' . $_SESSION['glpiID'] => [
+            $_SESSION['glpi_plannings']['plannings'] = ['user_' . Session::getLoginUserID() => [
                 'color'   => self::getPaletteColor('bg', 0),
                 'display' => true,
                 'type'    => 'user',
@@ -1662,7 +1662,7 @@ TWIG, $twig_params);
     public static function savePlanningsInDB()
     {
         $user = new User();
-        $user->update(['id' => $_SESSION['glpiID'],
+        $user->update(['id' => Session::getLoginUserID(),
             'plannings' => exportArrayToDB($_SESSION['glpi_plannings']),
         ]);
     }

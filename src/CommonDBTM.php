@@ -678,7 +678,7 @@ class CommonDBTM extends CommonGLPI
             array_key_exists('entities_id', $this->fields)
             && isset($_SESSION["glpiactive_entity"])
         ) {
-            $this->fields['entities_id'] = $_SESSION["glpiactive_entity"];
+            $this->fields['entities_id'] = Session::getActiveEntity();
         }
 
         $this->post_getEmpty();
@@ -807,7 +807,7 @@ class CommonDBTM extends CommonGLPI
             $params = ['is_deleted' => 0];
             // Auto set date_mod if exsist
             if (isset($this->fields['date_mod'])) {
-                $params['date_mod'] = $_SESSION["glpi_currenttime"];
+                $params['date_mod'] = Session::getCurrentTime();
             }
 
             $DB->update(static::getTable(), $params, ['id' => $this->fields['id']]);
@@ -859,7 +859,7 @@ class CommonDBTM extends CommonGLPI
             // Auto set date_mod if exsist
             $toadd = [];
             if (isset($this->fields['date_mod'])) {
-                $toadd['date_mod'] = $_SESSION["glpi_currenttime"];
+                $toadd['date_mod'] = Session::getCurrentTime();
             }
 
             $DB->update(
@@ -1382,12 +1382,12 @@ class CommonDBTM extends CommonGLPI
 
             // Auto set date_creation if exist
             if (isset($table_fields['date_creation']) && !isset($this->input['date_creation'])) {
-                $this->fields['date_creation'] = $_SESSION["glpi_currenttime"];
+                $this->fields['date_creation'] = Session::getCurrentTime();
             }
 
             // Auto set date_mod if exist
             if (isset($table_fields['date_mod']) && !isset($this->input['date_mod'])) {
-                $this->fields['date_mod'] = $_SESSION["glpi_currenttime"];
+                $this->fields['date_mod'] = Session::getCurrentTime();
             }
 
             if ($this->checkUnicity(true, $options)) {
@@ -1771,7 +1771,7 @@ class CommonDBTM extends CommonGLPI
                     if (array_key_exists('date_mod', $this->fields)) {
                         // is a non blacklist field exists
                         if (count(array_diff($this->updates, $this->history_blacklist)) > 0) {
-                            $this->fields['date_mod'] = $_SESSION["glpi_currenttime"];
+                            $this->fields['date_mod'] = Session::getCurrentTime();
                             $this->updates[$x++]      = 'date_mod';
                         }
                     }
@@ -1919,7 +1919,7 @@ class CommonDBTM extends CommonGLPI
                 [
                     'itemtype'        => static::class,
                     'items_id'        => $this->fields['id'],
-                    'date_creation'   => $_SESSION["glpi_currenttime"],
+                    'date_creation'   => Session::getCurrentTime(),
                     'field'           => new QueryParam(),
                 ]
             );
@@ -2880,7 +2880,7 @@ class CommonDBTM extends CommonGLPI
 
             // If entity assign force current entity to manage recursive templates
             if ($this->isEntityAssign()) {
-                $input['entities_id'] = $_SESSION['glpiactive_entity'];
+                $input['entities_id'] = Session::getActiveEntity();
             }
 
             $input = $this->initObjectOnCreation($input);
@@ -2970,7 +2970,7 @@ class CommonDBTM extends CommonGLPI
             ($params['withtemplate'] == 2)
             && $this->isEntityAssign()
         ) {
-            $this->fields['entities_id']  = $_SESSION['glpiactive_entity'];
+            $this->fields['entities_id']  = Session::getActiveEntity();
         }
 
         $header_toolbar = $params['header_toolbar'];
@@ -4780,7 +4780,7 @@ class CommonDBTM extends CommonGLPI
                                     'action_user' => getUserName((int) Session::getLoginUserID()),
                                     'entities_id' => $entities_id,
                                     'itemtype'    => get_class($this),
-                                    'date'        => $_SESSION['glpi_currenttime'],
+                                    'date'        => Session::getCurrentTime(),
                                     'refuse'      => $fields['action_refuse'],
                                     'label'       => $message,
                                     'field'       => $fields,
@@ -5329,7 +5329,7 @@ class CommonDBTM extends CommonGLPI
                         }
                     }
                     if (!isset($options['entity'])) {
-                        $options['entity'] = $_SESSION['glpiactiveentities'];
+                        $options['entity'] = Session::getActiveEntities();
                     }
                     $itemtype = $searchoptions['itemtype'] ?? getItemTypeForTable($searchoptions['table']);
 
@@ -5435,7 +5435,7 @@ class CommonDBTM extends CommonGLPI
             $request['WHERE'] += getEntitiesRestrictCriteria(
                 $item::getTable(),
                 'entities_id',
-                $_SESSION['glpiactiveentities'],
+                Session::getActiveEntities(),
                 $item->maybeRecursive()
             );
         }
@@ -5671,7 +5671,7 @@ class CommonDBTM extends CommonGLPI
             }
 
             //retrieve entity
-            $entities_id = $_SESSION['glpiactive_entity'] ?? 0;
+            $entities_id = Session::getActiveEntity();
             if (isset($this->fields["entities_id"])) {
                 $entities_id = $this->fields["entities_id"];
             } elseif (isset($input['entities_id'])) {
@@ -5787,7 +5787,7 @@ class CommonDBTM extends CommonGLPI
                     'items_id'      => $this->getID(),
                 ];
                 // Set date, needed if it differs from the creation date
-                $toadd['date'] = $options['date'] ?? $_SESSION['glpi_currenttime'];
+                $toadd['date'] = $options['date'] ?? Session::getCurrentTime();
 
                 if (isset($input['users_id'])) {
                     $toadd['users_id'] = $input['users_id'];

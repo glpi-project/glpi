@@ -91,7 +91,7 @@ class Item_Kanban extends CommonDBRelation
             'items_id'  => $items_id,
             'users_id'  => $users_id,
             'state'     => json_encode($state, JSON_FORCE_OBJECT),
-            'date_mod'  => $_SESSION['glpi_currenttime'],
+            'date_mod'  => Session::getCurrentTime(),
         ];
         $criteria = [
             'users_id' => $users_id,
@@ -100,11 +100,11 @@ class Item_Kanban extends CommonDBRelation
         ];
         if (countElementsInTable('glpi_items_kanbans', $criteria)) {
             $DB->update('glpi_items_kanbans', [
-                'date_mod'  => $_SESSION['glpi_currenttime'],
+                'date_mod'  => Session::getCurrentTime(),
             ] + $common_input, $criteria);
         } else {
             $DB->insert('glpi_items_kanbans', [
-                'date_creation'   => $_SESSION['glpi_currenttime'],
+                'date_creation'   => Session::getCurrentTime(),
             ] + $common_input);
         }
         return true;

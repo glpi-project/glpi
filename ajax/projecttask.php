@@ -50,7 +50,7 @@ if (isset($_POST['projecttasktemplates_id']) && ($_POST['projecttasktemplates_id
         $template->getID(),
         $template::class,
         'description',
-        $_SESSION['glpilanguage'],
+        Session::getLanguage(),
         $template->fields['description']
     );
 

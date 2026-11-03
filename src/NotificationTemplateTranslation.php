@@ -478,12 +478,12 @@ TWIG, $twig_params);
                 $options['items']       = [$item->getID() => $item->fields];
             }
             $target = NotificationTarget::getInstance($item, $event, $options);
-            $infos  = ['language' => $_SESSION['glpilanguage'],
+            $infos  = ['language' => Session::getLanguage(),
                 'additionnaloption' => ['usertype' => NotificationTarget::GLPI_USER],
             ];
 
             $template->resetComputedTemplates();
-            $template->setSignature(Notification::getMailingSignature($_SESSION['glpiactive_entity']));
+            $template->setSignature(Notification::getMailingSignature(Session::getActiveEntity()));
             if ($target !== false && $tid = $template->getTemplateByLanguage($target, $infos, $event, $options)) {
                 $data = $template->templates_by_languages[$tid];
             }

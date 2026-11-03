@@ -643,7 +643,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
                     'YEAR'        => $date->format('Y'),
                     'MONTH'       => $date->format('m'),
                     'MONTH_NAME'  => Toolbox::getMonthsOfYearArray()[(int) $date->format('n')],
-                    'MONTH_SHORT' => mb_ucfirst((string) IntlDateFormatter::formatObject($date, 'LLL', $_SESSION['glpilanguage'] ?? 'en_GB')),
+                    'MONTH_SHORT' => mb_ucfirst((string) IntlDateFormatter::formatObject($date, 'LLL', Session::getLanguage() ?? 'en_GB')),
                     'DAY'         => $date->format('d'),
                     'WEEKDAY'     => Toolbox::getDaysOfWeekArray()[(int) $date->format('w')],
                     'WEEK'        => $date->format('W'),

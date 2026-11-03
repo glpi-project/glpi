@@ -231,7 +231,7 @@ TWIG, $twig_params);
         $obj   = new self();
         $found = $obj->find([
             'reminders_id'   => $item->getID(),
-            'language'           => $_SESSION['glpilanguage'],
+            'language'           => Session::getLanguage(),
         ]);
 
         if (

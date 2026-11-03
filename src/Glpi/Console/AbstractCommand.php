@@ -395,7 +395,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
         $user = new User();
         if ($user->getFromDBbyName($username)) {
             // Store computed output parameters
-            $lang = $_SESSION['glpilanguage'];
+            $lang = Session::getLanguage();
             $session_use_mode = $_SESSION['glpi_use_mode'];
 
             $auth = new Auth();

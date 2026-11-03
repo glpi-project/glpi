@@ -54,7 +54,7 @@ if (
         0,
         $_REQUEST["ldap_group_filter"] ?? '',
         $_REQUEST["ldap_group_filter2"] ?? '',
-        $_SESSION["glpiactive_entity"]
+        Session::getActiveEntity()
     );
 }
 

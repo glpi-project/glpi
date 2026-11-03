@@ -127,7 +127,8 @@ describe('EntitySelector Vue Component', () => {
         const wrapper = await mountEntitySelector();
 
         expect(wrapper.find('a').attributes()).toHaveProperty('title', 'Root entity');
-        expect(wrapper.find('a').text()).toBe('Root');
+        expect(wrapper.find('a span:not(.visually-hidden)').text()).toBe('Root');
+        expect(wrapper.find('a .visually-hidden').text()).toBe('Select the desired entity,');
         expect(wrapper.find('input[name="entsearchtext"]').exists()).toBe(true);
     });
 

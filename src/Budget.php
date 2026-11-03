@@ -703,7 +703,7 @@ class Budget extends CommonDropdown
         $entries = [];
         $itemtype_totals = [];
         $grand_total = 0;
-        $active_entities = $_SESSION['glpiactiveentities'];
+        $active_entities = Session::getActiveEntities();
 
         foreach ($iterator as $data) {
             $itemtype = $data['_itemtype'];
