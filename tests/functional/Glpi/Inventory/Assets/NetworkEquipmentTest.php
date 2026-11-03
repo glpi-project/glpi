@@ -5158,6 +5158,22 @@ Build Time: Mon Jan 27 10:02:25 2020</COMMENTS>
         );
     }
 
+    public function testManagementIpNotDuplicatedOnUnsupportedTypeAggregatePort(): void
+    {
+        $xml_source = preg_replace(
+            '#(<IFNAME>eth2</IFNAME>.*?<IFTYPE>)6(</IFTYPE>)#s',
+            '${1}53${2}<AGGREGATE><PORT>1</PORT><PORT>2</PORT><PORT>3</PORT><PORT>5</PORT><PORT>6</PORT></AGGREGATE>',
+            file_get_contents(FIXTURE_DIR . '/inventories/huawei-ibmc.xml')
+        );
+
+        $inventory = $this->doInventory($xml_source, true);
+
+        $this->assertSame(
+            ['eth2' => ['192.0.2.10']],
+            $this->getPortsIps($inventory->getItem())
+        );
+    }
+
     public function testManagementPortRemovedWhenImportedPortCarriesItsIp(): void
     {
         $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/huawei-ibmc.xml');
@@ -5196,7 +5212,7 @@ Build Time: Mon Jan 27 10:02:25 2020</COMMENTS>
 
         $ports_ips = [];
         $iterator = $DB->request([
-            'SELECT'     => ['glpi_networkports.name AS port', 'glpi_ipaddresses.name AS ip'],
+            'SELECT'     => [\NetworkPort::getTable() . '.name AS port', \IPAddress::getTable() . '.name AS ip'],
             'FROM'       => \NetworkPort::getTable(),
             'INNER JOIN' => [
                 \NetworkName::getTable() => [

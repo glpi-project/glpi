@@ -292,13 +292,9 @@ class NetworkEquipment extends MainAsset
     {
         $ips = [];
         foreach ($this->raw_data->content->network_ports ?? [] as $network_port) {
-            if (!property_exists($network_port, 'ifnumber') && !property_exists($network_port, 'logical_number')) {
-                continue;
+            if (NetworkPort::isImportable($network_port)) {
+                array_push($ips, ...($network_port->ips ?? []));
             }
-            if (property_exists($network_port, 'iftype') && NetworkPortType::getInstantiationType($network_port->iftype) === false) {
-                continue;
-            }
-            array_push($ips, ...($network_port->ips ?? []));
         }
 
         return $ips;

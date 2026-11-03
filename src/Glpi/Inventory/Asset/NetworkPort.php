@@ -42,7 +42,6 @@ use Glpi\DBAL\QueryParam;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\FilesToJSON;
 use Glpi\Inventory\MainAsset\NetworkEquipment;
-use Glpi\Inventory\MainAsset\Printer;
 use mysqli_stmt;
 use NetworkPort as GlobalNetworkPort;
 use NetworkPort_NetworkPort;
@@ -95,35 +94,25 @@ class NetworkPort extends InventoryAsset
         ];
 
         foreach ($this->data as $k => &$val) {
-            $keep = true;
             if (!property_exists($val, 'instantiation_type')) {
                 $val->instantiation_type = 'NetworkPortEthernet';
             }
 
-            if (!property_exists($val, 'logical_number') && !property_exists($val, 'ifnumber')) {
+            if (!self::isImportable($val)) {
+                //port cannot be imported, remove from data source
                 unset($this->data[$k]);
                 continue;
             }
 
             if (property_exists($val, 'iftype')) {
                 $inst_type = NetworkPortType::getInstantiationType($val->iftype);
-                $keep = $inst_type !== false;
                 if ($inst_type !== false && $inst_type !== true) {
                     $val->instantiation_type = $inst_type;
                 }
             }
 
-            if (property_exists($val, 'aggregate') && property_exists($val, 'ifnumber')) {
-                if (isset($val->aggregate[$val->ifnumber])) {
-                    $keep = true;
-                    $val->instantiation_type = 'NetworkPortAggregate';
-                }
-            }
-
-            if (!$keep) {
-                //port cannot be imported, remove from data source
-                unset($this->data[$k]);
-                continue;
+            if (self::isAggregateMember($val)) {
+                $val->instantiation_type = 'NetworkPortAggregate';
             }
 
             if (property_exists($val, 'connections')) {
@@ -170,6 +159,24 @@ class NetworkPort extends InventoryAsset
         $this->ports += $this->data;
 
         return $this->data;
+    }
+
+    public static function isImportable(stdClass $port): bool
+    {
+        if (!property_exists($port, 'logical_number') && !property_exists($port, 'ifnumber')) {
+            return false;
+        }
+
+        return self::isAggregateMember($port)
+            || !property_exists($port, 'iftype')
+            || NetworkPortType::getInstantiationType($port->iftype) !== false;
+    }
+
+    private static function isAggregateMember(stdClass $port): bool
+    {
+        return property_exists($port, 'aggregate')
+            && property_exists($port, 'ifnumber')
+            && isset($port->aggregate[$port->ifnumber]);
     }
 
     /**
