@@ -84,20 +84,15 @@ test.describe('ITIL Followups', () => {
 
         const ticket = new TicketPage(page);
         await ticket.goto(id);
-        await ticket.getButton('Answer').click();
-
-        const followup_block = page.getByTestId('new-ITILFollowup-block');
-        const pending_checkbox = followup_block.getByTestId('pending-checkbox');
-        // eslint-disable-next-line playwright/no-raw-locators
-        const pending_reasons = followup_block.locator('[id^="pending-reasons-setup-"]');
+        await ticket.doOpenFollowupForm();
 
         // The second click happens while the collapse transition is still running
-        await pending_checkbox.dblclick();
-        await expect(pending_checkbox).not.toBeChecked();
-        await expect(pending_reasons).toBeHidden();
+        await ticket.doDoubleClickFollowupPendingSwitch();
+        await expect(ticket.followup_pending_switch).not.toBeChecked();
+        await expect(ticket.followup_pending_reasons).toBeHidden();
 
-        await pending_checkbox.click();
-        await expect(pending_checkbox).toBeChecked();
-        await expect(pending_reasons).toBeVisible();
+        await ticket.doClickFollowupPendingSwitch();
+        await expect(ticket.followup_pending_switch).toBeChecked();
+        await expect(ticket.followup_pending_reasons).toBeVisible();
     });
 });

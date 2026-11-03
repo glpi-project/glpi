@@ -238,6 +238,7 @@
                            class="collapse ps-2 py-1 flex-fill {{ show_pending_reasons_actions ? 'show' : '' }}"
                            aria-expanded="{{ show_pending_reasons_actions ? 'true' : 'false' }}"
                            id="pending-reasons-setup-{{ rand }}"
+                           data-testid="pending-reasons"
                         >
                            {{ include('components/itilobject/timeline/pending_reasons.html.twig') }}
                         </div>
