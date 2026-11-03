@@ -45,6 +45,8 @@ use Glpi\Form\QuestionType\AbstractQuestionTypeShortAnswer;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
+use Glpi\Form\QuestionType\QuestionTypeRadio;
+use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
@@ -211,26 +213,69 @@ class QuestionTest extends DbTestCase
         $this->assertEmpty($question->getConfiguredValidationConditionsData());
     }
 
-    public function testCloneKeyInInputDoesNotSkipExtraDataValidation(): void
+    public function testChangingTypeRemovesExtraDataOfPreviousType(): void
     {
-        // Arrange: create a form with a section
-        $builder = new FormBuilder();
-        $builder->addSection("My section");
-        $form = $this->createForm($builder);
-        $section = current($form->getSections());
+        // Arrange: create a radio question
+        $question_id = $this->createRadioQuestion();
 
-        // Assert: invalid extra data must still be refused
+        // Act: change its type without sending extra data, like the form editor
+        $this->updateItem(Question::class, $question_id, [
+            'type' => QuestionTypeShortText::class,
+        ]);
+
+        // Assert: the radio options should be removed
+        $this->assertNull(Question::getById($question_id)->fields['extra_data']);
+    }
+
+    public function testChangingTypeToTypeRequiringExtraDataWithoutSendingIt(): void
+    {
+        // Arrange: create a short text question
+        $builder = new FormBuilder();
+        $builder->addQuestion("My question", QuestionTypeShortText::class);
+        $form = $this->createForm($builder);
+
+        // Assert: a radio question can't be saved without its options
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Invalid extra data for question");
 
-        // Act: add a question with invalid extra data and a `clone` key in
-        // the input, which is not a clone made by `Clonable::clone()`
-        (new Question())->add([
-            'forms_sections_id' => $section->getID(),
-            'name'              => "My question",
-            'type'              => QuestionTypeShortText::class,
-            'extra_data'        => '{"options":{"yes":"Yes"}}',
-            'clone'             => true,
+        // Act: change the type without sending extra data
+        (new Question())->update([
+            'id'   => $this->getQuestionId($form, "My question"),
+            'type' => QuestionTypeRadio::class,
         ]);
+    }
+
+    public function testUpdateWithSameTypeKeepsExtraData(): void
+    {
+        // Arrange: create a radio question
+        $question_id = $this->createRadioQuestion();
+        $extra_data = Question::getById($question_id)->fields['extra_data'];
+
+        // Act: update it with its current type and no extra data
+        $this->updateItem(Question::class, $question_id, [
+            'name' => "My updated question",
+            'type' => QuestionTypeRadio::class,
+        ]);
+
+        // Assert: the radio options should be kept
+        $this->assertEquals(
+            $extra_data,
+            Question::getById($question_id)->fields['extra_data']
+        );
+    }
+
+    private function createRadioQuestion(): int
+    {
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "My question",
+            type: QuestionTypeRadio::class,
+            extra_data: json_encode(new QuestionTypeSelectableExtraDataConfig([
+                'yes' => 'Yes',
+                'no'  => 'No',
+            ])),
+        );
+
+        return $this->getQuestionId($this->createForm($builder), "My question");
     }
 }

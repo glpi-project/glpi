@@ -81,11 +81,6 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
 
     private ?Section $section = null;
 
-    /**
-     * Set by `prepareInputForClone()`, so it cannot come from the submitted input.
-     */
-    private bool $is_cloning = false;
-
     #[Override]
     public static function getTypeName($nb = 0)
     {
@@ -364,7 +359,6 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     public function prepareInputForClone($input)
     {
         $input = parent::prepareInputForClone($input);
-        $this->is_cloning = true;
         return FormCloneHelper::getInstance()->prepareQuestionInputForClone($input);
     }
 
@@ -397,6 +391,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         }
 
         $question_type = $this->getQuestionType();
+        $is_type_changed = false;
 
         // The question type can be null when the question is created
         // We need to instantiate the question type to format and validate attributes
@@ -405,6 +400,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
             && is_a($input['type'], QuestionTypeInterface::class, true)
         ) {
             $question_type = new $input['type']();
+            $is_type_changed = !$is_creating && $input['type'] !== $this->fields['type'];
         }
 
         if ($question_type) {
@@ -417,10 +413,9 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
                 $input['default_value'] = $question_type->formatDefaultValueForDB(null);
             }
 
-            // A clone keeps the extra data stored on the source question, which
-            // may no longer be valid for its type (e.g. the question type was
-            // changed or a custom asset definition was disabled).
-            if (!$this->is_cloning && (isset($input['extra_data']) || $is_creating)) {
+            // The form editor sends no extra data for types without settings, so
+            // a type change must also replace the extra data of the previous type.
+            if (isset($input['extra_data']) || $is_creating || $is_type_changed) {
                 $extra_data = $input['extra_data'] ?? [];
                 if (is_string($extra_data)) {
                     if (empty($extra_data)) {
@@ -443,6 +438,8 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
                 // Save extra data as JSON
                 if ($extra_data !== []) {
                     $input['extra_data'] = json_encode($extra_data);
+                } elseif ($is_type_changed) {
+                    $input['extra_data'] = 'NULL';
                 }
             }
         }

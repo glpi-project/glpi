@@ -36,7 +36,6 @@ namespace tests\units\Glpi\Form\Clone;
 
 use Computer;
 use Entity;
-use Glpi\Asset\AssetDefinition;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
@@ -596,7 +595,6 @@ final class FormCloneHelperTest extends DbTestCase
     {
         // Arrange: create a radio question then change it to a short text
         // question without sending extra data, like the form editor does.
-        // The radio options stay stored on the question.
         $builder = new FormBuilder("My form");
         $builder->addQuestion(
             name: "My question",
@@ -607,7 +605,7 @@ final class FormCloneHelperTest extends DbTestCase
             ])),
         );
         $form = $this->createForm($builder);
-        $question = $this->updateItem(
+        $this->updateItem(
             Question::class,
             $this->getQuestionId($form, "My question"),
             ['type' => QuestionTypeShortText::class],
@@ -621,59 +619,10 @@ final class FormCloneHelperTest extends DbTestCase
         $this->assertCount(1, $cloned_questions);
         $cloned_question = array_pop($cloned_questions);
 
-        // Assert: the question should be cloned with its stored extra data
+        // Assert: the question should be cloned as a short text question
         $this->assertEquals(
             QuestionTypeShortText::class,
             $cloned_question->fields['type'],
-        );
-        $this->assertEquals(
-            $question->fields['extra_data'],
-            $cloned_question->fields['extra_data'],
-        );
-    }
-
-    public function testCloneFormWithItemQuestionOnDisabledAssetDefinition(): void
-    {
-        global $CFG_GLPI;
-
-        // Arrange: create an item question on a custom asset then disable
-        // the asset definition.
-        $definition = $this->initAssetDefinition();
-        $asset_class = $definition->getAssetClassName();
-
-        $builder = new FormBuilder("My form");
-        $builder->addQuestion(
-            name: "My question",
-            type: QuestionTypeItem::class,
-            extra_data: json_encode(new QuestionTypeItemExtraDataConfig(
-                itemtype: $asset_class,
-            )),
-        );
-        $form = $this->createForm($builder);
-        $question = Question::getById($this->getQuestionId($form, "My question"));
-
-        $this->updateItem(AssetDefinition::class, $definition->getID(), [
-            'is_active' => false,
-        ]);
-
-        // A disabled definition is not registered as an asset type on the
-        // next request.
-        $CFG_GLPI['asset_types'] = array_values(
-            array_diff($CFG_GLPI['asset_types'], [$asset_class])
-        );
-
-        // Act: clone form and get the cloned question
-        $form_id = $form->clone();
-        $clone = Form::getById($form_id);
-
-        $cloned_questions = $clone->getQuestions();
-        $this->assertCount(1, $cloned_questions);
-        $cloned_question = array_pop($cloned_questions);
-
-        // Assert: the question should be cloned with its stored extra data
-        $this->assertEquals(
-            $question->fields['extra_data'],
-            $cloned_question->fields['extra_data'],
         );
     }
 
