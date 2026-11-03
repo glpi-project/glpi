@@ -40,6 +40,7 @@ use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\Provider\KnowbaseItemProvider;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
 
 class KnowbaseItemProviderTest extends DbTestCase
@@ -526,6 +527,46 @@ class KnowbaseItemProviderTest extends DbTestCase
         // Should match both items
         $this->assertContains($kb1->getID(), $kb_ids);
         $this->assertContains($kb2->getID(), $kb_ids);
+    }
+
+    public static function authorWithoutFaqRightDoesNotSeeOwnItemsProvider(): iterable
+    {
+        yield 'Knowbase article' => ['is_faq' => 0];
+        yield 'FAQ article' => ['is_faq' => 1];
+    }
+
+    /**
+     * Test that articles written by the user are not returned when the user
+     * has no right to read the knowbase / FAQ
+     */
+    #[DataProvider('authorWithoutFaqRightDoesNotSeeOwnItemsProvider')]
+    public function testAuthorWithoutFaqRightDoesNotSeeOwnItems(int $is_faq)
+    {
+        $this->login();
+
+        $kb = $this->createKnowbaseItem([
+            'name' => 'My own article',
+            'answer' => 'Article written by the current user',
+            'users_id' => Session::getLoginUserID(),
+            'is_faq' => $is_faq,
+            'show_in_service_catalog' => 1,
+        ]);
+
+        $request = new ItemRequest(
+            access_parameters: new FormAccessParameters(
+                session_info: Session::getCurrentSessionInfo()
+            ),
+            filter: ''
+        );
+
+        // Author with FAQ right: article is visible
+        $_SESSION['glpiactiveprofile']['knowbase'] = KnowbaseItem::READFAQ;
+        $kb_ids = array_map(fn($kb) => $kb->getID(), $this->provider->getItems($request));
+        $this->assertContains($kb->getID(), $kb_ids);
+
+        // Author without FAQ right: article must not be returned
+        $_SESSION['glpiactiveprofile']['knowbase'] = 0;
+        $this->assertEmpty($this->provider->getItems($request));
     }
 
     /**

@@ -1610,6 +1610,46 @@ class SessionTest extends DbTestCase
         $this->assertArrayHasKey('content', $_SESSION['glpimenu']['config']);
     }
 
+    public function testSavedSearchMenuDependsOnProfileRight(): void
+    {
+        global $DB;
+
+        // Arrange: create a central user with ticket rights only
+        $profile = $this->createItem(Profile::class, [
+            'name' => 'Assistance only profile',
+            'interface' => 'central',
+        ]);
+        $user = $this->createItem(User::class, [
+            'name' => 'assistance_only_user',
+        ]);
+        $this->createItem(Profile_User::class, [
+            'users_id' => $user->getID(),
+            'profiles_id' => $profile->getID(),
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $DB->update(ProfileRight::getTable(), ['rights' => 0], ['profiles_id' => $profile->getID()]);
+        $DB->update(
+            ProfileRight::getTable(),
+            ['rights' => ALLSTANDARDRIGHT | \Ticket::READALL],
+            ['profiles_id' => $profile->getID(), 'name' => 'ticket']
+        );
+
+        // Act + Assert: no "Saved searches" entry without the "bookmark_public" right
+        $this->login('assistance_only_user');
+        \Html::generateMenuSession(true);
+        $this->assertArrayNotHasKey('savedsearch', $_SESSION['glpimenu']['tools']['content'] ?? []);
+
+        // Granting READ on "bookmark_public" brings the entry back
+        $DB->update(
+            ProfileRight::getTable(),
+            ['rights' => READ],
+            ['profiles_id' => $profile->getID(), 'name' => 'bookmark_public']
+        );
+        $this->login('assistance_only_user');
+        \Html::generateMenuSession(true);
+        $this->assertArrayHasKey('savedsearch', $_SESSION['glpimenu']['tools']['content']);
+    }
+
     public function testLoadEntitySetsParentEntities(): void
     {
         // Non-regression: Session::loadEntity() was not setting glpiparententities,

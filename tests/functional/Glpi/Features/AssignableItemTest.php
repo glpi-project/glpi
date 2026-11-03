@@ -442,4 +442,58 @@ class AssignableItemTest extends DbTestCase
         $item->canViewItem();
         $item->canUpdateItem();
     }
+
+    /**
+     * Items owned by one of the user groups must remain visible in lists
+     * when the profile has both READ_ASSIGNED and READ_OWNED rights.
+     *
+     * @param class-string<AssignableItem> $class
+     */
+    #[DataProvider('itemtypeProvider')]
+    public function testGetAssignableVisiblityCriteriaWithAssignedAndOwnedRights(string $class): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $group = $this->createItem(Group::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->createItem(\Group_User::class, [
+            'users_id'  => \Session::getLoginUserID(),
+            'groups_id' => $group->getID(),
+        ]);
+
+        $input = $this->getMinimalCreationInput($class);
+        $owned_item = $this->createItem(
+            $class,
+            $input + [$class::getNameField() => __FUNCTION__ . ' owned', 'groups_id' => [$group->getID()]]
+        );
+        $assigned_item = $this->createItem(
+            $class,
+            $input + [$class::getNameField() => __FUNCTION__ . ' assigned', 'groups_id_tech' => [$group->getID()]]
+        );
+        $other_item = $this->createItem(
+            $class,
+            $input + [$class::getNameField() => __FUNCTION__ . ' other']
+        );
+
+        $_SESSION['glpigroups'] = [$group->getID()];
+        $_SESSION['glpiactiveprofile'][$class::$rightname] = READ_ASSIGNED | READ_OWNED;
+
+        $visible_ids = array_column(
+            iterator_to_array($DB->request([
+                'SELECT' => ['id'],
+                'FROM'   => $class::getTable(),
+                'WHERE'  => [
+                    'id' => [$owned_item->getID(), $assigned_item->getID(), $other_item->getID()],
+                ] + $class::getAssignableVisiblityCriteria(),
+            ])),
+            'id'
+        );
+        sort($visible_ids);
+
+        $this->assertEquals([$owned_item->getID(), $assigned_item->getID()], $visible_ids);
+    }
 }
