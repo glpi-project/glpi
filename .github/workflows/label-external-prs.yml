@@ -25,7 +25,6 @@ jobs:
     if: github.event.pull_request.user.type != 'Bot'
     runs-on: "ubuntu-latest"
     permissions:
-      issues: write
       pull-requests: write
     steps:
       - name: "Check author permission and add label"
