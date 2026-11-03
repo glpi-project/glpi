@@ -827,6 +827,11 @@ body.in_modal .kb-editor-reserved {
             max-width: 100%;
         }
 
+        // Fit the image, so the bubble menu is centered above it, not above the column.
+        [data-resize-container] {
+            width: fit-content;
+        }
+
         [data-resize-container] img {
             // Beats the inline px height, so a narrow column scales the image without distortion.
             height: auto !important;

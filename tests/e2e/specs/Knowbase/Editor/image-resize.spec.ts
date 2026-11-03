@@ -195,13 +195,53 @@ test.describe('Knowledge Base Editor - Image Resize', () => {
 
         await kb.goto(id);
         await kb.editor.enterEditMode();
-        await kb.editor.contentContainer.getByRole('img', { name: 'Components' }).click();
+        const image = kb.editor.contentContainer.getByRole('img', { name: 'Components' });
+        await image.click();
         await expect(kb.bubbleMenu.getButton('Bold')).toBeHidden();
+
+        const menu = page.getByRole('toolbar', { name: 'Image' });
+        await expect(menu).toBeVisible();
+        const image_box = await getBox(image);
+        const menu_box = await getBox(menu);
+        expect(menu_box.x + menu_box.width / 2).toBeCloseTo(image_box.x + image_box.width / 2, 0);
+
         await kb.bubbleMenu.clickButton('Edit image');
 
         await expect(kb.imageDialog).toBeVisible();
         await expect(kb.imageDialog.getByLabel('Width')).toHaveValue('400');
         await expect(kb.imageDialog.getByLabel('Height')).toHaveValue('193');
+    });
+
+    test('The menu stays centered above the image during a drag', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Image resize menu follows drag',
+            entities_id: getWorkerEntityId(),
+            answer: `<p>Content</p>${IMAGE_HTML}`,
+        });
+
+        await kb.goto(id);
+        await kb.editor.enterEditMode();
+        const image = kb.editor.contentContainer.getByRole('img', { name: 'Components' });
+        await image.click();
+        const menu = page.getByRole('toolbar', { name: 'Image' });
+        await expect(menu).toBeVisible();
+
+        const box = await getBox(image);
+        await page.mouse.move(box.x + box.width + 3, box.y + box.height + 3);
+        await page.mouse.down();
+        await page.mouse.move(box.x + box.width - 200, box.y + box.height + 3, { steps: 10 });
+
+        // Mouse still down: the new size is not committed yet.
+        await expect.poll(async () => {
+            const image_box = await getBox(image);
+            const menu_box = await getBox(menu);
+            return Math.abs((menu_box.x + menu_box.width / 2) - (image_box.x + image_box.width / 2));
+        }).toBeLessThan(2);
+        expect((await getBox(image)).width).toBeLessThan(250);
+
+        await page.mouse.up();
     });
 
     test('On a narrow screen, the image fits the column and keeps its ratio', async ({ page, profile, api }) => {

@@ -35,8 +35,17 @@
 /**
  * Image whose resizable node view also follows size changes that do not come
  * from a drag (image dialog, undo, redo): TipTap applies them only on creation.
+ *
+ * `onLiveResize` is called on each size change during a drag.
  */
 export const ResizableImage = TiptapImage.extend({
+    addOptions() {
+        return {
+            ...this.parent?.(),
+            onLiveResize: null,
+        };
+    },
+
     addNodeView() {
         const createNodeView = this.parent?.();
         if (!createNodeView) {
@@ -45,17 +54,37 @@ export const ResizableImage = TiptapImage.extend({
 
         return (props) => {
             const node_view = createNodeView(props);
-            const update = node_view.update.bind(node_view);
+            const isResizing = () => node_view.dom.dataset.resizeState === 'true';
 
+            const update = node_view.update.bind(node_view);
             node_view.update = (node, decorations, inner_decorations) => {
                 if (!update(node, decorations, inner_decorations)) {
                     return false;
                 }
-                const { width, height } = node.attrs;
-                node_view.element.style.width = width ? `${width}px` : '';
-                node_view.element.style.height = height ? `${height}px` : '';
+                // Mid-drag, the node still has the old size: keep the dragged one.
+                if (!isResizing()) {
+                    const { width, height } = node.attrs;
+                    node_view.element.style.width = width ? `${width}px` : '';
+                    node_view.element.style.height = height ? `${height}px` : '';
+                }
                 return true;
             };
+
+            const on_live_resize = this.options.onLiveResize;
+            if (typeof on_live_resize === 'function') {
+                const observer = new ResizeObserver(() => {
+                    if (isResizing()) {
+                        on_live_resize();
+                    }
+                });
+                observer.observe(node_view.element);
+
+                const destroy = node_view.destroy.bind(node_view);
+                node_view.destroy = () => {
+                    observer.disconnect();
+                    destroy();
+                };
+            }
 
             return node_view;
         };

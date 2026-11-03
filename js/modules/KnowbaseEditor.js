@@ -152,6 +152,11 @@ class KnowbaseEditor {
                     minHeight: 50,
                     alwaysPreserveAspectRatio: true,
                 },
+                // A drag changes no state, so the bubble menu would stay at the old center.
+                onLiveResize: () => {
+                    if (!this.#editor || this.#editor.isDestroyed) return;
+                    this.#editor.view.dispatch(this.#editor.state.tr.setMeta(BUBBLE_MENU_PLUGIN_KEY, 'updatePosition'));
+                },
             }),
             TiptapPlaceholder.configure({
                 placeholder: this.#options.placeholder,
