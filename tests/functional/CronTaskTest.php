@@ -41,6 +41,8 @@ use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Search;
+use Symfony\Component\DomCrawler\Crawler;
 use User;
 
 /* Test for inc/crontask.class.php */
@@ -523,5 +525,79 @@ class CronTaskTest extends DbTestCase
         $html = ob_get_clean();
         unset($_GET['crontasklogs_id']);
         $this->assertStringContainsString('Detail logged during the run', $html);
+    }
+
+    public static function stateSearchCriterionProvider(): iterable
+    {
+        // A new criterion has an empty value, no state must be preselected
+        yield ['', null];
+        yield [(string) CronTask::STATE_DISABLE, CronTask::STATE_DISABLE];
+        yield [(string) CronTask::STATE_WAITING, CronTask::STATE_WAITING];
+    }
+
+    #[DataProvider('stateSearchCriterionProvider')]
+    public function testDisplayStateSearchCriterion(string $value, ?int $expected_selected): void
+    {
+        $this->login();
+
+        // Same call as the one done by the search builder when the "Status" field is chosen
+        ob_start();
+        Search::displaySearchoption([
+            'itemtype' => CronTask::class,
+            'field'    => 4,
+            'num'      => 0,
+            'value'    => $value,
+            'p'        => [],
+        ]);
+        $html = ob_get_clean();
+
+        $options = (new Crawler($html))->filter('select[name="criteria[0][value]"] option');
+        $this->assertSame(
+            [(string) CronTask::STATE_DISABLE, (string) CronTask::STATE_WAITING],
+            $options->each(static fn(Crawler $option) => $option->attr('value'))
+        );
+        $this->assertSame(
+            $expected_selected === null ? [] : [(string) $expected_selected],
+            $options->filter('[selected]')->each(static fn(Crawler $option) => $option->attr('value'))
+        );
+    }
+
+    public function testSearchByState(): void
+    {
+        $this->login();
+
+        $disabled = $this->createItem(CronTask::class, [
+            'itemtype'  => CronTask::class,
+            'name'      => 'test_search_disabled',
+            'frequency' => MINUTE_TIMESTAMP,
+            'state'     => CronTask::STATE_DISABLE,
+        ]);
+        $waiting = $this->createItem(CronTask::class, [
+            'itemtype'  => CronTask::class,
+            'name'      => 'test_search_waiting',
+            'frequency' => MINUTE_TIMESTAMP,
+            'state'     => CronTask::STATE_WAITING,
+        ]);
+
+        foreach ([CronTask::STATE_DISABLE => $disabled, CronTask::STATE_WAITING => $waiting] as $state => $expected) {
+            $data = Search::getDatas(CronTask::class, [
+                'criteria' => [
+                    [
+                        'field'      => 4,
+                        'searchtype' => 'equals',
+                        'value'      => (string) $state,
+                    ],
+                    [
+                        'link'       => 'AND',
+                        'field'      => 1,
+                        'searchtype' => 'contains',
+                        'value'      => 'test_search_',
+                    ],
+                ],
+            ], [2]);
+
+            $this->assertSame(1, $data['data']['totalcount']);
+            $this->assertSame($expected->getID(), (int) $data['data']['rows'][0]['raw']['ITEM_CronTask_2']);
+        }
     }
 }

@@ -38,6 +38,7 @@ use AuthLDAP;
 use DateInterval;
 use DateTime;
 use DBmysql;
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Tests\DbTestCase;
@@ -55,6 +56,58 @@ use function Safe\strtotime;
 
 class UserTest extends DbTestCase
 {
+    public function testLdapGroupLookupMatchesLegacyHtmlEncodedValues(): void
+    {
+        global $DB;
+
+        $dn_raw     = 'CN=Batches&Interfaces,OU=R&D <Team>,DC=example,DC=org';
+        $dn_encoded = 'CN=Batches&#38;Interfaces,OU=R&#38;D &#60;Team&#62;,DC=example,DC=org';
+
+        // Groups stored the way GLPI 10.x saved them (HTML encoded), as found in migrated databases
+        $this->assertTrue($DB->insert('glpi_groups', [
+            'name'          => __FUNCTION__ . '_dn',
+            'entities_id'   => 0,
+            'ldap_group_dn' => $dn_encoded,
+        ]));
+        $by_dn_id = $DB->insertId();
+        $this->assertTrue($DB->insert('glpi_groups', [
+            'name'        => __FUNCTION__ . '_value',
+            'entities_id' => 0,
+            'ldap_field'  => 'memberof',
+            'ldap_value'  => $dn_encoded,
+        ]));
+        $by_value_id = $DB->insertId();
+
+        $variants = $this->callPrivateMethod(User::class, 'withLegacyHtmlEncodedVariants', [$dn_raw, 'CN=plain,DC=example,DC=org']);
+        $this->assertSame([$dn_raw, $dn_encoded, 'CN=plain,DC=example,DC=org'], $variants);
+
+        // Same criteria as User::getFromLDAPGroupVirtual() / getFromLDAPGroupDiscret()
+        $found = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_groups',
+            'WHERE'  => ['ldap_group_dn' => $variants],
+        ])->current();
+        $this->assertSame($by_dn_id, (int) $found['id']);
+
+        $lgroups = [];
+        foreach ($variants as $lgroup) {
+            $lgroups[] = [new QueryExpression('? LIKE `ldap_value`', values: [$lgroup])];
+        }
+        $found = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_groups',
+            'WHERE'  => ['ldap_field' => 'memberof', 'OR' => $lgroups],
+        ])->current();
+        $this->assertSame($by_value_id, (int) $found['id']);
+
+        // Without the encoded variant the raw DN does not match (the bug from #23339)
+        $this->assertCount(0, $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_groups',
+            'WHERE'  => ['ldap_group_dn' => [$dn_raw]],
+        ]));
+    }
+
     public function testGenerateUserToken()
     {
         $this->login(); // must be authenticated to be able to regenerate self personal token
@@ -770,6 +823,8 @@ class UserTest extends DbTestCase
             '_useremails'           => ['test1@example.com', 'test2@example.com'],
             '_emails'               => ['test1@example.com', 'test2@example.com'],
             'is_active'             => false,
+            'is_deleted'            => true,
+            'name'                  => 'renamed_user',
         ];
 
         foreach ($users_matrix as $login => $targer_users_names) {
@@ -864,6 +919,43 @@ class UserTest extends DbTestCase
         $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), 'authtype' => \Auth::EXTERNAL]);
         $this->assertArrayNotHasKey('authtype', $output);
     }
+
+    public function testPrepareInputForUpdateAuthLinkFields(): void
+    {
+        $this->login();
+
+        $target_user = \getItemByTypeName(User::class, 'glpi');
+        $input = [
+            'id'           => $target_user->getID(),
+            'auths_id'     => 3,
+            'sync_field'   => 'abcdef',
+            'user_dn'      => 'cn=someone,dc=example,dc=org',
+            'user_dn_hash' => md5('cn=someone,dc=example,dc=org'),
+        ];
+
+        // Check with right to update the authentication
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT + User::UPDATEAUTHENT;
+        $output = $target_user->prepareInputForUpdate($input);
+        foreach (['auths_id', 'sync_field', 'user_dn'] as $field) {
+            $this->assertSame($input[$field], $output[$field]);
+        }
+
+        // Check without right to update the authentication
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT;
+        $output = $target_user->prepareInputForUpdate($input);
+        foreach (['auths_id', 'sync_field', 'user_dn', 'user_dn_hash'] as $field) {
+            $this->assertArrayNotHasKey($field, $output);
+        }
+
+        // Backend routines (no session) can still update them
+        $this->logout();
+        $output = $target_user->prepareInputForUpdate($input);
+        foreach (['auths_id', 'sync_field', 'user_dn'] as $field) {
+            $this->assertSame($input[$field], $output[$field]);
+        }
+    }
+
+
 
     public function testPrepareInputForUpdateAuthTypeAsSystemRoutine(): void
     {

@@ -51,9 +51,9 @@ change, as CONTRIBUTING.md requires. Use an end-to-end test for a client and \
 server contract.
 - Linked issue and AI disclosure: the description must link an issue, unless \
 the fix is trivial, and must say whether AI tools were used, as \
-CONTRIBUTING.md requires. Skip the AI disclosure when the author is a member \
-of the glpi-project organization (author association MEMBER or OWNER): never \
-ask project members about their use of AI.
+CONTRIBUTING.md requires. Skip both checks when the author is a member of the \
+glpi-project organization (author association MEMBER or OWNER): these rules \
+apply to outside contributors only.
 - Code rules: apply .github/instructions/php.instructions.md and \
 .github/instructions/e2e.instructions.md to the lines the pull request \
 changes, in particular the rights, translation and database sections.\

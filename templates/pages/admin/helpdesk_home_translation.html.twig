@@ -105,7 +105,7 @@
                     {% set default_value = handler.isRichText() ? '<div class="rich_text_container rich_text_container_translation">' ~ default_value|safe_html ~ '</div>' : default_value|e %}
                 {% endif %}
                 {% set group_entries = group_entries|merge([{
-                    'type': '<span class="fw-medium">' ~ handler.getName() ~ '</span>',
+                    'type': '<span class="fw-medium">' ~ handler.getName()|e ~ '</span>',
                     'default': default_value,
                     'translation': _self.getTranslationInput(
                         handler,
@@ -122,7 +122,7 @@
 
     {% if group_entries is not empty %}
         {% set entries = entries|merge([{
-            'type': '<span data-glpi-helpdesk-translations-subtitle-row>' ~ handlers|first.getCategory() ~ '</span>',
+            'type': '<span data-glpi-helpdesk-translations-subtitle-row>' ~ handlers|first.getCategory()|e ~ '</span>',
             'type_colspan': 3,
             'type_aria_label': _n('Category', 'Categories', 1)
         }]) %}

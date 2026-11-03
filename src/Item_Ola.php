@@ -348,7 +348,9 @@ class Item_Ola extends CommonDBRelation
         $ola = new OLA();
 
         // get ola data from DB - each $item_ola_data row contains linked OLA fields + items_olas_id in 'linkid' field
-        $olas_in_db_data = array_values(iterator_to_array(self::getListForItem($ticket), false));
+        $olas_in_db_data = $ticket->isNewItem()
+            ? []
+            : array_values(iterator_to_array(self::getListForItem($ticket), false));
 
         // complete with olas not associated to ticket - not yet in items_ola
         $fetched_olas_ids = array_column($olas_in_db_data, 'id');

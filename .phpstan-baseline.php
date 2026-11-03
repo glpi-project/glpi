@@ -5326,24 +5326,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
 	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
-	'count' => 6,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method hydrate\\(\\) on Glpi\\\\Api\\\\HL\\\\Search\\\\RecordSet\\|int\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
+	'count' => 7,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method maybeRecursive\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Search\\:\\:getSearchResultsBySchema\\(\\) should return array\\{results\\: array, start\\: int, limit\\: int, total\\: int\\} but returns array\\{results\\: list, start\\: 0\\|array, limit\\: array\\|int\\<0, max\\>, total\\: Glpi\\\\Api\\\\HL\\\\Search\\\\RecordSet\\|int\\}\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
 ];
@@ -5358,6 +5346,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
+	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Search/CursorPagination.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
@@ -11068,7 +11062,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
 	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
-	'count' => 86,
+	'count' => 87,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [

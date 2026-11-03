@@ -726,7 +726,7 @@ abstract class CommonDropdown extends CommonDBTM
                 'FROM'   => $this->getTable(),
                 'WHERE'  => [
                     'name'   => $input['name'],
-                ],
+                ] + static::getSystemSQLCriteria(),
                 'LIMIT'  => 1,
             ];
 

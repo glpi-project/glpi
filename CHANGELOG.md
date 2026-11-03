@@ -39,7 +39,28 @@ The present file will list all changes made to the project; according to the
 - `Html::link()`.
 - `confirmaction` option of `Html::submit()`. Confirmation is now handled through the `data-glpi-confirm` attribute, so no additional action can be run on confirmation.
 
-## [12.0.1] unreleased
+## [12.0.2] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [12.0.1] 2026-10-28
 
 ### Added
 
@@ -294,9 +315,33 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::stripslashes_deep()`
 
 
-## [11.0.12] unreleased
+## [11.0.13] unreleased
 
 ### Added
+
+### Changed
+- The session cookie name now includes the GLPI version. Users will have to log in again after each GLPI update, unless they use the "remember me" feature.
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+- `Auth::getRememberMeCookieName()` to get the "remember me" cookie name, which no longer derives from the session name.
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.12] 2026-10-28
+
+### Added
+- Georgian language
 
 ### Changed
 - The "Other financial and administrative information" report now includes the licenses that are not linked to any software, so its totals can change.

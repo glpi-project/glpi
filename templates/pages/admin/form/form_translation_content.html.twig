@@ -146,7 +146,7 @@
                 {% set default_value = handler.isRichText() ? '<div class="rich_text_container rich_text_container_translation">' ~ (default_value|safe_html) ~ '</div>' : default_value|e %}
             {% endif %}
             {% set group_entries = group_entries|merge([{
-                'type': '<span class="fw-medium">' ~ handler.getName() ~ '</span>',
+                'type': '<span class="fw-medium">' ~ handler.getName()|e ~ '</span>',
                 'default': default_value,
                 'actions': _self.getActions(handler),
                 'translation': _self.getTranslationInput(
@@ -165,51 +165,7 @@
 
     {% if group_entries is not empty %}
         {% set entries = entries|merge([{
-            'type': '<span data-glpi-form-translations-subtitle-row>' ~ handlers|first.getCategory() ~ '</span>',
-            'type_colspan': 4,
-            'type_aria_label': _n('Category', 'Categories', 1)
-        }]) %}
-        {% set entries = entries|merge(group_entries) %}
-    {% endif %}
-{% endfor %}
-
-{% set entries = [] %}
-{% for handlers in form.listTranslationsHandlers() %}
-    {% set group_entries = [] %}
-    {% for handler in handlers %}
-        {% set item_translation = form_translation.getForItemKeyAndLanguage(
-            handler.getItem(),
-            handler.getKey(),
-            form_translation.fields['language']
-        ) %}
-        {% if handler.getValue() is not empty or (item_translation is not null and item_translation.getTranslation() is not empty) %}
-            {% set default_value = handler.getValue() %}
-            {% if handler.getValue() is empty %}
-                {% set default_value = '<span class="text-muted fst-italic">' ~ __('No default value') ~ '</span>' %}
-            {% else %}
-                {% set default_value = handler.isRichText() ? '<div class="rich_text_container rich_text_container_translation">' ~ (default_value|safe_html) ~ '</div>' : default_value|e %}
-            {% endif %}
-            {% set group_entries = group_entries|merge([{
-                'type': '<span class="fw-medium">' ~ handler.getName() ~ '</span>',
-                'default': default_value,
-                'actions': _self.getActions(handler),
-                'translation': _self.getTranslationInput(
-                    handler,
-                    item_translation,
-                    form_translation.getCldrLanguage().getPluralKey(1)
-                ),
-                'row_aria_label': __('Translation row for %s')|format(handler.getName()),
-                'type_aria_label': __('Translation name'),
-                'default_aria_label': __('Default value'),
-                'actions_aria_label': __('Translation actions'),
-                'translation_aria_label': __('Translated value')
-            }]) %}
-        {% endif %}
-    {% endfor %}
-
-    {% if group_entries is not empty %}
-        {% set entries = entries|merge([{
-            'type': '<span data-glpi-form-translations-subtitle-row>' ~ handlers|first.getCategory() ~ '</span>',
+            'type': '<span data-glpi-form-translations-subtitle-row>' ~ handlers|first.getCategory()|e ~ '</span>',
             'type_colspan': 4,
             'type_aria_label': _n('Category', 'Categories', 1)
         }]) %}
