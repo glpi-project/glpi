@@ -37,7 +37,7 @@ jobs:
           LABEL: "external contribution"
         run: |
           set -e
-          ROLE=$(gh api "/repos/$REPO/collaborators/$AUTHOR/permission" --jq '.role_name' 2>/dev/null || echo "none")
+          ROLE=$(gh api "/repos/$REPO/collaborators/$AUTHOR/permission" --jq '.role_name')
           echo "$AUTHOR has role '$ROLE' on $REPO"
           case "$ROLE" in
             admin|maintain|write|triage)
