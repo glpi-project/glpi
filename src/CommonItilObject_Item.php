@@ -96,7 +96,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $obj = getItemForItemtype(static::$itemtype_1);
         $input  = [
             'id'            => $this->fields[static::$items_id_1],
-            'date_mod'      => $_SESSION["glpi_currenttime"],
+            'date_mod'      => Session::getCurrentTime(),
         ];
 
         if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
@@ -116,7 +116,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $obj = getItemForItemtype(static::$itemtype_1);
         $input = [
             'id'            => $this->fields[static::$items_id_1],
-            'date_mod'      => $_SESSION["glpi_currenttime"],
+            'date_mod'      => Session::getCurrentTime(),
         ];
 
         if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
@@ -760,7 +760,7 @@ TWIG, $twig_params);
         $number = count($iterator);
 
         $colspan = 12;
-        if (count($_SESSION["glpiactiveentities"]) > 1) {
+        if (count(Session::getActiveEntities()) > 1) {
             $colspan++;
         }
 
@@ -1407,7 +1407,7 @@ TWIG, $twig_params);
             'itemtype_name'   => 'item_itemtype',
             'itemtypes'       => $CFG_GLPI['ticket_types'],
             'checkright'      => true,
-            'entity_restrict' => $_SESSION['glpiactive_entity'],
+            'entity_restrict' => Session::getActiveEntity(),
         ];
         Dropdown::showSelectItemFromItemtypes($dropdown_params);
         switch ($ma->getAction()) {

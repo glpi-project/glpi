@@ -285,7 +285,7 @@ class Reminder extends CommonDBVisible implements
         // Entities
         if (
             $forceall
-            || (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"]))
+            || (isset($_SESSION["glpiactiveentities"]) && count(Session::getActiveEntities()))
         ) {
             $join['glpi_entities_reminders'] = [
                 'FKEY' => [
@@ -294,7 +294,7 @@ class Reminder extends CommonDBVisible implements
                 ],
             ];
         }
-        if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
+        if (isset($_SESSION["glpiactiveentities"]) && count(Session::getActiveEntities())) {
             $restrict = getEntitiesRestrictCriteria('glpi_entities_reminders', '', '', true, true);
             if (count($restrict)) {
                 $where['OR'] += $restrict;
@@ -577,7 +577,7 @@ class Reminder extends CommonDBVisible implements
     {
         global $DB;
 
-        $language = $_SESSION['glpilanguage'] ?? null;
+        $language = Session::getLanguage() ?? null;
         $reminders_ids = array_unique(array_column($events, 'reminders_id'));
         if (empty($language) || $reminders_ids === []) {
             return $events;
@@ -675,7 +675,7 @@ class Reminder extends CommonDBVisible implements
                             'glpi_reminders'             => 'id',
                             'glpi_remindertranslations'  => 'reminders_id', [
                                 'AND'                            => [
-                                    'glpi_remindertranslations.language' => $_SESSION['glpilanguage'],
+                                    'glpi_remindertranslations.language' => Session::getLanguage(),
                                 ],
                             ],
                         ],

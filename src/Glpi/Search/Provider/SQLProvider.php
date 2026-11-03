@@ -1468,15 +1468,15 @@ final class SQLProvider implements SearchProviderInterface
                 if ($val === 'myself') {
                     switch ($searchtype) {
                         case 'equals':
-                            $SEARCH = ['=', $_SESSION['glpiID']];
+                            $SEARCH = ['=', Session::getLoginUserID()];
                             break;
 
                         case 'notequals':
                             if ($use_subquery_on_id_search) {
                                 // Potential negation will be handled by the subquery operator
-                                $SEARCH = ['=', $_SESSION['glpiID']];
+                                $SEARCH = ['=', Session::getLoginUserID()];
                             } else {
-                                $SEARCH = ['<>', $_SESSION['glpiID']];
+                                $SEARCH = ['<>', Session::getLoginUserID()];
                             }
                             break;
                     }
@@ -4151,7 +4151,7 @@ final class SQLProvider implements SearchProviderInterface
                         [
                             'AND' => [
                                 "$alias.items_id" => new QueryExpression($DB::quoteName("$table.id")),
-                                "$alias.language" => $_SESSION['glpilanguage'],
+                                "$alias.language" => Session::getLanguage(),
                                 "$alias.field"    => $field,
                             ],
                         ],
@@ -7113,7 +7113,7 @@ final class SQLProvider implements SearchProviderInterface
                             ));
                             $currenttime = $sla->getActiveTimeBetween(
                                 $item->fields['date'],
-                                $_SESSION['glpi_currenttime']
+                                Session::getCurrentTime()
                             );
                             $totaltime   = $sla->getActiveTimeBetween(
                                 $item->fields['date'],
@@ -7131,14 +7131,14 @@ final class SQLProvider implements SearchProviderInterface
                             if ($calendars_id > 0 && $calendar->getFromDB($calendars_id)) { // Ticket entity have calendar
                                 $currenttime = $calendar->getActiveTimeBetween(
                                     $item->fields['date'],
-                                    $_SESSION['glpi_currenttime']
+                                    Session::getCurrentTime()
                                 );
                                 $totaltime   = $calendar->getActiveTimeBetween(
                                     $item->fields['date'],
                                     $data[$ID][0]['name']
                                 );
                             } else { // No calendar
-                                $currenttime = strtotime($_SESSION['glpi_currenttime'])
+                                $currenttime = strtotime(Session::getCurrentTime())
                                     - strtotime($item->fields['date']);
                                 $totaltime   = strtotime($data[$ID][0]['name'])
                                     - strtotime($item->fields['date']);
@@ -7217,7 +7217,7 @@ final class SQLProvider implements SearchProviderInterface
                                     && $status != CommonITILObject::WAITING
                                     && (
                                         $solve_date > $value
-                                        || ($solve_date == null && $value < $_SESSION['glpi_currenttime'])
+                                        || ($solve_date == null && $value < Session::getCurrentTime())
                                     );
                                 break;
                             case "glpi_tickets.time_to_own":
@@ -7234,7 +7234,7 @@ final class SQLProvider implements SearchProviderInterface
                                     && $status != CommonITILObject::WAITING
                                     && (
                                         $tia_date > $value
-                                        || ($tia_date == null && $value < $_SESSION['glpi_currenttime'])
+                                        || ($tia_date == null && $value < Session::getCurrentTime())
                                     );
                         }
                         if ($is_late) {
@@ -7697,12 +7697,12 @@ final class SQLProvider implements SearchProviderInterface
                         && !empty($data[$ID][0]['name'])
                     ) {
                         $date = $data[$ID][0]['name'];
-                        $before = Entity::getUsedConfig('send_certificates_alert_before_delay', $_SESSION['glpiactive_entity']);
-                        $color = ($date < $_SESSION['glpi_currenttime']) ? '#cf9b9b' : null;
+                        $before = Entity::getUsedConfig('send_certificates_alert_before_delay', Session::getActiveEntity());
+                        $color = ($date < Session::getCurrentTime()) ? '#cf9b9b' : null;
                         if ($before) {
-                            $before = date('Y-m-d', strtotime($_SESSION['glpi_currenttime'] . "+$before days"));
+                            $before = date('Y-m-d', strtotime(Session::getCurrentTime() . "+$before days"));
                             $color = match (true) {
-                                $date < $_SESSION['glpi_currenttime'] => '#d63939',
+                                $date < Session::getCurrentTime() => '#d63939',
                                 $date < $before => '#de5d06',
                                 $date >= $before => '#a1cf66',
                                 default => null
@@ -7718,7 +7718,7 @@ final class SQLProvider implements SearchProviderInterface
                     break;
                 case "glpi_domains.date_expiration":
                     if (!empty($data[$ID][0]['name'])
-                        && ($data[$ID][0]['name'] < $_SESSION['glpi_currenttime'])
+                        && ($data[$ID][0]['name'] < Session::getCurrentTime())
                     ) {
                         return "<div class='badge_block' style='border-color: #cf9b9b'>
                         <span style='background: #cf9b9b'></span>&nbsp;" . \htmlescape(Html::convDate($data[$ID][0]['name'])) . "

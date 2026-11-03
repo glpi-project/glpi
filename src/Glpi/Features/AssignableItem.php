@@ -143,7 +143,7 @@ trait AssignableItem
         $or = [];
         if (Session::haveRight(static::$rightname, READ_ASSIGNED)) {
             $or[] = [
-                $item_table . '.users_id_tech' => $_SESSION['glpiID'],
+                $item_table . '.users_id_tech' => Session::getLoginUserID(),
             ];
             if (count($_SESSION['glpigroups']) > 0) {
                 $or[] = [
@@ -207,7 +207,7 @@ trait AssignableItem
         string $item_table,
         string $relation_table,
     ): array {
-        $or = [$item_table . '.users_id' => $_SESSION['glpiID']];
+        $or = [$item_table . '.users_id' => Session::getLoginUserID()];
         if (count($_SESSION['glpigroups']) > 0) {
             $or[] = [
                 $item_table . '.id' => new QuerySubQuery([

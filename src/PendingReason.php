@@ -201,7 +201,7 @@ class PendingReason extends CommonDropdown
      */
     public static function getFollowupFrequencyValues(): array
     {
-        $formatter = new NumberFormatter($_SESSION['glpilanguage'], NumberFormatter::SPELLOUT);
+        $formatter = new NumberFormatter(Session::getLanguage(), NumberFormatter::SPELLOUT);
         return [
             DAY_TIMESTAMP      => __("Every day"),
             2 * DAY_TIMESTAMP  => sprintf(__("Every %s days"), $formatter->format(2)),

@@ -535,7 +535,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
             $twig_params = [
                 'header' => sprintf(__('New child %s'), static::getTypeName(1)),
                 'form_url' => static::getFormURL(),
-                'entity' => ($entity_assign && static::getForeignKeyField() !== 'entities_id') ? $_SESSION['glpiactive_entity'] : null,
+                'entity' => ($entity_assign && static::getForeignKeyField() !== 'entities_id') ? Session::getActiveEntity() : null,
                 'is_recursive' => $entity_assign && $this->isRecursive() ? 1 : 0,
                 'name_label' => __('Name'),
                 'btn_label' => _x('button', 'Add'),
@@ -593,9 +593,9 @@ TWIG, $twig_params);
             ];
             $name = htmlescape($data['name']);
             if (
-                (($fk === 'entities_id') && in_array($data['id'], $_SESSION['glpiactiveentities'], true))
+                (($fk === 'entities_id') && in_array($data['id'], Session::getActiveEntities(), true))
                 || !$entity_assign
-                || (($fk !== 'entities_id') && in_array($data['entities_id'], $_SESSION['glpiactiveentities'], true))
+                || (($fk !== 'entities_id') && in_array($data['entities_id'], Session::getActiveEntities(), true))
             ) {
                 $entry['name'] = sprintf(
                     '<a href="%s">%s</a>',
@@ -705,7 +705,7 @@ TWIG, $twig_params);
                 echo __s('As child of');
                 Dropdown::show($itemtype, ['name'     => 'parent',
                     'comments' => 0,
-                    'entity'   => $_SESSION['glpiactive_entity'],
+                    'entity'   => Session::getActiveEntity(),
                     'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
                 ]);
                 echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='"

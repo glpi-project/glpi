@@ -117,7 +117,7 @@ final class ReAuthManager
         }
 
         $current_limit_timestamp = $_SESSION['glpi_reauth_until'] ?? null;
-        $calculated_limit_timestamp = (new DateTime($_SESSION['glpi_currenttime']))->getTimestamp();
+        $calculated_limit_timestamp = (new DateTime(\Session::getCurrentTime()))->getTimestamp();
 
         return $current_limit_timestamp !== null && $current_limit_timestamp > $calculated_limit_timestamp;
     }
@@ -132,7 +132,7 @@ final class ReAuthManager
     {
         $strategy = $this->getStrategy();
 
-        return $strategy->verify($_SESSION['glpiID'], $request);
+        return $strategy->verify(\Session::getLoginUserID(), $request);
     }
 
     /**
@@ -143,7 +143,7 @@ final class ReAuthManager
      */
     public function authenticate(): void
     {
-        $_SESSION['glpi_reauth_until'] = (new DateTime($_SESSION['glpi_currenttime']))
+        $_SESSION['glpi_reauth_until'] = (new DateTime(\Session::getCurrentTime()))
             ->modify('+' . self::REAUTH_DELAY_SECONDS . ' seconds')
             ->getTimestamp();
     }
@@ -308,7 +308,7 @@ final class ReAuthManager
     private function getStrategy(): ReAuthStrategyInterface
     {
         if ($this->strategy === null) {
-            $this->strategy = $this->resolvePreferred($_SESSION['glpiID']);
+            $this->strategy = $this->resolvePreferred(\Session::getLoginUserID());
         }
 
         return $this->strategy;

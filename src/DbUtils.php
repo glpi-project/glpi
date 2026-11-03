@@ -873,7 +873,7 @@ final class DbUtils
             if (
                 isset($_SESSION['glpiactiveentities'])
                 && isset($_SESSION['glpiparententities'])
-                && $value == $_SESSION['glpiactiveentities']
+                && $value == Session::getActiveEntities()
             ) {
                 $ancestors = $_SESSION['glpiparententities'];
             } else {
@@ -951,7 +951,7 @@ final class DbUtils
         $value_is_session_default = false;
         if ($value === '') {
             if (isset($_SESSION['glpiactiveentities'])) {
-                $value = $_SESSION['glpiactiveentities'];
+                $value = Session::getActiveEntities();
                 $value_is_session_default = true;
             } elseif (Session::isRightChecksDisabled()) {
                 return [new QueryExpression('true')];
@@ -1347,7 +1347,7 @@ final class DbUtils
                         $table   => 'id', [
                             'AND' => [
                                 'namet.itemtype'  => $this->getItemTypeForTable($table),
-                                'namet.language'  => $_SESSION['glpilanguage'],
+                                'namet.language'  => Session::getLanguage(),
                                 'namet.field'     => 'name',
                             ],
                         ],
@@ -1363,7 +1363,7 @@ final class DbUtils
                         $table   => 'id', [
                             'AND' => [
                                 'namec.itemtype'  => $this->getItemTypeForTable($table),
-                                'namec.language'  => $_SESSION['glpilanguage'],
+                                'namec.language'  => Session::getLanguage(),
                                 'namec.field'     => 'comment',
                             ],
                         ],
@@ -1460,7 +1460,7 @@ final class DbUtils
                         $table   => 'id', [
                             'AND' => [
                                 'namet.itemtype'  => $this->getItemTypeForTable($table),
-                                'namet.language'  => $_SESSION['glpilanguage'],
+                                'namet.language'  => Session::getLanguage(),
                                 'namet.field'     => 'completename',
                             ],
                         ],

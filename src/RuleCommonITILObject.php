@@ -179,7 +179,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
     public function addSpecificParamsForPreview($params)
     {
         if (!isset($params["entities_id"])) {
-            $params["entities_id"] = $_SESSION["glpiactive_entity"];
+            $params["entities_id"] = Session::getActiveEntity();
         }
         return $params;
     }
@@ -194,7 +194,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
             }
         }
         if (!$entity_as_criteria) {
-            echo "<input type='hidden' name='entities_id' value='" . ((int) $_SESSION["glpiactive_entity"]) . "'>";
+            echo "<input type='hidden' name='entities_id' value='" . ((int) Session::getActiveEntity()) . "'>";
         }
     }
 

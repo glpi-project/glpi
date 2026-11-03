@@ -501,7 +501,7 @@ class ITILFollowup extends CommonDBChild
         }
 
         if (!isset($input['date'])) {
-            $input["date"] = $_SESSION["glpi_currenttime"];
+            $input["date"] = Session::getCurrentTime();
         }
         return $input;
     }

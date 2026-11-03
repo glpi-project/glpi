@@ -492,7 +492,7 @@ class Auth extends CommonGLPI
                 // Disable account if password expired
                 if (
                     -1 !== $pass_expiration_delay && -1 !== $lock_delay
-                    && $row['lock_date'] < $_SESSION['glpi_currenttime']
+                    && $row['lock_date'] < Session::getCurrentTime()
                 ) {
                     $user = new User();
                     $user->update(
@@ -504,7 +504,7 @@ class Auth extends CommonGLPI
                 }
                 if (
                     -1 !== $pass_expiration_delay
-                    && $row['password_expiration_date'] < $_SESSION['glpi_currenttime']
+                    && $row['password_expiration_date'] < Session::getCurrentTime()
                 ) {
                     $this->password_expired = true;
                 }

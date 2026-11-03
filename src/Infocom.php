@@ -130,7 +130,7 @@ class Infocom extends CommonDBChild
         if (isset($_SESSION['glpiactive_entity'])) {
             $this->fields["alert"] = Entity::getUsedConfig(
                 "use_infocoms_alert",
-                $_SESSION['glpiactive_entity'],
+                Session::getActiveEntity(),
                 "default_infocom_alert",
                 0
             );
@@ -470,7 +470,7 @@ class Infocom extends CommonDBChild
                 && ($values[1] == $changes['states_id'])
             ) {
                 $add_or_update    = true;
-                $tmp[$date_field] = $_SESSION["glpi_currenttime"];
+                $tmp[$date_field] = Session::getCurrentTime();
             }
         }
 
@@ -728,7 +728,7 @@ class Infocom extends CommonDBChild
         foreach ($items_infos as $entity => $items) {
             // We will ignore items that have been deleted but aren't expired, in case they are restored before the warranty expires
             $not_deleted_items = array_filter($items, static fn($item) => $item['is_deleted'] === 0);
-            $deleted_expired_items = array_filter($items, static fn($item) => $item['is_deleted'] === 1 && $item['warrantyexpiration'] < $_SESSION['glpi_currenttime']);
+            $deleted_expired_items = array_filter($items, static fn($item) => $item['is_deleted'] === 1 && $item['warrantyexpiration'] < Session::getCurrentTime());
             if (
                 count($not_deleted_items) > 0
                 && NotificationEvent::raiseEvent("alert", new self(), [
@@ -2006,10 +2006,10 @@ HTML;
 
         // For notice calculation with periodicity, we need to find the current period
         if ($deletenotice > 0 && $periodicity > 0 && $periodicity != $addwarranty) {
-            $current_time = strtotime($_SESSION['glpi_currenttime']);
+            $current_time = strtotime(Session::getCurrentTime());
 
             // Calculate the number of months elapsed since the beginning
-            $current = new DateTime($_SESSION['glpi_currenttime']);
+            $current = new DateTime(Session::getCurrentTime());
             $start = new DateTime($from);
             $interval = $start->diff($current);
             $months_elapsed = ($interval->y * 12) + $interval->m;
@@ -2066,7 +2066,7 @@ HTML;
 
                 // For TACIT contracts: calculate the next FUTURE notice
                 if ($auto_renew && $periodicity > 0) {
-                    $current_time = strtotime($_SESSION['glpi_currenttime']);
+                    $current_time = strtotime(Session::getCurrentTime());
 
                     $start_date = new DateTime($from);
                     $first_notice_date = clone $start_date;
@@ -2108,7 +2108,7 @@ HTML;
                 return __s('Never');
             }
 
-            while ($timestamp < strtotime($_SESSION['glpi_currenttime'])) {
+            while ($timestamp < strtotime(Session::getCurrentTime())) {
                 $datetime = new DateTime();
                 $datetime->setTimestamp($timestamp);
                 $datetime->add(new DateInterval("P{$renewal_period}M"));
@@ -2128,7 +2128,7 @@ HTML;
             $date = '';
         }
 
-        if ($color && ($timestamp < strtotime($_SESSION['glpi_currenttime']))) {
+        if ($color && ($timestamp < strtotime(Session::getCurrentTime()))) {
             return "<span class='red'>" . htmlescape($date) . "</span>";
         }
         return htmlescape($date);

@@ -251,7 +251,7 @@ class PrinterLog extends CommonDBChild
         // the "Constants for PHP Date Output" used in others functions
         // See https://framework.zend.com/manual/1.12/en/zend.date.constants.html#zend.date.constants.selfdefinedformats
         $fmt = new IntlDateFormatter(
-            $_SESSION['glpilanguage'] ?? 'en_GB',
+            Session::getLanguage() ?? 'en_GB',
             IntlDateFormatter::NONE,
             IntlDateFormatter::NONE,
             null,

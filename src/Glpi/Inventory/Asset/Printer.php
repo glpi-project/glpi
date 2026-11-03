@@ -57,7 +57,7 @@ class Printer extends InventoryAsset
         foreach ($this->data as $k => &$val) {
             //set update system
             $val->autoupdatesystems_id = AutoUpdateSystem::NATIVE_INVENTORY;
-            $val->last_inventory_update = $_SESSION["glpi_currenttime"];
+            $val->last_inventory_update = \Session::getCurrentTime();
             $val->is_deleted = 0;
 
             if (property_exists($val, 'port') && strstr($val->port, "USB")) {

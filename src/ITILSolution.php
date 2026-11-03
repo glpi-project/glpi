@@ -294,7 +294,7 @@ class ITILSolution extends CommonDBChild
             //Accepted; store user and date
             if ($status == CommonITILValidation::ACCEPTED) {
                 $input['users_id_approval'] = Session::getLoginUserID();
-                $input['date_approval'] = $_SESSION["glpi_currenttime"];
+                $input['date_approval'] = Session::getCurrentTime();
             }
 
             $input['status'] = $status;

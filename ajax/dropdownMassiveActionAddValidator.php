@@ -57,7 +57,7 @@ if (isset($_POST["validatortype"])) {
         case 'user':
             User::dropdown([
                 'name'   => $items_id_name,
-                'entity' => $_SESSION["glpiactive_entity"],
+                'entity' => Session::getActiveEntity(),
                 'right'  => $_POST['right'],
             ]);
             echo Html::hidden($itemtype_name, ['value' => 'User']);
@@ -86,7 +86,7 @@ if (isset($_POST["validatortype"])) {
         case $types_mapping['group_user']:
             $rand = Group::dropdown([
                 'name'      => $groups_id_name,
-                'entity'    => $_SESSION["glpiactive_entity"],
+                'entity'    => Session::getActiveEntity(),
             ]);
             echo Html::hidden($itemtype_name, ['value' => 'User']);
 
@@ -113,7 +113,7 @@ if (isset($_POST["validatortype"])) {
             $opt = [
                 'groups_id' => $_POST["groups_id"],
                 'right'     => $_POST['right'],
-                'entity'    => $_SESSION["glpiactive_entity"],
+                'entity'    => Session::getActiveEntity(),
             ];
 
             $groups_users = $validation_class::getGroupUserHaveRights($opt);

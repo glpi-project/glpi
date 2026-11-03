@@ -307,7 +307,7 @@ class CronTask extends CommonDBTM
 
             $this->startlog = $log->add([
                 'crontasks_id'    => $this->fields['id'],
-                'date'            => $_SESSION['glpi_currenttime'],
+                'date'            => Session::getCurrentTime(),
                 'content'         => $txt,
                 'crontasklogs_id' => 0,
                 'state'           => CronTaskLog::STATE_START,
@@ -474,7 +474,7 @@ class CronTask extends CommonDBTM
 
             $log = new CronTaskLog();
             $log->add(['crontasks_id'    => $this->fields['id'],
-                'date'            => $_SESSION['glpi_currenttime'],
+                'date'            => Session::getCurrentTime(),
                 'content'         => $content,
                 'crontasklogs_id' => $this->startlog,
                 'state'           => $log_state,
@@ -501,7 +501,7 @@ class CronTask extends CommonDBTM
         $log     = new CronTaskLog();
         $content = Toolbox::substr($content, 0, 200);
         return $log->add(['crontasks_id'    => $this->fields['id'],
-            'date'            => $_SESSION['glpi_currenttime'],
+            'date'            => Session::getCurrentTime(),
             'content'         => $content,
             'crontasklogs_id' => $this->startlog,
             'state'           => CronTaskLog::STATE_RUN,

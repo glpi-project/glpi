@@ -107,7 +107,7 @@ class PendingReason_Item extends CommonDBRelation
         $fields['itemtype'] = $item::class;
         $fields['items_id'] = $item->getID();
         if (!isset($fields['last_bump_date'])) {
-            $fields['last_bump_date'] = $_SESSION['glpi_currenttime'];
+            $fields['last_bump_date'] = Session::getCurrentTime();
         }
         $success = $em->add($fields);
         if (!$success) {

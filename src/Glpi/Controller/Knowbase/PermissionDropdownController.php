@@ -93,7 +93,7 @@ final class PermissionDropdownController extends AbstractController
                 'aria_label' => Group::getTypeName(1),
             ],
             Entity::class => [
-                'value'       => $_SESSION['glpiactive_entity'],
+                'value'       => \Session::getActiveEntity(),
                 'name'        => 'entities_id',
                 'entity'      => $request->request->get('entity', -1),
                 'entity_sons' => $request->request->getBoolean('is_recursive'),

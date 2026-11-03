@@ -94,7 +94,7 @@ $HEADER_LOADED = true;
 header("Content-Type: text/html; charset=UTF-8");
 
 TemplateRenderer::getInstance()->display('layout/parts/head.html.twig', [
-    'lang'  => $_SESSION['glpilanguage'],
+    'lang'  => Session::getLanguage(),
     'title' => __('GLPI setup'),
     'css_files' => [
         ['path' => 'lib/tabler.css'],

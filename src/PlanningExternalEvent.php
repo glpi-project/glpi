@@ -306,10 +306,10 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
 
         $condition = [
             'OR' => [
-                self::getTableField('users_id') => $_SESSION['glpiID'],
+                self::getTableField('users_id') => Session::getLoginUserID(),
                 QueryFunction::jsonContains(
                     self::getTableField('users_id_guests'),
-                    new QueryExpression($DB::quoteValue((int) $_SESSION['glpiID'])),
+                    new QueryExpression($DB::quoteValue((int) Session::getLoginUserID())),
                     '$'
                 ),
             ],

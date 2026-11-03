@@ -77,7 +77,7 @@ if (!$kb->can($id, READ)) {
 if (Session::getLoginUserID()) {
     Html::helpHeader(__('FAQ'), 'faq');
 } else {
-    $_SESSION["glpilanguage"] = $_SESSION['glpilanguage'] ?? Session::getPreferredLanguage();
+    $_SESSION["glpilanguage"] = Session::getLanguage() ?? Session::getPreferredLanguage();
     // Anonymous FAQ
     Html::simpleHeader(__('FAQ'), [
         __('Authentication') => '/',

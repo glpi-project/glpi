@@ -99,7 +99,7 @@ final class IndexController extends AbstractController
                 'errors'    => $errors,
                 'title'     => __('Access denied'),
                 'login_url' => $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1&redirect=' . \rawurlencode($redirect),
-                'lang'      => LanguageRegistry::get($_SESSION['glpilanguage'])->getPageLang(),
+                'lang'      => LanguageRegistry::get(\Session::getLanguage())->getPageLang(),
             ]);
         }
 
@@ -114,7 +114,7 @@ final class IndexController extends AbstractController
         return $this->render('pages/login.html.twig', [
             'rand'                => $rand,
             'card_bg_width'       => true,
-            'lang'                => LanguageRegistry::get($_SESSION['glpilanguage'])->getPageLang(),
+            'lang'                => LanguageRegistry::get(\Session::getLanguage())->getPageLang(),
             'title'               => __('Authentication'),
             'noAuto'              => $_GET["noAUTO"] ?? 0,
             'redirect'            => $redirect,

@@ -590,7 +590,7 @@ class Reservation extends CommonDBChild
         }
 
         $can_reserve_js = $can_reserve ? "true" : "false";
-        $now = jsescape($_SESSION["glpi_currenttime"]);
+        $now = jsescape(Session::getCurrentTime());
         $default_date = jsescape($default_date);
         echo <<<HTML
             <script type="module">
@@ -1066,7 +1066,7 @@ HTML;
             Session::haveRight(Reservation::$rightname, ReservationItem::RESERVEANITEM)
             && count(self::getReservableItemtypes()) > 0
         ) ? "true" : "false";
-        $now = jsescape($_SESSION["glpi_currenttime"]);
+        $now = jsescape(Session::getCurrentTime());
         echo <<<HTML
             <script type="module">
                 window.Vue.createApp(window.Vue.components['Reservations/ReservationScheduler'].component, {
@@ -1090,7 +1090,7 @@ HTML;
     {
         global $DB;
 
-        $now = $_SESSION["glpi_currenttime"];
+        $now = Session::getCurrentTime();
 
         $common_criteria = [
             'SELECT'    => [

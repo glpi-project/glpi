@@ -129,7 +129,7 @@ class Event extends CommonDBTM
         $input = [
             'items_id' => intval($items_id),
             'type'     => $type,
-            'date'     => $_SESSION["glpi_currenttime"],
+            'date'     => Session::getCurrentTime(),
             'service'  => $service,
             'level'    => intval($level),
             'message'  => $event,

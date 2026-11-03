@@ -123,7 +123,7 @@ class NotificationTargetContract extends NotificationTarget
                     if (isset($contract["alert_date"])) {
                         $tmp['##contract.time##'] =  Html::convDate($contract["alert_date"]);
                     } elseif (isset($options['_debug'])) {
-                        $tmp['##contract.time##'] =  Html::convDate($_SESSION['glpi_currenttime']);
+                        $tmp['##contract.time##'] =  Html::convDate(Session::getCurrentTime());
                     }
                     break;
             }

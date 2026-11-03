@@ -328,7 +328,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
 
         //search entity
         if ($add && !isset($input['entities_id'])) {
-            $input['entities_id'] = $_SESSION['glpiactive_entity'] ?? 0;
+            $input['entities_id'] = Session::getActiveEntity();
             $input['is_recursive'] = $_SESSION['glpiactive_entity_recursive'] ?? 0;
             $domain = new Domain();
             if (isset($input['domains_id']) && $domain->getFromDB($input['domains_id'])) {

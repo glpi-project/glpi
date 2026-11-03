@@ -164,7 +164,7 @@ class NotificationTarget extends CommonDBChild
     public function __construct($entity = null, $event = '', $object = null, $options = [])
     {
         if ($entity === null) {
-            $this->entity = ($_SESSION['glpiactive_entity'] ?? 0);
+            $this->entity = (Session::getActiveEntity());
         } else {
             $this->entity = $entity;
         }
@@ -670,9 +670,9 @@ class NotificationTarget extends CommonDBChild
                 || ($user->isDeleted())
                 || (!$user->isActive())
                 || (!is_null($user->fields['begin_date'])
-                  && ($user->fields['begin_date'] > $_SESSION["glpi_currenttime"]))
+                  && ($user->fields['begin_date'] > Session::getCurrentTime()))
                 || (!is_null($user->fields['end_date'])
-                  && ($user->fields['end_date'] < $_SESSION["glpi_currenttime"]))
+                  && ($user->fields['end_date'] < Session::getCurrentTime()))
             ) {
                 // unknown, deleted or disabled user
                 return;

@@ -134,7 +134,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
         if (isset($_SESSION['glpiactive_entity'])) {
             $this->fields["alarm_threshold"] = Entity::getUsedConfig(
                 "cartridges_alert_repeat",
-                $_SESSION['glpiactive_entity'],
+                Session::getActiveEntity(),
                 "default_cartridges_alarm_threshold",
                 10
             );
