@@ -52,9 +52,10 @@ export const ResizableImage = TiptapImage.extend({
             return null;
         }
 
+        const on_live_resize = this.options.onLiveResize;
+
         return (props) => {
             const node_view = createNodeView(props);
-            const isResizing = () => node_view.dom.dataset.resizeState === 'true';
 
             const update = node_view.update.bind(node_view);
             node_view.update = (node, decorations, inner_decorations) => {
@@ -62,7 +63,7 @@ export const ResizableImage = TiptapImage.extend({
                     return false;
                 }
                 // Mid-drag, the node still has the old size: keep the dragged one.
-                if (!isResizing()) {
+                if (node_view.dom.dataset.resizeState !== 'true') {
                     const { width, height } = node.attrs;
                     node_view.element.style.width = width ? `${width}px` : '';
                     node_view.element.style.height = height ? `${height}px` : '';
@@ -70,19 +71,11 @@ export const ResizableImage = TiptapImage.extend({
                 return true;
             };
 
-            const on_live_resize = this.options.onLiveResize;
             if (typeof on_live_resize === 'function') {
-                const observer = new ResizeObserver(() => {
-                    if (isResizing()) {
-                        on_live_resize();
-                    }
-                });
-                observer.observe(node_view.element);
-
-                const destroy = node_view.destroy.bind(node_view);
-                node_view.destroy = () => {
-                    observer.disconnect();
-                    destroy();
+                const on_resize = node_view.onResize;
+                node_view.onResize = (width, height) => {
+                    on_resize?.(width, height);
+                    on_live_resize();
                 };
             }
 

@@ -33,6 +33,7 @@
 import { Locator, Page } from "@playwright/test";
 import { expect, test } from "../../../fixtures/glpi_fixture";
 import { KnowbaseItemPage } from "../../../pages/KnowbaseItemPage";
+import { Api } from "../../../utils/Api";
 import { Profiles } from "../../../utils/Profiles";
 import { getWorkerEntityId } from "../../../utils/WorkerEntities";
 
@@ -50,17 +51,28 @@ async function getBox(locator: Locator): Promise<{ x: number, y: number, width: 
 }
 
 /**
+ * Horizontal distance in px between the centers of `a` and `b`.
+ */
+async function getCenterOffset(a: Locator, b: Locator): Promise<number> {
+    const box_a = await getBox(a);
+    const box_b = await getBox(b);
+    return Math.abs((box_a.x + box_a.width / 2) - (box_b.x + box_b.width / 2));
+}
+
+/**
  * Drag the bottom-right resize handle of `image` by `delta_x` px.
  * The handle is centered on the image corner.
  */
-async function dragBottomRightHandle(page: Page, image: Locator, delta_x: number): Promise<void> {
+async function dragBottomRightHandle(page: Page, image: Locator, delta_x: number, release = true): Promise<void> {
     const box = await getBox(image);
     const start_x = box.x + box.width + 3;
     const start_y = box.y + box.height + 3;
     await page.mouse.move(start_x, start_y);
     await page.mouse.down();
     await page.mouse.move(start_x + delta_x, start_y, { steps: 10 });
-    await page.mouse.up();
+    if (release) {
+        await page.mouse.up();
+    }
 }
 
 /**
@@ -82,20 +94,31 @@ async function countResizeHandles(kb: KnowbaseItemPage): Promise<number> {
     );
 }
 
-test.describe('Knowledge Base Editor - Image Resize', () => {
-    test('Dragging a corner resizes the image and keeps its ratio after reload', async ({ page, profile, api }) => {
-        await profile.set(Profiles.SuperAdmin);
-        const kb = new KnowbaseItemPage(page);
-        const id = await api.createItem('KnowbaseItem', {
-            name: 'Image resize drag',
-            entities_id: getWorkerEntityId(),
-            answer: `<p>Content</p>${IMAGE_HTML}`,
-        });
+async function createArticle(api: Api, name: string, answer = `<p>Content</p>${IMAGE_HTML}`): Promise<number> {
+    return api.createItem('KnowbaseItem', { name, entities_id: getWorkerEntityId(), answer });
+}
 
-        await kb.goto(id);
-        await kb.editor.enterEditMode();
-        const image = kb.editor.contentContainer.getByRole('img', { name: 'Components' });
-        await image.click();
+/**
+ * Open the article in edit mode and select its image.
+ */
+async function selectImageInEditor(kb: KnowbaseItemPage, id: number): Promise<Locator> {
+    await kb.goto(id);
+    await kb.editor.enterEditMode();
+    const image = kb.editor.contentContainer.getByRole('img', { name: 'Components' });
+    await image.click();
+    return image;
+}
+
+test.describe('Knowledge Base Editor - Image Resize', () => {
+    test.beforeEach(async ({ profile }) => {
+        await profile.set(Profiles.SuperAdmin);
+    });
+
+    test('Dragging a corner resizes the image and keeps its ratio after reload', async ({ page, api }) => {
+        const kb = new KnowbaseItemPage(page);
+        const id = await createArticle(api, 'Image resize drag');
+
+        const image = await selectImageInEditor(kb, id);
         await dragBottomRightHandle(page, image, -150);
         await kb.editor.save();
 
@@ -110,19 +133,11 @@ test.describe('Knowledge Base Editor - Image Resize', () => {
         expect(await countResizeHandles(kb)).toBe(0);
     });
 
-    test('The image cannot be smaller than the minimum size', async ({ page, profile, api }) => {
-        await profile.set(Profiles.SuperAdmin);
+    test('The image cannot be smaller than the minimum size', async ({ page, api }) => {
         const kb = new KnowbaseItemPage(page);
-        const id = await api.createItem('KnowbaseItem', {
-            name: 'Image resize minimum',
-            entities_id: getWorkerEntityId(),
-            answer: `<p>Content</p>${IMAGE_HTML}`,
-        });
+        const id = await createArticle(api, 'Image resize minimum');
 
-        await kb.goto(id);
-        await kb.editor.enterEditMode();
-        const image = kb.editor.contentContainer.getByRole('img', { name: 'Components' });
-        await image.click();
+        const image = await selectImageInEditor(kb, id);
         await dragBottomRightHandle(page, image, -1000);
         await kb.editor.save();
 
@@ -131,19 +146,11 @@ test.describe('Knowledge Base Editor - Image Resize', () => {
         expect(Math.min(saved.width, saved.height)).toBeGreaterThanOrEqual(50);
     });
 
-    test('Undo restores the previous size on screen', async ({ page, profile, api }) => {
-        await profile.set(Profiles.SuperAdmin);
+    test('Undo restores the previous size on screen', async ({ page, api }) => {
         const kb = new KnowbaseItemPage(page);
-        const id = await api.createItem('KnowbaseItem', {
-            name: 'Image resize undo',
-            entities_id: getWorkerEntityId(),
-            answer: `<p>Content</p>${IMAGE_HTML}`,
-        });
+        const id = await createArticle(api, 'Image resize undo');
 
-        await kb.goto(id);
-        await kb.editor.enterEditMode();
-        const image = kb.editor.contentContainer.getByRole('img', { name: 'Components' });
-        await image.click();
+        const image = await selectImageInEditor(kb, id);
         await dragBottomRightHandle(page, image, -150);
         await expect.poll(async () => (await image.boundingBox())?.width).toBeLessThan(300);
 
@@ -151,19 +158,11 @@ test.describe('Knowledge Base Editor - Image Resize', () => {
         await expect.poll(async () => Math.round((await image.boundingBox())?.width ?? 0)).toBe(400);
     });
 
-    test('Enter on a selected image opens the dialog and applies the new size', async ({ page, profile, api }) => {
-        await profile.set(Profiles.SuperAdmin);
+    test('Enter on a selected image opens the dialog and applies the new size', async ({ page, api }) => {
         const kb = new KnowbaseItemPage(page);
-        const id = await api.createItem('KnowbaseItem', {
-            name: 'Image resize keyboard',
-            entities_id: getWorkerEntityId(),
-            answer: `<p>Content</p>${IMAGE_HTML}`,
-        });
+        const id = await createArticle(api, 'Image resize keyboard');
 
-        await kb.goto(id);
-        await kb.editor.enterEditMode();
-        const image = kb.editor.contentContainer.getByRole('img', { name: 'Components' });
-        await image.click();
+        const image = await selectImageInEditor(kb, id);
         await page.keyboard.press('Enter');
 
         const dialog = kb.imageDialog;
@@ -184,26 +183,16 @@ test.describe('Knowledge Base Editor - Image Resize', () => {
         expect(saved.height).toBe(Math.round(200 / IMAGE_RATIO));
     });
 
-    test('The Edit image button opens the dialog with the current values', async ({ page, profile, api }) => {
-        await profile.set(Profiles.SuperAdmin);
+    test('The Edit image button opens the dialog with the current values', async ({ page, api }) => {
         const kb = new KnowbaseItemPage(page);
-        const id = await api.createItem('KnowbaseItem', {
-            name: 'Image resize button',
-            entities_id: getWorkerEntityId(),
-            answer: `<p>Content</p>${IMAGE_HTML}`,
-        });
+        const id = await createArticle(api, 'Image resize button');
 
-        await kb.goto(id);
-        await kb.editor.enterEditMode();
-        const image = kb.editor.contentContainer.getByRole('img', { name: 'Components' });
-        await image.click();
-        await expect(kb.bubbleMenu.getButton('Bold')).toBeHidden();
+        const image = await selectImageInEditor(kb, id);
+        await kb.bubbleMenu.assertButtonHidden('Bold');
 
-        const menu = page.getByRole('toolbar', { name: 'Image' });
-        await expect(menu).toBeVisible();
-        const image_box = await getBox(image);
-        const menu_box = await getBox(menu);
-        expect(menu_box.x + menu_box.width / 2).toBeCloseTo(image_box.x + image_box.width / 2, 0);
+        const menu = await kb.bubbleMenu.assertVisible();
+        await expect(menu).toHaveAccessibleName('Image');
+        expect(await getCenterOffset(menu, image)).toBeLessThan(1);
 
         await kb.bubbleMenu.clickButton('Edit image');
 
@@ -212,46 +201,29 @@ test.describe('Knowledge Base Editor - Image Resize', () => {
         await expect(kb.imageDialog.getByLabel('Height')).toHaveValue('193');
     });
 
-    test('The menu stays centered above the image during a drag', async ({ page, profile, api }) => {
-        await profile.set(Profiles.SuperAdmin);
+    test('The menu stays centered above the image during a drag', async ({ page, api }) => {
         const kb = new KnowbaseItemPage(page);
-        const id = await api.createItem('KnowbaseItem', {
-            name: 'Image resize menu follows drag',
-            entities_id: getWorkerEntityId(),
-            answer: `<p>Content</p>${IMAGE_HTML}`,
-        });
+        const id = await createArticle(api, 'Image resize menu follows drag');
 
-        await kb.goto(id);
-        await kb.editor.enterEditMode();
-        const image = kb.editor.contentContainer.getByRole('img', { name: 'Components' });
-        await image.click();
-        const menu = page.getByRole('toolbar', { name: 'Image' });
-        await expect(menu).toBeVisible();
-
-        const box = await getBox(image);
-        await page.mouse.move(box.x + box.width + 3, box.y + box.height + 3);
-        await page.mouse.down();
-        await page.mouse.move(box.x + box.width - 200, box.y + box.height + 3, { steps: 10 });
+        const image = await selectImageInEditor(kb, id);
+        const menu = await kb.bubbleMenu.assertVisible();
+        await expect(menu).toHaveAccessibleName('Image');
 
         // Mouse still down: the new size is not committed yet.
-        await expect.poll(async () => {
-            const image_box = await getBox(image);
-            const menu_box = await getBox(menu);
-            return Math.abs((menu_box.x + menu_box.width / 2) - (image_box.x + image_box.width / 2));
-        }).toBeLessThan(2);
+        await dragBottomRightHandle(page, image, -200, false);
+        await expect.poll(() => getCenterOffset(menu, image)).toBeLessThan(2);
         expect((await getBox(image)).width).toBeLessThan(250);
 
         await page.mouse.up();
     });
 
-    test('On a narrow screen, the image fits the column and keeps its ratio', async ({ page, profile, api }) => {
-        await profile.set(Profiles.SuperAdmin);
+    test('On a narrow screen, the image fits the column and keeps its ratio', async ({ page, api }) => {
         const kb = new KnowbaseItemPage(page);
-        const id = await api.createItem('KnowbaseItem', {
-            name: 'Image resize narrow screen',
-            entities_id: getWorkerEntityId(),
-            answer: `<p>Content</p><img src="${IMAGE_SRC}" alt="Components" width="1000" height="482">`,
-        });
+        const id = await createArticle(
+            api,
+            'Image resize narrow screen',
+            `<p>Content</p><img src="${IMAGE_SRC}" alt="Components" width="1000" height="482">`,
+        );
 
         await page.setViewportSize({ width: 400, height: 800 });
         await kb.goto(id);
@@ -264,19 +236,15 @@ test.describe('Knowledge Base Editor - Image Resize', () => {
         expect(image_box.width / image_box.height).toBeCloseTo(IMAGE_RATIO, 1);
     });
 
-    test('An image in a table cell stays inside the cell', async ({ page, profile, api }) => {
-        await profile.set(Profiles.SuperAdmin);
+    test('An image in a table cell stays inside the cell', async ({ page, api }) => {
         const kb = new KnowbaseItemPage(page);
-        const id = await api.createItem('KnowbaseItem', {
-            name: 'Image resize table cell',
-            entities_id: getWorkerEntityId(),
-            answer: `<table><tbody><tr><td>${IMAGE_HTML}</td><td><p>B</p></td></tr></tbody></table>`,
-        });
+        const id = await createArticle(
+            api,
+            'Image resize table cell',
+            `<table><tbody><tr><td>${IMAGE_HTML}</td><td><p>B</p></td></tr></tbody></table>`,
+        );
 
-        await kb.goto(id);
-        await kb.editor.enterEditMode();
-        const image = kb.editor.contentContainer.getByRole('img', { name: 'Components' });
-        await image.click();
+        const image = await selectImageInEditor(kb, id);
         await dragBottomRightHandle(page, image, 1000);
 
         const image_box = await getBox(image);

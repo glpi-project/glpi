@@ -815,10 +815,6 @@ body.in_modal .kb-editor-reserved {
             max-width: 100%;
             height: auto;
             border-radius: var(--tblr-border-radius);
-
-            &.ProseMirror-selectednode {
-                outline: 2px solid var(--tblr-primary);
-            }
         }
 
         // Resizable images: TipTap writes the px size inline on the <img>.
@@ -849,25 +845,20 @@ body.in_modal .kb-editor-reserved {
             background: var(--tblr-primary);
             border: 2px solid var(--tblr-bg-surface);
             border-radius: var(--tblr-border-radius-sm);
+            cursor: nesw-resize;
+            transform: translate(var(--kb-handle-x, 50%), var(--kb-handle-y, 50%));
 
-            &[data-resize-handle="top-left"] {
-                cursor: nwse-resize;
-                transform: translate(-50%, -50%);
+            &[data-resize-handle$="left"] {
+                --kb-handle-x: -50%;
             }
 
-            &[data-resize-handle="top-right"] {
-                cursor: nesw-resize;
-                transform: translate(50%, -50%);
+            &[data-resize-handle^="top"] {
+                --kb-handle-y: -50%;
             }
 
-            &[data-resize-handle="bottom-left"] {
-                cursor: nesw-resize;
-                transform: translate(-50%, 50%);
-            }
-
+            &[data-resize-handle="top-left"],
             &[data-resize-handle="bottom-right"] {
                 cursor: nwse-resize;
-                transform: translate(50%, 50%);
             }
         }
 

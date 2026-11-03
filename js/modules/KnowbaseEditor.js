@@ -571,7 +571,7 @@ class KnowbaseEditor {
     #editImage(pos) {
         const node = this.#editor?.state.doc.nodeAt(pos);
         if (!node || node.type.name !== 'image') return;
-        showImageDialog(this.#editor, { ...node.attrs }, pos);
+        showImageDialog(this.#editor, node.attrs, pos);
     }
 
     /**
@@ -631,10 +631,7 @@ class KnowbaseEditor {
             let isActive = false;
             if (special === 'link' || special === 'unlink') {
                 isActive = this.#editor.isActive('link');
-                // Hide unlink button if no link, show link button always
-                if (special === 'unlink') {
-                    btn.style.display = isActive ? '' : 'none';
-                } else {
+                if (special === 'link') {
                     // Inline code and code blocks can't carry a link mark: the dialog would be impossible to confirm.
                     btn.disabled = !this.#editor.can().setMark('link');
                 }
@@ -658,13 +655,11 @@ class KnowbaseEditor {
                 this.#updateCommentButtonAvailability(btn);
             }
 
-            if (special === 'image') {
-                btn.style.display = imageSelected ? '' : 'none';
-            } else if (imageSelected) {
-                btn.style.display = 'none';
-            } else if (special !== 'unlink') {
-                btn.style.display = '';
-            }
+            // The unlink button only shows on a link.
+            const hidden = imageSelected
+                ? special !== 'image'
+                : special === 'image' || (special === 'unlink' && !isActive);
+            btn.style.display = hidden ? 'none' : '';
 
             btn.classList.toggle('is-active', isActive);
             // is-active is CSS-only; toggle buttons also need aria-pressed.
