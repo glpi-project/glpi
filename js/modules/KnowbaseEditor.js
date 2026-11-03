@@ -30,11 +30,12 @@
  * ---------------------------------------------------------------------
  */
 
-/* global TiptapCore, TiptapStarterKit, TiptapImage, TiptapPlaceholder, TiptapBubbleMenu */
+/* global TiptapCore, TiptapStarterKit, TiptapPlaceholder, TiptapBubbleMenu */
 /* global TableKit, TiptapPMTables */
 /* global TiptapFileHandler, glpi_toast_error */
 
-import { SlashCommands } from '/js/modules/TipTap/SlashCommandsExtension.js';
+import { SlashCommands, showImageDialog } from '/js/modules/TipTap/SlashCommandsExtension.js';
+import { ResizableImage } from '/js/modules/TipTap/ResizableImageExtension.js';
 import { Base64ImageHandler } from '/js/modules/TipTap/Base64ImageHandlerExtension.js';
 import { VideoEmbed } from '/js/modules/TipTap/VideoEmbedExtension.js';
 import { TableGrips } from '/js/modules/TipTap/TableGripsExtension.js';
@@ -141,9 +142,16 @@ class KnowbaseEditor {
                     },
                 },
             }),
-            TiptapImage.configure({
+            ResizableImage.configure({
                 inline: false,
                 allowBase64: true,
+                resize: {
+                    enabled: true,
+                    directions: ['top-left', 'top-right', 'bottom-left', 'bottom-right'],
+                    minWidth: 50,
+                    minHeight: 50,
+                    alwaysPreserveAspectRatio: true,
+                },
             }),
             TiptapPlaceholder.configure({
                 placeholder: this.#options.placeholder,
@@ -156,7 +164,6 @@ class KnowbaseEditor {
                 shouldShow: ({ editor, state, view }) => editor.isEditable
                     && !state.selection.empty
                     && (view.hasFocus() || this.#bubbleMenuElement.contains(document.activeElement))
-                    && !editor.isActive('image')
                     && !(state.selection instanceof TiptapPMTables.CellSelection),
                 options: {
                     placement: 'top',
@@ -229,9 +236,23 @@ class KnowbaseEditor {
                     }
                     return false;
                 },
+                handleDoubleClickOn: (view, pos, node) => {
+                    if (!this.#editor.isEditable || node.type.name !== 'image') {
+                        return false;
+                    }
+                    this.#editImage(pos);
+                    return true;
+                },
                 // Jump straight into the bubble menu on Tab instead of leaving
                 // the keyboard user to tab through unrelated page controls first.
                 handleKeyDown: (view, event) => {
+                    // Drag handles are pointer-only: Enter opens the size dialog instead.
+                    if (event.key === 'Enter' && this.#isImageSelected()) {
+                        event.preventDefault();
+                        this.#editImage(view.state.selection.from);
+                        return true;
+                    }
+
                     // Escape closes the menu even if focus never left the editor.
                     if (event.key === 'Escape') {
                         if (!this.#bubbleMenuElement?.isConnected || this.#bubbleMenuElement.style.visibility === 'hidden') {
@@ -361,6 +382,9 @@ class KnowbaseEditor {
             );
         }
 
+        // Only shown when an image is selected, in place of the text buttons.
+        buttons.push({ command: 'editImage', icon: 'ti ti-photo-edit', title: __('Edit image'), special: 'image' });
+
         buttons.forEach((btn) => {
             if (btn.type === 'divider') {
                 const divider = document.createElement('span');
@@ -396,6 +420,9 @@ class KnowbaseEditor {
                 button.title = btn.title;
             }
             button.tabIndex = -1;
+            if (btn.special === 'image') {
+                button.style.display = 'none';
+            }
 
             const icon = document.createElement('i');
             icon.className = btn.icon;
@@ -517,9 +544,29 @@ class KnowbaseEditor {
             this.#editor.chain().toggleHeading({ level }).run();
         } else if (special === 'comment') {
             this.#dispatchCommentSelection();
+        } else if (special === 'image') {
+            this.#editImage(this.#editor.state.selection.from);
         } else if (this.#editor.chain()[command]) {
             this.#editor.chain()[command]().run();
         }
+    }
+
+    /**
+     * @returns {boolean}
+     */
+    #isImageSelected() {
+        if (!this.#editor?.isEditable) return false;
+        return this.#editor.state.selection.node?.type.name === 'image';
+    }
+
+    /**
+     * Open the image dialog on the image at `pos`, prefilled with its attributes.
+     * @param {number} pos
+     */
+    #editImage(pos) {
+        const node = this.#editor?.state.doc.nodeAt(pos);
+        if (!node || node.type.name !== 'image') return;
+        showImageDialog(this.#editor, { ...node.attrs }, pos);
     }
 
     /**
@@ -564,6 +611,12 @@ class KnowbaseEditor {
     #updateBubbleMenuState() {
         if (!this.#editor || !this.#bubbleMenuElement) return;
 
+        const imageSelected = this.#isImageSelected();
+        this.#bubbleMenuElement.setAttribute('aria-label', imageSelected ? __('Image') : __('Text formatting'));
+        this.#bubbleMenuElement.querySelectorAll('.bubble-menu-divider').forEach((divider) => {
+            divider.style.display = imageSelected ? 'none' : '';
+        });
+
         const buttons = this.#bubbleMenuElement.querySelectorAll('.bubble-menu-btn');
         buttons.forEach((btn) => {
             const command = btn.dataset.command;
@@ -598,6 +651,14 @@ class KnowbaseEditor {
                 isActive = this.#editor.isActive('blockquote');
             } else if (special === 'comment') {
                 this.#updateCommentButtonAvailability(btn);
+            }
+
+            if (special === 'image') {
+                btn.style.display = imageSelected ? '' : 'none';
+            } else if (imageSelected) {
+                btn.style.display = 'none';
+            } else if (special !== 'unlink') {
+                btn.style.display = '';
             }
 
             btn.classList.toggle('is-active', isActive);

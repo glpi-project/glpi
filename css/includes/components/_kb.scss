@@ -821,6 +821,56 @@ body.in_modal .kb-editor-reserved {
             }
         }
 
+        // Resizable images: TipTap writes the px size inline on the <img>.
+        [data-resize-container],
+        [data-resize-wrapper] {
+            max-width: 100%;
+        }
+
+        [data-resize-container] img {
+            // Beats the inline px height, so a narrow column scales the image without distortion.
+            height: auto !important;
+        }
+
+        [data-resize-container].ProseMirror-selectednode img {
+            outline: 2px solid var(--tblr-primary);
+        }
+
+        [data-resize-handle] {
+            display: none;
+            z-index: 1;
+            width: 12px;
+            height: 12px;
+            background: var(--tblr-primary);
+            border: 2px solid var(--tblr-bg-surface);
+            border-radius: var(--tblr-border-radius-sm);
+
+            &[data-resize-handle="top-left"] {
+                cursor: nwse-resize;
+                transform: translate(-50%, -50%);
+            }
+
+            &[data-resize-handle="top-right"] {
+                cursor: nesw-resize;
+                transform: translate(50%, -50%);
+            }
+
+            &[data-resize-handle="bottom-left"] {
+                cursor: nesw-resize;
+                transform: translate(-50%, 50%);
+            }
+
+            &[data-resize-handle="bottom-right"] {
+                cursor: nwse-resize;
+                transform: translate(50%, 50%);
+            }
+        }
+
+        [data-resize-container].ProseMirror-selectednode [data-resize-handle],
+        [data-resize-container][data-resize-state="true"] [data-resize-handle] {
+            display: block;
+        }
+
         // Links
         a {
             color: var(--tblr-primary);

@@ -46,8 +46,9 @@ const { Extension } = TiptapCore;
  * Show the Insert/Edit Image dialog (Source, Alt, Width, Height)
  * @param {object} editor - TipTap editor instance
  * @param {object|null} existing_attrs - Existing image attributes for editing (null for new)
+ * @param {number|null} pos - Position of the edited image (null to insert a new one)
  */
-function showImageDialog(editor, existing_attrs = null) {
+function showImageDialog(editor, existing_attrs = null, pos = null) {
     const uid = Math.random().toString(36).slice(2, 9);
 
     const source_group = createDialogField(__('Source'), 'text', `image-src-${uid}`, existing_attrs?.src || '');
@@ -84,8 +85,7 @@ function showImageDialog(editor, existing_attrs = null) {
 
     // Ratio tracking
     let aspect_ratio = null;
-    src_input.addEventListener('change', () => {
-        // Try to load image to get natural dimensions
+    const loadNaturalSize = () => {
         const img = new Image();
         img.onload = () => {
             if (!width_input.value && !height_input.value) {
@@ -95,7 +95,11 @@ function showImageDialog(editor, existing_attrs = null) {
             aspect_ratio = img.naturalWidth / img.naturalHeight;
         };
         img.src = src_input.value;
-    });
+    };
+    src_input.addEventListener('change', loadNaturalSize);
+    if (src_input.value) {
+        loadNaturalSize();
+    }
 
     width_input.addEventListener('input', () => {
         if (ratio_locked && aspect_ratio && width_input.value) {
@@ -122,19 +126,19 @@ function showImageDialog(editor, existing_attrs = null) {
                 return;
             }
 
-            const attrs = { src };
-            const alt = alt_input.value.trim();
-            if (alt) {
-                attrs.alt = alt;
-            }
-            if (width_input.value) {
-                attrs.width = parseInt(width_input.value, 10);
-            }
-            if (height_input.value) {
-                attrs.height = parseInt(height_input.value, 10);
-            }
+            // Explicit nulls so that a cleared field removes the attribute of an edited image.
+            const attrs = {
+                src,
+                alt: alt_input.value.trim() || null,
+                width: width_input.value ? parseInt(width_input.value, 10) : null,
+                height: height_input.value ? parseInt(height_input.value, 10) : null,
+            };
 
-            editor.chain().focus().setImage(attrs).run();
+            if (pos === null) {
+                editor.chain().focus().setImage(attrs).run();
+            } else {
+                editor.chain().focus().setNodeSelection(pos).updateAttributes('image', attrs).run();
+            }
             close();
         },
     });
@@ -144,7 +148,7 @@ function showImageDialog(editor, existing_attrs = null) {
     body.appendChild(alt_group);
     body.appendChild(size_row);
 
-    src_input.focus();
+    (pos === null ? src_input : width_input).focus();
 }
 
 /**
@@ -467,4 +471,4 @@ const SlashCommands = Extension.create({
     },
 });
 
-export { SlashCommands };
+export { SlashCommands, showImageDialog };
