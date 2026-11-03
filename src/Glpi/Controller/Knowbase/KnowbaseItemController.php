@@ -83,6 +83,10 @@ final class KnowbaseItemController extends AbstractController
 
         $safe = RichText::getSafeHtml($kbitem->fields['answer'], false);
         $html = (new VideoEmbedRenderer())->renderAllAsLink($safe);
+        // The requester of the ticket can open FAQ articles only.
+        if (!$kbitem->fields['is_faq']) {
+            return new Response($html);
+        }
         // Absolute, as this content may go into notifications, and through the redirect page,
         // which opens the article page of the reader's interface.
         $article_url = $CFG_GLPI['url_base'] . '/index.php?redirect=' . rawurlencode('knowbaseitem_' . $id);

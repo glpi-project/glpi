@@ -379,6 +379,7 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         const id = await api.createItem('KnowbaseItem', {
             name: 'Mermaid content fallback',
             entities_id: getWorkerEntityId(),
+            is_faq: 1,
             answer: `<p>Intro</p>${DIAGRAM_ANSWER}`,
         });
 
@@ -387,6 +388,67 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         expect(html).toContain('See the diagram in the article');
         // Through the redirect page, which opens the article in the interface of the reader.
         expect(html).toMatch(new RegExp(`href="https?://[^"]+/index\\.php\\?redirect=knowbaseitem_${id}"`));
+        expect(html).toContain('flowchart TD');
+    });
+
+    test('Diagram copied from the read view is pasted as a diagram in the editor', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Mermaid copy and paste',
+            entities_id: getWorkerEntityId(),
+            answer: `<p>Intro</p>${DIAGRAM_ANSWER}<p>Outro</p>`,
+        });
+
+        await kb.goto(id);
+        const diagrams = page.getByRole('figure', { name: 'Diagram' });
+        await expect(diagrams).toHaveCount(1);
+
+        // The system clipboard is not used: the same DataTransfer goes from the copy to the paste.
+        const clipboard = await kb.editor.contentContainer.evaluateHandle((content) => {
+            const range = document.createRange();
+            range.selectNodeContents(content);
+            document.getSelection()?.removeAllRanges();
+            document.getSelection()?.addRange(range);
+            const data = new DataTransfer();
+            content.dispatchEvent(new ClipboardEvent('copy', { clipboardData: data, bubbles: true, cancelable: true }));
+            return data;
+        });
+        const copied = await clipboard.evaluate((data) => ({
+            html: data.getData('text/html'),
+            text: data.getData('text/plain'),
+        }));
+        expect(copied.html).toContain('<code class="language-mermaid">flowchart TD');
+        expect(copied.html).not.toContain('<svg');
+        expect(copied.text).toContain('A[Start] --> B[Finish]');
+
+        const editor = await kb.editor.enterEditMode();
+        await kb.editor.clearContent();
+        await expect(diagrams).toHaveCount(0);
+        await editor.evaluate((element, data) => {
+            element.dispatchEvent(new ClipboardEvent('paste', { clipboardData: data, bubbles: true, cancelable: true }));
+        }, clipboard);
+
+        await expect(diagrams).toHaveCount(1);
+        await expect(diagrams).toContainText('Finish');
+        await expect(editor).toContainText('Intro');
+        await expect(editor).toContainText('Outro');
+    });
+
+    test('Diagram source gets no article link when the article is not in the FAQ', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Mermaid content fallback, not FAQ',
+            entities_id: getWorkerEntityId(),
+            is_faq: 0,
+            answer: `<p>Intro</p>${DIAGRAM_ANSWER}`,
+        });
+
+        const response = await page.request.get(`/Knowbase/KnowbaseItem/${id}/Content`);
+        const html = await response.text();
+        expect(html).not.toContain('See the diagram in the article');
         expect(html).toContain('flowchart TD');
     });
 });
