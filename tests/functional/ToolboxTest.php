@@ -1907,6 +1907,23 @@ HTML;
         $this->assertSame($result, $instance->computeRedirect($where));
     }
 
+    public function testComputeRedirectToKnowbaseItemChangesEntityInHelpdesk(): void
+    {
+        $this->login();
+        $kbitem = $this->createItem(\KnowbaseItem::class, [
+            'name'        => 'Article in another entity',
+            'answer'      => 'Answer',
+            'is_faq'      => 1,
+            'entities_id' => getItemByTypeName('Entity', '_test_child_2', true),
+        ]);
+        $this->setEntity('_test_child_1', false);
+        $_SESSION['glpiactiveprofile']['interface'] = 'helpdesk';
+
+        (new \Toolbox())->computeRedirect('knowbaseitem_' . $kbitem->getID());
+
+        $this->assertSame(getItemByTypeName('Entity', '_test_child_2', true), $_SESSION['glpiactive_entity']);
+    }
+
     public function test_LogInFile_SeeExpectedContentsInLogFile(): void
     {
         // Arrange

@@ -1377,6 +1377,13 @@ class Toolbox
 
                     case "knowbaseitem":
                         if (isset($data[1]) && is_numeric($data[1]) && ($data[1] > 0)) {
+                            $item = new KnowbaseItem();
+                            if (
+                                $item->getFromDB((int) $data[1])
+                                && !Session::haveAccessToEntity($item->getEntityID())
+                            ) {
+                                Session::changeActiveEntities($item->getEntityID(), true);
+                            }
                             return KnowbaseItem::getFormURLWithID((int) $data[1]) . "&$forcetab";
                         }
                         return null;

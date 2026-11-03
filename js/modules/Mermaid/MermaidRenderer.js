@@ -132,6 +132,49 @@ export async function renderMermaidBlocks(root) {
 }
 
 /**
+ * Copy the source of the drawn diagrams, not their SVG: the browser leaves the hidden
+ * source block out of the copy, so a paste in the editor would lose the diagram.
+ *
+ * @param {ClipboardEvent} event
+ * @param {HTMLElement} root
+ */
+function copyDiagramSources(event, root) {
+    const selection = document.getSelection();
+    if (event.defaultPrevented || selection.isCollapsed || event.target.closest?.('.ProseMirror')) {
+        return;
+    }
+    const range = selection.getRangeAt(0);
+    const figures = [...root.querySelectorAll('figure.kb-mermaid-diagram')]
+        .filter((figure) => range.intersectsNode(figure));
+    if (figures.length === 0) {
+        return;
+    }
+
+    const fragment = range.cloneContents();
+    // Each diagram comes back once, from its figure, even when the range also holds its source.
+    fragment.querySelectorAll('pre.kb-mermaid-drawn').forEach((pre) => pre.remove());
+    // The clones keep the order of the figures they come from.
+    fragment.querySelectorAll('figure.kb-mermaid-diagram').forEach((clone, index) => {
+        const pre = document.createElement('pre');
+        const code = document.createElement('code');
+        code.className = 'language-mermaid';
+        code.textContent = figures[index].previousElementSibling.textContent;
+        pre.append(code);
+        clone.replaceWith(pre);
+    });
+
+    // innerText needs a rendered element to keep the line breaks of the blocks.
+    const container = document.createElement('div');
+    container.style.cssText = 'position: fixed; left: -10000px; white-space: normal;';
+    container.append(fragment);
+    document.body.append(container);
+    event.clipboardData.setData('text/html', container.innerHTML);
+    event.clipboardData.setData('text/plain', container.innerText);
+    container.remove();
+    event.preventDefault();
+}
+
+/**
  * Render the Mermaid blocks of the given content now and each time it is replaced
  * (translation switch, revision diff, ...). Only its direct children are watched,
  * so typing in the editor does not start a scan.
@@ -140,6 +183,7 @@ export async function renderMermaidBlocks(root) {
  */
 export function watchMermaidBlocks(root) {
     renderMermaidBlocks(root);
+    root.addEventListener('copy', (event) => copyDiagramSources(event, root));
 
     let scheduled = false;
     new MutationObserver(() => {
