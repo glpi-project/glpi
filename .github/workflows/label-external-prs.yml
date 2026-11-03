@@ -45,6 +45,5 @@ jobs:
               exit 0
               ;;
           esac
-          gh label create "$LABEL" -R "$REPO" --color "c5def5" --description "Pull request from a contributor outside of the core team" 2>/dev/null || true
           gh api -X POST "/repos/$REPO/issues/$PR_NUMBER/labels" -f "labels[]=$LABEL" > /dev/null
           echo "Label '$LABEL' added."
