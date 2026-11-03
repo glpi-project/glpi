@@ -948,6 +948,10 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
+    /**
+     * @param array<string, mixed> $input
+     * @return array<string, mixed>
+     */
     #[Override]
     public function prepareInputForClone($input)
     {
