@@ -340,8 +340,6 @@
                             id="enable-pending-reasons-{{ rand }}"
                             role="button"
                             {{ item.fields['status'] == constant('CommonITILObject::WAITING') ? 'checked' : '' }}
-                            data-bs-toggle="collapse"
-                            data-bs-target="#pending-reasons-setup-{{ rand }}"
                         />
                         </label>
                     </span>

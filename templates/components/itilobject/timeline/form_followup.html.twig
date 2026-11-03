@@ -230,7 +230,6 @@
                                     id="enable-pending-reasons-{{ rand }}"
                                     role="button"
                                     {{ (item.fields['status'] == constant('CommonITILObject::WAITING') or is_default_pending) and not add_reopen ? 'checked' : '' }}
-                                    data-bs-toggle="collapse" data-bs-target="#pending-reasons-setup-{{ rand }}"
                                     data-testid="pending-checkbox" />
                            </label>
                         </span>
