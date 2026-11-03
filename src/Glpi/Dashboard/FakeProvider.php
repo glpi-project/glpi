@@ -703,14 +703,13 @@ final class FakeProvider extends Provider
     public static function computersByOperatingSystem(array $params = []): array
     {
         $data = [];
-        foreach (['Microsoft Windows 11' => 2600, 'Microsoft Windows 10' => 1500, 'Ubuntu' => 600, 'macOS' => 400] as $os => $max) {
+        foreach (['Microsoft Windows 11' => 2600, 'Microsoft Windows 10' => 1500, 'Ubuntu' => 600, 'macOS' => 400] as $os => $number) {
             $data[] = [
-                'number' => self::getObscureNumberForString('os' . $os, $max),
+                'number' => $number,
                 'label'  => $os,
                 'url'    => '',
             ];
         }
-        usort($data, static fn(array $a, array $b): int => $b['number'] <=> $a['number']);
 
         return [
             'data'  => $data,
