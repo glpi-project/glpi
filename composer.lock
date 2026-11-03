@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "06d6abfe868157448ca446bc5566dba3",
+    "content-hash": "032af5719b8c1be1f2313cd6f6bb27e6",
     "packages": [
         {
             "name": "altcha-org/altcha",
@@ -12815,16 +12815,16 @@
         },
         {
             "name": "glpi-project/rector-glpi",
-            "version": "1.1.1",
+            "version": "1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/rector-glpi.git",
-                "reference": "9027c37b2c82066c1f3daad06137e52ad630d930"
+                "reference": "75c6785c250c3b55620865a00a24e5332dcd9478"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/rector-glpi/zipball/9027c37b2c82066c1f3daad06137e52ad630d930",
-                "reference": "9027c37b2c82066c1f3daad06137e52ad630d930",
+                "url": "https://api.github.com/repos/glpi-project/rector-glpi/zipball/75c6785c250c3b55620865a00a24e5332dcd9478",
+                "reference": "75c6785c250c3b55620865a00a24e5332dcd9478",
                 "shasum": ""
             },
             "require": {
@@ -12851,9 +12851,9 @@
             "description": "Rector rules for GLPI.",
             "support": {
                 "issues": "https://github.com/glpi-project/rector-glpi/issues",
-                "source": "https://github.com/glpi-project/rector-glpi/tree/1.1.1"
+                "source": "https://github.com/glpi-project/rector-glpi/tree/1.2.1"
             },
-            "time": "2026-09-17T12:43:33+00:00"
+            "time": "2026-11-02T08:42:37+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
@@ -14462,21 +14462,21 @@
         },
         {
             "name": "rector/rector",
-            "version": "2.6.7",
+            "version": "2.8.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rectorphp/rector.git",
-                "reference": "f4aa224edb9b0630fb43826d4cb6a49b62e48d4c"
+                "reference": "12ddb68d34acb91bcf3d00302bf1c7c1b5840bd6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rectorphp/rector/zipball/f4aa224edb9b0630fb43826d4cb6a49b62e48d4c",
-                "reference": "f4aa224edb9b0630fb43826d4cb6a49b62e48d4c",
+                "url": "https://api.github.com/repos/rectorphp/rector/zipball/12ddb68d34acb91bcf3d00302bf1c7c1b5840bd6",
+                "reference": "12ddb68d34acb91bcf3d00302bf1c7c1b5840bd6",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.4|^8.0",
-                "phpstan/phpstan": "^2.2.14"
+                "phpstan/phpstan": "^2.3.4"
             },
             "conflict": {
                 "rector/rector-doctrine": "*",
@@ -14507,7 +14507,7 @@
             ],
             "support": {
                 "issues": "https://github.com/rectorphp/rector/issues",
-                "source": "https://github.com/rectorphp/rector/tree/2.6.7"
+                "source": "https://github.com/rectorphp/rector/tree/2.8.3"
             },
             "funding": [
                 {
@@ -14515,7 +14515,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-09-13T20:17:44+00:00"
+            "time": "2026-10-29T05:51:41+00:00"
         },
         {
             "name": "revolt/event-loop",
