@@ -33,9 +33,7 @@
 /* global TiptapImage */
 
 /**
- * Image whose resizable node view also follows size changes that do not come
- * from a drag (image dialog, undo, redo): TipTap applies them only on creation.
- *
+ * Resizable image that also follows non-drag size changes (dialog, undo, redo).
  * `onLiveResize` is called on each size change during a drag.
  */
 export const ResizableImage = TiptapImage.extend({
@@ -70,6 +68,19 @@ export const ResizableImage = TiptapImage.extend({
                 }
                 return true;
             };
+
+            // TipTap ends a drag on mouseup only, so a touch drag would never commit.
+            const end_touch_drag = () => {
+                document.removeEventListener('touchend', end_touch_drag);
+                document.removeEventListener('touchcancel', end_touch_drag);
+                document.removeEventListener('touchmove', node_view.handleTouchMove);
+                node_view.handleMouseUp();
+            };
+            // Capture phase: the handle stops the propagation of its touchstart.
+            node_view.dom.addEventListener('touchstart', () => {
+                document.addEventListener('touchend', end_touch_drag);
+                document.addEventListener('touchcancel', end_touch_drag);
+            }, { capture: true });
 
             if (typeof on_live_resize === 'function') {
                 const on_resize = node_view.onResize;

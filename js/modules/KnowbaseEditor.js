@@ -31,7 +31,7 @@
  */
 
 /* global TiptapCore, TiptapStarterKit, TiptapPlaceholder, TiptapBubbleMenu */
-/* global TableKit, TiptapPMTables */
+/* global TableKit, TiptapPMTables, TiptapPMState */
 /* global TiptapFileHandler, glpi_toast_error */
 
 import { SlashCommands, showImageDialog } from '/js/modules/TipTap/SlashCommandsExtension.js';
@@ -241,18 +241,19 @@ class KnowbaseEditor {
                     }
                     return false;
                 },
-                handleDoubleClickOn: (view, pos, node) => {
+                handleDoubleClickOn: (view, pos, node, node_pos) => {
                     if (!this.#editor.isEditable || node.type.name !== 'image') {
                         return false;
                     }
-                    this.#editImage(pos);
+                    this.#editImage(node_pos);
                     return true;
                 },
                 // Jump straight into the bubble menu on Tab instead of leaving
                 // the keyboard user to tab through unrelated page controls first.
                 handleKeyDown: (view, event) => {
                     // Drag handles are pointer-only: Enter opens the size dialog instead.
-                    if (event.key === 'Enter' && this.#isImageSelected()) {
+                    const has_modifier = event.shiftKey || event.ctrlKey || event.metaKey || event.altKey;
+                    if (event.key === 'Enter' && !has_modifier && this.#isImageSelected()) {
                         event.preventDefault();
                         this.#editImage(view.state.selection.from);
                         return true;
@@ -528,7 +529,15 @@ class KnowbaseEditor {
      */
     #closeBubbleMenu() {
         if (!this.#editor || this.#editor.isDestroyed) return;
-        const { to } = this.#editor.state.selection;
+        const { doc, selection } = this.#editor.state;
+        let { to } = selection;
+        // After a block node (image), `to` is between blocks: move to the nearest text.
+        if (selection instanceof TiptapPMState.NodeSelection) {
+            const $to = doc.resolve(to);
+            const near = TiptapPMState.Selection.findFrom($to, 1, true)
+                ?? TiptapPMState.Selection.findFrom($to, -1, true);
+            to = near?.from ?? to;
+        }
         this.#editor.chain().setTextSelection(to).focus().run();
     }
 

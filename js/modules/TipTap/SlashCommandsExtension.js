@@ -88,7 +88,8 @@ function showImageDialog(editor, existing_attrs = null, pos = null) {
     const loadNaturalSize = () => {
         const img = new Image();
         img.onload = () => {
-            if (!width_input.value && !height_input.value) {
+            // An edited image without a size must stay responsive.
+            if (pos === null && !width_input.value && !height_input.value) {
                 width_input.value = img.naturalWidth;
                 height_input.value = img.naturalHeight;
             }

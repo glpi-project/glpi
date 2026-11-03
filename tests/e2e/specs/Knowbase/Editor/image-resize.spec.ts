@@ -183,6 +183,80 @@ test.describe('Knowledge Base Editor - Image Resize', () => {
         expect(saved.height).toBe(Math.round(200 / IMAGE_RATIO));
     });
 
+    test('Shift+Enter on a selected image does not open the dialog', async ({ page, api }) => {
+        const kb = new KnowbaseItemPage(page);
+        const id = await createArticle(api, 'Image resize shift enter');
+
+        await selectImageInEditor(kb, id);
+        await page.keyboard.press('Shift+Enter');
+        await expect(kb.imageDialog).toBeHidden();
+    });
+
+    test('Escape on a selected image puts the caret in the next paragraph', async ({ page, api }) => {
+        const kb = new KnowbaseItemPage(page);
+        const id = await createArticle(api, 'Image resize escape', `<p>Content</p>${IMAGE_HTML}<p>After</p>`);
+        const warnings: string[] = [];
+        page.on('console', (message) => {
+            if (message.type() === 'warning') {
+                warnings.push(message.text());
+            }
+        });
+
+        await selectImageInEditor(kb, id);
+        await kb.bubbleMenu.assertVisible();
+        await page.keyboard.press('Escape');
+        await kb.bubbleMenu.assertHidden();
+        await page.keyboard.type('X');
+
+        await expect(kb.editor.contentContainer.getByText('XAfter')).toBeVisible();
+        expect(warnings.filter((text) => text.includes('TextSelection'))).toEqual([]);
+    });
+
+    test('Editing the alt text of an image without size keeps it without size', async ({ page, api }) => {
+        const kb = new KnowbaseItemPage(page);
+        const id = await createArticle(api, 'Image resize no size', `<p>Content</p><img src="${IMAGE_SRC}" alt="Components">`);
+
+        await selectImageInEditor(kb, id);
+        await page.keyboard.press('Enter');
+        const dialog = kb.imageDialog;
+        await dialog.getByLabel('Alternative description').fill('New alt');
+        await dialog.getByRole('button', { name: 'Save' }).click();
+        await expect(dialog).toBeHidden();
+        await kb.editor.save();
+
+        const answer = (await api.getItem('KnowbaseItem', id)).answer;
+        expect(answer).toContain('New alt');
+        expect(answer).not.toMatch(/<img[^>]*\s(width|height)=/);
+    });
+
+    test.describe('With a touch screen', () => {
+        test.use({ hasTouch: true });
+
+        test('A touch drag on a corner saves the new size', async ({ page, api }) => {
+            const kb = new KnowbaseItemPage(page);
+            const id = await createArticle(api, 'Image resize touch');
+
+            const image = await selectImageInEditor(kb, id);
+            const box = await getBox(image);
+            const start = { x: box.x + box.width + 3, y: box.y + box.height + 3 };
+
+            // Playwright has no touch drag: send the touch events through CDP.
+            const cdp = await page.context().newCDPSession(page);
+            await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [start] });
+            for (let step = 1; step <= 10; step++) {
+                await cdp.send('Input.dispatchTouchEvent', {
+                    type: 'touchMove',
+                    touchPoints: [{ x: start.x - step * 15, y: start.y }],
+                });
+            }
+            await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+            await kb.editor.save();
+
+            const saved = getSavedImageSize((await api.getItem('KnowbaseItem', id)).answer);
+            expect(saved.width).toBeLessThan(300);
+        });
+    });
+
     test('The Edit image button opens the dialog with the current values', async ({ page, api }) => {
         const kb = new KnowbaseItemPage(page);
         const id = await createArticle(api, 'Image resize button');
