@@ -37,6 +37,7 @@ namespace tests\units;
 use CommonITILObject;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\SLMTrait;
+use LevelAgreementLevel;
 use OlaLevel;
 use OlaLevelAction;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -533,13 +534,13 @@ class SlaLevel_TicketTest extends DbTestCase
         }
 
         ['level' => $level, 'ticket_input' => $ticket_input] = $this->createTtrLevel($level_class, __FUNCTION__, $entities_id);
-        $action_field = $event . '_notification_' . $notifications_ids['sent'];
+        $action_field = $event . LevelAgreementLevel::NOTIFICATION_RECALL_SUFFIX;
         $this->assertArrayHasKey($action_field, $level->getActions());
         $this->createItem($action_class, [
             $level::getForeignKeyField() => $level->getID(),
             'action_type'                => 'send',
             'field'                      => $action_field,
-            'value'                      => 1,
+            'value'                      => $notifications_ids['sent'],
         ]);
 
         $ticket = $this->createItem(Ticket::class, [
@@ -634,6 +635,11 @@ class SlaLevel_TicketTest extends DbTestCase
             [$tickets['with_sla']->getID()],
             array_column($results['data']['rows'], 'id')
         );
+
+        // A clone does not inherit the escalation history of its source
+        $clone_id = $tickets['with_sla']->clone();
+        $this->assertGreaterThan(0, $clone_id);
+        $this->assertSame(0, Ticket::getById($clone_id)->fields['slastatuses_id']);
     }
 
     public function testSlaStatusRequiresSlmAssignRight(): void
@@ -653,6 +659,11 @@ class SlaLevel_TicketTest extends DbTestCase
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
         $this->assertSame(0, $ticket->fields['slastatuses_id']);
 
+        // `_auto_update` comes from the client and must not bypass the right
+        $this->assertTrue($ticket->update(['id' => $ticket->getID(), 'slastatuses_id' => $status->getID(), '_auto_update' => true]));
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertSame(0, $ticket->fields['slastatuses_id']);
+
         $_SESSION['glpiactiveprofile'][SLM::$rightname] = $slm_right | SLM::RIGHT_ASSIGN;
         $this->updateItem(Ticket::class, $ticket->getID(), ['slastatuses_id' => $status->getID()]);
     }
@@ -662,7 +673,7 @@ class SlaLevel_TicketTest extends DbTestCase
      * @param class-string<SlaLevelAction|OlaLevelAction> $action_class
      */
     #[DataProvider('recallLevelProvider')]
-    public function testNotificationPurgeDeletesItsRecallActions(string $level_class, string $action_class, string $event): void
+    public function testNotificationChangeDeletesItsRecallActions(string $level_class, string $action_class, string $event): void
     {
         $this->login();
 
@@ -670,7 +681,7 @@ class SlaLevel_TicketTest extends DbTestCase
 
         $notifications = [];
         $actions = [];
-        foreach (['purged', 'kept'] as $name) {
+        foreach (['purged', 'moved', 'kept'] as $name) {
             $notification = $this->createItem(\Notification::class, [
                 'name'     => __FUNCTION__ . $name,
                 'itemtype' => Ticket::class,
@@ -679,15 +690,43 @@ class SlaLevel_TicketTest extends DbTestCase
             $actions[$name] = $this->createItem($action_class, [
                 $level::getForeignKeyField() => $level->getID(),
                 'action_type'                => 'send',
-                'field'                      => $event . '_notification_' . $notification->getID(),
-                'value'                      => 1,
+                'field'                      => $event . LevelAgreementLevel::NOTIFICATION_RECALL_SUFFIX,
+                'value'                      => $notification->getID(),
             ]);
             $notifications[$name] = $notification;
         }
 
         $this->assertTrue($notifications['purged']->delete(['id' => $notifications['purged']->getID()], true));
+        $this->updateItem(\Notification::class, $notifications['moved']->getID(), ['event' => 'new']);
+
         $this->assertFalse($action_class::getById($actions['purged']->getID()));
+        $this->assertFalse($action_class::getById($actions['moved']->getID()));
         $this->assertNotFalse($action_class::getById($actions['kept']->getID()));
     }
 
+    public function testSlaStatusPurgeDisablesItsLevels(): void
+    {
+        $this->login();
+
+        ['level' => $level] = $this->createTtrLevel(SlaLevel::class, __FUNCTION__, $this->getTestRootEntity(true));
+        $statuses = [];
+        foreach (['replaced', 'replacement'] as $name) {
+            $statuses[$name] = $this->createItem(\SlaStatus::class, ['name' => __FUNCTION__ . $name]);
+        }
+        $action = $this->createItem(SlaLevelAction::class, [
+            'slalevels_id' => $level->getID(),
+            'action_type'  => 'assign',
+            'field'        => 'slastatuses_id',
+            'value'        => $statuses['replaced']->getID(),
+        ]);
+
+        // Replacement updates the action
+        $this->assertTrue($statuses['replaced']->delete(['id' => $statuses['replaced']->getID(), '_replace_by' => $statuses['replacement']->getID()], true));
+        $this->assertEquals($statuses['replacement']->getID(), SlaLevelAction::getById($action->getID())->fields['value']);
+        $this->assertSame(1, SlaLevel::getById($level->getID())->fields['is_active']);
+
+        // Purge disables the level
+        $this->assertTrue($statuses['replacement']->delete(['id' => $statuses['replacement']->getID()], true));
+        $this->assertSame(0, SlaLevel::getById($level->getID())->fields['is_active']);
+    }
 }

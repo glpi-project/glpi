@@ -85,7 +85,7 @@ class SlaLevel extends LevelAgreementLevel
         $actions['recall']['name']          = __('Automatic reminders of SLA');
         $actions['recall']['type']          = 'yesonly';
         $actions['recall']['force_actions'] = ['send'];
-        $actions += $this->getNotificationRecallActions('recall', $actions['recall']['name']);
+        $actions += $this->getNotificationRecallAction('recall', $actions['recall']['name']);
         $actions['slastatuses_id'] = [
             'name'          => SlaStatus::getTypeName(1),
             'type'          => 'dropdown',

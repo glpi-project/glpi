@@ -41,4 +41,13 @@ class SlaStatus extends CommonDropdown
     {
         return _n('SLA status', 'SLA statuses', $nb);
     }
+
+    #[Override]
+    public function cleanDBonPurge()
+    {
+        parent::cleanDBonPurge();
+
+        // Escalation levels assigning this status are disabled, or updated on replacement
+        Rule::cleanForItemAction($this);
+    }
 }
