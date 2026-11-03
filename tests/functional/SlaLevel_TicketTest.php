@@ -578,6 +578,8 @@ class SlaLevel_TicketTest extends DbTestCase
         $this->updateItem(SlaLevel_Ticket::class, $level_ticket->getID(), [
             'date' => date('Y-m-d H:i:s', time() - HOUR_TIMESTAMP),
         ]);
+        // Levels can be replayed in the session of a user without the SLM assign right
+        $_SESSION['glpiactiveprofile'][SLM::$rightname] &= ~SLM::RIGHT_ASSIGN;
         $this->runSlaCron();
 
         $this->assertTrue($tickets['with_sla']->getFromDB($tickets['with_sla']->getID()));

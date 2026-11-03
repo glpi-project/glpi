@@ -1033,7 +1033,10 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 [$dateField, $slaField] = SLA::getFieldNames($slmType);
                 unset($input[$dateField], $input[$slaField]);
             }
-            unset($input['slastatuses_id']);
+            if (!isset($input['_auto_update'])) {
+                // Escalation levels may run in the session of a user without this right
+                unset($input['slastatuses_id']);
+            }
         }
 
         //must be handled here for tickets. @see CommonITILObject::prepareInputForUpdate()
@@ -3513,6 +3516,7 @@ JAVASCRIPT;
             '_actors'                   => [],
             '_contracts_id'             => 0,
             'externalid'                => '',
+            'slastatuses_id'            => 0,
         ];
     }
 
