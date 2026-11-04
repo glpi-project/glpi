@@ -340,7 +340,7 @@ class CustomFieldDefinitionTest extends DbTestCase
         $opt = $custom_field_definition_4->getFieldType()->getSearchOption();
         $this->assertEquals($opt_id_offset + $field_id, $opt['id']);
         $this->assertEquals('Test number', $opt['name']);
-        $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '420') + 0", (string) $opt['computation']);
+        $this->assertEquals("NULLIF(COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '420'), 'null') + 0", (string) $opt['computation']);
         $this->assertEquals('number', $opt['datatype']);
         $this->assertEquals(0, $opt['decimals']);
 
@@ -356,7 +356,7 @@ class CustomFieldDefinitionTest extends DbTestCase
         $opt = $custom_field_definition_4b->getFieldType()->getSearchOption();
         $this->assertEquals($opt_id_offset + $field_id, $opt['id']);
         $this->assertEquals('Test decimal number', $opt['name']);
-        $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '4.2') + 0", (string) $opt['computation']);
+        $this->assertEquals("NULLIF(COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '4.2'), 'null') + 0", (string) $opt['computation']);
         $this->assertEquals('number', $opt['datatype']);
         $this->assertEquals(2, $opt['decimals']);
 
@@ -370,6 +370,25 @@ class CustomFieldDefinitionTest extends DbTestCase
         $opt = $custom_field_definition_4c->getFieldType()->getSearchOption();
         $this->assertEquals('number', $opt['datatype']);
         $this->assertEquals(0, $opt['decimals']);
+
+        // Values that `(string)` renders in scientific notation, or with floating point noise
+        $decimals_cases = [
+            [['step' => 0.00001], 5],
+            [['step' => 1.5e-7], 8],
+            [['min' => 1e15, 'step' => 1], 0],
+            [['min' => 0.1 + 0.2, 'step' => 1], 1],
+        ];
+        foreach ($decimals_cases as $i => [$field_options, $expected_decimals]) {
+            $definition = $this->createItem(CustomFieldDefinition::class, [
+                'assets_assetdefinitions_id' => $asset_definition->getID(),
+                'system_name' => 'test_decimals_number_' . $i,
+                'label' => 'Test decimals number ' . $i,
+                'type' => NumberType::class,
+                'field_options' => $field_options,
+            ], ['field_options']); // JSON encoded field cannot be automatically checked
+            $opt = $definition->getFieldType()->getSearchOption();
+            $this->assertEquals($expected_decimals, $opt['decimals'], json_encode($field_options));
+        }
 
         $custom_field_definition_5 = $this->createItem(CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
@@ -928,6 +947,74 @@ class CustomFieldDefinitionTest extends DbTestCase
             );
             $this->assertSame($expected_values, $values, "Sort {$order}");
         }
+    }
+
+    public function testSearchClearedNumberField(): void
+    {
+        $asset_definition = $this->initAssetDefinition();
+        $asset_classname  = $asset_definition->getAssetClassName();
+
+        $field = $this->createItem(CustomFieldDefinition::class, [
+            'assets_assetdefinitions_id' => $asset_definition->getID(),
+            'system_name' => 'clearednumber',
+            'label' => 'Cleared number',
+            'type' => NumberType::class,
+            'default_value' => 7, // a cleared value must be displayed empty, not with the default value
+        ]);
+
+        // Login after the definition creation to get the corresponding rights in the session
+        $this->login();
+
+        $number_opt = $field->getSearchOptionID();
+
+        $this->createItem($asset_classname, [
+            'entities_id' => $this->getTestRootEntity(true),
+            'name' => __FUNCTION__ . '_set',
+            'custom_clearednumber' => 5,
+        ], ['custom_clearednumber']);
+        $cleared = $this->createItem($asset_classname, [
+            'entities_id' => $this->getTestRootEntity(true),
+            'name' => __FUNCTION__ . '_cleared',
+            'custom_clearednumber' => 3,
+        ], ['custom_clearednumber']);
+        $this->updateItem($asset_classname, $cleared->getID(), ['custom_clearednumber' => ''], ['custom_clearednumber']);
+
+        // Clearing the field stores a JSON null
+        $cleared->getFromDB($cleared->getID());
+        $this->assertSame([$field->getID() => null], json_decode($cleared->fields['custom_fields'], true));
+
+        $data = SearchEngine::getData($asset_classname, [
+            'criteria' => [
+                [
+                    'link' => 'AND',
+                    'field' => 1,
+                    'searchtype' => 'contains',
+                    'value' => __FUNCTION__ . '_cleared',
+                ],
+            ],
+        ], [1, $number_opt]);
+        $this->assertCount(1, $data['data']['rows']);
+        $row = reset($data['data']['rows']);
+        $this->assertNull($row['raw']['ITEM_' . $asset_classname . '_' . $number_opt]);
+
+        // A cleared value must not be considered as 0
+        $data = SearchEngine::getData($asset_classname, [
+            'criteria' => [
+                [
+                    'link' => 'AND',
+                    'field' => 1,
+                    'searchtype' => 'contains',
+                    'value' => __FUNCTION__,
+                ],
+                [
+                    'link' => 'AND',
+                    'field' => $number_opt,
+                    'searchtype' => 'lessthan',
+                    'value' => 1,
+                ],
+            ],
+        ], [1, $number_opt]);
+        $this->assertCount(0, $data['data']['rows']);
     }
 
     /**

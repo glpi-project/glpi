@@ -37,6 +37,7 @@ namespace Glpi\Asset\CustomFieldType;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldOption\NumberOption;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use InvalidArgumentException;
 
 class NumberType extends AbstractType
@@ -101,10 +102,11 @@ TWIG, $twig_params);
     {
         $decimals_count = 0;
         foreach ([$min, $step] as $value) {
-            $fractional_part = strrchr((string) $value, '.');
-            if ($fractional_part !== false) {
-                $decimals_count = max($decimals_count, strlen($fractional_part) - 1);
-            }
+            // Always use the scientific notation, as `(string)` switches to it only for very small or large values,
+            // e.g. `1.27500000000000e+1`: decimals count = significant mantissa decimals - exponent.
+            [$mantissa, $exponent] = explode('e', sprintf('%.14e', $value));
+            $mantissa_decimals = strlen(rtrim(substr(strrchr($mantissa, '.'), 1), '0'));
+            $decimals_count = max($decimals_count, $mantissa_decimals - (int) $exponent);
         }
         return $decimals_count;
     }
@@ -112,8 +114,14 @@ TWIG, $twig_params);
     public function getSearchOption(): ?array
     {
         $opt = $this->getCommonSearchOptionData();
-        // JSON_UNQUOTE() returns a string, convert it to a number to get a numeric sort and comparison
-        $opt['computation'] = new QueryExpression($opt['computation'] . ' + 0');
+        // A cleared value is stored as JSON null, that JSON_UNQUOTE() returns as the 'null' string: convert it to SQL NULL.
+        // JSON_UNQUOTE() returns a string, convert it to a number to get a numeric sort and comparison.
+        $opt['computation'] = new QueryExpression(
+            QueryFunction::nullif(
+                $opt['computation'],
+                new QueryExpression("'null'") // not quoteValue(), which converts 'null' to NULL
+            ) . ' + 0'
+        );
         $opt['datatype'] = 'number';
         $field_opts = $this->custom_field->fields['field_options'] ?? [];
         $opt['min'] = $field_opts['min'] ?? 0;
