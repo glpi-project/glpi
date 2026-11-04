@@ -137,11 +137,10 @@ header {
         }
 
         img {
-            position: absolute;
+            margin-top: auto;
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            bottom: 0;
         }
 
         // Hide for screens smaller than 1600px

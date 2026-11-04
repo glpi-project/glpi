@@ -39,6 +39,10 @@ import {
 } from '../../utils/WorkerEntities';
 
 test.describe('Helpdesk home page', () => {
+    test.afterEach(async({entity}) => {
+        await entity.resetToDefaultWorkerEntity();
+    });
+
     test('can search for forms and faq entries', async ({
         page,
         profile,
@@ -237,14 +241,10 @@ test.describe('Helpdesk home page', () => {
         await entity.switchToWithRecursion(entity_id);
         await page.goto('/Helpdesk');
 
-        // eslint-disable-next-line playwright/no-raw-locators
-        const left_scene = page.locator('.scene-left');
-        // eslint-disable-next-line playwright/no-raw-locators
-        const right_scene = page.locator('.scene-right');
-        // eslint-disable-next-line playwright/no-raw-locators
-        const custom_img = left_scene.locator('img');
-        // eslint-disable-next-line playwright/no-raw-locators
-        const default_svg = right_scene.locator('svg');
+        const left_scene = page.getByTestId('helpdesk-scene-left');
+        const right_scene = page.getByTestId('helpdesk-scene-right');
+        const custom_img = left_scene.getByRole('img');
+        const default_svg = right_scene.getByRole('img');
         await expect(custom_img).toBeVisible();
         await expect(default_svg).toBeVisible();
         await expect.poll(
@@ -277,6 +277,5 @@ test.describe('Helpdesk home page', () => {
         expect(Math.abs(custom_img_content_bottom - await bottom(left_scene))).toBeLessThanOrEqual(1);
         expect(Math.abs(await bottom(default_svg) - await bottom(right_scene))).toBeLessThanOrEqual(1);
 
-        await entity.resetToDefaultWorkerEntity();
     });
 });
