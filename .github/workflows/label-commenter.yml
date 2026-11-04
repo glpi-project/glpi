@@ -17,7 +17,7 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v7"
+        uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1" # v7.0.1
 
       - name: "Label commenter"
-        uses: "peaceiris/actions-label-commenter@v1"
+        uses: "peaceiris/actions-label-commenter@f0dbbef043eb1b150b566db36b0bdc8b7f505579" # v1.10.0
