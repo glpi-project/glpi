@@ -101,6 +101,9 @@ export function annotateHeadings(root) {
         const id = ids[index];
         const anchor = heading.querySelector(':scope > [data-glpi-kb-heading-anchor]');
 
+        // Saved by the first call only: a link to the id the author gave must still work.
+        heading.dataset.glpiKbOriginalId ??= heading.id;
+
         if (id === null) {
             heading.removeAttribute('id');
             heading.removeAttribute('aria-label');

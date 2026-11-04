@@ -39,7 +39,6 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profile as DebugProfile;
 use Glpi\Knowbase\EditorAction;
-use Glpi\Knowbase\EditorActionSeparator;
 use Glpi\Knowbase\EditorActionType;
 use Glpi\Tests\DbTestCase;
 use InvalidArgumentException;
@@ -3973,50 +3972,6 @@ HTML,
         $this->assertContains('Permissions', $labels);
         $this->assertContains('Schedule visibility', $labels);
         $this->assertContains('Service catalog', $labels);
-    }
-
-    public function testTableOfContentsActionComesFirstForAnyReader(): void
-    {
-        $glpi_user = getItemByTypeName("User", "glpi", true);
-        $entity = $this->getTestRootEntity(only_id: true);
-
-        $this->login();
-        $article = $this->createItem(KnowbaseItem::class, [
-            'name'        => __FUNCTION__,
-            'answer'      => '<h2>Section</h2><p>Text</p>',
-            'is_faq'      => 1,
-            'users_id'    => $glpi_user,
-            'entities_id' => $entity,
-        ]);
-        $this->createItem(\Entity_KnowbaseItem::class, [
-            'knowbaseitems_id' => $article->getID(),
-            'entities_id'      => $entity,
-            'is_recursive'     => 1,
-        ]);
-
-        $actions = $this->callPrivateMethod($article, 'getEditorActions');
-        $this->assertInstanceOf(EditorAction::class, $actions[0]);
-        $this->assertSame(EditorActionType::TOGGLE_TABLE_OF_CONTENTS, $actions[0]->type);
-        $this->assertInstanceOf(EditorActionSeparator::class, $actions[1]);
-
-        $this->login('post-only', 'postonly');
-
-        $item = new KnowbaseItem();
-        $this->assertTrue($item->getFromDB($article->getID()));
-        $this->assertTrue($item->can($article->getID(), READ));
-        $this->assertFalse($item->can($article->getID(), UPDATE));
-
-        $types = array_map(
-            static fn(EditorAction $action): EditorActionType => $action->type,
-            array_values(array_filter(
-                $this->callPrivateMethod($item, 'getEditorActions'),
-                static fn(object $action): bool => $action instanceof EditorAction,
-            )),
-        );
-        $this->assertSame(
-            [EditorActionType::TOGGLE_TABLE_OF_CONTENTS, EditorActionType::TOGGLE_FAVORITE],
-            $types,
-        );
     }
 
     /**

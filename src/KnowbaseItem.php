@@ -1974,20 +1974,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             array_push($actions, ...$management);
         }
 
-        // Shown to every reader. The state is a per-browser preference, synced by JS.
-        $toc = new EditorAction(
-            label: __("Show table of contents"),
-            icon: "ti ti-align-right",
-            type: EditorActionType::TOGGLE_TABLE_OF_CONTENTS,
-            params: [
-                'checked' => '0',
-            ],
-        );
-        if ($actions !== []) {
-            array_unshift($actions, new EditorActionSeparator());
-        }
-        array_unshift($actions, $toc);
-
         return $actions;
     }
 

@@ -32,7 +32,11 @@
 
 {% import "pages/tools/kb/_actions_menu.html.twig" as actions_menu %}
 
+{# A form can embed several articles: each script must find its own. #}
+{% set article_rand = random() %}
+
 <div
+    id="kb-article-{{ article_rand }}"
     class="d-flex mx-n2 my-n2 pe-none"
     data-glpi-knowbase-article
     data-glpi-kb-item-id="{{ item_id }}"
@@ -611,6 +615,7 @@
 <div
     class="offcanvas offcanvas-end"
     tabindex="-1"
+    id="kb-article-offcanvas-{{ article_rand }}"
     data-glpi-knowbase-side-panel-offcanvas
     data-testid="offcanvas"
 >
@@ -623,16 +628,17 @@
         const module = await import(
             "/js/modules/Knowbase/ArticleController.js"
         );
+        const article = document.getElementById('kb-article-{{ article_rand }}');
         new module.GlpiKnowbaseArticleController(
-            document.querySelector('[data-glpi-knowbase-article]'),
-            document.querySelector('[data-glpi-knowbase-side-panel]'),
-            document.querySelector('[data-glpi-knowbase-side-panel-offcanvas]'),
+            article,
+            article.querySelector('[data-glpi-knowbase-side-panel]'),
+            document.getElementById('kb-article-offcanvas-{{ article_rand }}'),
             '{{ mode|e('js') }}',
         );
 
         // Initialize document upload controller eagerly so the submit
         // handler is bound before any user interaction with the modal.
-        const uploadModal = document.getElementById('kb-add-document-modal');
+        const uploadModal = article.querySelector('#kb-add-document-modal');
         const uploadPane = uploadModal?.querySelector('#kb-modal-upload-pane');
         if (uploadPane) {
             const uploadModule = await import(
@@ -641,7 +647,7 @@
             new uploadModule.DocumentUploadController(uploadPane, uploadModal);
         }
 
-        const share_dropdown = document.querySelector('[data-glpi-share-dropdown]');
+        const share_dropdown = article.querySelector('[data-glpi-share-dropdown]');
         if (share_dropdown) {
             const { GlpiKnowbaseSharePopoverController } = await import(
                 "/js/modules/Knowbase/SharePopoverController.js"

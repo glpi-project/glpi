@@ -84,11 +84,23 @@ export class GlpiKnowbaseArticleOutline extends EventTarget
     /** @type {MutationObserver|null} */
     #observer = null;
 
+    /** @type {IntersectionObserver|null} */
+    #intersection_observer = null;
+
+    /** @type {ResizeObserver|null} */
+    #resize_observer = null;
+
+    /** @type {Element|null} The element that scrolls the content, null for the viewport. */
+    #scroller = null;
+
+    /** @type {HTMLElement} Visible when the end of the article is. */
+    #end_sentinel = document.createElement('div');
+
+    /** @type {boolean} */
+    #at_end = false;
+
     /** @type {AbortController} Removes the page-level listeners once the article leaves the page. */
     #listeners = new AbortController();
-
-    /** @type {number|null} */
-    #scroll_frame = null;
 
     /**
      * Stays active until the scroller leaves its end: a short page cannot scroll it to the top.
@@ -98,6 +110,8 @@ export class GlpiKnowbaseArticleOutline extends EventTarget
 
     // The editor changes the DOM on each key press.
     #scheduleRefresh = _.debounce(() => this.#refresh(), 100);
+
+    #scheduleObserve = _.debounce(() => this.#observe(), 100);
 
     /**
      * @param {HTMLElement} content The element that holds the article HTML or the editor.
@@ -119,21 +133,20 @@ export class GlpiKnowbaseArticleOutline extends EventTarget
      */
     start()
     {
+        this.#end_sentinel.setAttribute('aria-hidden', 'true');
+        this.#article.append(this.#end_sentinel);
         this.#refresh();
 
+        // Only the content swaps of the view mode: the editor reports its own changes.
         this.#observer = new MutationObserver(() => this.#scheduleRefresh());
-        this.#observer.observe(this.#content, {
-            childList: true,
-            subtree: true,
-            characterData: true,
-        });
+        this.#observer.observe(this.#content, { childList: true });
 
-        // The scroller is `.kb-article`, or the window in a modal.
+        // The scroller can change when a popup opens, an image loads or the window resizes.
+        this.#resize_observer = new ResizeObserver(() => this.#scheduleObserve());
+        this.#resize_observer.observe(this.#article);
+        this.#resize_observer.observe(this.#content);
+
         const { signal } = this.#listeners;
-        const on_scroll = () => this.#scheduleActiveUpdate();
-        this.#article.addEventListener('scroll', on_scroll, { passive: true });
-        window.addEventListener('scroll', on_scroll, { passive: true, signal });
-        window.addEventListener('resize', on_scroll, { passive: true, signal });
         // The hash of the page that embeds the article is not for the article.
         if (this.#article_url === null) {
             window.addEventListener('hashchange', () => this.#scrollToHash(true), { signal });
@@ -158,6 +171,19 @@ export class GlpiKnowbaseArticleOutline extends EventTarget
     }
 
     /**
+     * Follow the changes made in the editor.
+     * @param {object} editor The Tiptap editor.
+     */
+    watchEditor(editor)
+    {
+        editor.on('transaction', ({ transaction }) => {
+            if (transaction.docChanged) {
+                this.#scheduleRefresh();
+            }
+        });
+    }
+
+    /**
      * @returns {boolean} False once the article left the page, after the listeners were removed.
      */
     #isConnected()
@@ -167,6 +193,8 @@ export class GlpiKnowbaseArticleOutline extends EventTarget
         }
         this.#listeners.abort();
         this.#observer?.disconnect();
+        this.#intersection_observer?.disconnect();
+        this.#resize_observer?.disconnect();
         return false;
     }
 
@@ -246,6 +274,7 @@ export class GlpiKnowbaseArticleOutline extends EventTarget
             .filter((element) => element.id !== '');
         const legacy_text = Object.hasOwn(this.#legacy_ids, id) ? normalizeText(this.#legacy_ids[id]) : null;
         const element = elements.find((candidate) => candidate.id === id)
+            ?? elements.find((candidate) => candidate.dataset.glpiKbOriginalId === id)
             ?? elements.find((candidate) => normalizeText(candidate.textContent) === legacy_text);
         if (element === undefined) {
             return false;
@@ -290,24 +319,63 @@ export class GlpiKnowbaseArticleOutline extends EventTarget
         if (changed) {
             this.dispatchEvent(new Event('change'));
         }
+        this.#observe();
         this.#updateActive();
     }
 
-    #scheduleActiveUpdate()
+    /**
+     * @returns {Element|null} The nearest ancestor that scrolls the content, null for the viewport.
+     */
+    #findScroller()
     {
-        if (this.#scroll_frame !== null || this.#headings.length === 0 || !this.#isConnected()) {
+        for (let element = this.#content.parentElement; element !== null && element !== document.body; element = element.parentElement) {
+            const { overflowY } = getComputedStyle(element);
+            if (['auto', 'scroll', 'overlay'].includes(overflowY) && element.scrollHeight > element.clientHeight) {
+                return element;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Watch the headings against the active line of the scroller, without scroll listeners.
+     */
+    #observe()
+    {
+        if (!this.#isConnected()) {
             return;
         }
-        this.#scroll_frame = requestAnimationFrame(() => {
-            this.#scroll_frame = null;
+        this.#intersection_observer?.disconnect();
+        this.#intersection_observer = null;
+        if (this.#headings.length === 0) {
+            return;
+        }
+
+        this.#scroller = this.#findScroller();
+        this.#intersection_observer = new IntersectionObserver((entries) => {
+            for (const entry of entries) {
+                if (entry.target === this.#end_sentinel) {
+                    this.#at_end = entry.isIntersecting;
+                }
+            }
             this.#updateActive();
+        }, {
+            root: this.#scroller,
+            // The ratio of a heading drops below 1 when its top crosses the active line.
+            rootMargin: `-${GlpiKnowbaseArticleOutline.#ACTIVE_OFFSET}px 0px 0px 0px`,
+            threshold: [0, 1],
         });
+        for (const heading of this.#headings) {
+            this.#intersection_observer.observe(heading.element);
+        }
+        this.#intersection_observer.observe(this.#end_sentinel);
     }
 
     #updateActive()
     {
-        // `.kb-article` does not scroll in a modal: the viewport top applies then.
-        const top = Math.max(0, this.#article.getBoundingClientRect().top)
+        // While the article starts lower than the scroller top, the line follows the article.
+        const scroller_top = this.#scroller?.getBoundingClientRect().top ?? 0;
+        const top = Math.max(scroller_top, this.#article.getBoundingClientRect().top)
             + GlpiKnowbaseArticleOutline.#ACTIVE_OFFSET;
 
         let active_id = null;
@@ -318,10 +386,7 @@ export class GlpiKnowbaseArticleOutline extends EventTarget
             active_id = heading.id;
         }
         if (this.#picked !== null) {
-            const scroller = this.#article.scrollHeight > this.#article.clientHeight
-                ? this.#article
-                : document.scrollingElement;
-            const at_end = scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 1;
+            const at_end = this.#at_end;
             const left_end = this.#picked.reached_end && !at_end;
             const exists = this.#headings.some((heading) => heading.id === this.#picked.id);
             if (active_id === this.#picked.id || left_end || !exists) {

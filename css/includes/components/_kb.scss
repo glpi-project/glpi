@@ -233,7 +233,7 @@ body.in_modal .kb-article {
 // Width + margin are counted in MIN_BODY_WIDTH of TableOfContentsController.js
 .kb-toc-column {
     position: sticky;
-    top: 1rem;
+    inset-block-start: 1rem;
     align-self: flex-start;
     flex: 0 0 16rem;
     margin-inline-start: 2rem;

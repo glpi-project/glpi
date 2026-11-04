@@ -69,6 +69,9 @@ export class GlpiKnowbaseArticleController
      */
     #editor = null;
 
+    /** @type {GlpiKnowbaseArticleOutline|null} */
+    #outline = null;
+
     /** @type {GlpiKnowbaseTableOfContentsController|null} */
     #toc = null;
 
@@ -286,7 +289,7 @@ export class GlpiKnowbaseArticleController
 
     #initTableOfContents()
     {
-        const outline = new GlpiKnowbaseArticleOutline(
+        this.#outline = new GlpiKnowbaseArticleOutline(
             this.#container.querySelector('#kb-tiptap-editor'),
             this.#container.querySelector('[data-glpi-knowbase-article-content]'),
             {
@@ -294,9 +297,9 @@ export class GlpiKnowbaseArticleController
                 legacy_ids: JSON.parse(this.#container.dataset.glpiKbLegacyHeadingIds ?? '{}'),
             },
         );
-        this.#toc = new GlpiKnowbaseTableOfContentsController(this.#container, outline);
+        this.#toc = new GlpiKnowbaseTableOfContentsController(this.#container, this.#outline);
         // After #initEditor(): the article HTML is read before headings get ids and icons.
-        outline.start();
+        this.#outline.start();
     }
 
     #initDiffListeners()
@@ -547,10 +550,6 @@ export class GlpiKnowbaseArticleController
                 break;
             case EditorActionType.OPEN_MODAL:
                 this.#openModal(params.id, params.key, params.title, params.icon ?? null);
-                break;
-            case EditorActionType.TOGGLE_TABLE_OF_CONTENTS:
-                event.stopPropagation();
-                this.#toc?.toggle();
                 break;
         }
     }
@@ -1370,6 +1369,7 @@ export class GlpiKnowbaseArticleController
                     this.#syncAnchorQuotes();
                 },
             });
+            this.#outline?.watchEditor(this.#editor.getEditor());
             // The pointer may already sit on a passage, edit mode being keyboard-reachable.
             this.#applyHoveredComment();
         } else {

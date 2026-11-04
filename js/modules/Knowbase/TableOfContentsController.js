@@ -32,12 +32,10 @@
 
 /* global bootstrap, _ */
 
-import { EditorActionType } from "/js/modules/Knowbase/EditorActions.js";
-
 /**
- * The article "Contents" column, its toggle button in the meta row, its
- * kebab switch and its keyboard shortcut. Without space for the column, the
- * button opens the list in a dropdown instead.
+ * The article "Contents" column, its toggle button in the meta row and its
+ * keyboard shortcut. Without space for the column, the button opens the list
+ * in a dropdown instead.
  */
 export class GlpiKnowbaseTableOfContentsController
 {
@@ -69,6 +67,9 @@ export class GlpiKnowbaseTableOfContentsController
 
     /** @type {boolean} */
     #is_editing = false;
+
+    /** @type {string|null} */
+    #tooltip = null;
 
     /** @type {AbortController} Removes the page-level listener once the article leaves the page. */
     #listeners = new AbortController();
@@ -117,6 +118,10 @@ export class GlpiKnowbaseTableOfContentsController
             }
             // Keep the keys of the other fields of the page, such as a ticket form.
             if (e.target.closest?.('input, textarea, select, [contenteditable="true"]') && !container.contains(e.target)) {
+                return;
+            }
+            // A form can embed several articles, most of them in closed popups.
+            if (!container.checkVisibility()) {
                 return;
             }
             // `code`, not `key`: with Alt, the produced character depends on the layout.
@@ -227,7 +232,7 @@ export class GlpiKnowbaseTableOfContentsController
     /** @returns {string} */
     #getLabel()
     {
-        return this.#is_visible && !this.#is_narrow ? __('Hide contents') : __('Show contents');
+        return this.#is_visible && !this.#is_narrow ? __('Hide table of contents') : __('Show table of contents');
     }
 
     /** @returns {string} */
@@ -259,13 +264,10 @@ export class GlpiKnowbaseTableOfContentsController
             this.#button.removeAttribute('aria-expanded');
             this.#button.setAttribute('aria-pressed', this.#is_visible ? 'true' : 'false');
         }
-        bootstrap.Tooltip.getInstance(this.#toggle_container)?.setContent({ '.tooltip-inner': this.#getTooltip() });
-
-        // Without headings, the choice would change nothing here, but would apply to all the articles.
-        const selector = `[data-glpi-kb-action="${EditorActionType.TOGGLE_TABLE_OF_CONTENTS}"]`;
-        for (const action of this.#container.querySelectorAll(selector)) {
-            action.disabled = !has_headings && !this.#is_editing;
-            action.querySelector('input[type="checkbox"]').checked = this.#is_visible;
+        const tooltip = this.#getTooltip();
+        if (tooltip !== this.#tooltip) {
+            this.#tooltip = tooltip;
+            bootstrap.Tooltip.getInstance(this.#toggle_container)?.setContent({ '.tooltip-inner': tooltip });
         }
     }
 

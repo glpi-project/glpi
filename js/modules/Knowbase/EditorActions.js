@@ -42,7 +42,6 @@ export const EditorActionType = Object.freeze({
     TOGGLE_FAVORITE: 'TOGGLE_FAVORITE',
     DELETE_ARTICLE:  'DELETE_ARTICLE',
     OPEN_MODAL:      'OPEN_MODAL',
-    TOGGLE_TABLE_OF_CONTENTS: 'TOGGLE_TABLE_OF_CONTENTS',
 });
 
 // In-flight toggle requests keyed `${type}:${id}`, to prevent overlapping add/remove races.
