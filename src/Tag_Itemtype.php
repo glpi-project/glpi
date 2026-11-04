@@ -158,7 +158,8 @@ class Tag_Itemtype extends CommonDBChild
             'GROUPBY' => ['tags_id'],
             'HAVING' => [
                 new QueryExpression(
-                    'COUNT(DISTINCT ' . $DB::quoteName('itemtype') . ') = ' . count($itemtypes)
+                    'COUNT(DISTINCT `itemtype`) = ?',
+                    values: [count($itemtypes)]
                 ),
             ],
         ]);

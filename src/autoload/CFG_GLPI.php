@@ -628,16 +628,18 @@ $CFG_GLPI['dropdown_types'] = [
     SoftwareLicenseType::class, CartridgeItemType::class, ConsumableItemType::class,
     ContractType::class, ContactType::class, DeviceGenericType::class,
     DeviceSensorType::class, DeviceMemoryType::class, SupplierType::class,
-    InterfaceType::class, DeviceCaseType::class, PhonePowerSupply::class,
+    InterfaceType::class, DeviceHardDriveType::class, DeviceBatteryType::class,
+    DeviceFirmwareType::class, DeviceCaseType::class, PhonePowerSupply::class,
     Filesystem::class, CertificateType::class, BudgetType::class,
     DeviceSimcardType::class, LineType::class, RackType::class, PDUType::class,
-    PassiveDCEquipmentType::class, ClusterType::class, DatabaseInstanceType::class,
+    PlugType::class, PassiveDCEquipmentType::class, ClusterType::class, DatabaseInstanceType::class,
 
     // Models
     ComputerModel::class, NetworkEquipmentModel::class, PrinterModel::class,
     MonitorModel::class, PeripheralModel::class, PhoneModel::class,
-    DeviceCameraModel::class, DeviceCaseModel::class, DeviceControlModel::class,
-    DeviceDriveModel::class, DeviceGenericModel::class, DeviceGraphicCardModel::class,
+    DeviceBatteryModel::class, DeviceCameraModel::class, DeviceCaseModel::class,
+    DeviceControlModel::class, DeviceDriveModel::class, DeviceFirmwareModel::class,
+    DeviceGenericModel::class, DeviceGraphicCardModel::class,
     DeviceHardDriveModel::class, DeviceMemoryModel::class, DeviceMotherboardModel::class,
     DeviceNetworkCardModel::class, DevicePciModel::class, DevicePowerSupplyModel::class,
     DeviceProcessorModel::class, DeviceSoundCardModel::class, DeviceSensorModel::class,
@@ -703,7 +705,6 @@ $CFG_GLPI['possible_proxy_exclusions'] = new ProxyExclusions();
 $extra_taggable_types = [
     PlanningExternalEvent::class, DCRoom::class, Datacenter::class, SLM::class,
     AuthLDAP::class, AuthMail::class, Agent::class,
-    DeviceBatteryModel::class, DeviceFirmwareModel::class,
     MailCollector::class, Webhook::class, NotificationTemplate::class,
     Notification::class,
     TicketRecurrent::class, RecurrentChange::class, Link::class, Rack::class,
@@ -711,7 +712,6 @@ $extra_taggable_types = [
     Line::class, DatabaseInstance::class, Software::class, PassiveDCEquipment::class,
     Cable::class, Domain::class, Cluster::class,
     Database::class, DomainRecord::class, Item_DeviceSimcard::class,
-    DeviceBatteryType::class, DeviceFirmwareType::class, DeviceHardDriveType::class,
 ];
 
 $excluded_taggable_types = [Tag::class, DefaultFilter::class];
