@@ -115,6 +115,25 @@ test.describe('Knowledge Base Editor - Notices', () => {
         await kb.editor.assertContainsText('Outside');
     });
 
+    test('Enter on an empty middle line adds a line in the notice', async ({ page, profile, api }) => {
+        const kb = await openEmptyEditor(page, profile, api, 'Test notice enter middle');
+
+        await kb.slashMenu.insert('Info notice', 'click');
+        await kb.editor.typeText('First');
+        await kb.editor.pressKey('Enter');
+        await kb.editor.typeText('Last');
+
+        const notice = page.getByRole('note', { name: 'Info notice' });
+        await notice.getByText('First').click();
+        await kb.editor.pressKey('End');
+        await kb.editor.pressKey('Enter');
+        await kb.editor.pressKey('Enter');
+        await kb.editor.typeText('Middle');
+
+        await expect(page.getByRole('note')).toHaveCount(1);
+        await expect(notice).toHaveText('FirstMiddleLast');
+    });
+
     test('Backspace in an empty notice removes it', async ({ page, profile, api }) => {
         const kb = await openEmptyEditor(page, profile, api, 'Test notice removal');
 

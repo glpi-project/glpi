@@ -206,6 +206,18 @@ export const Notice = Node.create({
 
     addKeyboardShortcuts() {
         return {
+            // On an empty line in the middle of a notice, add a line instead of splitting the notice.
+            Enter: () => {
+                const { $from, empty } = this.editor.state.selection;
+                if (!empty || $from.depth < 2 || $from.parent.content.size !== 0) {
+                    return false;
+                }
+                const notice = $from.node(-1);
+                if (notice.type.name !== this.name || $from.index(-1) === notice.childCount - 1) {
+                    return false;
+                }
+                return this.editor.commands.splitBlock();
+            },
             // Remove an empty notice, instead of joining it with the block above.
             Backspace: () => this.editor.commands.command(({ state, tr, dispatch }) => {
                 const { $from, empty } = state.selection;
