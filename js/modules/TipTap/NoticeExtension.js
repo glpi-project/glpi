@@ -33,7 +33,7 @@
 /* global TiptapCore, TiptapPMState */
 
 const { Node, mergeAttributes } = TiptapCore;
-const { TextSelection } = TiptapPMState;
+const { Plugin, PluginKey, TextSelection } = TiptapPMState;
 
 export const NOTICE_TYPES = {
     info: { label: __('Info notice'), icon: 'ti-info-circle-filled' },
@@ -55,6 +55,36 @@ function parseType(element) {
  */
 export function getNoticeIconClass(type) {
     return `ti ${NOTICE_TYPES[type].icon} kb-notice-icon kb-notice-icon-${type}`;
+}
+
+/**
+ * Tells if the slice brings in a block that the notice content does not accept.
+ * Nodes on the open edges of the slice already exist in the document, so they are skipped.
+ */
+function sliceHasForbiddenBlock(fragment, open_start, open_end, is_forbidden) {
+    let found = false;
+    fragment.forEach((child, _offset, index) => {
+        if (found) {
+            return;
+        }
+        const child_open_start = index === 0 ? open_start : 0;
+        const child_open_end = index === fragment.childCount - 1 ? open_end : 0;
+        if (child_open_start > 0 || child_open_end > 0) {
+            found = sliceHasForbiddenBlock(
+                child.content,
+                Math.max(child_open_start - 1, 0),
+                Math.max(child_open_end - 1, 0),
+                is_forbidden
+            );
+            return;
+        }
+        found = is_forbidden(child.type);
+        child.descendants((node) => {
+            found ||= is_forbidden(node.type);
+            return !found;
+        });
+    });
+    return found;
 }
 
 /**
@@ -126,6 +156,52 @@ export const Notice = Node.create({
                 });
             },
         };
+    },
+
+    addProseMirrorPlugins() {
+        const notice_type = this.type;
+        // Without this guard, ProseMirror splits the notice around the block (`---`, paste, drop).
+        const is_forbidden = (type) => type.isInGroup('block') && notice_type.contentMatch.matchType(type) === null;
+        const is_in_notice = ($pos) => {
+            for (let depth = $pos.depth; depth > 0; depth--) {
+                if ($pos.node(depth).type === notice_type) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        return [
+            new Plugin({
+                key: new PluginKey('noticeContentGuard'),
+                filterTransaction: (tr, state) => {
+                    // Undo and redo restore a state that was already valid.
+                    if (!tr.docChanged || tr.getMeta('history$')) {
+                        return true;
+                    }
+                    const rejected = tr.steps.some((step, index) => step.slice
+                        && step.slice.size > 0
+                        && is_in_notice(tr.docs[index].resolve(step.from))
+                        && sliceHasForbiddenBlock(step.slice.content, step.slice.openStart, step.slice.openEnd, is_forbidden));
+                    if (!rejected) {
+                        return true;
+                    }
+
+                    // An input rule consumes the typed character: type it again, as plain text.
+                    const input = state.plugins
+                        .filter((plugin) => plugin.spec.isInputRules)
+                        .map((plugin) => tr.getMeta(plugin))
+                        .find((meta) => meta?.text !== undefined);
+                    if (input) {
+                        setTimeout(() => {
+                            const { view } = this.editor;
+                            view.dispatch(view.state.tr.insertText(input.text, input.from, input.to));
+                        });
+                    }
+                    return false;
+                },
+            }),
+        ];
     },
 
     addKeyboardShortcuts() {
