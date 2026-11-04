@@ -7874,16 +7874,16 @@
         },
         {
             "name": "symfony/property-access",
-            "version": "v6.4.49",
+            "version": "v6.4.50",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/property-access.git",
-                "reference": "26c05ba4515ed7815155d89e7d1b1539c756f536"
+                "reference": "c846c1a79fa573d54990e5107882b3c539f92fc4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/property-access/zipball/26c05ba4515ed7815155d89e7d1b1539c756f536",
-                "reference": "26c05ba4515ed7815155d89e7d1b1539c756f536",
+                "url": "https://api.github.com/repos/symfony/property-access/zipball/c846c1a79fa573d54990e5107882b3c539f92fc4",
+                "reference": "c846c1a79fa573d54990e5107882b3c539f92fc4",
                 "shasum": ""
             },
             "require": {
@@ -7931,7 +7931,7 @@
                 "reflection"
             ],
             "support": {
-                "source": "https://github.com/symfony/property-access/tree/v6.4.49"
+                "source": "https://github.com/symfony/property-access/tree/v6.4.50"
             },
             "funding": [
                 {
@@ -7951,20 +7951,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-21T18:39:57+00:00"
+            "time": "2026-11-01T12:20:14+00:00"
         },
         {
             "name": "symfony/property-info",
-            "version": "v6.4.49",
+            "version": "v6.4.50",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/property-info.git",
-                "reference": "963a05352f05cdff305adae34fcad2410181da90"
+                "reference": "776f55ea231472a899ba12291bfb2852ed9be11f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/property-info/zipball/963a05352f05cdff305adae34fcad2410181da90",
-                "reference": "963a05352f05cdff305adae34fcad2410181da90",
+                "url": "https://api.github.com/repos/symfony/property-info/zipball/776f55ea231472a899ba12291bfb2852ed9be11f",
+                "reference": "776f55ea231472a899ba12291bfb2852ed9be11f",
                 "shasum": ""
             },
             "require": {
@@ -8021,7 +8021,7 @@
                 "validator"
             ],
             "support": {
-                "source": "https://github.com/symfony/property-info/tree/v6.4.49"
+                "source": "https://github.com/symfony/property-info/tree/v6.4.50"
             },
             "funding": [
                 {
@@ -8041,20 +8041,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-25T07:57:08+00:00"
+            "time": "2026-11-02T08:29:05+00:00"
         },
         {
             "name": "symfony/rate-limiter",
-            "version": "v6.4.49",
+            "version": "v6.4.50",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/rate-limiter.git",
-                "reference": "3705e61b30413c9d4b396142bb58e6312f435025"
+                "reference": "ba333c7faa005abf80672f8bbbf426422beac522"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/rate-limiter/zipball/3705e61b30413c9d4b396142bb58e6312f435025",
-                "reference": "3705e61b30413c9d4b396142bb58e6312f435025",
+                "url": "https://api.github.com/repos/symfony/rate-limiter/zipball/ba333c7faa005abf80672f8bbbf426422beac522",
+                "reference": "ba333c7faa005abf80672f8bbbf426422beac522",
                 "shasum": ""
             },
             "require": {
@@ -8096,7 +8096,7 @@
                 "rate-limiter"
             ],
             "support": {
-                "source": "https://github.com/symfony/rate-limiter/tree/v6.4.49"
+                "source": "https://github.com/symfony/rate-limiter/tree/v6.4.50"
             },
             "funding": [
                 {
@@ -8116,7 +8116,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-20T07:12:46+00:00"
+            "time": "2026-10-31T22:46:52+00:00"
         },
         {
             "name": "symfony/routing",
