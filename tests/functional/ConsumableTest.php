@@ -202,4 +202,39 @@ class ConsumableTest extends DbTestCase
             $infocom2->fields['value']
         );
     }
+
+    public function testNewConsumablesCountInSearch()
+    {
+        $this->login();
+
+        $empty_item = $this->createItem(\ConsumableItem::class, ['name' => 'Consumable item without consumables', 'entities_id' => $this->getTestRootEntity(true)]);
+        $used_item  = $this->createItem(\ConsumableItem::class, ['name' => 'Consumable item with consumables', 'entities_id' => $this->getTestRootEntity(true)]);
+        $consumables = $this->createItems(\Consumable::class, [
+            ['consumableitems_id' => $used_item->getID()],
+            ['consumableitems_id' => $used_item->getID()],
+        ]);
+        $this->assertTrue((new \Consumable())->out($consumables[1]->getID(), \User::class, getItemByTypeName(\User::class, TU_USER, true)));
+
+        $params = \Search::manageParams(\ConsumableItem::class, [
+            'reset'    => 'reset',
+            'criteria' => [
+                [
+                    'field'      => 1,
+                    'searchtype' => 'contains',
+                    'value'      => 'Consumable item with',
+                ],
+            ],
+        ]);
+        $data = \Search::getDatas(\ConsumableItem::class, $params, [17, 19]);
+
+        $counts = [];
+        foreach ($data['data']['rows'] as $row) {
+            $counts[$row['id']] = [
+                'used' => (int) $row['raw']['ITEM_ConsumableItem_17'],
+                'new'  => (int) $row['raw']['ITEM_ConsumableItem_19'],
+            ];
+        }
+        $this->assertSame(['used' => 0, 'new' => 0], $counts[$empty_item->getID()]);
+        $this->assertSame(['used' => 1, 'new' => 1], $counts[$used_item->getID()]);
+    }
 }
