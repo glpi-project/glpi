@@ -1,11 +1,17 @@
 # Security Policy
 
-> [!CAUTION]
-> Never use public issues, pull requests, or discussions to report security problems. Vulnerabilities are not disclosed before a fix is released.
+> [!IMPORTANT]
+> We receive a lot of security reports and we need to validate each one - please be patient ;)
+> Also, please provide us all information, scripts, etc so we can easily reproduce and test.
+> 
+> Thank you!
 
 ## Reporting
 
 Email **security@glpi-project.org**.
+
+> [!CAUTION]
+> Never use public issues, pull requests, or discussions to report security problems. Vulnerabilities are not disclosed before a fix is released.
 
 We do not accept GitHub Security Advisory direct submissions, and we will not create accounts on third-party platforms to receive reports. All information must be sent by email or, once an advisory is opened, posted directly in that advisory.
 
@@ -13,30 +19,29 @@ We do not accept GitHub Security Advisory direct submissions, and we will not cr
 
 Send a separate email for each unrelated vulnerability. Do not bundle unrelated issues into a single thread, and do not reply to an existing report thread to raise a new, unrelated one. This keeps triage, severity assessment, and advisory tracking clean — one report, one thread, one advisory.
 
-This is distinct from the grouping rule below: related instances of the *same* vulnerability class stay in one report; unrelated vulnerabilities each get their own.
-
-Attach your proof-of-concept as a file (script, HTTP request collection, etc.) rather than pasting source code inline in the email body. This keeps reports readable and reproducible, and avoids mangling by mail clients (indentation, quoting, encoding).
+This is distinct from the grouping rule below: instances sharing the *same root cause and repair* stay in one report; unrelated vulnerabilities each get their own.
 
 ## Required information
 
-Incomplete reports are returned once and **closed** if not completed within seven days.
+Incomplete reports are returned once with a consolidated request for missing evidence and **closed** if not completed within seven days. Reports may be reopened when completed; missing evidence does not make a finding invalid.
 
-> [!IMPORTANT]
-> We receive a lot of security reports and we need to validate each one - please be patient ;)
-> Also, please provide us all information, scripts, etc so we can easily reproduce and test.
-> 
-> Thank you!
+Use the following structure for your reports:
 
-1. Affected GLPI version (see below).
-2. What the attacker can do and what privilege level they need.
-3. Step-by-step reproduction from a clean install.
-4. Scripts (Python, PHP, ...) to validate and reproduce the issue; and then make sure it gets fixed.
-5. Working proof of concept.
-6. Impact and preconditions.
-7. AI disclosure: which tools, if any, you used to find or draft the report.
-8. A realistic estimated CVSS score, following the convention described in [Disclosure](#disclosure).
+- Setup
+    - Affected GLPI version (see below), Docker image tag and digest.
+    - Preconditions and privileges required for the attacker.
+    - Settings changed from defaults, with original/new values and reasons (including profile rights, entity assignments/recursion, and PHP/web-server overrides).
+- Description
+    - Description of the root cause of the vulnerability, with references to relevant code. Use GitHub permalinks whenever possible.
+    - Impact and the security boundary crossed.
+- Exploit Scenario
+    - Step-by-step reproduction from a clean install using the current [official Docker setup](https://github.com/glpi-project/docker-images), with a freshly pulled image of the latest patch release of the affected supported branch.
+    - Working proof of concept (Python, PHP, ...) to validate and reproduce the issue; and then make sure it gets fixed. Attach it as a file (script, HTTP request collection, etc.) rather than pasting source code inline in the email body to keep reports readable and reproducible, and avoids mangling by mail clients (indentation, quoting, encoding).
+- Recommendation
+    - Suggest how to address the issue.
+    - Patches are optional, but welcome if the reported verified it during testing, either manually or with [glpi-security-patch](.agents/skills/glpi-security-patch/SKILL.md).
 
-Group related findings into a single report. Multiple instances of the same vulnerability class — for example XSS across different fields, or missing capability checks on related endpoints — belong in one submission, not several.
+Omit generic background, repeated impact claims, and CVSS scores.
 
 If you have a GitHub account, include your username so we can add you as observer when the advisory is opened.
 
@@ -44,7 +49,9 @@ If you have a GitHub account, include your username so we can add you as observe
 
 **In scope:** GLPI core, official releases.
 
-**Out of scope:** third-party plugins (report to plugin maintainers), the GLPI Inventory Agent, Teclib'-operated websites, self-modified installs, hosting providers, social engineering, hardening suggestions without a working exploit, scanner output without verification, out-of-date versions.
+We only accept issues with demonstrated impact on confidentiality or integrity. For bugs only impacting availability and hardening suggestions (see our [threat model](THREAT_MODEL.md)), prefer opening [an issue](https://github.com/glpi-project/glpi/issues) or a pull request.
+
+**Out of scope:** third-party plugins (report to plugin maintainers), the GLPI Inventory Agent, Teclib'-operated websites, self-modified installs, hosting providers, standalone social engineering, hardening suggestions without a working exploit, scanner output without verification, out-of-date versions.
 
 ## Supported versions
 
@@ -56,9 +63,9 @@ If you have a GitHub account, include your username so we can add you as observe
 
 Only the latest patch release of each supported branch is in scope. Reports against older patch versions are closed without review — please upgrade and verify the issue still exists before reporting.
 
-## Disclosure
+## Scoring 
 
-Severity is assessed using CVSS v4.
+Severity is assessed using CVSS v4. Do not score your submissions, GLPI will handle it during triage.
 
 For the **Privileges Required (PR)** metric, GLPI uses the following convention:
 
@@ -70,11 +77,13 @@ For the **Privileges Required (PR)** metric, GLPI uses the following convention:
 
 Reports scoring an attacker with a standard-interface profile as PR:L will be re-scored accordingly.
 
-Critical and High advisories are published one month after the fix release. All other advisories are published one week after the fix release.
+## Disclosure
 
-CVE is reserved on report acceptance. You will be credited in the published advisory unless you request anonymity. Unilateral disclosure before a fix ships ends our engagement.
+Critical and High advisories are published one month after the fix release; other advisories are published one week after the fix release. You will receive credit on the advisory unless you request anonymity. Unilateral disclosure before a fix ships ends our engagement.
 
 We do not offer monetary rewards.
+
+While all vulnerabilities will receive fixes and a GHSA identifier, GLPI requests CVE identifiers only for confirmed **High and Critical** vulnerabilities. Please reference lower-severity ones with their GHSA ID.
 
 ## AI-assisted reports
 
