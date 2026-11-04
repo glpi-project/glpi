@@ -1,0 +1,4 @@
+interface:
+  display_name: "GLPI security patch"
+  short_description: "Prepare and verify GLPI security fixes"
+  default_prompt: "Use $glpi-security-patch to reproduce this issue and prepare and verify a proposed GLPI security fix."

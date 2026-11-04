@@ -1,0 +1,4 @@
+interface:
+  display_name: "GLPI security triage"
+  short_description: "Review GLPI security reports and draft replies"
+  default_prompt: "Use $glpi-security-triage to review this GLPI security report and draft a reply."
