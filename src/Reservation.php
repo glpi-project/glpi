@@ -768,7 +768,7 @@ class Reservation extends CommonDBChild
     public static function updateEvent(array $event): bool
     {
         $reservation = new static();
-        if (!$reservation->getFromDB((int) $event['id'])) {
+        if (!$reservation->getFromDB((int) $event['id']) || !$reservation->can((int) $event['id'], UPDATE)) {
             return false;
         }
 
