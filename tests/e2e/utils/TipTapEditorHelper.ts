@@ -172,9 +172,11 @@ export class TipTapEditorHelper {
             },
             end: async () => {
                 await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+                await cdp.detach();
             },
             cancel: async () => {
                 await cdp.send('Input.dispatchTouchEvent', { type: 'touchCancel', touchPoints: [] });
+                await cdp.detach();
             },
         };
     }
@@ -196,11 +198,16 @@ export class TipTapEditorHelper {
         }, base64);
     }
 
-    private async getImageCorner(image: Locator): Promise<{ x: number, y: number }> {
-        const box = await image.boundingBox();
+    async getBox(locator: Locator): Promise<{ x: number, y: number, width: number, height: number }> {
+        const box = await locator.boundingBox();
         if (box === null) {
-            throw new Error('Image is not visible');
+            throw new Error('Element is not visible');
         }
+        return box;
+    }
+
+    private async getImageCorner(image: Locator): Promise<{ x: number, y: number }> {
+        const box = await this.getBox(image);
         return { x: box.x + box.width + 3, y: box.y + box.height + 3 };
     }
 

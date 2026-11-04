@@ -632,6 +632,12 @@ class KnowbaseEditor {
             const special = btn.dataset.special;
             const level = btn.dataset.level ? parseInt(btn.dataset.level, 10) : null;
 
+            // The text buttons are hidden: their state is computed again on the next text selection.
+            if (image_selected) {
+                btn.style.display = special === 'image' ? '' : 'none';
+                return;
+            }
+
             let isActive = false;
             if (special === 'link' || special === 'unlink') {
                 isActive = this.#editor.isActive('link');
@@ -660,9 +666,7 @@ class KnowbaseEditor {
             }
 
             // The unlink button only shows on a link.
-            const hidden = image_selected
-                ? special !== 'image'
-                : special === 'image' || (special === 'unlink' && !isActive);
+            const hidden = special === 'image' || (special === 'unlink' && !isActive);
             btn.style.display = hidden ? 'none' : '';
 
             btn.classList.toggle('is-active', isActive);

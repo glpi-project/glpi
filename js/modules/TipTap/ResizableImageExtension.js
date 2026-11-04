@@ -50,7 +50,7 @@ export const ResizableImage = TiptapImage.extend({
             return null;
         }
 
-        const on_live_resize = this.options.onLiveResize;
+        const on_live_resize = typeof this.options.onLiveResize === 'function' ? this.options.onLiveResize : null;
 
         return (props) => {
             const node_view = createNodeView(props);
@@ -96,9 +96,7 @@ export const ResizableImage = TiptapImage.extend({
                 end_drag();
                 node_view.onCommit = on_commit;
                 apply_node_size();
-                if (typeof on_live_resize === 'function') {
-                    on_live_resize();
-                }
+                on_live_resize?.();
             };
             // Capture phase: the handle stops the propagation of its touchstart.
             node_view.dom.addEventListener('touchstart', (event) => {
@@ -110,7 +108,7 @@ export const ResizableImage = TiptapImage.extend({
                 document.addEventListener('touchcancel', end_touch_drag);
             }, { capture: true });
 
-            if (typeof on_live_resize === 'function') {
+            if (on_live_resize) {
                 const on_resize = node_view.onResize;
                 let frame = null;
                 node_view.onResize = (width, height) => {
