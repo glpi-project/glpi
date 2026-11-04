@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "032af5719b8c1be1f2313cd6f6bb27e6",
+    "content-hash": "850ca01d1b74cd07384001713c79ed82",
     "packages": [
         {
             "name": "altcha-org/altcha",
@@ -12767,21 +12767,21 @@
         },
         {
             "name": "glpi-project/phpstan-glpi",
-            "version": "1.4.0",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/phpstan-glpi.git",
-                "reference": "f8b2c116b09538b9f45503f19692af57728c658e"
+                "reference": "da3b1cb5b9f7aae28364c03fb7fa575087619afa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/phpstan-glpi/zipball/f8b2c116b09538b9f45503f19692af57728c658e",
-                "reference": "f8b2c116b09538b9f45503f19692af57728c658e",
+                "url": "https://api.github.com/repos/glpi-project/phpstan-glpi/zipball/da3b1cb5b9f7aae28364c03fb7fa575087619afa",
+                "reference": "da3b1cb5b9f7aae28364c03fb7fa575087619afa",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.2",
-                "phpstan/phpstan": "^2.1"
+                "phpstan/phpstan": "^2.2.15"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.95",
@@ -12809,33 +12809,33 @@
             "description": "PHPStan rules for GLPI.",
             "support": {
                 "issues": "https://github.com/glpi-project/phpstan-glpi/issues",
-                "source": "https://github.com/glpi-project/phpstan-glpi/tree/1.4.0"
+                "source": "https://github.com/glpi-project/phpstan-glpi/tree/1.5.0"
             },
-            "time": "2026-09-28T13:50:43+00:00"
+            "time": "2026-11-04T14:41:58+00:00"
         },
         {
             "name": "glpi-project/rector-glpi",
-            "version": "1.2.1",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/rector-glpi.git",
-                "reference": "75c6785c250c3b55620865a00a24e5332dcd9478"
+                "reference": "dd403ef5b8f13c2d921d148885f104c58ffb5c73"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/rector-glpi/zipball/75c6785c250c3b55620865a00a24e5332dcd9478",
-                "reference": "75c6785c250c3b55620865a00a24e5332dcd9478",
+                "url": "https://api.github.com/repos/glpi-project/rector-glpi/zipball/dd403ef5b8f13c2d921d148885f104c58ffb5c73",
+                "reference": "dd403ef5b8f13c2d921d148885f104c58ffb5c73",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.2",
-                "rector/rector": "^2.4"
+                "rector/rector": "^2.8"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.95",
                 "php-parallel-lint/php-parallel-lint": "^1.4",
                 "phpstan/phpstan": "^2.2",
-                "phpstan/phpstan-phpunit": "^2.0",
+                "phpstan/phpstan-phpunit": "^2.1",
                 "phpunit/phpunit": "^11.5"
             },
             "type": "rector-extension",
@@ -12851,9 +12851,9 @@
             "description": "Rector rules for GLPI.",
             "support": {
                 "issues": "https://github.com/glpi-project/rector-glpi/issues",
-                "source": "https://github.com/glpi-project/rector-glpi/tree/1.2.1"
+                "source": "https://github.com/glpi-project/rector-glpi/tree/1.3.0"
             },
-            "time": "2026-11-02T08:42:37+00:00"
+            "time": "2026-11-04T09:39:37+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
@@ -13374,11 +13374,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.3.4",
+            "version": "2.3.5",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/f20ce6f3c82556cfcfc086b152445a12d1d64fff",
-                "reference": "f20ce6f3c82556cfcfc086b152445a12d1d64fff",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/645a1bd6bead15fc1b8474137467961d0fa30a79",
+                "reference": "645a1bd6bead15fc1b8474137467961d0fa30a79",
                 "shasum": ""
             },
             "require": {
@@ -13434,7 +13434,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-28T22:38:53+00:00"
+            "time": "2026-11-03T12:14:22+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",
@@ -14462,21 +14462,21 @@
         },
         {
             "name": "rector/rector",
-            "version": "2.8.3",
+            "version": "2.8.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rectorphp/rector.git",
-                "reference": "12ddb68d34acb91bcf3d00302bf1c7c1b5840bd6"
+                "reference": "55acbd956d7e3907f7d21aab54edd68a310609e6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rectorphp/rector/zipball/12ddb68d34acb91bcf3d00302bf1c7c1b5840bd6",
-                "reference": "12ddb68d34acb91bcf3d00302bf1c7c1b5840bd6",
+                "url": "https://api.github.com/repos/rectorphp/rector/zipball/55acbd956d7e3907f7d21aab54edd68a310609e6",
+                "reference": "55acbd956d7e3907f7d21aab54edd68a310609e6",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.4|^8.0",
-                "phpstan/phpstan": "^2.3.4"
+                "phpstan/phpstan": "^2.3.5"
             },
             "conflict": {
                 "rector/rector-doctrine": "*",
@@ -14507,7 +14507,7 @@
             ],
             "support": {
                 "issues": "https://github.com/rectorphp/rector/issues",
-                "source": "https://github.com/rectorphp/rector/tree/2.8.3"
+                "source": "https://github.com/rectorphp/rector/tree/2.8.4"
             },
             "funding": [
                 {
@@ -14515,7 +14515,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-29T05:51:41+00:00"
+            "time": "2026-11-03T18:48:08+00:00"
         },
         {
             "name": "revolt/event-loop",
