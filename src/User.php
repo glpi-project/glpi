@@ -5126,9 +5126,20 @@ HTML;
             if (!empty($value)) {
                 if (in_array($f, ['group', 'users'], true)) {
                     foreach ((array) $value as $v) {
-                        if (is_numeric($v) && (int) $v > 0) {
-                            $filters[$f][] = (int) $v;
+                        if (!is_numeric($v) || (int) $v <= 0) {
+                            continue;
                         }
+                        // Selected users names are displayed in the dropdown, do not disclose users the viewer cannot see
+                        if ($f === 'users') {
+                            $selected_user = new self();
+                            if (
+                                !$selected_user->getFromDB((int) $v)
+                                || !Session::haveAccessToOneOfEntities($selected_user->getEntities())
+                            ) {
+                                continue;
+                            }
+                        }
+                        $filters[$f][] = (int) $v;
                     }
                 } elseif (isset($array_filters_choices[$f])) {
                     foreach ((array) $value as $v) {

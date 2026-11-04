@@ -3175,5 +3175,17 @@ class UserTest extends DbTestCase
         $output = $render(['filters' => ['active' => 1, 'users' => [$other_user->getID()]]]);
         $this->assertStringNotContainsString('Computer used by test user', $output);
         $this->assertStringContainsString('OtherUserRealname', $output);
+
+        // Users the viewer cannot see are ignored
+        $hidden_user = $this->createItem(User::class, [
+            'name'          => $this->getUniqueString(),
+            'realname'      => 'HiddenUserRealname',
+            '_profiles_id'  => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id'  => getItemByTypeName('Entity', '_test_child_2', true),
+            '_is_recursive' => 0,
+        ]);
+        $this->setEntity('_test_child_1', false);
+        $output = $render(['filters' => ['active' => 1, 'users' => [$hidden_user->getID()]]]);
+        $this->assertStringNotContainsString('HiddenUserRealname', $output);
     }
 }
