@@ -105,7 +105,8 @@ TWIG, $twig_params);
             // Always use the scientific notation, as `(string)` switches to it only for very small or large values,
             // e.g. `1.27500000000000e+1`: decimals count = significant mantissa decimals - exponent.
             [$mantissa, $exponent] = explode('e', sprintf('%.14e', $value));
-            $mantissa_decimals = strlen(rtrim(substr(strrchr($mantissa, '.'), 1), '0'));
+            [, $mantissa_fraction] = explode('.', $mantissa);
+            $mantissa_decimals = strlen(rtrim($mantissa_fraction, '0'));
             $decimals_count = max($decimals_count, $mantissa_decimals - (int) $exponent);
         }
         return $decimals_count;
