@@ -30,28 +30,33 @@
  * ---------------------------------------------------------------------
  */
 
-import { expect, test } from "../../../fixtures/glpi_fixture";
+import { expect, Page, test } from "../../../fixtures/glpi_fixture";
 import { KnowbaseItemPage } from "../../../pages/KnowbaseItemPage";
+import { Api } from "../../../utils/Api";
+import { ProfileSwitcher } from "../../../utils/ProfileSwitcher";
 import { Profiles } from "../../../utils/Profiles";
 import { getWorkerEntityId } from "../../../utils/WorkerEntities";
 
 const NOTICES = ['Info notice', 'Success notice', 'Warning notice', 'Tip notice'] as const;
 
+async function openEmptyEditor(
+    page: Page,
+    profile: ProfileSwitcher,
+    api: Api,
+    name: string,
+): Promise<KnowbaseItemPage> {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+    await kb.goto(await api.knowbase.createArticle({ name }));
+    await kb.editor.enterEditMode();
+    await kb.editor.clearContent();
+    return kb;
+}
+
 test.describe('Knowledge Base Editor - Notices', () => {
     for (const notice of NOTICES) {
         test(`Can insert a ${notice} and keep it after reload`, async ({ page, profile, api }) => {
-            await profile.set(Profiles.SuperAdmin);
-            const kb = new KnowbaseItemPage(page);
-
-            const id = await api.createItem('KnowbaseItem', {
-                name: `Test ${notice}`,
-                entities_id: getWorkerEntityId(),
-                answer: '<p>Content</p>',
-            });
-
-            await kb.goto(id);
-            await kb.editor.enterEditMode();
-            await kb.editor.clearContent();
+            const kb = await openEmptyEditor(page, profile, api, `Test ${notice}`);
 
             await kb.slashMenu.insert(notice, 'click');
             await kb.editor.typeText('Notice text');
@@ -89,18 +94,7 @@ test.describe('Knowledge Base Editor - Notices', () => {
     });
 
     test('Can insert a notice with the keyboard', async ({ page, profile, api }) => {
-        await profile.set(Profiles.SuperAdmin);
-        const kb = new KnowbaseItemPage(page);
-
-        const id = await api.createItem('KnowbaseItem', {
-            name: 'Test notice keyboard',
-            entities_id: getWorkerEntityId(),
-            answer: '<p>Content</p>',
-        });
-
-        await kb.goto(id);
-        await kb.editor.enterEditMode();
-        await kb.editor.clearContent();
+        const kb = await openEmptyEditor(page, profile, api, 'Test notice keyboard');
 
         await kb.slashMenu.insert('Warning notice', 'keyboard');
         await kb.editor.typeText('Keyboard notice');
@@ -109,18 +103,7 @@ test.describe('Knowledge Base Editor - Notices', () => {
     });
 
     test('Enter on an empty last paragraph leaves the notice', async ({ page, profile, api }) => {
-        await profile.set(Profiles.SuperAdmin);
-        const kb = new KnowbaseItemPage(page);
-
-        const id = await api.createItem('KnowbaseItem', {
-            name: 'Test notice exit',
-            entities_id: getWorkerEntityId(),
-            answer: '<p>Content</p>',
-        });
-
-        await kb.goto(id);
-        await kb.editor.enterEditMode();
-        await kb.editor.clearContent();
+        const kb = await openEmptyEditor(page, profile, api, 'Test notice exit');
 
         await kb.slashMenu.insert('Info notice', 'click');
         await kb.editor.typeText('Inside');
@@ -133,18 +116,7 @@ test.describe('Knowledge Base Editor - Notices', () => {
     });
 
     test('Backspace in an empty notice removes it', async ({ page, profile, api }) => {
-        await profile.set(Profiles.SuperAdmin);
-        const kb = new KnowbaseItemPage(page);
-
-        const id = await api.createItem('KnowbaseItem', {
-            name: 'Test notice removal',
-            entities_id: getWorkerEntityId(),
-            answer: '<p>Content</p>',
-        });
-
-        await kb.goto(id);
-        await kb.editor.enterEditMode();
-        await kb.editor.clearContent();
+        const kb = await openEmptyEditor(page, profile, api, 'Test notice removal');
 
         await kb.slashMenu.insert('Tip notice', 'click');
         await expect(page.getByRole('note', { name: 'Tip notice' })).toBeVisible();
@@ -154,18 +126,7 @@ test.describe('Knowledge Base Editor - Notices', () => {
     });
 
     test('Slash menu in a notice shows only the allowed blocks', async ({ page, profile, api }) => {
-        await profile.set(Profiles.SuperAdmin);
-        const kb = new KnowbaseItemPage(page);
-
-        const id = await api.createItem('KnowbaseItem', {
-            name: 'Test slash menu in notice',
-            entities_id: getWorkerEntityId(),
-            answer: '<p>Content</p>',
-        });
-
-        await kb.goto(id);
-        await kb.editor.enterEditMode();
-        await kb.editor.clearContent();
+        const kb = await openEmptyEditor(page, profile, api, 'Test slash menu in notice');
 
         await kb.slashMenu.insert('Info notice', 'click');
         await kb.slashMenu.open();
@@ -182,19 +143,52 @@ test.describe('Knowledge Base Editor - Notices', () => {
         await kb.slashMenu.assertCommandHidden('Video');
     });
 
-    test('Slash menu shows separators between groups', async ({ page, profile, api }) => {
-        await profile.set(Profiles.SuperAdmin);
-        const kb = new KnowbaseItemPage(page);
+    test('Divider shortcut in a notice keeps the text and the notice', async ({ page, profile, api }) => {
+        const kb = await openEmptyEditor(page, profile, api, 'Test divider shortcut in notice');
 
-        const id = await api.createItem('KnowbaseItem', {
-            name: 'Test slash menu separators',
-            entities_id: getWorkerEntityId(),
-            answer: '<p>Content</p>',
+        await kb.slashMenu.insert('Info notice', 'click');
+        await kb.editor.typeText('---');
+
+        await expect(page.getByRole('note', { name: 'Info notice' })).toHaveText('---');
+        await expect(page.getByRole('note')).toHaveCount(1);
+        await expect(kb.editor.contentContainer.getByRole('separator')).toHaveCount(0);
+    });
+
+    test('Divider shortcut in a list item of a notice keeps the text', async ({ page, profile, api }) => {
+        const kb = await openEmptyEditor(page, profile, api, 'Test divider shortcut in notice list');
+
+        await kb.slashMenu.insert('Info notice', 'click');
+        await kb.editor.typeText('- Item');
+        await kb.editor.pressKey('Enter');
+        await kb.editor.typeText('---');
+
+        const notice = page.getByRole('note', { name: 'Info notice' });
+        await expect(notice.getByRole('listitem')).toHaveText(['Item', '---']);
+        await expect(kb.editor.contentContainer.getByRole('separator')).toHaveCount(0);
+    });
+
+    test('Pasting a table in a notice does not split it', async ({ page, profile, api }) => {
+        const kb = await openEmptyEditor(page, profile, api, 'Test table paste in notice');
+
+        await kb.slashMenu.insert('Info notice', 'click');
+        await kb.editor.typeText('InOut');
+        // In the middle of the text: at the end, the table goes after the notice.
+        await kb.editor.pressKey('ArrowLeft');
+        await kb.editor.pressKey('ArrowLeft');
+        await kb.editor.pressKey('ArrowLeft');
+        await kb.editor.getEditor().evaluate((element) => {
+            const data = new DataTransfer();
+            data.setData('text/html', '<table><tbody><tr><td>Cell</td></tr></tbody></table>');
+            element.dispatchEvent(new ClipboardEvent('paste', { bubbles: true, cancelable: true, clipboardData: data }));
         });
 
-        await kb.goto(id);
-        await kb.editor.enterEditMode();
-        await kb.editor.clearContent();
+        await expect(page.getByRole('note', { name: 'Info notice' })).toHaveText('InOut');
+        await expect(page.getByRole('note')).toHaveCount(1);
+        await expect(kb.editor.contentContainer.getByRole('table')).toHaveCount(0);
+    });
+
+    test('Slash menu shows separators between groups', async ({ page, profile, api }) => {
+        const kb = await openEmptyEditor(page, profile, api, 'Test slash menu separators');
 
         // Text, Lists, Blocks, Notices, Media
         await kb.slashMenu.open();
