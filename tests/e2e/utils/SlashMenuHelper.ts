@@ -43,6 +43,10 @@ export type SlashCommand =
     | 'Code Block'
     | 'Table'
     | 'Divider'
+    | 'Info notice'
+    | 'Success notice'
+    | 'Warning notice'
+    | 'Tip notice'
     | 'Image'
     | 'Video';
 
@@ -156,6 +160,10 @@ export class SlashMenuHelper {
         // eslint-disable-next-line playwright/no-raw-locators
         const selected = this.page.locator('.slash-menu-item.is-selected');
         await expect(selected).toContainText(expectedText);
+    }
+
+    async assertSeparatorCount(count: number): Promise<void> {
+        await expect(this.getMenu().getByRole('separator')).toHaveCount(count);
     }
 
     async assertNoResults(): Promise<void> {

@@ -879,16 +879,74 @@ body.in_modal .kb-editor-reserved {
             opacity: 0.7;
         }
 
+        i.kb-notice-icon {
+            opacity: 1;
+        }
+
         &:hover,
         &.is-selected {
             background: var(--tblr-bg-surface-secondary);
         }
     }
 
+    .slash-menu-separator {
+        border-top: 1px solid var(--tblr-border-color);
+        margin: 0.25rem 0;
+    }
+
     .slash-menu-empty {
         padding: 0.5rem 0.75rem;
         color: var(--tblr-muted);
         font-size: 0.875rem;
+    }
+}
+
+// Notices: global, as KB answers are also shown outside the KB view
+$kb-notice-colors: (
+    info: blue,
+    success: green,
+    warning: yellow,
+    tip: indigo,
+);
+
+@each $type, $color in $kb-notice-colors {
+    .kb-notice-#{$type},
+    .kb-notice-icon-#{$type} {
+        --kb-notice-color: var(--tblr-#{$color});
+    }
+}
+
+// Mixed with the text color to keep a readable contrast in both themes.
+.kb-notice-icon {
+    color: color-mix(in srgb, var(--kb-notice-color) 70%, var(--tblr-body-color));
+}
+
+.kb-notice {
+    position: relative;
+    margin: 1rem 0;
+    padding: 0.75rem 1rem 0.75rem 2.75rem;
+    border: 1px solid color-mix(in srgb, var(--kb-notice-color) 30%, transparent);
+    border-radius: var(--tblr-border-radius);
+    background: color-mix(in srgb, var(--kb-notice-color) 10%, transparent);
+
+    // Absolute, as the server render puts the icon next to the blocks, without a wrapper.
+    > .kb-notice-icon {
+        position: absolute;
+        top: 0.75rem;
+        left: 1rem;
+        font-size: 1.25rem;
+        line-height: 1.5rem;
+        user-select: none;
+    }
+
+    > .kb-notice-icon + *,
+    > .kb-notice-content > :first-child {
+        margin-top: 0;
+    }
+
+    > :last-child,
+    > .kb-notice-content > :last-child {
+        margin-bottom: 0;
     }
 }
 

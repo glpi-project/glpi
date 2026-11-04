@@ -34,6 +34,7 @@
 
 import { showVideoDialog } from '/js/modules/TipTap/VideoEmbedExtension.js';
 import { createEditorDialog, createDialogField, createDialogError } from '/js/modules/TipTap/EditorDialog.js';
+import { NOTICE_TYPES, getNoticeIconClass } from '/js/modules/TipTap/NoticeExtension.js';
 
 /**
  * Slash commands extension for Tiptap editor
@@ -148,59 +149,87 @@ function showImageDialog(editor, existing_attrs = null) {
 }
 
 /**
- * Available slash commands
+ * Available slash commands, in display order; a separator is shown between groups.
  * Each command receives (editor, range) and must delete the range in the same chain
  * Uses insertContent to INSERT new blocks rather than transforming existing content
+ * `allowed_in_notice` must match the content expression of the notice node.
  */
 const SLASH_COMMANDS = [
     {
         title: __('Heading 1'),
         icon: 'ti ti-h-1',
+        group: 'text',
+        allowed_in_notice: true,
         command: (editor, range) => editor.chain().focus().deleteRange(range).insertContent({ type: 'heading', attrs: { level: 1 } }).run(),
     },
     {
         title: __('Heading 2'),
         icon: 'ti ti-h-2',
+        group: 'text',
+        allowed_in_notice: true,
         command: (editor, range) => editor.chain().focus().deleteRange(range).insertContent({ type: 'heading', attrs: { level: 2 } }).run(),
     },
     {
         title: __('Heading 3'),
         icon: 'ti ti-h-3',
+        group: 'text',
+        allowed_in_notice: true,
         command: (editor, range) => editor.chain().focus().deleteRange(range).insertContent({ type: 'heading', attrs: { level: 3 } }).run(),
     },
     {
         title: __('Bullet List'),
         icon: 'ti ti-list',
+        group: 'lists',
+        allowed_in_notice: true,
         command: (editor, range) => editor.chain().focus().deleteRange(range).insertContent({ type: 'bulletList', content: [{ type: 'listItem', content: [{ type: 'paragraph' }] }] }).run(),
     },
     {
         title: __('Numbered List'),
         icon: 'ti ti-list-numbers',
+        group: 'lists',
+        allowed_in_notice: true,
         command: (editor, range) => editor.chain().focus().deleteRange(range).insertContent({ type: 'orderedList', content: [{ type: 'listItem', content: [{ type: 'paragraph' }] }] }).run(),
     },
     {
         title: __('Quote'),
         icon: 'ti ti-blockquote',
+        group: 'blocks',
+        allowed_in_notice: false,
         command: (editor, range) => editor.chain().focus().deleteRange(range).insertContent({ type: 'blockquote', content: [{ type: 'paragraph' }] }).run(),
     },
     {
         title: __('Code Block'),
         icon: 'ti ti-code',
+        group: 'blocks',
+        allowed_in_notice: true,
         command: (editor, range) => editor.chain().focus().deleteRange(range).insertContent({ type: 'codeBlock' }).run(),
     },
     {
         title: __('Table'),
         icon: 'ti ti-table',
+        group: 'blocks',
+        allowed_in_notice: false,
         command: (editor, range) => editor.chain().focus().deleteRange(range).insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
     },
     {
         title: __('Divider'),
         icon: 'ti ti-minus',
+        group: 'blocks',
+        allowed_in_notice: false,
         command: (editor, range) => editor.chain().focus().deleteRange(range).insertContent({ type: 'horizontalRule' }).run(),
     },
+    ...Object.entries(NOTICE_TYPES).map(([type, { label }]) => ({
+        title: label,
+        icon: getNoticeIconClass(type),
+        group: 'notices',
+        allowed_in_notice: false,
+        command: (editor, range) => editor.chain().focus().deleteRange(range).setNotice(type).run(),
+    })),
     {
         title: __('Image'),
         icon: 'ti ti-photo',
+        group: 'media',
+        allowed_in_notice: true,
         command: (editor, range) => {
             editor.chain().focus().deleteRange(range).run();
             showImageDialog(editor);
@@ -209,12 +238,28 @@ const SLASH_COMMANDS = [
     {
         title: __('Video'),
         icon: 'ti ti-video',
+        group: 'media',
+        allowed_in_notice: false,
         command: (editor, range) => {
             editor.chain().focus().deleteRange(range).run();
             showVideoDialog(editor);
         },
     },
 ];
+
+/**
+ * @param {object} $pos - ProseMirror resolved position
+ * @param {string} type_name - Node type name
+ * @returns {boolean} Whether the position is inside a node of this type
+ */
+function isInsideNode($pos, type_name) {
+    for (let depth = $pos.depth; depth > 0; depth--) {
+        if ($pos.node(depth).type.name === type_name) {
+            return true;
+        }
+    }
+    return false;
+}
 
 /**
  * Create the slash menu DOM element
@@ -236,6 +281,14 @@ function createSlashMenu(items, selectedIndex, onSelect) {
     }
 
     items.forEach((item, index) => {
+        // Separators are not `.slash-menu-item`, so keyboard indexes stay aligned with `items`.
+        if (index > 0 && item.group !== items[index - 1].group) {
+            const separator = document.createElement('div');
+            separator.classList.add('slash-menu-separator');
+            separator.setAttribute('role', 'separator');
+            menu.appendChild(separator);
+        }
+
         const button = document.createElement('button');
         button.type = 'button';
         button.classList.add('slash-menu-item');
@@ -271,19 +324,13 @@ const SlashCommands = Extension.create({
                 allowSpaces: false,
                 startOfLine: false,
                 // Block the menu inside table cells to avoid nested tables/blocks.
-                allow: ({ state, range }) => {
-                    const $from = state.doc.resolve(range.from);
-                    for (let depth = $from.depth; depth > 0; depth--) {
-                        if ($from.node(depth).type.name === 'table') {
-                            return false;
-                        }
-                    }
-                    return true;
-                },
-                items: ({ query }) => {
+                allow: ({ state, range }) => !isInsideNode(state.doc.resolve(range.from), 'table'),
+                items: ({ query, editor }) => {
                     const lowerQuery = query.toLowerCase();
+                    const in_notice = isInsideNode(editor.state.selection.$from, 'notice');
                     return SLASH_COMMANDS.filter((item) =>
-                        item.title.toLowerCase().includes(lowerQuery)
+                        (!in_notice || item.allowed_in_notice)
+                        && item.title.toLowerCase().includes(lowerQuery)
                     );
                 },
                 render: () => {
