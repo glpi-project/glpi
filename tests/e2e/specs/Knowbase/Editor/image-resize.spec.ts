@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-import { Locator, Page } from "@playwright/test";
+import { Locator } from "@playwright/test";
 import { expect, test } from "../../../fixtures/glpi_fixture";
 import { KnowbaseItemPage } from "../../../pages/KnowbaseItemPage";
 import { Api } from "../../../utils/Api";
@@ -41,6 +41,8 @@ import { getWorkerEntityId } from "../../../utils/WorkerEntities";
 const IMAGE_SRC = '/pics/screenshots/components.png';
 const IMAGE_RATIO = 1024 / 494;
 const IMAGE_HTML = `<img src="${IMAGE_SRC}" alt="Components" width="400" height="193">`;
+// 1 x 1 px
+const PASTED_PNG_BASE64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
 
 async function getBox(locator: Locator): Promise<{ x: number, y: number, width: number, height: number }> {
     const box = await locator.boundingBox();
@@ -60,22 +62,6 @@ async function getCenterOffset(a: Locator, b: Locator): Promise<number> {
 }
 
 /**
- * Drag the bottom-right resize handle of `image` by `delta_x` px.
- * The handle is centered on the image corner.
- */
-async function dragBottomRightHandle(page: Page, image: Locator, delta_x: number, release = true): Promise<void> {
-    const box = await getBox(image);
-    const start_x = box.x + box.width + 3;
-    const start_y = box.y + box.height + 3;
-    await page.mouse.move(start_x, start_y);
-    await page.mouse.down();
-    await page.mouse.move(start_x + delta_x, start_y, { steps: 10 });
-    if (release) {
-        await page.mouse.up();
-    }
-}
-
-/**
  * `width` and `height` of the first image of the saved answer.
  */
 function getSavedImageSize(answer: string): { width: number, height: number } {
@@ -88,25 +74,8 @@ function getSavedImageSize(answer: string): { width: number, height: number } {
     return { width: Number(width[1]), height: Number(height[1]) };
 }
 
-async function countResizeHandles(kb: KnowbaseItemPage): Promise<number> {
-    return kb.editor.contentContainer.evaluate(
-        (container) => container.querySelectorAll('[data-resize-handle]').length
-    );
-}
-
 async function createArticle(api: Api, name: string, answer = `<p>Content</p>${IMAGE_HTML}`): Promise<number> {
     return api.createItem('KnowbaseItem', { name, entities_id: getWorkerEntityId(), answer });
-}
-
-/**
- * Open the article in edit mode and select its image.
- */
-async function selectImageInEditor(kb: KnowbaseItemPage, id: number): Promise<Locator> {
-    await kb.goto(id);
-    await kb.editor.enterEditMode();
-    const image = kb.editor.contentContainer.getByRole('img', { name: 'Components' });
-    await image.click();
-    return image;
 }
 
 test.describe('Knowledge Base Editor - Image Resize', () => {
@@ -118,8 +87,8 @@ test.describe('Knowledge Base Editor - Image Resize', () => {
         const kb = new KnowbaseItemPage(page);
         const id = await createArticle(api, 'Image resize drag');
 
-        const image = await selectImageInEditor(kb, id);
-        await dragBottomRightHandle(page, image, -150);
+        const image = await kb.doSelectImageInEditMode(id, 'Components');
+        await kb.editor.doDragImageCorner(image, -150);
         await kb.editor.save();
 
         const saved = getSavedImageSize((await api.getItem('KnowbaseItem', id)).answer);
@@ -128,17 +97,17 @@ test.describe('Knowledge Base Editor - Image Resize', () => {
         expect(saved.width / saved.height).toBeCloseTo(IMAGE_RATIO, 1);
 
         await kb.goto(id);
-        const box = await kb.editor.contentContainer.getByRole('img', { name: 'Components' }).boundingBox();
+        const box = await kb.editor.getImage('Components').boundingBox();
         expect(box?.width).toBeCloseTo(saved.width, 0);
-        expect(await countResizeHandles(kb)).toBe(0);
+        expect(await kb.editor.getResizeHandleCount()).toBe(0);
     });
 
     test('The image cannot be smaller than the minimum size', async ({ page, api }) => {
         const kb = new KnowbaseItemPage(page);
         const id = await createArticle(api, 'Image resize minimum');
 
-        const image = await selectImageInEditor(kb, id);
-        await dragBottomRightHandle(page, image, -1000);
+        const image = await kb.doSelectImageInEditMode(id, 'Components');
+        await kb.editor.doDragImageCorner(image, -1000);
         await kb.editor.save();
 
         const saved = getSavedImageSize((await api.getItem('KnowbaseItem', id)).answer);
@@ -150,8 +119,8 @@ test.describe('Knowledge Base Editor - Image Resize', () => {
         const kb = new KnowbaseItemPage(page);
         const id = await createArticle(api, 'Image resize undo');
 
-        const image = await selectImageInEditor(kb, id);
-        await dragBottomRightHandle(page, image, -150);
+        const image = await kb.doSelectImageInEditMode(id, 'Components');
+        await kb.editor.doDragImageCorner(image, -150);
         await expect.poll(async () => (await image.boundingBox())?.width).toBeLessThan(300);
 
         await page.keyboard.press('Control+z');
@@ -162,7 +131,7 @@ test.describe('Knowledge Base Editor - Image Resize', () => {
         const kb = new KnowbaseItemPage(page);
         const id = await createArticle(api, 'Image resize keyboard');
 
-        const image = await selectImageInEditor(kb, id);
+        const image = await kb.doSelectImageInEditMode(id, 'Components');
         await page.keyboard.press('Enter');
 
         const dialog = kb.imageDialog;
@@ -187,7 +156,7 @@ test.describe('Knowledge Base Editor - Image Resize', () => {
         const kb = new KnowbaseItemPage(page);
         const id = await createArticle(api, 'Image resize shift enter');
 
-        await selectImageInEditor(kb, id);
+        await kb.doSelectImageInEditMode(id, 'Components');
         await page.keyboard.press('Shift+Enter');
         await expect(kb.imageDialog).toBeHidden();
     });
@@ -202,7 +171,7 @@ test.describe('Knowledge Base Editor - Image Resize', () => {
             }
         });
 
-        await selectImageInEditor(kb, id);
+        await kb.doSelectImageInEditMode(id, 'Components');
         await kb.bubbleMenu.assertVisible();
         await page.keyboard.press('Escape');
         await kb.bubbleMenu.assertHidden();
@@ -212,11 +181,108 @@ test.describe('Knowledge Base Editor - Image Resize', () => {
         expect(warnings.filter((text) => text.includes('TextSelection'))).toEqual([]);
     });
 
+    test('A size below the minimum is refused', async ({ page, api }) => {
+        const kb = new KnowbaseItemPage(page);
+        const id = await createArticle(api, 'Image resize dialog minimum');
+
+        await kb.doSelectImageInEditMode(id, 'Components');
+        await page.keyboard.press('Enter');
+        const dialog = kb.imageDialog;
+        await dialog.getByLabel('Width').fill('0');
+        await dialog.getByRole('button', { name: 'Save' }).click();
+
+        await expect(dialog.getByRole('alert').filter({ hasText: 'The minimum value is 50.' })).toBeVisible();
+        await expect(dialog.getByLabel('Width')).toHaveAttribute('aria-invalid', 'true');
+        await expect(dialog).toBeVisible();
+    });
+
+    test('The dialog keeps the stored ratio of an image that does not load', async ({ page, api }) => {
+        const kb = new KnowbaseItemPage(page);
+        const id = await createArticle(
+            api,
+            'Image resize dialog broken image',
+            '<p>Content</p><img src="/pics/does-not-exist.png" alt="Components" width="400" height="200">',
+        );
+
+        await kb.doSelectImageInEditMode(id, 'Components');
+        await page.keyboard.press('Enter');
+        const dialog = kb.imageDialog;
+        await dialog.getByLabel('Width').fill('200');
+        await expect(dialog.getByLabel('Height')).toHaveValue('100');
+    });
+
+    test('Saving the dialog edits the right image after an upload removed another one', async ({ page, api }) => {
+        const kb = new KnowbaseItemPage(page);
+        const id = await createArticle(api, 'Image resize dialog stale position');
+
+        let release_upload = () => {};
+        const upload_held = new Promise<void>((resolve) => {
+            release_upload = resolve;
+        });
+        await page.route('**/UploadInlineImage**', async (route) => {
+            await upload_held;
+            await route.abort();
+        });
+
+        await kb.goto(id);
+        await kb.editor.enterEditMode();
+        await kb.editor.contentContainer.getByText('Content').click();
+        await page.keyboard.press('Home');
+
+        // The pasted image goes before the article image, then its upload fails.
+        const upload_request = page.waitForRequest((request) => request.url().includes('/UploadInlineImage'));
+        await kb.editor.doPasteHtml(`<img src="data:image/png;base64,${PASTED_PNG_BASE64}">`);
+        await upload_request;
+
+        const image = await kb.editor.doSelectImage('Components');
+        await page.keyboard.press('Enter');
+        const dialog = kb.imageDialog;
+        await dialog.getByLabel('Width').fill('200');
+
+        release_upload();
+        await expect(kb.editor.contentContainer.getByRole('img')).toHaveCount(1);
+        await dialog.getByRole('button', { name: 'Save' }).click();
+        await expect(dialog).toBeHidden();
+
+        await expect.poll(async () => Math.round((await image.boundingBox())?.width ?? 0)).toBe(200);
+    });
+
+    test('An upload that ends while the dialog is open does not replace the edited image', async ({ page, api }) => {
+        const kb = new KnowbaseItemPage(page);
+        const id = await createArticle(api, 'Image resize dialog upload ends');
+
+        let release_upload = () => {};
+        const upload_held = new Promise<void>((resolve) => {
+            release_upload = resolve;
+        });
+        await page.route('**/UploadInlineImage**', async (route) => {
+            await upload_held;
+            await route.continue();
+        });
+
+        await kb.goto(id);
+        await kb.editor.enterEditMode();
+        await kb.editor.contentContainer.getByText('Content').click();
+        const upload_request = page.waitForRequest((request) => request.url().includes('/UploadInlineImage'));
+        await kb.editor.doPastePngFile(PASTED_PNG_BASE64);
+        await upload_request;
+
+        await kb.editor.doSelectImage('Components');
+        await page.keyboard.press('Enter');
+        const dialog = kb.imageDialog;
+        await expect(dialog.getByLabel('Width')).toBeFocused();
+
+        release_upload();
+        await expect(kb.editor.contentContainer.getByRole('img')).toHaveCount(2);
+        await expect(kb.editor.getImage('Components')).toBeVisible();
+        await expect(dialog.getByLabel('Width')).toBeFocused();
+    });
+
     test('Editing the alt text of an image without size keeps it without size', async ({ page, api }) => {
         const kb = new KnowbaseItemPage(page);
         const id = await createArticle(api, 'Image resize no size', `<p>Content</p><img src="${IMAGE_SRC}" alt="Components">`);
 
-        await selectImageInEditor(kb, id);
+        await kb.doSelectImageInEditMode(id, 'Components');
         await page.keyboard.press('Enter');
         const dialog = kb.imageDialog;
         await dialog.getByLabel('Alternative description').fill('New alt');
@@ -236,24 +302,45 @@ test.describe('Knowledge Base Editor - Image Resize', () => {
             const kb = new KnowbaseItemPage(page);
             const id = await createArticle(api, 'Image resize touch');
 
-            const image = await selectImageInEditor(kb, id);
-            const box = await getBox(image);
-            const start = { x: box.x + box.width + 3, y: box.y + box.height + 3 };
-
-            // Playwright has no touch drag: send the touch events through CDP.
-            const cdp = await page.context().newCDPSession(page);
-            await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [start] });
-            for (let step = 1; step <= 10; step++) {
-                await cdp.send('Input.dispatchTouchEvent', {
-                    type: 'touchMove',
-                    touchPoints: [{ x: start.x - step * 15, y: start.y }],
-                });
-            }
-            await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+            const image = await kb.doSelectImageInEditMode(id, 'Components');
+            const drag = await kb.editor.doStartTouchDragOnImageCorner(image);
+            await drag.moveBy(-150);
+            await drag.end();
             await kb.editor.save();
 
             const saved = getSavedImageSize((await api.getItem('KnowbaseItem', id)).answer);
             expect(saved.width).toBeLessThan(300);
+        });
+
+        test('A second finger that lifts does not end the drag', async ({ page, api }) => {
+            const kb = new KnowbaseItemPage(page);
+            const id = await createArticle(api, 'Image resize two fingers');
+
+            const image = await kb.doSelectImageInEditMode(id, 'Components');
+            const drag = await kb.editor.doStartTouchDragOnImageCorner(image);
+            await drag.moveBy(-30);
+            await drag.liftOtherFinger();
+            await drag.moveBy(-120);
+            await drag.end();
+            await kb.editor.save();
+
+            const saved = getSavedImageSize((await api.getItem('KnowbaseItem', id)).answer);
+            expect(saved.width).toBeLessThan(300);
+        });
+
+        test('A cancelled touch drag keeps the old size', async ({ page, api }) => {
+            const kb = new KnowbaseItemPage(page);
+            const id = await createArticle(api, 'Image resize touch cancel');
+
+            const image = await kb.doSelectImageInEditMode(id, 'Components');
+            const drag = await kb.editor.doStartTouchDragOnImageCorner(image);
+            await drag.moveBy(-150);
+            await drag.cancel();
+
+            await expect.poll(async () => Math.round((await image.boundingBox())?.width ?? 0)).toBe(400);
+            await kb.editor.save();
+            const saved = getSavedImageSize((await api.getItem('KnowbaseItem', id)).answer);
+            expect(saved.width).toBe(400);
         });
     });
 
@@ -261,7 +348,7 @@ test.describe('Knowledge Base Editor - Image Resize', () => {
         const kb = new KnowbaseItemPage(page);
         const id = await createArticle(api, 'Image resize button');
 
-        const image = await selectImageInEditor(kb, id);
+        const image = await kb.doSelectImageInEditMode(id, 'Components');
         await kb.bubbleMenu.assertButtonHidden('Bold');
 
         const menu = await kb.bubbleMenu.assertVisible();
@@ -279,12 +366,12 @@ test.describe('Knowledge Base Editor - Image Resize', () => {
         const kb = new KnowbaseItemPage(page);
         const id = await createArticle(api, 'Image resize menu follows drag');
 
-        const image = await selectImageInEditor(kb, id);
+        const image = await kb.doSelectImageInEditMode(id, 'Components');
         const menu = await kb.bubbleMenu.assertVisible();
         await expect(menu).toHaveAccessibleName('Image');
 
         // Mouse still down: the new size is not committed yet.
-        await dragBottomRightHandle(page, image, -200, false);
+        await kb.editor.doDragImageCorner(image, -200, false);
         await expect.poll(() => getCenterOffset(menu, image)).toBeLessThan(2);
         expect((await getBox(image)).width).toBeLessThan(250);
 
@@ -302,7 +389,7 @@ test.describe('Knowledge Base Editor - Image Resize', () => {
         await page.setViewportSize({ width: 400, height: 800 });
         await kb.goto(id);
 
-        const image = kb.editor.contentContainer.getByRole('img', { name: 'Components' });
+        const image = kb.editor.getImage('Components');
         await expect(image).toBeVisible();
         const image_box = await getBox(image);
         const container_box = await getBox(kb.editor.contentContainer);
@@ -318,8 +405,8 @@ test.describe('Knowledge Base Editor - Image Resize', () => {
             `<table><tbody><tr><td>${IMAGE_HTML}</td><td><p>B</p></td></tr></tbody></table>`,
         );
 
-        const image = await selectImageInEditor(kb, id);
-        await dragBottomRightHandle(page, image, 1000);
+        const image = await kb.doSelectImageInEditMode(id, 'Components');
+        await kb.editor.doDragImageCorner(image, 1000);
 
         const image_box = await getBox(image);
         const cell_box = await getBox(kb.editor.contentContainer.getByRole('cell').first());

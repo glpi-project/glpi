@@ -45,6 +45,7 @@ import { CommentHighlight, getRefreshedCommentAnchors, getResolvedCommentAnchors
 import { buildPmTextIndex, pmPositionToOffset } from '/js/modules/TipTap/CommentPosition.js';
 import { extractAnchor } from '/js/modules/Knowbase/CommentAnchor.js';
 import { showLinkDialog } from '/js/modules/TipTap/LinkDialog.js';
+import { trackPosition } from '/js/modules/TipTap/TrackPosition.js';
 
 // Used to hide the bubble menu explicitly when focus leaves it or the editor.
 const BUBBLE_MENU_PLUGIN_KEY = 'kb-editor-bubble-menu';
@@ -241,13 +242,7 @@ class KnowbaseEditor {
                     }
                     return false;
                 },
-                handleDoubleClickOn: (view, pos, node, node_pos) => {
-                    if (!this.#editor.isEditable || node.type.name !== 'image') {
-                        return false;
-                    }
-                    this.#editImage(node_pos);
-                    return true;
-                },
+                handleDoubleClickOn: (view, pos, node, node_pos) => this.#editor.isEditable && this.#editImage(node_pos),
                 // Jump straight into the bubble menu on Tab instead of leaving
                 // the keyboard user to tab through unrelated page controls first.
                 handleKeyDown: (view, event) => {
@@ -312,6 +307,7 @@ class KnowbaseEditor {
         // so the container itself isn't a second, dead tab stop.
         if (this.#bubbleMenuElement) {
             this.#bubbleMenuElement.tabIndex = -1;
+            this.#updateBubbleMenuState();
         }
 
         // Tiptap's own blur handling wrongly treats focus moving anywhere
@@ -426,9 +422,6 @@ class KnowbaseEditor {
                 button.title = btn.title;
             }
             button.tabIndex = -1;
-            if (btn.special === 'image') {
-                button.style.display = 'none';
-            }
 
             const icon = document.createElement('i');
             icon.className = btn.icon;
@@ -576,11 +569,13 @@ class KnowbaseEditor {
     /**
      * Open the image dialog on the image at `pos`, prefilled with its attributes.
      * @param {number} pos
+     * @returns {boolean} false when there is no image at `pos`
      */
     #editImage(pos) {
         const node = this.#editor?.state.doc.nodeAt(pos);
-        if (!node || node.type.name !== 'image') return;
+        if (node?.type.name !== 'image') return false;
         showImageDialog(this.#editor, node.attrs, pos);
+        return true;
     }
 
     /**
@@ -625,10 +620,10 @@ class KnowbaseEditor {
     #updateBubbleMenuState() {
         if (!this.#editor || !this.#bubbleMenuElement) return;
 
-        const imageSelected = this.#isImageSelected();
-        this.#bubbleMenuElement.setAttribute('aria-label', imageSelected ? __('Image') : __('Text formatting'));
+        const image_selected = this.#isImageSelected();
+        this.#bubbleMenuElement.setAttribute('aria-label', image_selected ? __('Image') : __('Text formatting'));
         this.#bubbleMenuElement.querySelectorAll('.bubble-menu-divider').forEach((divider) => {
-            divider.style.display = imageSelected ? 'none' : '';
+            divider.style.display = image_selected ? 'none' : '';
         });
 
         const buttons = this.#bubbleMenuElement.querySelectorAll('.bubble-menu-btn');
@@ -665,7 +660,7 @@ class KnowbaseEditor {
             }
 
             // The unlink button only shows on a link.
-            const hidden = imageSelected
+            const hidden = image_selected
                 ? special !== 'image'
                 : special === 'image' || (special === 'unlink' && !isActive);
             btn.style.display = hidden ? 'none' : '';
@@ -803,21 +798,30 @@ class KnowbaseEditor {
      * @param {number|undefined} pos - Insert position (undefined = current cursor)
      */
     async #uploadAndInsertImage(editor, file, pos) {
+        // Insert at the paste or drop point: a selection made during the upload would be replaced.
+        const from = trackPosition(editor, pos ?? editor.state.selection.from, -1);
+        const to = trackPosition(editor, pos ?? editor.state.selection.to, 1);
         try {
             const image_url = await this.#uploadImageFile(file);
-
-            const attrs = { src: image_url };
-            if (pos !== undefined) {
-                editor.chain().focus().insertContentAt(pos, {
-                    type: 'image',
-                    attrs,
-                }).run();
-            } else {
-                editor.chain().focus().setImage(attrs).run();
+            if (editor.isDestroyed) {
+                return;
             }
+
+            const chain = editor.chain();
+            // A dialog opened during the upload keeps the focus.
+            if (!document.activeElement?.closest('[aria-modal="true"]')) {
+                chain.focus();
+            }
+            chain.insertContentAt({ from: from.pos, to: Math.max(from.pos, to.pos) }, {
+                type: 'image',
+                attrs: { src: image_url },
+            }).run();
         } catch (error) {
             glpi_toast_error(__('Image upload failed'));
             console.error('Image upload error:', error);
+        } finally {
+            from.stop();
+            to.stop();
         }
     }
 

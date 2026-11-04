@@ -135,7 +135,7 @@ test.describe('Knowledge Base Editor - Image Insertion', () => {
             await dialog.getByRole('button', { name: 'Save' }).click();
 
             await expect(dialog).toBeVisible();
-            await expect(dialog.getByRole('alert')).toBeVisible();
+            await expect(dialog.getByRole('alert').filter({ hasText: 'An image source is required.' })).toBeVisible();
             await expect(dialog.getByLabel('Source')).toHaveAttribute('aria-invalid', 'true');
         });
 
