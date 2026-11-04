@@ -110,14 +110,21 @@ export default function usePlanningScheduler(calendar_el, current_view, full_vie
         let new_itemtype = null;
         let new_items_id = null;
 
-        if (info?.newResource) {
-            new_itemtype = info.newResource._resource.extendedProps.itemtype;
-            new_items_id = info.newResource._resource.extendedProps.items_id;
+        // FullCalendar only provides oldResource/newResource when the resource changed.
+        // When only the date/time changed, the event's current resource is both the old and new actor.
+        const current_resources = typeof event.getResources === 'function' ? event.getResources() : [];
+        const current_resource = current_resources.length === 1 ? current_resources[0] : null;
+        const new_resource = info?.newResource || current_resource;
+        const old_resource = info?.oldResource || current_resource;
+
+        if (new_resource) {
+            new_itemtype = new_resource.extendedProps.itemtype;
+            new_items_id = new_resource.extendedProps.items_id;
         }
 
-        if (info?.oldResource) {
-            old_itemtype = info.oldResource._resource.extendedProps.itemtype;
-            old_items_id = info.oldResource._resource.extendedProps.items_id;
+        if (old_resource) {
+            old_itemtype = old_resource.extendedProps.itemtype;
+            old_items_id = old_resource.extendedProps.items_id;
         }
 
         let start = event.start;
@@ -165,10 +172,10 @@ export default function usePlanningScheduler(calendar_el, current_view, full_vie
                 items_id:      ext_props.items_id,
                 move_instance: move_instance,
                 old_start:     old_start.toISOString(),
-                new_actor_itemtype: new_itemtype,
-                new_actor_items_id: new_items_id,
-                old_actor_itemtype: old_itemtype,
-                old_actor_items_id: old_items_id,
+                new_actor_itemtype: new_itemtype ?? '',
+                new_actor_items_id: new_items_id ?? '',
+                old_actor_itemtype: old_itemtype ?? '',
+                old_actor_items_id: old_items_id ?? '',
             }),
         }).then(response => {
             if (!response.ok) {
