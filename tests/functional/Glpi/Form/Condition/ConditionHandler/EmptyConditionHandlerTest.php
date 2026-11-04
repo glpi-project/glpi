@@ -44,6 +44,7 @@ use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeFile;
+use Glpi\Form\QuestionType\QuestionTypeImpact;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemDefaultValueConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
@@ -238,6 +239,11 @@ final class EmptyConditionHandlerTest extends AbstractConditionHandlerTest
             ],
             "QuestionTypeUrgency" => [
                 'type'             => QuestionTypeUrgency::class,
+                'empty_answer'     => "0",
+                'not_empty_answer' => "1",
+            ],
+            "QuestionTypeImpact" => [
+                'type'             => QuestionTypeImpact::class,
                 'empty_answer'     => "0",
                 'not_empty_answer' => "1",
             ],
