@@ -1932,6 +1932,51 @@ HTML,
         $this->assertTrue($fn_can_tech_see_kb());
     }
 
+    public static function visibilityDatesInSearchProvider(): iterable
+    {
+        // Technician and Self-Service do not have KNOWBASEADMIN: dates are enforced
+        yield 'tech' => ['tech', 'tech', ['KB dates control']];
+        yield 'post-only' => ['post-only', 'postonly', ['KB dates control']];
+        // KB admins see every article, whatever its dates
+        yield 'glpi' => ['glpi', 'glpi', ['KB dates control', 'KB dates expired', 'KB dates scheduled']];
+    }
+
+    #[DataProvider('visibilityDatesInSearchProvider')]
+    public function testVisibilityDatesInSearch(string $login, string $password, array $expected): void
+    {
+        $this->login();
+
+        $articles = [
+            'KB dates expired'   => ['begin_date' => null, 'end_date' => date('Y-m-d H:i:s', strtotime('-1 day'))],
+            'KB dates scheduled' => ['begin_date' => date('Y-m-d H:i:s', strtotime('+1 day')), 'end_date' => null],
+            'KB dates control'   => ['begin_date' => null, 'end_date' => null],
+        ];
+        foreach ($articles as $name => $dates) {
+            $kb_item = $this->createItem(\KnowbaseItem::class, [
+                'name'     => $name,
+                'answer'   => $name,
+                'is_faq'   => true,
+                'users_id' => $_SESSION['glpiID'],
+            ] + $dates, ['begin_date', 'end_date']);
+            $this->createItem(\Entity_KnowbaseItem::class, [
+                'knowbaseitems_id' => $kb_item->getID(),
+                'entities_id'      => 0,
+                'is_recursive'     => 1,
+            ]);
+        }
+
+        $this->login($login, $password);
+
+        $params = \Search::manageParams(\KnowbaseItem::class, [
+            'criteria' => [['field' => 1, 'searchtype' => 'contains', 'value' => 'KB dates']],
+        ], false);
+        $data = \Search::getDatas(\KnowbaseItem::class, $params);
+        $names = array_map(static fn($row) => $row['raw']['ITEM_KnowbaseItem_1'], $data['data']['rows']);
+        sort($names);
+
+        $this->assertSame($expected, $names);
+    }
+
     public function testRelinkEmbeddedDocumentsFromTicketSolution(): void
     {
         $this->login();

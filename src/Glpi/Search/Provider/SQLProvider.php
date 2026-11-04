@@ -1083,6 +1083,10 @@ final class SQLProvider implements SearchProviderInterface
 
             case KnowbaseItem::class:
                 $criteria = KnowbaseItem::getVisibilityCriteria(false)['WHERE'];
+                // Same as the former "browse" list: hide articles outside their visibility period
+                if (!Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN)) {
+                    $criteria[] = KnowbaseItem::getVisibilityDateCriteria();
+                }
                 break;
 
             case Form::class:
