@@ -68,6 +68,11 @@ enum QuestionTypeCategory: string implements QuestionTypeCategoryInterface
     case URGENCY = "urgency";
 
     /**
+     * Question that expect an impact level
+     */
+    case IMPACT = "impact";
+
+    /**
      * Question that expect a request type
      */
     case REQUEST_TYPE = "request_type";
@@ -106,6 +111,7 @@ enum QuestionTypeCategory: string implements QuestionTypeCategoryInterface
             self::DATE_AND_TIME => __("Date and time"),
             self::ACTORS => __("Actors"),
             self::URGENCY => __("Urgency"),
+            self::IMPACT => __("Impact"),
             self::REQUEST_TYPE => __("Request type"),
             self::FILE => __("File"),
             self::RADIO => __("Radio"),
@@ -124,6 +130,7 @@ enum QuestionTypeCategory: string implements QuestionTypeCategoryInterface
             self::DATE_AND_TIME => "ti ti-calendar",
             self::ACTORS => "ti ti-user",
             self::URGENCY => "ti ti-hourglass",
+            self::IMPACT => "ti ti-bolt",
             self::REQUEST_TYPE => "ti ti-tag",
             self::FILE => "ti ti-file",
             self::RADIO => "ti ti-circle-dot",
@@ -142,6 +149,7 @@ enum QuestionTypeCategory: string implements QuestionTypeCategoryInterface
             self::DATE_AND_TIME => 30,
             self::ACTORS        => 40,
             self::URGENCY       => 50,
+            self::IMPACT        => 55,
             self::REQUEST_TYPE  => 60,
             self::FILE          => 70,
             self::RADIO         => 80,
