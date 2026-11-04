@@ -39,6 +39,7 @@ use CommonGLPI;
 use Glpi\Asset\CapacityConfig;
 use Item_Devices;
 use Override;
+use Plug;
 use Session;
 
 class HasDevicesCapacity extends AbstractCapacity
@@ -145,6 +146,7 @@ class HasDevicesCapacity extends AbstractCapacity
         }
 
         CommonGLPI::registerStandardTab($classname, Item_Devices::class, 15);
+        CommonGLPI::registerStandardTab($classname, Plug::class, 55);
     }
 
     public function onCapacityDisabled(string $classname, CapacityConfig $config): void

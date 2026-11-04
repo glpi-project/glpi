@@ -41,6 +41,7 @@ use Glpi\Features\Inventoriable;
 class Plug extends CommonDBRelation
 {
     use Inventoriable;
+    public const POWER_SUPPLY_FIELD = 'items_devicepowersupplies_id';
 
     public static ?string $itemtype_1 = 'itemtype_main';
     public static ?string $items_id_1 = 'items_id_main';
@@ -96,7 +97,7 @@ class Plug extends CommonDBRelation
      *
      * @return false|array<string, mixed>
      */
-    private function prepareInput($input): array|false
+    private function prepareInput($input, bool $on_add = false): array|false
     {
         if (isset($input['name']) && empty($input['name'])) {
             Session::addMessageAfterRedirect(
@@ -120,6 +121,98 @@ class Plug extends CommonDBRelation
             return false;
         }
 
+        if (
+            isset($input['itemtype_asset'])
+            && $input['itemtype_asset'] !== ''
+            && !is_a($input['itemtype_asset'], CommonDBTM::class, true)
+        ) {
+            trigger_error(
+                sprintf('Invalid itemtype_asset value: %s', $input['itemtype_asset']),
+                E_USER_WARNING
+            );
+            return false;
+        }
+
+        $asset_in_input = isset($input['itemtype_asset']) || isset($input['items_id_asset']);
+        $restoring = isset($input['is_deleted'])
+            && (int) $input['is_deleted'] === 0
+            && (int) ($this->fields['is_deleted'] ?? 0) !== 0;
+        if (!$on_add && !$asset_in_input && !isset($input[self::POWER_SUPPLY_FIELD]) && !$restoring) {
+            return $input;
+        }
+
+        $asset_changed = (
+            isset($input['itemtype_asset'])
+            && $input['itemtype_asset'] !== ($this->fields['itemtype_asset'] ?? '')
+        ) || (
+            isset($input['items_id_asset'])
+            && (int) $input['items_id_asset'] !== (int) ($this->fields['items_id_asset'] ?? 0)
+        );
+        if ($asset_changed && !isset($input[self::POWER_SUPPLY_FIELD])) {
+            // A component reference cannot be kept if its parent asset changes.
+            $input[self::POWER_SUPPLY_FIELD] = 0;
+        }
+
+        $itemtype_asset = $input['itemtype_asset'] ?? $this->fields['itemtype_asset'] ?? '';
+        $items_id_asset = (int) ($input['items_id_asset'] ?? $this->fields['items_id_asset'] ?? 0);
+        $power_supply_id = (int) ($input[self::POWER_SUPPLY_FIELD] ?? $this->fields[self::POWER_SUPPLY_FIELD] ?? 0);
+
+        if (
+            $power_supply_id === 0
+            && ($on_add || $asset_in_input)
+            && self::getPowerSupplyChoices($itemtype_asset, $items_id_asset) !== []
+        ) {
+            Session::addMessageAfterRedirect(
+                __s('A specific power supply must be selected for this asset'),
+                true,
+                ERROR
+            );
+            return false;
+        }
+
+        if ($power_supply_id === 0) {
+            return $input;
+        }
+
+        $power_supply = new Item_DevicePowerSupply();
+
+        if (
+            $itemtype_asset === ''
+            || $items_id_asset === 0
+            || !$power_supply->getFromDB($power_supply_id)
+            || (int) $power_supply->fields['is_deleted'] !== 0
+            || $power_supply->fields['itemtype'] !== $itemtype_asset
+            || (int) $power_supply->fields['items_id'] !== $items_id_asset
+        ) {
+            Session::addMessageAfterRedirect(
+                __s('The selected power supply does not belong to the associated asset'),
+                true,
+                ERROR
+            );
+            return false;
+        }
+
+        if ((int) ($input['is_deleted'] ?? $this->fields['is_deleted'] ?? 0) !== 0) {
+            return $input;
+        }
+
+        $criteria = [
+            self::POWER_SUPPLY_FIELD => $power_supply_id,
+            'is_deleted' => 0,
+        ];
+        $current_id = (int) ($input['id'] ?? $this->getID());
+        if ($current_id > 0) {
+            $criteria['NOT'] = ['id' => $current_id];
+        }
+        if (countElementsInTable(self::getTable(), $criteria) > 0) {
+            Session::addMessageAfterRedirect(
+                __s('The selected power supply is already connected to another plug'),
+                true,
+                ERROR
+            );
+            return false;
+        }
+
         return $input;
     }
 
@@ -138,7 +231,7 @@ class Plug extends CommonDBRelation
 
         // always set number
         $input['number'] = $base_number + 1;
-        return $this->prepareInput($input);
+        return $this->prepareInput($input, true);
     }
 
     public function prepareInputForUpdate($input)
@@ -148,29 +241,76 @@ class Plug extends CommonDBRelation
         return $this->prepareInput($input);
     }
 
+    public function restore(array $input, $history = true)
+    {
+        if (!$this->getFromDB($input['id'])) {
+            return false;
+        }
+
+        // Restoring bypasses prepareInputForUpdate(), but must not reconnect an occupied PSU.
+        if ($this->prepareInput([
+            'id' => $this->getID(),
+            'is_deleted' => 0,
+            self::POWER_SUPPLY_FIELD => $this->fields[self::POWER_SUPPLY_FIELD],
+        ]) === false) {
+            return false;
+        }
+
+        return parent::restore($input, $history);
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        $nb = 0;
-        if ($_SESSION['glpishow_count_on_tabs']) {
-            /** @var CommonDBTM $item */
-            $nb = countElementsInTable(
-                self::getTable(),
-                [
-                    'itemtype_main' => $item::class,
-                    'items_id_main' => $item->getID(),
-                    'is_deleted'    => false, // do not count deleted items
-                ]
-            );
+        global $CFG_GLPI;
+
+        if (!$item instanceof CommonDBTM) {
+            return '';
         }
-        return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+
+        $is_plug_host = in_array($item::class, $CFG_GLPI['plug_types'], true);
+        $has_power_supplies = in_array(Item_DevicePowerSupply::class, Item_Devices::getItemAffinities($item::class), true);
+        $tabs = [];
+        if ($is_plug_host) {
+            $nb = $_SESSION['glpishow_count_on_tabs'] ? countElementsInTable(self::getTable(), [
+                'itemtype_main' => $item::class,
+                'items_id_main' => $item->getID(),
+                'is_deleted' => false,
+            ]) : 0;
+            $tabs[1] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+        }
+        if ($has_power_supplies) {
+            $nb = $_SESSION['glpishow_count_on_tabs'] ? countElementsInTable(self::getTable(), [
+                'itemtype_asset' => $item::class,
+                'items_id_asset' => $item->getID(),
+                'is_deleted' => false,
+                self::POWER_SUPPLY_FIELD => ['>', 0],
+            ]) : 0;
+            $tabs[$is_plug_host ? 2 : 1] = self::createTabEntry(__('Power connections'), $nb, $item::class);
+        }
+
+        return $is_plug_host && $has_power_supplies ? $tabs : ($tabs[1] ?? '');
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        global $CFG_GLPI;
+
         if (!$item instanceof CommonDBTM) {
             return false;
         }
-        return self::showItems($item);
+
+        $is_plug_host = in_array($item::class, $CFG_GLPI['plug_types'], true);
+        if ($is_plug_host && $tabnum === 1) {
+            return self::showItems($item);
+        }
+        if (
+            $tabnum === ($is_plug_host ? 2 : 1)
+            && in_array(Item_DevicePowerSupply::class, Item_Devices::getItemAffinities($item::class), true)
+        ) {
+            return self::showPowerConnections($item);
+        }
+
+        return false;
     }
 
     public function showForm($ID, array $options = [])
@@ -180,6 +320,10 @@ class Plug extends CommonDBRelation
             'item'              => $this,
             'params'            => $options,
             'entity_restrict'   => $this->isRecursive() ? getSonsOf('glpi_entities', $this->getEntityID()) : $this->getEntityID(),
+            'power_supplies'    => self::getPowerSupplyChoices(
+                $this->fields['itemtype_asset'] ?? '',
+                (int) ($this->fields['items_id_asset'] ?? 0)
+            ),
         ]);
         return true;
     }
@@ -272,6 +416,7 @@ class Plug extends CommonDBRelation
                 'linked_item' => $asset !== null && $plug->fields['items_id_asset'] && $asset->getFromDB($plug->fields['items_id_asset'])
                     ? $asset->getLink()
                     : '',
+                'power_supply' => self::getPowerSupplyLabel((int) ($plug->fields[self::POWER_SUPPLY_FIELD] ?? 0)),
                 'id' => $row['id'],
             ];
         }
@@ -285,11 +430,13 @@ class Plug extends CommonDBRelation
                 'custom_name' => __('Custom name'),
                 'type' => PlugType::getTypeName(0),
                 'linked_item' => __s('Associated asset'),
+                'power_supply' => DevicePowerSupply::getTypeName(1),
             ],
             'formatters' => [
                 'name' => 'raw_html',
                 'custom_name' => 'text',
                 'linked_item' => 'raw_html',
+                'power_supply' => 'text',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -298,6 +445,84 @@ class Plug extends CommonDBRelation
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
                 'container'     => 'mass' . static::class . $rand,
             ],
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Print the PDU plugs connected to an asset.
+     */
+    public static function showPowerConnections(CommonDBTM $item): bool
+    {
+        global $DB;
+
+        $ID = $item->getID();
+        if (
+            !$item->getFromDB($ID)
+            || !$item->can($ID, READ)
+        ) {
+            return false;
+        }
+
+        $items = $DB->request([
+            'SELECT' => ['*'],
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'itemtype_asset' => $item::class,
+                'items_id_asset' => $ID,
+                'is_deleted' => false,
+                self::POWER_SUPPLY_FIELD => ['>', 0],
+            ],
+            'ORDER' => ['id'],
+        ]);
+
+        $entries = [];
+        foreach ($items as $row) {
+            $plug = new Plug();
+            $plug->fields = $row;
+
+            $plug_host = is_a($plug->fields['itemtype_main'], CommonDBTM::class, true)
+                ? new $plug->fields['itemtype_main']()
+                : null;
+            $plug_host_link = '';
+            if (
+                $plug_host !== null
+                && $plug_host->getFromDB((int) $plug->fields['items_id_main'])
+                && $plug_host->can($plug_host->getID(), READ)
+            ) {
+                $plug_host_link = $plug_host->getLink();
+            }
+
+            $entries[] = [
+                'itemtype'    => $plug::class,
+                'id'          => $plug->getID(),
+                'plug_host'   => $plug_host_link,
+                'plug'        => $plug->getLink(),
+                'custom_name' => $plug->fields['custom_name'],
+                'connected_to' => self::getPowerSupplyLabel(
+                    (int) $plug->fields[self::POWER_SUPPLY_FIELD]
+                ),
+            ];
+        }
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'columns' => [
+                'plug_host' => __('Power distribution unit'),
+                'plug' => self::getTypeName(1),
+                'custom_name' => __('Custom name'),
+                'connected_to' => __('Connected to'),
+            ],
+            'formatters' => [
+                'plug_host' => 'raw_html',
+                'plug' => 'raw_html',
+                'custom_name' => 'text',
+                'connected_to' => 'text',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
         ]);
 
         return true;
@@ -400,7 +625,77 @@ class Plug extends CommonDBRelation
             'additionalfields'   => ['itemtype_asset'],
         ];
 
+        $tab[] = [
+            'id'                 => 9,
+            'table'              => $this->getTable(),
+            'field'              => self::POWER_SUPPLY_FIELD,
+            'name'               => DevicePowerSupply::getTypeName(1),
+            'massiveaction'      => false,
+            'datatype'           => 'number',
+            'searchtype'         => 'equals',
+        ];
+
         return $tab;
+    }
+
+    /**
+     * Return the installed power supplies belonging to an asset.
+     *
+     * @return array<int, string>
+     */
+    public static function getPowerSupplyChoices(string $itemtype, int $items_id): array
+    {
+        global $DB;
+
+        if ($items_id <= 0 || !is_a($itemtype, CommonDBTM::class, true)) {
+            return [];
+        }
+
+        $choices = [];
+        $iterator = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => Item_DevicePowerSupply::getTable(),
+            'WHERE'  => [
+                'itemtype'  => $itemtype,
+                'items_id'  => $items_id,
+                'is_deleted' => 0,
+            ],
+            'ORDER'  => ['id'],
+        ]);
+
+        foreach ($iterator as $row) {
+            $choices[(int) $row['id']] = self::getPowerSupplyLabel((int) $row['id']);
+        }
+
+        return $choices;
+    }
+
+    public static function getPowerSupplyLabel(int $power_supply_id): string
+    {
+        if ($power_supply_id <= 0) {
+            return '';
+        }
+
+        $power_supply = new Item_DevicePowerSupply();
+        if (!$power_supply->getFromDB($power_supply_id)) {
+            return '';
+        }
+
+        $device = new DevicePowerSupply();
+        $designation = $device->getFromDB((int) $power_supply->fields['devicepowersupplies_id'])
+            ? $device->getName()
+            : DevicePowerSupply::getTypeName(1);
+
+        $details = [];
+        if (!empty($power_supply->fields['serial'])) {
+            $details[] = sprintf(__('Serial number: %s'), $power_supply->fields['serial']);
+        }
+        if (!empty($power_supply->fields['otherserial'])) {
+            $details[] = sprintf(__('Inventory number: %s'), $power_supply->fields['otherserial']);
+        }
+
+        $label = sprintf('%s (#%d)', $designation, $power_supply_id);
+        return $details === [] ? $label : sprintf('%s — %s', $label, implode(', ', $details));
     }
 
 }

@@ -123,6 +123,12 @@ $migration->addField(
 
 $migration->addField(
     'glpi_plugs',
+    'items_devicepowersupplies_id',
+    'fkey'
+);
+
+$migration->addField(
+    'glpi_plugs',
     'entities_id',
     'fkey'
 );
@@ -144,6 +150,7 @@ $migration->addKey('glpi_plugs', ['itemtype_main', 'items_id_main'], 'main_item'
 $migration->addKey('glpi_plugs', 'autoupdatesystems_id');
 $migration->addKey('glpi_plugs', 'is_dynamic');
 $migration->addKey('glpi_plugs', 'plugtypes_id');
+$migration->addKey('glpi_plugs', 'items_devicepowersupplies_id');
 $migration->addKey('glpi_plugs', 'entities_id');
 $migration->addKey('glpi_plugs', 'is_deleted');
 $migration->addKey('glpi_plugs', 'is_recursive');
