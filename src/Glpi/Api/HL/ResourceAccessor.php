@@ -435,14 +435,30 @@ final class ResourceAccessor
             }
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message, $detail), 500);
         }
-        $has_more = $results['start'] + $results['limit'] < $results['total'];
-        $end = max(0, ($results['start'] + $results['limit'] - 1));
-        if ($end > $results['total']) {
-            $end = $results['total'] - 1;
+        $headers = [];
+        if ($results['cursor_used']) {
+            // The offset of the results is unknown when using a cursor, so a Content-Range header cannot be given
+            $has_more = $results['next_cursor'] !== null;
+        } else {
+            $total = $results['total'] ?? count($results['results']);
+            $has_more = $results['start'] + $results['limit'] < $total;
+            $end = max(0, ($results['start'] + $results['limit'] - 1));
+            if ($end > $total) {
+                $end = $total - 1;
+            }
+            $headers['Content-Range'] = $results['start'] . '-' . $end . '/' . $total;
         }
-        return new JSONResponse($results['results'], $has_more ? 206 : 200, [
-            'Content-Range' => $results['start'] . '-' . $end . '/' . $results['total'],
-        ]);
+        if ($results['prev_cursor'] !== null) {
+            $headers['GLPI-Previous-Cursor'] = $results['prev_cursor'];
+        }
+        if ($results['next_cursor'] !== null) {
+            $headers['GLPI-Next-Cursor'] = $results['next_cursor'];
+        }
+        if ($results['adjacent_cursors'] !== []) {
+            // Keyed by the page offset relative to the current page, plus "last"
+            $headers['GLPI-Adjacent-Cursors'] = json_encode($results['adjacent_cursors'], JSON_THROW_ON_ERROR);
+        }
+        return new JSONResponse($results['results'], $has_more ? 206 : 200, $headers);
     }
 
     /**

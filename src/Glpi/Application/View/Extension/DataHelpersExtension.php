@@ -204,7 +204,7 @@ class DataHelpersExtension extends AbstractExtension
     public function underlineShortcutLetter(string $string, string $shortcut_letter): string
     {
         if (empty($shortcut_letter)) {
-            return $string;
+            return htmlescape($string);
         }
         return Toolbox::shortcut($string, $shortcut_letter);
     }

@@ -160,7 +160,7 @@ trait AssignableItem
             }
         }
         if (Session::haveRight(static::$rightname, READ_OWNED)) {
-            $or += self::getOwnAssetsCriteria($item_table, $relation_table);
+            $or = array_merge($or, self::getOwnAssetsCriteria($item_table, $relation_table));
         }
 
         return ['OR' => $or];

@@ -1418,8 +1418,12 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
                 // Prevent disabling another user account
                 'is_active',
+                'is_deleted',
                 'begin_date',
                 'end_date',
+
+                // Prevent changing the login, that is used to match the user with an external authentication source
+                'name',
 
                 // Prevent changing 2fa settings
                 '2fa',
@@ -1480,6 +1484,14 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 // blank password when authtype changes
                 $input['password'] = '';
             }
+        }
+
+        if (
+            Session::getLoginUserID() !== false // always allow update from backend routines
+            && !Session::haveRight(self::$rightname, self::UPDATEAUTHENT)
+        ) {
+            // prevent unexpected change of the authentication source and of the link with the directory entry
+            unset($input['auths_id'], $input['sync_field'], $input['user_dn'], $input['user_dn_hash']);
         }
 
         // Update User in the database
@@ -2355,7 +2367,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         $group_iterator = $DB->request([
                             'SELECT' => 'id',
                             'FROM'   => 'glpi_groups',
-                            'WHERE'  => ['ldap_group_dn' => $v[$i]['ou']],
+                            'WHERE'  => ['ldap_group_dn' => self::withLegacyHtmlEncodedVariants($v[$i]['ou'])],
                         ]);
 
                         foreach ($group_iterator as $group) {
@@ -2376,7 +2388,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     ) {
                         unset($v[$i][$field]['count']);
                         $lgroups = [];
-                        foreach ($v[$i][$field] as $lgroup) {
+                        foreach (self::withLegacyHtmlEncodedVariants($v[$i][$field]) as $lgroup) {
                             $lgroups[] = [
                                 new QueryExpression('? LIKE `ldap_value`', values: [$lgroup]),
                             ];
@@ -2399,6 +2411,33 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
     }
 
+
+    /**
+     * Add the GLPI 10.x HTML-encoded form of each LDAP value to the list.
+     *
+     * Databases migrated from GLPI 10.x may still contain values that were
+     * HTML-encoded on save (`&` stored as `&#38;`, `<` as `&#60;`, `>` as `&#62;`).
+     * They are decoded when read, but SQL comparisons run against the stored
+     * form, so an LDAP DN like `OU=R&D,...` would never match its group.
+     *
+     * @param array<int|string, mixed> $values Raw values read from LDAP
+     *
+     * @return array<int, mixed>
+     */
+    private static function withLegacyHtmlEncodedVariants(array $values): array
+    {
+        $variants = [];
+        foreach ($values as $value) {
+            $variants[] = $value;
+            if (is_string($value)) {
+                $encoded = str_replace(['&', '<', '>'], ['&#38;', '&#60;', '&#62;'], $value);
+                if ($encoded !== $value) {
+                    $variants[] = $encoded;
+                }
+            }
+        }
+        return $variants;
+    }
 
     /**
      * Function that tries to load the user membership from LDAP
@@ -2460,7 +2499,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 $iterator = $DB->request([
                     'SELECT' => 'id',
                     'FROM'   => 'glpi_groups',
-                    'WHERE'  => ['ldap_group_dn' => $result[$ldap_method["group_member_field"]]],
+                    'WHERE'  => ['ldap_group_dn' => self::withLegacyHtmlEncodedVariants($result[$ldap_method["group_member_field"]])],
                 ]);
 
                 foreach ($iterator as $group) {
@@ -2869,7 +2908,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 $this->fields['_ldap_conn']   = $ldap_connection;
                 //Hook to retrieve more information for ldap
                 $this->fields = Plugin::doHookFunction(Hooks::RETRIEVE_MORE_DATA_FROM_LDAP, $this->fields);
-                unset($this->fields['_ldap_result']);
+                unset($this->fields['_ldap_result'], $this->fields['_ldap_conn']);
             }
 
             return true;
@@ -3270,15 +3309,15 @@ HTML;
         $profiles = [];
         $groups = [];
 
-        if (!empty($ID)) {
+        if (!$this->isNewItem()) {
             if ($higherrights || $ismyself) {
                 $profiles = Dropdown::getDropdownArrayNames(
                     'glpi_profiles',
-                    Profile_User::getUserProfiles($this->fields['id'])
+                    Profile_User::getUserProfiles($this->getID())
                 );
             }
             if ($higherrights) {
-                foreach (Group_User::getUserGroups($this->fields['id']) as $group) {
+                foreach (Group_User::getUserGroups($this->getID()) as $group) {
                     $groups[$group['id']] = $group['completename'];
                 }
             }
@@ -7123,7 +7162,7 @@ HTML;
             && ($anon = $this->getAnonymizedName()) !== null
         ) {
             // if anonymized name active, return only the anonymized name
-            return $anon;
+            return htmlescape($anon);
         }
 
         return $this->getLink($options);

@@ -38,6 +38,7 @@ use Glpi\DBAL\Parts\Select;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Debug\Profile;
 use Glpi\Exception\Database\StatementException;
 use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -81,6 +82,43 @@ class DBTest extends GLPITestCase
             'Table fakeTable does not exist',
             LogLevel::WARNING
         );
+    }
+
+    public function testWarningsRaisedWhileReadingStatementResult(): void
+    {
+        global $DB;
+
+        // Comparing a numeric column to an empty string produces a warning while the rows are read
+        iterator_to_array($DB->request([
+            'FROM'  => 'glpi_crontasks',
+            'WHERE' => ['frequency' => ''],
+        ]));
+        $this->hasPhpLogRecordThatContains(
+            'Truncated incorrect', // value type differs between MySQL and MariaDB
+            LogLevel::WARNING
+        );
+    }
+
+    public function testWarningsRaisedWhileReadingStatementResultInDebugProfile(): void
+    {
+        global $DB;
+
+        $use_mode = $_SESSION['glpi_use_mode'];
+        $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
+        try {
+            iterator_to_array($DB->request([
+                'FROM'  => 'glpi_crontasks',
+                'WHERE' => ['frequency' => ''],
+            ]));
+        } finally {
+            $_SESSION['glpi_use_mode'] = $use_mode;
+        }
+        $this->hasPhpLogRecordThatContains('Truncated incorrect', LogLevel::WARNING);
+
+        $queries = Profile::getCurrent()->getDebugInfo()['sql']['queries'];
+        $query = end($queries);
+        $this->assertStringContainsString('`glpi_crontasks`', $query['raw_query']);
+        $this->assertStringContainsString('Truncated incorrect', $query['warnings']);
     }
 
     public static function nameProvider()

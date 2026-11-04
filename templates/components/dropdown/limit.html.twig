@@ -47,7 +47,7 @@
       {% set tab_params = 'glpilist_limit=%value%' ~ additional_params %}
    {% elseif href is defined %}
       {% set href_separator = '?' in href ? '&' : '?' %}
-      {% set href = "location.href='" ~ href ~ href_separator ~ "glpilist_limit='+this.value+'" ~ additional_params ~ "'" %}
+      {% set href = "location.href='" ~ href|e('js') ~ href_separator ~ "glpilist_limit='+this.value+'" ~ additional_params|e('js') ~ "'" %}
    {% endif %}
 {% endif %}
 

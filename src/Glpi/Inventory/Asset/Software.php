@@ -648,7 +648,7 @@ class Software extends InventoryAsset
                     $input['manufacturers_id'],
                 ]
             );
-            $results = $stmt->get_result();
+            $results = $DB->getStatementResult($stmt);
 
             if ($row = $results->fetch_object()) {
                 $this->softwares[$key] = $row->id;
@@ -714,7 +714,8 @@ class Software extends InventoryAsset
                 'version'      => $val->version,
                 'arch'         => $val->arch ?? '',
                 'softwares_id' => $softwares_id,
-                'osid'         => $this->getOsForKey($val),
+                // `%` (any OS) is cast to `0` by the DB server when compared to the integer `operatingsystems_id` field
+                'osid'         => (int) $this->getOsForKey($val),
             ];
 
             $DB->executeStatement(
@@ -727,7 +728,7 @@ class Software extends InventoryAsset
                     $input['osid'],
                 ]
             );
-            $results = $stmt->get_result();
+            $results = $DB->getStatementResult($stmt);
 
             while ($row = $results->fetch_object()) {
                 $this->versions[$key] = $row->id;

@@ -67,7 +67,7 @@ class RuleImportAssetCollection extends RuleCollection
                     $types = $CFG_GLPI['ruleimportasset_types'];
                     foreach ($types as $type) {
                         if (class_exists($type)) {
-                            $ong[$type] = $type::getTypeName(Session::getPluralNumber());
+                            $ong[$type] = htmlescape($type::getTypeName(Session::getPluralNumber()));
                         }
                     }
                     $ong['_global'] = self::createTabEntry(__('Global'));

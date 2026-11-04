@@ -278,6 +278,15 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return true;
     }
 
+    public static function getMenuContent()
+    {
+        // canView() is always true, so the menu entry must rely on the profile right.
+        if (!Session::haveRight(self::$rightname, READ)) {
+            return [];
+        }
+        return parent::getMenuContent();
+    }
+
     public function canViewItem(): bool
     {
         if ($this->fields['is_private'] == 1) {
@@ -357,7 +366,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             'massiveaction' => false,
             'joinparams'    => [
                 'jointype'  => 'child',
-                'condition' => ['NEWTABLE.users_id' => Session::getLoginUserID()],
+                'condition' => ['NEWTABLE.users_id' => (int) Session::getLoginUserID()],
             ],
             'datatype'      => 'specific',
             'searchtype'    => [

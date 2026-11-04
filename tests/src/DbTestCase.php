@@ -742,9 +742,10 @@ class DbTestCase extends GLPITestCase
             'profiles_id' => getItemByTypeName(Profile::class, $profile, true),
             'name' => $right,
         ]);
-        $this->updateItem(ProfileRight::class, $profile_right->fields['id'], [
+        // Fixture setup: bypass the "cannot grant rights you do not have" check of the logged-in user.
+        Session::callAsSystem(fn() => $this->updateItem(ProfileRight::class, $profile_right->fields['id'], [
             'rights' => $profile_right->fields['rights'] | $value,
-        ]);
+        ]));
     }
 
     protected function removeRightFromProfile(
@@ -757,9 +758,10 @@ class DbTestCase extends GLPITestCase
             'profiles_id' => getItemByTypeName(Profile::class, $profile, true),
             'name' => $right,
         ]);
-        $this->updateItem(ProfileRight::class, $profile_right->fields['id'], [
+        // Fixture setup: bypass the "cannot grant rights you do not have" check of the logged-in user.
+        Session::callAsSystem(fn() => $this->updateItem(ProfileRight::class, $profile_right->fields['id'], [
             'rights' => $profile_right->fields['rights'] & ~$value,
-        ]);
+        ]));
     }
 
     protected function addDocumentToItem(
