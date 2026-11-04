@@ -6,7 +6,29 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      github-actions:
+        patterns: ["*"]
 
+  # 11.0/bugfixes branch
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    target-branch: "11.0/bugfixes"
+    groups:
+      github-actions:
+        patterns: ["*"]
+
+  # main branch
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    target-branch: "main"
+    groups:
+      github-actions:
+        patterns: ["*"]
 
   # 11.0/bugfixes branch
   # -> patch (bugfixes) updates for both production and developement dependencies (new policy applied since GLPI 11.0)
