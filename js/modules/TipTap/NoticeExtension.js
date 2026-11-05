@@ -194,6 +194,14 @@ export const Notice = Node.create({
                         .find((meta) => meta?.text !== undefined);
                     if (input) {
                         setTimeout(() => {
+                            // Enter also runs the input rules: replay it as a line break, not as text.
+                            if (input.text === '\n') {
+                                this.editor.commands.first(({ commands }) => [
+                                    () => commands.splitListItem('listItem'),
+                                    () => commands.splitBlock(),
+                                ]);
+                                return;
+                            }
                             const { view } = this.editor;
                             view.dispatch(view.state.tr.insertText(input.text, input.from, input.to));
                         });
@@ -209,7 +217,8 @@ export const Notice = Node.create({
             // On an empty line in the middle of a notice, add a line instead of splitting the notice.
             Enter: () => {
                 const { $from, empty } = this.editor.state.selection;
-                if (!empty || $from.depth < 2 || $from.parent.content.size !== 0) {
+                // In a code block, Enter adds a new line in the code.
+                if (!empty || $from.depth < 2 || $from.parent.content.size !== 0 || $from.parent.type.spec.code) {
                     return false;
                 }
                 const notice = $from.node(-1);
