@@ -160,7 +160,8 @@ class Notification extends CommonDBTM implements FilterableInterface
     // Notification to the technician in charge of the contracts linked to the ticket
     public const CONTRACT_TECH_IN_CHARGE             = 49;
     // Notification to the group in charge of the contracts linked to the ticket
-    public const CONTRACT_TECH_GROUP_IN_CHARGE       = 50;
+    // 50 to 55 are skipped: already used as USER_TYPE recipients by the behaviors plugin
+    public const CONTRACT_TECH_GROUP_IN_CHARGE       = 56;
 
     // From CommonDBTM
     public bool $dohistory = true;
