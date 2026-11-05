@@ -120,13 +120,11 @@ class AuthLDAP extends CommonDBTM
     public const RESTORED_USER_ENABLE  = 3;
 
     /**
-     * List of TLS versions
+     * List of supported TLS versions
      * @var array
      * @since 11.0.0
      */
     public const TLS_VERSIONS = [
-        '1.0' => '1.0',
-        '1.1' => '1.1',
         '1.2' => '1.2',
         '1.3' => '1.3',
     ];
