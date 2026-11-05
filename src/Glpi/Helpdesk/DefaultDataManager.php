@@ -269,7 +269,7 @@ final class DefaultDataManager
                 }
 
                 // Store to database
-                $add_translation_stmt->execute([
+                $DB->executeStatement($add_translation_stmt, [
                     $value_to_translate->getItem()::class,
                     $value_to_translate->getItem()->getID(),
                     $value_to_translate->getKey(),
