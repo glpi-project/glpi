@@ -105,6 +105,17 @@ body.mce-content-body {
     }
 }
 
+// Prevent pasted inline positioning from escaping timeline items and overlaying the page.
+.itil-timeline .rich_text_container {
+    [style*="position"] {
+        position: static !important;
+    }
+
+    [style*="transform"] {
+        transform: none !important;
+    }
+}
+
 .user-mention,
 [data-user-mention="true"] {
     background: rgb(0, 0, 0, 20%);
