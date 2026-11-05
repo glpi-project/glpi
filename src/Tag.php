@@ -591,7 +591,7 @@ class Tag extends CommonDropdown
 
         $action_prefix = Tag_Item::class . MassiveAction::CLASS_ACTION_SEPARATOR;
 
-        $actions[$action_prefix . 'add']    = "<i class='ti ti-tag-plus'></i>" . _sx('button', 'Add a tag');
-        $actions[$action_prefix . 'remove'] = "<i class='ti ti-tag-minus'></i>" . _sx('button', 'Remove a tag');
+        $actions[$action_prefix . 'add']    = "<i class='ti ti-tag-plus' aria-hidden='true'></i>" . _sx('button', 'Add a tag');
+        $actions[$action_prefix . 'remove'] = "<i class='ti ti-tag-minus' aria-hidden='true'></i>" . _sx('button', 'Remove a tag');
     }
 }

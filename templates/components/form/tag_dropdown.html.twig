@@ -42,7 +42,7 @@
         <div class="btn btn-outline-secondary" title="{{ __('Add') }}" data-bs-toggle="modal" data-bs-target="#add_{{ field_id }}">
             {{ call('Ajax::createIframeModalWindow', ['add_' ~ field_id, call('Tag::getFormURL'), {'display': false}])|raw }}
             <span data-bs-toggle="tooltip">
-                <i class="ti ti-plus"></i>
+                <i class="ti ti-plus" aria-hidden="true"></i>
                 <span class="visually-hidden">{{ __('Add') }}</span>
             </span>
         </div>
