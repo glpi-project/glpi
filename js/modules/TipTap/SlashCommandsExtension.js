@@ -220,7 +220,7 @@ const SLASH_COMMANDS = [
     },
     ...Object.entries(NOTICE_TYPES).map(([type, { label }]) => ({
         title: label,
-        icon: getNoticeIconClass(type),
+        icon: `${getNoticeIconClass(type)} text-${type}`,
         group: 'notices',
         node: 'notice',
         command: (editor, range) => editor.chain().focus().deleteRange(range).setNotice(type).run(),

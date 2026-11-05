@@ -77,7 +77,7 @@ class GetTranslationContentControllerTest extends DbTestCase
             'knowbaseitems_id' => $kbitem->getID(),
             'language'         => 'fr_FR',
             'name'             => 'Traduit',
-            'answer'           => '<div class="kb-notice kb-notice-tip"><p>Astuce</p></div>',
+            'answer'           => '<div class="kb-notice kb-notice-danger"><div class="kb-notice-content"><p>Attention</p></div></div>',
         ]);
 
         $request = Request::create('/Knowbase/KnowbaseItem/' . $kbitem->getID() . '/Translation/fr_FR');
@@ -87,6 +87,6 @@ class GetTranslationContentControllerTest extends DbTestCase
 
         $answer = json_decode($response->getContent(), true)['answer'];
         $this->assertStringContainsString('role="note"', $answer);
-        $this->assertStringContainsString('kb-notice-icon-tip', $answer);
+        $this->assertStringContainsString('alert alert-danger', $answer);
     }
 }

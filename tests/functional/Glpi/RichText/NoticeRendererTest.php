@@ -43,32 +43,32 @@ class NoticeRendererTest extends GLPITestCase
     public static function renderAllProvider(): iterable
     {
         yield 'Info' => [
-            'content'  => '<div class="kb-notice kb-notice-info"><p>Text</p></div>',
-            'expected' => '<div class="kb-notice kb-notice-info" role="note" aria-label="Info notice">'
-                . '<i class="ti ti-info-circle-filled kb-notice-icon kb-notice-icon-info" aria-hidden="true"></i>'
-                . '<p>Text</p></div>',
+            'content'  => '<div class="kb-notice kb-notice-info"><div class="kb-notice-content"><p>Text</p></div></div>',
+            'expected' => '<div class="alert alert-info kb-notice kb-notice-info" role="note" aria-label="Info notice">'
+                . '<i class="ti ti-info-circle-filled kb-notice-icon alert-icon" aria-hidden="true"></i>'
+                . '<div class="kb-notice-content"><p>Text</p></div></div>',
         ];
         yield 'Success' => [
-            'content'  => '<div class="kb-notice kb-notice-success"><p>Text</p></div>',
-            'expected' => '<div class="kb-notice kb-notice-success" role="note" aria-label="Success notice">'
-                . '<i class="ti ti-circle-check-filled kb-notice-icon kb-notice-icon-success" aria-hidden="true"></i>'
-                . '<p>Text</p></div>',
+            'content'  => '<div class="kb-notice kb-notice-success"><div class="kb-notice-content"><p>Text</p></div></div>',
+            'expected' => '<div class="alert alert-success kb-notice kb-notice-success" role="note" aria-label="Success notice">'
+                . '<i class="ti ti-circle-check-filled kb-notice-icon alert-icon" aria-hidden="true"></i>'
+                . '<div class="kb-notice-content"><p>Text</p></div></div>',
         ];
         yield 'Warning' => [
-            'content'  => '<div class="kb-notice kb-notice-warning"><p>Text</p></div>',
-            'expected' => '<div class="kb-notice kb-notice-warning" role="note" aria-label="Warning notice">'
-                . '<i class="ti ti-alert-circle-filled kb-notice-icon kb-notice-icon-warning" aria-hidden="true"></i>'
-                . '<p>Text</p></div>',
+            'content'  => '<div class="kb-notice kb-notice-warning"><div class="kb-notice-content"><p>Text</p></div></div>',
+            'expected' => '<div class="alert alert-warning kb-notice kb-notice-warning" role="note" aria-label="Warning notice">'
+                . '<i class="ti ti-alert-triangle-filled kb-notice-icon alert-icon" aria-hidden="true"></i>'
+                . '<div class="kb-notice-content"><p>Text</p></div></div>',
         ];
-        yield 'Tip' => [
-            'content'  => '<div class="kb-notice kb-notice-tip"><p>Text</p></div>',
-            'expected' => '<div class="kb-notice kb-notice-tip" role="note" aria-label="Tip notice">'
-                . '<i class="ti ti-star-filled kb-notice-icon kb-notice-icon-tip" aria-hidden="true"></i>'
-                . '<p>Text</p></div>',
+        yield 'Danger' => [
+            'content'  => '<div class="kb-notice kb-notice-danger"><div class="kb-notice-content"><p>Text</p></div></div>',
+            'expected' => '<div class="alert alert-danger kb-notice kb-notice-danger" role="note" aria-label="Danger notice">'
+                . '<i class="ti ti-exclamation-circle-filled kb-notice-icon alert-icon" aria-hidden="true"></i>'
+                . '<div class="kb-notice-content"><p>Text</p></div></div>',
         ];
         yield 'Unknown type is left as is' => [
-            'content'  => '<div class="kb-notice kb-notice-danger"><p>Text</p></div>',
-            'expected' => '<div class="kb-notice kb-notice-danger"><p>Text</p></div>',
+            'content'  => '<div class="kb-notice kb-notice-tip"><p>Text</p></div>',
+            'expected' => '<div class="kb-notice kb-notice-tip"><p>Text</p></div>',
         ];
         yield 'Content without notice is left as is' => [
             'content'  => '<p>Text</p>',

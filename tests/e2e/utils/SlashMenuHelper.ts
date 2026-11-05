@@ -46,7 +46,7 @@ export type SlashCommand =
     | 'Info notice'
     | 'Success notice'
     | 'Warning notice'
-    | 'Tip notice'
+    | 'Danger notice'
     | 'Image'
     | 'Video';
 

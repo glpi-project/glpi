@@ -890,7 +890,7 @@ body.in_modal .kb-editor-reserved {
     }
 
     .slash-menu-separator {
-        border-top: 1px solid var(--tblr-border-color);
+        border-block-start: 1px solid var(--tblr-border-color);
         margin: 0.25rem 0;
     }
 
@@ -901,52 +901,57 @@ body.in_modal .kb-editor-reserved {
     }
 }
 
-// Notices: global, as KB answers are also shown outside the KB view
-$kb-notice-colors: (
-    info: blue,
-    success: green,
-    warning: yellow,
-    tip: indigo,
-);
-
-@each $type, $color in $kb-notice-colors {
-    .kb-notice-#{$type},
-    .kb-notice-icon-#{$type} {
-        --kb-notice-color: var(--tblr-#{$color});
-    }
-}
-
-// Mixed with the text color to keep a readable contrast in both themes.
-.kb-notice-icon {
-    color: color-mix(in srgb, var(--kb-notice-color) 70%, var(--tblr-body-color));
-}
-
+// Notices: global, as KB answers are also shown outside the KB view.
+// The look comes from the Tabler alert classes, added at render time.
 .kb-notice {
-    position: relative;
-    margin: 1rem 0;
-    padding: 0.75rem 1rem 0.75rem 2.75rem;
-    border: 1px solid color-mix(in srgb, var(--kb-notice-color) 30%, transparent);
-    border-radius: var(--tblr-border-radius);
-    background: color-mix(in srgb, var(--kb-notice-color) 10%, transparent);
-
-    // Absolute, as the server render puts the icon next to the blocks, without a wrapper.
     > .kb-notice-icon {
-        position: absolute;
-        top: 0.75rem;
-        left: 1rem;
         font-size: 1.25rem;
-        line-height: 1.5rem;
+        line-height: 1.25rem;
         user-select: none;
     }
 
-    > .kb-notice-icon + *,
-    > .kb-notice-content > :first-child {
-        margin-top: 0;
+    > .kb-notice-content {
+        flex: 1 1 auto;
+        min-width: 0;
     }
 
-    > :last-child,
-    > .kb-notice-content > :last-child {
-        margin-bottom: 0;
+    > .kb-notice-content,
+    &:not(:has(> .kb-notice-content)) {
+        > :first-child,
+        > .kb-notice-icon + * {
+            margin-block-start: 0;
+        }
+
+        > :last-child {
+            margin-block-end: 0;
+        }
+    }
+
+    // Older answers have no content wrapper: keep their blocks stacked under the flex alert.
+    &.alert:not(:has(> .kb-notice-content)) {
+        display: block;
+        padding-inline-start: calc(2 * var(--tblr-alert-padding-x) + 1.25rem);
+
+        > .kb-notice-icon {
+            position: absolute;
+            inset-block-start: var(--tblr-alert-padding-y);
+            inset-inline-start: var(--tblr-alert-padding-x);
+        }
+    }
+
+    // Views that show the stored HTML without the alert classes, like the ticket editor.
+    &:not(.alert) {
+        margin-block: 1rem;
+        padding: 0.75rem 1rem;
+        border: var(--tblr-border-width) solid color-mix(in srgb, var(--kb-notice-color) 20%, transparent);
+        border-radius: var(--tblr-border-radius);
+        background-color: color-mix(in srgb, var(--kb-notice-color) 10%, var(--tblr-bg-surface));
+    }
+
+    @each $type in info, success, warning, danger {
+        &.kb-notice-#{$type} {
+            --kb-notice-color: var(--tblr-#{$type});
+        }
     }
 }
 
