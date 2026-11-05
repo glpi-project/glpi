@@ -1916,6 +1916,18 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $allowed_fields[] = '_prefix_content';
                     $allowed_fields[] = 'takeintoaccount_delay_stat';
                     $allowed_fields[] = 'takeintoaccountdate';
+
+                    // Requesters and observers are allowed by `transformActorsInput()` under the same condition
+                    foreach (['requester', 'observer'] as $actor_type) {
+                        foreach ([User::class, Group::class, Supplier::class] as $actor_itemtype) {
+                            $input_key = sprintf('_%s_%s', getForeignKeyFieldForItemType($actor_itemtype), $actor_type);
+                            $allowed_fields[] = $input_key;
+                            $allowed_fields[] = $input_key . '_deleted';
+                            if ($actor_itemtype !== Group::class) {
+                                $allowed_fields[] = $input_key . '_notif';
+                            }
+                        }
+                    }
                 }
                 if (isset($input['_do_update_date_mod'])) {
                     $allowed_fields[] = 'date_mod';
