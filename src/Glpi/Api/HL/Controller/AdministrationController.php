@@ -36,6 +36,8 @@
 namespace Glpi\Api\HL\Controller;
 
 use Auth;
+use Change;
+use ChangeTemplate;
 use CommonDBTM;
 use CommonITILObject;
 use Entity;
@@ -52,8 +54,12 @@ use Glpi\Http\Response;
 use Glpi\UI\ThemeManager;
 use Group;
 use Planning;
+use Problem;
+use ProblemTemplate;
 use Profile;
 use Session;
+use Ticket;
+use TicketTemplate;
 use Toolbox;
 use User;
 use UserCategory;
@@ -72,6 +78,25 @@ final class AdministrationController extends AbstractController
     public static function getRawKnownSchemas(): array
     {
         global $DB;
+
+        $ticket_status_description = '';
+        $change_status_description = '';
+        $problem_status_description = '';
+        $ticket_statuses = Ticket::getAllStatusArray();
+        ksort($ticket_statuses, SORT_NUMERIC);
+        $change_statuses = Change::getAllStatusArray();
+        ksort($change_statuses, SORT_NUMERIC);
+        $problem_statuses = Problem::getAllStatusArray();
+        ksort($problem_statuses, SORT_NUMERIC);
+        foreach ($ticket_statuses as $status => $status_name) {
+            $ticket_status_description .= "- $status: $status_name\n";
+        }
+        foreach ($change_statuses as $status => $status_name) {
+            $change_status_description .= "- $status: $status_name\n";
+        }
+        foreach ($problem_statuses as $status => $status_name) {
+            $problem_status_description .= "- $status: $status_name\n";
+        }
 
         $schemas = [
             'User' => [
@@ -653,6 +678,59 @@ EOT,
                         'x-field' => '2fa_enforced',
                         'type' => Doc\Schema::TYPE_BOOLEAN,
                         'description' => 'Is two-factor authentication enforced for this profile',
+                    ],
+                    'interface' => [
+                        'x-version-introduced' => '2.4.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'enum' => ['helpdesk', 'central'],
+                        'description' => 'Interface type for this profile. helpdesk: Simplified Interface, central: Standard Interface',
+                    ],
+                    'ticket_status' => [
+                        'x-version-introduced' => '2.4.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => <<<EOT
+A JSON-encoded string which indicates the ticket status changes allowed by this profile. An empty array indicates all changed are allowed. The keys are the current ticket statuses, and the values are objects where the keys are the new status and the values are 0 to indicate is isn\'t allowed or 1 to indicate it is. Omitted new statuses are allowed.
+$ticket_status_description
+EOT,
+                    ],
+                    'change_status' => [
+                        'x-version-introduced' => '2.4.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => <<<EOT
+A JSON-encoded string which indicates the change status changes allowed by this profile. An empty array indicates all changed are allowed. The keys are the current change statuses, and the values are objects where the keys are the new status and the values are 0 to indicate is isn\'t allowed or 1 to indicate it is. Omitted new statuses are allowed.
+$change_status_description
+EOT,
+                    ],
+                    'problem_status' => [
+                        'x-version-introduced' => '2.4.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => <<<EOT
+A JSON-encoded string which indicates the problem status changes allowed by this profile. An empty array indicates all changed are allowed. The keys are the current problem statuses, and the values are objects where the keys are the new status and the values are 0 to indicate is isn\'t allowed or 1 to indicate it is. Omitted new statuses are allowed.
+$problem_status_description
+EOT,
+                    ],
+                    'use_mentions' => [
+                        'x-version-introduced' => '2.4.0',
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Whether this profile can use mentions in tickets, changes, and problems',
+                    ],
+                    'create_ticket_on_login' => [
+                        'x-version-introduced' => '2.4.0',
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Whether this profile sees the service catalog (simplified interface) or the new ticket form (standard interface) when logging in',
+                    ],
+                    'default_ticket_template' => self::getDropdownTypeSchema(class: TicketTemplate::class, full_schema: 'TicketTemplate', params: ['x-version-introduced' => '2.4.0']),
+                    'default_change_template' => self::getDropdownTypeSchema(class: ChangeTemplate::class, full_schema: 'ChangeTemplate', params: ['x-version-introduced' => '2.4.0']),
+                    'default_problem_template' => self::getDropdownTypeSchema(class: ProblemTemplate::class, full_schema: 'ProblemTemplate', params: ['x-version-introduced' => '2.4.0']),
+                    'date_creation' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'x-version-introduced' => '2.4.0',
+                    ],
+                    'date_mod' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'x-version-introduced' => '2.4.0',
                     ],
                 ],
             ],
