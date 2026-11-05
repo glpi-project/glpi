@@ -855,6 +855,26 @@ class Contract extends CommonDBTM implements StateInterface
             ],
         ];
 
+        $tab[] = [
+            'id'                 => '70',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'linkfield'          => 'users_id_tech',
+            'name'               => __('Technician in charge'),
+            'datatype'           => 'dropdown',
+            'right'              => 'own_ticket',
+        ];
+
+        $tab[] = [
+            'id'                 => '71',
+            'table'              => 'glpi_groups',
+            'field'              => 'completename',
+            'linkfield'          => 'groups_id_tech',
+            'name'               => __('Group in charge'),
+            'condition'          => ['is_assign' => 1],
+            'datatype'           => 'dropdown',
+        ];
+
         return $tab;
     }
 
