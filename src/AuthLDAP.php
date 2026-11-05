@@ -2765,7 +2765,11 @@ TWIG, $twig_params);
                                 $input['add'] = 1;
                             }
 
-                            $user->fields["id"] = $user->add($input);
+                            $new_id = $user->add($input);
+                            if ($new_id === false) {
+                                return false;
+                            }
+                            $user->fields["id"] = $new_id;
                             return ['action' => self::USER_IMPORTED,
                                 'id'     => $user->fields["id"],
                             ];

@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use AuthLDAP;
+use FieldUnicity;
 use Glpi\DBAL\QueryExpression;
 use Glpi\OAuth\Client;
 use Glpi\OAuth\UserRepository;
@@ -898,6 +899,44 @@ class AuthLdapTest extends DbTestCase
 
         $this->assertGreaterThan(0, (int) $user->fields['usertitles_id']);
         $this->assertGreaterThan(0, (int) $user->fields['usercategories_id']);
+    }
+
+    #[RequiresPhpExtension('ldap')]
+    public function testRefusedImportIsNotReportedAsImported(): void
+    {
+        $this->login();
+
+        // Make the import fail on a unicity check against an existing local user
+        $this->createItem(FieldUnicity::class, [
+            'name'          => 'User login uniqueness',
+            'itemtype'      => \User::class,
+            '_fields'       => ['name'],
+            'entities_id'   => 0,
+            'is_recursive'  => 1,
+            'is_active'     => 1,
+            'action_refuse' => 1,
+        ], ['_fields']);
+        $users_id = $this->createItem(\User::class, ['name' => 'ecuador0'])->getID();
+
+        // Same call as the CLI synchronization command (ldap:synchronize_users)
+        $import = AuthLDAP::ldapImportUserByServerId(
+            [
+                'method' => AuthLDAP::IDENTIFIER_LOGIN,
+                'value'  => 'ecuador0',
+            ],
+            AuthLDAP::ACTION_IMPORT,
+            $this->ldap->getID(),
+            false,
+            true
+        );
+        $this->assertFalse($import);
+        $this->hasSessionMessageThatContains('Impossible record for Login = ecuador0', ERROR);
+
+        // No user has been created, the existing one is untouched
+        $this->assertSame(1, countElementsInTable(\User::getTable(), ['name' => 'ecuador0']));
+        $user = new \User();
+        $this->assertTrue($user->getFromDB($users_id));
+        $this->assertEmpty($user->fields['user_dn']);
     }
 
     /**
