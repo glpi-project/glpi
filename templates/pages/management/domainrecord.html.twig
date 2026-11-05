@@ -58,6 +58,8 @@
     {% endif %}
     {{ fields.textField('name', item.fields['name'], __('Name')) }}
 
+    {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number())) }}
+
     {{ fields.dropdownField(
         'DomainRecordType',
         'domainrecordtypes_id',

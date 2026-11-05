@@ -35,7 +35,11 @@
 
 {% block form_fields %}
     {{ fields.textField('name', item.fields['name'], __('Name')) }}
+
+    {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number())) }}
+
     {{ fields.textareaField('comment', item.fields['comment'], _n('Comment', 'Comments', get_plural_number())) }}
+    {{ fields.nullField() }}
     {% block more_fields %}
         {{ fields.checkboxField('is_default', item.fields['is_default'], __('Default profile')) }}
         {{ fields.nullField() }}

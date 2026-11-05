@@ -386,7 +386,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param DBmysqlIterator $iter Iterator instance
      *
-     * @return iterable<CommonDBTM>
+     * @return iterable<static>
      */
     public static function getFromIter(DBmysqlIterator $iter)
     {
@@ -1408,6 +1408,7 @@ class CommonDBTM extends CommonGLPI
                     }
 
                     $this->post_addItem();
+                    $this->handleTags();
                     if ($this instanceof CacheableListInterface) {
                         $this->invalidateListCache();
                     }
@@ -1831,6 +1832,7 @@ class CommonDBTM extends CommonGLPI
                 }
 
                 $this->post_updateItem($history);
+                $this->handleTags();
                 if ($this instanceof CacheableListInterface) {
                     $this->invalidateListCache();
                 }
@@ -2201,6 +2203,7 @@ class CommonDBTM extends CommonGLPI
                 if ($force) {
                     $this->addMessageOnPurgeAction();
                     $this->post_purgeItem();
+                    Tag_Item::cleanTag($this);
                     if ($this instanceof CacheableListInterface) {
                         $this->invalidateListCache();
                     }
@@ -6930,5 +6933,50 @@ class CommonDBTM extends CommonGLPI
             $item->post_getFromDB();
             yield $item;
         }
+    }
+
+    /**
+     * Synchronize tag associations from the `_tags` input (list of tag IDs) for taggable itemtypes.
+     *
+     * @return void
+     */
+    private function handleTags(): void
+    {
+        // Check if the itemtype is taggable and if the `_tags` input is set
+        if (!isset($this->input['_tags']) || !$this->isTaggable()) {
+            return;
+        }
+
+        // If the `_tags` input is empty, remove all existing tag associations
+        if (empty($this->input['_tags'])) {
+            Tag_Item::cleanTag($this);
+            return;
+        }
+
+        // Convert the `_tags` input to an array and get the old tag associations
+        $tags_id_input = array_map('intval', $this->input['_tags']);
+        $old_tags_ids = Tag_Item::getTagsForItem($this);
+
+        // Remove old tag associations
+        foreach ($old_tags_ids as $tags_id) {
+            if (!in_array($tags_id, $tags_id_input, true)) {
+                Tag_Item::removeTag($this, $tags_id);
+            }
+        }
+
+        // Add new tag associations
+        foreach ($tags_id_input as $tags_id) {
+            if (!in_array($tags_id, $old_tags_ids, true)) {
+                Tag_Item::addTag($this, $tags_id);
+            }
+        }
+    }
+
+    /**
+     * Check if the current itemtype is taggable.
+     */
+    public function isTaggable(): bool
+    {
+        return Tag_Itemtype::isTaggableItemtype($this::class);
     }
 }
