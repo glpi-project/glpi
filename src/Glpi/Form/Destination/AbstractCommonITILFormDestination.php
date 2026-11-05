@@ -40,6 +40,7 @@ use Document;
 use Exception;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\PrepareForCloneInterface;
+use Glpi\Form\Answer;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Clone\FormCloneHelper;
 use Glpi\Form\Destination\CommonITILField\AssigneeField;
@@ -57,6 +58,7 @@ use Glpi\Form\Destination\CommonITILField\ObserverField;
 use Glpi\Form\Destination\CommonITILField\RequesterField;
 use Glpi\Form\Destination\CommonITILField\RequestSourceField;
 use Glpi\Form\Destination\CommonITILField\RequestTypeField;
+use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
 use Glpi\Form\Destination\CommonITILField\TemplateField;
 use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Destination\CommonITILField\UrgencyField;
@@ -65,7 +67,9 @@ use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeFile;
+use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\FormTagsManager;
+use Glpi\Form\Tag\FullFormTagProvider;
 use Override;
 use ReflectionClass;
 use Session;
@@ -212,7 +216,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         }
 
         // Add linked items
-        $input = $this->setFilesInput($input, $answers_set);
+        $input = $this->setFilesInput($input, $form, $config, $answers_set);
 
         // Create commonitil object
         // We use 'callAsSystem' here because Ticket::prepareInputForAdd() has
@@ -496,19 +500,31 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         return $input;
     }
 
-    private function setFilesInput(array $input, AnswersSet $answers_set): array
-    {
+    /**
+     * @param array<string, mixed> $config
+     */
+    private function setFilesInput(
+        array $input,
+        Form $form,
+        array $config,
+        AnswersSet $answers_set,
+    ): array {
         // Nothing to do if no file was submitted with the form
         $files = $answers_set->getSubmittedFiles();
         if ($files === [] || empty($files['filename'])) {
             return $input;
         }
 
-        // Collect the "File" questions and the documents created from their answers
-        $file_questions_ids = [];
-        $documents_ids      = [];
-        foreach ($answers_set->getAnswersByType(QuestionTypeFile::class) as $answer) {
-            $file_questions_ids[] = $answer->getQuestionId();
+        // Collect all the "File" questions, even those not meant for this
+        // destination, as their files must never be uploaded again
+        $file_questions_ids = array_map(
+            fn(Answer $answer) => $answer->getQuestionId(),
+            $answers_set->getAnswersByType(QuestionTypeFile::class)
+        );
+
+        // Collect the documents created from the answers meant for this destination
+        $documents_ids = [];
+        foreach ($this->getFileAnswersForDestination($form, $config, $answers_set) as $answer) {
             array_push($documents_ids, ...$answer->getRawAnswer());
         }
 
@@ -531,6 +547,120 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         $input['_tag_filename']    = array_values($files['tag']);
 
         return $input;
+    }
+
+    /**
+     * Get the "File" answers whose documents must be linked to this destination.
+     *
+     * A "File" question whose answer is tagged in some of the created destinations
+     * only goes to these destinations. A "File" question that is not tagged in
+     * any created destination goes to all destinations.
+     *
+     * @param array<string, mixed> $config
+     * @return Answer[]
+     */
+    private function getFileAnswersForDestination(
+        Form $form,
+        array $config,
+        AnswersSet $answers_set,
+    ): array {
+        $file_answers = $answers_set->getAnswersByType(QuestionTypeFile::class);
+        if ($file_answers === [] || $this->isUsingWholeForm($form, $config)) {
+            return $file_answers;
+        }
+
+        $tagged_here     = $this->getTaggedQuestionIds($form, $config);
+        $tagged_anywhere = [];
+        $creation_output = $answers_set->getCreationOutput();
+        foreach ($form->getDestinations() as $destination) {
+            // Destinations that won't be created must not take files away from the others
+            if ($creation_output !== null && !$creation_output->itemMustBeCreated($destination)) {
+                continue;
+            }
+
+            $concrete_destination = $destination->getConcreteDestinationItem();
+            if ($concrete_destination instanceof self) {
+                array_push(
+                    $tagged_anywhere,
+                    ...$concrete_destination->getTaggedQuestionIds($form, $destination->getConfig())
+                );
+            }
+        }
+
+        return array_filter(
+            $file_answers,
+            fn(Answer $answer) => in_array($answer->getQuestionId(), $tagged_here, true)
+                || !in_array($answer->getQuestionId(), $tagged_anywhere, true)
+        );
+    }
+
+    /**
+     * Get the ids of the questions whose answer tag is explicitly used in the
+     * given destination config.
+     *
+     * @param array<string, mixed> $config
+     * @return int[]
+     */
+    private function getTaggedQuestionIds(Form $form, array $config): array
+    {
+        $tags_manager = new FormTagsManager();
+
+        $questions_ids = [];
+        foreach ($this->getTagsFieldsValues($form, $config) as $value) {
+            $values = $tags_manager->getTagValuesForProvider($value, AnswerTagProvider::class);
+            array_push($questions_ids, ...array_map('intval', $values));
+        }
+
+        return $questions_ids;
+    }
+
+    /**
+     * Check if the given destination config uses the answers of the whole form.
+     *
+     * @param array<string, mixed> $config
+     */
+    private function isUsingWholeForm(Form $form, array $config): bool
+    {
+        // Auto-configured content contains the answers of all the questions
+        if ((new ContentField())->isAutoConfigurated($config)) {
+            return true;
+        }
+
+        $tags_manager = new FormTagsManager();
+        foreach ($this->getTagsFieldsValues($form, $config) as $value) {
+            if ($tags_manager->getTagValuesForProvider($value, FullFormTagProvider::class) !== []) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the manually configured values of the fields supporting form tags.
+     *
+     * @param array<string, mixed> $config
+     * @return string[]
+     */
+    private function getTagsFieldsValues(Form $form, array $config): array
+    {
+        $values = [];
+        foreach ($this->getConfigurableFields() as $field) {
+            $reflection = new ReflectionClass($field);
+            if (
+                $reflection->getAttributes(HasFormTags::class) === []
+                || ($field->supportAutoConfiguration() && $field->isAutoConfigurated($config))
+            ) {
+                continue;
+            }
+
+            $field_config = $field->getConfig($form, $config);
+            if ($field_config instanceof SimpleValueConfig) {
+                $values[] = $field_config->getValue();
+            }
+        }
+
+        return $values;
     }
 
     /**

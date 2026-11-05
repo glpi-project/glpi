@@ -37,18 +37,30 @@ namespace tests\units;
 use DocumentCategory;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
+use Glpi\Form\Condition\CreationStrategy;
+use Glpi\Form\Condition\LogicOperator;
+use Glpi\Form\Condition\Type;
+use Glpi\Form\Condition\ValueOperator;
+use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\EntityField;
 use Glpi\Form\Destination\CommonITILField\EntityFieldConfig;
 use Glpi\Form\Destination\CommonITILField\EntityFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\RequesterField;
 use Glpi\Form\Destination\CommonITILField\RequesterFieldConfig;
+use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
+use Glpi\Form\Destination\CommonITILField\TitleField;
+use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeFile;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
+use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Form\Tag\AnswerTagProvider;
+use Glpi\Form\Tag\FullFormTagProvider;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -2135,5 +2147,140 @@ class DocumentTest extends DbTestCase
                 'items_id'     => $ticket->getID(),
             ]));
         }
+    }
+
+    public static function formFileQuestionsDispatchedToDestinationsProvider(): iterable
+    {
+        // Each destination content is either a list of tagged answers,
+        // 'auto' (auto-configured content) or 'full' (full form tag).
+        // Only explicit answer tags restrict a file question to some destinations.
+        yield 'each destination tags its own file question' => [
+            'contents' => ['A' => ['Text A', 'File A'], 'B' => ['Text B', 'File B']],
+            'expected' => ['A' => ['foo.txt'], 'B' => ['bar.txt']],
+        ];
+        yield 'file questions not tagged anywhere go everywhere' => [
+            'contents' => ['A' => ['Text A'], 'B' => ['Text B']],
+            'expected' => ['A' => ['foo.txt', 'bar.txt'], 'B' => ['foo.txt', 'bar.txt']],
+        ];
+        yield 'only untagged file question goes everywhere' => [
+            'contents' => ['A' => ['Text A', 'File A'], 'B' => ['Text B']],
+            'expected' => ['A' => ['foo.txt', 'bar.txt'], 'B' => ['bar.txt']],
+        ];
+        yield 'auto-configured content gets every file' => [
+            'contents' => ['A' => 'auto', 'B' => ['Text B', 'File B']],
+            'expected' => ['A' => ['foo.txt', 'bar.txt'], 'B' => ['foo.txt', 'bar.txt']],
+        ];
+        yield 'full form tag gets every file' => [
+            'contents' => ['A' => 'full', 'B' => ['Text B', 'File B']],
+            'expected' => ['A' => ['foo.txt', 'bar.txt'], 'B' => ['foo.txt', 'bar.txt']],
+        ];
+        yield 'tags of a destination that is not created are ignored' => [
+            'contents' => ['A' => ['Text A', 'File A'], 'B' => ['Text B', 'File B']],
+            'expected' => ['B' => ['foo.txt', 'bar.txt']],
+            'skipped'  => ['A'],
+        ];
+    }
+
+    #[DataProvider('formFileQuestionsDispatchedToDestinationsProvider')]
+    public function testFormFileQuestionsAreDispatchedToDestinations(
+        array $contents,
+        array $expected,
+        array $skipped = [],
+    ): void {
+        $this->login();
+
+        // Create a form with a text and a file question for each destination
+        $builder = new FormBuilder();
+        $builder->setShouldInitDestinations(false);
+        $builder->addQuestion('Text A', QuestionTypeShortText::class);
+        $builder->addQuestion('File A', QuestionTypeFile::class);
+        $builder->addQuestion('Text B', QuestionTypeShortText::class);
+        $builder->addQuestion('File B', QuestionTypeFile::class);
+        foreach (array_keys($contents) as $name) {
+            $builder->addDestination(FormDestinationTicket::class, "Destination $name");
+            if (in_array($name, $skipped, true)) {
+                // Condition that is never fulfilled
+                $builder->setDestinationCondition("Destination $name", CreationStrategy::CREATED_IF, [[
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Text $name",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => 'Never answered',
+                ]]);
+            }
+        }
+        $form = $this->createForm($builder);
+
+        // Configure each destination content
+        $tag_provider = new AnswerTagProvider();
+        foreach ($contents as $name => $content) {
+            $config = [TitleField::getKey() => (new SimpleValueConfig("Ticket $name"))->jsonSerialize()];
+            if ($content === 'full') {
+                $config[ContentField::getAutoConfigKey()] = false;
+                $config[ContentField::getKey()] = (new SimpleValueConfig(
+                    (new FullFormTagProvider())->getTagForForm($form)->html
+                ))->jsonSerialize();
+            } elseif ($content !== 'auto') {
+                $html = '';
+                foreach ($content as $question_name) {
+                    $question = Question::getById($this->getQuestionId($form, $question_name));
+                    $html .= '<p>' . $tag_provider->getTagForQuestion($question)->html . '</p>';
+                }
+                $config[ContentField::getAutoConfigKey()] = false;
+                $config[ContentField::getKey()] = (new SimpleValueConfig($html))->jsonSerialize();
+            }
+            $this->updateItem(
+                FormDestination::class,
+                $this->getDestinationId($form, "Destination $name"),
+                ['config' => $config],
+                ['config'],
+            );
+        }
+
+        // Upload a different file for each file question
+        $files = ['filename' => [], 'prefix' => [], 'tag' => [], 'question_id' => []];
+        $answers = ['Text A' => 'Answer A', 'Text B' => 'Answer B'];
+        foreach (['File A' => 'foo.txt', 'File B' => 'bar.txt'] as $question_name => $source) {
+            $question_id = $this->getQuestionId($form, $question_name);
+            $prefix = 'testFormFileQuestionsAreDispatchedToDestinations' . $question_id;
+            $filename = $prefix . $source;
+            copy(FIXTURE_DIR . '/uploads/' . $source, GLPI_TMP_DIR . '/' . $filename);
+            $_POST['_prefix_answers_' . $question_id] = $prefix;
+
+            $answers[$question_name] = [$filename];
+            $files['filename'][] = $filename;
+            $files['prefix'][] = $prefix;
+            $files['tag'][] = \Rule::getUuid();
+            $files['question_id'][] = $question_id;
+        }
+
+        $answers_set = $this->sendFormAndGetAnswerSet($form, $answers, $files);
+        foreach (['File A', 'File B'] as $question_name) {
+            unset($_POST['_prefix_answers_' . $this->getQuestionId($form, $question_name)]);
+        }
+
+        // Each ticket must only be linked to the expected documents
+        $tickets = $answers_set->getCreatedItems();
+        $this->assertCount(count($contents) - count($skipped), $tickets);
+        foreach ($tickets as $ticket) {
+            $name = substr($ticket->fields['name'], strlen('Ticket '));
+            $linked = (new \Document_Item())->find([
+                'itemtype' => \Ticket::class,
+                'items_id' => $ticket->getID(),
+            ]);
+            $filenames = array_map(
+                fn($link) => \Document::getById($link['documents_id'])->fields['filename'],
+                $linked
+            );
+            $this->assertEqualsCanonicalizing($expected[$name], array_values($filenames), "Ticket $name");
+        }
+
+        // Documents must not be duplicated
+        $this->assertCount(2, (new \Document())->find([
+            'sha1sum' => [
+                sha1_file(FIXTURE_DIR . '/uploads/foo.txt'),
+                sha1_file(FIXTURE_DIR . '/uploads/bar.txt'),
+            ],
+        ]));
     }
 }
