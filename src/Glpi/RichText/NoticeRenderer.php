@@ -37,8 +37,8 @@ namespace Glpi\RichText;
 use function Safe\preg_replace_callback;
 
 /**
- * Adds the icon and the accessible label to the KB notices at render time,
- * so that the label follows the reader's language.
+ * Adds the icon, the alert classes and the accessible label to the KB notices
+ * at render time, so that the label follows the reader's language.
  */
 final class NoticeRenderer
 {
@@ -53,8 +53,8 @@ final class NoticeRenderer
         return preg_replace_callback(
             '/<div class="kb-notice kb-notice-(' . implode('|', array_keys($types)) . ')">/',
             fn(array $matches): string => sprintf(
-                '<div class="kb-notice kb-notice-%1$s" role="note" aria-label="%2$s">'
-                . '<i class="ti %3$s kb-notice-icon kb-notice-icon-%1$s" aria-hidden="true"></i>',
+                '<div class="alert alert-%1$s kb-notice kb-notice-%1$s" role="note" aria-label="%2$s">'
+                . '<i class="ti %3$s kb-notice-icon alert-icon" aria-hidden="true"></i>',
                 $matches[1],
                 htmlescape($types[$matches[1]]['label']),
                 $types[$matches[1]]['icon']
@@ -71,8 +71,8 @@ final class NoticeRenderer
         return [
             'info'    => ['label' => __('Info notice'), 'icon' => 'ti-info-circle-filled'],
             'success' => ['label' => __('Success notice'), 'icon' => 'ti-circle-check-filled'],
-            'warning' => ['label' => __('Warning notice'), 'icon' => 'ti-alert-circle-filled'],
-            'tip'     => ['label' => __('Tip notice'), 'icon' => 'ti-star-filled'],
+            'warning' => ['label' => __('Warning notice'), 'icon' => 'ti-alert-triangle-filled'],
+            'danger'  => ['label' => __('Danger notice'), 'icon' => 'ti-exclamation-circle-filled'],
         ];
     }
 }

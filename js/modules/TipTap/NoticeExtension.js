@@ -38,8 +38,8 @@ const { Plugin, PluginKey, TextSelection } = TiptapPMState;
 export const NOTICE_TYPES = {
     info: { label: __('Info notice'), icon: 'ti-info-circle-filled' },
     success: { label: __('Success notice'), icon: 'ti-circle-check-filled' },
-    warning: { label: __('Warning notice'), icon: 'ti-alert-circle-filled' },
-    tip: { label: __('Tip notice'), icon: 'ti-star-filled' },
+    warning: { label: __('Warning notice'), icon: 'ti-alert-triangle-filled' },
+    danger: { label: __('Danger notice'), icon: 'ti-exclamation-circle-filled' },
 };
 
 const DEFAULT_TYPE = 'info';
@@ -54,7 +54,7 @@ function parseType(element) {
  * @returns {string} Classes of the icon, also used by the slash menu
  */
 export function getNoticeIconClass(type) {
-    return `ti ${NOTICE_TYPES[type].icon} kb-notice-icon kb-notice-icon-${type}`;
+    return `ti ${NOTICE_TYPES[type].icon} kb-notice-icon`;
 }
 
 /**
@@ -109,11 +109,19 @@ export const Notice = Node.create({
     },
 
     parseHTML() {
-        return [{ tag: 'div.kb-notice' }];
+        return [{
+            tag: 'div.kb-notice',
+            contentElement: (element) => element.querySelector(':scope > .kb-notice-content') ?? element,
+        }];
     },
 
+    // The wrapper keeps the blocks in one flex item of the alert, next to the icon.
     renderHTML({ node, HTMLAttributes }) {
-        return ['div', mergeAttributes(HTMLAttributes, { class: `kb-notice kb-notice-${node.attrs.type}` }), 0];
+        return [
+            'div',
+            mergeAttributes(HTMLAttributes, { class: `kb-notice kb-notice-${node.attrs.type}` }),
+            ['div', { class: 'kb-notice-content' }, 0],
+        ];
     },
 
     addNodeView() {
@@ -121,12 +129,12 @@ export const Notice = Node.create({
             const type = node.attrs.type;
 
             const dom = document.createElement('div');
-            dom.className = `kb-notice kb-notice-${type}`;
+            dom.className = `alert alert-${type} kb-notice kb-notice-${type}`;
             dom.setAttribute('role', 'note');
             dom.setAttribute('aria-label', NOTICE_TYPES[type].label);
 
             const icon = document.createElement('i');
-            icon.className = getNoticeIconClass(type);
+            icon.className = `${getNoticeIconClass(type)} alert-icon`;
             icon.setAttribute('aria-hidden', 'true');
             icon.contentEditable = 'false';
             dom.appendChild(icon);

@@ -37,7 +37,7 @@ import { ProfileSwitcher } from "../../../utils/ProfileSwitcher";
 import { Profiles } from "../../../utils/Profiles";
 import { getWorkerEntityId } from "../../../utils/WorkerEntities";
 
-const NOTICES = ['Info notice', 'Success notice', 'Warning notice', 'Tip notice'] as const;
+const NOTICES = ['Info notice', 'Success notice', 'Warning notice', 'Danger notice'] as const;
 
 async function openEmptyEditor(
     page: Page,
@@ -74,7 +74,7 @@ test.describe('Knowledge Base Editor - Notices', () => {
         const id = await api.createItem('KnowbaseItem', {
             name: 'Test notice edit again',
             entities_id: getWorkerEntityId(),
-            answer: '<div class="kb-notice kb-notice-warning"><p>Saved text</p></div>',
+            answer: '<div class="kb-notice kb-notice-warning"><div class="kb-notice-content"><p>Saved text</p></div></div>',
         });
 
         await kb.goto(id);
@@ -137,11 +137,11 @@ test.describe('Knowledge Base Editor - Notices', () => {
     test('Backspace in an empty notice removes it', async ({ page, profile, api }) => {
         const kb = await openEmptyEditor(page, profile, api, 'Test notice removal');
 
-        await kb.slashMenu.insert('Tip notice', 'click');
-        await expect(page.getByRole('note', { name: 'Tip notice' })).toBeVisible();
+        await kb.slashMenu.insert('Danger notice', 'click');
+        await expect(page.getByRole('note', { name: 'Danger notice' })).toBeVisible();
 
         await kb.editor.pressKey('Backspace');
-        await expect(page.getByRole('note', { name: 'Tip notice' })).toHaveCount(0);
+        await expect(page.getByRole('note', { name: 'Danger notice' })).toHaveCount(0);
     });
 
     test('Slash menu in a notice shows only the allowed blocks', async ({ page, profile, api }) => {
