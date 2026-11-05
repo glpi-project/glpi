@@ -186,6 +186,39 @@ test.describe('Knowledge Base Editor - Notices', () => {
         await expect(kb.editor.contentContainer.getByRole('separator')).toHaveCount(0);
     });
 
+    test('Enter after a divider shortcut in a notice adds a line', async ({ page, profile, api }) => {
+        const kb = await openEmptyEditor(page, profile, api, 'Test divider shortcut and Enter in notice');
+
+        await kb.slashMenu.insert('Info notice', 'click');
+        await kb.editor.typeText('___');
+        await kb.editor.pressKey('Enter');
+        await kb.editor.typeText('Next');
+
+        const notice = page.getByRole('note', { name: 'Info notice' });
+        await expect(notice.getByRole('paragraph')).toHaveText(['___', 'Next']);
+        await expect(kb.editor.contentContainer.getByRole('separator')).toHaveCount(0);
+    });
+
+    test('Enter in an empty code block in a notice adds a line in the code', async ({ page, profile, api }) => {
+        const kb = await openEmptyEditor(page, profile, api, 'Test code block enter in notice');
+
+        await kb.slashMenu.insert('Info notice', 'click');
+        await kb.editor.typeText('First');
+        await kb.editor.pressKey('Enter');
+        await kb.editor.typeText('Last');
+
+        const notice = page.getByRole('note', { name: 'Info notice' });
+        await notice.getByText('First').click();
+        await kb.editor.pressKey('End');
+        await kb.editor.pressKey('Enter');
+        await kb.editor.typeText('``` ');
+        await kb.editor.pressKey('Enter');
+        await kb.editor.typeText('code');
+
+        await expect(notice.getByRole('code')).toHaveText('code');
+        await expect(notice.getByRole('paragraph')).toHaveText(['First', 'Last']);
+    });
+
     test('Pasting a table in a notice does not split it', async ({ page, profile, api }) => {
         const kb = await openEmptyEditor(page, profile, api, 'Test table paste in notice');
 
