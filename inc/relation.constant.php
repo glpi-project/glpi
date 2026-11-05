@@ -1027,6 +1027,10 @@ $RELATION = [
         '_glpi_queuednotifications'                 => 'notificationtemplates_id',
     ],
 
+    'glpi_oauthapplications' => [
+        '_glpi_oauthauthorizations' => 'oauthapplications_id',
+    ],
+
     'glpi_olalevels' => [
         '_glpi_olalevelactions'   => 'olalevels_id',
         '_glpi_olalevelcriterias' => 'olalevels_id',
