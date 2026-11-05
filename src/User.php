@@ -5012,6 +5012,9 @@ HTML;
         $ID = $this->getField('id');
         $start       = intval($_GET["start"] ?? 0);
         $get_filters   = $_GET["filters"] ?? [];
+        if (!is_array($get_filters)) {
+            $get_filters = [];
+        }
 
         $sortable_columns = ['type', 'entity', 'name', 'serial', 'otherserial', 'states', 'group', 'users'];
         $sort = $_GET['sort'] ?? 'name';
@@ -5110,28 +5113,38 @@ HTML;
             ];
         }
 
-        $group_choices = [];
-        foreach (getAllDataFromTable('glpi_groups') as $g_id => $row) {
-            $group_choices[$g_id] = $row['completename'];
-        }
-        asort($group_choices);
+        $is_filtered = count($get_filters) > 0;
 
+        // Names caches for displayed rows; groups and users filters use AJAX dropdowns as these tables can be huge
+        $group_choices = [];
         $user_choices = [];
-        foreach (self::getSqlSearchResult(false, 'all') as $row) {
-            $user_choices[$row['id']] = formatUserName($row['id'], $row['name'], $row['realname'], $row['firstname']);
-        }
 
         $array_filters_choices = [
             'type'     => $type_choices,
             'entity'   => $entity_choices,
             'states'   => $state_choices,
-            'group'    => $group_choices,
-            'users'    => $user_choices,
         ];
 
         foreach ($get_filters as $f => $value) {
             if (!empty($value)) {
-                if (isset($array_filters_choices[$f])) {
+                if (in_array($f, ['group', 'users'], true)) {
+                    foreach ((array) $value as $v) {
+                        if (!is_numeric($v) || (int) $v <= 0) {
+                            continue;
+                        }
+                        // Selected users names are displayed in the dropdown, do not disclose users the viewer cannot see
+                        if ($f === 'users') {
+                            $selected_user = new self();
+                            if (
+                                !$selected_user->getFromDB((int) $v)
+                                || !Session::haveAccessToOneOfEntities($selected_user->getEntities())
+                            ) {
+                                continue;
+                            }
+                        }
+                        $filters[$f][] = (int) $v;
+                    }
+                } elseif (isset($array_filters_choices[$f])) {
                     foreach ((array) $value as $v) {
                         if (isset($array_filters_choices[$f][$v])) {
                             $filters[$f][] = $v;
@@ -5311,22 +5324,24 @@ HTML;
                 ],
                 'group'         => [
                     'label'            => Group::getTypeName(Session::getPluralNumber()),
-                    'filter_formatter' => 'array',
+                    'filter_formatter' => 'dropdown',
+                    'filter_itemtype'  => Group::class,
+                    'filter_params'    => ['addicon' => false, 'comments' => false],
                 ],
                 'users'         => [
                     'label'            => self::getTypeName(Session::getPluralNumber()),
-                    'filter_formatter' => 'array',
+                    'filter_formatter' => 'dropdown',
+                    'filter_itemtype'  => self::class,
+                    'filter_params'    => ['right' => 'all'],
                 ],
             ],
             'columns_values'        => [
                 'type'      => $type_choices,
                 'entity'    => $entity_choices,
                 'states'    => $state_choices,
-                'group'     => $group_choices,
-                'users'     => $user_choices,
             ],
-            'filters' => $filters,
-            'additional_params'     => http_build_query(['filters' => $filters]),
+            'filters' => $is_filtered ? $filters : [],
+            'additional_params'     => $is_filtered ? http_build_query(['filters' => $filters]) : '',
             'formatters' => [
                 'name'   => 'raw_html',
                 'group'  => 'raw_html',
