@@ -42,13 +42,13 @@ Html::header_nocache();
 
 // `check()` is used rather than `Session::checkRight()` so that the
 // re-authentication ("sudo mode") required by this itemtype is enforced here too.
+$action = $_POST['action'] ?? '';
+
 $application = new OAuthApplication();
 $required_right = ($action === 'step' && str_starts_with((string) ($_POST['step'] ?? ''), 'auth:')) ? UPDATE : READ;
 $application->check((int) ($_POST['id'] ?? 0), $required_right);
 
 $diagnostic = new ApplicationDiagnostic($application);
-
-$action = $_POST['action'] ?? '';
 
 if ($action === 'plan') {
     echo json_encode(['steps' => $diagnostic->getPlan()]);
