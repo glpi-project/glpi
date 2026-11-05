@@ -39,6 +39,7 @@
  */
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
+use Glpi\Exception\Database\StatementException;
 use Glpi\Inventory\Conf;
 
 $migration->addConfig(Conf::getDefaults(), 'inventory');
@@ -432,20 +433,14 @@ if (!$DB->tableExists('glpi_networkporttypes') || countElementsInTable(NetworkPo
     );
     $stmt = $DB->prepare($DB->buildInsert(NetworkPortType::getTable(), $reference));
 
-    $types = str_repeat('s', count($default_types[0]));
     foreach ($default_types as $row) {
-        $res = $stmt->bind_param($types, ...array_values($row));
-        if (false === $res) {
-            $msg = "Error binding params in table " . NetworkPortType::getTable() . "\n";
-            $msg .= print_r($row, true);
-            throw new RuntimeException($msg);
-        }
-        $res = $stmt->execute();
-        if (false === $res) {
-            $msg = $stmt->error;
+        try {
+            $DB->executeStatement($stmt, array_values($row));
+        } catch (StatementException $e) {
+            $msg = $e->getMessage();
             $msg .= "\nError execution statement in table " . NetworkPortType::getTable() . "\n";
             $msg .= print_r($row, true);
-            throw new RuntimeException($msg);
+            throw new RuntimeException($msg, 0, $e);
         }
     }
 }
@@ -833,7 +828,6 @@ if (countElementsInTable(Blacklist::getTable()) === 4) {
         )
     );
 
-    $types = 'sss';
     foreach (Blacklist::getDefaults() as $type => $values) {
         foreach ($values as $props) {
             $value = $props['value'];
@@ -846,18 +840,13 @@ if (countElementsInTable(Blacklist::getTable()) === 4) {
             ) {
                 continue;
             }
-            $res = $stmt->bind_param($types, $type, $name, $value);
-            if (false === $res) {
-                $msg = "Error binding params in table " . Blacklist::getTable() . "\n";
-                $msg .= "type: $type, value: $value";
-                throw new RuntimeException($msg);
-            }
-            $res = $stmt->execute();
-            if (false === $res) {
-                $msg = $stmt->error;
+            try {
+                $DB->executeStatement($stmt, [$type, $name, $value]);
+            } catch (StatementException $e) {
+                $msg = $e->getMessage();
                 $msg .= "\nError execution statement in table " . Blacklist::getTable() . "\n";
                 $msg .= "type: $type, value: $value";
-                throw new RuntimeException($msg);
+                throw new RuntimeException($msg, 0, $e);
             }
         }
     }
