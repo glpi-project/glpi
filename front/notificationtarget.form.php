@@ -33,9 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-Session::checkCentralAccess();
+if (!isset($_POST['notifications_id'])) {
+    throw new BadRequestHttpException('notifications_id not set');
+}
+
+(new Notification())->check((int) $_POST['notifications_id'], UPDATE);
+
 
 NotificationTarget::updateTargets($_POST);
 Html::back();
