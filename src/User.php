@@ -5012,6 +5012,9 @@ HTML;
         $ID = $this->getField('id');
         $start       = intval($_GET["start"] ?? 0);
         $get_filters   = $_GET["filters"] ?? [];
+        if (!is_array($get_filters)) {
+            $get_filters = [];
+        }
 
         $sortable_columns = ['type', 'entity', 'name', 'serial', 'otherserial', 'states', 'group', 'users'];
         $sort = $_GET['sort'] ?? 'name';

@@ -3160,6 +3160,11 @@ class UserTest extends DbTestCase
         $this->assertStringContainsString('Computer used by test user', $output);
         $this->assertStringNotContainsString('filter_row', $output);
 
+        // Non array filters are ignored
+        $output = $render(['filters' => 'invalid']);
+        $this->assertStringContainsString('Computer used by test user', $output);
+        $this->assertStringNotContainsString('filter_row', $output);
+
         // Users and groups filters are AJAX dropdowns, other users are not listed in the page
         $output = $render(['filters' => ['active' => 1]]);
         $this->assertStringContainsString('filter_row', $output);
