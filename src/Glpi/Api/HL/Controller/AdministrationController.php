@@ -38,6 +38,7 @@ namespace Glpi\Api\HL\Controller;
 use Auth;
 use CommonDBTM;
 use CommonITILObject;
+use DisplayPreference;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\FileUpload\FileManager;
@@ -45,10 +46,13 @@ use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
+use Glpi\Api\HL\Schemas;
+use Glpi\Api\HL\Search\SearchOptionMapper;
 use Glpi\Event;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use Glpi\Search\SearchOption;
 use Glpi\UI\ThemeManager;
 use Group;
 use Planning;
@@ -1119,6 +1123,41 @@ EOT,
             ],
         ];
 
+        $schemas['DisplayPreference'] = [
+            'x-version-introduced' => '2.4',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'description' => 'The columns shown in the search results for a type of item. Columns are identified by the (dotted) path of the property they show.',
+            'properties' => [
+                'interface' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => ['central', 'helpdesk'],
+                    'readOnly' => true,
+                ],
+                'is_personal' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'readOnly' => true,
+                    'description' => 'Whether the columns are the personal preferences of the user. If false, the global preferences are shown.',
+                ],
+                'columns' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'description' => 'The ordered list of columns shown in addition to the fixed columns',
+                    'items' => ['type' => Doc\Schema::TYPE_STRING],
+                ],
+                'fixed_columns' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'readOnly' => true,
+                    'description' => 'Columns that are always shown and cannot be changed',
+                    'items' => ['type' => Doc\Schema::TYPE_STRING],
+                ],
+                'unmapped_columns' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'readOnly' => true,
+                    'description' => 'Names of the shown columns that cannot be represented as a property of this type of item. Setting the columns removes them.',
+                    'items' => ['type' => Doc\Schema::TYPE_STRING],
+                ],
+            ],
+        ];
+
         return $schemas;
     }
 
@@ -2002,5 +2041,248 @@ EOT,
     public function deleteKBArticleItemLink(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    /**
+     * Resolve the schema, itemtype and interface targeted by a display preference route.
+     * @param Request $request
+     * @return array{schema_name: string, itemtype: class-string<CommonDBTM>, interface: string}|Response
+     */
+    private function resolveDisplayPreferenceTarget(Request $request): array|Response
+    {
+        $schema_name = (string) $request->getAttribute('schema');
+        $schema = Schemas::getInstance()->getSchema($schema_name);
+        $itemtype = $schema['x-itemtype'] ?? null;
+        if (
+            $schema === null
+            || isset($schema['x-subtypes'])
+            || !is_string($itemtype)
+            || !is_subclass_of($itemtype, CommonDBTM::class)
+        ) {
+            return self::getNotFoundErrorResponse();
+        }
+        $interface = $request->hasParameter('interface') ? $request->getParameter('interface') : 'central';
+        if (!in_array($interface, ['central', 'helpdesk'], true)) {
+            return self::getInvalidParametersErrorResponse(['invalid' => [[
+                'name' => 'interface',
+                'reason' => 'The interface must be central or helpdesk',
+            ]]]);
+        }
+        return ['schema_name' => $schema_name, 'itemtype' => $itemtype, 'interface' => $interface];
+    }
+
+    private function canManageDisplayPreferences(int $users_id): bool
+    {
+        $display_preference = new DisplayPreference();
+        $display_preference->fields['users_id'] = $users_id;
+        return $display_preference->canCrudItem();
+    }
+
+    /**
+     * @param string $schema_name
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $users_id The user to get the preferences of or 0 for the global preferences
+     * @param string $interface
+     */
+    private function getDisplayPreferenceResponse(string $schema_name, string $itemtype, int $users_id, string $interface): Response
+    {
+        $options = SearchOption::getOptionsForItemtype($itemtype);
+        $columns = [];
+        $unmapped_columns = [];
+        // Falls back to the global preferences if the user has no personal preferences
+        foreach (DisplayPreference::getForTypeUser($itemtype, $users_id, $interface) as $num) {
+            $path = SearchOptionMapper::getPropertyForOption($schema_name, (int) $num);
+            if ($path !== null) {
+                $columns[] = $path;
+            } elseif (isset($options[$num]['name'])) {
+                $unmapped_columns[] = $options[$num]['name'];
+            }
+        }
+        $fixed_columns = [];
+        foreach (SearchOption::getDefaultToView($itemtype) as $num) {
+            $path = SearchOptionMapper::getPropertyForOption($schema_name, (int) $num);
+            if ($path !== null) {
+                $fixed_columns[] = $path;
+            }
+        }
+        $is_personal = $users_id > 0 && countElementsInTable(DisplayPreference::getTable(), [
+            'itemtype' => $itemtype,
+            'users_id' => $users_id,
+            'interface' => $interface,
+        ]) > 0;
+
+        return new JSONResponse([
+            'interface' => $interface,
+            'is_personal' => $is_personal,
+            'columns' => $columns,
+            'fixed_columns' => $fixed_columns,
+            'unmapped_columns' => $unmapped_columns,
+        ]);
+    }
+
+    private function showDisplayPreference(Request $request, bool $global): Response
+    {
+        $target = $this->resolveDisplayPreferenceTarget($request);
+        if ($target instanceof Response) {
+            return $target;
+        }
+        if (!DisplayPreference::canCrud()) {
+            return self::getAccessDeniedErrorResponse();
+        }
+        $users_id = $global ? 0 : (int) Session::getLoginUserID();
+        return $this->getDisplayPreferenceResponse($target['schema_name'], $target['itemtype'], $users_id, $target['interface']);
+    }
+
+    private function replaceDisplayPreference(Request $request, bool $global): Response
+    {
+        global $DB;
+
+        $target = $this->resolveDisplayPreferenceTarget($request);
+        if ($target instanceof Response) {
+            return $target;
+        }
+        $users_id = $global ? 0 : (int) Session::getLoginUserID();
+        if (!$this->canManageDisplayPreferences($users_id) || (!$global && $users_id <= 0)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+
+        $columns = $request->hasParameter('columns') ? $request->getParameter('columns') : null;
+        if (!is_array($columns) || !array_is_list($columns)) {
+            return self::getInvalidParametersErrorResponse(['missing' => ['columns']]);
+        }
+
+        $itemtype = $target['itemtype'];
+        $displayable_options = SearchOption::getCleanedOptions($itemtype);
+        $fixed_columns = SearchOption::getDefaultToView($itemtype);
+        $nums = [];
+        $errors = [];
+        foreach ($columns as $column) {
+            $num = is_string($column) ? SearchOptionMapper::getOptionForProperty($target['schema_name'], $column) : null;
+            if (!is_int($num)) {
+                $errors[] = ['name' => 'columns', 'reason' => 'Unknown column: ' . (is_string($column) ? $column : get_debug_type($column))];
+            } elseif (!is_array($displayable_options[$num] ?? null) || !empty($displayable_options[$num]['nodisplay'])) {
+                $errors[] = ['name' => 'columns', 'reason' => 'The column cannot be displayed: ' . $column];
+            } elseif (in_array($num, $nums, true)) {
+                $errors[] = ['name' => 'columns', 'reason' => 'Duplicate column: ' . $column];
+            } elseif (!in_array($num, $fixed_columns, true)) {
+                // Fixed columns are always shown and are not stored
+                $nums[] = $num;
+            }
+        }
+        if (count($errors) > 0) {
+            return self::getInvalidParametersErrorResponse(['invalid' => $errors]);
+        }
+
+        if (count($nums) === 0) {
+            $DB->delete(DisplayPreference::getTable(), [
+                'itemtype' => $itemtype,
+                'users_id' => $users_id,
+                'interface' => $target['interface'],
+            ]);
+        } else {
+            (new DisplayPreference())->updateOrder($itemtype, $users_id, $nums, $target['interface']);
+        }
+        return $this->getDisplayPreferenceResponse($target['schema_name'], $itemtype, $users_id, $target['interface']);
+    }
+
+    private function resetDisplayPreference(Request $request, bool $global): Response
+    {
+        global $DB;
+
+        $target = $this->resolveDisplayPreferenceTarget($request);
+        if ($target instanceof Response) {
+            return $target;
+        }
+        $users_id = $global ? 0 : (int) Session::getLoginUserID();
+        if (!$this->canManageDisplayPreferences($users_id) || (!$global && $users_id <= 0)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+
+        if ($global) {
+            if (!DisplayPreference::resetToDefaultOptions($target['itemtype'])) {
+                return self::getCRUDErrorResponse(self::CRUD_ACTION_DELETE);
+            }
+        } else {
+            $DB->delete(DisplayPreference::getTable(), [
+                'itemtype' => $target['itemtype'],
+                'users_id' => $users_id,
+                'interface' => $target['interface'],
+            ]);
+        }
+        return new JSONResponse(null, 204);
+    }
+
+    #[Route(path: '/DisplayPreference/{schema}', methods: ['GET'], requirements: ['schema' => '\w+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\Route(
+        description: 'Get the columns shown in the search results of a type of item for the current user. If the user has no personal preferences, the global preferences are returned.',
+        parameters: [
+            new Doc\Parameter(name: 'interface', schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, enum: ['central', 'helpdesk']), description: 'The interface the preferences apply to. Defaults to central.', location: Doc\Parameter::LOCATION_QUERY),
+        ],
+        responses: [new Doc\Response(schema: new Doc\SchemaReference('DisplayPreference'))]
+    )]
+    public function getMyDisplayPreference(Request $request): Response
+    {
+        return $this->showDisplayPreference($request, false);
+    }
+
+    #[Route(path: '/DisplayPreference/{schema}', methods: ['PUT'], requirements: ['schema' => '\w+'])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\Route(
+        description: 'Replace the personal columns shown in the search results of a type of item for the current user. Fixed columns are ignored.',
+        parameters: [
+            new Doc\Parameter(name: 'interface', schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, enum: ['central', 'helpdesk']), description: 'The interface the preferences apply to. Defaults to central.', location: Doc\Parameter::LOCATION_QUERY),
+            new Doc\Parameter(name: 'columns', schema: new Doc\Schema(type: Doc\Schema::TYPE_ARRAY, items: new Doc\Schema(type: Doc\Schema::TYPE_STRING)), description: 'The ordered list of property paths to show', location: Doc\Parameter::LOCATION_BODY),
+        ],
+        responses: [new Doc\Response(schema: new Doc\SchemaReference('DisplayPreference'))]
+    )]
+    public function replaceMyDisplayPreference(Request $request): Response
+    {
+        return $this->replaceDisplayPreference($request, false);
+    }
+
+    #[Route(path: '/DisplayPreference/{schema}', methods: ['DELETE'], requirements: ['schema' => '\w+'])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\Route(description: 'Delete the personal columns shown in the search results of a type of item for the current user so the global preferences are used again')]
+    public function resetMyDisplayPreference(Request $request): Response
+    {
+        return $this->resetDisplayPreference($request, false);
+    }
+
+    #[Route(path: '/DisplayPreference/{schema}/Global', methods: ['GET'], requirements: ['schema' => '\w+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\Route(
+        description: 'Get the global columns shown in the search results of a type of item',
+        parameters: [
+            new Doc\Parameter(name: 'interface', schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, enum: ['central', 'helpdesk']), description: 'The interface the preferences apply to. Defaults to central.', location: Doc\Parameter::LOCATION_QUERY),
+        ],
+        responses: [new Doc\Response(schema: new Doc\SchemaReference('DisplayPreference'))]
+    )]
+    public function getGlobalDisplayPreference(Request $request): Response
+    {
+        return $this->showDisplayPreference($request, true);
+    }
+
+    #[Route(path: '/DisplayPreference/{schema}/Global', methods: ['PUT'], requirements: ['schema' => '\w+'])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\Route(
+        description: 'Replace the global columns shown in the search results of a type of item. Fixed columns are ignored.',
+        parameters: [
+            new Doc\Parameter(name: 'interface', schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, enum: ['central', 'helpdesk']), description: 'The interface the preferences apply to. Defaults to central.', location: Doc\Parameter::LOCATION_QUERY),
+            new Doc\Parameter(name: 'columns', schema: new Doc\Schema(type: Doc\Schema::TYPE_ARRAY, items: new Doc\Schema(type: Doc\Schema::TYPE_STRING)), description: 'The ordered list of property paths to show', location: Doc\Parameter::LOCATION_BODY),
+        ],
+        responses: [new Doc\Response(schema: new Doc\SchemaReference('DisplayPreference'))]
+    )]
+    public function replaceGlobalDisplayPreference(Request $request): Response
+    {
+        return $this->replaceDisplayPreference($request, true);
+    }
+
+    #[Route(path: '/DisplayPreference/{schema}/Global', methods: ['DELETE'], requirements: ['schema' => '\w+'])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\Route(description: 'Reset the global columns shown in the search results of a type of item (for all interfaces) to the defaults. Not all types of items have defaults.')]
+    public function resetGlobalDisplayPreference(Request $request): Response
+    {
+        return $this->resetDisplayPreference($request, true);
     }
 }

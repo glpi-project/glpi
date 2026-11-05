@@ -1021,4 +1021,124 @@ EOT;
 
         $this->assertEquals(1, countElementsInTable(Document_Item::getTable(), ['itemtype' => 'ITILFollowup', 'items_id' => $fup->getID()]));
     }
+
+    public function testTemplateFieldsCRUD(): void
+    {
+        $this->login();
+
+        foreach (['Ticket', 'Change', 'Problem'] as $itil_type) {
+            $template = $this->createItem($itil_type . 'Template', [
+                'name' => __FUNCTION__,
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                'is_recursive' => 1,
+            ]);
+            $base_path = "/Assistance/{$itil_type}/Template/{$template->getID()}/Field";
+
+            foreach (['Hidden', 'Mandatory', 'Readonly', 'Predefined'] as $kind) {
+                $path = "{$base_path}/{$kind}";
+                $location = null;
+
+                // Unknown fields are rejected
+                $request = new Request('POST', $path);
+                $request->setParameter('field', 'not_a_real_field');
+                $request->setParameter('value', '1');
+                $this->api->call($request, function ($call) {
+                    $call->response->status(function ($status) {
+                        $this->assertEquals(400, $status);
+                    });
+                });
+
+                foreach (['urgency', 'requester_user'] as $field_name) {
+                    if ($kind === 'Readonly' && $field_name === 'requester_user') {
+                        // The requester is not supported by read-only fields
+                        continue;
+                    }
+                    $request = new Request('POST', $path);
+                    $request->setParameter('field', $field_name);
+                    if ($kind === 'Predefined') {
+                        $request->setParameter('value', '3');
+                    }
+                    $this->api->call($request, function ($call) use (&$location) {
+                        $call->response
+                            ->isOK()
+                            ->headers(function ($headers) use (&$location) {
+                                $location = $headers['Location'];
+                            });
+                    });
+                    $this->assertNotEmpty($location);
+
+                    $this->api->call(new Request('GET', $location), function ($call) use ($field_name, $template, $kind) {
+                        $call->response
+                            ->isOK()
+                            ->jsonContent(function ($content) use ($field_name, $template, $kind) {
+                                $this->assertSame($field_name, $content['field']);
+                                $this->assertSame($template->getID(), $content['template']['id']);
+                                $this->assertIsInt($content['num']);
+                                if ($kind === 'Predefined') {
+                                    $this->assertSame('3', $content['value']);
+                                }
+                            });
+                    });
+
+                    if ($kind === 'Predefined' && $field_name === 'urgency') {
+                        $request = new Request('PATCH', $location);
+                        $request->setParameter('value', '5');
+                        $this->api->call($request, function ($call) {
+                            $call->response->isOK();
+                        });
+                        $this->api->call(new Request('GET', $location), function ($call) {
+                            $call->response
+                                ->isOK()
+                                ->jsonContent(function ($content) {
+                                    $this->assertSame('5', $content['value']);
+                                });
+                        });
+                    }
+                }
+
+                // Only the fields of the template in the path are listed
+                $expected_count = $kind === 'Readonly' ? 1 : 2;
+                $this->api->call(new Request('GET', $path), function ($call) use ($expected_count) {
+                    $call->response
+                        ->isOK()
+                        ->jsonContent(function ($content) use ($expected_count) {
+                            $this->assertCount($expected_count, $content);
+                        });
+                });
+
+                // Fields cannot be accessed through another template
+                $other_template = $this->createItem($itil_type . 'Template', [
+                    'name' => __FUNCTION__ . '_other',
+                    'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                ]);
+                $other_location = str_replace("/Template/{$template->getID()}/", "/Template/{$other_template->getID()}/", $location);
+                $this->api->call(new Request('GET', $other_location), function ($call) {
+                    $call->response->isNotFoundError();
+                });
+                $this->api->call(new Request('DELETE', $other_location), function ($call) {
+                    $call->response->isNotFoundError();
+                });
+
+                $this->api->call(new Request('DELETE', $location), function ($call) {
+                    $call->response->isOK();
+                });
+                $this->api->call(new Request('GET', $location), function ($call) {
+                    $call->response->isNotFoundError();
+                });
+            }
+        }
+    }
+
+    public function testTemplateFieldsUnknownTemplate(): void
+    {
+        $this->login();
+        $this->api->call(new Request('GET', '/Assistance/Ticket/Template/999999/Field/Hidden'), function ($call) {
+            $call->response->isNotFoundError();
+        });
+        $request = new Request('POST', '/Assistance/Ticket/Template/999999/Field/Hidden');
+        $request->setParameter('field', 'urgency');
+        $this->api->call($request, function ($call) {
+            $call->response->isNotFoundError();
+        });
+    }
 }

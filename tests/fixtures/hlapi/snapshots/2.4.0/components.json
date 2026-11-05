@@ -6240,6 +6240,43 @@
                 }
             }
         },
+        "DisplayPreference": {
+            "type": "object",
+            "properties": {
+                "interface": {
+                    "type": "string",
+                    "enum": [
+                        "central",
+                        "helpdesk"
+                    ],
+                    "readOnly": true
+                },
+                "is_personal": {
+                    "type": "boolean",
+                    "readOnly": true
+                },
+                "columns": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "fixed_columns": {
+                    "type": "array",
+                    "readOnly": true,
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "unmapped_columns": {
+                    "type": "array",
+                    "readOnly": true,
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "Document": {
             "type": "object",
             "x-itemtype": "Document",
@@ -18161,6 +18198,145 @@
                 }
             }
         },
+        "ProblemTemplateHiddenField": {
+            "x-itemtype": "ProblemTemplateHiddenField",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "template": {
+                    "type": "object",
+                    "x-itemtype": "ProblemTemplate",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "ProblemTemplate"
+                },
+                "num": {
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "field": {
+                    "type": "string",
+                    "readOnly": true
+                }
+            }
+        },
+        "ProblemTemplateMandatoryField": {
+            "x-itemtype": "ProblemTemplateMandatoryField",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "template": {
+                    "type": "object",
+                    "x-itemtype": "ProblemTemplate",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "ProblemTemplate"
+                },
+                "num": {
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "field": {
+                    "type": "string",
+                    "readOnly": true
+                }
+            }
+        },
+        "ProblemTemplatePredefinedField": {
+            "x-itemtype": "ProblemTemplatePredefinedField",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "template": {
+                    "type": "object",
+                    "x-itemtype": "ProblemTemplate",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "ProblemTemplate"
+                },
+                "num": {
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "field": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "ProblemTemplateReadonlyField": {
+            "x-itemtype": "ProblemTemplateReadonlyField",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "template": {
+                    "type": "object",
+                    "x-itemtype": "ProblemTemplate",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "ProblemTemplate"
+                },
+                "num": {
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "field": {
+                    "type": "string",
+                    "readOnly": true
+                }
+            }
+        },
         "Problem_Item": {
             "x-itemtype": "Item_Problem",
             "type": "object",
@@ -25628,6 +25804,145 @@
                 },
                 "is_recursive": {
                     "type": "boolean"
+                }
+            }
+        },
+        "TicketTemplateHiddenField": {
+            "x-itemtype": "TicketTemplateHiddenField",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "template": {
+                    "type": "object",
+                    "x-itemtype": "TicketTemplate",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "TicketTemplate"
+                },
+                "num": {
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "field": {
+                    "type": "string",
+                    "readOnly": true
+                }
+            }
+        },
+        "TicketTemplateMandatoryField": {
+            "x-itemtype": "TicketTemplateMandatoryField",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "template": {
+                    "type": "object",
+                    "x-itemtype": "TicketTemplate",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "TicketTemplate"
+                },
+                "num": {
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "field": {
+                    "type": "string",
+                    "readOnly": true
+                }
+            }
+        },
+        "TicketTemplatePredefinedField": {
+            "x-itemtype": "TicketTemplatePredefinedField",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "template": {
+                    "type": "object",
+                    "x-itemtype": "TicketTemplate",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "TicketTemplate"
+                },
+                "num": {
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "field": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "TicketTemplateReadonlyField": {
+            "x-itemtype": "TicketTemplateReadonlyField",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "template": {
+                    "type": "object",
+                    "x-itemtype": "TicketTemplate",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "TicketTemplate"
+                },
+                "num": {
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "field": {
+                    "type": "string",
+                    "readOnly": true
                 }
             }
         },
