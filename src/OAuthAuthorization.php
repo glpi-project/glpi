@@ -50,7 +50,7 @@ class OAuthAuthorization extends CommonDBChild
 {
     public static string $itemtype = OAuthApplication::class;
 
-    public static string $items_id = 'oauth_applications_id';
+    public static string $items_id = 'oauthapplications_id';
 
     public bool $dohistory = true;
 
@@ -153,7 +153,7 @@ class OAuthAuthorization extends CommonDBChild
         return true;
     }
 
-    private static function countForApplicationAndType(int $oauth_applications_id, string $type): int
+    private static function countForApplicationAndType(int $oauthapplications_id, string $type): int
     {
         global $DB;
 
@@ -161,7 +161,7 @@ class OAuthAuthorization extends CommonDBChild
             'COUNT' => 'cpt',
             'FROM'  => self::getTable(),
             'WHERE' => [
-                'oauth_applications_id' => $oauth_applications_id,
+                'oauthapplications_id' => $oauthapplications_id,
                 'type'                  => $type,
             ],
         ]);
@@ -176,7 +176,7 @@ class OAuthAuthorization extends CommonDBChild
         $iterator = $DB->request([
             'FROM'  => self::getTable(),
             'WHERE' => [
-                'oauth_applications_id' => $item->getID(),
+                'oauthapplications_id' => $item->getID(),
                 'type'                  => $type,
             ],
             'ORDER' => 'email',
@@ -301,12 +301,12 @@ class OAuthAuthorization extends CommonDBChild
      * Exchanges an authorization code for an access token, and creates or
      * updates the authorization row for the resulting mailbox.
      */
-    public function createFromCode(int $oauth_applications_id, string $type, string $code): bool
+    public function createFromCode(int $oauthapplications_id, string $type, string $code): bool
     {
         $this->error = null;
 
         $application = new OAuthApplication();
-        if (!$application->getFromDB($oauth_applications_id)) {
+        if (!$application->getFromDB($oauthapplications_id)) {
             $this->error = __('Invalid OAuth application');
             return false;
         }
@@ -324,7 +324,21 @@ class OAuthAuthorization extends CommonDBChild
             return false;
         }
 
-        $owner_details = $provider->getOwnerDetails($token);
+        try {
+            // Fetching the owner details is an HTTP call to the provider, which
+            // can fail (insufficient scope, network error, ...) just like the
+            // token exchange above.
+            $owner_details = $provider->getOwnerDetails($token);
+        } catch (Throwable $e) {
+            global $PHPLOGGER;
+            $PHPLOGGER->warning(
+                sprintf('Error during resource owner fetching: %s', $e->getMessage()),
+                ['exception' => $e]
+            );
+            $this->error = sprintf(__('Unable to get the authenticated account details from provider: %s'), $e->getMessage());
+            return false;
+        }
+
         $email = $owner_details?->email;
         if (empty($email)) {
             global $PHPLOGGER;
@@ -333,24 +347,34 @@ class OAuthAuthorization extends CommonDBChild
             return false;
         }
 
+        $refresh_token = $token->getRefreshToken();
+
         $input = [
-            'oauth_applications_id' => $oauth_applications_id,
+            'oauthapplications_id' => $oauthapplications_id,
             'type'                  => $type,
             'code'                  => $code,
             'token'                 => json_encode($token->jsonSerialize()),
-            'refresh_token'         => $token->getRefreshToken() ?? '',
             'email'                 => $email,
         ];
 
         $exists = $this->getFromDBByCrit([
-            'oauth_applications_id' => $oauth_applications_id,
+            'oauthapplications_id' => $oauthapplications_id,
             'email'                 => $email,
             'type'                  => $type,
         ]);
 
-        return $exists
-            ? $this->update(['id' => $this->fields['id']] + $input)
-            : (bool) $this->add($input);
+        if ($exists) {
+            // Providers do not always send back a refresh token on a new
+            // consent: keep the stored one in that case, as refreshToken() does,
+            // so the authorization can still be renewed.
+            if (!empty($refresh_token)) {
+                $input['refresh_token'] = $refresh_token;
+            }
+            return $this->update(['id' => $this->fields['id']] + $input);
+        }
+
+        $input['refresh_token'] = $refresh_token ?? '';
+        return (bool) $this->add($input);
     }
 
     /**
@@ -487,7 +511,7 @@ class OAuthAuthorization extends CommonDBChild
         }
 
         $application = new OAuthApplication();
-        if (!$application->getFromDB($this->fields['oauth_applications_id'])) {
+        if (!$application->getFromDB($this->fields['oauthapplications_id'])) {
             $this->error = __('Invalid OAuth application');
             return false;
         }
@@ -544,7 +568,7 @@ class OAuthAuthorization extends CommonDBChild
         }
 
         $application = new OAuthApplication();
-        if (!$application->getFromDB($this->fields['oauth_applications_id'])) {
+        if (!$application->getFromDB($this->fields['oauthapplications_id'])) {
             return ['success' => false, 'message' => __('Invalid OAuth application')];
         }
 

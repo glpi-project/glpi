@@ -411,7 +411,7 @@ class ApplicationDiagnostic
     {
         $authorizations = [];
         $rows = (new OAuthAuthorization())->find(
-            ['oauth_applications_id' => $this->application->getID()],
+            ['oauthapplications_id' => $this->application->getID()],
             ['type', 'email']
         );
 
@@ -435,7 +435,7 @@ class ApplicationDiagnostic
         $authorization = new OAuthAuthorization();
         if (
             !$authorization->getFromDB($authorizations_id)
-            || (int) $authorization->fields['oauth_applications_id'] !== $this->application->getID()
+            || (int) $authorization->fields['oauthapplications_id'] !== $this->application->getID()
         ) {
             return null;
         }

@@ -285,6 +285,15 @@ final class OAuthApplication extends CommonDBTM
         return true;
     }
 
+    public function cleanDBonPurge()
+    {
+        // Authorizations hold the (encrypted) mailbox tokens obtained through
+        // this application: they must not outlive it.
+        $this->deleteChildrenAndRelationsFromDb([
+            OAuthAuthorization::class,
+        ]);
+    }
+
     /**
      * Returns all active OAuthApplication instances.
      *
@@ -349,14 +358,16 @@ final class OAuthApplication extends CommonDBTM
      * to authorize a mailbox for the given authorization type.
      *
      * @param string $type One of `OAuthAuthorization::TYPE_IMAP`/`TYPE_SMTP`.
+     * @param ImapOauthProviderInterface|null $provider Provider to use, defaults to the one configured
+     *                                                  on this application for the given type.
      */
-    public function redirectToAuthorizationUrl(string $type): void
+    public function redirectToAuthorizationUrl(string $type, ?ImapOauthProviderInterface $provider = null): void
     {
         if ($this->isNewItem()) {
             throw new RuntimeException('Invalid application.');
         }
 
-        $provider = $this->getOauthProvider($type);
+        $provider ??= $this->getOauthProvider($type);
 
         $auth_url = $provider->getAuthorizationUrl();
 

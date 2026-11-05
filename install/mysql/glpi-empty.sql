@@ -10069,7 +10069,7 @@ CREATE TABLE `glpi_oauthapplications` (
 DROP TABLE IF EXISTS `glpi_oauthauthorizations`;
 CREATE TABLE `glpi_oauthauthorizations` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `oauth_applications_id` int unsigned NOT NULL DEFAULT '0',
+  `oauthapplications_id` int unsigned NOT NULL DEFAULT '0',
   `type` varchar(10) NOT NULL DEFAULT 'IMAP',
   `code` text,
   `token` text,
@@ -10078,7 +10078,7 @@ CREATE TABLE `glpi_oauthauthorizations` (
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`oauth_applications_id`,`email`,`type`),
+  UNIQUE KEY `unicity` (`oauthapplications_id`,`email`,`type`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

@@ -80,7 +80,7 @@ class OAuthAuthorizationTest extends DbTestCase
 
         /** @var OAuthAuthorization $authorization */
         $authorization = $this->createItem(OAuthAuthorization::class, [
-            'oauth_applications_id' => $app->getID(),
+            'oauthapplications_id' => $app->getID(),
             'type'                  => OAuthAuthorization::TYPE_IMAP,
             'email'                 => 'user@example.com',
             'code'                  => 'auth-code',
@@ -88,7 +88,7 @@ class OAuthAuthorizationTest extends DbTestCase
             'refresh_token'         => 'refresh-value',
         ], ['code', 'token', 'refresh_token']);
 
-        $this->assertSame($app->getID(), (int) $authorization->fields['oauth_applications_id']);
+        $this->assertSame($app->getID(), (int) $authorization->fields['oauthapplications_id']);
         $this->assertSame(OAuthAuthorization::TYPE_IMAP, $authorization->fields['type']);
         $this->assertSame('user@example.com', $authorization->fields['email']);
     }
@@ -101,7 +101,7 @@ class OAuthAuthorizationTest extends DbTestCase
 
         /** @var OAuthAuthorization $authorization */
         $authorization = $this->createItem(OAuthAuthorization::class, [
-            'oauth_applications_id' => $app->getID(),
+            'oauthapplications_id' => $app->getID(),
             'type'                  => OAuthAuthorization::TYPE_IMAP,
             'email'                 => 'user@example.com',
             'token'                 => 'token-json',
@@ -123,7 +123,7 @@ class OAuthAuthorizationTest extends DbTestCase
 
         /** @var OAuthAuthorization $authorization */
         $authorization = $this->createItem(OAuthAuthorization::class, [
-            'oauth_applications_id' => $app->getID(),
+            'oauthapplications_id' => $app->getID(),
             'type'                  => OAuthAuthorization::TYPE_IMAP,
             'email'                 => 'to-purge@example.com',
         ]);
@@ -145,7 +145,7 @@ class OAuthAuthorizationTest extends DbTestCase
 
         /** @var OAuthAuthorization $authorization */
         $authorization = $this->createItem(OAuthAuthorization::class, [
-            'oauth_applications_id' => $app->getID(),
+            'oauthapplications_id' => $app->getID(),
             'type'                  => OAuthAuthorization::TYPE_IMAP,
             'email'                 => 'user@example.com',
             'code'                  => 'plain-code',
@@ -211,6 +211,26 @@ class OAuthAuthorizationTest extends DbTestCase
         $this->hasPhpLogRecordThatContains('Unable to get user email', 'Warning');
     }
 
+    public function testCreateFromCodeFailsWhenOwnerDetailsFetchingFails(): void
+    {
+        $this->login();
+
+        $app = $this->createApplication();
+
+        $provider = new FakeOauthProviderForTests();
+        $provider->access_token_result = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
+        $provider->owner_details_exception = new RuntimeException('insufficient_scope');
+
+        $authorization = TestableOAuthAuthorization::withProvider($provider);
+        $result = $authorization->createFromCode($app->getID(), OAuthAuthorization::TYPE_IMAP, 'a-code');
+
+        // The provider error must be reported, not bubble up as an uncaught exception.
+        $this->assertFalse($result);
+        $this->assertStringContainsString('insufficient_scope', $authorization->getLastError());
+        $this->hasPhpLogRecordThatContains('Error during resource owner fetching: insufficient_scope', 'Warning');
+        $this->assertSame(0, countElementsInTable(OAuthAuthorization::getTable(), ['oauthapplications_id' => $app->getID()]));
+    }
+
     public function testCreateFromCodeSucceeds(): void
     {
         $this->login();
@@ -242,7 +262,7 @@ class OAuthAuthorizationTest extends DbTestCase
         // Save: everything the provider returned must land on the stored row, encrypted.
         $stored = new OAuthAuthorization();
         $this->assertTrue($stored->getFromDB($authorization->getID()));
-        $this->assertSame($app->getID(), (int) $stored->fields['oauth_applications_id']);
+        $this->assertSame($app->getID(), (int) $stored->fields['oauthapplications_id']);
         $this->assertSame('user@example.com', $stored->fields['email']);
         $this->assertSame(OAuthAuthorization::TYPE_IMAP, $stored->fields['type']);
 
@@ -293,12 +313,46 @@ class OAuthAuthorizationTest extends DbTestCase
             'COUNT' => 'cpt',
             'FROM'  => OAuthAuthorization::getTable(),
             'WHERE' => [
-                'oauth_applications_id' => $app->getID(),
+                'oauthapplications_id' => $app->getID(),
                 'email'                 => 'user@example.com',
                 'type'                  => OAuthAuthorization::TYPE_IMAP,
             ],
         ])->current()['cpt'];
         $this->assertSame(1, (int) $count);
+    }
+
+    public function testCreateFromCodeKeepsStoredRefreshTokenWhenTheProviderIssuesNone(): void
+    {
+        $this->login();
+
+        $app = $this->createApplication();
+
+        $provider = new FakeOauthProviderForTests();
+        $owner = new OwnerDetails();
+        $owner->email = 'user@example.com';
+        $provider->owner_details = $owner;
+
+        $provider->access_token_result = new AccessToken([
+            'access_token'  => 'first',
+            'refresh_token' => 'first-refresh',
+            'expires_in'    => 3600,
+        ]);
+        $first = TestableOAuthAuthorization::withProvider($provider);
+        $this->assertTrue($first->createFromCode($app->getID(), OAuthAuthorization::TYPE_IMAP, 'code-1'));
+
+        // Re-authorization of the same mailbox, without any refresh token in the response.
+        $provider->access_token_result = new AccessToken(['access_token' => 'second', 'expires_in' => 3600]);
+        $second = TestableOAuthAuthorization::withProvider($provider);
+        $this->assertTrue($second->createFromCode($app->getID(), OAuthAuthorization::TYPE_IMAP, 'code-2'));
+
+        $stored = new OAuthAuthorization();
+        $this->assertTrue($stored->getFromDB($first->getID()));
+        $key = new GLPIKey();
+        $this->assertSame('first-refresh', $key->decrypt($stored->fields['refresh_token']));
+        $this->assertSame(
+            'second',
+            (new AccessToken(json_decode($key->decrypt($stored->fields['token']), true)))->getToken()
+        );
     }
 
     public function testCreateFromCodeStoresNoRefreshTokenWhenTheProviderIssuesNone(): void
@@ -358,7 +412,7 @@ class OAuthAuthorizationTest extends DbTestCase
 
         /** @var OAuthAuthorization $authorization */
         $authorization = $this->createItem(OAuthAuthorization::class, [
-            'oauth_applications_id' => $this->createApplication()->getID(),
+            'oauthapplications_id' => $this->createApplication()->getID(),
             'type'                  => OAuthAuthorization::TYPE_IMAP,
             'email'                 => 'user@example.com',
         ] + $fields, $encrypted);
@@ -470,7 +524,7 @@ class OAuthAuthorizationTest extends DbTestCase
 
         /** @var OAuthAuthorization $authorization */
         $authorization = $this->createItem(OAuthAuthorization::class, [
-            'oauth_applications_id' => $app->getID(),
+            'oauthapplications_id' => $app->getID(),
             'type'                  => OAuthAuthorization::TYPE_IMAP,
             'email'                 => 'user@example.com',
         ]);
@@ -487,7 +541,7 @@ class OAuthAuthorizationTest extends DbTestCase
 
         /** @var OAuthAuthorization $authorization */
         $authorization = $this->createItem(OAuthAuthorization::class, [
-            'oauth_applications_id' => $app->getID(),
+            'oauthapplications_id' => $app->getID(),
             'type'                  => OAuthAuthorization::TYPE_IMAP,
             'email'                 => 'user@example.com',
             'refresh_token'         => 'old-refresh',
@@ -521,7 +575,7 @@ class OAuthAuthorizationTest extends DbTestCase
 
         /** @var OAuthAuthorization $authorization */
         $authorization = $this->createItem(OAuthAuthorization::class, [
-            'oauth_applications_id' => $app->getID(),
+            'oauthapplications_id' => $app->getID(),
             'type'                  => OAuthAuthorization::TYPE_IMAP,
             'email'                 => 'user@example.com',
             'refresh_token'         => 'stable-refresh',
@@ -555,7 +609,7 @@ class OAuthAuthorizationTest extends DbTestCase
         $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
         /** @var OAuthAuthorization $authorization */
         $authorization = $this->createItem(OAuthAuthorization::class, [
-            'oauth_applications_id' => $app->getID(),
+            'oauthapplications_id' => $app->getID(),
             'type'                  => OAuthAuthorization::TYPE_IMAP,
             'email'                 => 'user@example.com',
             'token'                 => json_encode($token->jsonSerialize()),
@@ -579,7 +633,7 @@ class OAuthAuthorizationTest extends DbTestCase
         $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
         /** @var OAuthAuthorization $authorization */
         $authorization = $this->createItem(OAuthAuthorization::class, [
-            'oauth_applications_id' => $app->getID(),
+            'oauthapplications_id' => $app->getID(),
             'type'                  => OAuthAuthorization::TYPE_IMAP,
             'email'                 => 'user@example.com',
             'token'                 => json_encode($token->jsonSerialize()),
@@ -603,7 +657,7 @@ class OAuthAuthorizationTest extends DbTestCase
         $expired_token = new AccessToken(['access_token' => 'old', 'expires' => time() - 100]);
         /** @var OAuthAuthorization $authorization */
         $authorization = $this->createItem(OAuthAuthorization::class, [
-            'oauth_applications_id' => $app->getID(),
+            'oauthapplications_id' => $app->getID(),
             'type'                  => OAuthAuthorization::TYPE_IMAP,
             'email'                 => 'user@example.com',
             'token'                 => json_encode($expired_token->jsonSerialize()),
@@ -632,7 +686,7 @@ class OAuthAuthorizationTest extends DbTestCase
         $expired_token = new AccessToken(['access_token' => 'old', 'expires' => time() - 100]);
         /** @var OAuthAuthorization $authorization */
         $authorization = $this->createItem(OAuthAuthorization::class, [
-            'oauth_applications_id' => $app->getID(),
+            'oauthapplications_id' => $app->getID(),
             'type'                  => OAuthAuthorization::TYPE_IMAP,
             'email'                 => 'user@example.com',
             'token'                 => json_encode($expired_token->jsonSerialize()),
@@ -665,7 +719,7 @@ class OAuthAuthorizationTest extends DbTestCase
         $token = new AccessToken(['access_token' => 'abc']);
         /** @var OAuthAuthorization $authorization */
         $authorization = $this->createItem(OAuthAuthorization::class, [
-            'oauth_applications_id' => $app->getID(),
+            'oauthapplications_id' => $app->getID(),
             'type'                  => OAuthAuthorization::TYPE_IMAP,
             'email'                 => 'user@example.com',
             'token'                 => json_encode($token->jsonSerialize()),
@@ -694,7 +748,7 @@ class OAuthAuthorizationTest extends DbTestCase
 
         /** @var OAuthAuthorization $authorization */
         $authorization = $this->createItem(OAuthAuthorization::class, [
-            'oauth_applications_id' => $app->getID(),
+            'oauthapplications_id' => $app->getID(),
             'type'                  => OAuthAuthorization::TYPE_IMAP,
             'email'                 => 'user@example.com',
         ]);
@@ -715,7 +769,7 @@ class OAuthAuthorizationTest extends DbTestCase
 
         /** @var OAuthAuthorization $authorization */
         $authorization = $this->createItem(OAuthAuthorization::class, [
-            'oauth_applications_id' => $this->createApplication()->getID(),
+            'oauthapplications_id' => $this->createApplication()->getID(),
             'type'                  => OAuthAuthorization::TYPE_IMAP,
             'email'                 => 'user@example.com',
             'refresh_token'         => 'refresh-value',
@@ -786,6 +840,8 @@ final class FakeOauthProviderForTests implements ProviderInterface
 
     public ?OwnerDetails $owner_details = null;
 
+    public ?\Throwable $owner_details_exception = null;
+
     public ?string $last_grant = null;
 
     public array $last_options = [];
@@ -814,6 +870,10 @@ final class FakeOauthProviderForTests implements ProviderInterface
 
     public function getOwnerDetails(AccessTokenInterface $token): ?OwnerDetails
     {
+        if ($this->owner_details_exception !== null) {
+            throw $this->owner_details_exception;
+        }
+
         return $this->owner_details;
     }
 

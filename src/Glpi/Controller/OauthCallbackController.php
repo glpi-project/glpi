@@ -46,6 +46,15 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class OauthCallbackController extends AbstractController
 {
+    /**
+     * @param OAuthAuthorization|null $authorization Authorization used to redeem the code.
+     *                                               Not a service: it is only meant to be provided by tests,
+     *                                               a new instance is used otherwise.
+     */
+    public function __construct(
+        private readonly ?OAuthAuthorization $authorization = null,
+    ) {}
+
     #[Route("/oauth/callback", name: "glpi_oauth_callback", methods: ["GET"])]
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(Request $request): Response
@@ -89,7 +98,7 @@ final class OauthCallbackController extends AbstractController
         } elseif (!$request->query->has('code')) {
             Session::addMessageAfterRedirect(__s('Unable to get authorization code'), false, ERROR);
         } else {
-            $authorization = new OAuthAuthorization();
+            $authorization = $this->authorization ?? new OAuthAuthorization();
             if ($authorization->createFromCode((int) $application_id, (string) $type, (string) $request->query->get('code'))) {
                 Session::addMessageAfterRedirect(__s('Authorization granted'), false, INFO);
             } else {

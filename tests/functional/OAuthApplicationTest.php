@@ -39,6 +39,7 @@ use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
 use GLPIKey;
 use MailCollector;
 use OAuthApplication;
+use OAuthAuthorization;
 use PHPUnit\Framework\Attributes\Group;
 
 class OAuthApplicationTest extends DbTestCase
@@ -116,6 +117,56 @@ class OAuthApplicationTest extends DbTestCase
         $id = $app->getID();
         $this->assertTrue($app->delete(['id' => $id], true));
         $this->assertFalse($app->getFromDB($id));
+    }
+
+    public function testPurgeAlsoPurgesItsAuthorizations(): void
+    {
+        $this->login();
+
+        /** @var OAuthApplication $app */
+        $app = $this->createItem(OAuthApplication::class, [
+            'name'          => 'To purge with authorizations',
+            'provider'      => 'azure',
+            'client_id'     => 'cid',
+            'client_secret' => 'secret',
+            'tenant_id'     => 'tenant',
+        ], ['client_secret']);
+
+        /** @var OAuthApplication $other_app */
+        $other_app = $this->createItem(OAuthApplication::class, [
+            'name'          => 'Kept application',
+            'provider'      => 'azure',
+            'client_id'     => 'cid',
+            'client_secret' => 'secret',
+            'tenant_id'     => 'tenant',
+        ], ['client_secret']);
+
+        $imap = $this->createItem(OAuthAuthorization::class, [
+            'oauthapplications_id' => $app->getID(),
+            'type'                 => OAuthAuthorization::TYPE_IMAP,
+            'email'                => 'imap@example.com',
+            'token'                => 'token-json',
+        ], ['token']);
+        $smtp = $this->createItem(OAuthAuthorization::class, [
+            'oauthapplications_id' => $app->getID(),
+            'type'                 => OAuthAuthorization::TYPE_SMTP,
+            'email'                => 'smtp@example.com',
+            'token'                => 'token-json',
+        ], ['token']);
+        $kept = $this->createItem(OAuthAuthorization::class, [
+            'oauthapplications_id' => $other_app->getID(),
+            'type'                 => OAuthAuthorization::TYPE_IMAP,
+            'email'                => 'imap@example.com',
+            'token'                => 'token-json',
+        ], ['token']);
+
+        $this->deleteItem(OAuthApplication::class, $app->getID(), true);
+
+        // The tokens obtained through the purged application must not remain in DB...
+        $this->assertFalse((new OAuthAuthorization())->getFromDB($imap->getID()));
+        $this->assertFalse((new OAuthAuthorization())->getFromDB($smtp->getID()));
+        // ... while those of other applications are left untouched.
+        $this->assertTrue((new OAuthAuthorization())->getFromDB($kept->getID()));
     }
 
     // -------------------------------------------------------------------------

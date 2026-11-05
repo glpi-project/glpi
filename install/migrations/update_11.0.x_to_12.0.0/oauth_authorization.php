@@ -45,7 +45,7 @@ $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
 if (!$DB->tableExists('glpi_oauthauthorizations')) {
     $query = "CREATE TABLE `glpi_oauthauthorizations` (
       `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
-      `oauth_applications_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+      `oauthapplications_id` int {$default_key_sign} NOT NULL DEFAULT '0',
       `type` varchar(10) NOT NULL DEFAULT 'IMAP',
       `code` text,
       `token` text,
@@ -54,7 +54,7 @@ if (!$DB->tableExists('glpi_oauthauthorizations')) {
       `date_creation` timestamp NULL DEFAULT NULL,
       `date_mod` timestamp NULL DEFAULT NULL,
       PRIMARY KEY (`id`),
-      UNIQUE KEY `unicity` (`oauth_applications_id`,`email`,`type`),
+      UNIQUE KEY `unicity` (`oauthapplications_id`,`email`,`type`),
       KEY `date_creation` (`date_creation`),
       KEY `date_mod` (`date_mod`)
     ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC";

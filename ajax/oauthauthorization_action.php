@@ -35,9 +35,14 @@
 use Glpi\Exception\Http\BadRequestHttpException;
 
 if (isset($_POST['id']) && isset($_POST['type']) && isset($_POST['request_authorization'])) {
+    $type = $_POST['type'];
+    if (!is_string($type) || !array_key_exists($type, OAuthAuthorization::getEnumTypes())) {
+        throw new BadRequestHttpException();
+    }
+
     $application = new OAuthApplication();
     $application->check((int) ($_POST['id'] ?? 0), UPDATE);
-    $application->redirectToAuthorizationUrl($_POST['type']);
+    $application->redirectToAuthorizationUrl($type);
 } elseif (isset($_POST['id']) && isset($_POST['refresh'])) {
     $authorization = new OAuthAuthorization();
     $authorization->check((int) ($_POST['id'] ?? 0), UPDATE);
