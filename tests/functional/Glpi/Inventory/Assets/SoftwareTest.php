@@ -2147,4 +2147,71 @@ JSON;
         // Step 6: Full inventory with software and without OS should never happen
     }
 
+    public function testUnknownSoftwarePropertiesAreIgnored(): void
+    {
+        $this->login();
+
+        // Inventory format allows extra properties on softwares;
+        // they must not be written, even if they match a table column.
+        $json_source = \Safe\json_decode(\Safe\json_encode([
+            'action'   => 'inventory',
+            'deviceid' => 'test-unknown-soft-props',
+            'itemtype' => 'Computer',
+            'content'  => [
+                'hardware'  => ['name' => 'pc-unknown-soft-props'],
+                'bios'      => ['ssn' => 'unknown-soft-props-ssn'],
+                'versionclient' => 'GLPI-Agent_v1.11',
+                'softwares' => [
+                    [
+                        'name'          => 'Unknown props software 1',
+                        'version'       => '1.0',
+                        'publisher'     => 'Unknown props publisher',
+                        'id'            => 999999,
+                        'is_deleted'    => 1,
+                        'is_template'   => 1,
+                        'template_name' => 'tpl',
+                        'is_valid'      => 0,
+                        'states_id'     => 42,
+                    ],
+                    [
+                        // different set of extra properties than first software
+                        'name'          => 'Unknown props software 2',
+                        'version'       => '2.0',
+                        'ticket_tco'    => 1234,
+                    ],
+                    [
+                        'name'          => 'Unknown props software 3',
+                        'version'       => '3.0',
+                    ],
+                ],
+            ],
+        ]));
+        $this->doInventory($json_source);
+
+        $softwares = getAllDataFromTable(
+            \Software::getTable(),
+            ['name' => ['LIKE', 'Unknown props software %']]
+        );
+        $this->assertCount(3, $softwares);
+        foreach ($softwares as $software) {
+            $this->assertNotEquals(999999, $software['id']);
+            $this->assertSame(0, $software['is_deleted']);
+            $this->assertSame(0, $software['is_template']);
+            $this->assertNull($software['template_name']);
+            $this->assertSame(1, $software['is_valid']);
+            $this->assertEquals(0, $software['ticket_tco']);
+
+            $versions = getAllDataFromTable(
+                SoftwareVersion::getTable(),
+                ['softwares_id' => $software['id']]
+            );
+            $this->assertCount(1, $versions);
+            $version = array_pop($versions);
+            $this->assertSame(0, $version['states_id']);
+            $this->assertSame(
+                str_replace('Unknown props software ', '', $software['name']) . '.0',
+                $version['name']
+            );
+        }
+    }
 }
