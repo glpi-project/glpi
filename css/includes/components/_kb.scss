@@ -856,7 +856,7 @@ body.in_modal .kb-editor-reserved {
     box-shadow: var(--tblr-box-shadow);
     padding: 0.5rem;
     min-width: 200px;
-    max-height: 300px;
+    max-height: 400px;
     overflow-y: auto;
     z-index: 1050;
 
@@ -879,16 +879,79 @@ body.in_modal .kb-editor-reserved {
             opacity: 0.7;
         }
 
+        i.kb-notice-icon {
+            opacity: 1;
+        }
+
         &:hover,
         &.is-selected {
             background: var(--tblr-bg-surface-secondary);
         }
     }
 
+    .slash-menu-separator {
+        border-block-start: 1px solid var(--tblr-border-color);
+        margin: 0.25rem 0;
+    }
+
     .slash-menu-empty {
         padding: 0.5rem 0.75rem;
         color: var(--tblr-muted);
         font-size: 0.875rem;
+    }
+}
+
+// Notices: global, as KB answers are also shown outside the KB view.
+// The look comes from the Tabler alert classes, added at render time.
+.kb-notice {
+    > .kb-notice-icon {
+        font-size: 1.25rem;
+        line-height: 1.25rem;
+        user-select: none;
+    }
+
+    > .kb-notice-content {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    > .kb-notice-content,
+    &:not(:has(> .kb-notice-content)) {
+        > :first-child,
+        > .kb-notice-icon + * {
+            margin-block-start: 0;
+        }
+
+        > :last-child {
+            margin-block-end: 0;
+        }
+    }
+
+    // Older answers have no content wrapper: keep their blocks stacked under the flex alert.
+    &.alert:not(:has(> .kb-notice-content)) {
+        display: block;
+        padding-inline-start: calc(2 * var(--tblr-alert-padding-x) + 1.25rem);
+
+        > .kb-notice-icon {
+            position: absolute;
+            inset-block-start: var(--tblr-alert-padding-y);
+            inset-inline-start: var(--tblr-alert-padding-x);
+        }
+    }
+
+    // Views that show the stored HTML without the alert classes, like the ticket editor.
+    &:not(.alert) {
+        margin-block: 1rem;
+        padding: 0.75rem 1rem;
+        border: var(--tblr-border-width) solid color-mix(in srgb, var(--kb-notice-color) 20%, transparent);
+        border-radius: var(--tblr-border-radius);
+        background-color: color-mix(in srgb, var(--kb-notice-color) 10%, var(--tblr-bg-surface));
+    }
+
+    @each $type in info, success, warning, danger {
+        &.kb-notice-#{$type} {
+            --kb-notice-color: var(--tblr-#{$type});
+        }
     }
 }
 

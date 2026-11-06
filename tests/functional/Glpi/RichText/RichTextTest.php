@@ -480,6 +480,11 @@ HTML,
             'encode_output_entities' => false,
             'expected_result'        => '<p>Watch this:</p><div class="video-embed" data-video-provider="video" data-video-src="https://cdn.example.com/clip.mp4"></div>',
         ];
+        yield 'KB notice classes are preserved' => [
+            'content'                => '<div class="kb-notice kb-notice-danger"><div class="kb-notice-content"><p>Read this first.</p></div></div>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<div class="kb-notice kb-notice-danger"><div class="kb-notice-content"><p>Read this first.</p></div></div>',
+        ];
     }
 
     #[DataProvider('getSafeHtmlProvider')]
