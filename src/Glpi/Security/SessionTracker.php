@@ -238,7 +238,9 @@ final class SessionTracker
         if ($DB->isReplica() && $reason !== self::REVOKE_REASON_USER) {
             // Sessions cannot be revoked when connected to a read-only replica.
             // Only the logout of the current user is permitted, as it does not require the database to be updated.
-            throw new AccessDeniedHttpException();
+            $exception = new AccessDeniedHttpException();
+            $exception->setMessageToDisplay(__('Sessions cannot be revoked while the database is in read-only mode.'));
+            throw $exception;
         }
 
         $it = $DB->request([
