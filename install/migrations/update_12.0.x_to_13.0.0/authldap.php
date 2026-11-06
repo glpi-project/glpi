@@ -32,8 +32,6 @@
  * ---------------------------------------------------------------------
  */
 
-use function Safe\preg_match;
-
 /**
  * @var Migration $migration
  * @var DBmysql $DB
