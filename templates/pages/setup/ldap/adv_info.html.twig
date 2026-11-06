@@ -34,7 +34,9 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block form_fields %}
-    {{ fields.dropdownYesNo('use_tls', item.fields['use_tls'], __('Use TLS')) }}
+    {{ fields.dropdownYesNo('use_tls', item.fields['use_tls'], __('Use StartTLS'), {
+        helper: __('Use StartTLS. Not recommended if LDAPS can be used instead. If LDAPS is desired, use the ldaps:// protocol in the host and set the correct port (usually 636).'),
+    }) }}
     {{ fields.dropdownArrayField('time_offset', item.fields['time_offset'], gmt_values, __('LDAP directory time zone')) }}
 
     {% if page_size_available %}
