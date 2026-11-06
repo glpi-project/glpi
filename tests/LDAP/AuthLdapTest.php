@@ -3199,15 +3199,9 @@ class AuthLdapTest extends DbTestCase
     #[RequiresPhpExtension('ldap')]
     public function testConnectToServerTlsError()
     {
-        $error = implode(
-            "\n",
-            [
-                'Unable to start TLS connection to LDAP server `openldap:3890`',
-                'error: Protocol error (2)',
-                'extended error: unsupported extended operation',
-                'err string: unsupported extended operation',
-            ]
-        );
+        // The exact LDAP/OpenSSL error depends on the server TLS capabilities
+        // (e.g. "unsupported extended operation" or "no cipher match"), so only check the stable part.
+        $error = 'Unable to start TLS connection to LDAP server `openldap:3890`';
 
         AuthLDAP::connectToServer(
             'openldap',
