@@ -292,6 +292,9 @@ class AuthLDAP extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
+        if (isset($input['pagesize']) && ((int) $input['pagesize'] <= 0)) {
+            unset($input['pagesize']);
+        }
         if (isset($input["rootdn_passwd"])) {
             if (empty($input["rootdn_passwd"])) {
                 unset($input["rootdn_passwd"]);
@@ -1737,6 +1740,10 @@ TWIG, $twig_params);
 
         $cookie   = ''; // Cookie used to perform query using pages
         $count    = 0;  // Store the number of results ldap_search
+        $page_size = (int) ($config_ldap->fields['pagesize'] ?? 0);
+        if ($page_size <= 0) {
+            $page_size = 1000;
+        }
 
         do {
             // The paged results control is not critical: if the server does not support it (or restricts it),
@@ -1746,7 +1753,7 @@ TWIG, $twig_params);
                     'oid'       => LDAP_CONTROL_PAGEDRESULTS,
                     'iscritical' => false,
                     'value'     => [
-                        'size'   => $config_ldap->fields['pagesize'],
+                        'size'   => $page_size,
                         'cookie' => $cookie,
                     ],
                 ],
@@ -2393,6 +2400,11 @@ TWIG, $twig_params);
         }
         $cookie = '';
         $count  = 0;
+        $page_size = (int) ($config_ldap->fields['pagesize'] ?? 0);
+        if ($page_size <= 0) {
+            $page_size = 1000;
+        }
+
         do {
             // The paged results control is not critical: if the server does not support it (or restricts it),
             // it will ignore it and return all results at once, without any page cookie.
@@ -2401,7 +2413,7 @@ TWIG, $twig_params);
                     'oid'       => LDAP_CONTROL_PAGEDRESULTS,
                     'iscritical' => false,
                     'value'     => [
-                        'size'   => $config_ldap->fields['pagesize'],
+                        'size'   => $page_size,
                         'cookie' => $cookie,
                     ],
                 ],

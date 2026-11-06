@@ -3325,52 +3325,43 @@ class AuthLdapTest extends DbTestCase
 
     public static function searchForUsersErrorsProvider(): iterable
     {
-        // error messages should be identical whether pagesize support is enabled or not
-        $configs = [
-            [
-                'can_support_pagesize' => 0,
+        // invalid base DN
+        yield [
+            'config_fields' => [
+                'pagesize' => 100,
             ],
-            [
-                'can_support_pagesize' => 1,
-                'pagesize'             => 100,
-            ],
+            'basedn'        => 'notavalidbasedn',
+            'filter'        => '(objectclass=inetOrgPerson)',
+            'error'         => implode(
+                "\n",
+                [
+                    'LDAP search with base DN `notavalidbasedn` and filter `(objectclass=inetOrgPerson)` failed',
+                    'error: Invalid DN syntax (34)',
+                    'extended error: invalid DN',
+                    'err string: invalid DN',
+                ]
+            ),
         ];
-        foreach ($configs as $config_fields) {
-            // invalid base DN
-            yield [
-                'config_fields' => $config_fields,
-                'basedn'        => 'notavalidbasedn',
-                'filter'        => '(objectclass=inetOrgPerson)',
-                'error'         => implode(
-                    "\n",
-                    [
-                        'LDAP search with base DN `notavalidbasedn` and filter `(objectclass=inetOrgPerson)` failed',
-                        'error: Invalid DN syntax (34)',
-                        'extended error: invalid DN',
-                        'err string: invalid DN',
-                    ]
-                ),
-            ];
 
-            // invalid filter
-            yield [
-                'config_fields' => $config_fields,
-                'basedn'        => 'dc=glpi,dc=org',
-                'filter'        => 'notavalidfilter',
-                'error'         => implode(
-                    "\n",
-                    [
-                        'LDAP search with base DN `dc=glpi,dc=org` and filter `notavalidfilter` failed',
-                        'error: Bad search filter (-7)',
-                    ]
-                ),
-            ];
-        }
+        // invalid filter
+        yield [
+            'config_fields' => [
+                'pagesize' => 100,
+            ],
+            'basedn'        => 'dc=glpi,dc=org',
+            'filter'        => 'notavalidfilter',
+            'error'         => implode(
+                "\n",
+                [
+                    'LDAP search with base DN `dc=glpi,dc=org` and filter `notavalidfilter` failed',
+                    'error: Bad search filter (-7)',
+                ]
+            ),
+        ];
 
         // invalid pagesize
         yield [
             'config_fields' => [
-                'can_support_pagesize' => 1,
                 'pagesize'             => 0,
             ],
             'basedn'        => 'dc=glpi,dc=org',
@@ -3475,50 +3466,38 @@ class AuthLdapTest extends DbTestCase
 
     public static function getGroupsFromLDAPErrorsProvider(): iterable
     {
-        // error messages should be identical whether pagesize support is enabled or not
-        $configs = [
-            [
-                'can_support_pagesize' => 0,
-            ],
-            [
-                'can_support_pagesize' => 1,
-                'pagesize'             => 100,
-            ],
+        // invalid base DN
+        yield [
+            'config_fields' => ['pagesize' => 100, 'basedn' => 'notavalidbasedn'],
+            'filter'        => '(objectclass=inetOrgPerson)',
+            'error'         => implode(
+                "\n",
+                [
+                    'LDAP search with base DN `notavalidbasedn` and filter `(objectclass=inetOrgPerson)` failed',
+                    'error: Invalid DN syntax (34)',
+                    'extended error: invalid DN',
+                    'err string: invalid DN',
+                ]
+            ),
         ];
-        foreach ($configs as $config_fields) {
-            // invalid base DN
-            yield [
-                'config_fields' => $config_fields + ['basedn' => 'notavalidbasedn'],
-                'filter'        => '(objectclass=inetOrgPerson)',
-                'error'         => implode(
-                    "\n",
-                    [
-                        'LDAP search with base DN `notavalidbasedn` and filter `(objectclass=inetOrgPerson)` failed',
-                        'error: Invalid DN syntax (34)',
-                        'extended error: invalid DN',
-                        'err string: invalid DN',
-                    ]
-                ),
-            ];
 
-            // invalid filter
-            yield [
-                'config_fields' => $config_fields,
-                'filter'        => 'notavalidfilter',
-                'error'         => implode(
-                    "\n",
-                    [
-                        'LDAP search with base DN `dc=glpi,dc=org` and filter `notavalidfilter` failed',
-                        'error: Bad search filter (-7)',
-                    ]
-                ),
-            ];
-        }
+        // invalid filter
+        yield [
+            'config_fields' => ['pagesize' => 100],
+            'filter'        => 'notavalidfilter',
+            'error'         => implode(
+                "\n",
+                [
+                    'LDAP search with base DN `dc=glpi,dc=org` and filter `notavalidfilter` failed',
+                    'error: Bad search filter (-7)',
+                ]
+            ),
+        ];
+
 
         // invalid pagesize
         yield [
             'config_fields' => [
-                'can_support_pagesize' => 1,
                 'pagesize'             => 0,
             ],
             'filter'        => '(objectclass=groupOfNames)',
