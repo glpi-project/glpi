@@ -1361,19 +1361,7 @@ TWIG, $twig_params);
                     $search_where[] = ['OR' => $ors];
 
                     // Add visibility date
-                    $visibility_crit = [
-                        [
-                            'OR'  => [
-                                ['glpi_knowbaseitems.begin_date'  => null],
-                                ['glpi_knowbaseitems.begin_date'  => ['<', QueryFunction::now()]],
-                            ],
-                        ], [
-                            'OR'  => [
-                                ['glpi_knowbaseitems.end_date'    => null],
-                                ['glpi_knowbaseitems.end_date'    => ['>', QueryFunction::now()]],
-                            ],
-                        ],
-                    ];
+                    $visibility_crit = self::getVisibilityDateCriteria();
                     $search_where[] = $visibility_crit;
 
                     $criteria['ORDERBY'] = ['SCORE DESC'];
@@ -1823,18 +1811,7 @@ TWIG, $twig_params);
         ];
 
         // Add visibility date
-        $criteria['WHERE'][] = [
-            'OR'  => [
-                ['glpi_knowbaseitems.begin_date' => null],
-                ['glpi_knowbaseitems.begin_date' => ['<', QueryFunction::now()]],
-            ],
-        ];
-        $criteria['WHERE'][] = [
-            'OR'  => [
-                ['glpi_knowbaseitems.end_date'   => null],
-                ['glpi_knowbaseitems.end_date'   => ['>', QueryFunction::now()]],
-            ],
-        ];
+        $criteria['WHERE'][] = self::getVisibilityDateCriteria();
 
         if ($faq) { // FAQ
             $criteria['WHERE']['glpi_knowbaseitems.is_faq'] = 1;
