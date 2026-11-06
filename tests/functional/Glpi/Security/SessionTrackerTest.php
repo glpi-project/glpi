@@ -142,7 +142,12 @@ class SessionTrackerTest extends DbTestCase
 
         $DB->replica = true;
         try {
+            // Already known session (e.g. restored from a "remember me" cookie) is accepted.
             $this->assertTrue(SessionTracker::recordNewSession(new Auth()));
+
+            // New session cannot be recorded, it is refused.
+            $_SESSION['login_session_uid'] = bin2hex(random_bytes(16));
+            $this->assertFalse(SessionTracker::recordNewSession(new Auth()));
         } finally {
             $DB->replica = false;
         }
@@ -195,6 +200,27 @@ class SessionTrackerTest extends DbTestCase
             'login_session_uid' => $login_session_uid,
             'logged_out_at' => null,
         ]));
+    }
+
+    public function testRevokeSessionByAdminOnReplica(): void
+    {
+        global $DB;
+
+        $this->login();
+        $login_session_uid = Session::getLoginSessionUID();
+        $this->assertNotNull($login_session_uid);
+
+        $DB->replica = true;
+        try {
+            SessionTracker::revokeSession($login_session_uid, SessionTracker::REVOKE_REASON_ADMIN);
+            $this->fail('An exception was expected.');
+        } catch (AccessDeniedHttpException) {
+            // Expected exception.
+        } finally {
+            $DB->replica = false;
+        }
+
+        $this->assertEquals(1, countElementsInTable('glpi_users_sessions', ['login_session_uid' => $login_session_uid]));
     }
 
     public function testRevokeAllSessionExceptCurrent(): void

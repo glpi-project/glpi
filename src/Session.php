@@ -2373,7 +2373,7 @@ class Session
         $cookie_name = Auth::getRememberMeCookieName();
         if (is_numeric($users_id) && isset($_COOKIE[$cookie_name])) {
             [$token_uid] = explode(':', $_COOKIE[$cookie_name]);
-            if (!empty($token_uid)) {
+            if (!empty($token_uid) && !$DB->isReplica()) {
                 $DB->delete('glpi_usertokens', [
                     'users_id' => $users_id,
                     'token_uid' => $token_uid,

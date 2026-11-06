@@ -147,11 +147,6 @@ final class SessionTracker
             return false;
         }
 
-        if ($DB->isReplica()) {
-            // Sessions cannot be recorded when connected to a read-only replica.
-            return true;
-        }
-
         $it = $DB->request([
             'SELECT' => ['id'],
             'FROM' => 'glpi_users_sessions',
@@ -160,6 +155,12 @@ final class SessionTracker
         ]);
 
         $session_exists = $it->count() > 0;
+        if ($DB->isReplica()) {
+            // Sessions cannot be recorded when connected to a read-only replica.
+            // Only allow sessions that are already known (e.g. restored from a "remember me" cookie),
+            // as other ones would be considered as invalid on the next request.
+            return $session_exists;
+        }
         if ($session_exists) {
             $DB->update('glpi_users_sessions', [
                 'users_id' => $_SESSION['glpiID'],
@@ -234,6 +235,12 @@ final class SessionTracker
     {
         global $DB, $CFG_GLPI;
 
+        if ($DB->isReplica() && $reason !== self::REVOKE_REASON_USER) {
+            // Sessions cannot be revoked when connected to a read-only replica.
+            // Only the logout of the current user is permitted, as it does not require the database to be updated.
+            throw new AccessDeniedHttpException();
+        }
+
         $it = $DB->request([
             'SELECT' => ['users_id', 'session_file'],
             'FROM' => 'glpi_users_sessions',
@@ -284,7 +291,7 @@ final class SessionTracker
             }
         }
 
-        if ($reason === self::REVOKE_REASON_ADMIN && $users_id && !$DB->isReplica()) {
+        if ($reason === self::REVOKE_REASON_ADMIN && $users_id) {
             Log::history($users_id, User::class, [0, '', 'Session revoked'], User::class, Log::HISTORY_LOG_SIMPLE_MESSAGE);
         }
     }
