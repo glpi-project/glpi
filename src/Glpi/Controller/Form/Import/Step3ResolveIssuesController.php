@@ -35,9 +35,12 @@
 namespace Glpi\Controller\Form\Import;
 
 use Glpi\Controller\AbstractController;
+use Glpi\Form\Comment;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
+use Glpi\Form\Question;
+use Glpi\Form\Section;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -70,8 +73,25 @@ final class Step3ResolveIssuesController extends AbstractController
             );
         }
 
-        $issues = $serializer->listIssues($mapper, $json)->getIssues()[$form_id];
+        $issues = $serializer->listIssues($mapper, $json, $skipped_forms)->getIssues()[$form_id];
+
+        // Questions, sections and comments names are not unique, their form
+        // name is displayed to help choosing the right replacement.
+        $form_items_values = [];
+        foreach ($issues as $issue) {
+            if (!isset($form_items_values[$issue->itemtype])) {
+                $values = $this->getFormItemsDropdownValues(
+                    $issue->itemtype,
+                    Session::getActiveEntities(),
+                );
+                if ($values !== []) {
+                    $form_items_values[$issue->itemtype] = $values;
+                }
+            }
+        }
+
         return $this->render("pages/admin/form/import/step3_resolve_issues.html.twig", [
+            'form_items_values' => $form_items_values,
             'title'        => __("Resolve issues"),
             'menu'         => ['admin', Form::getType()],
             'issues'       => $issues,
@@ -79,5 +99,71 @@ final class Step3ResolveIssuesController extends AbstractController
             'replacements' => $replacements,
             'skipped_forms' => $skipped_forms,
         ]);
+    }
+
+    /**
+     * Get the questions, sections or comments that can be used as replacement,
+     * labelled with the name of their form.
+     *
+     * @param int[] $entities
+     * @return array<int, string>
+     */
+    public function getFormItemsDropdownValues(string $itemtype, array $entities): array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        if (!in_array($itemtype, [Question::class, Section::class, Comment::class], true)) {
+            return [];
+        }
+
+        $table = $itemtype::getTable();
+        $forms_table = Form::getTable();
+        $sections_table = Section::getTable();
+        $query = [
+            'SELECT' => [
+                "$table.id",
+                "$table.name",
+                "$forms_table.name AS form_name",
+            ],
+            'FROM'   => $table,
+            'WHERE'  => [
+                "$forms_table.is_deleted" => 0,
+                getEntitiesRestrictCriteria(
+                    $forms_table,
+                    value: $entities,
+                    is_recursive: true,
+                ),
+            ],
+        ];
+        if ($itemtype === Section::class) {
+            $query['INNER JOIN'][$forms_table] = [
+                'ON' => [
+                    $table       => Form::getForeignKeyField(),
+                    $forms_table => 'id',
+                ],
+            ];
+        } else {
+            $query['INNER JOIN'][$sections_table] = [
+                'ON' => [
+                    $table          => Section::getForeignKeyField(),
+                    $sections_table => 'id',
+                ],
+            ];
+            $query['INNER JOIN'][$forms_table] = [
+                'ON' => [
+                    $sections_table => Form::getForeignKeyField(),
+                    $forms_table    => 'id',
+                ],
+            ];
+        }
+
+        $values = [];
+        foreach ($DB->request($query) as $row) {
+            $values[$row['id']] = sprintf('%s > %s', $row['form_name'], $row['name']);
+        }
+        asort($values);
+
+        return $values;
     }
 }

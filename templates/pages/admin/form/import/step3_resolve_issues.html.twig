@@ -72,19 +72,35 @@
                             <td class="px-4">
                                 <input type="hidden" name="replacements[{{ replacement_index }}][itemtype]" value="{{ issue.itemtype }}"/>
                                 <input type="hidden" name="replacements[{{ replacement_index }}][original_name]" value="{{ original_name }}"/>
-                                {{ fields.dropdownField(
-                                    issue.itemtype,
-                                    'replacements[' ~ replacement_index ~ '][replacement_id]',
-                                    issue.replacement_id|default(issue.itemtype == 'Entity' ? session('glpiactive_entity') : 0),
-                                    '',
-                                    {
-                                        'field_class': 'col-12',
-                                        'aria_label' : __("Replacement value for '%s'")|format(original_name),
-                                        'no_label'   : true,
-                                        'right'      : 'all',
-                                        'mb'         : '',
-                                    }
-                                ) }}
+                                {% if form_items_values[issue.itemtype] is defined %}
+                                    {{ fields.dropdownArrayField(
+                                        'replacements[' ~ replacement_index ~ '][replacement_id]',
+                                        issue.replacement_id|default(0),
+                                        form_items_values[issue.itemtype],
+                                        '',
+                                        {
+                                            'field_class'         : 'col-12',
+                                            'aria_label'          : __("Replacement value for '%s'")|format(original_name),
+                                            'no_label'            : true,
+                                            'mb'                  : '',
+                                            'display_emptychoice' : true,
+                                        }
+                                    ) }}
+                                {% else %}
+                                    {{ fields.dropdownField(
+                                        issue.itemtype,
+                                        'replacements[' ~ replacement_index ~ '][replacement_id]',
+                                        issue.replacement_id|default(issue.itemtype == 'Entity' ? session('glpiactive_entity') : 0),
+                                        '',
+                                        {
+                                            'field_class': 'col-12',
+                                            'aria_label' : __("Replacement value for '%s'")|format(original_name),
+                                            'no_label'   : true,
+                                            'right'      : 'all',
+                                            'mb'         : '',
+                                        }
+                                    ) }}
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}

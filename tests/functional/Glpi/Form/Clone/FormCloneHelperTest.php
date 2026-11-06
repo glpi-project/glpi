@@ -1170,6 +1170,39 @@ final class FormCloneHelperTest extends DbTestCase
         );
     }
 
+    public function testExternalTagIdsAreKeptWhenCloning(): void
+    {
+        // Arrange: a form whose destination uses a question of another form
+        $form_a = $this->createForm(
+            (new FormBuilder("Form A"))->addQuestion("Question A", QuestionTypeShortText::class)
+        );
+        $form_b = $this->createForm(new FormBuilder("Form B"));
+        $destinations = $form_b->getDestinations();
+        $destination = current($destinations);
+        $this->updateItem(
+            $destination::class,
+            $destination->getId(),
+            [
+                'config' => [
+                    ContentField::getKey() => (new SimpleValueConfig(
+                        (new QuestionTagProvider())->getTags($form_a)[0]->html
+                    ))->jsonSerialize(),
+                ],
+            ],
+            ["config"],
+        );
+
+        // Act: clone the second form
+        $clone = Form::getById($form_b->clone());
+
+        // Assert: the tag still references the question of the first form
+        $cloned_destinations = $clone->getDestinations();
+        $this->assertStringContainsString(
+            sprintf('data-form-tag-value="%d"', $this->getQuestionId($form_a, "Question A")),
+            current($cloned_destinations)->getConfig()[ContentField::getKey()]['value'],
+        );
+    }
+
     public function testIdsInFormTagsAreUpdatedWhenCloning(): void
     {
         $form_tag_provider        = new FormTagProvider();

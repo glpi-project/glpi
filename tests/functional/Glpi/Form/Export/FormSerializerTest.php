@@ -78,7 +78,9 @@ use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Result\ImportError;
+use Glpi\Form\Export\Result\ImportResult;
 use Glpi\Form\Export\Serializer\FormSerializer;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
@@ -1623,6 +1625,353 @@ final class FormSerializerTest extends DbTestCase
         $this->assertNotNull($path);
         $this->assertFileExists($path);
         $this->assertEquals(md5_file($custom_icon_source), md5_file($path));
+    }
+
+    public function testItemQuestionTargetingUnknownQuestionIsReportedAsIssue(): void
+    {
+        // Arrange: create a form with an item question, questions can't be
+        // targeted from the UI so the export will be altered to target one
+        $computer = $this->createItem(Computer::class, [
+            'name'        => "Computer " . uniqid(),
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $form = $this->createForm((new FormBuilder())->addQuestion(
+            "My question item",
+            QuestionTypeItem::class,
+            $computer->getID(),
+            json_encode(new QuestionTypeItemExtraDataConfig(Computer::class)),
+        ));
+
+        // Act: export the form, make it target an unknown question then list
+        // the import issues
+        $unknown_name = "Unknown " . uniqid();
+        $json = str_replace(
+            ['"Computer"', $computer->fields['name']],
+            [json_encode(Question::class), $unknown_name],
+            $this->exportForm($form),
+        );
+        $mapper = new DatabaseMapper([$this->getTestRootEntity(only_id: true)]);
+        $issues = self::$serializer->listIssues($mapper, $json)->getIssues();
+
+        // Assert: the unknown question is reported, so it can be replaced
+        $this->assertEquals(
+            [new DataRequirementSpecification(Question::class, $unknown_name)],
+            $issues[$form->getID()],
+        );
+    }
+
+    public function testExternalTagIsExportedAsRequirement(): void
+    {
+        // Arrange: a form whose destination uses a question of another form
+        [$form_a, $question_a] = $this->createFormWithUniqueQuestion();
+        $form_b = $this->createFormWithDestinationContent(
+            (new QuestionTagProvider())->getTags($form_a)[0]->html
+        );
+
+        // Act: export the second form alone
+        $form_spec = json_decode($this->exportForm($form_b), true)['forms'][0];
+
+        // Assert: the question is a requirement and the tag references it
+        $this->assertContains(
+            ['itemtype' => Question::class, 'name' => $question_a->fields['name']],
+            $form_spec['data_requirements'],
+        );
+        $this->assertStringContainsString(
+            'data-form-tag-requirement="true"',
+            $form_spec['destinations'][0]['config'][ContentField::getKey()]['value'],
+        );
+    }
+
+    public function testSameExternalItemProducesOneRequirement(): void
+    {
+        // Arrange: a form whose destination uses twice a question of another form
+        [$form_a] = $this->createFormWithUniqueQuestion();
+        $tag = (new QuestionTagProvider())->getTags($form_a)[0]->html;
+        $form_b = $this->createFormWithDestinationContent($tag . $tag);
+
+        // Act: export the second form alone
+        $form_spec = json_decode($this->exportForm($form_b), true)['forms'][0];
+
+        // Assert: the question is required only once
+        $questions_requirements = array_filter(
+            $form_spec['data_requirements'],
+            fn($requirement) => $requirement['itemtype'] === Question::class,
+        );
+        $this->assertCount(1, $questions_requirements);
+    }
+
+    public function testExternalTagIsMatchedByNameOnImport(): void
+    {
+        // Arrange: a form whose destination uses a question of another form
+        [$form_a, $question_a] = $this->createFormWithUniqueQuestion();
+        $form_b = $this->createFormWithDestinationContent(
+            (new QuestionTagProvider())->getTags($form_a)[0]->html
+        );
+
+        // Act: export the second form, replace the question by another one with
+        // the same name (as on another instance) then import the form
+        $json = $this->exportForm($form_b);
+        $this->deleteItem(Question::class, $question_a->getID(), purge: true);
+        $other_form = $this->createForm(
+            (new FormBuilder())->addQuestion($question_a->fields['name'], QuestionTypeShortText::class)
+        );
+        $other_question = current($other_form->getQuestions());
+        $imported_form = $this->importForm($json, $this->getMapper());
+
+        // Assert: the tag references the question found by name
+        $content = $this->getDestinationContent($imported_form);
+        $this->assertStringContainsString(
+            sprintf('data-form-tag-value="%d"', $other_question->getID()),
+            $content,
+        );
+        $this->assertStringNotContainsString('data-form-tag-requirement', $content);
+    }
+
+    public function testUnresolvedExternalTagIsReportedAndCanBeReplaced(): void
+    {
+        // Arrange: a form whose destination uses a question of another form,
+        // and a third form with a question of the same name
+        [$form_a, $question_a] = $this->createFormWithUniqueQuestion();
+        $name = $question_a->fields['name'];
+        $this->createForm(
+            (new FormBuilder())->addQuestion($name, QuestionTypeShortText::class)
+        );
+        $form_b = $this->createFormWithDestinationContent(
+            (new QuestionTagProvider())->getTags($form_a)[0]->html
+        );
+        $json = $this->exportForm($form_b);
+
+        // Act: list the issues, then import with a replacement for the question
+        $issues = self::$serializer->listIssues($this->getMapper(), $json)->getIssues();
+        $mapper = $this->getMapper();
+        $mapper->addMappedItem(Question::class, $name, $question_a->getID());
+        $imported_form = $this->importForm($json, $mapper);
+
+        // Assert: the ambiguous question was reported, then replaced
+        $this->assertContainsEquals(
+            new DataRequirementSpecification(Question::class, $name),
+            $issues[$form_b->getID()],
+        );
+        $this->assertStringContainsString(
+            sprintf('data-form-tag-value="%d"', $question_a->getID()),
+            $this->getDestinationContent($imported_form),
+        );
+    }
+
+    public function testFormWithDanglingTagCanBeImported(): void
+    {
+        // Arrange: a form whose destination uses a question that was deleted
+        [$form_a, $question_a] = $this->createFormWithUniqueQuestion();
+        $form_b = $this->createFormWithDestinationContent(
+            (new QuestionTagProvider())->getTags($form_a)[0]->html
+        );
+        $this->deleteItem(Question::class, $question_a->getID(), purge: true);
+        $json = $this->exportForm($form_b);
+
+        // Act: list the issues and import the form
+        $issues = self::$serializer->listIssues($this->getMapper(), $json)->getIssues();
+        $imported_form = $this->importForm($json, $this->getMapper());
+
+        // Assert: no issues and the tag is kept as is
+        $this->assertEquals([], $issues[$form_b->getID()]);
+        $this->assertStringContainsString(
+            sprintf('data-form-tag-value="%d"', $question_a->getID()),
+            $this->getDestinationContent($imported_form),
+        );
+    }
+
+    public function testGroupedExportKeepsCrossFormReferencesInternal(): void
+    {
+        // Arrange: a form whose destination uses a question of another form
+        [$form_a, $question_a] = $this->createFormWithUniqueQuestion();
+        $form_b = $this->createFormWithDestinationContent(
+            (new QuestionTagProvider())->getTags($form_a)[0]->html
+        );
+
+        // Act: export both forms, the referencing form first, then import them
+        $json = self::$serializer->exportFormsToJson([$form_b, $form_a])->getJsonContent();
+        $result = self::$serializer->importFormsFromJson($json, $this->getMapper());
+
+        // Assert: the question is not a requirement and the imported tag
+        // references the imported question
+        foreach (json_decode($json, true)['forms'] as $form_spec) {
+            $this->assertNotContains(Question::class, array_column($form_spec['data_requirements'], 'itemtype'));
+        }
+        $imported_forms = $this->getImportedFormsByName($result);
+        $imported_question = current($imported_forms[$form_a->fields['name']]->getQuestions());
+        $this->assertNotEquals($question_a->getID(), $imported_question->getID());
+        $this->assertStringContainsString(
+            sprintf('data-form-tag-value="%d"', $imported_question->getID()),
+            $this->getDestinationContent($imported_forms[$form_b->fields['name']]),
+        );
+    }
+
+    public function testGroupedImportWithSkippedReferencedForm(): void
+    {
+        // Arrange: export a form along with the form it references
+        [$form_a] = $this->createFormWithUniqueQuestion();
+        $form_b = $this->createFormWithDestinationContent(
+            (new QuestionTagProvider())->getTags($form_a)[0]->html
+        );
+        $json = self::$serializer->exportFormsToJson([$form_b, $form_a])->getJsonContent();
+
+        // Act: import the forms, skipping the referenced one
+        $result = self::$serializer->importFormsFromJson(
+            $json,
+            $this->getMapper(),
+            [$form_a->getID()],
+        );
+
+        // Assert: the referencing form was imported
+        $this->assertEquals(
+            [$form_b->fields['name']],
+            array_keys($this->getImportedFormsByName($result)),
+        );
+    }
+
+    public function testGroupedImportWithCyclicReferences(): void
+    {
+        // Arrange: two forms referencing each other
+        [$form_a] = $this->createFormWithUniqueQuestion();
+        [$form_b] = $this->createFormWithUniqueQuestion();
+        $this->setDestinationContent(
+            $form_a,
+            (new QuestionTagProvider())->getTags($form_b)[0]->html
+        );
+        $this->setDestinationContent(
+            $form_b,
+            (new QuestionTagProvider())->getTags($form_a)[0]->html
+        );
+        $json = self::$serializer->exportFormsToJson([$form_a, $form_b])->getJsonContent();
+
+        // Act: import the forms
+        $result = self::$serializer->importFormsFromJson($json, $this->getMapper());
+
+        // Assert: each form references the imported question of the other
+        $forms = $this->getImportedFormsByName($result);
+        $imported_a = $forms[$form_a->fields['name']];
+        $imported_b = $forms[$form_b->fields['name']];
+        $this->assertStringContainsString(
+            sprintf('data-form-tag-value="%d"', current($imported_b->getQuestions())->getID()),
+            $this->getDestinationContent($imported_a),
+        );
+        $this->assertStringContainsString(
+            sprintf('data-form-tag-value="%d"', current($imported_a->getQuestions())->getID()),
+            $this->getDestinationContent($imported_b),
+        );
+    }
+
+    public function testGroupedImportResolvesReferencesToSkippedFormByName(): void
+    {
+        // Arrange: export a form along with the form it references, then
+        // replace the referenced question by another one with the same name
+        // (as if the referenced form already existed on another instance)
+        [$form_a, $question_a] = $this->createFormWithUniqueQuestion();
+        $form_b = $this->createFormWithDestinationContent(
+            (new QuestionTagProvider())->getTags($form_a)[0]->html
+        );
+        $json = self::$serializer->exportFormsToJson([$form_b, $form_a])->getJsonContent();
+        $this->deleteItem(Question::class, $question_a->getID(), purge: true);
+        $other_form = $this->createForm(
+            (new FormBuilder())->addQuestion($question_a->fields['name'], QuestionTypeShortText::class)
+        );
+        $other_question = current($other_form->getQuestions());
+
+        // Act: import the forms, skipping the referenced one
+        $result = self::$serializer->importFormsFromJson(
+            $json,
+            $this->getMapper(),
+            [$form_a->getID()],
+        );
+
+        // Assert: the tag references the question found by name
+        $imported_forms = $this->getImportedFormsByName($result);
+        $this->assertStringContainsString(
+            sprintf('data-form-tag-value="%d"', $other_question->getID()),
+            $this->getDestinationContent($imported_forms[$form_b->fields['name']]),
+        );
+    }
+
+    public function testReferencesToSkippedFormAreReportedAsIssues(): void
+    {
+        // Arrange: export a form along with the form it references, and add a
+        // question with the same name so the reference is ambiguous
+        [$form_a, $question_a] = $this->createFormWithUniqueQuestion();
+        $form_b = $this->createFormWithDestinationContent(
+            (new QuestionTagProvider())->getTags($form_a)[0]->html
+        );
+        $this->createForm(
+            (new FormBuilder())->addQuestion($question_a->fields['name'], QuestionTypeShortText::class)
+        );
+        $json = self::$serializer->exportFormsToJson([$form_b, $form_a])->getJsonContent();
+
+        // Act: list the issues, skipping the referenced form
+        $issues = self::$serializer->listIssues(
+            $this->getMapper(),
+            $json,
+            [$form_a->getID()],
+        )->getIssues();
+
+        // Assert: the referenced question must be resolved
+        $this->assertContainsEquals(
+            new DataRequirementSpecification(Question::class, $question_a->fields['name']),
+            $issues[$form_b->getID()],
+        );
+    }
+
+    /** @return array{Form, Question} */
+    private function createFormWithUniqueQuestion(): array
+    {
+        $uid = uniqid();
+        $form = $this->createForm(
+            (new FormBuilder("Form $uid"))->addQuestion("Question $uid", QuestionTypeShortText::class)
+        );
+        $questions = $form->getQuestions();
+        return [$form, current($questions)];
+    }
+
+    private function createFormWithDestinationContent(string $content): Form
+    {
+        $form = $this->createForm(new FormBuilder("Form " . uniqid()));
+        $this->setDestinationContent($form, $content);
+        return $form;
+    }
+
+    private function setDestinationContent(Form $form, string $content): void
+    {
+        $destinations = $form->getDestinations();
+        $destination = current($destinations);
+        $this->updateItem(
+            $destination::class,
+            $destination->getId(),
+            [
+                'config' => [
+                    ContentField::getKey() => (new SimpleValueConfig($content))->jsonSerialize(),
+                ],
+            ],
+            ["config"],
+        );
+    }
+
+    private function getDestinationContent(Form $form): string
+    {
+        $destinations = $form->getDestinations();
+        return current($destinations)->getConfig()[ContentField::getKey()]['value'];
+    }
+
+    /** @return array<string, Form> */
+    private function getImportedFormsByName(ImportResult $result): array
+    {
+        $forms = [];
+        foreach ($result->getImportedForms() as $form) {
+            $forms[$form->fields['name']] = $form;
+        }
+        return $forms;
+    }
+
+    private function getMapper(): DatabaseMapper
+    {
+        return new DatabaseMapper([$this->getTestRootEntity(only_id: true)]);
     }
 
     public function testTagsAreUpdatedWhenImporting(): void
