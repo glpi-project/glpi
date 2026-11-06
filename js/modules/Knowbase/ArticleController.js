@@ -36,6 +36,8 @@ import { get, post } from "/js/modules/Ajax.js";
 import { DocumentLinkController } from "/js/modules/Knowbase/DocumentLinkController.js";
 import { LinkItemFormController } from "/js/modules/Knowbase/LinkItemFormController.js";
 import { GlpiKnowbaseArticleSidePanelController } from "/js/modules/Knowbase/ArticleSidePanelController.js";
+import { GlpiKnowbaseArticleOutline } from "/js/modules/Knowbase/ArticleOutline.js";
+import { GlpiKnowbaseTableOfContentsController } from "/js/modules/Knowbase/TableOfContentsController.js";
 import { GlpiKnowbaseServiceCatalogPanelController } from "/js/modules/Knowbase/ServiceCatalogPanelController.js";
 import { highlightComments } from "/js/modules/Knowbase/CommentHighlighter.js";
 import { ReadModeSelectionBubble } from "/js/modules/Knowbase/ReadModeSelectionBubble.js";
@@ -66,6 +68,12 @@ export class GlpiKnowbaseArticleController
      * @type {KnowbaseEditor|null}
      */
     #editor = null;
+
+    /** @type {GlpiKnowbaseArticleOutline|null} */
+    #outline = null;
+
+    /** @type {GlpiKnowbaseTableOfContentsController|null} */
+    #toc = null;
 
     /**
      * @type {string}
@@ -180,6 +188,9 @@ export class GlpiKnowbaseArticleController
         }
         this.#initEventListeners();
         this.#initEditor();
+        if (mode !== "add") {
+            this.#initTableOfContents();
+        }
         this.#initDiffListeners();
         this.#initIllustrationPicker();
         this.#initRecursiveToggle();
@@ -274,6 +285,21 @@ export class GlpiKnowbaseArticleController
                 link.addEventListener('click', () => bootstrap.Tab.getOrCreateInstance(tab).show());
             }
         }
+    }
+
+    #initTableOfContents()
+    {
+        this.#outline = new GlpiKnowbaseArticleOutline(
+            this.#container.querySelector('#kb-tiptap-editor'),
+            this.#container.querySelector('[data-glpi-knowbase-article-content]'),
+            {
+                article_url: this.#container.dataset.glpiKbArticleUrl ?? null,
+                legacy_ids: JSON.parse(this.#container.dataset.glpiKbLegacyHeadingIds ?? '{}'),
+            },
+        );
+        this.#toc = new GlpiKnowbaseTableOfContentsController(this.#container, this.#outline);
+        // After #initEditor(): the article HTML is read before headings get ids and icons.
+        this.#outline.start();
     }
 
     #initDiffListeners()
@@ -952,6 +978,7 @@ export class GlpiKnowbaseArticleController
                 this.#editor.setContent(this.#original_content);
                 this.#editor.setEditable(false);
                 this.#is_editing = false;
+                this.#toc?.setEditing(false);
                 this.#disableTitleEditing(true);
                 this.#getIllustrationPicker()?.restore();
                 this.#setIllustrationEditable(false);
@@ -1342,6 +1369,7 @@ export class GlpiKnowbaseArticleController
                     this.#syncAnchorQuotes();
                 },
             });
+            this.#outline?.watchEditor(this.#editor.getEditor());
             // The pointer may already sit on a passage, edit mode being keyboard-reachable.
             this.#applyHoveredComment();
         } else {
@@ -1351,6 +1379,7 @@ export class GlpiKnowbaseArticleController
         this.#enableTitleEditing();
         this.#setIllustrationEditable(true);
         this.#is_editing = true;
+        this.#toc?.setEditing(true);
 
         this.#editor.focus();
         if (edit_button) {
@@ -1473,6 +1502,7 @@ export class GlpiKnowbaseArticleController
             this.#disableTitleEditing();
             this.#setIllustrationEditable(false);
             this.#is_editing = false;
+            this.#toc?.setEditing(false);
 
             this.#base_content = this.#original_content;
             this.#base_title = this.#original_title;
@@ -1795,6 +1825,7 @@ export class GlpiKnowbaseArticleController
         this.#getIllustrationPicker()?.restore();
         this.#setIllustrationEditable(false);
         this.#is_editing = false;
+        this.#toc?.setEditing(false);
 
         // Restore main editor actions visibility
         const editor_actions = this.#container.querySelector('.kb-editor-actions');

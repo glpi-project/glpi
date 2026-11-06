@@ -977,13 +977,13 @@ abstract class CommonDropdown extends CommonDBTM
             if ($found) {
                 $rand = mt_rand();
                 $ret .= "<div class='faqadd_block'>";
-                $ret .= "<label for='display_faq_chkbox$rand'>";
+                $ret .= "<label for='display_faq_chkbox$rand' title='" . htmlescape(KnowbaseItem::getTypeName(1)) . "'>";
                 $ret .= "<i class='ti ti-zoom-question' aria-hidden='true'></i>";
                 $ret .= "</label>";
                 $ret .= "<input type='checkbox'  class='display_faq_chkbox' id='display_faq_chkbox$rand'>";
                 $ret .= "<div class='faqadd_entries'>";
                 $ret .= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
-                $ret .= $kbitem->showFull(['display' => false]);
+                $ret .= $kbitem->showFull(['display' => false, 'embedded' => true]);
                 $ret .= "</div>"; // .faqadd_block_content
                 $ret .= Html::scriptBlock("
                         var setMaxWidth = function() {

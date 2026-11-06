@@ -38,6 +38,7 @@ import { SlashCommands } from '/js/modules/TipTap/SlashCommandsExtension.js';
 import { Base64ImageHandler } from '/js/modules/TipTap/Base64ImageHandlerExtension.js';
 import { VideoEmbed } from '/js/modules/TipTap/VideoEmbedExtension.js';
 import { TableGrips } from '/js/modules/TipTap/TableGripsExtension.js';
+import { HeadingAnchors } from '/js/modules/TipTap/HeadingAnchorsExtension.js';
 import { post } from '/js/modules/Ajax.js';
 import { FileUploader } from '/js/modules/FileUploader.js';
 import { CommentHighlight, getRefreshedCommentAnchors, getResolvedCommentAnchors } from '/js/modules/TipTap/CommentHighlightExtension.js';
@@ -171,6 +172,7 @@ class KnowbaseEditor {
             TableGrips,
             VideoEmbed,
             CommentHighlight.configure({ anchors: this.#options.comment_anchors }),
+            HeadingAnchors,
         ];
 
         // Add FileHandler for image drag & drop and paste (only for existing articles)
