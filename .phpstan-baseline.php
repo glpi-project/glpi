@@ -17996,12 +17996,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleAsset.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access constant class on CommonDBTM\\|null\\.$#',
-	'identifier' => 'classConstant.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCollection.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on Rule\\|null\\.$#',
 	'identifier' => 'classConstant.nonObject',
 	'count' => 2,
@@ -18123,12 +18117,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$table of static method Dropdown\\:\\:getDropdownName\\(\\) expects string, array\\<int\\|string\\>\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCollection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$itemtype of static method RuleCriteria\\:\\:getConditionByID\\(\\) expects string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleCollection.php',
