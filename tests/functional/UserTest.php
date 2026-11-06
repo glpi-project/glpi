@@ -48,14 +48,46 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Profile_User;
 use Psr\Log\LogLevel;
+use ReflectionClass;
 use User;
 use UserCategory;
 
 use function Safe\json_decode;
+use function Safe\json_encode;
 use function Safe\strtotime;
 
 class UserTest extends DbTestCase
 {
+    public function testCheckDefaultPasswordsIsCachedWhilePasswordsDoNotChange(): void
+    {
+        global $DB, $GLPI_CACHE;
+
+        $DB->update(User::getTable(), ['password' => \Auth::getPasswordHash('tech')], ['name' => 'tech']);
+        $this->assertContains('tech', User::checkDefaultPasswords());
+
+        // The result is read from the cache...
+        $users = iterator_to_array($DB->request([
+            'SELECT' => ['name', 'password'],
+            'FROM'   => User::getTable(),
+            'WHERE'  => [
+                'is_active'  => 1,
+                'is_deleted' => 0,
+                'name'       => ['glpi', 'tech', 'normal', 'post-only'],
+            ],
+            'ORDER'  => ['name'],
+        ]), false);
+        $cache_key = (new ReflectionClass(User::class))->getConstant('DEFAULT_PASSWORDS_CACHE_KEY_PREFIX')
+            . sha1(json_encode($users));
+        $this->assertContains('tech', $GLPI_CACHE->get($cache_key));
+        $GLPI_CACHE->set($cache_key, ['from cache']);
+        $this->assertSame(['from cache'], User::checkDefaultPasswords());
+
+        // ... until a password changes.
+        $DB->update(User::getTable(), ['password' => \Auth::getPasswordHash('a new password')], ['name' => 'tech']);
+        $default_logins = User::checkDefaultPasswords();
+        $this->assertNotContains('tech', $default_logins);
+        $this->assertNotContains('from cache', $default_logins);
+    }
     public function testLdapGroupLookupMatchesLegacyHtmlEncodedValues(): void
     {
         global $DB;

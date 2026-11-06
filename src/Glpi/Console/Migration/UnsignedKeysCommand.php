@@ -35,6 +35,7 @@
 
 namespace Glpi\Console\Migration;
 
+use Central;
 use DBConnection;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
@@ -235,6 +236,8 @@ class UnsignedKeysCommand extends AbstractCommand implements ConfigurationComman
                 }
             }
         }
+
+        Central::clearDatabaseSchemaChecksCache();
 
         if (!DBConnection::updateConfigProperty(DBConnection::PROPERTY_ALLOW_SIGNED_KEYS, false)) {
             throw new EarlyExitException(

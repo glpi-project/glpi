@@ -47,6 +47,7 @@
 } %}
 
 {% set pending_reason_selected_context = 'pending' %}
+{% set is_latest_pending = false %}
 
 {% if display_for_parent %}
     {% set pending_reason = pending_reason_item_parent ? call("PendingReason::getById", [pending_reason_item_parent.fields['pendingreasons_id']]) : false %}
@@ -54,10 +55,13 @@
     {% set pending_item = pending_item ?? call(entry['type'] ~ "::getById", [entry_i['id']]) %}
     {% set pending_reason_item = pending_item ? call("PendingReason_Item::getForItem", [pending_item]) : false %}
     {% set pending_reason = pending_reason_item ? call("PendingReason::getById", [pending_reason_item.fields['pendingreasons_id']]) : false %}
-    {% set is_latest_pending = call("PendingReason_Item::isLastPendingForItem", [
-        item,
-        pending_item
-    ]) %}
+    {# Only needed to display a pending reason: skip the lookup for the other timeline entries #}
+    {% if pending_reason %}
+        {% set is_latest_pending = call("PendingReason_Item::isLastPendingForItem", [
+            item,
+            pending_item
+        ]) %}
+    {% endif %}
     {% set pending_reason_selected_context = is_latest_pending and pending_reason_item_parent != false ? 'pending' : 'done' %}
 {% endif %}
 
@@ -66,10 +70,7 @@
       {{ pending_reason_contexts[pending_reason_selected_context].icon|raw }}
         {{ (pending_reason_contexts[pending_reason_selected_context].text ~ ": %s"|format(pending_reason.getLink()))|raw }}
 
-        {% if pending_reason_item_parent and (display_for_parent or call("PendingReason_Item::isLastPendingForItem", [
-            item,
-            pending_item
-        ])) %}
+        {% if pending_reason_item_parent and (display_for_parent or is_latest_pending) %}
             {% set next_bump = pending_reason_item_parent.getNextFollowupDate() %}
             {% if next_bump %}
 
