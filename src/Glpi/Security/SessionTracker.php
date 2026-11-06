@@ -147,6 +147,11 @@ final class SessionTracker
             return false;
         }
 
+        if ($DB->isReplica()) {
+            // Sessions cannot be recorded when connected to a read-only replica.
+            return true;
+        }
+
         $it = $DB->request([
             'SELECT' => ['id'],
             'FROM' => 'glpi_users_sessions',
@@ -201,8 +206,19 @@ final class SessionTracker
     {
         global $DB;
 
-        if (session_status() === PHP_SESSION_ACTIVE && Session::getLoginSessionUID() !== null) {
+        if (
+            $DB->isReplica()
+            || session_status() !== PHP_SESSION_ACTIVE
+            || Session::getLoginSessionUID() === null
+        ) {
+            return;
+        }
+
+        try {
             $DB->update('glpi_users_sessions', ['last_activity_at' => date('Y-m-d H:i:s')], ['login_session_uid' => Session::getLoginSessionUID()]);
+        } catch (RuntimeException $e) {
+            // Tracking the session activity must never make the request fail.
+            ErrorHandler::logCaughtException($e);
         }
     }
 
@@ -227,24 +243,27 @@ final class SessionTracker
         $session = $it->current();
         $users_id = $session['users_id'] ?? null;
 
-        $DB->delete('glpi_users_sessions', ['login_session_uid' => $login_session_uid]);
-        if ($CFG_GLPI['login_history_retention_days'] <= 0) {
-            $DB->delete('glpi_users_sessionhistories', ['login_session_uid' => $login_session_uid]);
-        } else {
-            $DB->update('glpi_users_sessionhistories', [
-                'logged_out_at' => Session::getCurrentTime(),
-                'logout_reason' => $reason,
-                'users_id_revoked_by' => $_SESSION['glpiID'] ?? null,
-            ], [
-                'login_session_uid' => $login_session_uid,
-                'logged_out_at' => null,
-            ]);
-        }
-        if ($reason !== self::REVOKE_REASON_EXPIRED && $users_id) {
-            $DB->delete('glpi_usertokens', [
-                'users_id' => $users_id,
-                'token_uid' => $login_session_uid,
-            ]);
+        // Database cannot be updated when connected to a read-only replica.
+        if (!$DB->isReplica()) {
+            $DB->delete('glpi_users_sessions', ['login_session_uid' => $login_session_uid]);
+            if ($CFG_GLPI['login_history_retention_days'] <= 0) {
+                $DB->delete('glpi_users_sessionhistories', ['login_session_uid' => $login_session_uid]);
+            } else {
+                $DB->update('glpi_users_sessionhistories', [
+                    'logged_out_at' => Session::getCurrentTime(),
+                    'logout_reason' => $reason,
+                    'users_id_revoked_by' => $_SESSION['glpiID'] ?? null,
+                ], [
+                    'login_session_uid' => $login_session_uid,
+                    'logged_out_at' => null,
+                ]);
+            }
+            if ($reason !== self::REVOKE_REASON_EXPIRED && $users_id) {
+                $DB->delete('glpi_usertokens', [
+                    'users_id' => $users_id,
+                    'token_uid' => $login_session_uid,
+                ]);
+            }
         }
 
         if (ini_get('session.save_handler') === 'files' && $session) {
@@ -265,7 +284,7 @@ final class SessionTracker
             }
         }
 
-        if ($reason === self::REVOKE_REASON_ADMIN && $users_id) {
+        if ($reason === self::REVOKE_REASON_ADMIN && $users_id && !$DB->isReplica()) {
             Log::history($users_id, User::class, [0, '', 'Session revoked'], User::class, Log::HISTORY_LOG_SIMPLE_MESSAGE);
         }
     }

@@ -40,6 +40,7 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Security\SessionTracker;
 use Glpi\Tests\DbTestCase;
 use Log;
+use Session;
 use User;
 
 class SessionTrackerTest extends DbTestCase
@@ -127,6 +128,72 @@ class SessionTrackerTest extends DbTestCase
                 'user_name' => TU_USER . ' (' . $_SESSION['glpiID'] . ')',
                 'new_value' => 'Session revoked',
             ],
+        ]));
+    }
+
+    public function testRecordNewSessionOnReplica(): void
+    {
+        global $DB;
+
+        $this->login();
+        $users_id = $_SESSION['glpiID'];
+        $sessions_count = countElementsInTable('glpi_users_sessions', ['users_id' => $users_id]);
+        $histories_count = countElementsInTable('glpi_users_sessionhistories', ['users_id' => $users_id]);
+
+        $DB->replica = true;
+        try {
+            $this->assertTrue(SessionTracker::recordNewSession(new Auth()));
+        } finally {
+            $DB->replica = false;
+        }
+
+        $this->assertEquals($sessions_count, countElementsInTable('glpi_users_sessions', ['users_id' => $users_id]));
+        $this->assertEquals($histories_count, countElementsInTable('glpi_users_sessionhistories', ['users_id' => $users_id]));
+    }
+
+    public function testUpdateLastSessionActivityOnReplica(): void
+    {
+        global $DB;
+
+        $this->login();
+        $login_session_uid = Session::getLoginSessionUID();
+        $this->assertNotNull($login_session_uid);
+        $DB->update('glpi_users_sessions', ['last_activity_at' => '2024-01-01 00:00:00'], ['login_session_uid' => $login_session_uid]);
+
+        $DB->replica = true;
+        try {
+            SessionTracker::updateLastSessionActivity();
+        } finally {
+            $DB->replica = false;
+        }
+
+        $last_activity = $DB->request([
+            'SELECT' => 'last_activity_at',
+            'FROM' => 'glpi_users_sessions',
+            'WHERE' => ['login_session_uid' => $login_session_uid],
+        ])->current()['last_activity_at'];
+        $this->assertEquals('2024-01-01 00:00:00', $last_activity);
+    }
+
+    public function testRevokeSessionOnReplica(): void
+    {
+        global $DB;
+
+        $this->login();
+        $login_session_uid = Session::getLoginSessionUID();
+        $this->assertNotNull($login_session_uid);
+
+        $DB->replica = true;
+        try {
+            SessionTracker::revokeSession($login_session_uid, SessionTracker::REVOKE_REASON_USER);
+        } finally {
+            $DB->replica = false;
+        }
+
+        $this->assertEquals(1, countElementsInTable('glpi_users_sessions', ['login_session_uid' => $login_session_uid]));
+        $this->assertEquals(1, countElementsInTable('glpi_users_sessionhistories', [
+            'login_session_uid' => $login_session_uid,
+            'logged_out_at' => null,
         ]));
     }
 
