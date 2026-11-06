@@ -3657,4 +3657,23 @@ class AuthLdapTest extends DbTestCase
         $this->assertSame(1, (int) $user->fields['is_active']);
         $this->assertSame(0, (int) $user->fields['is_deleted_ldap']);
     }
+
+    public static function tlsCipherSuiteProvider(): iterable
+    {
+        $excluded = ':!VERS-TLS1.0:!VERS-TLS1.1';
+        yield ['1.2', 'NORMAL:+VERS-TLS1.2:!VERS-TLS1.3' . $excluded];
+        yield ['1.3', 'NORMAL:!VERS-TLS1.2:+VERS-TLS1.3' . $excluded];
+        yield ['', 'NORMAL' . $excluded];
+        yield ['1.1', 'NORMAL' . $excluded];
+        yield ['bogus', 'NORMAL' . $excluded];
+    }
+
+    #[DataProvider('tlsCipherSuiteProvider')]
+    public function testGetTlsCipherSuite(string $tls_version, string $expected): void
+    {
+        $result = AuthLDAP::getTlsCipherSuite($tls_version);
+        $this->assertSame($expected, $result);
+        $this->assertStringContainsString('!VERS-TLS1.0', $result);
+        $this->assertStringContainsString('!VERS-TLS1.1', $result);
+    }
 }

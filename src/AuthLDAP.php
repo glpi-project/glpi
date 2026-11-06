@@ -129,6 +129,14 @@ class AuthLDAP extends CommonDBTM
         '1.3' => '1.3',
     ];
 
+    /**
+     * TLS versions that must always be excluded from LDAP negotiation.
+     * Kept separate from TLS_VERSIONS (UI allowlist) so removing a version
+     * from the allowlist never re-enables it.
+     * @var string[]
+     */
+    public const TLS_EXCLUDED_VERSIONS = ['1.0', '1.1'];
+
     // From CommonDBTM
     public bool $dohistory = true;
 
@@ -2831,6 +2839,27 @@ TWIG, $twig_params);
     }
 
     /**
+     * Build the TLS priority string for LDAP connections.
+     * TLS 1.0 and 1.1 are always excluded, even for empty/invalid selections.
+     *
+     * @param string $tls_version Selected TLS version
+     * @return string
+     */
+    public static function getTlsCipherSuite(string $tls_version = ''): string
+    {
+        $cipher_suite = 'NORMAL';
+        if (in_array($tls_version, self::TLS_VERSIONS, true)) {
+            foreach (self::TLS_VERSIONS as $value) {
+                $cipher_suite .= ($value === $tls_version ? ':+' : ':!') . 'VERS-TLS' . $value;
+            }
+        }
+        foreach (self::TLS_EXCLUDED_VERSIONS as $value) {
+            $cipher_suite .= ':!VERS-TLS' . $value;
+        }
+        return $cipher_suite;
+    }
+
+    /**
      * Connect to a LDAP server
      *
      * @param string  $host                 LDAP host to connect
@@ -2904,16 +2933,10 @@ TWIG, $twig_params);
                 }
             }
         }
-        if (!empty($tls_version)) {
-            $cipher_suite = 'NORMAL';
-            foreach (self::TLS_VERSIONS as $tls_version_value) {
-                $cipher_suite .= ($tls_version_value == $tls_version ? ':+' : ':!') . 'VERS-TLS' . $tls_version_value;
-            }
-            try {
-                @ldap_set_option(null, LDAP_OPT_X_TLS_CIPHER_SUITE, $cipher_suite);
-            } catch (LdapException $e) {
-                trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CIPHER_SUITE`", E_USER_WARNING);
-            }
+        try {
+            @ldap_set_option(null, LDAP_OPT_X_TLS_CIPHER_SUITE, self::getTlsCipherSuite($tls_version));
+        } catch (LdapException $e) {
+            trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CIPHER_SUITE`", E_USER_WARNING);
         }
 
         $ds = @ldap_connect($ldapuri);
