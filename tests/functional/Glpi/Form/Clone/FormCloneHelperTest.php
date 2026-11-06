@@ -96,7 +96,9 @@ use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
+use Glpi\Form\QuestionType\QuestionTypeRadio;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
+use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\RenderLayout;
@@ -586,6 +588,41 @@ final class FormCloneHelperTest extends DbTestCase
         $this->assertEquals(
             "question-" . $cloned_question->fields['uuid'],
             $cloned_condition->getItemDropdownKey(),
+        );
+    }
+
+    public function testCloneFormWithQuestionWhoseTypeWasChanged(): void
+    {
+        // Arrange: create a radio question then change it to a short text
+        // question without sending extra data, like the form editor does.
+        $builder = new FormBuilder("My form");
+        $builder->addQuestion(
+            name: "My question",
+            type: QuestionTypeRadio::class,
+            extra_data: json_encode(new QuestionTypeSelectableExtraDataConfig([
+                'yes' => 'Yes',
+                'no'  => 'No',
+            ])),
+        );
+        $form = $this->createForm($builder);
+        $this->updateItem(
+            Question::class,
+            $this->getQuestionId($form, "My question"),
+            ['type' => QuestionTypeShortText::class],
+        );
+
+        // Act: clone form and get the cloned question
+        $form_id = $form->clone();
+        $clone = Form::getById($form_id);
+
+        $cloned_questions = $clone->getQuestions();
+        $this->assertCount(1, $cloned_questions);
+        $cloned_question = array_pop($cloned_questions);
+
+        // Assert: the question should be cloned as a short text question
+        $this->assertEquals(
+            QuestionTypeShortText::class,
+            $cloned_question->fields['type'],
         );
     }
 
