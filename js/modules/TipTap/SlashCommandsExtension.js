@@ -34,6 +34,7 @@
 
 import { showVideoDialog } from '/js/modules/TipTap/VideoEmbedExtension.js';
 import { createEditorDialog, createDialogField, createDialogError } from '/js/modules/TipTap/EditorDialog.js';
+import { trackPosition } from '/js/modules/TipTap/TrackPosition.js';
 
 /**
  * Slash commands extension for Tiptap editor
@@ -46,8 +47,9 @@ const { Extension } = TiptapCore;
  * Show the Insert/Edit Image dialog (Source, Alt, Width, Height)
  * @param {object} editor - TipTap editor instance
  * @param {object|null} existing_attrs - Existing image attributes for editing (null for new)
+ * @param {number|null} pos - Position of the edited image (null to insert a new one)
  */
-function showImageDialog(editor, existing_attrs = null) {
+function showImageDialog(editor, existing_attrs = null, pos = null) {
     const uid = Math.random().toString(36).slice(2, 9);
 
     const source_group = createDialogField(__('Source'), 'text', `image-src-${uid}`, existing_attrs?.src || '');
@@ -60,6 +62,13 @@ function showImageDialog(editor, existing_attrs = null) {
     const height_group = createDialogField(__('Height'), 'number', `image-height-${uid}`, existing_attrs?.height || '');
     const width_input = width_group.querySelector('input');
     const height_input = height_group.querySelector('input');
+
+    // Same minimum as a drag with the handles.
+    const resize = editor.extensionManager.extensions.find((ext) => ext.name === 'image')?.options.resize;
+    const min_width = resize?.minWidth ?? 1;
+    const min_height = resize?.minHeight ?? 1;
+    width_input.min = String(min_width);
+    height_input.min = String(min_height);
 
     const lock_btn = document.createElement('button');
     lock_btn.type = 'button';
@@ -82,20 +91,31 @@ function showImageDialog(editor, existing_attrs = null) {
     size_row.appendChild(lock_btn);
     size_row.appendChild(height_group);
 
-    // Ratio tracking
-    let aspect_ratio = null;
-    src_input.addEventListener('change', () => {
-        // Try to load image to get natural dimensions
+    // The stored size gives a ratio before the image loads, or if it never loads.
+    let aspect_ratio = existing_attrs?.width && existing_attrs?.height
+        ? existing_attrs.width / existing_attrs.height
+        : null;
+    const loadNaturalSize = () => {
         const img = new Image();
+        const requested_src = src_input.value;
         img.onload = () => {
-            if (!width_input.value && !height_input.value) {
+            // A load that ends after a source change must not give the old ratio.
+            if (requested_src !== src_input.value) {
+                return;
+            }
+            // An edited image without a size must stay responsive.
+            if (pos === null && !width_input.value && !height_input.value) {
                 width_input.value = img.naturalWidth;
                 height_input.value = img.naturalHeight;
             }
             aspect_ratio = img.naturalWidth / img.naturalHeight;
         };
-        img.src = src_input.value;
-    });
+        img.src = requested_src;
+    };
+    src_input.addEventListener('change', loadNaturalSize);
+    if (src_input.value) {
+        loadNaturalSize();
+    }
 
     width_input.addEventListener('input', () => {
         if (ratio_locked && aspect_ratio && width_input.value) {
@@ -109,11 +129,17 @@ function showImageDialog(editor, existing_attrs = null) {
     });
 
     const error = createDialogError(src_input, `image-error-${uid}`);
+    const width_error = createDialogError(width_input, `image-width-error-${uid}`);
+    const height_error = createDialogError(height_input, `image-height-error-${uid}`);
+
+    // An upload that ends while the dialog is open can move or remove the edited image.
+    const edited = pos === null ? null : trackPosition(editor, pos);
 
     const { body } = createEditorDialog({
         editor,
         title: __('Insert/Edit Image'),
         confirmLabel: __('Save'),
+        onClose: () => edited?.stop(),
         onConfirm: ({ close }) => {
             const src = src_input.value.trim();
             if (!src) {
@@ -122,19 +148,32 @@ function showImageDialog(editor, existing_attrs = null) {
                 return;
             }
 
-            const attrs = { src };
-            const alt = alt_input.value.trim();
-            if (alt) {
-                attrs.alt = alt;
+            const width = width_input.value ? parseInt(width_input.value, 10) : null;
+            const height = height_input.value ? parseInt(height_input.value, 10) : null;
+            if (width !== null && !(width >= min_width)) {
+                width_error.show(__('The minimum value is %s.').replace('%s', min_width));
+                width_input.focus();
+                return;
             }
-            if (width_input.value) {
-                attrs.width = parseInt(width_input.value, 10);
-            }
-            if (height_input.value) {
-                attrs.height = parseInt(height_input.value, 10);
+            if (height !== null && !(height >= min_height)) {
+                height_error.show(__('The minimum value is %s.').replace('%s', min_height));
+                height_input.focus();
+                return;
             }
 
-            editor.chain().focus().setImage(attrs).run();
+            // Explicit nulls so that a cleared field removes the attribute of an edited image.
+            const attrs = {
+                src,
+                alt: alt_input.value.trim() || null,
+                width,
+                height,
+            };
+
+            if (edited === null) {
+                editor.chain().focus().setImage(attrs).run();
+            } else if (!edited.deleted && editor.state.doc.nodeAt(edited.pos)?.type.name === 'image') {
+                editor.chain().focus().setNodeSelection(edited.pos).updateAttributes('image', attrs).run();
+            }
             close();
         },
     });
@@ -143,8 +182,10 @@ function showImageDialog(editor, existing_attrs = null) {
     body.appendChild(error.element);
     body.appendChild(alt_group);
     body.appendChild(size_row);
+    body.appendChild(width_error.element);
+    body.appendChild(height_error.element);
 
-    src_input.focus();
+    (pos === null ? src_input : width_input).focus();
 }
 
 /**
@@ -467,4 +508,4 @@ const SlashCommands = Extension.create({
     },
 });
 
-export { SlashCommands };
+export { SlashCommands, showImageDialog };
