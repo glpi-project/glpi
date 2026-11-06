@@ -376,8 +376,11 @@ test.describe('Selectable form question types', () => {
         // Check that the user is redirected to the created ticket
         await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
 
-        // Check if the option is saved
-        await expect(page.getByText(': Option 0, Option 1').first())
+        // Check if the options are saved, one per line
+        await expect(page.getByRole('listitem').filter({ hasText: /^Option 0$/ }).first())
+            .toBeVisible()
+        ;
+        await expect(page.getByRole('listitem').filter({ hasText: /^Option 1$/ }).first())
             .toBeVisible()
         ;
     });

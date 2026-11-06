@@ -71,8 +71,8 @@ final class QuestionTypeCheckboxTest extends AbstractQuestionTypeSelectableTest
         ]);
 
         $this->assertStringContainsString(
-            "1) Shopping list: Bread, Milk, Cheese",
-            strip_tags($ticket->fields['content']),
+            "<ul><li>Bread</li><li>Milk</li><li>Cheese</li></ul>",
+            $ticket->fields['content'],
         );
     }
 

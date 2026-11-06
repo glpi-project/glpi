@@ -97,8 +97,8 @@ final class QuestionTypeDropdownTest extends AbstractQuestionTypeSelectableTest
         ]);
 
         $this->assertStringContainsString(
-            "1) Your favorite colors: Red, Yellow",
-            strip_tags($ticket->fields['content']),
+            "<ul><li>Red</li><li>Yellow</li></ul>",
+            $ticket->fields['content'],
         );
     }
 

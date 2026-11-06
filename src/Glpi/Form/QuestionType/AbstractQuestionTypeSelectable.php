@@ -51,7 +51,7 @@ use function Safe\json_decode;
 /**
  * Short answers are single line inputs used to answer simple questions.
  */
-abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType implements FormQuestionDataConverterInterface, TranslationAwareQuestionType, ConditionValueTransformerInterface, PredefinedValueValidationInterface
+abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType implements FormQuestionDataConverterInterface, TranslationAwareQuestionType, ConditionValueTransformerInterface, PredefinedValueValidationInterface, RawAnswerIsHtmlInterface
 {
     public const TRANSLATION_KEY_OPTION = 'option';
 
@@ -576,12 +576,17 @@ TWIG;
         $answer = array_map(
             function ($uuid) use ($question, $options) {
                 $key = sprintf('%s-%s', self::TRANSLATION_KEY_OPTION, $uuid);
-                return FormTranslation::translate($question, $key) ?? ($options[$uuid] ?? '');
+                return htmlescape(FormTranslation::translate($question, $key) ?? ($options[$uuid] ?? ''));
             },
             $answer
         );
 
-        return implode(', ', $answer);
+        if (count($answer) <= 1) {
+            return implode('', $answer);
+        }
+
+        // One answer per line, as in GLPI 10
+        return '<ul><li>' . implode('</li><li>', $answer) . '</li></ul>';
     }
 
     #[Override]
