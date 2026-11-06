@@ -309,6 +309,104 @@ final class QuestionTypeItemItemsIdsMigrationTest extends DbTestCase
         }
     }
 
+    public function testAnswerMigrationMemoryIsBoundedByLargestRow(): void
+    {
+        // A 1 MiB payload per row, as found with inlined uploads.
+        [$computer_id, $ids] = $this->createLegacyAnswerSets(20, 1024 * 1024);
+
+        $baseline = memory_get_usage();
+        memory_reset_peak_usage();
+        $this->runMigration();
+        $peak_delta = memory_get_peak_usage() - $baseline;
+
+        // Loading the 20 payloads in a single batch would need more than 20 MiB.
+        $this->assertLessThan(10 * 1024 * 1024, $peak_delta);
+        $this->assertAnswerSetsMigrated($computer_id, $ids);
+    }
+
+    public function testAnswerMigrationProcessesSeveralBatches(): void
+    {
+        // More rows than the migration batch size (250).
+        [$computer_id, $ids] = $this->createLegacyAnswerSets(260);
+
+        $this->runMigration();
+
+        $this->assertAnswerSetsMigrated($computer_id, $ids);
+    }
+
+    /**
+     * Create `$count` answer sets holding a legacy item answer, plus an optional padding answer.
+     *
+     * @return array{0: int, 1: int[]} The answered computer id and the answer sets ids.
+     */
+    private function createLegacyAnswerSets(int $count, int $padding_bytes = 0): array
+    {
+        global $DB;
+
+        $this->login();
+
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'TestPC-AnswerBatch',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: 'Pick an asset',
+            type: QuestionTypeItem::class,
+            extra_data: json_encode(
+                (new QuestionTypeItemExtraDataConfig(itemtype: Computer::class))->jsonSerialize()
+            ),
+        );
+        $form = $this->createForm($builder);
+
+        $answers_set = $this->sendFormAndGetAnswerSet($form, [
+            'Pick an asset' => ['itemtype' => Computer::class, 'items_ids' => $computer->getID()],
+        ]);
+        $row = $DB->request(['FROM' => 'glpi_forms_answerssets', 'WHERE' => ['id' => $answers_set->getID()]])->current();
+
+        $raw_answers = json_decode($row['answers'], true);
+        foreach ($raw_answers as &$answer) {
+            if ($answer['raw_question_type'] === QuestionTypeItem::class) {
+                $answer['raw_answer'] = ['itemtype' => Computer::class, 'items_id' => $computer->getID()];
+            }
+        }
+        unset($answer);
+        if ($padding_bytes > 0) {
+            $raw_answers[] = ['raw_question_type' => 'padding', 'raw_answer' => str_repeat('a', $padding_bytes)];
+        }
+        $row['answers'] = json_encode($raw_answers);
+        unset($row['id']);
+
+        $DB->update('glpi_forms_answerssets', ['answers' => $row['answers']], ['id' => $answers_set->getID()]);
+        $ids = [$answers_set->getID()];
+        for ($i = 1; $i < $count; $i++) {
+            $DB->insert('glpi_forms_answerssets', $row);
+            $ids[] = $DB->insertId();
+        }
+
+        return [$computer->getID(), $ids];
+    }
+
+    /**
+     * @param int[] $ids
+     */
+    private function assertAnswerSetsMigrated(int $computer_id, array $ids): void
+    {
+        global $DB;
+
+        $migrated = 0;
+        foreach ($DB->request(['FROM' => 'glpi_forms_answerssets', 'WHERE' => ['id' => $ids]]) as $row) {
+            foreach (json_decode($row['answers'], true) as $answer) {
+                if ($answer['raw_question_type'] === QuestionTypeItem::class) {
+                    $this->assertSame([$computer_id], $answer['raw_answer']['items_ids']);
+                    $migrated++;
+                }
+            }
+        }
+        $this->assertSame(count($ids), $migrated);
+    }
+
     public function testMigratesLegacyConditionValueOnQuestion(): void
     {
         global $DB;
