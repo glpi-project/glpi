@@ -745,9 +745,13 @@ class Plugin extends CommonDBTM
         // Prevent duplicated checks
         $directories = array_unique($directories);
 
+        // Reuse the rows fetched above rather than reloading each plugin. Not during a scan:
+        // replacing a plugin there can change the row of another plugin of the list.
+        $known_plugins_rows = $scan_inactive_and_new_plugins ? [] : array_column($known_plugins, null, 'directory');
+
         // Check all directories from the checklist
         foreach ($directories as $directory) {
-            $this->checkPluginState($directory, $scan_inactive_and_new_plugins);
+            $this->checkPluginState($directory, $scan_inactive_and_new_plugins, $known_plugins_rows[$directory] ?? null);
         }
     }
 
@@ -801,11 +805,12 @@ class Plugin extends CommonDBTM
     /**
      * Check plugin state.
      *
-     * @param string $plugin_key System name (Plugin directory)
+     * @param string                    $plugin_key    System name (Plugin directory)
+     * @param array<string, mixed>|null $plugin_fields Database row of the plugin, when the caller has already fetched it
      *
      * @return void
      */
-    public function checkPluginState($plugin_key, bool $check_for_replacement = false)
+    public function checkPluginState($plugin_key, bool $check_for_replacement = false, ?array $plugin_fields = null)
     {
         global $DB;
 
@@ -817,7 +822,12 @@ class Plugin extends CommonDBTM
 
         $information      = $this->getPluginInformation($plugin_key) ?? [];
         $is_loadable      = $information !== [];
-        $is_already_known = $plugin->getFromDBByCrit(['directory' => $plugin_key]);
+        if ($plugin_fields !== null) {
+            $plugin->fields   = $plugin_fields;
+            $is_already_known = true;
+        } else {
+            $is_already_known = $plugin->getFromDBByCrit(['directory' => $plugin_key]);
+        }
         $new_specs        = $check_for_replacement ? $this->getNewInfoAndDirBasedOnOldName($plugin_key) : null;
         $is_replaced      = $new_specs !== null;
 
