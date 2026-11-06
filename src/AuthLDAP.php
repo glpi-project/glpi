@@ -207,8 +207,7 @@ class AuthLDAP extends CommonDBTM
         $this->fields['use_bind']                    = 1;
         $this->fields['picture_field']               = '';
         $this->fields['responsible_field']           = '';
-        $this->fields['can_support_pagesize']        = 0;
-        $this->fields['pagesize']                    = 0;
+        $this->fields['pagesize']                    = 1000;
         $this->fields['ldap_maxlimit']               = 0;
         $this->fields['begin_date_field']            = '';
         $this->fields['end_date_field']              = '';
@@ -249,7 +248,6 @@ class AuthLDAP extends CommonDBTM
                 $this->fields['comment_field']             = 'info';
                 $this->fields['title_field']               = 'title';
                 $this->fields['use_dn']                    = 1;
-                $this->fields['can_support_pagesize']      = 1;
                 $this->fields['pagesize']                  = 1000;
                 $this->fields['picture_field']             = '';
                 $this->fields['responsible_field']         = 'manager';
@@ -279,7 +277,6 @@ class AuthLDAP extends CommonDBTM
                 $this->fields['comment_field']             = 'description';
                 $this->fields['title_field']               = 'title';
                 $this->fields['use_dn']                    = 1;
-                $this->fields['can_support_pagesize']      = 1;
                 $this->fields['pagesize']                  = 1000;
                 $this->fields['picture_field']             = 'jpegphoto';
                 $this->fields['responsible_field']         = 'manager';
@@ -489,7 +486,7 @@ class AuthLDAP extends CommonDBTM
                     'realname_field', 'registration_number_field', 'title_field',
                     'use_dn', 'use_tls', 'picture_field', 'responsible_field', 'begin_date_field', 'end_date_field',
                     'category_field', 'language_field', 'location_field',
-                    'can_support_pagesize', 'pagesize',
+                    'pagesize',
                 ];
             }
 
@@ -537,7 +534,6 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('pages/setup/ldap/adv_info.html.twig', [
             'item' => $this,
-            'page_size_available' => self::isLdapPageSizeAvailable(false, false),
             'gmt_values' => Dropdown::getGMTValues(),
             'params' => [
                 'formfooter' => false,
@@ -1739,60 +1735,41 @@ TWIG, $twig_params);
         &$ldap_users_by_dn = null
     ) {
 
-        // If paged results cannot be used (PHP < 5.4)
         $cookie   = ''; // Cookie used to perform query using pages
         $count    = 0;  // Store the number of results ldap_search
 
         do {
-            if (self::isLdapPageSizeAvailable($config_ldap)) {
-                $controls = [
-                    [
-                        'oid'       => LDAP_CONTROL_PAGEDRESULTS,
-                        'iscritical' => true,
-                        'value'     => [
-                            'size'   => $config_ldap->fields['pagesize'],
-                            'cookie' => $cookie,
-                        ],
+            // The paged results control is not critical: if the server does not support it (or restricts it),
+            // it will ignore it and return all results at once, without any page cookie.
+            $controls = [
+                [
+                    'oid'       => LDAP_CONTROL_PAGEDRESULTS,
+                    'iscritical' => false,
+                    'value'     => [
+                        'size'   => $config_ldap->fields['pagesize'],
+                        'cookie' => $cookie,
                     ],
-                ];
-                $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
-                if (
-                    $sr === false
-                    || @ldap_parse_result($ds, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls) === false // @phpstan-ignore theCodingMachineSafe.function
-                ) {
-                    // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
-                    if (ldap_errno($ds) !== 32) {
-                        trigger_error(
-                            static::buildError(
-                                $ds,
-                                sprintf('LDAP search with base DN `%s` and filter `%s` failed', $values['basedn'], $filter)
-                            ),
-                            E_USER_WARNING
-                        );
-                    }
-                    return false;
+                ],
+            ];
+            $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
+            if (
+                $sr === false
+                || @ldap_parse_result($ds, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls) === false // @phpstan-ignore theCodingMachineSafe.function
+            ) {
+                // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+                if (ldap_errno($ds) !== 32) {
+                    trigger_error(
+                        static::buildError(
+                            $ds,
+                            sprintf('LDAP search with base DN `%s` and filter `%s` failed', $values['basedn'], $filter)
+                        ),
+                        E_USER_WARNING
+                    );
                 }
-                if (isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])) {
-                    $cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];
-                } else {
-                    $cookie = '';
-                }
-            } else {
-                $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs);
-                if ($sr === false) {
-                    // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
-                    if (ldap_errno($ds) !== 32) {
-                        trigger_error(
-                            static::buildError(
-                                $ds,
-                                sprintf('LDAP search with base DN `%s` and filter `%s` failed', $values['basedn'], $filter)
-                            ),
-                            E_USER_WARNING
-                        );
-                    }
-                    return false;
-                }
+                return false;
             }
+            // No page cookie in the response means that there are no more pages (or that paging is not supported)
+            $cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'] ?? '';
 
             if (in_array(ldap_errno($ds), [4,11])) {
                 // openldap return 4 for Size limit exceeded
@@ -1806,11 +1783,10 @@ TWIG, $twig_params);
             }
 
             $count += $info['count'];
-            //If page results are enabled and the number of results is greater than the maximum allowed
+            //If the number of results is greater than the maximum allowed
             //warn user that limit is exceeded and stop search
             if (
-                self::isLdapPageSizeAvailable($config_ldap)
-                && $config_ldap->fields['ldap_maxlimit']
+                $config_ldap->fields['ldap_maxlimit']
                 && ($count > $config_ldap->fields['ldap_maxlimit'])
             ) {
                 $limitexceeded = true;
@@ -2418,55 +2394,37 @@ TWIG, $twig_params);
         $cookie = '';
         $count  = 0;
         do {
-            if (self::isLdapPageSizeAvailable($config_ldap)) {
-                $controls = [
-                    [
-                        'oid'       => LDAP_CONTROL_PAGEDRESULTS,
-                        'iscritical' => true,
-                        'value'     => [
-                            'size'   => $config_ldap->fields['pagesize'],
-                            'cookie' => $cookie,
-                        ],
+            // The paged results control is not critical: if the server does not support it (or restricts it),
+            // it will ignore it and return all results at once, without any page cookie.
+            $controls = [
+                [
+                    'oid'       => LDAP_CONTROL_PAGEDRESULTS,
+                    'iscritical' => false,
+                    'value'     => [
+                        'size'   => $config_ldap->fields['pagesize'],
+                        'cookie' => $cookie,
                     ],
-                ];
-                $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
-                if (
-                    $sr === false
-                    || @ldap_parse_result($ldap_connection, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls) === false // @phpstan-ignore theCodingMachineSafe.function
-                ) {
-                    // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
-                    if (ldap_errno($ldap_connection) !== 32) {
-                        trigger_error(
-                            static::buildError(
-                                $ldap_connection,
-                                sprintf('LDAP search with base DN `%s` and filter `%s` failed', $config_ldap->fields['basedn'], $filter)
-                            ),
-                            E_USER_WARNING
-                        );
-                    }
-                    return $groups;
+                ],
+            ];
+            $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
+            if (
+                $sr === false
+                || @ldap_parse_result($ldap_connection, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls) === false // @phpstan-ignore theCodingMachineSafe.function
+            ) {
+                // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+                if (ldap_errno($ldap_connection) !== 32) {
+                    trigger_error(
+                        static::buildError(
+                            $ldap_connection,
+                            sprintf('LDAP search with base DN `%s` and filter `%s` failed', $config_ldap->fields['basedn'], $filter)
+                        ),
+                        E_USER_WARNING
+                    );
                 }
-                if (isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])) {
-                    $cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];
-                } else {
-                    $cookie = '';
-                }
-            } else {
-                $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs);
-                if ($sr === false) {
-                    // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
-                    if (ldap_errno($ldap_connection) !== 32) {
-                        trigger_error(
-                            static::buildError(
-                                $ldap_connection,
-                                sprintf('LDAP search with base DN `%s` and filter `%s` failed', $config_ldap->fields['basedn'], $filter)
-                            ),
-                            E_USER_WARNING
-                        );
-                    }
-                    return $groups;
-                }
+                return $groups;
             }
+            // No page cookie in the response means that there are no more pages (or that paging is not supported)
+            $cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'] ?? '';
 
             if (in_array(ldap_errno($ldap_connection), [4,11])) {
                 // openldap return 4 for Size limit exceeded
@@ -2480,11 +2438,10 @@ TWIG, $twig_params);
             }
 
             $count += $infos['count'];
-            // If page results are enabled and the number of results is greater than the maximum allowed
+            // If the number of results is greater than the maximum allowed
             // warn user that limit is exceeded and stop search
             if (
-                self::isLdapPageSizeAvailable($config_ldap)
-                && $config_ldap->fields['ldap_maxlimit']
+                $config_ldap->fields['ldap_maxlimit']
                 && ($count > $config_ldap->fields['ldap_maxlimit'])
             ) {
                 $limitexceeded = true;
@@ -3899,8 +3856,8 @@ TWIG, $twig_params);
 
     public function prepareInputForAdd($input)
     {
-        if (empty($input['can_support_pagesize'] ?? '')) {
-            $input['can_support_pagesize'] = 0;
+        if (empty($input['pagesize'] ?? '')) {
+            $input['pagesize'] = 1000;
         }
 
         if (!empty($input["rootdn_passwd"])) {
@@ -4104,28 +4061,6 @@ TWIG, $twig_params);
             ];
         }
         return $replicates;
-    }
-
-    /**
-     * Check if ldap results can be paged or not
-     * This functionality is available for PHP 5.4 and higher
-     *
-     * @since 0.84
-     *
-     * @param ($check_config_value is true ? object : false)   $config_ldap        LDAP configuration. May only be false if $check_config_value is also false.
-     * @param bool  $check_config_value Whether to check config values
-     *
-     * @return bool true if maxPageSize can be used, false otherwise
-     */
-    public static function isLdapPageSizeAvailable($config_ldap, $check_config_value = true)
-    {
-        return (
-            extension_loaded('ldap')
-            && (
-                !$check_config_value
-                || $config_ldap->fields['can_support_pagesize']
-            )
-        );
     }
 
     /**

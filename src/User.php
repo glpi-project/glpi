@@ -2419,6 +2419,11 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 ? $ldap_method['condition']
                 : '(objectClass=*)';
 
+            $page_size = (int) ($ldap_method['pagesize'] ?? 0);
+            if ($page_size <= 0) {
+                $page_size = 1000;
+            }
+
             $groups_iterator = $DB->request([
                 'SELECT' => ['id', 'ldap_group_dn'],
                 'FROM'   => 'glpi_groups',
@@ -2437,34 +2442,31 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
                 do {
                     $last_db_activity = self::keepDbConnectionAlive($last_db_activity);
-                    if (!empty($ldap_method['pagesize'])) {
-                        $controls = [[
-                            'oid'        => LDAP_CONTROL_PAGEDRESULTS,
-                            'iscritical' => true,
-                            'value'      => ['size' => (int) $ldap_method['pagesize'], 'cookie' => $cookie],
-                        ]];
-                        $sr = @ldap_search(
-                            $ldap_connection,
-                            $ldap_method['basedn'],
-                            $filter,
-                            ['dn'],
-                            0,
-                            -1,
-                            -1,
-                            LDAP_DEREF_NEVER,
-                            $controls
-                        );
-                        if (
-                            $sr instanceof Result
-                            && @ldap_parse_result($ldap_connection, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls) !== false // @phpstan-ignore theCodingMachineSafe.function
-                            && isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])
-                        ) {
-                            $cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];
-                        } else {
-                            $cookie = '';
-                        }
+                    // The paged results control is not critical: if the server does not support it (or restricts it),
+                    // it will ignore it and return all results at once, without any page cookie.
+                    $controls = [[
+                        'oid'        => LDAP_CONTROL_PAGEDRESULTS,
+                        'iscritical' => false,
+                        'value'      => ['size' => $page_size, 'cookie' => $cookie],
+                    ]];
+                    $sr = @ldap_search(
+                        $ldap_connection,
+                        $ldap_method['basedn'],
+                        $filter,
+                        ['dn'],
+                        0,
+                        -1,
+                        -1,
+                        LDAP_DEREF_NEVER,
+                        $controls
+                    );
+                    if (
+                        $sr instanceof Result
+                        && @ldap_parse_result($ldap_connection, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls) !== false // @phpstan-ignore theCodingMachineSafe.function
+                    ) {
+                        // No page cookie in the response means that there are no more pages (or that paging is not supported)
+                        $cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'] ?? '';
                     } else {
-                        $sr     = @ldap_search($ldap_connection, $ldap_method['basedn'], $filter, ['dn']);
                         $cookie = '';
                     }
 
