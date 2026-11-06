@@ -1149,6 +1149,9 @@ class Plugin extends CommonDBTM
                 );
             }
 
+            // Plugin tables are part of the database schema checks of the central page.
+            Central::clearDatabaseSchemaChecksCache();
+
             $this->update([
                 'id'      => $ID,
                 'state'   => self::NOTINSTALLED,
@@ -1274,6 +1277,8 @@ class Plugin extends CommonDBTM
                     }
 
                     $this->resetHookableCacheEntries($this->fields['directory']);
+                    // Plugin tables are part of the database schema checks of the central page.
+                    Central::clearDatabaseSchemaChecksCache();
 
                     self::doHook(Hooks::POST_PLUGIN_INSTALL, $this->fields['directory']);
 
