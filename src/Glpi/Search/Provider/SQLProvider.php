@@ -1083,6 +1083,15 @@ final class SQLProvider implements SearchProviderInterface
 
             case KnowbaseItem::class:
                 $criteria = KnowbaseItem::getVisibilityCriteria(false)['WHERE'];
+                // Hide articles outside their visibility period, except to KB admins and to their author
+                if (!Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN)) {
+                    $date_criteria = KnowbaseItem::getVisibilityDateCriteria();
+                    // No author exemption when anonymous: `false` would match articles of purged users (users_id = 0)
+                    $users_id = Session::getLoginUserID();
+                    $criteria[] = $users_id === false
+                        ? $date_criteria
+                        : ['OR' => [['glpi_knowbaseitems.users_id' => $users_id], $date_criteria]];
+                }
                 break;
 
             case Form::class:
