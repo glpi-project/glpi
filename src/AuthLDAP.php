@@ -2842,10 +2842,10 @@ TWIG, $twig_params);
      * Build the TLS priority string for LDAP connections.
      * TLS 1.0 and 1.1 are always excluded, even for empty/invalid selections.
      *
-     * @param string $tls_version Selected TLS version
+     * @param string|null $tls_version Selected TLS version
      * @return string
      */
-    public static function getTlsCipherSuite(string $tls_version = ''): string
+    public static function getTlsCipherSuite(?string $tls_version = ''): string
     {
         $cipher_suite = 'NORMAL';
         if (in_array($tls_version, self::TLS_VERSIONS, true)) {
