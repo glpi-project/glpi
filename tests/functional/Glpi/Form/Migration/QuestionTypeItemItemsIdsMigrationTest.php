@@ -309,6 +309,69 @@ final class QuestionTypeItemItemsIdsMigrationTest extends DbTestCase
         }
     }
 
+    public function testAnswerMigrationMemoryIsBoundedByLargestRow(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'TestPC-AnswerMemory',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: 'Pick an asset',
+            type: QuestionTypeItem::class,
+            extra_data: json_encode(
+                (new QuestionTypeItemExtraDataConfig(itemtype: Computer::class))->jsonSerialize()
+            ),
+        );
+        $form = $this->createForm($builder);
+
+        $answers_set = $this->sendFormAndGetAnswerSet($form, [
+            'Pick an asset' => ['itemtype' => Computer::class, 'items_ids' => $computer->getID()],
+        ]);
+        $row = $DB->request(['FROM' => 'glpi_forms_answerssets', 'WHERE' => ['id' => $answers_set->getID()]])->current();
+
+        // Legacy item answer plus a 1 MiB payload, as found with inlined uploads.
+        $raw_answers = json_decode($row['answers'], true);
+        foreach ($raw_answers as &$answer) {
+            if ($answer['raw_question_type'] === QuestionTypeItem::class) {
+                $answer['raw_answer'] = ['itemtype' => Computer::class, 'items_id' => $computer->getID()];
+            }
+        }
+        unset($answer);
+        $raw_answers[] = ['raw_question_type' => 'padding', 'raw_answer' => str_repeat('a', 1024 * 1024)];
+        $row['answers'] = json_encode($raw_answers);
+        unset($row['id']);
+
+        $DB->update('glpi_forms_answerssets', ['answers' => $row['answers']], ['id' => $answers_set->getID()]);
+        $ids = [$answers_set->getID()];
+        for ($i = 1; $i < 20; $i++) {
+            $DB->insert('glpi_forms_answerssets', $row);
+            $ids[] = $DB->insertId();
+        }
+        unset($row, $raw_answers);
+
+        $baseline = memory_get_usage();
+        memory_reset_peak_usage();
+        $this->runMigration();
+        $peak_delta = memory_get_peak_usage() - $baseline;
+
+        // Loading the 20 payloads in a single batch would need more than 20 MiB.
+        $this->assertLessThan(10 * 1024 * 1024, $peak_delta);
+
+        foreach ($DB->request(['FROM' => 'glpi_forms_answerssets', 'WHERE' => ['id' => $ids]]) as $updated_row) {
+            foreach (json_decode($updated_row['answers'], true) as $answer) {
+                if ($answer['raw_question_type'] === QuestionTypeItem::class) {
+                    $this->assertSame([$computer->getID()], $answer['raw_answer']['items_ids']);
+                }
+            }
+        }
+    }
+
     public function testMigratesLegacyConditionValueOnQuestion(): void
     {
         global $DB;
