@@ -151,7 +151,7 @@ class AuthLdapTest extends DbTestCase
     {
         $ldap = new AuthLDAP();
         $ldap->post_getEmpty();
-        $this->assertCount(30, $ldap->fields);
+        $this->assertCount(29, $ldap->fields);
     }
 
     public function testUnsetUndisclosedFields()
@@ -3358,22 +3358,6 @@ class AuthLdapTest extends DbTestCase
                 ]
             ),
         ];
-
-        // invalid pagesize
-        yield [
-            'config_fields' => [
-                'pagesize'             => 0,
-            ],
-            'basedn'        => 'dc=glpi,dc=org',
-            'filter'        => '(objectclass=inetOrgPerson)',
-            'error'         => implode(
-                "\n",
-                [
-                    'LDAP search with base DN `dc=glpi,dc=org` and filter `(objectclass=inetOrgPerson)` failed',
-                    'error: Bad parameter to an ldap routine (-9)',
-                ]
-            ),
-        ];
     }
 
     #[RequiresPhpExtension('ldap')]
@@ -3490,22 +3474,6 @@ class AuthLdapTest extends DbTestCase
                 [
                     'LDAP search with base DN `dc=glpi,dc=org` and filter `notavalidfilter` failed',
                     'error: Bad search filter (-7)',
-                ]
-            ),
-        ];
-
-
-        // invalid pagesize
-        yield [
-            'config_fields' => [
-                'pagesize'             => 0,
-            ],
-            'filter'        => '(objectclass=groupOfNames)',
-            'error'         => implode(
-                "\n",
-                [
-                    'LDAP search with base DN `dc=glpi,dc=org` and filter `(objectclass=groupOfNames)` failed',
-                    'error: Bad parameter to an ldap routine (-9)',
                 ]
             ),
         ];
