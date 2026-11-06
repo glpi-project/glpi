@@ -1432,6 +1432,12 @@ TWIG, $twig_params);
 
         // Remove any whitespace from begin/end
         $search = preg_replace('/^[\p{Z}\h\v\r\n]+|[\p{Z}\h\v\r\n]+$/u', '', $search);
+        // Replace any other whitespace by a simple space
+        $search = preg_replace('/[\p{Z}\h\v\r\n]+/u', ' ', $search);
+
+        // Replace by a space all symbols located between two word chars, as MySQL fulltext index handles them as words separators
+        // (e.g. `base-de` is indexed as `base` and `de`)
+        $search = preg_replace("/(?<=[{$word_chars}])[^{$word_chars}()\"* ]+(?=[{$word_chars}])/u", ' ', $search);
 
         // Remove all symbols except word chars, ponderation chars, parenthesis, quotes, wildcards and spaces.
         // @distance is not included, since it's unlikely a human will be using it through UI form
