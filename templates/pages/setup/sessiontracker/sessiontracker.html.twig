@@ -294,6 +294,29 @@
             window.reloadTab(new URLSearchParams(getFilterData()).toString());
         }
 
+        async function revoke(url, options = {}) {
+            const default_error = '{{ __('An unexpected error occurred')|e('js') }}';
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    ...options,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                        ...(options.headers ?? {}),
+                    },
+                });
+                if (!response.ok) {
+                    const data = await response.json().catch(() => ({}));
+                    glpi_toast_error(data.message ?? default_error, data.title);
+                    return;
+                }
+                reloadWithFilters();
+            } catch {
+                glpi_toast_error(default_error);
+            }
+        }
+
         document.querySelector('button.revoke-all-sessions').addEventListener('click', async () => {
             const confirmed = await glpi_confirm_danger({
                 title: '{{ __('Revoke all active sessions')|e('js') }}',
@@ -301,17 +324,13 @@
                 confirm_label: '{{ __('Revoke')|e('js') }}'
             });
             if (confirmed) {
-                fetch(`{{ path('/Security/Session/All/Revoke')|e('js') }}`, {
-                    method: 'POST',
+                await revoke(`{{ path('/Security/Session/All/Revoke')|e('js') }}`, {
                     headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
                     body: new URLSearchParams({
                         users_id: {{ is_admin_view ? 0 : session('glpiID')|e('js') }}
                     }),
-                }).then(() => {
-                    reloadWithFilters();
                 });
             }
         });
@@ -329,14 +348,7 @@
                     const url = session_type === 'api'
                         ? `{{ path('/Security/AccessToken/')|e('js') }}${identifier}/Revoke`
                         : `{{ path('/Security/Session/')|e('js') }}${identifier}/Revoke`;
-                    fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                        },
-                    }).then(() => {
-                        reloadWithFilters();
-                    });
+                    await revoke(url);
                 }
             });
         });
