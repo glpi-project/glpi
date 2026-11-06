@@ -448,6 +448,44 @@ class CronTaskTest extends DbTestCase
         $this->assertSame(0, $crontask->fields['error_count']);
     }
 
+    public function testLaunchRunsEachTaskOnlyOncePerCycle(): void
+    {
+        global $DB;
+
+        $crontask = new CronTask();
+        $this->assertTrue($crontask->getFromDBbyName(CronTask::class, 'graph'));
+        $this->updateItem(CronTask::class, $crontask->getID(), [
+            'state'       => CronTask::STATE_WAITING,
+            'mode'        => CronTask::MODE_EXTERNAL,
+            'allowmode'   => CronTask::MODE_INTERNAL | CronTask::MODE_EXTERNAL,
+            'frequency'   => MINUTE_TIMESTAMP,
+            'hourmin'     => 0,
+            'hourmax'     => 24,
+            'error_count' => 0,
+            'lastrun'     => date('Y-m-d H:i:s', time() - (2 * MINUTE_TIMESTAMP)),
+            'next_run'    => date('Y-m-d H:i:s', time() - MINUTE_TIMESTAMP),
+        ]);
+        $DB->delete(CronTaskLog::getTable(), ['crontasks_id' => $crontask->getID()]);
+
+        // Several slots are available, the task must not be selected again once it has been run
+        $this->assertSame('graph', CronTask::launch(CronTask::MODE_EXTERNAL, 3, 'graph'));
+
+        $this->assertSame(
+            1,
+            countElementsInTable(
+                CronTaskLog::getTable(),
+                [
+                    'crontasks_id' => $crontask->getID(),
+                    'state'        => CronTaskLog::STATE_START,
+                ]
+            ),
+            'A task must be run only once per cron cycle'
+        );
+
+        $this->assertTrue($crontask->getFromDB($crontask->getID()));
+        $this->assertGreaterThan(time(), strtotime($crontask->fields['next_run']));
+    }
+
     public function testDuplicateCronTaskName()
     {
         global $DB;
