@@ -41,6 +41,7 @@ use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Session;
+use User;
 
 final class QuestionTypeUserDeviceTest extends DbTestCase
 {
@@ -69,6 +70,32 @@ final class QuestionTypeUserDeviceTest extends DbTestCase
         );
     }
 
+    public function testUserDeviceAnswerValidationRequiresADeviceOfTheUser(): void
+    {
+        $this->login();
+        $computer_1 = $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => Session::getActiveEntity(),
+            'users_id' => Session::getLoginUserID(),
+        ]);
+        $computer_2 = $this->createItem(Computer::class, [
+            'name' => 'Computer of someone else',
+            'entities_id' => Session::getActiveEntity(),
+            'users_id' => getItemByTypeName(User::class, 'tech', true),
+        ]);
+
+        $builder = new FormBuilder();
+        $builder->addQuestion("Computer", QuestionTypeUserDevice::class);
+        $form = $this->createForm($builder);
+
+        $is_valid = fn(string $device): bool => AnswersHandler::getInstance()->validateAnswers($form, [
+            $this->getQuestionId($form, "Computer") => $device,
+        ])->isValid();
+
+        $this->assertTrue($is_valid(Computer::class . '_' . $computer_1->getID()));
+        $this->assertFalse($is_valid(Computer::class . '_' . $computer_2->getID()));
+    }
+
     public function testMandatoryValidationAcceptsNamespacedDeviceKey(): void
     {
         $this->login();
@@ -80,6 +107,9 @@ final class QuestionTypeUserDeviceTest extends DbTestCase
             'entities_id' => Session::getActiveEntity(),
             'users_id'   => Session::getLoginUserID(),
         ]);
+
+        // The asset type is proposed to the user
+        $_SESSION['glpiactiveprofile']['helpdesk_item_type'][] = $asset_class;
 
         $builder = new FormBuilder();
         $builder->addQuestion("Device", QuestionTypeUserDevice::class, is_mandatory: true);
