@@ -399,6 +399,7 @@ $break_s_screen: 1400px;
                             overflow: hidden;
                             text-overflow: ellipsis;
                             white-space: nowrap;
+                            display: block;
                         }
                     }
                 }
@@ -412,6 +413,7 @@ $break_s_screen: 1400px;
                         overflow: hidden;
                         text-overflow: ellipsis;
                         white-space: nowrap;
+                        display: block;
                     }
 
                     .license,
