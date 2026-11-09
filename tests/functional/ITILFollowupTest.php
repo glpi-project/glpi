@@ -76,6 +76,31 @@ class ITILFollowupTest extends DbTestCase
         return $as_object ? $itilobject : (int) $itilobject->getID();
     }
 
+    /**
+     * Forging `is_private` + `users_id` must not grant the right to add a
+     * followup to an ITIL item the user has no access to.
+     */
+    public function testPrivateFlagDoesNotBypassCreateRights(): void
+    {
+        $this->login();
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $this->login('post-only', 'postonly');
+        $input = [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => __FUNCTION__,
+        ];
+        $this->assertFalse((new CoreITILFollowup())->can(-1, CREATE, $input));
+
+        $input += ['is_private' => 1, 'users_id' => \Session::getLoginUserID()];
+        $this->assertFalse((new CoreITILFollowup())->can(-1, CREATE, $input));
+    }
+
     public function testACL()
     {
         $this->login();

@@ -3059,12 +3059,7 @@ class CommonDBTM extends CommonGLPI
                 $this->input = $input;
             }
 
-            // check if private
-            $allowed = $this->isPrivate() && ($this->fields['users_id'] == Session::getLoginUserID());
-            // global check
-            if (!$allowed) {
-                $allowed = static::canCreate() && $this->canCreateItem();
-            }
+            $allowed = static::canCreate() && $this->canCreateItem();
 
             [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
 
@@ -3100,30 +3095,29 @@ class CommonDBTM extends CommonGLPI
             return true;
         }
 
-        $this_belongs_to_current_user = $this->isPrivate() && ($this->fields['users_id'] === Session::getLoginUserID());
         switch ($right) {
             case READ:
-                $allowed = $this_belongs_to_current_user || (static::canView() && $this->canViewItem());
+                $allowed = static::canView() && $this->canViewItem();
                 [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
                 break;
 
             case UPDATE:
-                $allowed = $this_belongs_to_current_user || (static::canUpdate() && $this->canUpdateItem());
+                $allowed = static::canUpdate() && $this->canUpdateItem();
                 [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
                 break;
 
             case DELETE:
-                $allowed = $this_belongs_to_current_user || (static::canDelete() && $this->canDeleteItem());
+                $allowed = static::canDelete() && $this->canDeleteItem();
                 [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
                 break;
 
             case PURGE:
-                $allowed = $this_belongs_to_current_user || (static::canPurge() && $this->canPurgeItem());
+                $allowed = static::canPurge() && $this->canPurgeItem();
                 [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
                 break;
 
             case CREATE:
-                $allowed = $this_belongs_to_current_user || (static::canCreate() && $this->canCreateItem());
+                $allowed = static::canCreate() && $this->canCreateItem();
                 [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
                 break;
 

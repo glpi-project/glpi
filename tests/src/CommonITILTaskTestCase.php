@@ -114,6 +114,33 @@ abstract class CommonITILTaskTestCase extends DbTestCase
         $this->assertFalse($task_item->canCreateItem());
     }
 
+    /**
+     * Forging `is_private` + `users_id` must not grant the right to add a task
+     * to an ITIL item the user has no access to.
+     */
+    public function testPrivateFlagDoesNotBypassCreateRights(): void
+    {
+        $task_class = static::getTaskClass();
+        $itil_class = $task_class::getItilObjectItemType();
+
+        $this->login();
+        $itil_item = $this->createItem($itil_class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $this->login('post-only', 'postonly');
+        $input = [
+            getForeignKeyFieldForItemType($itil_class) => $itil_item->getID(),
+            'content' => __FUNCTION__,
+        ];
+        $this->assertFalse((new $task_class())->can(-1, CREATE, $input));
+
+        $input += ['is_private' => 1, 'users_id' => \Session::getLoginUserID()];
+        $this->assertFalse((new $task_class())->can(-1, CREATE, $input));
+    }
+
     public static function addAsUserActorProvider(): iterable
     {
         yield 'ADDMY' => [
