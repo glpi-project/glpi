@@ -35,7 +35,7 @@ Use the following structure for your reports:
     - Description of the root cause of the vulnerability, with references to relevant code. Use GitHub permalinks whenever possible.
     - Impact and the security boundary crossed.
 - Exploit Scenario
-    - Step-by-step reproduction from a clean install using the current [official Docker setup](https://github.com/glpi-project/docker-images), with a freshly pulled image of the latest patch release of the affected supported branch.
+    - Concise, human-readable steps to reproduce the issue from a clean install using the current [official Docker setup](https://github.com/glpi-project/docker-images). Use a freshly pulled image of the latest patch release of the affected supported branch. Focus on reproducing the issue rather than explaining the vulnerability, and perform the steps manually before submitting the report.
     - Working proof of concept (Python, PHP, ...) to validate and reproduce the issue; and then make sure it gets fixed. Attach it as a file (script, HTTP request collection, etc.) rather than pasting source code inline in the email body to keep reports readable and reproducible, and avoids mangling by mail clients (indentation, quoting, encoding).
 - Recommendation
     - Suggest how to address the issue.
