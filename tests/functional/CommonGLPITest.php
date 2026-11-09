@@ -162,7 +162,7 @@ class CommonGLPITest extends DbTestCase
         $this->login(...$credentials);
 
         $_GET = [
-            '_glpi_tab' => $itemtype === RuleTicketCollection::class ? 'RuleCollection$1' : 'Computer$main',
+            '_glpi_tab' => $itemtype === RuleTicketCollection::class ? 'RuleCollection$2' : 'Computer$main',
             '_itemtype' => $itemtype,
             '_target'   => '/front/test.php',
             'id'        => $items_id,
