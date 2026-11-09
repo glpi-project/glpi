@@ -254,12 +254,16 @@ final class SessionTracker
             }
         } elseif (ini_get('session.save_handler') === 'redis' && $session) {
             try {
+                $settings = self::getRedisSessionConnectionSettings(ini_get('session.save_path'));
                 $redis = new \Redis();
-                //Manually telling PHPStan the type because the "safe" function ruins the type information of the underlying parse_url function.
-                /** @phpstan-var array{host: string, port?: int, path?: string, query?: string, fragment?: string} $redis_url */
-                $redis_url = parse_url(ini_get('session.save_path'));
-                $redis->connect((string) $redis_url['host'], $redis_url['port'] ?? 6379);
-                $redis->del('PHPREDIS_SESSION:' . str_replace('sess_', '', $session['session_file']));
+                $redis->connect($settings['host'], $settings['port'], $settings['timeout']);
+                if ($settings['auth'] !== null) {
+                    $redis->auth($settings['auth']);
+                }
+                if ($settings['database'] > 0) {
+                    $redis->select($settings['database']);
+                }
+                $redis->del($settings['prefix'] . str_replace('sess_', '', $session['session_file']));
             } catch (Throwable $e) {
                 ErrorHandler::logCaughtException($e);
             }
@@ -268,6 +272,56 @@ final class SessionTracker
         if ($reason === self::REVOKE_REASON_ADMIN && $users_id) {
             Log::history($users_id, User::class, [0, '', 'Session revoked'], User::class, Log::HISTORY_LOG_SIMPLE_MESSAGE);
         }
+    }
+
+    /**
+     * Get the connection settings of the phpredis session handler from its `session.save_path`.
+     *
+     * The save path is a comma-separated list of servers (e.g. `tcp://host:6379?auth=secret&database=1`
+     * or `unix:///path/to/redis.sock?prefix=GLPI_`). Only the first server is used.
+     *
+     * @return array{host: string, port: int, timeout: float, auth: string|list<string>|null, database: int, prefix: string}
+     */
+    private static function getRedisSessionConnectionSettings(string $save_path): array
+    {
+        $server = trim(explode(',', $save_path)[0]);
+        [$address, $query] = array_pad(explode('?', $server, 2), 2, '');
+
+        $params = [];
+        parse_str($query, $params);
+
+        if (str_starts_with($address, 'unix://')) {
+            // `parse_url()` cannot parse unix socket paths, and phpredis ignores the port for them.
+            $host = substr($address, strlen('unix://'));
+            $port = 0;
+        } else {
+            if (!str_contains($address, '://')) {
+                $address = 'tcp://' . $address;
+            }
+            /** @phpstan-var array{scheme: string, host: string, port?: int} $url */
+            $url = parse_url($address);
+            $scheme = strtolower($url['scheme']);
+            // phpredis expects the TLS scheme to be kept in the host.
+            $host = in_array($scheme, ['tls', 'ssl'], true) ? $scheme . '://' . $url['host'] : $url['host'];
+            $port = $url['port'] ?? 6379;
+        }
+
+        $auth = $params['auth'] ?? null;
+        if (is_array($auth)) {
+            // ACL authentication: `auth[]=user&auth[]=password`.
+            $auth = array_values(array_map('strval', $auth));
+        } elseif (!is_string($auth) || $auth === '') {
+            $auth = null;
+        }
+
+        return [
+            'host'     => $host,
+            'port'     => $port,
+            'timeout'  => is_numeric($params['timeout'] ?? null) ? (float) $params['timeout'] : 0.0,
+            'auth'     => $auth,
+            'database' => is_numeric($params['database'] ?? null) ? (int) $params['database'] : 0,
+            'prefix'   => is_string($params['prefix'] ?? null) ? $params['prefix'] : 'PHPREDIS_SESSION:',
+        ];
     }
 
     /**

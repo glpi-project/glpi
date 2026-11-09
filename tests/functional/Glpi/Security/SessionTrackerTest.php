@@ -40,6 +40,7 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Security\SessionTracker;
 use Glpi\Tests\DbTestCase;
 use Log;
+use PHPUnit\Framework\Attributes\DataProvider;
 use User;
 
 class SessionTrackerTest extends DbTestCase
@@ -128,6 +129,68 @@ class SessionTrackerTest extends DbTestCase
                 'new_value' => 'Session revoked',
             ],
         ]));
+    }
+
+    public static function redisSessionSavePathProvider(): iterable
+    {
+        $defaults = [
+            'host'     => '127.0.0.1',
+            'port'     => 6379,
+            'timeout'  => 0.0,
+            'auth'     => null,
+            'database' => 0,
+            'prefix'   => 'PHPREDIS_SESSION:',
+        ];
+
+        yield 'host only' => ['tcp://127.0.0.1', $defaults];
+
+        yield 'without scheme' => ['127.0.0.1:6380', array_merge($defaults, ['port' => 6380])];
+
+        yield 'password, database and prefix' => [
+            'tcp://redis.example.org:6380?auth=s3cr%26t&database=2&prefix=GLPI_SESS:&timeout=2.5',
+            [
+                'host'     => 'redis.example.org',
+                'port'     => 6380,
+                'timeout'  => 2.5,
+                'auth'     => 's3cr&t',
+                'database' => 2,
+                'prefix'   => 'GLPI_SESS:',
+            ],
+        ];
+
+        yield 'ACL user and password' => [
+            'tcp://127.0.0.1:6379?auth[]=glpi&auth[]=secret',
+            array_merge($defaults, ['auth' => ['glpi', 'secret']]),
+        ];
+
+        yield 'empty password' => ['tcp://127.0.0.1:6379?auth=', $defaults];
+
+        yield 'TLS' => ['tls://redis.example.org:6390?auth=secret', array_merge($defaults, [
+            'host' => 'tls://redis.example.org',
+            'port' => 6390,
+            'auth' => 'secret',
+        ])];
+
+        yield 'unix socket' => ['unix:///var/run/redis/redis.sock?auth=secret&database=3', array_merge($defaults, [
+            'host'     => '/var/run/redis/redis.sock',
+            'port'     => 0,
+            'auth'     => 'secret',
+            'database' => 3,
+        ])];
+
+        yield 'several servers' => [
+            'tcp://10.0.0.1:6379?weight=1&auth=first, tcp://10.0.0.2:6379?weight=2&auth=second',
+            array_merge($defaults, ['host' => '10.0.0.1', 'auth' => 'first']),
+        ];
+    }
+
+    #[DataProvider('redisSessionSavePathProvider')]
+    public function testGetRedisSessionConnectionSettings(string $save_path, array $expected): void
+    {
+        $this->assertSame(
+            $expected,
+            $this->callPrivateMethod(SessionTracker::class, 'getRedisSessionConnectionSettings', $save_path)
+        );
     }
 
     public function testRevokeAllSessionExceptCurrent(): void
