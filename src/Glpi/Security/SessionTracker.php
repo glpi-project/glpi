@@ -254,16 +254,7 @@ final class SessionTracker
             }
         } elseif (ini_get('session.save_handler') === 'redis' && $session) {
             try {
-                $settings = self::getRedisSessionConnectionSettings(ini_get('session.save_path'));
-                $redis = new \Redis();
-                $redis->connect($settings['host'], $settings['port'], $settings['timeout']);
-                if ($settings['auth'] !== null) {
-                    $redis->auth($settings['auth']);
-                }
-                if ($settings['database'] > 0) {
-                    $redis->select($settings['database']);
-                }
-                $redis->del($settings['prefix'] . str_replace('sess_', '', $session['session_file']));
+                self::deleteRedisSession(ini_get('session.save_path'), $session['session_file']);
             } catch (Throwable $e) {
                 ErrorHandler::logCaughtException($e);
             }
@@ -272,6 +263,29 @@ final class SessionTracker
         if ($reason === self::REVOKE_REASON_ADMIN && $users_id) {
             Log::history($users_id, User::class, [0, '', 'Session revoked'], User::class, Log::HISTORY_LOG_SIMPLE_MESSAGE);
         }
+    }
+
+    /**
+     * Delete a session stored by the phpredis session handler.
+     *
+     * @param string $save_path    The `session.save_path` of the phpredis session handler.
+     * @param string $session_file The session file name, as stored in `glpi_users_sessions` (`sess_<session id>`).
+     *
+     * @throws \RedisException
+     */
+    private static function deleteRedisSession(string $save_path, string $session_file): void
+    {
+        $settings = self::getRedisSessionConnectionSettings($save_path);
+
+        $redis = new \Redis();
+        $redis->connect($settings['host'], $settings['port'], $settings['timeout']);
+        if ($settings['auth'] !== null && !$redis->auth($settings['auth'])) {
+            throw new \RedisException('Redis authentication failed.');
+        }
+        if ($settings['database'] > 0 && !$redis->select($settings['database'])) {
+            throw new \RedisException(sprintf('Unable to select the Redis database %d.', $settings['database']));
+        }
+        $redis->del($settings['prefix'] . str_replace('sess_', '', $session_file));
     }
 
     /**

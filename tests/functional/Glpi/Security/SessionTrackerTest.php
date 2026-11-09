@@ -41,6 +41,8 @@ use Glpi\Security\SessionTracker;
 use Glpi\Tests\DbTestCase;
 use Log;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Redis;
+use RedisException;
 use User;
 
 class SessionTrackerTest extends DbTestCase
@@ -191,6 +193,67 @@ class SessionTrackerTest extends DbTestCase
             $expected,
             $this->callPrivateMethod(SessionTracker::class, 'getRedisSessionConnectionSettings', $save_path)
         );
+    }
+
+    public function testDeleteRedisSession(): void
+    {
+        $redis = new Redis();
+        try {
+            $redis->connect('redis', 6379, 1.0);
+        } catch (RedisException $e) {
+            $this->markTestSkipped('Redis server is not available: ' . $e->getMessage());
+        }
+
+        // Use a dedicated ACL user, to check that the credentials are sent without protecting
+        // the default user, which is used by other tests.
+        $user        = 'glpi_test_' . bin2hex(random_bytes(4));
+        $password    = bin2hex(random_bytes(16));
+        $session_id  = bin2hex(random_bytes(16));
+        $prefix      = 'GLPI_TEST_SESS_' . $user . ':';
+        $session_key = $prefix . $session_id;
+        $database    = 3;
+
+        $redis->rawCommand('ACL', 'SETUSER', $user, 'on', '>' . $password, '~*', '+@all');
+        try {
+            $redis->select($database);
+            $redis->set($session_key, 'data');
+            $redis->set($prefix . 'other', 'data');
+            $redis->select(0);
+            $redis->set($session_key, 'data');
+
+            // Invalid credentials: the session is not deleted.
+            try {
+                $this->callPrivateMethod(
+                    SessionTracker::class,
+                    'deleteRedisSession',
+                    sprintf('tcp://redis:6379?auth[]=%s&auth[]=invalid&database=%d&prefix=%s', $user, $database, $prefix),
+                    'sess_' . $session_id
+                );
+                $this->fail('Redis authentication with invalid credentials should have failed.');
+            } catch (RedisException) {
+                // Expected.
+            }
+            $redis->select($database);
+            $this->assertSame(1, $redis->exists($session_key));
+
+            // Valid credentials: only the session key of the selected database is deleted.
+            $this->callPrivateMethod(
+                SessionTracker::class,
+                'deleteRedisSession',
+                sprintf('tcp://redis:6379?auth[]=%s&auth[]=%s&database=%d&prefix=%s', $user, $password, $database, $prefix),
+                'sess_' . $session_id
+            );
+            $this->assertSame(0, $redis->exists($session_key));
+            $this->assertSame(1, $redis->exists($prefix . 'other'));
+            $redis->select(0);
+            $this->assertSame(1, $redis->exists($session_key));
+        } finally {
+            $redis->select($database);
+            $redis->del($session_key, $prefix . 'other');
+            $redis->select(0);
+            $redis->del($session_key);
+            $redis->rawCommand('ACL', 'DELUSER', $user);
+        }
     }
 
     public function testRevokeAllSessionExceptCurrent(): void
