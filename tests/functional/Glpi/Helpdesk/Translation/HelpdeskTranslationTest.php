@@ -64,7 +64,27 @@ class HelpdeskTranslationTest extends DbTestCase
 
     public function testGetTranslationsForHelpdesk(): void
     {
+        global $DB;
+
         $this->initHelpdeskWithTranslations();
+
+        // Orphan translation: entity row removed without the purge cleanup
+        $orphan_entity = $this->createItem(Entity::class, [
+            'name'        => 'Entity removed without purge',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->createItem(
+            HelpdeskTranslation::class,
+            [
+                'itemtype'     => Entity::class,
+                'items_id'     => $orphan_entity->getID(),
+                'language'     => 'fr_FR',
+                'key'          => Entity::TRANSLATION_KEY_CUSTOM_HELPDESK_HOME_TITLE,
+                'translations' => ['one' => 'orphan translation'],
+            ],
+            ['translations']
+        );
+        $DB->delete(Entity::getTable(), ['id' => $orphan_entity->getID()]);
 
         $entity_id = getItemByTypeName(Entity::class, 'Test Root Entity', true);
         $tile_id = array_key_first((new GlpiPageTile())->find(['title' => 'Test Tile']));

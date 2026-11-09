@@ -155,11 +155,20 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
 
         $tiles_manager = TilesManager::getInstance();
 
-        // Entity translations are purged with their entity, no need to load entities
+        // Join on entities to ignore orphan translations without loading every entity
         $entities_translations = [];
         $iterator = $DB->request([
-            'FROM'  => self::getTable(),
-            'WHERE' => [self::$itemtype => Entity::class],
+            'SELECT'     => self::getTable() . '.*',
+            'FROM'       => self::getTable(),
+            'INNER JOIN' => [
+                Entity::getTable() => [
+                    'ON' => [
+                        self::getTable()   => self::$items_id,
+                        Entity::getTable() => 'id',
+                    ],
+                ],
+            ],
+            'WHERE'      => [self::getTable() . '.' . self::$itemtype => Entity::class],
         ]);
         foreach ($iterator as $row) {
             $translation = new self();
