@@ -1881,11 +1881,22 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $allowed_fields[] = '_validationsteps_id';
                 }
                 // Manage assign, steal and own rights
-                if (static::getType() === Ticket::getType() && ($this->canAssign() || $this->canAssignToMe())) {
-                    $allowed_fields[] = '_itil_assign';
-                    $allowed_fields[] = '_users_id_assign';
-                    $allowed_fields[] = '_groups_id_assign';
-                    $allowed_fields[] = '_suppliers_id_assign';
+                if (static::getType() === Ticket::getType()) {
+                    if ($this->canAssign()) {
+                        $allowed_fields[] = '_itil_assign';
+                        $allowed_fields[] = '_users_id_assign';
+                        $allowed_fields[] = '_groups_id_assign';
+                        $allowed_fields[] = '_suppliers_id_assign';
+                    } elseif ($this->canAssignToMe()) {
+                        // '_itil_assign' is restricted to self-assignment later; '_users_id_assign' is added without rights check
+                        $allowed_fields[] = '_itil_assign';
+                        if (
+                            is_numeric($input['_users_id_assign'] ?? null)
+                            && (int) $input['_users_id_assign'] === Session::getLoginUserID()
+                        ) {
+                            $allowed_fields[] = '_users_id_assign';
+                        }
+                    }
                 }
 
                 // Can only update initial fields if no followup or task already added

@@ -7471,6 +7471,7 @@ HTML,
             'supplier' => fn() => ['_type' => 'supplier', 'suppliers_id' => getItemByTypeName('Supplier', '_suplier01_name', true)],
         ];
         foreach ($actors as $type => $actor) {
+            yield "$type with own" => [Ticket::READALL + Ticket::OWN, $actor, false];
             yield "$type with steal" => [Ticket::READALL + Ticket::STEAL, $actor, false];
             yield "$type with assign" => [Ticket::READALL + Ticket::ASSIGN, $actor, true];
         }
@@ -7497,6 +7498,78 @@ HTML,
 
         $ticket->getFromDB($ticket->getID());
         $this->assertCount($expected ? 1 : 0, $ticket->getActorsForType(CommonITILActor::ASSIGN));
+    }
+
+    public static function assignActorInputKeyWithoutUpdateRightProvider(): iterable
+    {
+        $inputs = [
+            'self user'  => fn() => ['_users_id_assign' => Session::getLoginUserID()],
+            'other user' => fn() => ['_users_id_assign' => getItemByTypeName('User', 'glpi', true)],
+            'group'      => fn() => ['_groups_id_assign' => getItemByTypeName('Group', '_test_group_1', true)],
+            'supplier'   => fn() => ['_suppliers_id_assign' => getItemByTypeName('Supplier', '_suplier01_name', true)],
+        ];
+        foreach ($inputs as $type => $input) {
+            yield "$type with own" => [Ticket::READALL + Ticket::OWN, $input, $type === 'self user'];
+            yield "$type with steal" => [Ticket::READALL + Ticket::STEAL, $input, $type === 'self user'];
+            yield "$type with assign" => [Ticket::READALL + Ticket::ASSIGN, $input, true];
+        }
+        yield 'self user with own on assigned ticket' => [Ticket::READALL + Ticket::OWN, $inputs['self user'], false, true];
+    }
+
+    #[DataProvider('assignActorInputKeyWithoutUpdateRightProvider')]
+    public function testAssignActorInputKeyWithoutUpdateRight(
+        int $rights,
+        callable $input,
+        bool $expected,
+        bool $already_assigned = false
+    ): void {
+        $this->login();
+        $ticket = $this->createItem(Ticket::class, [
+            'name'                => __METHOD__,
+            'content'             => __METHOD__,
+            'entities_id'         => 0,
+            '_skip_auto_assign'   => true,
+            '_users_id_requester' => getItemByTypeName('User', 'normal', true),
+            '_users_id_assign'    => $already_assigned ? getItemByTypeName('User', 'glpi', true) : 0,
+        ]);
+
+        $this->changeTechRights(['ticket' => $rights]);
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $ticket->update(['id' => $ticket->getID()] + $input());
+
+        $ticket->getFromDB($ticket->getID());
+        $this->assertCount(
+            (int) $already_assigned + (int) $expected,
+            $ticket->getActorsForType(CommonITILActor::ASSIGN)
+        );
+    }
+
+    public function testAssignToMeOnFollowupWithoutUpdateRight(): void
+    {
+        $this->login();
+        $ticket = $this->createItem(Ticket::class, [
+            'name'                => __METHOD__,
+            'content'             => __METHOD__,
+            'entities_id'         => 0,
+            '_skip_auto_assign'   => true,
+            '_users_id_requester' => getItemByTypeName('User', 'normal', true),
+        ]);
+
+        $this->changeTechRights(['ticket' => Ticket::READALL + Ticket::STEAL]);
+        $tech_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_followup_tech' => 1]);
+        $tech_user->loadPreferencesInSession();
+
+        // Ticket::assignToMe() sends '_users_id_assign' set to the followup author
+        $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => __METHOD__,
+            'users_id' => $tech_user->getID(),
+        ]);
+
+        $ticket->getFromDB($ticket->getID());
+        $this->assertTrue($ticket->isUser(CommonITILActor::ASSIGN, $tech_user->getID()));
     }
 
     public static function mailCollectorFollowupSetAssigneeProvider(): array
