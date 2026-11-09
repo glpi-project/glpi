@@ -90,7 +90,11 @@ class IsInventoriableCapacity extends AbstractCapacity
 
     public function getSearchOptions(string $classname): array
     {
-        $tab = Agent::rawSearchOptionsToAdd();
+        $tab = [];
+        $tab[] = [
+            'id'                 => 'inventory',
+            'name'               => Inventory::getTypeName(1),
+        ];
         $tab[] = [
             'id'                 => 42,
             'table'              => 'glpi_autoupdatesystems',
@@ -111,7 +115,7 @@ class IsInventoriableCapacity extends AbstractCapacity
                 'datatype'           => 'datetime',
                 'massiveaction'      => false,
             ];
-            return $tab;
+            return array_merge($tab, Agent::rawSearchOptionsToAdd());
         }
 
         // Network equipment like assets (including printers)
@@ -140,7 +144,7 @@ class IsInventoriableCapacity extends AbstractCapacity
             ];
         }
 
-        return $tab;
+        return array_merge($tab, Agent::rawSearchOptionsToAdd());
     }
 
     public function getCloneRelations(): array
