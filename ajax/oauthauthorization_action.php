@@ -58,7 +58,8 @@ if (isset($_POST['id']) && isset($_POST['type']) && isset($_POST['request_author
     Html::back();
 } elseif (isset($_POST['id']) && isset($_POST['test'])) {
     $authorization = new OAuthAuthorization();
-    $authorization->check((int) ($_POST['id'] ?? 0), READ);
+    // UPDATE (not READ): testConnection() may refresh and persist the token.
+    $authorization->check((int) ($_POST['id'] ?? 0), UPDATE);
 
     $result = $authorization->testConnection();
     Session::addMessageAfterRedirect(
