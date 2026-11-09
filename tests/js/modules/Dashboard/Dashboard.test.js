@@ -626,6 +626,51 @@ describe('Dashboard', () => {
         expect(dashboard.refreshCardsImpactedByFilter).toHaveBeenCalledWith('filter2');
     });
 
+    test('getFiltersFromDB caches filters per dashboard', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const fetched = [];
+
+        window.AjaxMock.start();
+        // persistent, so an unexpected extra request would be counted instead of throwing
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'GET', {
+            action: 'get_filter_data',
+        }, (data) => {
+            fetched.push(data.dashboard);
+            return {filter: `${data.dashboard}_value`};
+        }, true));
+
+        expect(dashboard.getFiltersFromDB()).toEqual({filter: 'current_dashboard_value'});
+        expect(dashboard.getFiltersFromDB()).toEqual({filter: 'current_dashboard_value'});
+
+        // switching dashboard must not reuse the previous dashboard's filters
+        dashboard.current_name = 'other_dashboard_1';
+        expect(dashboard.getFiltersFromDB()).toEqual({filter: 'other_dashboard_1_value'});
+
+        dashboard.current_name = 'current_dashboard';
+        expect(dashboard.getFiltersFromDB()).toEqual({filter: 'current_dashboard_value'});
+
+        expect(fetched).toEqual(['current_dashboard', 'other_dashboard_1']);
+    });
+
+    test('setFiltersInDB updates only the current dashboard cache', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard._filters_cache = {other_dashboard_1: {filter: 'other_value'}};
+
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'POST', {
+            action: 'save_filter_data',
+            dashboard: 'current_dashboard',
+        }, () => true));
+
+        dashboard.setFiltersInDB({filter: 'new_value'});
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+
+        // served from cache, no GET mock registered
+        expect(dashboard.getFiltersFromDB()).toEqual({filter: 'new_value'});
+        dashboard.current_name = 'other_dashboard_1';
+        expect(dashboard.getFiltersFromDB()).toEqual({filter: 'other_value'});
+    });
+
     test('refreshCardsImpactedByFilter', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         $('body').append(`
