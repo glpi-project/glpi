@@ -123,15 +123,24 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
     #[Override]
     public function listTranslationsHandlers(): array
     {
+        global $DB;
+
         $tiles_manager = TilesManager::getInstance();
-        $entities = array_map(
-            fn($entity_id) => Entity::getById($entity_id),
-            array_keys((new Entity())->find(getEntitiesRestrictCriteria(Entity::getTable())))
-        );
-        $entities_handlers = array_map(
-            fn($entity) => $entity->listTranslationsHandlers(),
-            $entities
-        );
+
+        // Only entities with their own helpdesk title provide translation handlers
+        $entities_iterator = $DB->request([
+            'FROM'  => Entity::getTable(),
+            'WHERE' => [
+                'NOT' => ['custom_helpdesk_home_title' => (string) Entity::CONFIG_PARENT],
+            ] + getEntitiesRestrictCriteria(Entity::getTable()),
+        ]);
+        $entities_handlers = [];
+        foreach ($entities_iterator as $row) {
+            $entity = new Entity();
+            $entity->getFromResultSet($row);
+            $entity->post_getFromDB();
+            $entities_handlers[] = $entity->listTranslationsHandlers();
+        }
 
         $tiles = $tiles_manager->getAllTiles();
         $tiles = array_filter($tiles, fn($tile) => $tile instanceof ProvideTranslationsInterface);
@@ -142,17 +151,24 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
 
     public static function getTranslationsForHelpdesk(): array
     {
+        global $DB;
+
         $tiles_manager = TilesManager::getInstance();
-        $entities = array_map(
-            fn($entity_id) => Entity::getById($entity_id),
-            array_keys((new Entity())->find())
-        );
+
+        // Entity translations are purged with their entity, no need to load entities
+        $entities_translations = [];
+        $iterator = $DB->request([
+            'FROM'  => self::getTable(),
+            'WHERE' => [self::$itemtype => Entity::class],
+        ]);
+        foreach ($iterator as $row) {
+            $translation = new self();
+            $translation->getFromResultSet($row);
+            $entities_translations[] = $translation;
+        }
 
         return array_merge(
-            ...array_map(
-                fn($entity) => self::getTranslationsForItem($entity),
-                $entities
-            ),
+            $entities_translations,
             ...array_map(
                 fn($item) => self::getTranslationsForItem($item),
                 $tiles_manager->getAllTiles()
