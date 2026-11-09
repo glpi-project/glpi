@@ -65,7 +65,11 @@ if (isset($_POST['id']) && isset($_POST['type']) && isset($_POST['request_author
     Session::addMessageAfterRedirect(
         htmlescape($result['message']),
         false,
-        $result['success'] ? INFO : ERROR
+        match ($result['success']) {
+            true  => INFO,
+            null  => WARNING,
+            false => ERROR,
+        }
     );
     Html::back();
 } elseif (isset($_POST['id']) && isset($_POST['delete'])) {

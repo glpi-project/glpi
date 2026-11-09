@@ -331,7 +331,11 @@ class ApplicationDiagnostic
         $result = $authorization->testConnection();
 
         return [
-            'status'  => $result['success'] ? self::STATUS_OK : self::STATUS_FAILED,
+            'status'  => match ($result['success']) {
+                true  => self::STATUS_OK,
+                null  => self::STATUS_WARNING,
+                false => self::STATUS_FAILED,
+            },
             'message' => $result['message'],
         ];
     }

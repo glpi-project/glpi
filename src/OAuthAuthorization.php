@@ -548,7 +548,10 @@ class OAuthAuthorization extends CommonDBChild
      * Attempts a real (but minimal) protocol-level connection using the
      * current access token, refreshing it first if needed.
      *
-     * @return array{success: bool, message: string}
+     * `success` is `null` when only the token could be obtained and the
+     * connection itself could not be verified.
+     *
+     * @return array{success: bool|null, message: string}
      */
     public function testConnection(): array
     {
@@ -572,14 +575,18 @@ class OAuthAuthorization extends CommonDBChild
             return ['success' => false, 'message' => __('Invalid OAuth application')];
         }
 
-        try {
-            if ($this->fields['type'] === self::TYPE_SMTP) {
-                // No SMTP host/port is stored on this entity (SMTP sending
-                // still goes through the legacy glpi_configs-based flow), so
-                // only the token validity checked above can be verified here.
-                return $this->probeSmtpConnection('', 0, $this->fields['email'], $token->getToken());
-            }
+        if ($this->fields['type'] === self::TYPE_SMTP) {
+            // No SMTP host/port is stored on this entity (SMTP sending still
+            // goes through the legacy glpi_configs-based flow), so no server
+            // can be contacted: the token may still lack the sending scope,
+            // hence an undetermined result rather than a success.
+            return [
+                'success' => null,
+                'message' => __('An access token was obtained, but no SMTP server is configured on this authorization: the connection and the permission to send emails were not verified.'),
+            ];
+        }
 
+        try {
             $defaults = $this->resolveProvider($application, self::TYPE_IMAP)::getImapDefaults();
 
             return $this->probeImapConnection(
@@ -688,89 +695,6 @@ class OAuthAuthorization extends CommonDBChild
                         'message' => $this->explainXoauth2Failure(trim($matches[2]), $challenge),
                     ];
                 }
-            }
-
-            return [
-                'success' => false,
-                'message' => sprintf(
-                    __('No answer from %s (the connection timed out or was closed during authentication).'),
-                    $host
-                ),
-            ];
-        } finally {
-            fclose($socket);
-        }
-    }
-
-    /**
-     * Performs a minimal SMTP `EHLO` + `AUTH XOAUTH2` handshake.
-     *
-     * Isolated in its own (protected) method so tests can stub it out
-     * without opening a real network connection.
-     *
-     * @return array{success: bool, message: string}
-     */
-    protected function probeSmtpConnection(string $host, int $port, string $email, string $token): array
-    {
-        if ($host === '') {
-            // No SMTP host configured on this authorization: only the token
-            // validity (already ensured by testConnection()) can be checked.
-            return [
-                'success' => true,
-                'message' => __('The access token is valid. No SMTP server is configured on this authorization, so the connection itself was not tested.'),
-            ];
-        }
-
-        $errno = 0;
-        $errstr = '';
-        // Warnings are silenced on purpose: an unreachable mail server is an
-        // expected diagnostic outcome, reported through the returned message.
-        $socket = @stream_socket_client($host . ':' . $port, $errno, $errstr, self::PROBE_TIMEOUT); // @phpstan-ignore theCodingMachineSafe.function
-        if ($socket === false) {
-            return [
-                'success' => false,
-                'message' => sprintf(
-                    __('Unable to connect to %1$s:%2$d: %3$s'),
-                    $host,
-                    $port,
-                    $errstr !== '' ? $errstr : __('connection refused')
-                ),
-            ];
-        }
-
-        stream_set_timeout($socket, self::PROBE_TIMEOUT);
-
-        try {
-            fgets($socket); // greeting
-            fwrite($socket, "EHLO glpi\r\n");
-            while (($line = fgets($socket)) !== false && preg_match('/^250-/', $line) === 1) {
-                // consume multi-line EHLO response
-            }
-
-            $auth = base64_encode(sprintf("user=%s\1auth=Bearer %s\1\1", $email, $token));
-            fwrite($socket, 'AUTH XOAUTH2 ' . $auth . "\r\n");
-
-            $challenge = null;
-            while (($response = fgets($socket)) !== false) {
-                $response = trim($response);
-                if ($response === '') {
-                    continue;
-                }
-
-                if (str_starts_with($response, '334')) {
-                    $challenge = trim(substr($response, 3));
-                    fwrite($socket, "\r\n");
-                    continue;
-                }
-
-                if (str_starts_with($response, '235')) {
-                    return ['success' => true, 'message' => sprintf(__('Connected to %s successfully.'), $host)];
-                }
-
-                return [
-                    'success' => false,
-                    'message' => $this->explainXoauth2Failure($response, $challenge),
-                ];
             }
 
             return [

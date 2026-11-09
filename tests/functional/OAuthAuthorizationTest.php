@@ -736,6 +736,33 @@ class OAuthAuthorizationTest extends DbTestCase
         $this->assertNull($provider->last_grant);
     }
 
+    public function testTestConnectionDoesNotReportSmtpAsSuccessful(): void
+    {
+        $this->login();
+
+        $app = $this->createApplication();
+
+        $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
+        /** @var OAuthAuthorization $authorization */
+        $authorization = $this->createItem(OAuthAuthorization::class, [
+            'oauthapplications_id' => $app->getID(),
+            'type'                  => OAuthAuthorization::TYPE_SMTP,
+            'email'                 => 'user@example.com',
+            'token'                 => json_encode($token->jsonSerialize()),
+        ], ['token']);
+
+        $provider = new FakeOauthProviderForTests();
+        $testable = TestableOAuthAuthorization::withProvider($provider);
+        $testable->getFromDB($authorization->getID());
+        // No SMTP server can be contacted: the result must stay undetermined
+        // even if a probe would have succeeded.
+        $testable->probe_result = true;
+
+        $result = $testable->testConnection();
+
+        $this->assertNull($result['success']);
+    }
+
     // -------------------------------------------------------------------------
     // revokeAuthorization()
     // -------------------------------------------------------------------------
@@ -921,11 +948,6 @@ final class TestableOAuthAuthorization extends OAuthAuthorization
     }
 
     protected function probeImapConnection(string $host, int $port, string $ssl, string $email, string $token): array
-    {
-        return $this->fakeProbeResult();
-    }
-
-    protected function probeSmtpConnection(string $host, int $port, string $email, string $token): array
     {
         return $this->fakeProbeResult();
     }
