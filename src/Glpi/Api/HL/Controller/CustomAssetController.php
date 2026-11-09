@@ -50,6 +50,7 @@ use Glpi\Http\Response;
 use Group_Item;
 use Location;
 use Manufacturer;
+use SNMPCredential;
 use State;
 use Toolbox;
 use User;
@@ -182,6 +183,18 @@ final class CustomAssetController extends AbstractController
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'last_boot' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'readOnly' => true,
+                    ],
+                    'sysdescr' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
+                    'snmp_credential' => self::getDropdownTypeSchema(class: SNMPCredential::class, full_schema: 'SNMPCredential') + ['x-version-introduced' => '2.3.0'],
+                    'ram' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64, 'x-version-introduced' => '2.3.0'],
+                    'cpu' => ['type' => Doc\Schema::TYPE_INTEGER, 'x-version-introduced' => '2.3.0'],
+                    'uptime' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
+                    'last_pages_counter' => ['type' => Doc\Schema::TYPE_INTEGER, 'x-version-introduced' => '2.3.0'],
                     'custom_fields' => [
                         'type' => Doc\Schema::TYPE_OBJECT,
                         'readOnly' => true,
