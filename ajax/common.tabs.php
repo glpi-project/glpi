@@ -34,6 +34,7 @@
  */
 
 use Glpi\Debug\Profiler;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 
 global $CFG_GLPI;
 
@@ -75,11 +76,11 @@ if ($item = getItemForItemtype($_GET['_itemtype'])) {
         // No id if ruleCollection but check right
         if ($item instanceof RuleCollection) {
             if (!$item->canList()) {
-                return;
+                throw new AccessDeniedHttpException();
             }
         } elseif (!isset($_GET["id"]) || $item->isNewID($_GET["id"])) {
             if (!$item::canCreate()) {
-                return;
+                throw new AccessDeniedHttpException();
             }
             // This call was initially triggered by a call to `$item->can($ID, CREATE, $input)`
             // but checking the input at display time was blocking legitiame form displays (mainly for `CommonDBRelation`).
@@ -91,7 +92,7 @@ if ($item = getItemForItemtype($_GET['_itemtype'])) {
                 $item->initObjectOnCreation($_GET);
             }
         } elseif (!$item->can($_GET["id"], READ)) {
-            return;
+            throw new AccessDeniedHttpException();
         }
     }
 }
