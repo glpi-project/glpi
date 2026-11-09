@@ -112,8 +112,299 @@
         </div>
     </div>
 
-    {{ include('components/form/buttons.html.twig') }}
+    {% set buttons_params = params %}
+    {% if not item.isNewItem() %}
+        {# Rendered after the standard buttons: the footer is laid out in reverse,
+           so this appears on their left. #}
+        {% set buttons_params = params|merge({
+            'addbuttons': {
+                'test_connection': {
+                    'type': 'button',
+                    'btn_class': 'btn-outline-secondary',
+                    'icon': 'ti ti-stethoscope',
+                    'text': __('Test connection'),
+                    'add_attribs': {
+                        'data-bs-toggle': 'modal',
+                        'data-bs-target': '#oauth_diagnostic_' ~ rand,
+                    },
+                },
+            },
+        }) %}
+    {% endif %}
+
+    {{ include('components/form/buttons.html.twig', {'params': buttons_params}) }}
 </div>
+
+{% if not item.isNewItem() %}
+    <div class="modal fade" id="oauth_diagnostic_{{ rand }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="ti ti-stethoscope me-1" aria-hidden="true"></i>
+                        {{ __('Connection diagnostic') }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="oauth-diagnostic-tree" id="oauth_diagnostic_tree_{{ rand }}"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" id="oauth_diagnostic_rerun_{{ rand }}">
+                        <i class="ti ti-refresh me-1" aria-hidden="true"></i>
+                        {{ __('Run again') }}
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Close') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .oauth-diagnostic-tree ul {
+            list-style: none;
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+        .oauth-diagnostic-tree > ul {
+            padding-left: 0;
+        }
+        .oauth-diagnostic-tree li {
+            position: relative;
+            padding: .35rem 0 .35rem 1.5rem;
+        }
+        .oauth-diagnostic-tree > ul > li {
+            padding-left: 0;
+        }
+        /* Elbow connector joining a node to its parent. */
+        .oauth-diagnostic-tree li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 1.25rem;
+            width: 1rem;
+            border-left: 1px solid var(--tblr-border-color);
+            border-bottom: 1px solid var(--tblr-border-color);
+            border-bottom-left-radius: .25rem;
+        }
+        /* Vertical line continuing down to the next sibling. */
+        .oauth-diagnostic-tree li::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 1.25rem;
+            bottom: 0;
+            border-left: 1px solid var(--tblr-border-color);
+        }
+        .oauth-diagnostic-tree li:last-child::after,
+        .oauth-diagnostic-tree > ul > li::before,
+        .oauth-diagnostic-tree > ul > li::after {
+            display: none;
+        }
+        .oauth-diagnostic-tree .oauth-diagnostic-node {
+            display: flex;
+            align-items: flex-start;
+            gap: .5rem;
+        }
+        .oauth-diagnostic-tree .oauth-diagnostic-icon {
+            flex: 0 0 1.25rem;
+            line-height: 1.4;
+            text-align: center;
+        }
+        .oauth-diagnostic-tree li.oauth-diagnostic-skipped {
+            opacity: .5;
+        }
+        /* Diagnostic messages may span several lines (server response, hints). */
+        .oauth-diagnostic-tree .oauth-diagnostic-message {
+            white-space: pre-line;
+        }
+    </style>
+
+    <script>
+        (function () {
+            const modal_el = document.getElementById('oauth_diagnostic_{{ rand }}');
+            const tree_el  = document.getElementById('oauth_diagnostic_tree_{{ rand }}');
+            const rerun_el = document.getElementById('oauth_diagnostic_rerun_{{ rand }}');
+
+            const endpoint = '{{ config('root_doc')|e('js') }}/ajax/oauthapplication_diagnostic.php';
+            const app_id   = {{ item.getID() }};
+
+            const i18n = {
+                pending: '{{ __('Pending')|e('js') }}',
+                running: '{{ __('Checking...')|e('js') }}',
+                skipped: '{{ __('Skipped because the previous step failed')|e('js') }}',
+                failed:  '{{ __('Failed')|e('js') }}',
+                error:   '{{ __('Unable to run the diagnostic')|e('js') }}',
+            };
+
+            // Statuses that allow child steps to run.
+            const CONTINUES = ['ok', 'warning', 'info'];
+
+            const ICONS = {
+                pending: '<i class="ti ti-circle-dotted text-muted" aria-hidden="true"></i>',
+                running: '<span class="spinner-border spinner-border-sm text-primary" role="status"></span>',
+                ok:      '<i class="ti ti-circle-check text-success" aria-hidden="true"></i>',
+                failed:  '<i class="ti ti-circle-x text-danger" aria-hidden="true"></i>',
+                warning: '<i class="ti ti-alert-triangle text-warning" aria-hidden="true"></i>',
+                info:    '<i class="ti ti-info-circle text-info" aria-hidden="true"></i>',
+                skipped: '<i class="ti ti-minus text-muted" aria-hidden="true"></i>',
+            };
+
+            let running = false;
+
+            async function post(data) {
+                const body = new FormData();
+                body.append('id', app_id);
+                Object.entries(data).forEach(([key, value]) => body.append(key, value));
+
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    body: body,
+                    credentials: 'same-origin',
+                });
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status);
+                }
+                return await response.json();
+            }
+
+            function buildNode(step) {
+                const li = document.createElement('li');
+                li.dataset.step = step.key;
+                li.innerHTML = '<div class="oauth-diagnostic-node">'
+                    + '<span class="oauth-diagnostic-icon" aria-hidden="true"></span>'
+                    + '<div class="flex-fill">'
+                    + '<div class="oauth-diagnostic-label"></div>'
+                    + '<div class="oauth-diagnostic-message text-muted small"></div>'
+                    + '</div></div>';
+                li.querySelector('.oauth-diagnostic-label').textContent = step.label;
+                return li;
+            }
+
+            /**
+             * Renders the flat, parent-referencing step list.
+             *
+             * The leading steps form a single-child chain of prerequisites:
+             * they are listed in line, since nesting them would only produce a
+             * staircase without conveying anything. Nesting starts at the first
+             * step that branches out (the client credentials, under which each
+             * authorization is checked independently).
+             */
+            function renderTree(steps) {
+                const children = new Map();
+                steps.forEach((step) => {
+                    const parent = step.parent === null ? '' : step.parent;
+                    if (!children.has(parent)) {
+                        children.set(parent, []);
+                    }
+                    children.get(parent).push(step);
+                });
+
+                const buildList = (parent_key) => {
+                    const list = children.get(parent_key) || [];
+                    if (list.length === 0) {
+                        return null;
+                    }
+                    const ul = document.createElement('ul');
+                    list.forEach((step) => {
+                        const li = buildNode(step);
+                        const sub = buildList(step.key);
+                        if (sub !== null) {
+                            li.appendChild(sub);
+                        }
+                        ul.appendChild(li);
+                    });
+                    return ul;
+                };
+
+                tree_el.replaceChildren();
+
+                const root = document.createElement('ul');
+                let parent_key = '';
+                let next = children.get('') || [];
+                let last_li = null;
+
+                while (next.length === 1) {
+                    last_li = buildNode(next[0]);
+                    root.appendChild(last_li);
+                    parent_key = next[0].key;
+                    next = children.get(parent_key) || [];
+                }
+
+                if (next.length > 0) {
+                    const branch = buildList(parent_key);
+                    if (branch !== null) {
+                        (last_li !== null ? last_li : root).appendChild(branch);
+                    }
+                }
+
+                tree_el.appendChild(root);
+
+                steps.forEach((step) => setState(step.key, 'pending', i18n.pending));
+            }
+
+            function setState(key, status, message) {
+                const li = tree_el.querySelector('[data-step="' + CSS.escape(key) + '"]');
+                if (li === null) {
+                    return;
+                }
+                li.classList.toggle('oauth-diagnostic-skipped', status === 'skipped');
+                li.querySelector('.oauth-diagnostic-icon').innerHTML = ICONS[status] || ICONS.pending;
+                li.querySelector('.oauth-diagnostic-message').textContent = message || '';
+            }
+
+            async function run() {
+                if (running) {
+                    return;
+                }
+                running = true;
+                rerun_el.disabled = true;
+
+                try {
+                    let steps;
+                    try {
+                        steps = (await post({action: 'plan'})).steps;
+                    } catch (error) {
+                        tree_el.replaceChildren();
+                        const alert = document.createElement('div');
+                        alert.className = 'alert alert-danger mb-0';
+                        alert.textContent = i18n.error + ' (' + error.message + ')';
+                        tree_el.appendChild(alert);
+                        return;
+                    }
+
+                    renderTree(steps);
+
+                    const statuses = {};
+                    for (const step of steps) {
+                        if (step.parent !== null && !CONTINUES.includes(statuses[step.parent])) {
+                            statuses[step.key] = 'skipped';
+                            setState(step.key, 'skipped', i18n.skipped);
+                            continue;
+                        }
+
+                        setState(step.key, 'running', i18n.running);
+                        try {
+                            const result = await post({action: 'step', step: step.key});
+                            statuses[step.key] = result.status;
+                            setState(step.key, result.status, result.message);
+                        } catch (error) {
+                            statuses[step.key] = 'failed';
+                            setState(step.key, 'failed', i18n.failed + ' (' + error.message + ')');
+                        }
+                    }
+                } finally {
+                    running = false;
+                    rerun_el.disabled = false;
+                }
+            }
+
+            modal_el.addEventListener('shown.bs.modal', run);
+            rerun_el.addEventListener('click', run);
+        })();
+    </script>
+{% endif %}
 
 <script>
     $(() => {

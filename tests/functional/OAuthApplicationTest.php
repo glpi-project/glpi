@@ -35,12 +35,23 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
 use GLPIKey;
 use MailCollector;
 use OAuthApplication;
+use OAuthAuthorization;
+use PHPUnit\Framework\Attributes\Group;
 
 class OAuthApplicationTest extends DbTestCase
 {
+    use ReAuthTrait;
+
+    public function tearDown(): void
+    {
+        $this->restoreWebContext();
+        parent::tearDown();
+    }
+
     // -------------------------------------------------------------------------
     // CRUD
     // -------------------------------------------------------------------------
@@ -106,6 +117,56 @@ class OAuthApplicationTest extends DbTestCase
         $id = $app->getID();
         $this->assertTrue($app->delete(['id' => $id], true));
         $this->assertFalse($app->getFromDB($id));
+    }
+
+    public function testPurgeAlsoPurgesItsAuthorizations(): void
+    {
+        $this->login();
+
+        /** @var OAuthApplication $app */
+        $app = $this->createItem(OAuthApplication::class, [
+            'name'          => 'To purge with authorizations',
+            'provider'      => 'azure',
+            'client_id'     => 'cid',
+            'client_secret' => 'secret',
+            'tenant_id'     => 'tenant',
+        ], ['client_secret']);
+
+        /** @var OAuthApplication $other_app */
+        $other_app = $this->createItem(OAuthApplication::class, [
+            'name'          => 'Kept application',
+            'provider'      => 'azure',
+            'client_id'     => 'cid',
+            'client_secret' => 'secret',
+            'tenant_id'     => 'tenant',
+        ], ['client_secret']);
+
+        $imap = $this->createItem(OAuthAuthorization::class, [
+            'oauthapplications_id' => $app->getID(),
+            'type'                 => OAuthAuthorization::TYPE_IMAP,
+            'email'                => 'imap@example.com',
+            'token'                => 'token-json',
+        ], ['token']);
+        $smtp = $this->createItem(OAuthAuthorization::class, [
+            'oauthapplications_id' => $app->getID(),
+            'type'                 => OAuthAuthorization::TYPE_SMTP,
+            'email'                => 'smtp@example.com',
+            'token'                => 'token-json',
+        ], ['token']);
+        $kept = $this->createItem(OAuthAuthorization::class, [
+            'oauthapplications_id' => $other_app->getID(),
+            'type'                 => OAuthAuthorization::TYPE_IMAP,
+            'email'                => 'imap@example.com',
+            'token'                => 'token-json',
+        ], ['token']);
+
+        $this->deleteItem(OAuthApplication::class, $app->getID(), true);
+
+        // The tokens obtained through the purged application must not remain in DB...
+        $this->assertFalse((new OAuthAuthorization())->getFromDB($imap->getID()));
+        $this->assertFalse((new OAuthAuthorization())->getFromDB($smtp->getID()));
+        // ... while those of other applications are left untouched.
+        $this->assertTrue((new OAuthAuthorization())->getFromDB($kept->getID()));
     }
 
     // -------------------------------------------------------------------------
@@ -501,6 +562,85 @@ class OAuthApplicationTest extends DbTestCase
         $this->withRight(fn($right) => READ, function () {
             $this->assertFalse(OAuthApplication::canUpdate());
             $this->assertTrue(OAuthApplication::canView());
+        });
+    }
+
+    // -------------------------------------------------------------------------
+    // Re-authentication ("sudo mode")
+    // -------------------------------------------------------------------------
+
+    #[Group('reauth')]
+    public function testItemTypeRequiresReauthentication(): void
+    {
+        $this->login();
+        $app_id = $this->createItem(OAuthApplication::class, [
+            'name'          => 'Reauth app',
+            'is_active'     => 1,
+            'provider'      => OAuthApplication::AZURE,
+            'client_id'     => 'my-client-id',
+            'client_secret' => 'my-secret',
+            'tenant_id'     => 'my-tenant',
+        ], ['client_secret'])->getID();
+        $this->fakeWebContext();
+
+        // Listing, updating and purging an application all expose or alter the
+        // stored client credentials, so each of them must ask for a re-authentication.
+        foreach ([READ, UPDATE, PURGE] as $right) {
+            $this->setReauthenticated(false);
+            $reauth_needed = null;
+            $input = null;
+            $this->assertFalse(
+                (new OAuthApplication())->can($app_id, $right, $input, $reauth_needed),
+                "{$right}: can() should be denied while not re-authenticated"
+            );
+            $this->assertTrue($reauth_needed, "{$right}: a re-authentication should be requested");
+
+            $this->setReauthenticated(true);
+            $reauth_needed = null;
+            $input = null;
+            $this->assertTrue(
+                (new OAuthApplication())->can($app_id, $right, $input, $reauth_needed),
+                "{$right}: can() should be granted once re-authenticated"
+            );
+            $this->assertFalse($reauth_needed, "{$right}: no re-authentication should be requested anymore");
+        }
+    }
+
+    #[Group('reauth')]
+    public function testCreationRequiresReauthentication(): void
+    {
+        $this->login();
+        $this->fakeWebContext();
+
+        $this->setReauthenticated(false);
+        $reauth_needed = null;
+        $input = null;
+        $this->assertFalse((new OAuthApplication())->can(-1, CREATE, $input, $reauth_needed));
+        $this->assertTrue($reauth_needed);
+
+        $this->setReauthenticated(true);
+        $reauth_needed = null;
+        $input = null;
+        $this->assertTrue((new OAuthApplication())->can(-1, CREATE, $input, $reauth_needed));
+        $this->assertFalse($reauth_needed);
+    }
+
+    /**
+     * Without the right, the request must be denied outright rather than
+     * answered with a re-authentication prompt.
+     */
+    #[Group('reauth')]
+    public function testMissingRightDoesNotRequestAReauthentication(): void
+    {
+        $this->login();
+        $this->fakeWebContext();
+        $this->setReauthenticated(false);
+
+        $this->withRight(fn($right) => 0, function () {
+            $reauth_needed = null;
+            $input = null;
+            $this->assertFalse((new OAuthApplication())->can(-1, CREATE, $input, $reauth_needed));
+            $this->assertFalse($reauth_needed);
         });
     }
 
