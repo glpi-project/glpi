@@ -106,6 +106,12 @@ class ApplicationDiagnostic
             ],
         ];
 
+        // Authorization steps may refresh and persist tokens, so running
+        // them requires UPDATE: hide them from users who could not run them.
+        if (!$this->application::canUpdate() || !$this->application->canUpdateItem()) {
+            return $steps;
+        }
+
         foreach ($this->getAuthorizations() as $authorization) {
             $id = (int) $authorization->fields['id'];
             $name = sprintf('%s · %s', $authorization->fields['type'], $authorization->fields['email']);
