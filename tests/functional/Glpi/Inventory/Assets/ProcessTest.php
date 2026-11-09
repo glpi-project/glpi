@@ -34,8 +34,8 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
-use Glpi\Asset\Capacity;
 use Computer;
+use Glpi\Asset\Capacity;
 use Glpi\Inventory\Asset\Process;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
