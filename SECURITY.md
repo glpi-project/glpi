@@ -39,7 +39,7 @@ Use the following structure for your reports:
     - Working proof of concept (Python, PHP, ...) to validate and reproduce the issue; and then make sure it gets fixed. Attach it as a file (script, HTTP request collection, etc.) rather than pasting source code inline in the email body to keep reports readable and reproducible, and avoids mangling by mail clients (indentation, quoting, encoding).
 - Recommendation
     - Suggest how to address the issue.
-    - Patches are optional, but welcome if the reported verified it during testing, either manually or with [glpi-security-patch](.agents/skills/glpi-security-patch/SKILL.md).
+    - Do not attach a patch to the report. The GLPI team will offer you the opportunity to review its patch before publication.
 
 Omit generic background, repeated impact claims, and CVSS scores.
 

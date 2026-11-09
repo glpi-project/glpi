@@ -1,19 +1,19 @@
 ---
 name: glpi-security-patch
-description: Help reporters test an optional patch or maintainers reproduce, fix, and independently verify a GLPI security bug using external patching and verification skills.
+description: Help maintainers reproduce, fix, and independently verify GLPI security bugs, and help reporters review GLPI-provided patches before publication.
 ---
 
 # GLPI security patch
 
 ## Setup
 
-Install `patching-bugs` and `regression-hunt` from the [trailofbits/skills marketplace](https://github.com/trailofbits/skills) using your agent's supported method, including their stage skills and supporting resources. Reuse existing installations and record the versions or source revisions used. Reporters can submit a complete report without using this skill.
+Install `patching-bugs` and `regression-hunt` from the [trailofbits/skills marketplace](https://github.com/trailofbits/skills) using your agent's supported method, including their stage skills and supporting resources. Reuse existing installations and record the versions or source revisions used.
 
-For all testing and validation, freshly pull the latest available [official Docker nightly image](https://github.com/glpi-project/docker-images/pkgs/container/glpi/versions) for the affected supported branch (`glpi/glpi:<major>.<minor>-nightly`). Record its tag and digest and the GLPI source revision. Keep the image digest fixed while testing the external workflow's pinned source revisions.
+For reproduction, use the current [official Docker setup](https://github.com/glpi-project/docker-images) with a freshly pulled image of the latest patch release of the affected supported branch. Record its tag and digest and the GLPI source revision. Keep the image digest fixed while testing the external workflow's pinned source revisions.
 
 ## Workflow
 
-Reporters may use this skill to prepare and test an optional patch before submitting a report. Maintainers use it to investigate reported bugs and prepare verified fixes. Both roles follow the same complete workflow; a reporter-supplied patch still requires maintainer review.
+Maintainers use this skill to investigate reported bugs and prepare verified fixes. Do not request or attach a patch to the report. The GLPI team will offer reporters the opportunity to review its patch before publication; reporters may use the standalone proof workflow below to review a GLPI-provided patch.
 
 Use the external [patching-bugs](https://github.com/trailofbits/skills/tree/master/plugins/patching-bugs) skill. Read its full SKILL.md and required references. Follow its complete workflow, including its stage skills, independent agents, record validators, proof, regression campaign, and report generation. Do not implement an abbreviated local procedure or skip a stage because a report already claims confirmation.
 

@@ -9,7 +9,7 @@ description: Help maintainers review one incoming GLPI security report, decide w
 
 Install `vulnerability-triage-brocards` from the [trailofbits/skills marketplace](https://github.com/trailofbits/skills) using your agent's supported method, including its required resources. Reuse an existing installation when available; record its version or source revision with the assessment.
 
-Testing and validation evidence must use the latest available [official Docker nightly image](https://github.com/glpi-project/docker-images/pkgs/container/glpi/versions) for the affected supported branch (`glpi/glpi:<major>.<minor>-nightly`), freshly pulled before testing. Require the image tag, digest, and GLPI source revision; request updated evidence if these are missing or the image is outdated.
+Reproduction evidence must use the current [official Docker setup](https://github.com/glpi-project/docker-images) with a freshly pulled image of the latest patch release of the affected supported branch. Require the image tag, digest, and GLPI source revision; request updated evidence if these are missing or the image is outdated.
 
 ## Workflow
 
@@ -49,7 +49,7 @@ Classification describes the behavior; status describes the work remaining. Leav
 
 ## Reply templates
 
-Replace brackets with specific evidence and a policy link. Keep replies to a few sentences. Missing evidence, AI use, unusual settings, documentation, and repair cost alone do not justify an invalid verdict. Never disclose another private report's details.
+Replace brackets with specific evidence and a policy link. Keep replies to a few sentences. Do not request a patch from the reporter; the GLPI team will offer them the opportunity to review its patch before publication. Missing evidence, AI use, unusual settings, documentation, and repair cost alone do not justify an invalid verdict. Never disclose another private report's details.
 
 **Needs information:** To assess this under [report requirements](../../../SECURITY.md#required-information), we need [complete list of missing facts or files]. Please reply in this thread within seven days. We can reopen the report when the evidence is available.
 
