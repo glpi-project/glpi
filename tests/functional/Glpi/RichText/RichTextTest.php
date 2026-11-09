@@ -113,6 +113,13 @@ HTML,
                 . '<table><tbody><tr><td><div>c</div></td></tr></tbody></table>',
         ];
 
+        // Cells outside a row are moved into a row, without being nested in another cell
+        yield [
+            'content'                => '<table><td>a</td><td>b</td></table><table><tbody><th>c</th></tbody></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table><tr><td>a</td><td>b</td></tr></table><table><tbody><tr><th>c</th></tr></tbody></table>',
+        ];
+
         // Cleaning of HTML structure
         yield [
             'content'                => <<<HTML

@@ -74,6 +74,7 @@ final class HtmlParser implements ParserInterface
     private function wrapMisplacedTableContent(DOMDocument $document, DOMNode $node): void
     {
         $allowed = self::ALLOWED_CHILDREN[strtolower($node->nodeName)] ?? null;
+        $implicit_row = null;
 
         foreach (iterator_to_array($node->childNodes) as $child) {
             if (!$child instanceof DOMElement) {
@@ -83,8 +84,20 @@ final class HtmlParser implements ParserInterface
             $this->wrapMisplacedTableContent($document, $child);
 
             if ($allowed === null || in_array(strtolower($child->nodeName), $allowed, true)) {
+                $implicit_row = null;
                 continue;
             }
+
+            if (in_array(strtolower($child->nodeName), ['td', 'th'], true)) {
+                // Cells outside a row: move consecutive cells into a single row, as browsers do.
+                if ($implicit_row === null) {
+                    $implicit_row = $document->createElement('tr');
+                    $node->insertBefore($implicit_row, $child);
+                }
+                $implicit_row->appendChild($child);
+                continue;
+            }
+            $implicit_row = null;
 
             $cell = $wrapper = $document->createElement('td');
             if (strtolower($node->nodeName) !== 'tr') {
