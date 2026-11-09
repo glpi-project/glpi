@@ -485,6 +485,39 @@ final class ObserverFieldTest extends AbstractActorFieldTest
         );
     }
 
+    public function testTemplateActorDoesNotShiftNotificationSettings(): void
+    {
+        // Login is required to assign actors
+        $this->login();
+
+        $form = $this->createAndGetFormWithMultipleActorsQuestions();
+        $user = $this->createItem(User::class, ['name' => 'testTemplateActorDoesNotShiftNotificationSettings User']);
+
+        // Set the user as default observer using predefined fields
+        $this->createItem(TicketTemplatePredefinedField::class, [
+            'tickettemplates_id' => getItemByTypeName(TicketTemplate::class, "Default", true),
+            'num' => 66, // User observer
+            'value' => $user->getID(),
+        ]);
+
+        // The email actor is added after the template one: its notification
+        // settings must not be given to the template actor.
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new ObserverFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [$this->getQuestionId($form, "Observer email 1")]
+            ),
+            answers: [
+                "Observer email 1" => 'test1@test.test',
+            ],
+            expected_actors: [
+                ['items_id' => $user->getID(), 'alternative_email' => ''],
+                ['items_id' => 0, 'alternative_email' => 'test1@test.test'],
+            ]
+        );
+    }
+
     public function testMultipleStrategies(): void
     {
         // Login is required to assign actors
