@@ -43,8 +43,8 @@ $rand = (int) ($_POST['rand'] ?? mt_rand());
 $choices = [];
 
 if (is_string($itemtype) && is_a($itemtype, CommonDBTM::class, true)) {
-    $asset = new $itemtype();
-    if ($items_id > 0 && $asset->getFromDB($items_id) && $asset->can($items_id, READ)) {
+    $asset = getItemForItemtype($itemtype);
+    if ($asset instanceof CommonDBTM && $items_id > 0 && $asset->getFromDB($items_id) && $asset->can($items_id, READ)) {
         $choices = Plug::getPowerSupplyChoices($itemtype, $items_id);
     }
 }

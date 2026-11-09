@@ -41,11 +41,13 @@ use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDevicesCapacity;
 use Glpi\Asset\Capacity\HasPlugCapacity;
+use Glpi\Debug\Profile;
 use Glpi\Features\Clonable;
 use Glpi\Tests\DbTestCase;
 use Item_DevicePowerSupply;
 use PDU;
 use Plug;
+use Psr\Log\LogLevel;
 use Toolbox;
 
 class PlugTest extends DbTestCase
@@ -513,6 +515,220 @@ class PlugTest extends DbTestCase
                 $this->assertStringContainsString($expected_name, $output);
                 $this->assertStringNotContainsString($tabnum === 1 ? 'Incoming outlet' : 'Hosted outlet', $output);
             }
+        }
+    }
+
+    public function testCloningPlugHostsClearsPhysicalConnections(): void
+    {
+        global $DB;
+
+        $definition = $this->initAssetDefinition(capacities: [
+            new Capacity(name: HasPlugCapacity::class),
+            new Capacity(name: HasDevicesCapacity::class),
+        ]);
+        $custom_host = $this->getPlugMainItem($definition);
+        $upstream = $this->createItem(PDU::class, $this->getMinimalCreationInput(PDU::class));
+        $incoming_psu = $this->createPowerSupply($custom_host, 'Incoming PSU', 'INCOMING-SERIAL');
+        $incoming = $this->createItem(Plug::class, $this->getPlugBaseInput($upstream, 'Incoming feed') + [
+            'itemtype_asset' => $custom_host::class,
+            'items_id_asset' => $custom_host->getID(),
+            Plug::POWER_SUPPLY_FIELD => $incoming_psu->getID(),
+        ]);
+        $hosts = [
+            $this->createItem(PDU::class, $this->getMinimalCreationInput(PDU::class)),
+            $custom_host,
+        ];
+        $computer = $this->createItem(Computer::class, $this->getMinimalCreationInput(Computer::class));
+        foreach ($hosts as $host) {
+            $power_supply = $this->createPowerSupply($computer, 'Clone PSU', 'CLONE-SERIAL');
+            $original = $this->createItem(Plug::class, $this->getPlugBaseInput($host) + [
+                'itemtype_asset' => Computer::class,
+                'items_id_asset' => $computer->getID(),
+                Plug::POWER_SUPPLY_FIELD => $power_supply->getID(),
+                'custom_name' => 'Physical outlet',
+            ]);
+            $clone_id = $host->clone();
+            $this->assertGreaterThan(0, $clone_id);
+            $cloned_plugs = iterator_to_array($DB->request([
+                'FROM' => Plug::getTable(),
+                'WHERE' => ['itemtype_main' => $host::class, 'items_id_main' => $clone_id],
+            ]), false);
+            $this->assertCount(1, $cloned_plugs);
+            $this->assertSame('', $cloned_plugs[0]['itemtype_asset']);
+            $this->assertSame(0, (int) $cloned_plugs[0]['items_id_asset']);
+            $this->assertSame(0, (int) $cloned_plugs[0][Plug::POWER_SUPPLY_FIELD]);
+            $this->assertSame('Physical outlet', $cloned_plugs[0]['custom_name']);
+            $this->assertTrue($original->getFromDB($original->getID()));
+            $this->assertSame($power_supply->getID(), (int) $original->fields[Plug::POWER_SUPPLY_FIELD]);
+        }
+        $this->assertTrue($incoming->getFromDB($incoming->getID()));
+        $this->assertSame($custom_host->getID(), (int) $incoming->fields['items_id_asset']);
+        $this->assertSame($incoming_psu->getID(), (int) $incoming->fields[Plug::POWER_SUPPLY_FIELD]);
+    }
+
+    public function testConnectionListsHideMovedPowerSupplyDetails(): void
+    {
+        $this->login();
+        $pdu = $this->createItem(PDU::class, $this->getMinimalCreationInput(PDU::class));
+        $computer = $this->createItem(Computer::class, $this->getMinimalCreationInput(Computer::class));
+        $other = $this->createItem(Computer::class, $this->getMinimalCreationInput(Computer::class));
+        $power_supply = $this->createPowerSupply($computer, 'Moved PSU', 'ORIGINAL-SERIAL');
+        $this->createItem(Plug::class, $this->getPlugBaseInput($pdu) + [
+            'itemtype_asset' => Computer::class,
+            'items_id_asset' => $computer->getID(),
+            Plug::POWER_SUPPLY_FIELD => $power_supply->getID(),
+        ]);
+        $this->assertTrue($power_supply->update([
+            'id' => $power_supply->getID(),
+            'items_id' => $other->getID(),
+            'serial' => 'NEW-OWNER-SECRET-SERIAL',
+        ]));
+        foreach (['showItems' => $pdu, 'showPowerConnections' => $computer] as $method => $item) {
+            ob_start();
+            try {
+                $this->assertTrue(Plug::$method($item));
+                $output = (string) ob_get_contents();
+            } finally {
+                ob_end_clean();
+            }
+            $this->assertStringNotContainsString('NEW-OWNER-SECRET-SERIAL', $output);
+        }
+    }
+
+    public function testRestoringPlugWithUnavailablePowerSupplyExplainsRecovery(): void
+    {
+        $pdu = $this->createItem(PDU::class, $this->getMinimalCreationInput(PDU::class));
+        $computer = $this->createItem(Computer::class, $this->getMinimalCreationInput(Computer::class));
+        $other_computer = $this->createItem(Computer::class, $this->getMinimalCreationInput(Computer::class));
+        foreach (['deleted', 'moved'] as $state) {
+            $power_supply = $this->createPowerSupply($computer, 'Unavailable PSU', $state);
+            $plug = $this->createItem(Plug::class, $this->getPlugBaseInput($pdu) + [
+                'itemtype_asset' => Computer::class,
+                'items_id_asset' => $computer->getID(),
+                Plug::POWER_SUPPLY_FIELD => $power_supply->getID(),
+            ]);
+            $this->assertTrue($plug->delete(['id' => $plug->getID()]));
+            $this->assertTrue($power_supply->update(['id' => $power_supply->getID()] + (
+                $state === 'deleted' ? ['is_deleted' => 1] : ['items_id' => $other_computer->getID()]
+            )));
+            $this->assertFalse($plug->restore(['id' => $plug->getID()]));
+            $this->hasSessionMessages(ERROR, [
+                'The selected power supply is no longer available for this asset. Clear or replace the power supply connection and save the plug before restoring it.',
+            ]);
+            $this->assertTrue($plug->getFromDB($plug->getID()));
+            $this->assertSame(1, (int) $plug->fields['is_deleted']);
+            $this->assertTrue($plug->update(['id' => $plug->getID(), Plug::POWER_SUPPLY_FIELD => 0]));
+            $this->assertTrue($plug->restore(['id' => $plug->getID()]));
+            $this->assertTrue($plug->getFromDB($plug->getID()));
+            $this->assertSame(0, (int) $plug->fields['is_deleted']);
+            $this->assertSame(0, (int) $plug->fields[Plug::POWER_SUPPLY_FIELD]);
+            $this->assertSame($computer->getID(), (int) $plug->fields['items_id_asset']);
+        }
+    }
+
+    public function testPowerConnectionListsBatchRelatedRecords(): void
+    {
+        $this->login();
+        $pdu = $this->createItem(PDU::class, ['name' => 'Batch PDU'] + $this->getMinimalCreationInput(PDU::class));
+        $computer = $this->createItem(Computer::class, $this->getMinimalCreationInput(Computer::class));
+        for ($i = 0; $i < 24; $i++) {
+            $power_supply = $this->createPowerSupply($computer, "Batch PSU $i", "BATCH-SERIAL-$i");
+            $this->createItem(Plug::class, $this->getPlugBaseInput($pdu, "Batch outlet $i") + [
+                'itemtype_asset' => Computer::class,
+                'items_id_asset' => $computer->getID(),
+                Plug::POWER_SUPPLY_FIELD => $power_supply->getID(),
+            ]);
+        }
+
+        $previous_mode = $_SESSION['glpi_use_mode'];
+        $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
+        try {
+            $profile = Profile::getCurrent();
+            $before = count($profile->getDebugInfo()['sql']['queries']);
+            $choices = Plug::getPowerSupplyChoices(Computer::class, $computer->getID());
+            $queries = array_slice($profile->getDebugInfo()['sql']['queries'], $before);
+            $this->assertCount(24, $choices);
+            $this->assertCount(1, $queries, 'All PSU choices must be loaded by one joined query.');
+
+            foreach (['showItems' => $pdu, 'showPowerConnections' => $computer] as $method => $item) {
+                $before = count($profile->getDebugInfo()['sql']['queries']);
+                ob_start();
+                try {
+                    $this->assertTrue(Plug::$method($item));
+                    $output = (string) ob_get_contents();
+                } finally {
+                    ob_end_clean();
+                }
+                $queries = array_slice($profile->getDebugInfo()['sql']['queries'], $before);
+                $psu_queries = array_filter($queries, static fn(array $query): bool => str_contains(
+                    $query['query'],
+                    '`' . Item_DevicePowerSupply::getTable() . '`'
+                ));
+                $this->assertCount(1, $psu_queries, "$method must batch PSU labels.");
+                $related_table = $method === 'showItems' ? Computer::getTable() : PDU::getTable();
+                $related_queries = array_filter($queries, static fn(array $query): bool => str_contains(
+                    $query['query'],
+                    '`' . $related_table . '`'
+                ));
+                $this->assertCount(1, $related_queries, "$method must batch related assets.");
+                $this->assertStringContainsString('BATCH-SERIAL-23', $output);
+                if ($method === 'showPowerConnections') {
+                    $this->assertStringContainsString('Batch PDU', $output);
+                }
+            }
+        } finally {
+            $_SESSION['glpi_use_mode'] = $previous_mode;
+        }
+
+        // Preloading a host must not make its link visible without read rights.
+        $previous_right = $_SESSION['glpiactiveprofile'][PDU::$rightname];
+        $_SESSION['glpiactiveprofile'][PDU::$rightname] = 0;
+        ob_start();
+        try {
+            $this->assertTrue(Plug::showPowerConnections($computer));
+            $output = (string) ob_get_contents();
+        } finally {
+            ob_end_clean();
+            $_SESSION['glpiactiveprofile'][PDU::$rightname] = $previous_right;
+        }
+        $this->assertStringNotContainsString('Batch PDU', $output);
+
+        // Component serials must follow the associated asset's read permission.
+        $previous_right = $_SESSION['glpiactiveprofile'][Computer::$rightname];
+        $_SESSION['glpiactiveprofile'][Computer::$rightname] = 0;
+        ob_start();
+        try {
+            $this->assertTrue(Plug::showItems($pdu));
+            $output = (string) ob_get_contents();
+        } finally {
+            ob_end_clean();
+            $_SESSION['glpiactiveprofile'][Computer::$rightname] = $previous_right;
+        }
+        $this->assertStringNotContainsString('BATCH-SERIAL-', $output);
+    }
+
+    public function testPowerSupplyDropdownRejectsAbstractItemtypes(): void
+    {
+        $this->login();
+        $previous_post = $_POST;
+        try {
+            foreach ([\CommonITILObject::class, \CommonDropdown::class] as $itemtype) {
+                $_POST = ['itemtype' => $itemtype, 'items_id' => 1];
+                ob_start();
+                try {
+                    include GLPI_ROOT . '/ajax/dropdownPowerSupplies.php';
+                    $output = (string) ob_get_contents();
+                } finally {
+                    ob_end_clean();
+                }
+                $this->assertStringContainsString(Plug::POWER_SUPPLY_FIELD, $output);
+                $this->hasPhpLogRecordThatContains(
+                    sprintf('Cannot instanciate "%s" as it is an abstract class.', $itemtype),
+                    LogLevel::WARNING
+                );
+            }
+        } finally {
+            $_POST = $previous_post;
         }
     }
 
