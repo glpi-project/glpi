@@ -35,11 +35,13 @@
 namespace tests\units\Glpi\Form\QuestionType;
 
 use CommonITILObject;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeImpact;
 use Glpi\ImpactLevel;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class QuestionTypeImpactTest extends DbTestCase
 {
@@ -75,6 +77,32 @@ final class QuestionTypeImpactTest extends DbTestCase
         $content = strip_tags($ticket->fields['content']);
         $this->assertStringContainsString("1) What is the impact:", $content);
         $this->assertStringNotContainsString("All", $content);
+    }
+
+    public static function validateAnswerProvider(): iterable
+    {
+        yield 'Enabled level' => ['answer' => "4", 'expected' => true];
+        yield 'Disabled level' => ['answer' => "5", 'expected' => false];
+        yield 'Fractional value' => ['answer' => "2.9", 'expected' => false];
+        yield 'Out of range' => ['answer' => "9", 'expected' => false];
+        yield 'Not a number' => ['answer' => "high", 'expected' => false];
+    }
+
+    #[DataProvider('validateAnswerProvider')]
+    public function testValidateAnswer(string $answer, bool $expected): void
+    {
+        global $CFG_GLPI;
+
+        // Allow levels 1 to 4 only
+        $CFG_GLPI['impact_mask'] = (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4);
+
+        $builder = new FormBuilder();
+        $builder->addQuestion("Impact", QuestionTypeImpact::class);
+        $form = $this->createForm($builder);
+        $question = Question::getById($this->getQuestionId($form, "Impact"));
+
+        $result = (new QuestionTypeImpact())->validateAnswer($question, $answer);
+        $this->assertSame($expected, $result->isValid());
     }
 
     public function testGetImpactLevels(): void

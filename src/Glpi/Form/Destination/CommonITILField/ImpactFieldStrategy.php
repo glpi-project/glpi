@@ -82,12 +82,12 @@ enum ImpactFieldStrategy: string
             return null;
         }
 
-        $value = $answer->getRawAnswer();
-        if (!is_numeric($value)) {
+        $value = filter_var($answer->getRawAnswer(), FILTER_VALIDATE_INT);
+        if ($value === false) {
             return null;
         }
 
-        return (int) $value;
+        return $value;
     }
 
     private function getImpactFromLastValidAnswer(
@@ -102,11 +102,11 @@ enum ImpactFieldStrategy: string
         }
 
         $answer = end($valid_answers);
-        $value = $answer->getRawAnswer();
-        if (!is_numeric($value)) {
+        $value = filter_var($answer->getRawAnswer(), FILTER_VALIDATE_INT);
+        if ($value === false) {
             return null;
         }
 
-        return (int) $value;
+        return $value;
     }
 }

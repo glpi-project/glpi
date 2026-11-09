@@ -36,12 +36,14 @@ import { FormPage } from "../../../pages/FormPage";
 
 test.describe('Impact configuration', () => {
     let form_page: FormPage;
+    let form_id: number;
 
     test.beforeEach(async ({ page, profile, formImporter }) => {
         await profile.set(Profiles.SuperAdmin);
         form_page = new FormPage(page);
         const info = await formImporter.importForm('destination_config_fields/impact-config.json');
-        await form_page.gotoDestinationTab(info.getId());
+        form_id = info.getId();
+        await form_page.gotoDestinationTab(form_id);
     });
 
     test('Can use all possible configuration options', async () => {
@@ -79,7 +81,7 @@ test.describe('Impact configuration', () => {
 
     test('Can create ticket using default configuration', async ({ page }) => {
         // Go to preview
-        await page.getByRole('tab', { name: 'Form', exact: true }).click();
+        await form_page.goto(form_id);
         await form_page.doPreviewForm();
 
         // Fill form

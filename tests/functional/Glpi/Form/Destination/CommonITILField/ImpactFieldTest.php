@@ -252,6 +252,20 @@ final class ImpactFieldTest extends AbstractDestinationFieldTest
         $this->assertEquals($low_impact, $ticket->fields['impact']);
     }
 
+    public function testFractionalImpactAnswerIsIgnored(): void
+    {
+        $default_impact = 3; // (medium)
+
+        $form = $this->createAndGetFormWithTwoImpactQuestions();
+
+        // Answers are saved without validation here, as a crafted request would be
+        $ticket = $this->sendFormAndGetCreatedTicket($form, [
+            "Impact 2" => "4.9",
+        ]);
+
+        $this->assertEquals($default_impact, $ticket->fields['impact']);
+    }
+
     public function testPriorityIsComputedFromUrgencyAndImpactAnswers(): void
     {
         $builder = new FormBuilder();

@@ -41,10 +41,11 @@ use Glpi\Form\Condition\ConditionHandler\ImpactConditionHandler;
 use Glpi\Form\Condition\ConditionValueTransformerInterface;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
+use Glpi\Form\ValidationResult;
 use Glpi\ImpactLevel;
 use Override;
 
-final class QuestionTypeImpact extends AbstractQuestionType implements UsedAsCriteriaInterface, ConditionValueTransformerInterface
+final class QuestionTypeImpact extends AbstractQuestionType implements UsedAsCriteriaInterface, ConditionValueTransformerInterface, QuestionTypeValidationInterface
 {
     /**
      * Retrieve the default value for the impact question type
@@ -129,11 +130,26 @@ TWIG;
     public function formatRawAnswer(mixed $answer, Question $question): string
     {
         // An empty answer is stored as "0", which getImpactName() renders as "All"
-        if (!is_numeric($answer) || ImpactLevel::tryFrom((int) $answer) === null) {
+        $level = filter_var($answer, FILTER_VALIDATE_INT);
+        if ($level === false || ImpactLevel::tryFrom($level) === null) {
             return '';
         }
 
-        return CommonITILObject::getImpactName((int) $answer);
+        return CommonITILObject::getImpactName($level);
+    }
+
+    #[Override]
+    public function validateAnswer(Question $question, mixed $answer): ValidationResult
+    {
+        $result = new ValidationResult(true);
+
+        // Only accept the exact levels offered by the dropdown
+        $level = filter_var($answer, FILTER_VALIDATE_INT);
+        if ($level === false || !array_key_exists($level, ImpactLevel::getEnabledImpactValuesForDropdown())) {
+            $result->addError($question, __("Unexpected value"));
+        }
+
+        return $result;
     }
 
     #[Override]
