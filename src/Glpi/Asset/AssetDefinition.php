@@ -49,6 +49,8 @@ use Glpi\Asset\CustomFieldType\TextType;
 use Glpi\Asset\CustomFieldType\TypeInterface;
 use Glpi\CustomObject\AbstractDefinition;
 use Glpi\Features\AssetImage;
+use Glpi\Inventory\MainAsset\GenericAsset;
+use Glpi\Inventory\MainAsset\MainAsset;
 use Glpi\Inventory\MainAsset\NetworkEquipment as NetworkEquipmentMainAsset;
 use Glpi\Inventory\MainAsset\Printer as PrinterMainAsset;
 use Group;
@@ -811,19 +813,38 @@ TWIG, $twig_params);
     }
 
     /**
+     * Get the inventory main asset class used for the assets of this definition.
+     *
+     * @return class-string<MainAsset>|null `null` if the assets are not inventoriable.
+     */
+    public function getInventoryMainAsset(): ?string
+    {
+        if (!$this->hasCapacityEnabled(new IsInventoriableCapacity())) {
+            return null;
+        }
+
+        $main_asset = $this->getCapacityConfiguration(IsInventoriableCapacity::class)->getValue('inventory_mainasset');
+        if (!is_string($main_asset) || !is_a($main_asset, MainAsset::class, true)) {
+            // Default main asset, see `Glpi\Inventory\Inventory::getMainClass()`
+            return GenericAsset::class;
+        }
+
+        return $main_asset;
+    }
+
+    /**
      * Get the fields filled by the inventory, depending on the inventory main asset type.
      *
      * @return array<string, array{text: string, type: class-string<TypeInterface>}>
      */
     private function getInventoryFields(): array
     {
-        if (!$this->hasCapacityEnabled(new IsInventoriableCapacity())) {
+        $main_asset = $this->getInventoryMainAsset();
+        if ($main_asset === null) {
             return [];
         }
 
-        $main_asset = $this->getCapacityConfiguration(IsInventoriableCapacity::class)->getValue('inventory_mainasset');
-
-        if (!is_a($main_asset ?? '', NetworkEquipmentMainAsset::class, true)) {
+        if (!is_a($main_asset, NetworkEquipmentMainAsset::class, true)) {
             // Computer like assets
             return [
                 'last_boot' => [

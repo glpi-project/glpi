@@ -99,11 +99,9 @@ class IsInventoriableCapacity extends AbstractCapacity
             'datatype'           => 'dropdown',
         ];
 
-        $main_asset = $classname::getDefinition()
-            ->getCapacityConfiguration(self::class)
-            ->getValue('inventory_mainasset');
+        $main_asset = $classname::getDefinition()->getInventoryMainAsset() ?? GenericAsset::class;
 
-        if (!is_a($main_asset ?? '', \Glpi\Inventory\MainAsset\NetworkEquipment::class, true)) {
+        if (!is_a($main_asset, \Glpi\Inventory\MainAsset\NetworkEquipment::class, true)) {
             // Computer like assets
             $tab[] = [
                 'id'                 => 10,

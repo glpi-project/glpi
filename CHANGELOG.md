@@ -6,6 +6,7 @@ The present file will list all changes made to the project; according to the
 ## [11.0.13] unreleased
 
 ### Added
+- Custom assets with the inventory capacity now store the inventory data sent by the agent, depending on their inventory main asset type: last boot date for generic assets; sysdescr, SNMP credential, memory, CPU usage and uptime for network equipments and printers; current counter of pages for printers. They are exposed in the High-Level API, and all of them except CPU usage and uptime are also available in the asset form and search options.
 
 ### Changed
 - The session cookie name now includes the GLPI version. Users will have to log in again after each GLPI update, unless they use the "remember me" feature.
@@ -18,6 +19,7 @@ The present file will list all changes made to the project; according to the
 
 #### Added
 - `Auth::getRememberMeCookieName()` to get the "remember me" cookie name, which no longer derives from the session name.
+- `Glpi\Asset\AssetDefinition::getInventoryMainAsset()` to get the inventory main asset class of a custom asset definition.
 
 #### Changes
 

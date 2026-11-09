@@ -41,12 +41,15 @@ use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Asset\Asset;
+use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use Glpi\Inventory\MainAsset\NetworkEquipment as NetworkEquipmentMainAsset;
+use Glpi\Inventory\MainAsset\Printer as PrinterMainAsset;
 use Group_Item;
 use Location;
 use Manufacturer;
@@ -74,6 +77,45 @@ use User;
 )]
 final class CustomAssetController extends AbstractController
 {
+    /**
+     * Get the properties filled by the inventory, depending on the inventory main asset type.
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    private static function getInventoryProperties(AssetDefinition $definition): array
+    {
+        $main_asset = $definition->getInventoryMainAsset();
+        if ($main_asset === null) {
+            return [];
+        }
+
+        if (!is_a($main_asset, NetworkEquipmentMainAsset::class, true)) {
+            // Computer like assets
+            return [
+                'last_boot' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'readOnly' => true,
+                ],
+            ];
+        }
+
+        // Network equipment like assets (including printers)
+        $properties = [
+            'sysdescr' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
+            'snmp_credential' => self::getDropdownTypeSchema(class: SNMPCredential::class, full_schema: 'SNMPCredential') + ['x-version-introduced' => '2.3.0'],
+            'ram' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64, 'x-version-introduced' => '2.3.0'],
+            'cpu' => ['type' => Doc\Schema::TYPE_INTEGER, 'x-version-introduced' => '2.3.0'],
+            'uptime' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
+        ];
+        if (is_a($main_asset, PrinterMainAsset::class, true)) {
+            $properties['last_pages_counter'] = ['type' => Doc\Schema::TYPE_INTEGER, 'x-version-introduced' => '2.3.0'];
+        }
+
+        return $properties;
+    }
+
     protected static function getRawKnownSchemas(): array
     {
         global $DB;
@@ -183,18 +225,6 @@ final class CustomAssetController extends AbstractController
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                    'last_boot' => [
-                        'x-version-introduced' => '2.3.0',
-                        'type' => Doc\Schema::TYPE_STRING,
-                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                        'readOnly' => true,
-                    ],
-                    'sysdescr' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
-                    'snmp_credential' => self::getDropdownTypeSchema(class: SNMPCredential::class, full_schema: 'SNMPCredential') + ['x-version-introduced' => '2.3.0'],
-                    'ram' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64, 'x-version-introduced' => '2.3.0'],
-                    'cpu' => ['type' => Doc\Schema::TYPE_INTEGER, 'x-version-introduced' => '2.3.0'],
-                    'uptime' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
-                    'last_pages_counter' => ['type' => Doc\Schema::TYPE_INTEGER, 'x-version-introduced' => '2.3.0'],
                     'custom_fields' => [
                         'type' => Doc\Schema::TYPE_OBJECT,
                         'readOnly' => true,
@@ -202,6 +232,8 @@ final class CustomAssetController extends AbstractController
                     ],
                 ],
             ];
+
+            $custom_assets[$schema_name]['properties'] += self::getInventoryProperties($definition);
 
             $custom_fields = $definition->getCustomFieldDefinitions();
             foreach ($custom_fields as $field) {
