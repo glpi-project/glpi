@@ -1810,7 +1810,24 @@ class Migration
 
                     if ($data['itemtype'] === $itemtype) {
                         // Fix sort
-                        if (isset($query['sort']) && (int) $query['sort'] === $old_search_opt) {
+                        if (isset($query['sort']) && is_array($query['sort'])) {
+                            // Multiple columns sort, with a matching `order` entry for each `sort` entry
+                            foreach ($query['sort'] as $sort_key => $sort_opt) {
+                                if ((int) $sort_opt !== $old_search_opt) {
+                                    continue;
+                                }
+                                if ($new_search_opt === null) {
+                                    unset($query['sort'][$sort_key], $query['order'][$sort_key]);
+                                } else {
+                                    $query['sort'][$sort_key] = $new_search_opt;
+                                }
+                                $is_changed = true;
+                            }
+                            $query['sort'] = array_values($query['sort']);
+                            if (isset($query['order']) && is_array($query['order'])) {
+                                $query['order'] = array_values($query['order']);
+                            }
+                        } elseif (isset($query['sort']) && (int) $query['sort'] === $old_search_opt) {
                             if ($new_search_opt === null) {
                                 unset($query['sort']);
                             } else {
