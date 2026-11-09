@@ -5405,14 +5405,23 @@ HTML;
                         'method' => AuthLDAP::IDENTIFIER_EMAIL,
                         'value'  => $email,
                     ];
+                    $refused = false;
                     $res = AuthLDAP::ldapImportUserByServerId(
                         $params,
                         AuthLDAP::ACTION_IMPORT,
-                        $ldap
+                        $ldap,
+                        false,
+                        false,
+                        $refused
                     );
 
                     if (isset($res['id'])) {
                         return $res['id'];
+                    }
+                    if ($refused) {
+                        // The user exists in LDAP but its import has been refused,
+                        // do not try other servers nor create it from its email.
+                        return 0;
                     }
                 }
             }
