@@ -104,6 +104,15 @@ PLAINTEXT,
 HTML,
         ];
 
+        // Misplaced table content is wrapped in a cell, to prevent browsers from closing the parent table early
+        yield [
+            'content'                => '<table><tr><td>a</td></tr><table><tr><td>b</td></tr></table></td></tr></table>'
+                . '<table><tbody><tr><div>c</div></tr></tbody></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table><tr><td>a</td></tr><tr><td><table><tr><td>b</td></tr></table></td></tr></table>'
+                . '<table><tbody><tr><td><div>c</div></td></tr></tbody></table>',
+        ];
+
         // Cleaning of HTML structure
         yield [
             'content'                => <<<HTML

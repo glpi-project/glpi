@@ -646,7 +646,7 @@ JAVASCRIPT;
                 $config = $config->allowAttribute($attribute, 'span');
             }
 
-            $sanitizer = new HtmlSanitizer($config);
+            $sanitizer = new HtmlSanitizer($config, new HtmlParser());
         }
 
         return $sanitizer;
