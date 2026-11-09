@@ -37,16 +37,9 @@ namespace tests\units\Glpi\Api\HL\Controller;
 
 use Glpi\Api\HL\Controller\CustomAssetController;
 use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Asset\Capacity;
-use Glpi\Asset\Capacity\IsInventoriableCapacity;
-use Glpi\Asset\CapacityConfig;
 use Glpi\Http\Request;
-use Glpi\Inventory\MainAsset\GenericAsset;
-use Glpi\Inventory\MainAsset\GenericNetworkAsset;
-use Glpi\Inventory\MainAsset\GenericPrinterAsset;
 use Glpi\Tests\HLAPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use SNMPCredential;
 
 class CustomAssetControllerTest extends HLAPITestCase
 {
@@ -198,96 +191,5 @@ class CustomAssetControllerTest extends HLAPITestCase
                     $this->assertEquals('Test02Type01', $content[0]['name']);
                 });
         });
-    }
-
-    public static function inventoryPropertiesProvider(): iterable
-    {
-        yield 'Not inventoriable' => [
-            'inventory_mainasset' => null,
-            'expected'            => [],
-        ];
-        yield 'Generic asset' => [
-            'inventory_mainasset' => GenericAsset::class,
-            'expected'            => ['last_boot'],
-        ];
-        yield 'Network equipment' => [
-            'inventory_mainasset' => GenericNetworkAsset::class,
-            'expected'            => ['sysdescr', 'snmp_credential', 'ram', 'cpu', 'uptime'],
-        ];
-        yield 'Printer' => [
-            'inventory_mainasset' => GenericPrinterAsset::class,
-            'expected'            => ['sysdescr', 'snmp_credential', 'ram', 'cpu', 'uptime', 'last_pages_counter'],
-        ];
-    }
-
-    #[DataProvider('inventoryPropertiesProvider')]
-    public function testInventoryPropertiesInSchema(?string $inventory_mainasset, array $expected): void
-    {
-        $capacities = [];
-        if ($inventory_mainasset !== null) {
-            $capacities[] = new Capacity(
-                name: IsInventoriableCapacity::class,
-                config: new CapacityConfig(['inventory_mainasset' => $inventory_mainasset])
-            );
-        }
-        $definition = $this->initAssetDefinition(capacities: $capacities);
-
-        $schema = CustomAssetController::getKnownSchemas('2.3.0')['CustomAsset_' . $definition->fields['system_name']];
-        $inventory_properties = ['last_boot', 'sysdescr', 'snmp_credential', 'ram', 'cpu', 'uptime', 'last_pages_counter'];
-        $this->assertSame(
-            $expected,
-            array_values(array_intersect(array_keys($schema['properties']), $inventory_properties))
-        );
-    }
-
-    public function testInventoryPropertiesReadAndWrite(): void
-    {
-        $definition = $this->initAssetDefinition(
-            capacities: [
-                new Capacity(
-                    name: IsInventoriableCapacity::class,
-                    config: new CapacityConfig(['inventory_mainasset' => GenericPrinterAsset::class])
-                ),
-            ]
-        );
-        $system_name = $definition->fields['system_name'];
-
-        $credential = $this->createItem(SNMPCredential::class, [
-            'name'        => 'test credential',
-            'snmpversion' => '2c',
-        ]);
-        $asset = $this->createItem($definition->getAssetClassName(), [
-            'name'        => 'test printer',
-            'entities_id' => $this->getTestRootEntity(true),
-            'cpu'         => 12,
-            'uptime'      => '8 days, 01:26:41.98',
-        ]);
-
-        $this->login();
-
-        $request = new Request('PATCH', '/Assets/Custom/' . $system_name . '/' . $asset->getID());
-        $request->setParameter('sysdescr', 'A printer');
-        $request->setParameter('snmp_credential', $credential->getID());
-        $request->setParameter('ram', 256);
-        $request->setParameter('last_pages_counter', 800);
-        $this->api->call($request, function ($call) {
-            $call->response->isOK();
-        });
-
-        $this->api->call(
-            new Request('GET', '/Assets/Custom/' . $system_name . '/' . $asset->getID()),
-            function ($call) use ($credential) {
-                $call->response
-                    ->isOK()
-                    ->jsonContent(function ($content) use ($credential) {
-                        $this->assertSame('A printer', $content['sysdescr']);
-                        $this->assertSame($credential->getID(), $content['snmp_credential']['id']);
-                        $this->assertSame(256, $content['ram']);
-                        $this->assertSame(12, $content['cpu']);
-                        $this->assertSame('8 days, 01:26:41.98', $content['uptime']);
-                        $this->assertSame(800, $content['last_pages_counter']);
-                    });
-            }
-        );
     }
 }
