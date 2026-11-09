@@ -795,6 +795,12 @@ TWIG, $twig_params);
             return true;
         }
 
+        // The legacy token binds no identity: honor it only when the request carries no
+        // users_id/profiles_id, else its holder could impersonate any user (e.g. Super-Admin).
+        if ((int) $params['users_id'] !== 0 || (int) $params['profiles_id'] !== 0) {
+            return false;
+        }
+
         $legacy_token = self::getLegacyToken(
             $params['dashboard'],
             $params['entities_id'],
