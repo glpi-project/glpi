@@ -432,12 +432,17 @@ class AuthTest extends DbTestCase
 
         $cookie_name = Auth::getRememberMeCookieName();
         $this->assertTrue((new Auth())->login(TU_USER, TU_PASS, true, true));
-        $first_uid = explode(':', $_COOKIE[$cookie_name])[0];
+        $first_cookie_value = $_COOKIE[$cookie_name];
+        $first_uid = explode(':', $first_cookie_value)[0];
 
         $this->assertTrue((new Auth())->login(TU_USER, TU_PASS, true, true));
         $second_uid = explode(':', $_COOKIE[$cookie_name])[0];
         $this->assertNotSame($first_uid, $second_uid);
         $this->assertSame($second_uid, Session::getLoginSessionUID());
+
+        // The replaced cookie must not be usable anymore
+        $_COOKIE[$cookie_name] = $first_cookie_value;
+        $this->assertFalse((new Auth())->login('', ''));
 
         unset($_COOKIE[$cookie_name]);
     }

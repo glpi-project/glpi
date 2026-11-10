@@ -1878,6 +1878,15 @@ class Auth extends CommonGLPI
         $cookie_samesite = ini_get('session.cookie_samesite');
         $token_hash = password_hash($token, PASSWORD_DEFAULT);
 
+        // The cookie is about to be replaced, so its previous token must not remain usable.
+        if (isset($_COOKIE[$cookie_name])) {
+            $DB->delete('glpi_usertokens', [
+                'type' => 'rememberme',
+                'users_id' => $users_id,
+                'token_uid' => explode(':', $_COOKIE[$cookie_name])[0],
+            ]);
+        }
+
         $DB->insert('glpi_usertokens', [
             'type' => 'rememberme',
             'users_id' => $users_id,
