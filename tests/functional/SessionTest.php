@@ -641,9 +641,232 @@ class SessionTest extends DbTestCase
             ],
             'data'     => [
                 'itemtype'    => 'User',
+                'displaywith' => ['id', 'phone', 'serial'],
+            ],
+            'is_valid' => false, // additional `displaywith` entry
+        ];
+        yield [
+            'token_itemtype' => 'User',
+            'token_data'     => [
+                'displaywith' => ['id', 'phone'],
+            ],
+            'data'     => [
+                'itemtype'    => 'User',
             ],
             'is_valid' => false, // missing displaywith
         ];
+
+        // bool matches
+        $truely_values = [true, 1, '1'];
+        $falsly_values = [false, 0, '0'];
+        foreach ($truely_values as $truely) {
+            yield [
+                'token_itemtype' => '',
+                'token_data'     => [
+                    'val' => true,
+                ],
+                'data'     => [
+                    'val' => $truely,
+                ],
+                'is_valid' => true,
+            ];
+            foreach (array_merge($falsly_values, ["00", "01", "foo", ['an array']]) as $falsy) {
+                yield [
+                    'token_itemtype' => '',
+                    'token_data'     => [
+                        'val' => $truely,
+                    ],
+                    'data'     => [
+                        'val' => $falsy,
+                    ],
+                    'is_valid' => false,
+                ];
+            }
+        }
+        foreach ($falsly_values as $falsy) {
+            yield [
+                'token_itemtype' => '',
+                'token_data'     => [
+                    'val' => false,
+                ],
+                'data'     => [
+                    'val' => $falsy,
+                ],
+                'is_valid' => true,
+            ];
+            foreach (array_merge($truely_values, ["00", "01", "foo", ['an array']]) as $truely) {
+                yield [
+                    'token_itemtype' => '',
+                    'token_data'     => [
+                        'val' => $falsy,
+                    ],
+                    'data'     => [
+                        'val' => $truely,
+                    ],
+                    'is_valid' => false,
+                ];
+            }
+        }
+
+        // positive int matches
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => 12,
+            ],
+            'data'     => [
+                'val' => 12,
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => 12,
+            ],
+            'data'     => [
+                'val' => "12",
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => 12,
+            ],
+            'data'     => [
+                'val' => "12 something",
+            ],
+            'is_valid' => false,
+        ];
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => 12,
+            ],
+            'data'     => [
+                'val' => "12.0",
+            ],
+            'is_valid' => false,
+        ];
+
+        // negative int matches
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => -1,
+            ],
+            'data'     => [
+                'val' => -1,
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => -1,
+            ],
+            'data'     => [
+                'val' => "-1",
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => -1,
+            ],
+            'data'     => [
+                'val' => "-1 foo",
+            ],
+            'is_valid' => false,
+        ];
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => -1,
+            ],
+            'data'     => [
+                'val' => "-1.0",
+            ],
+            'is_valid' => false,
+        ];
+
+        // float matches
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => 12.0,
+            ],
+            'data'     => [
+                'val' => 12.0,
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => 12.0,
+            ],
+            'data'     => [
+                'val' => "12.0",
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => 12.0,
+            ],
+            'data'     => [
+                'val' => 12,
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => 12.0,
+            ],
+            'data'     => [
+                'val' => 12.5,
+            ],
+            'is_valid' => false,
+        ];
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => 12.0,
+            ],
+            'data'     => [
+                'val' => "something like 12",
+            ],
+            'is_valid' => false,
+        ];
+
+        // null matches
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => null,
+            ],
+            'data'     => [
+                'val' => null,
+            ],
+            'is_valid' => true,
+        ];
+        foreach (['foo', 0, 1, true, false, []] as $value) {
+            yield [
+                'token_itemtype' => '',
+                'token_data'     => [
+                    'val' => null,
+                ],
+                'data'     => [
+                    'val' => $value,
+                ],
+                'is_valid' => false,
+            ];
+        }
     }
 
     #[DataProvider('idorDataProvider')]
