@@ -63,17 +63,88 @@
                </span>
             {% endif %}
 
-            {% if entry_i['status'] != constant('CommonITILValidation::WAITING') and entry_i['status'] != constant('CommonITILValidation::NONE') %}
-               <span class="badge bg-blue-lt">
-                  {% set action = entry_i['status'] == constant('CommonITILValidation::ACCEPTED') ? __('Accepted') : _x('validation', 'Refused') %}
-                  {{ __('%1$s on %2$s by %3$s')|format(
-                     action,
-                     (entry_i['date_approval']|formatted_datetime),
-                     get_item_link('User', entry_i['users_id_approval'], {'enable_anonymization': true})
-                  )|raw }}
+            {% if entry_i['status'] in [constant('CommonITILValidation::ACCEPTED'), constant('CommonITILValidation::REFUSED')] %}
+               {% set is_accepted = entry_i['status'] == constant('CommonITILValidation::ACCEPTED') %}
+               {% set action = is_accepted ? __('Accepted') : _x('validation', 'Refused') %}
+               <span class="badge {{ is_accepted ? 'bg-green-lt' : 'bg-red-lt' }}" data-testid="solution-approval-status">
+                  <i class="ti {{ is_accepted ? 'ti-check' : 'ti-x' }} me-1" aria-hidden="true"></i>
+                  {% if entry_i['users_id_approval'] > 0 %}
+                     {{ __('%1$s on %2$s by %3$s')|format(
+                        action,
+                        entry_i['date_approval']|formatted_datetime,
+                        get_item_link('User', entry_i['users_id_approval'], {'enable_anonymization': true})
+                     )|raw }}
+                  {% else %}
+                     {{ __('%1$s on %2$s')|format(action, entry_i['date_approval']|formatted_datetime) }}
+                  {% endif %}
                </span>
             {% endif %}
+
+            {{ last_update }}
          </div>
+
+         {# A solution of a closed item can stay waiting (closed without approval) #}
+         {% set is_waiting_approval = entry_i['status'] == constant('CommonITILValidation::WAITING') and item.isSolved() %}
+         {% set show_approval_form = entry_i['id'] == approval_solution_id %}
+         {% if is_waiting_approval or show_approval_form %}
+            <div class="solution-approval mt-3 pt-2 border-top" data-testid="solution-approval">
+               {% if is_waiting_approval %}
+                  <div class="d-flex flex-wrap align-items-center gap-2">
+                     <span class="badge bg-yellow-lt">
+                        <i class="ti ti-hourglass me-1" aria-hidden="true"></i>
+                        {{ __('Waiting for approval') }}
+                     </span>
+                     {% set approvers = item.getSolutionApprovers() %}
+                     {% set approvers_names = approvers['users']|map((users_id) => get_item_name('User', users_id)) %}
+                     {% set approvers_names = approvers_names|merge(approvers['groups']|map((groups_id) => get_item_name('Group', groups_id))) %}
+                     {% if approvers_names is not empty %}
+                        <span class="small text-secondary">{{ __('By %s')|format(approvers_names|join(', ')) }}</span>
+                     {% endif %}
+                  </div>
+               {% endif %}
+
+               {% if show_approval_form %}
+                  {# Same form as the answer to an approval request: always open, the comment is required to refuse #}
+                  <form method="post" action="{{ 'ITILFollowup'|itemtype_form_path }}" class="mt-2" data-submit-once data-testid="solution-approval-form">
+                     <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
+                     <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
+                     <input type="hidden" name="requesttypes_id" value="0" />
+
+                     {% if is_waiting_approval %}
+                        <hr class="my-2" />
+                     {% endif %}
+                     <div class="mb-3 comment-part">
+                        {{ fields.textareaField(
+                           'content',
+                           '',
+                           _n('Comment', 'Comments', 1),
+                           {
+                              'full_width': true,
+                              'helper': __('Optional when approved'),
+                              'enable_richtext': true,
+                              'enable_fileupload': true,
+                              'entities_id': item.fields['entities_id'],
+                              'is_horizontal': false,
+                              'rand': entry_rand,
+                           }
+                        ) }}
+                     </div>
+
+                     <hr class="my-2" />
+                     <div class="validation-footer">
+                        <button type="submit" class="btn btn-outline-red" name="add_reopen">
+                           <i class="ti ti-thumb-down" aria-hidden="true"></i>
+                           <span class="validation-label">{{ __('Refuse') }}</span>
+                        </button>
+                        <button type="submit" class="btn btn-outline-green" name="add_close">
+                           <i class="ti ti-thumb-up" aria-hidden="true"></i>
+                           <span class="validation-label">{{ __('Approve') }}</span>
+                        </button>
+                     </div>
+                  </form>
+               {% endif %}
+            </div>
+         {% endif %}
       </div>
    {% else %}
       <div class="itilsolution">
