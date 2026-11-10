@@ -42,6 +42,7 @@ use Glpi\Form\Migration\FormMigration;
 use Glpi\Marketplace\Controller;
 use Glpi\Migration\GenericobjectPluginMigration;
 use Glpi\Plugin\Hooks;
+use Glpi\System\HousekeepingCron;
 use Glpi\System\Requirement\PhpSupportedVersion;
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
 
@@ -685,31 +686,22 @@ class Central extends CommonGLPI
                 );
             }
 
-            // Processes are no longer historized, warn about remaining history entries
-            $has_process_logs = false;
-            foreach (['itemtype_link', 'itemtype'] as $log_field) {
-                $has_process_logs = count($DB->request([
-                    'SELECT' => ['id'],
-                    'FROM'   => Log::getTable(),
-                    'WHERE'  => [$log_field => Item_Process::class],
-                    'LIMIT'  => 1,
-                ])) > 0;
-                if ($has_process_logs) {
-                    break;
-                }
-            }
-            if ($has_process_logs) {
-                $messages['warnings'][] = __s('Processes are no longer historized, but history still contains entries related to processes.')
-                    . ' '
-                    . sprintf(
-                        __s('You can remove them using the following query: %s'),
-                        htmlescape(sprintf(
-                            "DELETE FROM `%s` WHERE `itemtype` = '%s' OR `itemtype_link` = '%s';",
-                            Log::getTable(),
-                            Item_Process::class,
-                            Item_Process::class
-                        ))
+            // Obsolete data is removed by the housekeeping automatic action, warn if it is disabled
+            $housekeeping = new CronTask();
+            if (
+                $housekeeping->getFromDBbyName(HousekeepingCron::class, HousekeepingCron::TASK_NAME)
+                && (int) $housekeeping->fields['state'] === CronTask::STATE_DISABLE
+                && HousekeepingCron::hasPendingWork()
+            ) {
+                $warning = __s('Some obsolete data should be removed, but the related automatic action is disabled.');
+                if (CronTask::canView()) {
+                    $warning .= ' ' . sprintf(
+                        '<a href="%s">%s</a>',
+                        htmlescape($housekeeping->getLinkURL()),
+                        __s('See automatic action')
                     );
+                }
+                $messages['warnings'][] = $warning;
             }
 
             // encrypt/decrypt key problems
