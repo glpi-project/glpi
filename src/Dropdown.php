@@ -434,9 +434,9 @@ class Dropdown
 
             // Location icon
             if ($itemtype === 'Location' && Location::canView()) {
-                $location_icon = "<div role='button' class='btn btn-outline-secondary' data-glpi-show-location-map
+                $location_icon = "<button type='button' class='btn btn-outline-secondary' data-glpi-show-location-map
                                        data-fid='" . htmlescape($field_id) . "' title='" . __s('Display on map') . "' data-bs-toggle='tooltip' data-bs-placement='bottom'>";
-                $location_icon .= "<i class='ti ti-map' aria-hidden='true'></i></div>";
+                $location_icon .= "<i class='ti ti-map' aria-hidden='true'></i></button>";
                 $icon_array[] = $location_icon;
             }
 
@@ -2549,8 +2549,8 @@ HTML;
             $deselect = __s('None');
             $output  .= "<div class='invisible' id='selectallbuttons_" . htmlescape($field_id) . "'>";
             $output  .= "<div class='d-flex justify-content-around p-1'>";
-            $output  .= "<a class='btn btn-sm' data-glpi-select-all>$select</a> ";
-            $output  .= "<a class='btn btn-sm' data-glpi-deselect-all>$deselect</a>";
+            $output  .= "<button type='button' class='btn btn-sm' data-glpi-select-all>$select</button> ";
+            $output  .= "<button type='button' class='btn btn-sm' data-glpi-deselect-all>$deselect</button>";
             $output  .= "</div></div>";
 
             $multichecksappend_varname = "multichecksappend" . preg_replace('/[^\w]/', '_', $field_id);
