@@ -58,7 +58,7 @@
             background: transparent;
             color: var(--tblr-secondary);
             font-weight: 400;
-            padding-left: 0;
+            padding-inline-start: 0;
         }
 
         .timeline-more-actions {
@@ -79,7 +79,7 @@
         display: flex;
         align-items: center;
         gap: 8px;
-        margin-bottom: 4px;
+        margin-block-end: 4px;
         font-size: 0.75rem;
         line-height: 1.4;
 
@@ -176,7 +176,7 @@
             display: grid;
             grid-template-columns: minmax(0, 1fr) auto;
             align-items: start;
-            padding-bottom: 0.5625rem;
+            padding-block-end: 0.5625rem;
 
             // Room kept for the actions on the first line
             --timeline-actions-room: 0px;
@@ -282,15 +282,15 @@
 
     // Approval status (also on the reason of a refusal)
     &.ITILValidation .timeline-content.waiting {
-        border-left: 10px solid rgb(221, 157, 39);
+        border-inline-start: 10px solid rgb(221, 157, 39);
     }
 
     .timeline-content.accepted {
-        border-left: 10px solid rgb(49, 174, 49);
+        border-inline-start: 10px solid rgb(49, 174, 49);
     }
 
     .timeline-content.refused {
-        border-left: 10px solid rgb(226, 80, 80);
+        border-inline-start: 10px solid rgb(226, 80, 80);
     }
 
     &.Document_Item {
@@ -316,7 +316,7 @@
         gap: 4px;
 
         &:has(> *) {
-            margin-top: 1rem;
+            margin-block-start: 1rem;
         }
 
         .badge {
