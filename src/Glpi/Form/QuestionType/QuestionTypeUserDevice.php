@@ -139,6 +139,14 @@ final class QuestionTypeUserDevice extends AbstractQuestionType implements
                     'mb'                 : '',
                 }
             ) }}
+
+            {% if not init %}
+                <script>
+                    import("/js/modules/Forms/QuestionUserDevice.js").then((m) => {
+                        new m.GlpiFormQuestionTypeUserDevice();
+                    });
+                </script>
+            {% endif %}
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
@@ -154,33 +162,17 @@ TWIG;
     public function renderAdministrationOptionsTemplate(?Question $question): string
     {
         $template = <<<TWIG
-            {% set rand = random() %}
-
-            <div id="is_multiple_devices_{{ rand }}" class="d-flex gap-2">
+            <div class="d-flex gap-2">
                 <label class="form-check form-switch mb-0">
                     <input type="hidden" name="is_multiple_devices" value="0"
                     data-glpi-form-editor-specific-question-extra-data>
                     <input class="form-check-input" type="checkbox" name="is_multiple_devices"
                         value="1" {{ is_multiple_devices ? 'checked' : '' }}
-                        onchange="handleMultipleDevicesCheckbox_{{ rand }}(this)"
+                        data-glpi-form-question-user-device-multiple-toggle
                         data-glpi-form-editor-specific-question-extra-data>
                     <span class="form-check-label">{{ is_multiple_devices_label }}</span>
                 </label>
             </div>
-
-            <script>
-                function handleMultipleDevicesCheckbox_{{ rand }}(input) {
-                    const is_checked = $(input).is(':checked');
-                    const selects = $(input).closest('section[data-glpi-form-editor-question]')
-                        .find('div .devices-dropdown');
-
-                    {# Toggle all selects visibility #}
-                    selects.toggleClass('d-none');
-
-                    {# Handle hidden input for multiple devices #}
-                    selects.find('input[type="hidden"]').prop('disabled', !is_checked);
-                }
-            </script>
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
