@@ -357,11 +357,6 @@ describe('Dashboard', () => {
         await new Promise(process.nextTick);
 
         expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
-        expect(dashboard.fitNumbers).toHaveBeenCalledWith(
-            expect.toSatisfy((widget) => {
-                return widget.attr('id') === 'widget12345';
-            })
-        );
         expect(dashboard.animateNumbers).toHaveBeenCalledWith(
             expect.toSatisfy((widget) => {
                 return widget.attr('id') === 'widget12345';
@@ -690,130 +685,18 @@ describe('Dashboard', () => {
         expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(1);
     });
 
-    test('computeWidth', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
-        $('body').append(`
-            <div class="parent1" style="width: 100px; height: 150px">
-                <div><div class="child-item"></div></div>
-            </div>
-            <div class="parent2" style="width: 200px; height: 100px">
-                <div><div class="child-item"></div></div>
-            </div>
-            <div class="parent3" style="width: 200px; height: 50px">
-                <div><div class="child-item"></div></div>
-            </div>
-        `);
-        const items = $('.child-item');
-
-        dashboard.computeWidth(items);
-
-        // Only computed when width is bigger than height
-        expect(items.eq(0).css('width')).toEqual('0px');
-        expect(items.eq(1).css('width')).toEqual('71.42857142857143%');
-        expect(items.eq(2).css('width')).toEqual('35.714285714285715%');
-    });
-
-    test('resetComputedWidth', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
-        $('body').append(`
-            <div class="parent1" style="width: 100px; height: 150px">
-                <div><div class="child-item"></div></div>
-            </div>
-            <div class="parent2" style="width: 200px; height: 100px">
-                <div><div class="child-item"></div></div>
-            </div>
-            <div class="parent3" style="width: 200px; height: 50px">
-                <div><div class="child-item"></div></div>
-            </div>
-        `);
-        const items = $('.child-item');
-        dashboard.resetComputedWidth(items);
-
-        expect(items.eq(0).css('width')).toEqual('100%');
-        expect(items.eq(1).css('width')).toEqual('100%');
-        expect(items.eq(2).css('width')).toEqual('100%');
-    });
-
     test('fitNumbers', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         dashboard.dash_width = 1000;
-        $('body').append(`
-            <div class="parent1">
-                <div class="big-number big-number-1">
-                    <div class="formatted-number">1</div>
-                    <div class="label">Label 1</div>
-                </div>
-                <div class="summary-numbers summary-numbers-1">
-                    <div class="line">
-                        <div class="formatted-number">1</div>
-                        <div class="label">Label 1</div>
-                    </div>
-                </div>
-            </div>
-        `);
-
-        dashboard.resetComputedWidth = vi.fn().mockImplementation(() => {});
-        dashboard.computeWidth = vi.fn().mockImplementation(() => {});
-        $.fn.fitText = vi.fn().mockImplementation(() => {});
-
-        dashboard.fitNumbers($('.parent1'));
-        expect($.fn.fitText).toHaveBeenNthCalledWith(1, 1.16);
-        expect($.fn.fitText).toHaveBeenNthCalledWith(2, 1.16 - 0.65);
-        expect($.fn.fitText).toHaveBeenNthCalledWith(3, 1.16 - 0.2);
-        expect($.fn.fitText).toHaveBeenNthCalledWith(4, 1.16 - 0.2, {minFontSize: '12px'});
-        expect(dashboard.computeWidth).toHaveBeenNthCalledWith(1, expect.toSatisfy(
-            (item) => {return item.hasClass('formatted-number') && item.closest('.big-number-1').length === 1;}
-        ));
-        expect(dashboard.computeWidth).toHaveBeenNthCalledWith(2, expect.toSatisfy(
-            (item) => {return item.hasClass('label') && item.closest('.big-number-1').length === 1;}
-        ));
-        expect(dashboard.resetComputedWidth).toHaveBeenNthCalledWith(1, expect.toSatisfy(
-            (item) => {return item.hasClass('formatted-number') && item.closest('.big-number-1').length === 1;}
-        ));
-        expect(dashboard.resetComputedWidth).toHaveBeenNthCalledWith(2, expect.toSatisfy(
-            (item) => {return item.hasClass('label') && item.closest('.big-number-1').length === 1;}
-        ));
+        dashboard.fitNumbers();
+        expect(dashboard.element[0].style.getPropertyValue('--dashboard-text-offset')).toBe('1.16');
     });
 
     test('fitNumbers small width', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         dashboard.dash_width = 500;
-        $('body').append(`
-            <div class="parent1">
-                <div class="big-number big-number-1">
-                    <div class="formatted-number">1</div>
-                    <div class="label">Label 1</div>
-                </div>
-                <div class="summary-numbers summary-numbers-1">
-                    <div class="line">
-                        <div class="formatted-number">1</div>
-                        <div class="label">Label 1</div>
-                    </div>
-                </div>
-            </div>
-        `);
-
-        dashboard.resetComputedWidth = vi.fn().mockImplementation(() => {});
-        dashboard.computeWidth = vi.fn().mockImplementation(() => {});
-        $.fn.fitText = vi.fn().mockImplementation(() => {});
-
-        dashboard.fitNumbers($('.parent1'));
-        expect($.fn.fitText).toHaveBeenNthCalledWith(1, 1.8);
-        expect($.fn.fitText).toHaveBeenNthCalledWith(2, 1.8 - 0.65);
-        expect($.fn.fitText).toHaveBeenNthCalledWith(3, 1.8 - 0.2);
-        expect($.fn.fitText).toHaveBeenNthCalledWith(4, 1.8 - 0.2, {minFontSize: '12px'});
-        expect(dashboard.computeWidth).toHaveBeenNthCalledWith(1, expect.toSatisfy(
-            (item) => {return item.hasClass('formatted-number') && item.closest('.big-number-1').length === 1;}
-        ));
-        expect(dashboard.computeWidth).toHaveBeenNthCalledWith(2, expect.toSatisfy(
-            (item) => {return item.hasClass('label') && item.closest('.big-number-1').length === 1;}
-        ));
-        expect(dashboard.resetComputedWidth).toHaveBeenNthCalledWith(1, expect.toSatisfy(
-            (item) => {return item.hasClass('formatted-number') && item.closest('.big-number-1').length === 1;}
-        ));
-        expect(dashboard.resetComputedWidth).toHaveBeenNthCalledWith(2, expect.toSatisfy(
-            (item) => {return item.hasClass('label') && item.closest('.big-number-1').length === 1;}
-        ));
+        dashboard.fitNumbers();
+        expect(dashboard.element[0].style.getPropertyValue('--dashboard-text-offset')).toBe('1.8');
     });
 
     test('animateNumbers Int', () => {
@@ -1818,14 +1701,13 @@ describe('Dashboard', () => {
         expect(dashboard.saveDashboard).toHaveBeenCalled();
     });
 
-    test('Resize and Animate Numbers on GridStack ResizeStop', () => {
+    test('Animate Numbers on GridStack ResizeStop', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.resetComputedWidth = vi.fn().mockImplementation(() => {});
         dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
         dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
         dashboard.grid.dispatchEvent(new Event('resizestop'));
-        expect(dashboard.resetComputedWidth).toHaveBeenCalledTimes(2);
-        expect(dashboard.fitNumbers).toHaveBeenCalledTimes(1);
+        // The numbers follow the card size in CSS
+        expect(dashboard.fitNumbers).not.toHaveBeenCalled();
         expect(dashboard.animateNumbers).toHaveBeenCalledTimes(1);
     });
 

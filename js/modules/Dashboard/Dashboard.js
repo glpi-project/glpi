@@ -206,6 +206,8 @@ class GLPIDashboard {
         // Apply mobile layout if needed on initial load
         window.requestAnimationFrame(() => {
             this.switchColumnLayout(options.cols);
+            // the single column layout changes the ratios of the card numbers
+            this.fitNumbers();
         });
 
         // set the width of the select box to match the selected option
@@ -376,13 +378,7 @@ class GLPIDashboard {
         this.grid.on('resizestop', (event, elem) => {
             this.saveDashboard();
 
-            // Used after "resize.fittext" event to reset our custom width "trick"
-            // See computeWidth() function for more info on the trick
-            this.resetComputedWidth($('body').find('.big-number').find('.formatted-number'));
-            this.resetComputedWidth($('body').find('.big-number').find('.label'));
-
             // animate the number
-            this.fitNumbers($(elem));
             this.animateNumbers($(elem));
         });
 
@@ -581,14 +577,8 @@ class GLPIDashboard {
             this.saveMarkdown($(e.target));
         });
 
-        // FitText() add an event listener that recompute the font size of all
-        // "fittexted" elements of the page.
-        // This means we need to apply our max-width "trick" on this event
-        // See computeWidth() function for more info on the trick
-        $(window).on('resize.fittext', () => {
-            this.computeWidth($('body').find('.big-number').find('.formatted-number'));
-            this.computeWidth($('body').find('.big-number').find('.label'));
-        });
+        // ratios of the card numbers for the dashboard width
+        this.fitNumbers();
 
         // Keep track of instance
         window.GLPI.Dashboard.dashboards[this.rand] = this;
@@ -684,7 +674,6 @@ class GLPIDashboard {
             widget
                 .children('.grid-stack-item-content')
                 .append(card_html);
-            this.fitNumbers(widget);
             this.animateNumbers(widget);
             this.saveDashboard();
         });
@@ -875,46 +864,6 @@ class GLPIDashboard {
     }
 
     /**
-     * FitText() only use the width of an item into consideration (and ignore the height).
-     * This means that if you keep increasing the width of a card without also
-     * increasing the height then your text will overflow the card's height at
-     * some point.
-     *
-     * This function fix this by reducing the available width of the parent DOM
-     * element to ensure a decent height / width ratio will be used by fitText()
-     *
-     * @param {*} items
-     */
-    computeWidth(items) {
-        items.each(function() {
-            // Compute parent dimension
-            const parent_width = $(this).parent().parent().width();
-            const parent_height = $(this).parent().parent().height();
-
-            // Only for "wide" cards
-            if (parent_width > parent_height) {
-                // FitText "ideal" ratio to avoid any overflow
-                // This value was found by using fitText() on a ~1600px wide span and
-                // checking the resulting text height.
-                // It probably wont be the perfect ratio for every possible texts
-                // length but it is a safe ratio to use for our calculation
-                const target_ratio = 0.35;
-
-                // Compute what our desired height would be if we want to match the
-                // target ratio
-                const desired_width = parent_height / target_ratio;
-                const desired_width_percent = (desired_width / parent_width) * 100;
-
-                // Keep half the space since we have two items to display (value and label)
-                const desired_width_percent_half = desired_width_percent / 2;
-
-                // Apply the width
-                $(this).css('width', desired_width_percent_half + '%');
-            }
-        });
-    }
-
-    /**
      * Switch between single-column (mobile) and multi-column (desktop) layout depending on the
      * current grid container width vs the mobile threshold.
      *
@@ -948,52 +897,15 @@ class GLPIDashboard {
     }
 
     /**
-     * Remove the custom width as it should only be used temporarily to 'trick'
-     * fitText into using a different fontSize and should not be applied to the
-     * actual text
-     *
-     * @param {*} items
+     * Card numbers and labels are sized in CSS from their card (see dashboard.scss). Narrow dashboards, and the
+     * single column layout, use larger ratios, set here through `--dashboard-text-offset`.
      */
-    resetComputedWidth(items) {
-        items.each(function() {
-            $(this).css('width', '100%');
-        });
-    }
-
-    fitNumbers(parent_item) {
-        parent_item = parent_item || $('body');
-
-        let text_offset = 1.16;
-
-        // responsive mode
-        if (this.dash_width <= 700
-            || $(this.grid.el).hasClass('gs-1')) {
-            text_offset = 1.8;
+    fitNumbers() {
+        const text_offset = (this.dash_width <= 700 || $(this.grid?.el).hasClass('gs-1')) ? '1.8' : '1.16';
+        if (this.text_offset !== text_offset) {
+            this.text_offset = text_offset;
+            this.element.css('--dashboard-text-offset', text_offset);
         }
-
-        // Set temporary max width to trick fitText and avoid overflow
-        this.computeWidth(parent_item.find('.big-number').find('.formatted-number'));
-        this.computeWidth(parent_item.find('.big-number').find('.label'));
-
-        parent_item
-            .find('.big-number')
-            .find('.formatted-number').fitText(text_offset);
-
-        parent_item
-            .find('.summary-numbers')
-            .find('.formatted-number').fitText(text_offset-0.65);
-
-        parent_item
-            .find('.summary-numbers')
-            .find('.line .label').fitText(text_offset-0.2);
-
-        parent_item
-            .find('.big-number')
-            .find('.label').fitText(text_offset - 0.2, { minFontSize: '12px'});
-
-        // Remove temporary width
-        this.resetComputedWidth(parent_item.find('.big-number').find('.formatted-number'));
-        this.resetComputedWidth(parent_item.find('.big-number').find('.label'));
     }
 
     animateNumbers(parent_item) {
@@ -1223,7 +1135,6 @@ class GLPIDashboard {
             return $.get(CFG_GLPI.root_doc+"/ajax/dashboard.php", data).then((html) => {
                 card.children('.grid-stack-item-content').html(html);
 
-                this.fitNumbers(card);
                 this.animateNumbers(card);
             }, () => {
                 card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle' aria-hidden='true'></i></div>");
@@ -1258,7 +1169,6 @@ class GLPIDashboard {
                         }
                         const card = requested_card.card_el;
                         card.children('.grid-stack-item-content').html(html);
-                        this.fitNumbers(card);
                         this.animateNumbers(card);
                         return false;
                     });
