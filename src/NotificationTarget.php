@@ -980,7 +980,7 @@ class NotificationTarget extends CommonDBChild
         global $DB;
 
         // members/managers of the group allowed on object entity
-        // filter group with 'is_assign' (attribute can be unset after notification)
+        // filter group with 'is_notify'
         $criteria = $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
         $criteria['FROM'] = Group_User::getTable();
         $criteria['INNER JOIN'] = array_merge(

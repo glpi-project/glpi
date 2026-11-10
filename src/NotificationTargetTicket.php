@@ -151,6 +151,103 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     }
 
     #[Override]
+    public function addAdditionalTargets($event = '')
+    {
+        parent::addAdditionalTargets($event);
+
+        if ($event === 'user_mention') {
+            return;
+        }
+
+        $this->addTarget(
+            Notification::CONTRACT_TECH_IN_CHARGE,
+            sprintf(__('Technician in charge of the %s'), Contract::getTypeName(1))
+        );
+        $this->addTarget(
+            Notification::CONTRACT_TECH_GROUP_IN_CHARGE,
+            sprintf(__('Group in charge of the %s'), Contract::getTypeName(1))
+        );
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $options
+     */
+    #[Override]
+    public function addSpecificTargets($data, $options)
+    {
+        if ($data['type'] == Notification::USER_TYPE) {
+            switch ($data['items_id']) {
+                case Notification::CONTRACT_TECH_IN_CHARGE:
+                    $this->addContractTechnicianInCharge();
+                    return;
+
+                case Notification::CONTRACT_TECH_GROUP_IN_CHARGE:
+                    foreach ($this->getLinkedContractsFieldValues('groups_id_tech') as $group_id) {
+                        $this->addForGroup(0, $group_id);
+                    }
+                    return;
+            }
+        }
+
+        parent::addSpecificTargets($data, $options);
+    }
+
+    /**
+     * Add technicians in charge of the contracts linked to the ticket.
+     */
+    private function addContractTechnicianInCharge(): void
+    {
+        global $DB;
+
+        $users_ids = $this->getLinkedContractsFieldValues('users_id_tech');
+        if ($users_ids === []) {
+            return;
+        }
+
+        $criteria = $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
+        $criteria['FROM'] = User::getTable();
+        $criteria['WHERE'][User::getTable() . '.id'] = $users_ids;
+        foreach ($DB->request($criteria) as $data) {
+            $this->addToRecipientsList($data);
+        }
+    }
+
+    /**
+     * Get the non-empty values of a foreign key field of the contracts linked to the ticket.
+     *
+     * @return int[]
+     */
+    private function getLinkedContractsFieldValues(string $field): array
+    {
+        global $DB;
+
+        if (!$this->obj instanceof Ticket || $this->obj->isNewItem()) {
+            return [];
+        }
+
+        $iterator = $DB->request([
+            'SELECT'     => [Contract::getTable() . '.' . $field],
+            'DISTINCT'   => true,
+            'FROM'       => Contract::getTable(),
+            'INNER JOIN' => [
+                Ticket_Contract::getTable() => [
+                    'ON' => [
+                        Ticket_Contract::getTable() => 'contracts_id',
+                        Contract::getTable()        => 'id',
+                    ],
+                ],
+            ],
+            'WHERE'      => [
+                Ticket_Contract::getTable() . '.tickets_id' => $this->obj->getID(),
+                Contract::getTable() . '.' . $field         => ['>', 0],
+            ],
+        ]);
+
+        return array_map(static fn($row) => (int) $row[$field], iterator_to_array($iterator, false));
+    }
+
+    #[Override]
     public function getDataForObject(CommonITILObject $item, array $options, $simple = false)
     {
         // Common ITIL data

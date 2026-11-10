@@ -1135,10 +1135,10 @@ TWIG, $twig_params);
                 <div>
                     <i class='ti ti-corner-left-up mx-3' aria-hidden='true'></i>
                     <button type="button" class="btn btn-link p-0 align-baseline"
-                            onclick="markCheckboxes('lock_form');">{{ check_all_msg }}</button>
+                            data-glpi-mark-checkboxes="lock_form">{{ check_all_msg }}</button>
                     <span>/</span>
                     <button type="button" class="btn btn-link p-0 align-baseline"
-                            onclick="unMarkCheckboxes('lock_form');">{{ uncheck_all_msg }}</button>
+                            data-glpi-unmark-checkboxes="lock_form">{{ uncheck_all_msg }}</button>
                     <button type="submit" name="unlock" class="btn btn-primary">{{ unlock_msg }}</button>
                     <button type="submit" name="purge" class="btn btn-danger">{{ purge_msg }}</button>
                 </div>
