@@ -35,7 +35,11 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
+use Symfony\Component\DomCrawler\Crawler;
 use Ticket;
+
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
 
 /* Test for inc/itilsolution.class.php */
 
@@ -607,6 +611,293 @@ HTML,
         $this->assertTrue($ticket->getFromDB($ticket_id));
         $this->assertSame(\CommonITILValidation::ACCEPTED, (int) $solution->fields['status']);
         $this->assertSame($ticket::CLOSED, (int) $ticket->fields['status']);
+    }
+
+    /**
+     * Ticket of "post-only", assigned to and solved by "tech", who stays logged in.
+     *
+     * @return array{Ticket, \ITILSolution}
+     */
+    private function createSolvedTicket(): array
+    {
+        $this->login('post-only', 'postonly');
+        $ticket = $this->createItem(Ticket::class, [
+            'name'                => 'ticket title',
+            'content'             => 'content',
+            '_users_id_requester' => getItemByTypeName('User', 'post-only', true),
+            '_users_id_assign'    => getItemByTypeName('User', 'tech', true),
+        ]);
+
+        $this->login('tech', 'tech');
+        return [$ticket, $this->addSolution($ticket)];
+    }
+
+    /**
+     * Change of the current user, with its solution, accepted at once.
+     *
+     * @return array{\Change, \ITILSolution}
+     */
+    private function createSolvedChange(): array
+    {
+        $this->login();
+        $change = $this->createItem(\Change::class, [
+            'name'                => 'change title',
+            'content'             => 'content',
+            'entities_id'         => $this->getTestRootEntity(only_id: true),
+            '_users_id_requester' => \Session::getLoginUserID(),
+        ]);
+        $solution = $this->addSolution($change);
+        $this->assertSame(\CommonITILValidation::ACCEPTED, (int) $solution->fields['status']);
+        $this->assertTrue($change->getFromDB($change->getID()));
+        $this->assertTrue($change->isSolved());
+
+        return [$change, $solution];
+    }
+
+    private function addSolution(\CommonITILObject $item): \ITILSolution
+    {
+        return $this->createItem(\ITILSolution::class, [
+            'itemtype' => $item::class,
+            'items_id' => $item->getID(),
+            'content'  => 'a solution',
+        ]);
+    }
+
+    private function addFollowup(\CommonITILObject $item, array $input): \ITILFollowup
+    {
+        return $this->createItem(\ITILFollowup::class, [
+            'itemtype' => $item::class,
+            'items_id' => $item->getID(),
+        ] + $input, ['add_reopen', 'add_close']);
+    }
+
+    private function assertSolutionAnswer(\ITILSolution $solution, int $status, int $itilfollowups_id): void
+    {
+        $this->assertTrue($solution->getFromDB($solution->getID()));
+        $this->assertSame($status, (int) $solution->fields['status']);
+        $this->assertSame($itilfollowups_id, (int) $solution->fields['itilfollowups_id']);
+    }
+
+    public function testSolutionIsLinkedToItsAnswerFollowup()
+    {
+        [$ticket, $refused] = $this->createSolvedTicket();
+
+        $this->login('post-only', 'postonly');
+        $reason = $this->addFollowup($ticket, ['add_reopen' => '1', 'content' => 'The reason of the refusal']);
+        $this->assertSolutionAnswer($refused, \CommonITILValidation::REFUSED, $reason->getID());
+
+        // Another followup does not replace the reason of the refusal
+        $this->addFollowup($ticket, ['content' => 'Another followup']);
+        $this->assertSolutionAnswer($refused, \CommonITILValidation::REFUSED, $reason->getID());
+
+        $this->login('tech', 'tech');
+        $approved = $this->addSolution($ticket);
+        $this->login('post-only', 'postonly');
+        $approval = $this->addFollowup($ticket, ['add_close' => '1']);
+        $this->assertSolutionAnswer($approved, \CommonITILValidation::ACCEPTED, $approval->getID());
+    }
+
+    public function testSolutionIsNotLinkedToAFollowupThatDidNotAnswerIt()
+    {
+        [$ticket, $solution] = $this->createSolvedTicket();
+
+        // Refused by a status change: no reason of the refusal
+        $this->updateItem(Ticket::class, $ticket->getID(), ['status' => Ticket::ASSIGNED]);
+        $this->assertSolutionAnswer($solution, \CommonITILValidation::REFUSED, 0);
+
+        // Neither a later answer of the requester (e.g. a collected mail),
+        // nor an approval sent from an outdated page
+        $this->login('post-only', 'postonly');
+        $this->addFollowup($ticket, ['add_reopen' => '1', 'content' => 'An answer']);
+        $this->addFollowup($ticket, ['add_close' => '1']);
+        $this->assertSolutionAnswer($solution, \CommonITILValidation::REFUSED, 0);
+
+        // Nor a reopening answer of someone who cannot approve the solution (e.g. a mail of the technician)
+        $this->login('tech', 'tech');
+        $solution = $this->addSolution($ticket);
+        $this->addFollowup($ticket, ['add_reopen' => '1', 'content' => 'Thanks']);
+        $this->assertSolutionAnswer($solution, \CommonITILValidation::REFUSED, 0);
+    }
+
+    public function testSolutionIsLinkedToAFollowupReopeningTheItem()
+    {
+        [$ticket, $solution] = $this->createSolvedTicket();
+
+        // Reopened without "add_reopen" (e.g. from the API)
+        $this->login('post-only', 'postonly');
+        $followup = $this->addFollowup($ticket, ['content' => 'It still does not work']);
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertFalse($ticket->isSolved());
+        $this->assertSolutionAnswer($solution, \CommonITILValidation::REFUSED, $followup->getID());
+    }
+
+    public function testSolutionApprovers()
+    {
+        $this->login();
+
+        $postonly_id = getItemByTypeName('User', 'post-only', true);
+        $normal_id   = getItemByTypeName('User', 'normal', true);
+        $tech_id     = getItemByTypeName('User', 'tech', true);
+        $group = $this->createItem(\Group::class, ['name' => 'requester group']);
+        $this->createItem(\Group_User::class, ['groups_id' => $group->getID(), 'users_id' => $normal_id]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'                 => 'ticket title',
+            'content'              => 'content',
+            '_users_id_requester'  => $postonly_id,
+            '_groups_id_requester' => $group->getID(),
+        ]);
+
+        $approvers = $ticket->getSolutionApprovers();
+        $this->assertContains($postonly_id, $approvers['users']);
+        $this->assertSame([$group->getID()], $approvers['groups']);
+
+        $this->assertTrue($ticket->canUserApproveSolution($postonly_id));
+        $this->assertTrue($ticket->canUserApproveSolution($normal_id));
+        $this->assertFalse($ticket->canUserApproveSolution($tech_id));
+        $this->assertFalse($ticket->canUserApproveSolution(0));
+
+        // Members of a parent group with recursive membership
+        $parent = $this->createItem(\Group::class, ['name' => 'parent group', 'recursive_membership' => 1]);
+        $this->createItem(\Group_User::class, ['groups_id' => $parent->getID(), 'users_id' => $tech_id]);
+        $this->assertFalse($ticket->canUserApproveSolution($tech_id));
+        $this->updateItem(\Group::class, $group->getID(), ['groups_id' => $parent->getID()]);
+        $this->assertTrue($ticket->canUserApproveSolution($tech_id));
+
+        $this->updateItem(\Group::class, $parent->getID(), ['recursive_membership' => 0]);
+        $this->assertFalse($ticket->canUserApproveSolution($tech_id));
+    }
+
+    public function testRefusalOfAnAcceptedSolutionIsLinked()
+    {
+        [$change, $solution] = $this->createSolvedChange();
+
+        $reason = $this->addFollowup($change, ['add_reopen' => '1', 'content' => 'The reason of the refusal']);
+        $this->assertSolutionAnswer($solution, \CommonITILValidation::REFUSED, $reason->getID());
+
+        // Unlinked once the answer is purged
+        $this->deleteItem(\ITILFollowup::class, $reason->getID(), true);
+        $this->assertTrue($solution->getFromDB($solution->getID()));
+        $this->assertNull($solution->fields['itilfollowups_id']);
+    }
+
+    public function testReopeningOfAClosedItemIsNotLinked()
+    {
+        [$ticket, $solution] = $this->createSolvedTicket();
+
+        // Closed without approval (e.g. automatic closure): the solution stays waiting
+        $this->updateItem(Ticket::class, $ticket->getID(), ['status' => Ticket::CLOSED]);
+        $this->assertSolutionAnswer($solution, \CommonITILValidation::WAITING, 0);
+
+        $this->login('post-only', 'postonly');
+        $this->addFollowup($ticket, ['add_reopen' => '1', 'content' => 'Another problem']);
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertFalse($ticket->isClosed());
+        $this->assertSolutionAnswer($solution, \CommonITILValidation::REFUSED, 0);
+    }
+
+    public function testTriggerAloneDoesNotUpdateTheItem()
+    {
+        $this->login();
+        $ticket = $this->createItem(Ticket::class, [
+            'name'    => 'ticket title',
+            'content' => 'content',
+        ]);
+        $followup = $this->addFollowup($ticket, ['content' => 'a followup']);
+
+        // Status not allowed for this user: nothing is left to update
+        $this->login('post-only', 'postonly');
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertFalse($ticket->update([
+            'id'       => $ticket->getID(),
+            'status'   => Ticket::WAITING,
+            '_trigger' => $followup,
+        ]));
+    }
+
+    private function renderForm(\CommonITILObject $item): Crawler
+    {
+        ob_start();
+        $item->showForm($item->getID());
+        return new Crawler(ob_get_clean());
+    }
+
+    public function testApprovalFormIsDisplayedForAnAcceptedSolution()
+    {
+        [$change, $solution] = $this->createSolvedChange();
+
+        $form = $this->renderForm($change)->filter('#ITILSolution_' . $solution->getID() . ' [data-testid="solution-approval-form"]');
+        $this->assertCount(1, $form);
+        $this->assertCount(1, $form->filter('button[name="add_close"]'));
+        $this->assertCount(1, $form->filter('button[name="add_reopen"]'));
+    }
+
+    public function testApprovalFormIsDisplayedOnTheSolutionItApproves()
+    {
+        global $DB;
+
+        [$ticket, $first] = $this->createSolvedTicket();
+        $this->login('post-only', 'postonly');
+        $this->addFollowup($ticket, ['add_reopen' => '1', 'content' => 'It still does not work']);
+        $this->login('tech', 'tech');
+        $second = $this->addSolution($ticket);
+
+        // The approval answers the most recent solution, which is not always the last one added
+        $DB->update(\ITILSolution::getTable(), ['date_creation' => date('Y-m-d H:i:s', strtotime('+1 hour'))], ['id' => $first->getID()]);
+
+        $this->login('post-only', 'postonly');
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $crawler = $this->renderForm($ticket);
+        $this->assertCount(1, $crawler->filter('[data-testid="solution-approval-form"]'));
+        $this->assertCount(1, $crawler->filter('#ITILSolution_' . $first->getID() . ' [data-testid="solution-approval-form"]'));
+    }
+
+    public function testApprovalFormIsDisplayedForAnItemSolvedWithoutSolution()
+    {
+        $this->login('post-only', 'postonly');
+        $ticket = $this->createItem(Ticket::class, [
+            'name'                => 'ticket title',
+            'content'             => 'content',
+            '_users_id_requester' => getItemByTypeName('User', 'post-only', true),
+        ]);
+        $this->login('tech', 'tech');
+        $this->updateItem(Ticket::class, $ticket->getID(), ['status' => Ticket::SOLVED]);
+
+        $this->login('post-only', 'postonly');
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $form = $this->renderForm($ticket)->filter('[data-testid="solution-approval-form"]');
+        $this->assertCount(1, $form);
+        $this->assertCount(1, $form->filter('button[name="add_close"]'));
+        $this->assertCount(1, $form->filter('button[name="add_reopen"]'));
+    }
+
+    public function testSolutionApproversAreAnonymizedInTheHelpdesk()
+    {
+        // The configuration of the active entity of the requester applies
+        $this->login('post-only', 'postonly');
+        $entities_id = \Session::getActiveEntity();
+        $this->login();
+        $this->updateItem(\Entity::class, $entities_id, [
+            'anonymize_support_agents' => \Entity::ANONYMIZE_USE_GENERIC,
+        ]);
+
+        // Written by the technician, who can approve the solution
+        $this->login('tech', 'tech');
+        $ticket = $this->createItem(Ticket::class, [
+            'name'                => 'ticket title',
+            'content'             => 'content',
+            '_users_id_requester' => getItemByTypeName('User', 'post-only', true),
+        ]);
+        $this->addSolution($ticket);
+        $this->assertContains(getItemByTypeName('User', 'tech', true), $ticket->getSolutionApprovers()['users']);
+
+        $this->login('post-only', 'postonly');
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $approval = $this->renderForm($ticket)->filter('[data-testid="solution-approval"]')->text();
+        $this->assertStringContainsString('Helpdesk user', $approval);
+        $this->assertStringNotContainsString('tech', $approval);
     }
 
     public function testAddEmptyContent()

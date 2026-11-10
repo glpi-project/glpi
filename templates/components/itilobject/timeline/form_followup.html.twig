@@ -55,6 +55,8 @@
          </div>
 
          <div class="timeline-badges">
+            {{ private_badge }}
+
             {% if entry_i['requesttypes_id'] %}
                <span class="badge bg-blue-lt" title="{{ __('Source of followup') }}">
                   <i class="ti ti-inbox me-1" aria-hidden="true"></i>
@@ -87,6 +89,8 @@
             {% endif %}
 
             {{ include('components/itilobject/timeline/pending_reasons_messages.html.twig') }}
+
+            {{ last_update }}
          </div>
       </div>
    {% else %}

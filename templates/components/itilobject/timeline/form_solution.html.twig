@@ -63,17 +63,55 @@
                </span>
             {% endif %}
 
-            {% if entry_i['status'] != constant('CommonITILValidation::WAITING') and entry_i['status'] != constant('CommonITILValidation::NONE') %}
-               <span class="badge bg-blue-lt">
-                  {% set action = entry_i['status'] == constant('CommonITILValidation::ACCEPTED') ? __('Accepted') : _x('validation', 'Refused') %}
-                  {{ __('%1$s on %2$s by %3$s')|format(
-                     action,
-                     (entry_i['date_approval']|formatted_datetime),
-                     get_item_link('User', entry_i['users_id_approval'], {'enable_anonymization': true})
-                  )|raw }}
+            {% if entry_i['status'] in [constant('CommonITILValidation::ACCEPTED'), constant('CommonITILValidation::REFUSED')] %}
+               {% set is_accepted = entry_i['status'] == constant('CommonITILValidation::ACCEPTED') %}
+               {% set action = is_accepted ? __('Accepted') : _x('validation', 'Refused') %}
+               <span class="badge {{ is_accepted ? 'bg-success-lt' : 'bg-danger-lt' }}" data-testid="solution-approval-status">
+                  <i class="ti {{ is_accepted ? 'ti-check' : 'ti-x' }} me-1" aria-hidden="true"></i>
+                  {% if entry_i['users_id_approval'] > 0 %}
+                     {{ __('%1$s on %2$s by %3$s')|format(
+                        action,
+                        entry_i['date_approval']|formatted_datetime,
+                        get_item_link('User', entry_i['users_id_approval'], {'enable_anonymization': true})
+                     )|raw }}
+                  {% else %}
+                     {{ __('%1$s on %2$s')|format(action, entry_i['date_approval']|formatted_datetime) }}
+                  {% endif %}
                </span>
             {% endif %}
+
+            {{ last_update }}
          </div>
+
+         {# A solution of a closed item can stay waiting (closed without approval) #}
+         {% set is_waiting_approval = entry_i['status'] == constant('CommonITILValidation::WAITING') and item.isSolved() %}
+         {% set show_approval_form = entry_i['id'] == approval_solution_id %}
+         {% if is_waiting_approval or show_approval_form %}
+            <div class="solution-approval mt-3 pt-2 border-top" data-testid="solution-approval">
+               {% if is_waiting_approval %}
+                  <div class="d-flex flex-wrap align-items-center gap-2">
+                     <span class="badge bg-yellow-lt">
+                        <i class="ti ti-hourglass me-1" aria-hidden="true"></i>
+                        {{ __('Waiting for approval') }}
+                     </span>
+                     {% set approvers = item.getSolutionApprovers() %}
+                     {# Anonymized in the helpdesk, as the other actors of the timeline #}
+                     {% set approvers_links = approvers['users']|map((users_id) => get_item_link('User', users_id, {'enable_anonymization': true})) %}
+                     {% set approvers_links = approvers_links|merge(approvers['groups']|map((groups_id) => get_item_link('Group', groups_id, {'enable_anonymization': true}))) %}
+                     {% if approvers_links is not empty %}
+                        <span class="small text-secondary">{{ __('By %s')|format(approvers_links|join(', '))|raw }}</span>
+                     {% endif %}
+                  </div>
+               {% endif %}
+
+               {% if show_approval_form %}
+                  {{ include('components/itilobject/timeline/solution_approval_form.html.twig', {
+                     'rand': entry_rand,
+                     'with_separator': is_waiting_approval,
+                  }) }}
+               {% endif %}
+            </div>
+         {% endif %}
       </div>
    {% else %}
       <div class="itilsolution">

@@ -32,17 +32,84 @@
  */
 
 .timeline-item {
-    min-width: 65%;
+    // Cards fit their content, up to the timeline width
+    min-width: 0;
+    max-width: 100%;
 
+    @include media-breakpoint-up(sm) {
+        > .row {
+            flex-wrap: nowrap;
+        }
+
+        .content-part {
+            flex: 0 1 auto;
+            width: auto;
+            min-width: 0;
+        }
+    }
+
+    // Actions in the top end corner
     .timeline-header {
-        margin-top: -0.5rem;
-        margin-bottom: 1rem;
+        float: inline-end;
+        gap: 2px;
+        margin-block: -1px 0.25rem;
+        margin-inline: 0.75rem 0;
 
-        .timeline-item-buttons {
-            .is-private {
-                color: var(--glpi-timeline-badge-fg);
+        .creator .badge {
+            background: transparent;
+            color: var(--tblr-secondary);
+            font-weight: 400;
+            padding-inline-start: 0;
+        }
+
+        .timeline-more-actions {
+            width: 22px;
+            height: 22px;
+            min-height: 0;
+            padding: 0;
+            justify-content: center;
+
+            i {
+                margin: 0;
+                font-size: 1rem;
             }
         }
+    }
+
+    .timeline-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-block-end: 4px;
+        font-size: 0.75rem;
+        line-height: 1.4;
+
+        &.timeline-meta-right {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-author {
+            font-weight: 600;
+
+            a {
+                color: var(--tblr-body-color);
+            }
+
+            .ti-user {
+                display: none;
+            }
+        }
+
+        .timeline-time {
+            color: var(--tblr-secondary);
+        }
+    }
+
+    .user-part .avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50% !important; // Override `.rounded` utility class
+        font-size: 0.75rem;
     }
 
     .todo-list-state {
@@ -102,215 +169,138 @@
     .timeline-content {
         position: relative;
         max-width: 820px;
-        min-width: 100%;
+        min-width: 0;
         overflow-wrap: anywhere;
 
-        // Square only the corner the notch points to: top-left for left-aligned
-        // items, top-right for right-aligned (t-right) ones. Squaring top-left
-        // unconditionally left t-right bubbles with two squared top corners.
-        &:not(.t-right) {
-            border-top-left-radius: 0;
+        // Actions in the top end corner, content below them on the whole width
+        > .card-body {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: start;
+            padding-block-end: 0.5625rem;
+
+            // Room kept for the actions on the first line
+            --timeline-actions-room: 0px;
+
+            &:has(> .timeline-header .timeline-more-actions) {
+                --timeline-actions-room: 34px;
+            }
+
+            > *,
+            > .read-only-content:has(> .rich_text_container, > .validation-content) > * {
+                grid-column: 1 / -1;
+            }
+
+            > .timeline-header {
+                grid-column: 2;
+                grid-row: 1;
+                position: relative;
+                z-index: 1;
+            }
+
+            > .read-only-content:has(> .rich_text_container, > .validation-content) {
+                display: contents;
+            }
+
+            > .timeline-refusal-reason {
+                grid-column: 1;
+                grid-row: 1;
+            }
         }
 
-        @include media-breakpoint-up(sm) {
-            &::before {
-                content: " ";
-                position: absolute;
-                width: 0;
-                height: 0;
-                left: -14px;
-                right: auto;
-                top: -1px;
-                bottom: auto;
-                border: 7px dashed transparent;
-            }
+        .read-only-content > :last-child,
+        .rich_text_container > :last-child {
+            margin-block-end: 0;
+        }
 
-            &::after {
-                content: " ";
-                position: absolute;
-                width: 0;
-                height: 0;
-                left: -12px;
-                right: auto;
-                top: 0;
-                bottom: auto;
-                border: 6px dashed transparent;
-            }
+        // Match the smaller padding of the card
+        .card-footer.mb-n3 {
+            margin-block-end: -0.5625rem !important;
+            border-end-start-radius: 11px;
+            border-end-end-radius: 11px;
+        }
 
-            &.t-right {
-                border-top-right-radius: 0;
+        background-color: var(--tblr-body-bg);
+        color: var(--tblr-body-color);
+        border: 1px solid var(--tblr-border-color);
 
-                &::before {
-                    left: auto;
-                    right: -14px;
-                }
+        // Square corner on the avatar side
+        border-radius: 12px;
+        border-start-start-radius: 2px;
 
-                &::after {
-                    left: auto;
-                    right: -12px;
-                }
-            }
+        // A shadow at rest makes the bottom border look thicker
+        box-shadow: none;
+        transition: box-shadow 150ms ease;
+
+        &:hover {
+            box-shadow: 0 4px 12px rgb(16, 25, 35, 8%);
+        }
+
+        &.t-right {
+            border-start-start-radius: 12px;
+            border-start-end-radius: 2px;
+        }
+    }
+
+    // The title bar of the description takes the whole width, the actions float next to it
+    &.ITILContent .timeline-content > .card-body {
+        display: flow-root;
+    }
+
+    // The text starts on the line of the actions, unless a badge is already there
+    &:not(.ITILContent) .timeline-content > .card-body:not(:has(> .timeline-refusal-reason, > .timeline-header .creator > .badge)) > .read-only-content > :is(.rich_text_container, .validation-content):first-child {
+        grid-row: 1;
+
+        &::before {
+            content: "";
+            float: inline-end;
+            width: var(--timeline-actions-room);
+            height: 20px;
+        }
+
+        // Own formatting context, so that the float counts in the card width and a single line does not wrap
+        > :is(p, div, ul, ol, blockquote, pre, h1, h2, h3, h4, h5, h6):first-child {
+            display: flow-root;
         }
     }
 
     &.private-item {
         .timeline-content {
             border-style: dashed;
-            border-width: 3px;
-
-            &::before {
-                top: -3px;
-            }
-
-            &::after {
-                left: -7px;
-            }
-
-            &.t-right {
-                &::after {
-                    left: auto;
-                    right: -7px;
-                }
-            }
         }
     }
 
-    &:not(.private-item) {
-        .timeline-content {
-            padding: 2px; // compensate border
+    @each $type, $palette in (ITILContent: itil-content, ITILValidation: itil-content, ITILFollowup: fup, ITILTask: task, ITILSolution: solution) {
+        &.#{$type} .timeline-content {
+            border-color: var(--glpi-timeline-#{$palette}-border-color);
+            background-color: var(--glpi-timeline-#{$palette}-bg);
+            color: var(--glpi-timeline-#{$palette}-fg);
         }
     }
 
-    &.ITILContent,
-    &.ITILValidation {
-        .timeline-content {
-            background-color: var(--glpi-timeline-itil-content-bg);
-            color: var(--glpi-timeline-itil-content-fg);
-            border-color: var(--glpi-timeline-itil-content-border-color);
-
-            &::before {
-                border-color: var(--glpi-timeline-itil-content-border-color) var(--glpi-timeline-itil-content-border-color) transparent transparent;
-            }
-
-            &::after {
-                border-color: var(--glpi-timeline-itil-content-bg) var(--glpi-timeline-itil-content-bg) transparent transparent;
-            }
-
-            &.t-right::before {
-                border-color: var(--glpi-timeline-itil-content-border-color) transparent transparent var(--glpi-timeline-itil-content-border-color);
-            }
-
-            &.t-right::after {
-                border-color: var(--glpi-timeline-itil-content-bg) transparent transparent var(--glpi-timeline-itil-content-bg);
-            }
-        }
+    // The palette blue is too strong for a whole card
+    &.ITILSolution .timeline-content {
+        background-color: color-mix(in srgb, var(--glpi-timeline-solution-bg) 50%, var(--tblr-bg-surface));
     }
 
-    &.ITILFollowup,
-    &.KnowbaseItemComment {
-        .timeline-content {
-            background-color: var(--glpi-timeline-fup-bg);
-            color: var(--glpi-timeline-fup-fg);
-            border-color: var(--glpi-timeline-fup-border-color);
-            background-image: url("../pics/timeline/followup.png");
-            background-repeat: no-repeat;
-
-            &::before {
-                border-color: var(--glpi-timeline-fup-border-color) var(--glpi-timeline-fup-border-color) transparent transparent;
-            }
-
-            &::after {
-                border-color: var(--glpi-timeline-fup-bg) var(--glpi-timeline-fup-bg) transparent transparent;
-            }
-
-            &.t-right::before {
-                border-color: var(--glpi-timeline-fup-border-color) transparent transparent var(--glpi-timeline-fup-border-color);
-            }
-
-            &.t-right::after {
-                border-color: var(--glpi-timeline-fup-bg) transparent transparent var(--glpi-timeline-fup-bg);
-            }
-        }
+    // Approval status (also on the reason of a refusal)
+    &.ITILValidation .timeline-content.waiting {
+        border-inline-start: 10px solid rgb(221, 157, 39);
     }
 
-    &.ITILTask {
-        .timeline-content {
-            background-color: var(--glpi-timeline-task-bg);
-            color: var(--glpi-timeline-task-fg);
-            border-color: var(--glpi-timeline-task-border-color);
-            background-image: url("../pics/timeline/task.png");
-            background-repeat: no-repeat;
-
-            &::before {
-                border-color: var(--glpi-timeline-task-border-color) var(--glpi-timeline-task-border-color) transparent transparent;
-            }
-
-            &::after {
-                border-color: var(--glpi-timeline-task-bg) var(--glpi-timeline-task-bg) transparent transparent;
-            }
-
-            &.t-right::before {
-                border-color: var(--glpi-timeline-task-border-color) transparent transparent var(--glpi-timeline-task-border-color);
-            }
-
-            &.t-right::after {
-                border-color: var(--glpi-timeline-task-bg) transparent transparent var(--glpi-timeline-task-bg);
-            }
-        }
+    .timeline-content.accepted {
+        border-inline-start: 10px solid rgb(49, 174, 49);
     }
 
-    &.ITILSolution {
-        .timeline-content {
-            background-color: var(--glpi-timeline-solution-bg);
-            color: var(--glpi-timeline-solution-fg);
-            border-color: var(--glpi-timeline-solution-border-color);
-            border-left: 1em transparent solid;
-
-            .solimg {
-                position: absolute;
-                color: rgb(66, 91, 100, 10%);
-                pointer-events: none;
-            }
-
-            &::before {
-                border-color: var(--glpi-timeline-solution-border-color) var(--glpi-timeline-solution-border-color) transparent transparent;
-            }
-
-            &::after {
-                border-color: var(--glpi-timeline-solution-bg) var(--glpi-timeline-solution-bg) transparent transparent;
-            }
-
-            &.t-right::before {
-                border-color: var(--glpi-timeline-solution-border-color) transparent transparent var(--glpi-timeline-solution-border-color);
-            }
-
-            &.t-right::after {
-                border-color: var(--glpi-timeline-solution-bg) transparent transparent var(--glpi-timeline-solution-bg);
-            }
-        }
-    }
-
-    &.ITILValidation,
-    &.ITILSolution {
-        .timeline-content {
-            &.waiting {
-                border-left-color: rgb(221, 157, 39);
-            }
-
-            &.accepted {
-                border-left: 1em rgb(52, 143, 52) solid;
-            }
-
-            &.refused {
-                border-left: 1em rgb(226, 80, 80) solid;
-            }
-        }
+    .timeline-content.refused {
+        border-inline-start: 10px solid rgb(226, 80, 80);
     }
 
     &.Document_Item {
         .timeline-content {
             border: 0;
             box-shadow: none;
+            background-color: transparent;
         }
 
         &#new-Document_Item-block {
@@ -322,57 +312,33 @@
         }
     }
 
-    &.Log,
-    &.ITILReminder {
-        width: 100%;
-
-        .user-part {
-            display: none !important;
-        }
-
-        .content-part {
-            flex-direction: row-reverse !important;
-            justify-content: flex-end;
-            margin-left: 75px;
-            margin-right: 83px;
-
-            .timeline-content {
-                border: 0;
-                box-shadow: none;
-                margin-top: 0 !important;
-                flex-grow: 0 !important;
-                background: transparent;
-
-                .card-body {
-                    padding: 0;
-                    display: flex;
-                    flex-direction: row-reverse;
-
-                    .timeline-header {
-                        margin-left: 1rem;
-                        margin-top: 0;
-                        margin-bottom: 0;
-                    }
-                }
-            }
-
-            .user_link {
-                display: none !important;
-            }
-
-            .itil-date-creation {
-                margin-left: 1rem !important;
-            }
-        }
-    }
-
     .timeline-badges {
-        margin-bottom: -0.75rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 4px;
+
+        &:has(> *) {
+            margin-block-start: 1rem;
+        }
 
         .badge {
             @include tabler-badge-fix;
 
             display: inline-block;
+        }
+
+        .timeline-last-update {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0 4px;
+            font-size: 0.75rem;
+            color: var(--tblr-secondary);
+
+            a {
+                color: inherit;
+            }
         }
     }
 
@@ -386,6 +352,7 @@
     }
 }
 
+// Answer forms, opened at the end of the timeline
 #new-itilobject-form {
     width: 100%;
 
@@ -395,11 +362,16 @@
         transition: none;
     }
 
-    .timeline-item {
-        &.ITILSolution {
-            .timeline-content {
-                border-left: 1px solid transparent;
-            }
+    > .timeline-item {
+        width: 100%;
+
+        .content-part {
+            flex: 1 1 auto;
+        }
+
+        .timeline-content {
+            width: 100%;
+            max-width: none;
         }
     }
 }
@@ -447,7 +419,6 @@
             &.ITILTask.info,
             &.Document_Item,
             &.Log,
-            &.KnowbaseItemComment,
             &.ITILReminder {
                 display: none;
             }
@@ -494,7 +465,10 @@
                     position: absolute;
                     left: -45px;
                     display: none;
-                    flex-direction: column;
+
+                    // Approve on top, it comes after Refuse in the form
+                    flex-direction: column-reverse;
+                    gap: 0;
                     top: 3px;
                     width: 30px;
 
@@ -532,7 +506,8 @@
             }
 
             .creator,
-            .user-part {
+            .user-part,
+            .timeline-meta {
                 display: none !important;
             }
 
@@ -543,10 +518,10 @@
                 .timeline-item-buttons {
                     flex-direction: column;
                     margin-top: 1rem;
+                }
 
-                    .is-private {
-                        display: none;
-                    }
+                .timeline-private-badge {
+                    display: none;
                 }
 
                 .timeline-content {
@@ -568,6 +543,9 @@
                         }
 
                         .read-only-content {
+                            // Not split into the grid of the cards
+                            display: block;
+
                             .state {
                                 display: none;
                             }
@@ -586,11 +564,6 @@
                                 display: none;
                             }
                         }
-                    }
-
-                    &::before,
-                    &::after {
-                        display: none;
                     }
                 }
 
@@ -645,4 +618,95 @@ ul.legacy-timeline-actions {
     .form-button-separator {
         border-top: 0 !important;
     }
+}
+
+.timeline-day-separator {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin-block-end: 1rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--tblr-secondary);
+
+    &::before,
+    &::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background-color: var(--tblr-border-color);
+    }
+
+    .timeline-todo-list & {
+        display: none;
+    }
+}
+
+#itil-object-container .itil-timeline {
+    align-self: center;
+    width: 100%;
+
+    // Side margins on ultrawide screens only
+    @media (min-width: 2400px) and (min-aspect-ratio: 21 / 9) {
+        max-width: max(860px, 80%);
+    }
+}
+
+// History entries
+.timeline-item.timeline-log {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 2px 6px;
+    align-self: center;
+    width: auto;
+    max-width: 90%;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    text-align: center;
+    color: var(--tblr-secondary);
+
+    &:hover {
+        background-color: var(--glpi-hover-bg);
+    }
+
+    .timeline-log-content {
+        i {
+            font-size: 0.875rem;
+            vertical-align: -2px;
+        }
+
+        del {
+            color: var(--tblr-secondary);
+            opacity: 0.8;
+        }
+
+        ins {
+            text-decoration: none;
+            font-weight: 500;
+            color: var(--tblr-body-color);
+        }
+    }
+
+    .timeline-log-meta {
+        display: inline-flex;
+        gap: 6px;
+        color: var(--tblr-secondary);
+        opacity: 0.8;
+
+        a {
+            color: inherit;
+        }
+    }
+}
+
+// Answer to an approval request or to a solution: Refuse, then Approve, at the end
+.timeline-item .validation-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
 }

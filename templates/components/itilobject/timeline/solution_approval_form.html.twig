@@ -1,0 +1,72 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{# Same form as the answer to an approval request: always open, the comment is required to refuse #}
+<form method="post" action="{{ 'ITILFollowup'|itemtype_form_path }}" class="mt-2" data-submit-once data-testid="solution-approval-form">
+   <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
+   <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
+   <input type="hidden" name="requesttypes_id" value="0" />
+
+   {% if with_separator ?? false %}
+      <hr class="my-2" />
+   {% endif %}
+   <div class="mb-3 comment-part">
+      {{ fields.textareaField(
+         'content',
+         '',
+         _n('Comment', 'Comments', 1),
+         {
+            'full_width': true,
+            'helper': __('Optional when approved'),
+            'enable_richtext': true,
+            'enable_fileupload': true,
+            'entities_id': item.fields['entities_id'],
+            'is_horizontal': false,
+            'rand': rand,
+         }
+      ) }}
+   </div>
+
+   <hr class="my-2" />
+   <div class="validation-footer">
+      <button type="submit" class="btn btn-outline-danger" name="add_reopen">
+         <i class="ti ti-thumb-down" aria-hidden="true"></i>
+         <span class="validation-label">{{ __('Refuse') }}</span>
+      </button>
+      <button type="submit" class="btn btn-outline-success" name="add_close">
+         <i class="ti ti-thumb-up" aria-hidden="true"></i>
+         <span class="validation-label">{{ __('Approve') }}</span>
+      </button>
+   </div>
+</form>
