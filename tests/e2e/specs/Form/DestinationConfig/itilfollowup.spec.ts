@@ -72,6 +72,16 @@ test.describe('ITILFollowup configuration', () => {
         await expect(followup_dropdown).toHaveText('Specific Followup templates');
         await expect(specific_dropdown).toContainText(followup_template_name);
 
+        // Switch to "Specific Followup content"
+        await form_page.doSetDropdownValue(followup_dropdown, 'Specific Followup content');
+        await expect(form_page.getDropdownByLabel('Select followup templates...', config)).toBeHidden();
+        const content = form_page.getRichTextByLabel('Followup content', config);
+        await content.click();
+        await content.pressSequentially('My followup content');
+        await form_page.doSaveDestination();
+        await expect(followup_dropdown).toHaveText('Specific Followup content');
+        await expect(content).toHaveText('My followup content');
+
         // Switch to "No Followup"
         await form_page.doSetDropdownValue(followup_dropdown, 'No Followup');
         await form_page.doSaveDestination();
@@ -96,5 +106,28 @@ test.describe('ITILFollowup configuration', () => {
 
         // Check if followup template content is displayed
         await expect(page.getByText('My ITILFollowup template content')).toBeVisible();
+    });
+
+    test('Can create ticket using specific followup content with form tags', async ({ page }) => {
+        const config = form_page.getRegion('Followups configuration');
+        const followup_dropdown = form_page.getStrategyDropdown(config);
+
+        await form_page.doSetDropdownValue(followup_dropdown, 'Specific Followup content');
+        const content = form_page.getRichTextByLabel('Followup content', config);
+        await content.click();
+        await content.pressSequentially('ENTREE VALIDEE #');
+        await page.getByRole('menuitem', { name: 'Answer: My test question' }).click();
+        await form_page.doSaveDestination();
+
+        // Go to preview
+        await page.getByRole('tab', { name: 'Form', exact: true }).click();
+        await form_page.doPreviewForm();
+        await page.getByRole('textbox', { name: 'My test question' }).fill('My answer');
+        await form_page.getButton('Submit').click();
+        // Check that the user is redirected to the created ticket
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
+
+        // Check if followup content is displayed with the answer
+        await expect(page.getByText('ENTREE VALIDEE My answer')).toBeVisible();
     });
 });
