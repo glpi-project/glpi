@@ -233,6 +233,7 @@ class ITILTemplateTest extends DbTestCase
                     155 => 'Time to own',
                     193 => 'Contract',
                     87 => 'External ID',
+                    199 => 'SLA status',
                 ],
             ], [
                 'Change',

@@ -527,6 +527,17 @@ class RuleAction extends CommonDBChild
                             if (isset($actions[$options["field"]]['condition'])) {
                                 $param['condition'] = $actions[$options["field"]]['condition'];
                             }
+                            if (!empty($actions[$options["field"]]['entity_from_rule'])) {
+                                $rule = getItemForItemtype($options['sub_type']);
+                                if (
+                                    $rule instanceof CommonDBTM
+                                    && $rule->isEntityAssign()
+                                    && $rule->getFromDB((int) ($options[$rule::getForeignKeyField()] ?? 0))
+                                ) {
+                                    $param['entity']      = $rule->getEntityID();
+                                    $param['entity_sons'] = $rule->isRecursive();
+                                }
+                            }
                             Dropdown::show(getItemTypeForTable($table), $param);
                             $display = true;
                             break;
