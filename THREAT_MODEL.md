@@ -33,7 +33,7 @@ Supported optional features and nondefault settings are in scope. List any prote
 
 | Reported behavior | What to show |
 | --- | --- |
-| An RSS feed or integration makes an outbound request | Fetching configured URLs is expected. Show unauthorized access or a bypass of URL restrictions (`GLPI_SERVERSIDE_URL_ALLOWLIST` where used). A callback alone is insufficient. |
+| An RSS feed or integration makes an outbound request | Fetching configured URLs is expected. Show unauthorized access or a bypass of URL restrictions (`GLPI_SERVERSIDE_URL_ALLOWED_PRIVATE_NETWORKS_CONTEXTS` lists the contexts allowed to make server-side requests to private networks). A callback alone is insufficient. |
 | Reflected XSS requires a modified `Referer` header | Show how the attacker sets the header in the victim's browser or the page is cached and served to other users; editing your own request is insufficient. |
 | An uploaded HTML or PDF document runs JavaScript | Show access to GLPI data or actions outside the viewer's sandbox. Script execution inside the sandbox is insufficient. |
 | An upload accepts an executable file extension | Show how the supported runtime executes the file on the server. A missing blocklist entry does not prove code execution. |
