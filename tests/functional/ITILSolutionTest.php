@@ -817,19 +817,87 @@ HTML,
         ]));
     }
 
+    private function renderForm(\CommonITILObject $item): Crawler
+    {
+        ob_start();
+        $item->showForm($item->getID());
+        return new Crawler(ob_get_clean());
+    }
+
     public function testApprovalFormIsDisplayedForAnAcceptedSolution()
     {
         [$change, $solution] = $this->createSolvedChange();
 
-        ob_start();
-        $change->showForm($change->getID());
-        $html = ob_get_clean();
-
-        $crawler = new Crawler($html);
-        $form = $crawler->filter('#ITILSolution_' . $solution->getID() . ' [data-testid="solution-approval-form"]');
+        $form = $this->renderForm($change)->filter('#ITILSolution_' . $solution->getID() . ' [data-testid="solution-approval-form"]');
         $this->assertCount(1, $form);
         $this->assertCount(1, $form->filter('button[name="add_close"]'));
         $this->assertCount(1, $form->filter('button[name="add_reopen"]'));
+    }
+
+    public function testApprovalFormIsDisplayedOnTheSolutionItApproves()
+    {
+        global $DB;
+
+        [$ticket, $first] = $this->createSolvedTicket();
+        $this->login('post-only', 'postonly');
+        $this->addFollowup($ticket, ['add_reopen' => '1', 'content' => 'It still does not work']);
+        $this->login('tech', 'tech');
+        $second = $this->addSolution($ticket);
+
+        // The approval answers the most recent solution, which is not always the last one added
+        $DB->update(\ITILSolution::getTable(), ['date_creation' => date('Y-m-d H:i:s', strtotime('+1 hour'))], ['id' => $first->getID()]);
+
+        $this->login('post-only', 'postonly');
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $crawler = $this->renderForm($ticket);
+        $this->assertCount(1, $crawler->filter('[data-testid="solution-approval-form"]'));
+        $this->assertCount(1, $crawler->filter('#ITILSolution_' . $first->getID() . ' [data-testid="solution-approval-form"]'));
+    }
+
+    public function testApprovalFormIsDisplayedForAnItemSolvedWithoutSolution()
+    {
+        $this->login('post-only', 'postonly');
+        $ticket = $this->createItem(Ticket::class, [
+            'name'                => 'ticket title',
+            'content'             => 'content',
+            '_users_id_requester' => getItemByTypeName('User', 'post-only', true),
+        ]);
+        $this->login('tech', 'tech');
+        $this->updateItem(Ticket::class, $ticket->getID(), ['status' => Ticket::SOLVED]);
+
+        $this->login('post-only', 'postonly');
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $form = $this->renderForm($ticket)->filter('[data-testid="solution-approval-form"]');
+        $this->assertCount(1, $form);
+        $this->assertCount(1, $form->filter('button[name="add_close"]'));
+        $this->assertCount(1, $form->filter('button[name="add_reopen"]'));
+    }
+
+    public function testSolutionApproversAreAnonymizedInTheHelpdesk()
+    {
+        // The configuration of the active entity of the requester applies
+        $this->login('post-only', 'postonly');
+        $entities_id = \Session::getActiveEntity();
+        $this->login();
+        $this->updateItem(\Entity::class, $entities_id, [
+            'anonymize_support_agents' => \Entity::ANONYMIZE_USE_GENERIC,
+        ]);
+
+        // Written by the technician, who can approve the solution
+        $this->login('tech', 'tech');
+        $ticket = $this->createItem(Ticket::class, [
+            'name'                => 'ticket title',
+            'content'             => 'content',
+            '_users_id_requester' => getItemByTypeName('User', 'post-only', true),
+        ]);
+        $this->addSolution($ticket);
+        $this->assertContains(getItemByTypeName('User', 'tech', true), $ticket->getSolutionApprovers()['users']);
+
+        $this->login('post-only', 'postonly');
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $approval = $this->renderForm($ticket)->filter('[data-testid="solution-approval"]')->text();
+        $this->assertStringContainsString('Helpdesk user', $approval);
+        $this->assertStringNotContainsString('tech', $approval);
     }
 
     public function testAddEmptyContent()
