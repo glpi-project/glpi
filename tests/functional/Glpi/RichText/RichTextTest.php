@@ -120,6 +120,14 @@ HTML,
             'expected_result'        => '<table><tr><td>a</td><td>b</td></tr></table><table><tbody><tr><th>c</th></tr></tbody></table>',
         ];
 
+        // Table elements outside a table are removed, but their content is kept
+        yield [
+            'content'                => '<div><td>a</td></div><p><caption>b</caption></p><span><th>c</th></span>'
+                . '<tr><table><tr><td>d</td></tr></table></tr>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<div>a</div><p>b</p><span>c</span><table><tr><td>d</td></tr></table>',
+        ];
+
         // Cleaning of HTML structure
         yield [
             'content'                => <<<HTML

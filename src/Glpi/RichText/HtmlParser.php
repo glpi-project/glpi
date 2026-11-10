@@ -51,6 +51,8 @@ use Symfony\Component\HtmlSanitizer\Parser\ParserInterface;
  * is embedded (e.g. the search results list).
  * Wrapping these misplaced elements in a table cell produces a structure that browsers will parse
  * as it is.
+ * For the same reason, table elements that are not inside a `<table>` (e.g. `<div><td>x</td></div>`)
+ * are removed, keeping their content, as browsers ignore these tags.
  */
 final class HtmlParser implements ParserInterface
 {
@@ -62,18 +64,22 @@ final class HtmlParser implements ParserInterface
         'tr'    => ['td', 'th'],
     ];
 
+    private const TABLE_ELEMENTS = ['caption', 'colgroup', 'col', 'thead', 'tbody', 'tfoot', 'tr', 'td', 'th'];
+
     public function parse(string $html): ?DOMNode
     {
-        $fragment = (new MastermindsParser())->parse($html);
+        $fragment = (new MastermindsParser(['disable_html_ns' => true]))->parse($html);
         if ($fragment?->ownerDocument !== null) {
-            $this->wrapMisplacedTableContent($fragment->ownerDocument, $fragment);
+            $this->fixTableStructure($fragment->ownerDocument, $fragment);
         }
         return $fragment;
     }
 
-    private function wrapMisplacedTableContent(DOMDocument $document, DOMNode $node): void
+    private function fixTableStructure(DOMDocument $document, DOMNode $node, bool $in_table = false): void
     {
-        $allowed = self::ALLOWED_CHILDREN[strtolower($node->nodeName)] ?? null;
+        $in_table = $in_table || strtolower($node->nodeName) === 'table';
+        // Table elements outside a table are removed, so their content must not be wrapped.
+        $allowed = $in_table ? (self::ALLOWED_CHILDREN[strtolower($node->nodeName)] ?? null) : null;
         $implicit_row = null;
 
         foreach (iterator_to_array($node->childNodes) as $child) {
@@ -81,7 +87,16 @@ final class HtmlParser implements ParserInterface
                 continue;
             }
 
-            $this->wrapMisplacedTableContent($document, $child);
+            $this->fixTableStructure($document, $child, $in_table);
+
+            if (!$in_table && in_array(strtolower($child->nodeName), self::TABLE_ELEMENTS, true)) {
+                // Table element outside a table: keep only its content.
+                while ($child->firstChild !== null) {
+                    $node->insertBefore($child->firstChild, $child);
+                }
+                $node->removeChild($child);
+                continue;
+            }
 
             if ($allowed === null || in_array(strtolower($child->nodeName), $allowed, true)) {
                 $implicit_row = null;
