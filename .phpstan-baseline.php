@@ -6728,12 +6728,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ITILCategoryField.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method getITILFollowupTemplatesIDs\\(\\) on Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILFollowupFieldStrategy\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ITILFollowupField.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method getTaskTemplatesIDs\\(\\) on Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILTaskFieldStrategy\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,

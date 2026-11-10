@@ -36,7 +36,9 @@ namespace tests\units;
 
 use Central;
 use Computer;
+use CronTask;
 use Glpi\Console\Migration\MyIsamToInnoDbCommand;
+use Glpi\System\HousekeepingCron;
 use Glpi\Tests\DbTestCase;
 use Item_Process;
 use Log;
@@ -203,16 +205,26 @@ class CentralTest extends DbTestCase
         );
     }
 
-    public function testProcessLogsWarning(): void
+    public function testHousekeepingWarning(): void
     {
         $this->login();
 
-        $warning = 'Processes are no longer historized, but history still contains entries related to processes.';
-        $get_warnings = fn(): array => $this->callPrivateMethod(new Central(), 'getMessages')['warnings'] ?? [];
+        $warning = 'Some obsolete data should be removed, but the related automatic action is disabled.';
+        $has_warning = function () use ($warning): bool {
+            $warnings = $this->callPrivateMethod(new Central(), 'getMessages')['warnings'] ?? [];
+            foreach ($warnings as $message) {
+                if (str_contains($message, $warning)) {
+                    return true;
+                }
+            }
+            return false;
+        };
 
-        foreach ($get_warnings() as $message) {
-            $this->assertStringNotContainsString($warning, $message);
-        }
+        $task = new CronTask();
+        $this->assertTrue($task->getFromDBbyName(HousekeepingCron::class, HousekeepingCron::TASK_NAME));
+
+        // nothing to clean
+        $this->assertFalse($has_warning());
 
         $computer = getItemByTypeName(Computer::class, '_test_pc01');
         $this->createItem(Log::class, [
@@ -224,13 +236,20 @@ class CentralTest extends DbTestCase
             'date_mod'      => $_SESSION['glpi_currenttime'],
         ]);
 
-        $found = false;
-        foreach ($get_warnings() as $message) {
-            if (str_contains($message, $warning)) {
-                $found = true;
-                break;
-            }
-        }
-        $this->assertTrue($found, 'Process logs warning is missing.');
+        // automatic action is disabled by default
+        $this->assertTrue($has_warning());
+        $warnings = $this->callPrivateMethod(new Central(), 'getMessages')['warnings'];
+        $this->assertStringContainsString('See automatic action', implode('', $warnings));
+
+        // no link to the automatic action without the right to view it
+        $_SESSION['glpiactiveprofile']['config'] = UPDATE;
+        $this->assertTrue($has_warning());
+        $warnings = $this->callPrivateMethod(new Central(), 'getMessages')['warnings'];
+        $this->assertStringNotContainsString('See automatic action', implode('', $warnings));
+        $_SESSION['glpiactiveprofile']['config'] = READ | UPDATE;
+
+        // automatic action is enabled, it will handle the cleanup
+        $this->updateItem(CronTask::class, $task->getID(), ['state' => CronTask::STATE_WAITING]);
+        $this->assertFalse($has_warning());
     }
 }
