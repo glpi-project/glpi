@@ -5187,8 +5187,8 @@ class SearchTest extends DbTestCase
             'search_option'    => 15, // date
             'searchtype'       => 'equals',
             'value'            => 'NULL',
-            'expected_and'     => "AND {$ticket_date} IS NULL GROUP BY",
-            'expected_and_not' => "AND NOT ({$ticket_date} IS NULL) GROUP BY",
+            'expected_and'     => "AND ({$ticket_date} IS NULL) GROUP BY",
+            'expected_and_not' => "AND (NOT ({$ticket_date} IS NULL)) GROUP BY",
             'expected_values'    => [],
         ];
     }
