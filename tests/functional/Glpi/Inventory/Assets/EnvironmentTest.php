@@ -192,6 +192,17 @@ class EnvironmentTest extends AbstractInventoryAsset
 
         $changed_id = array_key_first(array_filter($first, static fn($env) => $env['key'] === $json->content->envs[0]->key));
         $this->assertSame('changed value', $second[$changed_id]['value']);
+
+        // environments are not historized
+        $this->assertSame(
+            0,
+            countElementsInTable(\Log::getTable(), [
+                'OR' => [
+                    'itemtype'      => \Item_Environment::class,
+                    'itemtype_link' => \Item_Environment::class,
+                ],
+            ])
+        );
     }
 
     public function testGenericAssetEnvironment(): void
