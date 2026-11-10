@@ -821,7 +821,9 @@ HTML,
     {
         ob_start();
         $item->showForm($item->getID());
-        return new Crawler(ob_get_clean());
+        // The doctype makes the crawler use an HTML5 parser on every PHP version: the libxml parser,
+        // used otherwise before PHP 8.4, closes the forms on the scripts of the rich text editor
+        return new Crawler('<!DOCTYPE html>' . ob_get_clean());
     }
 
     public function testApprovalFormIsDisplayedForAnAcceptedSolution()
