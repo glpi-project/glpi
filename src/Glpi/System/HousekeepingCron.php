@@ -35,8 +35,10 @@
 
 namespace Glpi\System;
 
+use CommonDBTM;
 use CommonGLPI;
 use CronTask;
+use Item_Environment;
 use Item_Process;
 use Log;
 
@@ -107,9 +109,11 @@ final class HousekeepingCron extends CommonGLPI
      */
     public static function getChores(): array
     {
-        return [
-            __('History entries related to processes') => self::cleanProcessLogs(...),
-        ];
+        $chores = [];
+        foreach (self::getNotHistorizedItemtypes() as $label => $itemtype) {
+            $chores[$label] = static fn(int $max): int => self::cleanLogs($itemtype, $max);
+        }
+        return $chores;
     }
 
     /**
@@ -117,18 +121,38 @@ final class HousekeepingCron extends CommonGLPI
      */
     public static function hasPendingWork(): bool
     {
-        return self::hasProcessLogs();
+        foreach (self::getNotHistorizedItemtypes() as $itemtype) {
+            if (self::hasLogs($itemtype)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
-     * Processes are not historized anymore since GLPI 11.0.13, remove existing entries.
+     * Itemtypes that are not historized anymore, but may still have history entries.
+     *
+     * @return array<string, class-string<CommonDBTM>>
      */
-    private static function cleanProcessLogs(int $max): int
+    private static function getNotHistorizedItemtypes(): array
+    {
+        return [
+            __('History entries related to processes')             => Item_Process::class,
+            __('History entries related to environment variables') => Item_Environment::class,
+        ];
+    }
+
+    /**
+     * Remove history entries related to given itemtype.
+     *
+     * @param class-string<CommonDBTM> $itemtype
+     */
+    private static function cleanLogs(string $itemtype, int $max): int
     {
         global $DB;
 
         $total = 0;
-        foreach (self::getProcessLogsCriteria() as $criteria) {
+        foreach (self::getLogsCriteria($itemtype) as $criteria) {
             if ($total >= $max) {
                 break;
             }
@@ -151,11 +175,14 @@ final class HousekeepingCron extends CommonGLPI
         return $total;
     }
 
-    private static function hasProcessLogs(): bool
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     */
+    private static function hasLogs(string $itemtype): bool
     {
         global $DB;
 
-        foreach (self::getProcessLogsCriteria() as $criteria) {
+        foreach (self::getLogsCriteria($itemtype) as $criteria) {
             if (
                 count($DB->request([
                     'SELECT' => ['id'],
@@ -172,15 +199,18 @@ final class HousekeepingCron extends CommonGLPI
     }
 
     /**
+     * Entries are logged either on the parent item (`itemtype_link`) or on the item itself (`itemtype`).
      * Distinct criteria are used instead of an `OR`, so each one can use its own index.
+     *
+     * @param class-string<CommonDBTM> $itemtype
      *
      * @return array<int, array<string, string>>
      */
-    private static function getProcessLogsCriteria(): array
+    private static function getLogsCriteria(string $itemtype): array
     {
         return [
-            ['itemtype_link' => Item_Process::class],
-            ['itemtype'      => Item_Process::class],
+            ['itemtype_link' => $itemtype],
+            ['itemtype'      => $itemtype],
         ];
     }
 }
