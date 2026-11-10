@@ -65,9 +65,9 @@ Only the latest patch release of each supported branch is in scope. Reports agai
 
 ## Scoring 
 
-Severity is assessed using CVSS v4. Do not score your submissions, GLPI will handle it during triage.
+GLPI assesses severity using CVSS v4 during triage. Do not score your submissions.
 
-For the **Privileges Required (PR)** metric, GLPI uses the following convention:
+During triage, GLPI uses the following convention for the **Privileges Required (PR)** metric:
 
 | Attacker privilege level                                          | PR   |
 |-------------------------------------------------------------------|------|
