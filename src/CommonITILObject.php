@@ -1048,6 +1048,125 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
+     * Can the writer of this ITIL object approve its solution? See canApprove().
+     *
+     * @param int $users_id ID of the writer, not necessarily the current user
+     *
+     * @return bool
+     */
+    protected function canRecipientApprove(int $users_id): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get the actors allowed to approve the solution: requesters, requester groups and writer.
+     *
+     * @return array{users: int[], groups: int[]}
+     */
+    public function getSolutionApprovers(): array
+    {
+        $ids = static fn(array $actors, string $key): array
+            => array_values(array_unique(array_filter(array_map('intval', array_column($actors, $key)))));
+
+        $users = $ids($this->getUsers(CommonITILActor::REQUESTER), 'users_id');
+
+        $users_id_recipient = (int) ($this->fields['users_id_recipient'] ?? 0);
+        if (
+            $users_id_recipient > 0
+            && !in_array($users_id_recipient, $users, true)
+            && $this->canRecipientApprove($users_id_recipient)
+        ) {
+            $users[] = $users_id_recipient;
+        }
+
+        return [
+            'users'  => $users,
+            'groups' => $ids($this->getGroups(CommonITILActor::REQUESTER), 'groups_id'),
+        ];
+    }
+
+    /**
+     * Can the given user approve the solution? Same rules as canApprove(), which is for the current user.
+     *
+     * @param int $users_id
+     *
+     * @return bool
+     */
+    public function canUserApproveSolution(int $users_id): bool
+    {
+        if ($users_id <= 0) {
+            return false;
+        }
+
+        if ($users_id === (int) Session::getLoginUserID()) {
+            return $this->canApprove();
+        }
+
+        if (
+            $this->isUser(CommonITILActor::REQUESTER, $users_id)
+            || ((int) ($this->fields['users_id_recipient'] ?? 0) === $users_id && $this->canRecipientApprove($users_id))
+        ) {
+            return true;
+        }
+
+        // Requester groups and their parents with recursive membership (see Session::loadGroups())
+        $groups_ids = [];
+        foreach ($this->getGroups(CommonITILActor::REQUESTER) as $actor) {
+            $group = Group::getById((int) $actor['groups_id']);
+            while ($group instanceof Group && !in_array($group->getID(), $groups_ids, true)) {
+                $groups_ids[] = $group->getID();
+                $parent = $group->fields['groups_id'] > 0 ? Group::getById((int) $group->fields['groups_id']) : false;
+                $group = $parent instanceof Group && $parent->fields['recursive_membership'] ? $parent : null;
+            }
+        }
+
+        return $groups_ids !== []
+            && countElementsInTable(Group_User::getTable(), ['users_id' => $users_id, 'groups_id' => $groups_ids]) > 0;
+    }
+
+    /**
+     * Update the approval of the last solution, and link it to the followup answering it.
+     *
+     * @param array{status: int, users_id_approval: mixed, date_approval: string} $approval
+     */
+    private function updateLastSolutionApproval(array $approval): void
+    {
+        global $DB;
+
+        $solution = $DB->request([
+            'SELECT' => ['id', 'itilfollowups_id'],
+            'FROM'   => ITILSolution::getTable(),
+            'WHERE'  => [
+                'itemtype' => static::class,
+                'items_id' => $this->getID(),
+            ],
+            'ORDER'  => ['date_creation DESC', 'id DESC'],
+            'LIMIT'  => 1,
+        ])->current();
+        if ($solution === null) {
+            return;
+        }
+
+        // Only a followup answering a solved item (not a closed one) answers its solution
+        $trigger = $this->input['_trigger'] ?? null;
+        if (
+            $trigger instanceof ITILFollowup
+            && in_array($this->oldvalues['status'] ?? null, static::getSolvedStatusArray())
+            && empty($solution['itilfollowups_id'])
+            && $this->canUserApproveSolution((int) $trigger->fields['users_id'])
+        ) {
+            $approval['itilfollowups_id'] = $trigger->getID();
+        }
+
+        $DB->update(
+            ITILSolution::getTable(),
+            $approval,
+            ['id' => $solution['id']]
+        );
+    }
+
+    /**
      * Is the current user have right to add followups to the current ITIL Object ?
      *
      * @since 9.4.0
@@ -1930,12 +2049,17 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 }
             }
 
-            $input = $ret;
-
             // Only ID return false
-            if (count($input) == 1) {
+            if (count($ret) == 1) {
                 return false;
             }
+
+            // Followup or task triggering this update (an object, so never from a form)
+            if (($input['_trigger'] ?? null) instanceof CommonDBTM) {
+                $ret['_trigger'] = $input['_trigger'];
+            }
+
+            $input = $ret;
         }
 
         [SLM::TTO => $input['_olas_id_tto'], SLM::TTR => $input['_olas_id_ttr']] = OLA::splitIdsByType($input['_olas_id'] ?? []);
@@ -2515,8 +2639,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     public function pre_updateInDB()
     {
-        global $DB;
-
         // get again object to reload actors
         $this->loadActors();
 
@@ -2830,25 +2952,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
 
             //Mark existing solutions as refused
-            $DB->update(
-                ITILSolution::getTable(),
-                [
-                    'status'             => CommonITILValidation::REFUSED,
-                    'users_id_approval'  => $users_id_reject,
-                    'date_approval'      => date('Y-m-d H:i:s'),
-                ],
-                [
-                    'WHERE'  => [
-                        'itemtype'  => static::class,
-                        'items_id'  => $this->getID(),
-                    ],
-                    'ORDER'  => [
-                        'date_creation DESC',
-                        'id DESC',
-                    ],
-                    'LIMIT'  => 1,
-                ]
-            );
+            $this->updateLastSolutionApproval([
+                'status'             => CommonITILValidation::REFUSED,
+                'users_id_approval'  => $users_id_reject,
+                'date_approval'      => date('Y-m-d H:i:s'),
+            ]);
 
             //Delete existing survey
             $inquest = new TicketSatisfaction();
@@ -2857,25 +2965,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         if (isset($this->input['_accepted'])) {
             //Mark last solution as approved
-            $DB->update(
-                ITILSolution::getTable(),
-                [
-                    'status'             => CommonITILValidation::ACCEPTED,
-                    'users_id_approval'  => Session::getLoginUserID(),
-                    'date_approval'      => date('Y-m-d H:i:s'),
-                ],
-                [
-                    'WHERE'  => [
-                        'itemtype'  => static::class,
-                        'items_id'  => $this->getID(),
-                    ],
-                    'ORDER'  => [
-                        'date_creation DESC',
-                        'id DESC',
-                    ],
-                    'LIMIT'  => 1,
-                ]
-            );
+            $this->updateLastSolutionApproval([
+                'status'             => CommonITILValidation::ACCEPTED,
+                'users_id_approval'  => Session::getLoginUserID(),
+                'date_approval'      => date('Y-m-d H:i:s'),
+            ]);
         }
 
         // Do not take into account date_mod if no update is done
@@ -7544,7 +7638,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *      date_mod: string|null,
      *      users_id_approval: int,
      *      date_approval: string|null,
-     *      status: int
+     *      status: int,
+     *      itilfollowups_id: int|null
      *     },
      *     object: mixed
      * }> Timeline items
@@ -7760,6 +7855,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     'users_id_approval'  => $solution_item['users_id_approval'],
                     'date_approval'      => $solution_item['date_approval'],
                     'status'             => $solution_item['status'],
+                    'itilfollowups_id'   => $solution_item['itilfollowups_id'],
                 ],
                 'object' => $solution,
             ];

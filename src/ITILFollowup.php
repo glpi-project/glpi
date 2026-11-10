@@ -334,6 +334,18 @@ class ITILFollowup extends CommonDBChild
     }
 
 
+    public function cleanDBonPurge()
+    {
+        global $DB;
+
+        // Unlink the solution answered by this followup
+        $DB->update(
+            ITILSolution::getTable(),
+            ['itilfollowups_id' => null],
+            ['itilfollowups_id' => $this->getID()]
+        );
+    }
+
     public function post_deleteFromDB()
     {
         global $CFG_GLPI;

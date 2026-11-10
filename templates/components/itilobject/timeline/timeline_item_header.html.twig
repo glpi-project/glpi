@@ -41,6 +41,8 @@
          'anchor': entry['type'] ~ '_' ~ entry_i['id'],
          'anonym_user': anonym_user,
          'entry': entry,
+         'show_creation': false,
+         'show_last_update': not has_badges_line,
       }, with_context = false) }}
    </div>
 
@@ -88,11 +90,11 @@
       {% endif %}
 
       {% if actions|length %}
-         <div class="dropdown ms-2">
+         <div class="dropdown">
             <button class="btn btn-sm btn-ghost-secondary timeline-more-actions" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{{ __('More actions') }}">
                <i class="ti ti-dots-vertical" aria-hidden="true"></i>
             </button>
-            <ul class="dropdown-menu" aria-labelledby="more-actions-{{ entry_rand }}">
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="more-actions-{{ entry_rand }}">
                {% for action in actions %}
                   {{ action }}
                {% endfor %}
@@ -100,13 +102,9 @@
          </div>
       {% endif %}
 
-      {% if is_private %}
-         <span class="is-private ms-2" title="{{ __('This entry is "internal" (visible only to technicians)') }}" data-testid="private-followup-hint"
-               data-bs-toggle="tooltip" data-bs-placement="bottom">
-            {# aria-label is not exposed on a generic element, the label needs to be real text. #}
-            <i class="ti ti-eye-off" aria-hidden="true"></i>
-            <span class="visually-hidden">{{ __('Private') }}</span>
-         </span>
+      {# Otherwise displayed in the badges line #}
+      {% if is_private and not has_badges_line %}
+         <span class="ms-1">{{ private_badge }}</span>
       {% endif %}
    </div>
 
@@ -114,3 +112,12 @@
       <i class="ti ti-x" aria-hidden="true"></i>
    </button>
 </div>
+
+{% if is_refusal_reason %}
+   <div class="timeline-refusal-reason mb-2">
+      <span class="badge bg-red-lt" data-testid="refusal-reason-badge">
+         <i class="ti ti-x me-1" aria-hidden="true"></i>
+         {{ __('Reason of rejection') }}
+      </span>
+   </div>
+{% endif %}
