@@ -42,12 +42,19 @@
 {% set itil_layout    = user_pref('itil_layout', true) %}
 {% set headers_states = itil_layout['items']|default([]) %}
 
+{# Chevron indicating whether an accordion item is expanded or collapsed #}
+{% set accordion_toggle %}
+   <span class="accordion-button-toggle align-items-center justify-content-center" aria-hidden="true">
+      <i class="ti ti-chevron-down"></i>
+   </span>
+{% endset %}
+
 <div class="accordion open accordion-flush itil-object-fields" id="itil-data">
    {% set main_show = headers_states['item-main'] is not defined or headers_states['item-main'] == "true" ? true : false %}
    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITIL_INFO_SECTION'), {"item": item, 'options': params}) }}
    <section class="accordion-item" aria-label="{{ item.getTypeName(1) }}">
       <div class="accordion-header" id="heading-main-item">
-         <button class="accordion-button {{ main_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#item-main" aria-expanded="true" aria-controls="ticket-main">
+         <button class="accordion-button {{ main_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#item-main" aria-expanded="{{ main_show ? 'true' : 'false' }}" aria-controls="item-main">
             <i class="ti ti-alert-circle item-icon"></i>
             <span class='status-recall'>
                 {{ item.getStatusIcon(item.fields['status'])|raw }}
@@ -55,6 +62,7 @@
             <span class="item-title">
                 {{ item.getTypeName(1) }}
             </span>
+            {{ accordion_toggle }}
          </button>
       </div>
       <section id="item-main" class="accordion-collapse collapse {{ main_show ? "show" : "" }}" aria-labelledby="heading-main-item">
@@ -272,7 +280,7 @@
    {% set actors_show = headers_states['actors'] is not defined or headers_states['actors'] == "true" ? true : false %}
    <section class="accordion-item" aria-label="{{ __('Actors') }}">
       <div class="accordion-header" id="heading-actor" title="{{ __('Actors') }}" data-bs-toggle="tooltip">
-         <button class="accordion-button {{ actors_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#actors" aria-expanded="true" aria-controls="actors">
+         <button class="accordion-button {{ actors_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#actors" aria-expanded="{{ actors_show ? 'true' : 'false' }}" aria-controls="actors">
             <i class="ti ti-users"></i>
             <span class="item-title">
                 {{ __('Actors') }}
@@ -283,6 +291,7 @@
             {% if not (params['template_preview'] ?? false) and cancreateuser|default(false) and canupdate %}
                {{ include('components/user/create_user.html.twig') }}
             {% endif %}
+            {{ accordion_toggle }}
          </button>
       </div>
       <div id="actors" class="accordion-collapse collapse {{ actors_show ? "show" : "" }}" aria-labelledby="heading-actor">
@@ -298,12 +307,13 @@
        {% if notes|length != 0 %}
           <section class="accordion-item" aria-label="{{ __('Notes') }}">
              <div class="accordion-header" id="notes-heading" title="{{ __('Notes') }}" data-bs-toggle="tooltip">
-                <button class="accordion-button {{ notes_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#notes" aria-expanded="true" aria-controls="notes">
+                <button class="accordion-button {{ notes_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#notes" aria-expanded="{{ notes_show ? 'true' : 'false' }}" aria-controls="notes">
                    <i class="ti ti-notes"></i>
                    <span class="item-title">
                       {{ __('Entity notes') }}
                    </span>
                    <span class="badge bg-secondary text-secondary-fg ms-2">{{ notes|length }}</span>
+                   {{ accordion_toggle }}
                 </button>
              </div>
              <div id="notes" class="accordion-collapse collapse {{ notes_show ? "show" : "" }}" aria-labelledby="notes-heading">
@@ -328,7 +338,7 @@
       {% set items_show = headers_states['items'] is not defined or headers_states['items'] == "true" ? true : false %}
       <section class="accordion-item" aria-label="{{ _n('Item', 'Items', get_plural_number()) }}">
          <div class="accordion-header" id="items-heading" title="{{ _n('Item', 'Items', get_plural_number()) }}" data-bs-toggle="tooltip">
-            <button class="accordion-button {{ items_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#items" aria-expanded="true" aria-controls="items">
+            <button class="accordion-button {{ items_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#items" aria-expanded="{{ items_show ? 'true' : 'false' }}" aria-controls="items">
                <i class="ti ti-package"></i>
                <span class="item-title">
                     {{ _n('Item', 'Items', get_plural_number()) }}
@@ -337,6 +347,7 @@
                {% if itiltemplate.isMandatoryField('items_id') %}
                   <span class="required">*</span>
                {% endif %}
+               {{ accordion_toggle }}
             </button>
          </div>
          <div id="items" class="accordion-collapse collapse {{ items_show ? "show" : "" }}" aria-labelledby="items-heading">
@@ -357,7 +368,7 @@
          {% set servicelevels_show = headers_states['service-levels'] is defined and headers_states['service-levels'] == "true" ? true : false %}
          <section class="accordion-item" aria-label="{{ _n('Service level', 'Service levels', get_plural_number()) }}">
             <div class="accordion-header" id="service-levels-heading" title="{{ _n('Service level', 'Service levels', get_plural_number()) }}" data-bs-toggle="tooltip">
-               <button class="accordion-button {{ servicelevels_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#service-levels" aria-expanded="true" aria-controls="service-levels">
+               <button class="accordion-button {{ servicelevels_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#service-levels" aria-expanded="{{ servicelevels_show ? 'true' : 'false' }}" aria-controls="service-levels">
                   <i class="ti ti-alarm"></i>
                   <span class="item-title">
                      {{ _n('Service level', 'Service levels', get_plural_number()) }}
@@ -365,6 +376,7 @@
                   {% if nb_la > 0 %}
                      <span class="badge bg-secondary text-secondary-fg ms-2">{{ nb_la }}</span>
                   {% endif %}
+                  {{ accordion_toggle }}
                </button>
             </div>
             <div id="service-levels" class="accordion-collapse collapse {{ servicelevels_show ? "show" : "" }}" aria-labelledby="service-levels-heading">
@@ -393,7 +405,7 @@
       {% set analysis_show = headers_states['analysis'] is defined and headers_states['analysis'] == "true" ? true : false %}
       <section class="accordion-item" aria-label="{{ __('Analysis') }}">
          <div class="accordion-header" id="analysis-heading" title="{{ __("Analysis") }}" data-bs-toggle="tooltip">
-            <button class="accordion-button {{ analysis_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#analysis" aria-expanded="true" aria-controls="analysis">
+            <button class="accordion-button {{ analysis_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#analysis" aria-expanded="{{ analysis_show ? 'true' : 'false' }}" aria-controls="analysis">
                <i class="ti ti-eyeglass"></i>
                <span class="item-title">
                     {{ __("Analysis") }}
@@ -401,6 +413,7 @@
                {% if nb_analysis > 0 %}
                   <span class="badge bg-secondary text-secondary-fg ms-2">{{ nb_analysis }}</span>
                {% endif %}
+               {{ accordion_toggle }}
             </button>
          </div>
          <div id="analysis" class="accordion-collapse collapse {{ analysis_show ? "show" : "" }}" aria-labelledby="analysis-heading">
@@ -440,7 +453,7 @@
       {% set plans_show = headers_states['plans'] is defined and headers_states['plans'] == "true" ? true : false %}
       <section class="accordion-item" aria-label="{{ __('Plans') }}">
          <div class="accordion-header" id="plans-heading" title="{{ __("Plans") }}" data-bs-toggle="tooltip">
-            <button class="accordion-button {{ plans_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#plans" aria-expanded="true" aria-controls="plans">
+            <button class="accordion-button {{ plans_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#plans" aria-expanded="{{ plans_show ? 'true' : 'false' }}" aria-controls="plans">
                <i class="ti ti-checkup-list"></i>
                <span class="item-title">
                     {{ __("Plans") }}
@@ -448,6 +461,7 @@
                {% if nb_plans > 0 %}
                   <span class="badge bg-secondary text-secondary-fg ms-2">{{ nb_plans }}</span>
                {% endif %}
+               {{ accordion_toggle }}
             </button>
          </div>
          <div id="plans" class="accordion-collapse collapse {{ plans_show ? "show" : "" }}" aria-labelledby="plans-heading">
@@ -474,7 +488,7 @@
    {% set nb_linked_itilobjects = item.isNewItem() ? 0 : call('CommonITILObject_CommonITILObject::countAllLinks', [item.getType(), item.getId()]) %}
    <section class="accordion-item" aria-label="{{ 'CommonITILObject_CommonITILObject'|itemtype_name(nb_linked_itilobjects) }}">
       <div class="accordion-header" id="linked_itilobjects-heading" title="{{ 'CommonITILObject_CommonITILObject'|itemtype_name(nb_linked_itilobjects) }}" data-bs-toggle="tooltip">
-         <button class="accordion-button {{ linked_itilobjects_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#linked_itilobjects" aria-expanded="true" aria-controls="linked_itilobjects">
+         <button class="accordion-button {{ linked_itilobjects_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#linked_itilobjects" aria-expanded="{{ linked_itilobjects_show ? 'true' : 'false' }}" aria-controls="linked_itilobjects">
             <i class="ti ti-link"></i>
             {% if item.isNewItem() and (params['_link']['items_id_2'] ?? 0) > 0 %}
                {% set nb_linked_itilobjects = 1 %}
@@ -485,6 +499,7 @@
             {% if nb_linked_itilobjects > 0 %}
                <span class="badge bg-secondary text-secondary-fg ms-2">{{ nb_linked_itilobjects }}</span>
             {% endif %}
+            {{ accordion_toggle }}
          </button>
       </div>
       <div id="linked_itilobjects" class="accordion-collapse collapse {{ linked_itilobjects_show ? "show" : "" }}" aria-labelledby="linked_itilobjects-heading">
@@ -497,7 +512,7 @@
    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITIL_INFO_SECTION'), {"item": item, 'options': params}) }}
 
     <span class="d-none d-md-block">
-        <button type="button" class="switch-panel-width btn btn-icon btn-ghost-secondary position-absolute bottom-0 start-0 mb-2">
+        <button type="button" class="switch-panel-width btn btn-icon btn-ghost-secondary position-absolute bottom-0 mb-2">
             <i class="ti ti-caret-left-filled"></i>
         </button>
     </span>
