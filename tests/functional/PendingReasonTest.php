@@ -39,6 +39,7 @@ use Change;
 use ChangeTask;
 use CommonITILObject;
 use Config;
+use Glpi\Debug\Profile;
 use Glpi\Tests\DbTestCase;
 use ITILFollowup;
 use ITILFollowupTemplate;
@@ -1677,6 +1678,124 @@ class PendingReasonTest extends DbTestCase
         $crawler = new Crawler($content);
         $badges_text = $crawler->filter('.timeline-item.ITILTask:not(#new-TicketTask-block) .bg-transparent')->innerText();
         $this->assertStringContainsString('Done:', $badges_text);
+    }
+
+    public function testPendingReasonsMessagesOfSeveralTimelineItems(): void
+    {
+        $this->login();
+
+        $ticket = getItemByTypeName(Ticket::class, '_ticket01');
+        $pending_input = [
+            'pending'                     => 1,
+            'pendingreasons_id'           => getItemByTypeName(PendingReason::class, 'needupdate_pendingreason', true),
+            'followup_frequency'          => DAY_TIMESTAMP,
+            'followups_before_resolution' => 3,
+        ];
+
+        $plain_followup = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => 'Followup without a pending reason',
+        ]);
+        $pending_followup = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => 'Pending followup',
+        ] + $pending_input, array_keys($pending_input));
+        // A pending action added to an item that is already pending replaces the previous one only if it changes it
+        $other_pending_reason = $this->createItem(PendingReason::class, [
+            'name'        => 'Other pending reason',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $pending_input['pendingreasons_id'] = $other_pending_reason->getID();
+        $pending_task = $this->createItem(TicketTask::class, [
+            'tickets_id' => $ticket->getID(),
+            'content'    => 'Pending task',
+        ] + $pending_input, array_keys($pending_input));
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertEquals(CommonITILObject::WAITING, $ticket->fields['status']);
+
+        ob_start();
+        $ticket->showForm($ticket->getID());
+        $crawler = new Crawler(ob_get_clean());
+
+        // Only the last pending action is displayed as pending
+        $badges = static fn(string $anchor): string => $crawler->filter('#' . $anchor . ' .timeline-badges')->text();
+
+        $task_badges = $badges('TicketTask_' . $pending_task->getID());
+        $this->assertStringContainsString('Pending: Other pending reason', $task_badges);
+        $this->assertStringNotContainsString('Done:', $task_badges);
+
+        $followup_badges = $badges('ITILFollowup_' . $pending_followup->getID());
+        $this->assertStringContainsString('Done: needupdate_pendingreason', $followup_badges);
+        $this->assertStringNotContainsString('Pending:', $followup_badges);
+
+        $plain_badges = $badges('ITILFollowup_' . $plain_followup->getID());
+        $this->assertStringNotContainsString('Done:', $plain_badges);
+        $this->assertStringNotContainsString('Pending:', $plain_badges);
+    }
+
+    public function testTimelineQueriesOnPendingReasonsDoNotDependOnEntriesCount(): void
+    {
+        $this->login();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Timeline queries',
+            'content'     => 'Timeline queries',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $add_followup = function () use ($ticket): void {
+            $this->createItem(ITILFollowup::class, [
+                'itemtype' => Ticket::class,
+                'items_id' => $ticket->getID(),
+                'content'  => 'Followup',
+            ]);
+        };
+
+        $count_queries = static function () use ($ticket): array {
+            $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
+            $before = count(Profile::getCurrent()->getDebugInfo()['sql']['queries'] ?? []);
+            ob_start();
+            $ticket->showForm($ticket->getID());
+            ob_end_clean();
+            $queries = array_slice(Profile::getCurrent()->getDebugInfo()['sql']['queries'], $before);
+            $_SESSION['glpi_use_mode'] = \Session::NORMAL_MODE;
+
+            $count = static function (string ...$needles) use ($queries): int {
+                $matching = 0;
+                foreach ($queries as $query) {
+                    foreach ($needles as $needle) {
+                        if (!str_contains($query['query'], $needle)) {
+                            continue 2;
+                        }
+                    }
+                    $matching++;
+                }
+                return $matching;
+            };
+
+            return [
+                // Pending reason of the ticket
+                'parent'    => $count('`glpi_pendingreasons_items`', "'Ticket'"),
+                // Default pending reason, only used by the followup form
+                'default'   => $count('FROM `glpi_pendingreasons`'),
+                // Followups, already loaded with the timeline
+                'followups' => $count('FROM `glpi_itilfollowups`'),
+            ];
+        };
+
+        $add_followup();
+        $count_queries(); // The first display fills the caches
+        $expected = $count_queries();
+        $this->assertGreaterThan(0, $expected['parent']);
+        $this->assertGreaterThan(0, $expected['followups']);
+
+        for ($i = 0; $i < 5; $i++) {
+            $add_followup();
+        }
+
+        $this->assertSame($expected, $count_queries());
     }
 
     /**

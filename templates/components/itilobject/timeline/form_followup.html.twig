@@ -40,7 +40,8 @@
 {% set can_update_kb = has_profile_right('knowbase', constant('UPDATE')) %}
 {% set nokb = params['nokb'] is defined or (params['nokb'] ?? false) == true %}
 {% set rand = random() %}
-{% set is_default_pending = call('PendingReason::isDefaultPending') %}
+{# Only used by the form. The display mode gets its default value in the parent template, which is not rendered yet. #}
+{% set is_default_pending = (form_mode ?? 'edit') != 'view' and call('PendingReason::isDefaultPending') %}
 
 {% set content_field_id = 'solution_content_' ~ rand %}
 

@@ -52,6 +52,9 @@
     {# Same for their info card, which is displayed by two tooltips in each of their entries #}
     {% set user_info_card_cache = {} %}
 
+    {# Pending reason of the parent item, read once for all the followups and tasks #}
+    {% set pending_reason_item_parent = call("PendingReason_Item::getForItem", [item]) %}
+
     {% for entry in timeline %}
         {% set entry_i = entry['item'] %}
         {% set entry_object = entry['object'] ?? get_item(entry['type'], entry_i['id']) %}
