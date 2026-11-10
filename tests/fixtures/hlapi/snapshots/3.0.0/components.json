@@ -18923,12 +18923,18 @@
                 "headers": {
                     "type": "string"
                 },
+                "is_body_disclosed": {
+                    "type": "boolean",
+                    "readOnly": true
+                },
                 "body_text": {
-                    "type": "string"
+                    "type": "string",
+                    "readOnly": true
                 },
                 "body_html": {
                     "type": "string",
-                    "format": "html"
+                    "format": "html",
+                    "readOnly": true
                 },
                 "message_id": {
                     "type": "string"
