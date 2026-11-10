@@ -40,6 +40,7 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profile as DebugProfile;
 use Glpi\Knowbase\EditorAction;
 use Glpi\Knowbase\EditorActionType;
+use Glpi\Search\Provider\SQLProvider;
 use Glpi\Tests\DbTestCase;
 use InvalidArgumentException;
 use KnowbaseItem;
@@ -2804,6 +2805,97 @@ HTML,
         $html = ob_get_clean();
 
         return new Crawler($html);
+    }
+
+    public static function visibilityDatesInSearchProvider(): iterable
+    {
+        // Technician and Self-Service do not have KNOWBASEADMIN: dates are enforced, except on their own articles
+        yield 'tech' => ['tech', 'tech', ['KB dates control', 'KB dates expired by tech']];
+        yield 'post-only' => ['post-only', 'postonly', ['KB dates control']];
+        // KB admins see every article, whatever its dates
+        yield 'glpi' => ['glpi', 'glpi', ['KB dates control', 'KB dates expired', 'KB dates expired by tech', 'KB dates scheduled']];
+    }
+
+    #[DataProvider('visibilityDatesInSearchProvider')]
+    public function testVisibilityDatesInSearch(string $login, string $password, array $expected): void
+    {
+        $this->login();
+
+        $past = date('Y-m-d H:i:s', strtotime('-1 day'));
+        $tech_id = getItemByTypeName(User::class, 'tech', true);
+        $articles = [
+            'KB dates expired'         => ['begin_date' => null, 'end_date' => $past, 'users_id' => $_SESSION['glpiID']],
+            'KB dates expired by tech' => ['begin_date' => null, 'end_date' => $past, 'users_id' => $tech_id],
+            'KB dates scheduled'       => ['begin_date' => date('Y-m-d H:i:s', strtotime('+1 day')), 'end_date' => null, 'users_id' => $_SESSION['glpiID']],
+            'KB dates control'         => ['begin_date' => null, 'end_date' => null, 'users_id' => $_SESSION['glpiID']],
+        ];
+        foreach ($articles as $name => $fields) {
+            $kb_item = $this->createItem(KnowbaseItem::class, [
+                'name'     => $name,
+                'answer'   => $name,
+                'is_faq'   => true,
+            ] + $fields, ['begin_date', 'end_date']);
+            $this->createItem(\Entity_KnowbaseItem::class, [
+                'knowbaseitems_id' => $kb_item->getID(),
+                'entities_id'      => 0,
+                'is_recursive'     => 1,
+            ]);
+        }
+
+        $this->login($login, $password);
+
+        $params = \Search::manageParams(KnowbaseItem::class, [
+            'criteria' => [['field' => 1, 'searchtype' => 'contains', 'value' => 'KB dates']],
+        ], false);
+        $data = \Search::getDatas(KnowbaseItem::class, $params);
+        $names = array_map(static fn($row) => $row['raw']['ITEM_KnowbaseItem_1'], $data['data']['rows']);
+        sort($names);
+
+        $this->assertSame($expected, $names);
+    }
+
+    public function testVisibilityDatesInPublicFaqSearch(): void
+    {
+        global $CFG_GLPI, $DB;
+
+        $this->login();
+
+        // users_id = 0 is what remains on articles once their author has been purged
+        $past = date('Y-m-d H:i:s', strtotime('-1 day'));
+        $articles = [
+            'Public FAQ expired orphan' => ['end_date' => $past, 'users_id' => 0],
+            'Public FAQ expired'        => ['end_date' => $past, 'users_id' => $_SESSION['glpiID']],
+            'Public FAQ control'        => ['end_date' => null, 'users_id' => $_SESSION['glpiID']],
+        ];
+        foreach ($articles as $name => $fields) {
+            $kb_item = $this->createItem(KnowbaseItem::class, [
+                'name'   => $name,
+                'answer' => $name,
+                'is_faq' => true,
+            ] + $fields, ['end_date']);
+            $this->createItem(\Entity_KnowbaseItem::class, [
+                'knowbaseitems_id' => $kb_item->getID(),
+                'entities_id'      => 0,
+                'is_recursive'     => 1,
+            ]);
+        }
+
+        $this->logOut();
+        $CFG_GLPI['use_public_faq'] = true;
+
+        // Default search engine restrictions, as applied to the public FAQ "Browse" tab
+        $already_linked = [];
+        $criteria = SQLProvider::getDefaultJoinCriteria(KnowbaseItem::class, KnowbaseItem::getTable(), $already_linked);
+        $criteria['SELECT'] = ['glpi_knowbaseitems.name'];
+        $criteria['DISTINCT'] = true;
+        $criteria['FROM'] = KnowbaseItem::getTable();
+        $criteria['WHERE'] = [
+            SQLProvider::getDefaultWhereCriteria(KnowbaseItem::class),
+            'glpi_knowbaseitems.name' => ['LIKE', 'Public FAQ%'],
+        ];
+        $names = array_column(iterator_to_array($DB->request($criteria)), 'name');
+
+        $this->assertSame(['Public FAQ control'], $names);
     }
 
     public function testRelinkEmbeddedDocumentsFromTicketSolution(): void

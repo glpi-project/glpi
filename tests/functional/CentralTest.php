@@ -35,8 +35,11 @@
 namespace tests\units;
 
 use Central;
+use Computer;
 use Glpi\Console\Migration\MyIsamToInnoDbCommand;
 use Glpi\Tests\DbTestCase;
+use Item_Process;
+use Log;
 use ReflectionClass;
 use Reminder;
 use RSSFeed;
@@ -198,5 +201,36 @@ class CentralTest extends DbTestCase
             str_contains($output, 'data-itemtype="Reminder"'),
             'Reminder widget must be rendered with permission.',
         );
+    }
+
+    public function testProcessLogsWarning(): void
+    {
+        $this->login();
+
+        $warning = 'Processes are no longer historized, but history still contains entries related to processes.';
+        $get_warnings = fn(): array => $this->callPrivateMethod(new Central(), 'getMessages')['warnings'] ?? [];
+
+        foreach ($get_warnings() as $message) {
+            $this->assertStringNotContainsString($warning, $message);
+        }
+
+        $computer = getItemByTypeName(Computer::class, '_test_pc01');
+        $this->createItem(Log::class, [
+            'itemtype'      => Computer::class,
+            'items_id'      => $computer->getID(),
+            'itemtype_link' => Item_Process::class,
+            'linked_action' => Log::HISTORY_ADD_SUBITEM,
+            'user_name'     => 'test',
+            'date_mod'      => $_SESSION['glpi_currenttime'],
+        ]);
+
+        $found = false;
+        foreach ($get_warnings() as $message) {
+            if (str_contains($message, $warning)) {
+                $found = true;
+                break;
+            }
+        }
+        $this->assertTrue($found, 'Process logs warning is missing.');
     }
 }

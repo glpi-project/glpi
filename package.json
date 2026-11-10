@@ -118,7 +118,7 @@
         "eslint-plugin-playwright": "^2.11.0",
         "eslint-plugin-vue": "^10.10.0",
         "exports-loader": "^5.0.0",
-        "glob": "^13.0.6",
+        "glob": "^14.0.4",
         "globals": "^17.6.0",
         "jsdom": "^30.0.1",
         "mini-css-extract-plugin": "^2.10.2",

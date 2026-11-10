@@ -949,6 +949,30 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     }
 
     /**
+     * Get the WHERE clause restricting articles to their visibility period
+     * (`begin_date` < NOW() < `end_date`, a null bound being open).
+     *
+     * @return array<int, array<string, mixed>> WHERE clause
+     */
+    public static function getVisibilityDateCriteria(): array
+    {
+        return [
+            [
+                'OR'  => [
+                    ['glpi_knowbaseitems.begin_date' => null],
+                    ['glpi_knowbaseitems.begin_date' => ['<', QueryFunction::now()]],
+                ],
+            ],
+            [
+                'OR'  => [
+                    ['glpi_knowbaseitems.end_date' => null],
+                    ['glpi_knowbaseitems.end_date' => ['>', QueryFunction::now()]],
+                ],
+            ],
+        ];
+    }
+
+    /**
      * Common JOIN clause used by getVisibilityCriteria* methods
      *
      * @param bool $forceall Force all join ?
@@ -2392,20 +2416,7 @@ TWIG, $twig_params);
 
             case 'search':
                 // Publication window
-                $criteria['WHERE'][] = [
-                    [
-                        'OR'  => [
-                            ['glpi_knowbaseitems.begin_date'  => null],
-                            ['glpi_knowbaseitems.begin_date'  => ['<', QueryFunction::now()]],
-                        ],
-                    ],
-                    [
-                        'OR'  => [
-                            ['glpi_knowbaseitems.end_date'    => null],
-                            ['glpi_knowbaseitems.end_date'    => ['>', QueryFunction::now()]],
-                        ],
-                    ],
-                ];
+                $criteria['WHERE'][] = self::getVisibilityDateCriteria();
 
                 if (((string) $params["contains"]) !== '') {
                     $search = $params["contains"];
@@ -2509,19 +2520,7 @@ TWIG, $twig_params);
 
             case 'browse':
                 if (!Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
-                    // Add visibility date
-                    $criteria['WHERE'][] = [
-                        'OR'  => [
-                            ['glpi_knowbaseitems.begin_date' => null],
-                            ['glpi_knowbaseitems.begin_date' => ['<', QueryFunction::now()]],
-                        ],
-                    ];
-                    $criteria['WHERE'][] = [
-                        'OR'  => [
-                            ['glpi_knowbaseitems.end_date' => null],
-                            ['glpi_knowbaseitems.end_date' => ['>', QueryFunction::now()]],
-                        ],
-                    ];
+                    $criteria['WHERE'][] = self::getVisibilityDateCriteria();
                 }
 
                 // Sort on the title the reader sees: the translation if any, else the original.
@@ -2945,18 +2944,7 @@ TWIG, $twig_params);
         ];
 
         // Add visibility date
-        $criteria['WHERE'][] = [
-            'OR'  => [
-                ['glpi_knowbaseitems.begin_date' => null],
-                ['glpi_knowbaseitems.begin_date' => ['<', QueryFunction::now()]],
-            ],
-        ];
-        $criteria['WHERE'][] = [
-            'OR'  => [
-                ['glpi_knowbaseitems.end_date'   => null],
-                ['glpi_knowbaseitems.end_date'   => ['>', QueryFunction::now()]],
-            ],
-        ];
+        $criteria['WHERE'][] = self::getVisibilityDateCriteria();
 
         if ($faq) { // FAQ
             $criteria['WHERE']['glpi_knowbaseitems.is_faq'] = 1;
