@@ -76,6 +76,29 @@
 {% set description_day = item.fields['date'] ? item.fields['date']|date('Y-m-d') : null %}
 {% set previous_day = null %}
 
+{% set solutions = timeline|filter((e) => e['type'] == 'ITILSolution') %}
+{# Anchors of the followups giving the reason of a solution refusal #}
+{% set refusal_anchors = solutions|filter((s) => s['item']['status'] == constant('CommonITILValidation::REFUSED') and (s['item']['itilfollowups_id'] ?? 0) > 0) %}
+{% set refusal_anchors = refusal_anchors|map((s) => 'ITILFollowup_' ~ s['item']['itilfollowups_id']) %}
+{# The last solution (timeline sorted by date then id, as when it is approved) holds the approval form, even if accepted (changes and problems) #}
+{% set can_approve_solution = item.isSolved() and item.canApprove() and item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::CLOSED')) %}
+{% set last_solution = is_timeline_reversed ? solutions|first : solutions|last %}
+{% set approval_solution_id = can_approve_solution and last_solution ? last_solution['item']['id'] : 0 %}
+{# Solved without solution (status changed directly) #}
+{% set standalone_approval_form = '' %}
+{% if can_approve_solution and approval_solution_id == 0 %}
+    {% set standalone_approval_form %}
+        <div class="timeline-item mb-3 w-100" data-testid="solution-approval">
+            <div class="timeline-content card">
+                <div class="card-header">{{ __('Approval of the solution') }}</div>
+                <div class="card-body">
+                    {{ include('components/itilobject/timeline/solution_approval_form.html.twig', {'rand': random()}) }}
+                </div>
+            </div>
+        </div>
+    {% endset %}
+{% endif %}
+
 <div class="itil-timeline d-flex flex-column align-items-start mb-auto {{ is_helpdesk ? "px-3 py-2" : '' }}">
     {% if is_timeline_reversed %}
         {{ include('components/itilobject/timeline/satisfaction_survey.html.twig') }}
@@ -91,6 +114,7 @@
         {% endif %}
         {{ include('components/itilobject/timeline/main_description.html.twig') }}
     {% else %}
+        {{ standalone_approval_form }}
         {{ include('components/itilobject/answer.html.twig') }}
     {% endif %}
 
@@ -98,20 +122,6 @@
 
     {# Keep track of loaded user to avoid reloading them from database if they appear multiple time in a ticket #}
     {% set user_cache = {} %}
-
-    {# Anchors of the followups giving the reason of a solution refusal #}
-    {% set refusal_anchors = [] %}
-    {# The last solution holds the approval form, even if accepted (changes and problems) #}
-    {% set can_approve_solution = item.isSolved() and item.canApprove() and item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::CLOSED')) %}
-    {% set approval_solution_id = 0 %}
-    {% for solution in timeline|filter((e) => e['type'] == 'ITILSolution') %}
-        {% if solution['item']['status'] == constant('CommonITILValidation::REFUSED') and (solution['item']['itilfollowups_id'] ?? 0) > 0 %}
-            {% set refusal_anchors = refusal_anchors|merge(['ITILFollowup_' ~ solution['item']['itilfollowups_id']]) %}
-        {% endif %}
-        {% if can_approve_solution and solution['item']['id'] > approval_solution_id %}
-            {% set approval_solution_id = solution['item']['id'] %}
-        {% endif %}
-    {% endfor %}
 
     {% for entry in timeline %}
         {% set entry_i = entry['item'] %}
@@ -372,6 +382,7 @@
     </div>
 
     {% if not is_timeline_reversed %}
+        {{ standalone_approval_form }}
         {{ include('components/itilobject/answer.html.twig') }}
         {{ include('components/itilobject/timeline/satisfaction_survey.html.twig') }}
     {% endif %}

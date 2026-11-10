@@ -95,53 +95,20 @@
                         {{ __('Waiting for approval') }}
                      </span>
                      {% set approvers = item.getSolutionApprovers() %}
-                     {% set approvers_names = approvers['users']|map((users_id) => get_item_name('User', users_id)) %}
-                     {% set approvers_names = approvers_names|merge(approvers['groups']|map((groups_id) => get_item_name('Group', groups_id))) %}
-                     {% if approvers_names is not empty %}
-                        <span class="small text-secondary">{{ __('By %s')|format(approvers_names|join(', ')) }}</span>
+                     {# Anonymized in the helpdesk, as the other actors of the timeline #}
+                     {% set approvers_links = approvers['users']|map((users_id) => get_item_link('User', users_id, {'enable_anonymization': true})) %}
+                     {% set approvers_links = approvers_links|merge(approvers['groups']|map((groups_id) => get_item_link('Group', groups_id, {'enable_anonymization': true}))) %}
+                     {% if approvers_links is not empty %}
+                        <span class="small text-secondary">{{ __('By %s')|format(approvers_links|join(', '))|raw }}</span>
                      {% endif %}
                   </div>
                {% endif %}
 
                {% if show_approval_form %}
-                  {# Same form as the answer to an approval request: always open, the comment is required to refuse #}
-                  <form method="post" action="{{ 'ITILFollowup'|itemtype_form_path }}" class="mt-2" data-submit-once data-testid="solution-approval-form">
-                     <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
-                     <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
-                     <input type="hidden" name="requesttypes_id" value="0" />
-
-                     {% if is_waiting_approval %}
-                        <hr class="my-2" />
-                     {% endif %}
-                     <div class="mb-3 comment-part">
-                        {{ fields.textareaField(
-                           'content',
-                           '',
-                           _n('Comment', 'Comments', 1),
-                           {
-                              'full_width': true,
-                              'helper': __('Optional when approved'),
-                              'enable_richtext': true,
-                              'enable_fileupload': true,
-                              'entities_id': item.fields['entities_id'],
-                              'is_horizontal': false,
-                              'rand': entry_rand,
-                           }
-                        ) }}
-                     </div>
-
-                     <hr class="my-2" />
-                     <div class="validation-footer">
-                        <button type="submit" class="btn btn-outline-red" name="add_reopen">
-                           <i class="ti ti-thumb-down" aria-hidden="true"></i>
-                           <span class="validation-label">{{ __('Refuse') }}</span>
-                        </button>
-                        <button type="submit" class="btn btn-outline-green" name="add_close">
-                           <i class="ti ti-thumb-up" aria-hidden="true"></i>
-                           <span class="validation-label">{{ __('Approve') }}</span>
-                        </button>
-                     </div>
-                  </form>
+                  {{ include('components/itilobject/timeline/solution_approval_form.html.twig', {
+                     'rand': entry_rand,
+                     'with_separator': is_waiting_approval,
+                  }) }}
                {% endif %}
             </div>
          {% endif %}
