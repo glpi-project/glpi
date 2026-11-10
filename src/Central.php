@@ -685,6 +685,33 @@ class Central extends CommonGLPI
                 );
             }
 
+            // Processes are no longer historized, warn about remaining history entries
+            $has_process_logs = false;
+            foreach (['itemtype_link', 'itemtype'] as $log_field) {
+                $has_process_logs = count($DB->request([
+                    'SELECT' => ['id'],
+                    'FROM'   => Log::getTable(),
+                    'WHERE'  => [$log_field => Item_Process::class],
+                    'LIMIT'  => 1,
+                ])) > 0;
+                if ($has_process_logs) {
+                    break;
+                }
+            }
+            if ($has_process_logs) {
+                $messages['warnings'][] = __s('Processes are no longer historized, but history still contains entries related to processes.')
+                    . ' '
+                    . sprintf(
+                        __s('You can remove them using the following query: %s'),
+                        htmlescape(sprintf(
+                            "DELETE FROM `%s` WHERE `itemtype` = '%s' OR `itemtype_link` = '%s';",
+                            Log::getTable(),
+                            Item_Process::class,
+                            Item_Process::class
+                        ))
+                    );
+            }
+
             // encrypt/decrypt key problems
             $messages['errors'] = (new GLPIKey())->getKeyFileReadErrors();
 
