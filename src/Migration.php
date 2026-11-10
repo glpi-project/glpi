@@ -1811,21 +1811,40 @@ class Migration
                     if ($data['itemtype'] === $itemtype) {
                         // Fix sort
                         if (isset($query['sort']) && is_array($query['sort'])) {
-                            // Multiple columns sort, with a matching `order` entry for each `sort` entry
+                            // Multiple columns sort, each `sort` entry is paired with the `order` entry of the same key
+                            $orders = $query['order'] ?? [];
+                            if (!is_array($orders)) {
+                                // Legacy scalar order, applied to the first sort entry (see `SearchEngine`)
+                                $orders = [$orders];
+                            }
+                            $sort_changed = false;
+                            $new_sorts = [];
+                            $new_orders = [];
                             foreach ($query['sort'] as $sort_key => $sort_opt) {
-                                if ((int) $sort_opt !== $old_search_opt) {
+                                if ((int) $sort_opt === $old_search_opt) {
+                                    $sort_changed = true;
+                                    if ($new_search_opt === null) {
+                                        continue;
+                                    }
+                                    $sort_opt = $new_search_opt;
+                                }
+                                if (in_array((int) $sort_opt, array_map('intval', $new_sorts), true)) {
+                                    // Already sorted on this option, the first occurrence takes precedence
                                     continue;
                                 }
-                                if ($new_search_opt === null) {
-                                    unset($query['sort'][$sort_key], $query['order'][$sort_key]);
+                                if (array_key_exists($sort_key, $orders)) {
+                                    $new_orders[count($new_sorts)] = $orders[$sort_key];
+                                }
+                                $new_sorts[] = $sort_opt;
+                            }
+                            if ($sort_changed) {
+                                $query['sort'] = $new_sorts;
+                                if ($new_orders !== []) {
+                                    $query['order'] = $new_orders;
                                 } else {
-                                    $query['sort'][$sort_key] = $new_search_opt;
+                                    unset($query['order']);
                                 }
                                 $is_changed = true;
-                            }
-                            $query['sort'] = array_values($query['sort']);
-                            if (isset($query['order']) && is_array($query['order'])) {
-                                $query['order'] = array_values($query['order']);
                             }
                         } elseif (isset($query['sort']) && (int) $query['sort'] === $old_search_opt) {
                             if ($new_search_opt === null) {

@@ -1050,6 +1050,41 @@ class MigrationTest extends DbTestCase
             'new_opt'       => null,
             'expected'      => 'sort%5B0%5D=1&order%5B0%5D=DESC&itemtype=Computer',
         ];
+        // Multiple columns sort with a legacy scalar order
+        yield [
+            'query'         => 'sort%5B0%5D=40&sort%5B1%5D=1&order=DESC&itemtype=Computer',
+            'new_opt'       => null,
+            'expected'      => 'sort%5B0%5D=1&itemtype=Computer',
+        ];
+        yield [
+            'query'         => 'sort%5B0%5D=1&sort%5B1%5D=40&order=DESC&itemtype=Computer',
+            'new_opt'       => null,
+            'expected'      => 'sort%5B0%5D=1&order%5B0%5D=DESC&itemtype=Computer',
+        ];
+        // Replacement option already used in sort: first occurrence takes precedence
+        yield [
+            'query'         => 'sort%5B0%5D=40&sort%5B1%5D=100&order%5B0%5D=ASC&order%5B1%5D=DESC&itemtype=Computer',
+            'new_opt'       => 100,
+            'expected'      => 'sort%5B0%5D=100&order%5B0%5D=ASC&itemtype=Computer',
+        ];
+        yield [
+            'query'         => 'sort%5B0%5D=100&sort%5B1%5D=40&order%5B0%5D=DESC&order%5B1%5D=ASC&itemtype=Computer',
+            'new_opt'       => 100,
+            'expected'      => 'sort%5B0%5D=100&order%5B0%5D=DESC&itemtype=Computer',
+        ];
+        // Order entry kept with its sort entry when removing a sort entry
+        yield [
+            'query'         => 'sort%5B0%5D=40&sort%5B1%5D=1&order%5B1%5D=DESC&itemtype=Computer',
+            'new_opt'       => null,
+            'expected'      => 'sort%5B0%5D=1&order%5B0%5D=DESC&itemtype=Computer',
+        ];
+
+        // Sort not affected by the change: kept as is, even when only criteria are migrated
+        yield [
+            'query'         => 'sort%5B0%5D=2&order%5B1%5D=DESC&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&itemtype=Computer',
+            'new_opt'       => 100,
+            'expected'      => 'sort%5B0%5D=2&order%5B1%5D=DESC&criteria%5B0%5D%5Bfield%5D=100&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&itemtype=Computer',
+        ];
 
         // Legacy single column sort
         yield [
