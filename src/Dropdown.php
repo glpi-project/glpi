@@ -1923,7 +1923,16 @@ HTML;
 
         // We check $options as the caller will set $options['default_itemtype'] only if it needs a
         // default itemtype and the default value can be '' thus empty won't be valid !
-        if (array_key_exists('default_itemtype', $options)) {
+        if (array_key_exists('default_itemtype', $options) && empty($params['default_itemtype'])) {
+            // No itemtype to preselect: the server has no item dropdown to return for it,
+            // so both fields are reset in the page, without any request.
+            $out .= Html::scriptBlock("
+                $(function() {
+                    $('#" . jsescape($field_id) . "').val('').trigger('change.select2');
+                    $('#" . jsescape($show_id) . "').empty();
+                });
+            ");
+        } elseif (array_key_exists('default_itemtype', $options)) {
             $out .= Html::scriptBlock("
                 $(function() {
                     $('#" . jsescape($field_id) . "').trigger('setValue', '" . jsescape($params['default_itemtype']) . "');
