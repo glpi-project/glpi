@@ -97,7 +97,7 @@ final class QuestionTypeDropdownTest extends AbstractQuestionTypeSelectableTest
         ]);
 
         $this->assertStringContainsString(
-            "<ul><li>Red</li><li>Yellow</li></ul>",
+            "<ul><li>Red</li> <li>Yellow</li></ul>",
             $ticket->fields['content'],
         );
     }

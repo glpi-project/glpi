@@ -586,7 +586,7 @@ TWIG;
         }
 
         // One answer per line, as in GLPI 10
-        return '<ul><li>' . implode('</li><li>', $answer) . '</li></ul>';
+        return '<ul><li>' . implode('</li> <li>', $answer) . '</li></ul>';
     }
 
     #[Override]

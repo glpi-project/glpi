@@ -115,6 +115,33 @@ final class TitleFieldTest extends DbTestCase
         $this->assertSame("Bread, Milk", $ticket->fields['name']);
     }
 
+    public function testEmptyTitleWithMultipleCheckboxAnswersKeepsAnswersSeparated(): void
+    {
+        $builder = new FormBuilder("My form name");
+        $builder->addQuestion(
+            name: "Shopping list",
+            type: QuestionTypeCheckbox::class,
+            extra_data: json_encode(new QuestionTypeSelectableExtraDataConfig([
+                'bread' => 'Bread',
+                'milk'  => 'Milk',
+            ]))
+        );
+        $form = $this->createForm($builder);
+
+        $this->setDestinationFieldConfig(
+            form: $form,
+            key: TitleField::getKey(),
+            config: new SimpleValueConfig(""),
+        );
+
+        $ticket = $this->sendFormAndGetCreatedTicket($form, [
+            "Shopping list" => ['bread', 'milk'],
+        ]);
+
+        // Title is built from the content, answers must not be merged
+        $this->assertStringContainsString("Bread Milk", $ticket->fields['name']);
+    }
+
     private function sendFormAndAssertTicketTitle(
         string $expected_title,
         Form $form,

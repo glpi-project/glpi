@@ -71,7 +71,7 @@ final class QuestionTypeCheckboxTest extends AbstractQuestionTypeSelectableTest
         ]);
 
         $this->assertStringContainsString(
-            "<ul><li>Bread</li><li>Milk</li><li>Cheese</li></ul>",
+            "<ul><li>Bread</li> <li>Milk</li> <li>Cheese</li></ul>",
             $ticket->fields['content'],
         );
     }

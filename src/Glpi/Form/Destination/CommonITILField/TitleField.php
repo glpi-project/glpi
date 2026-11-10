@@ -140,7 +140,7 @@ TWIG;
             $answers_set
         );
 
-        $input['name'] = html_entity_decode(strip_tags(str_replace('</li><li>', ', ', $title)));
+        $input['name'] = html_entity_decode(strip_tags(str_replace('</li> <li>', ', ', $title)));
 
         return $input;
     }
