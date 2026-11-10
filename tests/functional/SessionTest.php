@@ -1661,4 +1661,33 @@ class SessionTest extends DbTestCase
         $this->assertArrayHasKey('glpiparententities_string', $_SESSION);
         $this->assertIsArray($_SESSION['glpiparententities']);
     }
+
+    public function testCleanOnLogoutOnReplica(): void
+    {
+        global $CFG_GLPI, $DB;
+
+        $this->login();
+        $users_id = \Session::getLoginUserID();
+        $token_uid = bin2hex(random_bytes(8));
+
+        $CFG_GLPI['login_remember_time'] = 3600;
+        $this->callPrivateMethod(\Auth::class, 'setRememberMeCookie', $users_id, $token_uid, bin2hex(random_bytes(16)));
+        $cookie_name = \Auth::getRememberMeCookieName();
+        $this->assertArrayHasKey($cookie_name, $_COOKIE);
+
+        $DB->replica = true;
+        try {
+            \Session::cleanOnLogout();
+        } finally {
+            $DB->replica = false;
+        }
+
+        // Token cannot be deleted from the replica, but the cookie is removed.
+        $this->assertEquals(1, countElementsInTable('glpi_usertokens', [
+            'users_id' => $users_id,
+            'token_uid' => $token_uid,
+            'type' => 'rememberme',
+        ]));
+        $this->assertArrayNotHasKey($cookie_name, $_COOKIE);
+    }
 }

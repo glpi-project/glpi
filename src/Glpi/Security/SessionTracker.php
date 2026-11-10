@@ -164,6 +164,12 @@ final class SessionTracker
         ]);
 
         $session_exists = $it->count() > 0;
+        if ($DB->isReplica()) {
+            // Sessions cannot be recorded when connected to a read-only replica.
+            // Only allow sessions that are already known (e.g. restored from a "remember me" cookie),
+            // as other ones would be considered as invalid on the next request.
+            return $session_exists;
+        }
         if ($session_exists) {
             $DB->update('glpi_users_sessions', [
                 'users_id' => $_SESSION['glpiID'],
@@ -210,8 +216,19 @@ final class SessionTracker
     {
         global $DB;
 
-        if (session_status() === PHP_SESSION_ACTIVE && Session::getLoginSessionUID() !== null) {
+        if (
+            $DB->isReplica()
+            || session_status() !== PHP_SESSION_ACTIVE
+            || Session::getLoginSessionUID() === null
+        ) {
+            return;
+        }
+
+        try {
             $DB->update('glpi_users_sessions', ['last_activity_at' => date('Y-m-d H:i:s')], ['login_session_uid' => Session::getLoginSessionUID()]);
+        } catch (RuntimeException $e) {
+            // Tracking the session activity must never make the request fail.
+            ErrorHandler::logCaughtException($e);
         }
     }
 
@@ -227,6 +244,14 @@ final class SessionTracker
     {
         global $DB, $CFG_GLPI;
 
+        if ($DB->isReplica() && $reason !== self::REVOKE_REASON_USER) {
+            // Sessions cannot be revoked when connected to a read-only replica.
+            // Only the logout of the current user is permitted, as it does not require the database to be updated.
+            $exception = new AccessDeniedHttpException();
+            $exception->setMessageToDisplay(__('Sessions cannot be revoked while the database is in read-only mode.'));
+            throw $exception;
+        }
+
         $it = $DB->request([
             'SELECT' => ['users_id', 'session_file'],
             'FROM' => 'glpi_users_sessions',
@@ -236,24 +261,27 @@ final class SessionTracker
         $session = $it->current();
         $users_id = $session['users_id'] ?? null;
 
-        $DB->delete('glpi_users_sessions', ['login_session_uid' => $login_session_uid]);
-        if ($CFG_GLPI['login_history_retention_days'] <= 0) {
-            $DB->delete('glpi_users_sessionhistories', ['login_session_uid' => $login_session_uid]);
-        } else {
-            $DB->update('glpi_users_sessionhistories', [
-                'logged_out_at' => Session::getCurrentTime(),
-                'logout_reason' => $reason,
-                'users_id_revoked_by' => $_SESSION['glpiID'] ?? null,
-            ], [
-                'login_session_uid' => $login_session_uid,
-                'logged_out_at' => null,
-            ]);
-        }
-        if ($reason !== self::REVOKE_REASON_EXPIRED && $users_id) {
-            $DB->delete('glpi_usertokens', [
-                'users_id' => $users_id,
-                'token_uid' => $login_session_uid,
-            ]);
+        // Database cannot be updated when connected to a read-only replica.
+        if (!$DB->isReplica()) {
+            $DB->delete('glpi_users_sessions', ['login_session_uid' => $login_session_uid]);
+            if ($CFG_GLPI['login_history_retention_days'] <= 0) {
+                $DB->delete('glpi_users_sessionhistories', ['login_session_uid' => $login_session_uid]);
+            } else {
+                $DB->update('glpi_users_sessionhistories', [
+                    'logged_out_at' => Session::getCurrentTime(),
+                    'logout_reason' => $reason,
+                    'users_id_revoked_by' => $_SESSION['glpiID'] ?? null,
+                ], [
+                    'login_session_uid' => $login_session_uid,
+                    'logged_out_at' => null,
+                ]);
+            }
+            if ($reason !== self::REVOKE_REASON_EXPIRED && $users_id) {
+                $DB->delete('glpi_usertokens', [
+                    'users_id' => $users_id,
+                    'token_uid' => $login_session_uid,
+                ]);
+            }
         }
 
         if (ini_get('session.save_handler') === 'files' && $session) {

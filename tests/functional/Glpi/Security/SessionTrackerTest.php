@@ -45,6 +45,7 @@ use Redis;
 use RedisException;
 use ReflectionProperty;
 use RuntimeException;
+use Session;
 use User;
 
 class SessionTrackerTest extends DbTestCase
@@ -298,6 +299,98 @@ class SessionTrackerTest extends DbTestCase
             $redis->del($session_key);
             $redis->rawCommand('ACL', 'DELUSER', $user);
         }
+    }
+
+    public function testRecordNewSessionOnReplica(): void
+    {
+        global $DB;
+
+        $this->login();
+        $users_id = $_SESSION['glpiID'];
+        $sessions_count = countElementsInTable('glpi_users_sessions', ['users_id' => $users_id]);
+        $histories_count = countElementsInTable('glpi_users_sessionhistories', ['users_id' => $users_id]);
+
+        $DB->replica = true;
+        try {
+            // Already known session (e.g. restored from a "remember me" cookie) is accepted.
+            $this->assertTrue(SessionTracker::recordNewSession(new Auth()));
+
+            // New session cannot be recorded, it is refused.
+            $_SESSION['login_session_uid'] = bin2hex(random_bytes(16));
+            $this->assertFalse(SessionTracker::recordNewSession(new Auth()));
+        } finally {
+            $DB->replica = false;
+        }
+
+        $this->assertEquals($sessions_count, countElementsInTable('glpi_users_sessions', ['users_id' => $users_id]));
+        $this->assertEquals($histories_count, countElementsInTable('glpi_users_sessionhistories', ['users_id' => $users_id]));
+    }
+
+    public function testUpdateLastSessionActivityOnReplica(): void
+    {
+        global $DB;
+
+        $this->login();
+        $login_session_uid = Session::getLoginSessionUID();
+        $this->assertNotNull($login_session_uid);
+        $DB->update('glpi_users_sessions', ['last_activity_at' => '2024-01-01 00:00:00'], ['login_session_uid' => $login_session_uid]);
+
+        $DB->replica = true;
+        try {
+            SessionTracker::updateLastSessionActivity();
+        } finally {
+            $DB->replica = false;
+        }
+
+        $last_activity = $DB->request([
+            'SELECT' => 'last_activity_at',
+            'FROM' => 'glpi_users_sessions',
+            'WHERE' => ['login_session_uid' => $login_session_uid],
+        ])->current()['last_activity_at'];
+        $this->assertEquals('2024-01-01 00:00:00', $last_activity);
+    }
+
+    public function testRevokeSessionOnReplica(): void
+    {
+        global $DB;
+
+        $this->login();
+        $login_session_uid = Session::getLoginSessionUID();
+        $this->assertNotNull($login_session_uid);
+
+        $DB->replica = true;
+        try {
+            SessionTracker::revokeSession($login_session_uid, SessionTracker::REVOKE_REASON_USER);
+        } finally {
+            $DB->replica = false;
+        }
+
+        $this->assertEquals(1, countElementsInTable('glpi_users_sessions', ['login_session_uid' => $login_session_uid]));
+        $this->assertEquals(1, countElementsInTable('glpi_users_sessionhistories', [
+            'login_session_uid' => $login_session_uid,
+            'logged_out_at' => null,
+        ]));
+    }
+
+    public function testRevokeSessionByAdminOnReplica(): void
+    {
+        global $DB;
+
+        $this->login();
+        $login_session_uid = Session::getLoginSessionUID();
+        $this->assertNotNull($login_session_uid);
+
+        $DB->replica = true;
+        try {
+            SessionTracker::revokeSession($login_session_uid, SessionTracker::REVOKE_REASON_ADMIN);
+            $this->fail('An exception was expected.');
+        } catch (AccessDeniedHttpException) {
+            // Expected exception.
+        } finally {
+            $DB->replica = false;
+        }
+
+        $this->assertEquals(1, countElementsInTable('glpi_users_sessions', ['login_session_uid' => $login_session_uid]));
     }
 
     public function testRevokeAllSessionExceptCurrent(): void
