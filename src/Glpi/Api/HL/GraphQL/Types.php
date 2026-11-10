@@ -74,12 +74,14 @@ class Types
         $fields = [];
         $is_array_of_objects = $schema['type'] === Doc\Schema::TYPE_ARRAY && isset($schema['items']['properties']);
         if ($is_array_of_objects) {
+            $discriminator = $schema['items']['discriminator']['propertyName'] ?? null;
             foreach ($schema['items']['properties'] as $name => $property) {
-                $fields[$name] = static fn() => self::convertRESTPropertyToGraphQLType($property, $name, $schema_name, $api_version);
+                $fields[$name] = static fn() => self::convertRESTPropertyToGraphQLType($property, $name, $schema_name, $api_version, $discriminator);
             }
         } else {
+            $discriminator = $schema['discriminator']['propertyName'] ?? null;
             foreach ($schema['properties'] as $name => $property) {
-                $fields[$name] = static fn() => self::convertRESTPropertyToGraphQLType($property, $name, $schema_name, $api_version);
+                $fields[$name] = static fn() => self::convertRESTPropertyToGraphQLType($property, $name, $schema_name, $api_version, $discriminator);
             }
         }
         $type_config = [
@@ -97,10 +99,71 @@ class Types
      * @param string|null $name
      * @param string $prefix
      * @param string $api_version
-     * @return array{type: Type|ListOfType|ObjectType|callable}|null
+     * @param string|null $parent_discriminator The discriminator property name defined on the parent object schema, if any.
+     *     Used for union properties that do not define their own discriminator.
+     * @return array{type: Type|ListOfType|ObjectType|callable, resolve?: callable}|null
      */
-    private static function convertRESTPropertyToGraphQLType(array $property, ?string $name, string $prefix, string $api_version)
+    private static function convertRESTPropertyToGraphQLType(
+        array $property,
+        ?string $name,
+        string $prefix,
+        string $api_version,
+        ?string $parent_discriminator = null
+    ) {
+        $field = self::convertRESTPropertyToGraphQLFieldType($property, $name, $prefix, $api_version, $parent_discriminator);
+        if ($field === null) {
+            return null;
+        }
+        // Properties may define their own resolver which takes priority over the default field resolver
+        $resolver = $property['x-graphql-resolver'] ?? $property['items']['x-graphql-resolver'] ?? null;
+        if ($resolver !== null) {
+            $field['resolve'] = $resolver;
+        }
+        return $field;
+    }
+
+    /**
+     * @param string $name
+     * @param array<int, string|array{"$ref": string}> $variants Schema names or schema references
+     * @param string $discriminator The property name used to determine the concrete type of a value
+     * @param string $api_version
+     * @return UnionType
+     */
+    private static function createUnionType(string $name, array $variants, string $discriminator, string $api_version): UnionType
     {
+        if (isset(self::$types[$name])) {
+            /** @var UnionType */
+            return self::$types[$name];
+        }
+        $type_list = array_map(
+            static fn($v) => str_replace('#/components/schemas/', '', is_array($v) ? $v['$ref'] : $v),
+            $variants
+        );
+        $union_config = [
+            'name' => $name,
+            'types' => static fn() => array_map(static fn($t) => self::load($t, $api_version), $type_list),
+            'resolveType' => static fn($value): Type => self::load($value[$discriminator], $api_version),
+        ];
+        // Register the type so it can be found by the schema type loader during execution
+        /** @phpstan-ignore-next-line */
+        return self::$types[$name] = new UnionType($union_config);
+    }
+
+    /**
+     * @param array<string, mixed> $property
+     * @param string|null $name
+     * @param string $prefix
+     * @param string $api_version
+     * @param string|null $parent_discriminator
+     * @return array{type: Type|ListOfType|ObjectType|callable, args: array<string, mixed>}|null
+     */
+    private static function convertRESTPropertyToGraphQLFieldType(
+        array $property,
+        ?string $name,
+        string $prefix,
+        string $api_version,
+        ?string $parent_discriminator
+    ) {
         $type = $property['type'] ?? 'string';
         $graphql_type = match ($type) {
             Doc\Schema::TYPE_STRING => Type::string(),
@@ -109,6 +172,15 @@ class Types
             Doc\Schema::TYPE_BOOLEAN => Type::boolean(),
             default => null,
         };
+
+        // GraphQL-only field arguments, using GraphQL argument configs directly (type, defaultValue, description, ...)
+        $args = [];
+        if ($property['x-graphql-args'] ?? false) {
+            foreach ($property['x-graphql-args'] as $arg_name => $arg_config) {
+                $args[$arg_name] = $arg_config;
+            }
+        }
+
         if (
             $graphql_type === Type::string()
             && isset($property['format'])
@@ -117,51 +189,40 @@ class Types
             $graphql_type = DateTimeType::dateTime();
         }
         if ($graphql_type !== null) {
-            return ['type' => $graphql_type];
+            return ['type' => $graphql_type, 'args' => $args];
         }
 
         // Handle array and object types
         if ($type === Doc\Schema::TYPE_ARRAY) {
-            $items = $property['items'];
-
-            // Unions
-            if (isset($items['anyOf']) || isset($items['oneOf'])) {
-                $type_list = array_map(
-                    static fn($r) => str_replace('#/components/schemas/', '', $r),
-                    array_column($items['anyOf'] ?? $items['oneOf'], '$ref')
-                );
-                // anyOf and oneOf could both use UnionType. Not sure there is a good way to properly say for oneOf that all items are the same type.
-                $union_config = [
-                    'name' => "_{$prefix}_{$name}",
-                    'types' => static fn() => array_map(static fn($t) => self::load($t, $api_version), $type_list),
-                    'resolveType' => static function ($value) use ($api_version): Type {
-                        $t = $value;
-                        return self::load($t['_tile_type'], $api_version);
-                    },
-                ];
-                /** @phpstan-ignore-next-line */
-                $graphql_type = new UnionType($union_config);
-                return ['type' => new ListOfType($graphql_type)];
-            }
-
-            // Regular arrays
-            $graphql_type = self::convertRESTPropertyToGraphQLType($items, $name, $prefix, $api_version);
+            $graphql_type = self::convertRESTPropertyToGraphQLFieldType($property['items'], $name, $prefix, $api_version, $parent_discriminator);
             if ($graphql_type === null) {
                 return null;
             }
-            return ['type' => new ListOfType($graphql_type['type'])];
+            return ['type' => new ListOfType($graphql_type['type']), 'args' => $args];
         }
 
         if ($type === Doc\Schema::TYPE_OBJECT) {
+            // Unions
+            if (isset($property['anyOf']) || isset($property['oneOf'])) {
+                // anyOf and oneOf could both use UnionType. Not sure there is a good way to properly say for oneOf that all items are the same type.
+                $discriminator = $property['discriminator']['propertyName'] ?? $parent_discriminator ?? '_type';
+                return [
+                    'type' => self::createUnionType("_{$prefix}_{$name}", $property['anyOf'] ?? $property['oneOf'], $discriminator, $api_version),
+                    'args' => $args,
+                ];
+            }
+
             $properties = $property['properties'];
+            $discriminator = $property['discriminator']['propertyName'] ?? null;
             $fields = [];
             foreach ($properties as $prop_name => $prop_value) {
-                $fields[$prop_name] = static fn() => self::convertRESTPropertyToGraphQLType($prop_value, $prop_name, $prefix, $api_version);
+                $fields[$prop_name] = static fn() => self::convertRESTPropertyToGraphQLType($prop_value, $prop_name, $prefix, $api_version, $discriminator);
             }
             if (isset($property['x-full-schema'])) {
                 $full_schema_name = $property['x-full-schema'];
                 return [
                     'type' => static fn() => self::load($full_schema_name, $api_version),
+                    'args' => $args,
                 ];
             }
             return [
@@ -169,6 +230,7 @@ class Types
                     'name' => "_{$prefix}_{$name}",
                     'fields' => $fields,
                 ]),
+                'args' => $args,
             ];
         }
         return null;
