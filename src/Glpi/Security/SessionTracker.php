@@ -59,10 +59,12 @@ use User;
 use function Safe\ini_get;
 use function Safe\json_decode;
 use function Safe\parse_url;
+use function Safe\preg_split;
 use function Safe\session_id;
 use function Safe\session_save_path;
 use function Safe\strtotime;
 use function Safe\unlink;
+use function Safe\unpack;
 
 /**
  * @phpstan-type SessionFilterCriteria array{user?: string, status?: 'all'|'active', type?: 'all'|'web'|'api', authtype?: 'all'|integer, ip?: string, date?: list{string, string}}
@@ -80,6 +82,13 @@ final class SessionTracker
         'safari' => 'ti ti-brand-safari',
         'opera' => 'ti ti-brand-opera',
     ];
+
+    /**
+     * Redis connections used to delete sessions, indexed by their connection settings.
+     *
+     * @var array<string, \Redis>
+     */
+    private static array $redis_connections = [];
 
     /**
      * Checks if the given login session UID corresponds to a known active session.
@@ -268,6 +277,9 @@ final class SessionTracker
     /**
      * Delete a session stored by the phpredis session handler.
      *
+     * Connections are kept for the duration of the process, so that revoking many sessions
+     * (e.g. {@link self::revokeSessionsByAge()}) does not open a new connection for each of them.
+     *
      * @param string $save_path    The `session.save_path` of the phpredis session handler.
      * @param string $session_file The session file name, as stored in `glpi_users_sessions` (`sess_<session id>`).
      *
@@ -275,30 +287,91 @@ final class SessionTracker
      */
     private static function deleteRedisSession(string $save_path, string $session_file): void
     {
-        $settings = self::getRedisSessionConnectionSettings($save_path);
+        $session_id = str_replace('sess_', '', $session_file);
+        $settings = self::getRedisSessionConnectionSettings($save_path, $session_id);
+        $session_key = $settings['prefix'] . $session_id;
+
+        $connection_key = serialize(array_diff_key($settings, ['prefix' => true]));
+        if (isset(self::$redis_connections[$connection_key])) {
+            try {
+                self::$redis_connections[$connection_key]->del($session_key);
+                return;
+            } catch (\RedisException) {
+                // The connection may have been closed by the server, open a new one.
+                unset(self::$redis_connections[$connection_key]);
+            }
+        }
 
         $redis = new \Redis();
-        $redis->connect($settings['host'], $settings['port'], $settings['timeout']);
+        $redis->connect(
+            $settings['host'],
+            $settings['port'],
+            $settings['timeout'],
+            null,
+            $settings['retry_interval'],
+            $settings['read_timeout'],
+            $settings['context']
+        );
         if ($settings['auth'] !== null && !$redis->auth($settings['auth'])) {
             throw new \RedisException('Redis authentication failed.');
         }
         if ($settings['database'] > 0 && !$redis->select($settings['database'])) {
             throw new \RedisException(sprintf('Unable to select the Redis database %d.', $settings['database']));
         }
-        $redis->del($settings['prefix'] . str_replace('sess_', '', $session_file));
+        $redis->del($session_key);
+
+        self::$redis_connections[$connection_key] = $redis;
     }
 
     /**
-     * Get the connection settings of the phpredis session handler from its `session.save_path`.
+     * Get the connection settings of the server used by the phpredis session handler to store the given session.
      *
-     * The save path is a comma-separated list of servers (e.g. `tcp://host:6379?auth=secret&database=1`
-     * or `unix:///path/to/redis.sock?prefix=GLPI_`). Only the first server is used.
+     * The save path is a list of servers separated by commas or spaces (e.g. `tcp://host:6379?auth=secret&database=1`
+     * or `unix:///path/to/redis.sock?prefix=GLPI_`). When several servers are defined, the server is picked
+     * the same way as phpredis does, from a weighted hash of the session ID.
      *
-     * @return array{host: string, port: int, timeout: float, auth: string|list<string>|null, database: int, prefix: string}
+     * @return array{host: string, port: int, timeout: float, read_timeout: float, retry_interval: int, auth: string|list<string>|null, database: int, prefix: string, context: array{stream: array<mixed>}|null}
+     *
+     * @throws RuntimeException
      */
-    private static function getRedisSessionConnectionSettings(string $save_path): array
+    private static function getRedisSessionConnectionSettings(string $save_path, string $session_id): array
     {
-        $server = trim(explode(',', $save_path)[0]);
+        $servers = array_map(
+            self::parseRedisSessionServer(...),
+            preg_split('/[\s,]+/', $save_path, -1, PREG_SPLIT_NO_EMPTY)
+        );
+
+        // phpredis prepends each server to its pool, so the pool is browsed from the last server.
+        $servers = array_reverse($servers);
+        $total_weight = array_sum(array_column($servers, 'weight'));
+        if ($total_weight <= 0) {
+            throw new RuntimeException('No Redis server defined in the session save path.');
+        }
+
+        // phpredis uses the first 4 bytes of the session ID as a native int.
+        /** @var array{1: int} $seed */
+        $seed = unpack('l', str_pad(substr($session_id, 0, 4), 4, "\0"));
+        $position = $seed[1] % $total_weight;
+
+        $offset = 0;
+        foreach ($servers as $server) {
+            if ($position >= $offset && $position < $offset + $server['weight']) {
+                unset($server['weight']);
+                return $server;
+            }
+            $offset += $server['weight'];
+        }
+
+        throw new RuntimeException(sprintf('Unable to find the Redis server of the session "%s".', $session_id));
+    }
+
+    /**
+     * Parse a server definition of the phpredis session handler `session.save_path`.
+     *
+     * @return array{host: string, port: int, timeout: float, read_timeout: float, retry_interval: int, auth: string|list<string>|null, database: int, prefix: string, context: array{stream: array<mixed>}|null, weight: int}
+     */
+    private static function parseRedisSessionServer(string $server): array
+    {
         [$address, $query] = array_pad(explode('?', $server, 2), 2, '');
 
         $params = [];
@@ -329,12 +402,17 @@ final class SessionTracker
         }
 
         return [
-            'host'     => $host,
-            'port'     => $port,
-            'timeout'  => is_numeric($params['timeout'] ?? null) ? (float) $params['timeout'] : 0.0,
-            'auth'     => $auth,
-            'database' => is_numeric($params['database'] ?? null) ? (int) $params['database'] : 0,
-            'prefix'   => is_string($params['prefix'] ?? null) ? $params['prefix'] : 'PHPREDIS_SESSION:',
+            'host'           => $host,
+            'port'           => $port,
+            'timeout'        => is_numeric($params['timeout'] ?? null) ? (float) $params['timeout'] : 0.0,
+            'read_timeout'   => is_numeric($params['read_timeout'] ?? null) ? (float) $params['read_timeout'] : 0.0,
+            'retry_interval' => is_numeric($params['retry_interval'] ?? null) ? (int) $params['retry_interval'] : 0,
+            'auth'           => $auth,
+            'database'       => is_numeric($params['database'] ?? null) ? (int) $params['database'] : 0,
+            'prefix'         => is_string($params['prefix'] ?? null) ? $params['prefix'] : 'PHPREDIS_SESSION:',
+            // SSL context options, e.g. `stream[verify_peer]=0&stream[cafile]=/path/to/ca.pem`.
+            'context'        => is_array($params['stream'] ?? null) ? ['stream' => $params['stream']] : null,
+            'weight'         => is_numeric($params['weight'] ?? null) && (int) $params['weight'] > 0 ? (int) $params['weight'] : 1,
         ];
     }
 

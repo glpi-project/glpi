@@ -43,6 +43,8 @@ use Log;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Redis;
 use RedisException;
+use ReflectionProperty;
+use RuntimeException;
 use User;
 
 class SessionTrackerTest extends DbTestCase
@@ -136,12 +138,15 @@ class SessionTrackerTest extends DbTestCase
     public static function redisSessionSavePathProvider(): iterable
     {
         $defaults = [
-            'host'     => '127.0.0.1',
-            'port'     => 6379,
-            'timeout'  => 0.0,
-            'auth'     => null,
-            'database' => 0,
-            'prefix'   => 'PHPREDIS_SESSION:',
+            'host'           => '127.0.0.1',
+            'port'           => 6379,
+            'timeout'        => 0.0,
+            'read_timeout'   => 0.0,
+            'retry_interval' => 0,
+            'auth'           => null,
+            'database'       => 0,
+            'prefix'         => 'PHPREDIS_SESSION:',
+            'context'        => null,
         ];
 
         yield 'host only' => ['tcp://127.0.0.1', $defaults];
@@ -149,14 +154,17 @@ class SessionTrackerTest extends DbTestCase
         yield 'without scheme' => ['127.0.0.1:6380', array_merge($defaults, ['port' => 6380])];
 
         yield 'password, database and prefix' => [
-            'tcp://redis.example.org:6380?auth=s3cr%26t&database=2&prefix=GLPI_SESS:&timeout=2.5',
+            'tcp://redis.example.org:6380?auth=s3cr%26t&database=2&prefix=GLPI_SESS:&timeout=2.5&read_timeout=3&retry_interval=100',
             [
-                'host'     => 'redis.example.org',
-                'port'     => 6380,
-                'timeout'  => 2.5,
-                'auth'     => 's3cr&t',
-                'database' => 2,
-                'prefix'   => 'GLPI_SESS:',
+                'host'           => 'redis.example.org',
+                'port'           => 6380,
+                'timeout'        => 2.5,
+                'read_timeout'   => 3.0,
+                'retry_interval' => 100,
+                'auth'           => 's3cr&t',
+                'database'       => 2,
+                'prefix'         => 'GLPI_SESS:',
+                'context'        => null,
             ],
         ];
 
@@ -173,6 +181,15 @@ class SessionTrackerTest extends DbTestCase
             'auth' => 'secret',
         ])];
 
+        yield 'TLS with stream context options' => [
+            'tls://redis.example.org:6390?stream[verify_peer]=0&stream[cafile]=/etc/ssl/glpi/ca.pem',
+            array_merge($defaults, [
+                'host'    => 'tls://redis.example.org',
+                'port'    => 6390,
+                'context' => ['stream' => ['verify_peer' => '0', 'cafile' => '/etc/ssl/glpi/ca.pem']],
+            ]),
+        ];
+
         yield 'unix socket' => ['unix:///var/run/redis/redis.sock?auth=secret&database=3', array_merge($defaults, [
             'host'     => '/var/run/redis/redis.sock',
             'port'     => 0,
@@ -180,26 +197,45 @@ class SessionTrackerTest extends DbTestCase
             'database' => 3,
         ])];
 
-        yield 'several servers' => [
-            'tcp://10.0.0.1:6379?weight=1&auth=first, tcp://10.0.0.2:6379?weight=2&auth=second',
-            array_merge($defaults, ['host' => '10.0.0.1', 'auth' => 'first']),
+        // phpredis browses its pool from the last server, and picks the server from the first 4 bytes
+        // of the session ID modulo the total weight: `abcd` => 1, `abce` => 2, `abcf` => 0.
+        $several_servers = 'tcp://10.0.0.1:6379?weight=1&auth=first, tcp://10.0.0.2:6379?weight=2&auth=second';
+        $first_server    = array_merge($defaults, ['host' => '10.0.0.1', 'auth' => 'first']);
+        $second_server   = array_merge($defaults, ['host' => '10.0.0.2', 'auth' => 'second']);
+        yield 'several servers, position 0' => [$several_servers, $second_server, 'abcf0123456789'];
+        yield 'several servers, position 1' => [$several_servers, $second_server, 'abcd0123456789'];
+        yield 'several servers, position 2' => [$several_servers, $first_server, 'abce0123456789'];
+
+        yield 'several servers separated by spaces' => [
+            'tcp://10.0.0.1:6379?auth=first tcp://10.0.0.2:6379?auth=second',
+            $first_server,
+            'abcd0123456789',
         ];
     }
 
     #[DataProvider('redisSessionSavePathProvider')]
-    public function testGetRedisSessionConnectionSettings(string $save_path, array $expected): void
-    {
+    public function testGetRedisSessionConnectionSettings(
+        string $save_path,
+        array $expected,
+        string $session_id = 'abcd0123456789'
+    ): void {
         $this->assertSame(
             $expected,
-            $this->callPrivateMethod(SessionTracker::class, 'getRedisSessionConnectionSettings', $save_path)
+            $this->callPrivateMethod(SessionTracker::class, 'getRedisSessionConnectionSettings', $save_path, $session_id)
         );
+    }
+
+    public function testGetRedisSessionConnectionSettingsWithoutServer(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->callPrivateMethod(SessionTracker::class, 'getRedisSessionConnectionSettings', ' , ', 'abcd0123456789');
     }
 
     public function testDeleteRedisSession(): void
     {
         $redis = new Redis();
         try {
-            $redis->connect('redis', 6379, 1.0);
+            @$redis->connect('redis', 6379, 1.0);
         } catch (RedisException $e) {
             $this->markTestSkipped('Redis server is not available: ' . $e->getMessage());
         }
@@ -212,6 +248,9 @@ class SessionTrackerTest extends DbTestCase
         $prefix      = 'GLPI_TEST_SESS_' . $user . ':';
         $session_key = $prefix . $session_id;
         $database    = 3;
+
+        $connections_property = new ReflectionProperty(SessionTracker::class, 'redis_connections');
+        $connections_property->setValue(null, []);
 
         $redis->rawCommand('ACL', 'SETUSER', $user, 'on', '>' . $password, '~*', '+@all');
         try {
@@ -237,17 +276,22 @@ class SessionTrackerTest extends DbTestCase
             $this->assertSame(1, $redis->exists($session_key));
 
             // Valid credentials: only the session key of the selected database is deleted.
-            $this->callPrivateMethod(
-                SessionTracker::class,
-                'deleteRedisSession',
-                sprintf('tcp://redis:6379?auth[]=%s&auth[]=%s&database=%d&prefix=%s', $user, $password, $database, $prefix),
-                'sess_' . $session_id
-            );
+            $save_path = sprintf('tcp://redis:6379?auth[]=%s&auth[]=%s&database=%d&prefix=%s', $user, $password, $database, $prefix);
+            $this->callPrivateMethod(SessionTracker::class, 'deleteRedisSession', $save_path, 'sess_' . $session_id);
             $this->assertSame(0, $redis->exists($session_key));
             $this->assertSame(1, $redis->exists($prefix . 'other'));
+
+            // The connection is reused to delete another session.
+            $connections = $connections_property->getValue();
+            $this->assertCount(1, $connections);
+            $this->callPrivateMethod(SessionTracker::class, 'deleteRedisSession', $save_path, 'sess_other');
+            $this->assertSame(0, $redis->exists($prefix . 'other'));
+            $this->assertSame($connections, $connections_property->getValue());
+
             $redis->select(0);
             $this->assertSame(1, $redis->exists($session_key));
         } finally {
+            $connections_property->setValue(null, []);
             $redis->select($database);
             $redis->del($session_key, $prefix . 'other');
             $redis->select(0);
