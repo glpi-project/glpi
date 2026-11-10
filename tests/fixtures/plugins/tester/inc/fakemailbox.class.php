@@ -32,13 +32,4 @@
  * ---------------------------------------------------------------------
  */
 
-class PluginTesterFakeStorage extends Laminas\Mail\Storage\Imap
-{
-    public function __construct($params)
-    {
-    }
-
-    public function close()
-    {
-    }
-}
+class PluginTesterFakeMailbox extends DirectoryTree\ImapEngine\Mailbox {}

@@ -11,6 +11,7 @@ The present file will list all changes made to the project; according to the
 - "Impact" question type in forms, which can be used to define the impact of the created tickets, changes and problems.
 
 ### Changes
+- Mails receivers now rely on the `directorytree/imapengine` library to connect to IMAP servers.
 
 ### Deprecated
 
@@ -39,6 +40,8 @@ The present file will list all changes made to the project; according to the
 - `Html::getConfirmationOnActionScript()`. Use the `data-glpi-confirm="<message>"` attribute instead.
 - `Html::link()`.
 - `confirmaction` option of `Html::submit()`. Confirmation is now handled through the `data-glpi-confirm` attribute, so no additional action can be run on confirmation.
+- `laminas/laminas-mail` and `laminas/laminas-mime` PHP libraries. Use `directorytree/imapengine` and `zbateson/mail-mime-parser` instead.
+- `Toolbox::getMailServerStorageInstance()`. Use `Toolbox::getMailServerMailboxInstance()` instead.
 
 ## [12.0.2] unreleased
 
