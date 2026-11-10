@@ -367,6 +367,15 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                   && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])));
     }
 
+    protected function canRecipientApprove(int $users_id): bool
+    {
+        if ($users_id === (int) Session::getLoginUserID()) {
+            // Active profile only, as in canApprove()
+            return Session::haveRight(self::$rightname, self::SURVEY);
+        }
+        return Profile::haveUserRight($users_id, self::$rightname, self::SURVEY, $this->getEntityID());
+    }
+
 
     public function canMassiveAction($action, $field, $value)
     {
