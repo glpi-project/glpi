@@ -656,6 +656,58 @@ class PendingReasonTest extends DbTestCase
     }
 
     /**
+     * @param class-string<CommonITILObject> $itemtype
+     */
+    #[DataProvider('itemtypeProvider')]
+    public function testGetLastPendingTimelineItemDataForItem(string $itemtype): void
+    {
+        $this->login();
+
+        $pending_reason = getItemByTypeName(PendingReason::class, 'needupdate_pendingreason');
+        $task_class     = $itemtype::getTaskClass();
+        $this->assertNotNull($task_class);
+
+        $item       = $this->createItem($itemtype, ['name' => 'item', 'content' => 'item']);
+        $other_item = $this->createItem($itemtype, ['name' => 'other item', 'content' => 'other item']);
+
+        $followup_1 = $this->createItem(ITILFollowup::class, [
+            'itemtype' => $itemtype,
+            'items_id' => $item->getID(),
+            'content'  => 'first followup',
+        ]);
+        $task = $this->createItem($task_class, [
+            $itemtype::getForeignKeyField() => $item->getID(),
+            'content'                       => 'task',
+        ]);
+        $followup_2 = $this->createItem(ITILFollowup::class, [
+            'itemtype' => $itemtype,
+            'items_id' => $item->getID(),
+            'content'  => 'second followup',
+        ]);
+        $other_followup = $this->createItem(ITILFollowup::class, [
+            'itemtype' => $itemtype,
+            'items_id' => $other_item->getID(),
+            'content'  => 'followup of another item',
+        ]);
+
+        $this->assertFalse(PendingReason_Item::getLastPendingTimelineItemDataForItem($item));
+
+        // The last pending action is searched among both the followups and the tasks of the item,
+        // and pending actions of other items are ignored.
+        foreach ([$followup_1, $task, $followup_2, $other_followup] as $timeline_item) {
+            $this->assertTrue(PendingReason_Item::createForItem($timeline_item, [
+                'pendingreasons_id' => $pending_reason->getID(),
+            ]));
+
+            $expected = $timeline_item === $other_followup ? $followup_2 : $timeline_item;
+            $last_pending = PendingReason_Item::getLastPendingTimelineItemDataForItem($item);
+            $this->assertInstanceOf(PendingReason_Item::class, $last_pending);
+            $this->assertEquals($expected::class, $last_pending->fields['itemtype']);
+            $this->assertEquals($expected->getID(), $last_pending->fields['items_id']);
+        }
+    }
+
+    /**
      * Remove pending from timeline item should delete any linked
      * PendingReason_Item objects and restore previous status
      */

@@ -55,6 +55,34 @@ use function Safe\unlink;
 
 class SessionTest extends DbTestCase
 {
+    public function testCanViewAllEntitiesFollowsEntitiesChanges(): void
+    {
+        $this->login();
+        $this->setEntity('Root entity', true);
+
+        // The command line can always view all entities, emulate a web request.
+        $GLOBALS['GLPI_IS_COMMAND_LINE'] = false;
+        try {
+            $this->assertTrue(\Session::canViewAllEntities());
+
+            // An added entity is counted, and is added to the active entities of its creator.
+            $entity = $this->createItem(\Entity::class, [
+                'name'        => 'canViewAllEntities test',
+                'entities_id' => 0,
+            ]);
+            $this->assertTrue(\Session::canViewAllEntities());
+
+            unset($_SESSION['glpiactiveentities'][$entity->getID()]);
+            $this->assertFalse(\Session::canViewAllEntities());
+
+            // A purged entity is no longer counted.
+            $this->assertTrue($entity->delete(['id' => $entity->getID()], true));
+            $this->assertTrue(\Session::canViewAllEntities());
+        } finally {
+            unset($GLOBALS['GLPI_IS_COMMAND_LINE']);
+        }
+    }
+
     /**
      * Language used to test the local i18n files.
      * It must be a language that is not used by any other test, as the local

@@ -100,6 +100,11 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     private const DB_KEEPALIVE_INTERVAL = 30;
 
+    /**
+     * Prefix of the cache keys of checkDefaultPasswords() results.
+     */
+    private const DEFAULT_PASSWORDS_CACHE_KEY_PREFIX = 'user_default_passwords_';
+
     public static array $undisclosedFields = [
         'password',
         'password_history',
@@ -6219,7 +6224,7 @@ HTML;
      */
     public static function checkDefaultPasswords()
     {
-        global $DB;
+        global $DB, $GLPI_CACHE;
 
         $passwords = ['glpi'      => 'glpi',
             'tech'      => 'tech',
@@ -6228,7 +6233,7 @@ HTML;
         ];
         $default_password_set = [];
 
-        $users = $DB->request([
+        $users = iterator_to_array($DB->request([
             'SELECT' => ['name', 'password'],
             'FROM' => self::getTable(),
             'WHERE' => [
@@ -6236,12 +6241,22 @@ HTML;
                 'is_deleted' => 0,
                 'name'       => array_keys($passwords),
             ],
-        ]);
+            'ORDER' => ['name'],
+        ]), false);
+
+        // Verifying a password is slow by design: keep the result for as long as the password hashes stay the same.
+        $cache_key = self::DEFAULT_PASSWORDS_CACHE_KEY_PREFIX . sha1(json_encode($users));
+        $cached = $GLPI_CACHE->get($cache_key);
+        if (is_array($cached)) {
+            return $cached;
+        }
+
         foreach ($users as $data) {
             if (Auth::checkPassword($passwords[strtolower($data['name'])], $data['password'])) {
                 $default_password_set[] = $data['name'];
             }
         }
+        $GLPI_CACHE->set($cache_key, $default_password_set, DAY_TIMESTAMP);
 
         return $default_password_set;
     }
