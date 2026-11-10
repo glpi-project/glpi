@@ -39,10 +39,17 @@ use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\CapacityInterface;
+use Glpi\Asset\Capacity\IsInventoriableCapacity;
+use Glpi\Asset\CapacityConfig;
 use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Asset\CustomFieldType\DropdownType;
 use Glpi\Asset\CustomFieldType\StringType;
+use Glpi\Inventory\MainAsset\GenericAsset;
+use Glpi\Inventory\MainAsset\GenericNetworkAsset;
+use Glpi\Inventory\MainAsset\GenericPrinterAsset;
+use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class AssetTest extends DbTestCase
 {
@@ -146,10 +153,23 @@ class AssetTest extends DbTestCase
         $this->assertSame('new asset', $asset->fields['name']);
     }
 
-    public function testSearchOptionsUnicity(): void
+    public static function inventoryMainAssetProvider(): iterable
+    {
+        yield [GenericAsset::class];
+        yield [GenericNetworkAsset::class];
+        yield [GenericPrinterAsset::class];
+    }
+
+    #[DataProvider('inventoryMainAssetProvider')]
+    public function testSearchOptionsUnicity(string $inventory_mainasset): void
     {
         $capacities = array_map(
-            fn(CapacityInterface $capacity) => new Capacity(name: $capacity::class),
+            fn(CapacityInterface $capacity) => new Capacity(
+                name: $capacity::class,
+                config: $capacity instanceof IsInventoriableCapacity
+                    ? new CapacityConfig(['inventory_mainasset' => $inventory_mainasset])
+                    : new CapacityConfig()
+            ),
             AssetDefinitionManager::getInstance()->getAvailableCapacities()
         );
         $definition = $this->initAssetDefinition(
@@ -162,6 +182,8 @@ class AssetTest extends DbTestCase
         ]);
 
         $this->assertIsArray($asset->searchOptions());
+        // Also check options added by other itemtypes (e.g. `Infocom`)
+        $this->assertIsArray(SearchOption::getOptionsForItemtype($definition->getAssetClassName()));
     }
 
     public function testPrepareInputForAdd()
@@ -465,5 +487,44 @@ class AssetTest extends DbTestCase
         $this->assertSame([], $foo_asset->fields);
 
         $this->assertTrue((new $bar_classname())->getFromDB($bar_asset->getID()));
+    }
+
+    public function testShowFormWithUnavailableField(): void
+    {
+        $definition = $this->initAssetDefinition(
+            capacities: [
+                new Capacity(
+                    name: IsInventoriableCapacity::class,
+                    config: new CapacityConfig(['inventory_mainasset' => GenericNetworkAsset::class])
+                ),
+            ]
+        );
+        $this->updateItem(
+            AssetDefinition::class,
+            $definition->getID(),
+            ['fields_display' => ['name', 'sysdescr']],
+            ['fields_display']
+        );
+
+        // Disabling the capacity makes the `sysdescr` field unavailable, but it is still in `fields_display`
+        $this->updateItem(AssetDefinition::class, $definition->getID(), ['capacities' => []], ['capacities']);
+        $definition->getFromDB($definition->getID());
+        $this->assertContains('sysdescr', array_column($definition->getDecodedFieldsField(), 'key'));
+        $this->assertArrayNotHasKey('sysdescr', $definition->getAllFields());
+
+        $this->login(); // must be done after the definition creation, to get rights on it
+
+        $asset = $this->createItem($definition->getAssetClassName(), [
+            'name'        => 'test asset',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        ob_start();
+        $result = $asset->showForm($asset->getID());
+        $output = ob_get_clean();
+
+        $this->assertTrue($result);
+        $this->assertStringContainsString('name="name"', $output);
+        $this->assertStringNotContainsString('name="sysdescr"', $output);
     }
 }
