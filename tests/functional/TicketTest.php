@@ -13016,4 +13016,111 @@ HTML,
             $this->assertCount(1, array_keys($recipients, $user->fields['name'] . '@several.test'));
         }
     }
+
+    public function testTimelineDisplaysTheInfoCardOfEachAuthor(): void
+    {
+        $this->login();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Timeline authors',
+            'content'     => 'Timeline authors',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Two authors, the first one having several entries
+        $authors = [
+            getItemByTypeName(User::class, TU_USER),
+            getItemByTypeName(User::class, 'tech'),
+            getItemByTypeName(User::class, TU_USER),
+        ];
+        $followups = [];
+        foreach ($authors as $author) {
+            $followups[] = $this->createItem(ITILFollowup::class, [
+                'itemtype' => Ticket::class,
+                'items_id' => $ticket->getID(),
+                'content'  => 'Followup of ' . $author->fields['name'],
+                'users_id' => $author->getID(),
+            ]);
+        }
+
+        ob_start();
+        $ticket->showForm($ticket->getID());
+        $crawler = new Crawler(ob_get_clean());
+
+        foreach ($followups as $index => $followup) {
+            $author = $authors[$index];
+            $entry  = $crawler->filter('#ITILFollowup_' . $followup->getID());
+            $this->assertCount(1, $entry);
+
+            $this->assertStringContainsString(
+                $author->getFriendlyName(),
+                $entry->filter('.timeline-header .creator')->text()
+            );
+
+            // One info card for the picture of the author, another one for its name
+            $info_cards = $entry->filter('.user-info-card');
+            $this->assertCount(2, $info_cards);
+            foreach ($info_cards as $info_card) {
+                $info_card = new Crawler($info_card);
+                $this->assertSame($author->getFriendlyName(), $info_card->filter('.card-title')->text());
+                $this->assertStringContainsString(
+                    'user.form.php?id=' . $author->getID(),
+                    $info_card->filter('.card-title a')->attr('href')
+                );
+            }
+        }
+    }
+
+    public function testTimelineQueriesOnAuthorsDoNotDependOnEntriesCount(): void
+    {
+        $this->login();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Timeline queries',
+            'content'     => 'Timeline queries',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $author = getItemByTypeName(User::class, 'tech');
+        $add_followup = function () use ($ticket, $author): void {
+            $this->createItem(ITILFollowup::class, [
+                'itemtype' => Ticket::class,
+                'items_id' => $ticket->getID(),
+                'content'  => 'Followup',
+                'users_id' => $author->getID(),
+            ]);
+        };
+
+        // Number of queries run on the users and on their emails to display the ticket
+        $count_queries = static function () use ($ticket): array {
+            $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
+            $before = count(\Glpi\Debug\Profile::getCurrent()->getDebugInfo()['sql']['queries'] ?? []);
+            ob_start();
+            $ticket->showForm($ticket->getID());
+            ob_end_clean();
+            $queries = array_slice(\Glpi\Debug\Profile::getCurrent()->getDebugInfo()['sql']['queries'], $before);
+            $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+
+            $counts = [];
+            foreach (['glpi_users', 'glpi_useremails'] as $table) {
+                $counts[$table] = count(array_filter(
+                    $queries,
+                    static fn(array $query): bool => str_contains($query['query'], "FROM `$table`")
+                ));
+            }
+            return $counts;
+        };
+
+        $add_followup();
+        $count_queries(); // The first display fills the caches
+        $expected = $count_queries();
+        $this->assertGreaterThan(0, $expected['glpi_users']);
+        $this->assertGreaterThan(0, $expected['glpi_useremails']);
+
+        for ($i = 0; $i < 5; $i++) {
+            $add_followup();
+        }
+
+        // An author is loaded once, and so are the data of its info card, whatever the number of its entries
+        $this->assertSame($expected, $count_queries());
+    }
 }

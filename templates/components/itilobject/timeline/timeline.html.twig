@@ -49,6 +49,8 @@
 
     {# Keep track of loaded user to avoid reloading them from database if they appear multiple time in a ticket #}
     {% set user_cache = {} %}
+    {# Same for their info card, which is displayed by two tooltips in each of their entries #}
+    {% set user_info_card_cache = {} %}
 
     {% for entry in timeline %}
         {% set entry_i = entry['item'] %}
@@ -111,6 +113,25 @@
         {# Update cache #}
         {% set user_cache = user_cache|merge({("_" ~ users_id): entry_user}) %}
 
+        {% set user_info_card = null %}
+        {% if entry_user is not null and not anonym_user %}
+            {% set user_info_card = user_info_card_cache["_" ~ users_id] ?? null %}
+            {% if user_info_card is null and entry_user.canView() %}
+                {% set user_fields = entry_user.fields %}
+                {% set user_fields = user_fields|merge({user_name: entry_user.getFriendlyName()}) %}
+                {% set user_fields = user_fields|merge({email: entry_user.getDefaultEmail()}) %}
+                {% if has_profile_right('user', constant('READ')) %}
+                    {% set user_fields = user_fields|merge({login: entry_user.fields['name']}) %}
+                {% endif %}
+                {% set user_info_card = include('components/user/info_card.html.twig', {
+                    'user': user_fields,
+                    'user_object': entry_user,
+                    'enable_anonymization': false,
+                }, with_context = false) %}
+                {% set user_info_card_cache = user_info_card_cache|merge({("_" ~ users_id): user_info_card}) %}
+            {% endif %}
+        {% endif %}
+
         {% set anchor = entry['type'] ~ '_' ~ entry_i['id'] %}
         <div id="{{ anchor }}" class="timeline-item mb-3 {{ is_private_class }} {{ itiltype }} {{ state_class }} {{ entry['class'] ?? '' }} {{ 'right' in item_position ? 'ms-auto' : '' }}"
              data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}"
@@ -153,12 +174,6 @@
                     {% set avatar_rand = random() %}
                     {# log entries have no users_id #}
                     {% if entry_user is not null %}
-                        {% set user_fields = entry_user.fields %}
-                        {% set user_fields = user_fields|merge({user_name: entry_user.getFriendlyName()}) %}
-                        {% set user_fields = user_fields|merge({email: entry_user.getDefaultEmail()}) %}
-                        {% if has_profile_right('user', constant('READ')) %}
-                            {% set user_fields = user_fields|merge({login: entry_user.fields['name']}) %}
-                        {% endif %}
                         <span id="timeline-avatar{{ avatar_rand }}">
                      {{ include('components/user/picture.html.twig', {
                          'users_id': users_id,
@@ -166,13 +181,9 @@
                          'enable_anonymization': anonym_user
                      }, with_context = false) }}
                   </span>
-                        {% if not anonym_user and entry_user.canView() %}
+                        {% if user_info_card is not null %}
                             {% do call('Html::showToolTip', [
-                                include('components/user/info_card.html.twig', {
-                                    'user': user_fields,
-                                    'user_object': entry_user,
-                                    'enable_anonymization': false,
-                                }, with_context = false), {
+                                user_info_card, {
                                     'applyto': 'timeline-avatar' ~ avatar_rand
                                 }]) %}
                         {% endif %}
