@@ -152,6 +152,48 @@ class EnvironmentTest extends AbstractInventoryAsset
         );
     }
 
+    public function testHandleExisting(): void
+    {
+        $this->login();
+        $conf = new Conf();
+        $this->assertTrue($conf->saveConf([
+            'import_env' => 1,
+        ]));
+        $this->logout();
+
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $criteria = ['items_id' => $computer->getID(), 'itemtype' => 'Computer'];
+
+        $converter = new Converter();
+        $json = json_decode($converter->convert($this->assetProvider()[0]['xml']));
+
+        $asset = new Environment($computer, $json->content->envs);
+        $asset->setExtraData((array) $json->content);
+        $this->assertTrue($asset->checkConf($conf));
+        $asset->prepare();
+        $asset->handleLinks();
+        $asset->handle();
+
+        $first = getAllDataFromTable(\Item_Environment::getTable(), $criteria);
+        $this->assertNotEmpty($first);
+
+        // second inventory, one value has changed
+        $json->content->envs[0]->val = 'changed value';
+        $asset = new Environment($computer, $json->content->envs);
+        $asset->setExtraData((array) $json->content);
+        $this->assertTrue($asset->checkConf($conf));
+        $asset->prepare();
+        $asset->handleLinks();
+        $asset->handle();
+
+        $second = getAllDataFromTable(\Item_Environment::getTable(), $criteria);
+        // existing environments are updated, not deleted then re-created
+        $this->assertSame(array_keys($first), array_keys($second));
+
+        $changed_id = array_key_first(array_filter($first, static fn($env) => $env['key'] === $json->content->envs[0]->key));
+        $this->assertSame('changed value', $second[$changed_id]['value']);
+    }
+
     public function testGenericAssetEnvironment(): void
     {
         //create generic asset
