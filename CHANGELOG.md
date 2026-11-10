@@ -8,6 +8,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 - Documents, contracts and notes on cables.
 - Date variables (e.g. `{YEAR}`, `{MONTH_NAME+1}`, `{WEEK}` with `{YEAR_OF_WEEK}`) in the predefined title of recurrent tickets and changes, computed from the occurrence date.
+- "Impact" question type in forms, which can be used to define the impact of the created tickets, changes and problems.
 
 ### Changes
 
