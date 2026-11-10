@@ -156,10 +156,11 @@ class Session
         $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
 
         $cookie_name = Auth::getRememberMeCookieName();
-        if (isset($_COOKIE[$cookie_name])) {
+        if ($auth->getAuthType() === Auth::COOKIE && isset($_COOKIE[$cookie_name])) {
+            // Session restored from the "Remember me" cookie: keep its login session UID.
             $login_session_uid = explode(':', $_COOKIE[$cookie_name])[0];
         } else {
-            // Login is not using "Remember me", so a new UID is used just for this PHP-based session for consistency.
+            // Fresh login, a new UID is used (an existing "Remember me" cookie belongs to another login session).
             $login_session_uid = bin2hex(random_bytes(8));
         }
         $_SESSION['login_session_uid'] = $login_session_uid;
