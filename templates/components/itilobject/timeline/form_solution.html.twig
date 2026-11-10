@@ -66,7 +66,7 @@
             {% if entry_i['status'] in [constant('CommonITILValidation::ACCEPTED'), constant('CommonITILValidation::REFUSED')] %}
                {% set is_accepted = entry_i['status'] == constant('CommonITILValidation::ACCEPTED') %}
                {% set action = is_accepted ? __('Accepted') : _x('validation', 'Refused') %}
-               <span class="badge {{ is_accepted ? 'bg-green-lt' : 'bg-red-lt' }}" data-testid="solution-approval-status">
+               <span class="badge {{ is_accepted ? 'bg-success-lt' : 'bg-danger-lt' }}" data-testid="solution-approval-status">
                   <i class="ti {{ is_accepted ? 'ti-check' : 'ti-x' }} me-1" aria-hidden="true"></i>
                   {% if entry_i['users_id_approval'] > 0 %}
                      {{ __('%1$s on %2$s by %3$s')|format(
