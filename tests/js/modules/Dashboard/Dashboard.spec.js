@@ -1087,9 +1087,8 @@ describe('Dashboard', () => {
         expect(new_option.is(':selected')).toBeTruthy();
     });
 
-    test('getCardsAjax multi-mode all', () => {
+    test('getCardsAjax all', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.ajax_cards = true;
         dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {
                 'filter1': 'value1',
@@ -1103,13 +1102,12 @@ describe('Dashboard', () => {
         $.each(gridstack_items, (index, item) => {
             $(item).data('card-options', {});
         });
-        // When ajax_cards is true, getCardsAjax should return an array of promises
+        // getCardsAjax returns an array of promises
         expect(Array.isArray(dashboard.getCardsAjax())).toBeTruthy();
     });
 
-    test('getCardsAjax multi-mode embed', async () => {
+    test('getCardsAjax embed', async () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.ajax_cards = true;
         dashboard.embed = true;
         dashboard.token = 'mytoken';
         dashboard.entities_id = 3;
@@ -1166,9 +1164,8 @@ describe('Dashboard', () => {
         expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
     });
 
-    test('getCardsAjax multi-mode single', () => {
+    test('getCardsAjax single card', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.ajax_cards = true;
         dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {
                 'filter1': 'value1',
@@ -1182,13 +1179,12 @@ describe('Dashboard', () => {
         $.each(gridstack_items, (index, item) => {
             $(item).data('card-options', {});
         });
-        // When ajax_cards is true, getCardsAjax should return an array of promises
+        // getCardsAjax returns an array of promises
         expect(Array.isArray(dashboard.getCardsAjax('[gs-id="2"]'))).toBeTruthy();
     });
 
-    test('getCardsAjax multi-mode Error', async () => {
+    test('getCardsAjax Error', async () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.ajax_cards = true;
         dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {};
         });
@@ -1206,7 +1202,6 @@ describe('Dashboard', () => {
             return true;
         }, false, 'error'));
 
-        // When ajax_cards is false, getCardsAjax should return a single promise
         dashboard.getCardsAjax('[gs-id="2"]');
         await new Promise(process.nextTick);
         expect($('.grid-stack-item[gs-id="2"] .empty-card.card-error').length).toBe(1);
@@ -1214,126 +1209,158 @@ describe('Dashboard', () => {
         expect($('.grid-stack-item > *:not(.empty-card)').length).toBe(2);
     });
 
-    test('getCardsAjax single-mode all', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.ajax_cards = false;
-        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
-            return {
-                'filter1': 'value1',
-                'filter2': 'value2',
-            };
+    const cardsWithContent = () => {
+        $('.grid-stack-item').each((index, item) => {
+            $(item).data('card-options', {}).append('<div class="grid-stack-item-content"></div>');
         });
-        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
-        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+    };
 
-        const gridstack_items = $('.grid-stack-item');
-        $.each(gridstack_items, (index, item) => {
-            $(item).data('card-options', {});
-        });
-        // When ajax_cards is false, getCardsAjax should return a single promise
-        const result = dashboard.getCardsAjax();
-        expect(typeof result).toBe('object');
-        expect(result.then).toBeDefined();
-    });
-
-    test('getCardsAjax single-mode embed', async () => {
+    test('getCardsAjax cached batch', async () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.ajax_cards = false;
-        dashboard.embed = true;
-        dashboard.token = 'mytoken';
-        dashboard.entities_id = 3;
-        dashboard.is_recursive = 1;
-        dashboard.profiles_id = 4;
-        dashboard.users_id = 5;
-        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
-            return {
-                'filter1': 'value1',
-                'filter2': 'value2',
-            };
-        });
-        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
-        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
-        const gridstack_items = $('.grid-stack-item');
-        $.each(gridstack_items, (index, item) => {
-            $(item).data('card-options', {});
-        });
-        window.AjaxMock.start();
-        const data = {
-            "force": 0,
-            "d_cache_key": "",
-            "cards": [
-                {"card_id":"1","force":0,"args":{"gridstack_id":"1","apply_filters":{"filter1":"value1","filter2":"value2"}},"c_cache_key":""},
-                {"card_id":"2","force":0,"args":{"gridstack_id":"2","apply_filters":{"filter1":"value1","filter2":"value2"}},"c_cache_key":""},
-                {"card_id":"3","force":0,"args":{"gridstack_id":"3","apply_filters":{"filter1":"value1","filter2":"value2"}},"c_cache_key":""}
-            ],
-            "embed": 1,
-            "token": "mytoken",
-            "entities_id": 3,
-            "is_recursive": 1,
-            "profiles_id": 4,
-            "users_id": 5
+        dashboard.cached_batch = true;
+        dashboard.all_cards = {
+            '1': {'provider': 'provider1'},
+            '2': {'provider': 'provider2'},
+            '3': {'provider': 'provider3'},
         };
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
-            action: 'get_cards',
-            data: JSON.stringify(data)
-        }, () => {
-            return ['<div></div>'];
-        }));
-
-        dashboard.getCardsAjax();
-        await new Promise(process.nextTick);
-
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
-    });
-
-    test('getCardsAjax single-mode single', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.ajax_cards = false;
-        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
-            return {
-                'filter1': 'value1',
-                'filter2': 'value2',
-            };
-        });
-        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
-        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
-
-        const gridstack_items = $('.grid-stack-item');
-        $.each(gridstack_items, (index, item) => {
-            $(item).data('card-options', {});
-        });
-        // When ajax_cards is false, getCardsAjax should return a single promise
-        const result = dashboard.getCardsAjax('[gs-id="2"]');
-        expect(typeof result).toBe('object');
-        expect(result.then).toBeDefined();
-    });
-
-    test('getCardsAjax single-mode Error', async () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.ajax_cards = false;
         dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {};
         });
         dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
         dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+        cardsWithContent();
 
-        const gridstack_items = $('.grid-stack-item');
-        $.each(gridstack_items, (index, item) => {
-            $(item).data('card-options', {});
-        });
         window.AjaxMock.start();
+        let batched_cards = [];
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
-            action: 'get_cards',
-        }, () => {
+            action: 'get_cached_cards',
+        }, (data) => {
+            batched_cards = data.cards.map((card) => card.card_id);
+            return {'1': 'cached 1', '3': 'cached 3'};
+        }));
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+            action: 'get_card',
+            card_id: 2,
+        }, () => 'rendered 2'));
+
+        dashboard.getCardsAjax();
+        await new Promise((resolve) => setTimeout(resolve));
+
+        // One request for the three cards, then one for the card missing from the cache
+        expect(batched_cards).toEqual(['1', '2', '3']);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+        expect($('.grid-stack-item[gs-id="1"] .grid-stack-item-content').html()).toBe('cached 1');
+        expect($('.grid-stack-item[gs-id="2"] .grid-stack-item-content').html()).toBe('rendered 2');
+        expect($('.grid-stack-item[gs-id="3"] .grid-stack-item-content').html()).toBe('cached 3');
+    });
+
+    test('getCardsAjax cached batch without the cards never cached', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.cached_batch = true;
+        dashboard.all_cards = {
+            '1': {'provider': 'provider1'},
+            '2': {'provider': 'provider2', 'cache': true},
+            '3': {'provider': 'provider3', 'cache': false},
+        };
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {};
+        });
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+        cardsWithContent();
+
+        window.AjaxMock.start();
+        let batched_cards = [];
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
+            action: 'get_cached_cards',
+        }, (data) => {
+            batched_cards = data.cards.map((card) => card.card_id);
+            return {'1': 'cached 1', '2': 'cached 2'};
+        }));
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+            action: 'get_card',
+            card_id: 3,
+        }, () => 'rendered 3'));
+
+        dashboard.getCardsAjax();
+        await new Promise((resolve) => setTimeout(resolve));
+
+        expect(batched_cards).toEqual(['1', '2']);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+        expect($('.grid-stack-item[gs-id="3"] .grid-stack-item-content').html()).toBe('rendered 3');
+    });
+
+    test('getCardsAjax forced refresh', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.cached_batch = true;
+        dashboard.all_cards = {
+            '1': {'provider': 'provider1'},
+            '2': {'provider': 'provider2'},
+            '3': {'provider': 'provider3'},
+        };
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {};
+        });
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+        cardsWithContent();
+
+        // No cached batch: each card is requested with force, as the auto-refresh does
+        window.AjaxMock.start();
+        [1, 2, 3].forEach((card_id) => {
+            window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+                action: 'get_card',
+                card_id: card_id,
+                force: 1,
+            }, () => `fresh ${card_id}`));
+        });
+
+        dashboard.getCardsAjax('', undefined, true);
+        await new Promise((resolve) => setTimeout(resolve));
+
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+        expect($('.grid-stack-item[gs-id="2"] .grid-stack-item-content').html()).toBe('fresh 2');
+    });
+
+    test('getCardsAjax cached batch error', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.cached_batch = true;
+        // Card 3 is not in the catalog, so the server cache cannot hold it
+        dashboard.all_cards = {
+            '1': {'provider': 'provider1'},
+            '2': {'provider': 'provider2'},
+        };
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {};
+        });
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+        cardsWithContent();
+
+        window.AjaxMock.start();
+        let batched_cards = [];
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
+            action: 'get_cached_cards',
+        }, (data) => {
+            batched_cards = data.cards.map((card) => card.card_id);
             return true;
         }, false, 'error'));
+        [1, 2, 3].forEach((card_id) => {
+            window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+                action: 'get_card',
+                card_id: card_id,
+            }, () => `rendered ${card_id}`));
+        });
 
-        // When ajax_cards is false, getCardsAjax should return a single promise
-        dashboard.getCardsAjax('[gs-id="2"]');
-        await new Promise(process.nextTick);
-        expect($('.grid-stack-item[gs-id="2"] .empty-card.card-error').length).toBe(1);
-        // card 1 and 3 should still be present without error
-        expect($('.grid-stack-item > *:not(.empty-card)').length).toBe(2);
+        dashboard.getCardsAjax();
+        await new Promise((resolve) => setTimeout(resolve));
+
+        // Card 3 is requested right away; once the batch fails, cards 1 and 2 are requested one by one
+        expect(batched_cards).toEqual(['1', '2']);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+        [1, 2, 3].forEach((card_id) => {
+            expect($(`.grid-stack-item[gs-id="${card_id}"] .grid-stack-item-content`).html()).toBe(`rendered ${card_id}`);
+        });
     });
 
     test('initFilters', async () => {
@@ -1757,24 +1784,6 @@ describe('Dashboard', () => {
                 filter2: 'value2',
             }
         );
-    });
-
-    test('Single ajax mode - Animate on load', () => {
-        //let  = false;
-        const MockGLPIDashboard = class extends GLPIDashboard {
-            fitNumbers() {}
-        };
-        MockGLPIDashboard.prototype.fitNumbers = vi.fn().mockImplementation(() => {});
-        let dashboard = new MockGLPIDashboard({
-            'rand': '12345',
-            'ajax_cards': true,
-        });
-        expect(dashboard.fitNumbers).not.toHaveBeenCalled();
-        dashboard = new MockGLPIDashboard({
-            'rand': '12345',
-            'ajax_cards': false,
-        });
-        expect(dashboard.fitNumbers).toHaveBeenCalled();
     });
 
     test('Update CSS and Fit Numbers on Resize', () => {

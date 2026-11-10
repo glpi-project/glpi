@@ -36,7 +36,6 @@
 use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Grid;
 use Glpi\Debug\Profiler;
-use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\UnprocessableEntityHttpException;
 
@@ -54,7 +53,7 @@ unset($request_data['data']);
 // Session check is disabled for this script when "embed" mode is used.
 // Indeed, it is declared as stateless by `\Glpi\Http\SessionManager::isResourceStateless()`,
 // to prevent using the session cookie for embed dashboards.
-$is_embed_request = in_array($_REQUEST['action'], ['get_dashboard_items', 'get_card', 'get_cards'])
+$is_embed_request = in_array($_REQUEST['action'], ['get_dashboard_items', 'get_card'])
     && array_key_exists('embed', $request_data)
     && (bool) $request_data['embed'];
 
@@ -236,30 +235,29 @@ switch ($_REQUEST['action']) {
         Profiler::getInstance()->stop('Get card HTML');
         break;
 
-    case 'get_cards':
+    case 'get_cached_cards':
+        // Returns, keyed by grid item, the cards the server cache already holds; the page requests the others
+        // one by one.
         header("Content-Type: application/json; charset=UTF-8");
-
-        // Release the lock before the DB/cache read, so concurrent card requests don't queue.
         Session::writeClose();
 
-        if (!$dashboard->canViewCurrent() && !$is_embed_request) {
+        if (!$dashboard->canViewCurrent()) {
             throw new AccessDeniedHttpException();
         }
 
-        $cards = $request_data['cards'];
+        $cards = $request_data['cards'] ?? [];
         unset($request_data['cards']);
         $result = [];
-        Profiler::getInstance()->start('Get cards HTML');
-        foreach ($cards as $card) {
-            try {
-                $result[$card['card_id']] = $grid->getCardHtml($card['card_id'], array_merge($request_data, $card));
-            } catch (Throwable $e) {
-                // Send exception to logger without actually exiting.
-                ErrorHandler::logCaughtException($e);
+        foreach (\is_array($cards) ? $cards : [] as $card) {
+            if (!\is_array($card) || !isset($card['card_id']) || !\is_string($card['args']['gridstack_id'] ?? null)) {
+                continue;
+            }
+            $html = $grid->getCachedCardHtml((string) $card['card_id'], array_merge($request_data, $card));
+            if ($html !== null) {
+                $result[$card['args']['gridstack_id']] = $html;
             }
         }
-        Profiler::getInstance()->stop('Get cards HTML');
-        echo json_encode($result);
+        echo json_encode((object) $result);
         break;
 
     case 'display_add_filter':

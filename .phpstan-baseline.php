@@ -44,12 +44,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/common.tabs.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'cards\' might not exist on array\\{action\\: mixed, \\.\\.\\.\\<mixed, mixed\\>\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/dashboard.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
 	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
 	'count' => 1,

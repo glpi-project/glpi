@@ -38,6 +38,7 @@ use Change;
 use Glpi\Features\AssignableItem;
 use Group;
 use Group_Item;
+use Override;
 use Problem;
 use Ticket;
 use Toolbox;
@@ -45,6 +46,12 @@ use UnexpectedValueException;
 
 abstract class AbstractGroupFilter extends AbstractFilter
 {
+    #[Override]
+    public static function isValueBoundToUser(mixed $value): bool
+    {
+        return \in_array('mygroups', \is_array($value) ? $value : [$value], true);
+    }
+
     /**
      * Get the group type
      * @return int

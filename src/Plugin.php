@@ -3303,6 +3303,8 @@ class Plugin extends CommonDBTM
             // and `Hooks::DASHBOARD_FILTERS`.
             $to_clear[] = Grid::getAllDashboardCardsCacheKey($language);
         }
+        // Cards added by plugins, kept per user
+        $to_clear[] = Grid::PLUGIN_CARDS_TOKEN_CACHE_KEY;
 
         // FIXME Try to separate template cache for each Twig namespace, in order to be able to reset only the plugin Twig templates cache.
         (new CacheManager())->resetCompiledTemplates();

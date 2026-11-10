@@ -78,6 +78,42 @@ class Grid
     public static bool $embed              = false;
     public static array $all_dashboards     = [];
 
+    /**
+     * Lifetime, in seconds, of the rendered cards and of the plugin cards in the server cache.
+     */
+    private const CARD_CACHE_TTL = 300;
+
+    /**
+     * Cache entry holding the token under which the cards added by plugins are kept: deleting it drops them all.
+     */
+    public const PLUGIN_CARDS_TOKEN_CACHE_KEY = 'dashboard_plugin_cards_token';
+
+    /**
+     * Cards catalog already built by this instance.
+     *
+     * @var array<string, array<string, mixed>>|null
+     */
+    private ?array $cards_catalog = null;
+
+    /**
+     * Core providers whose result only depends on the rights of the profile, the active entities, the card options
+     * and its filters: the cards they feed can be shared by the users of a same profile and entities.
+     * `bigNumber<Itemtype>` and `multipleNumber<Itemtype>By<Itemtype>` providers are shareable too.
+     *
+     * A provider only joins this list once audited: anything it reads from the user (own tickets, validations,
+     * private items, personal display preferences) must keep its cards per user.
+     */
+    private const SHAREABLE_PROVIDERS = [
+        'nbTicketsGeneric',
+        'getTicketsEvolution',
+        'getTicketsStatus',
+    ];
+
+    /**
+     * User preferences that change the output of a shared card.
+     */
+    private const SHARED_CARD_PREFERENCES = ['language', 'date_format', 'number_format', 'names_format', 'is_ids_visible', 'timezone'];
+
     public function __construct(string $dashboard_key = "central", int $grid_cols = 26, int $grid_rows = 24, string $context = 'core')
     {
 
@@ -132,11 +168,6 @@ class Grid
 
     /**
      * Init dashboards cards
-     * A define.php constant (GLPI_AJAX_DASHBOARD) exists to control how the cards should be loaded
-     *  - if true: load all cards in separate ajax request
-     *    pros: slow cards won't impact the others
-     * - else: load all cards in a single ajax request
-     *    pros: less strain for the server
      *
      * @return void
      */
@@ -458,7 +489,6 @@ HTML;
 TWIG, $params);
         }
 
-        $ajax_cards = GLPI_AJAX_DASHBOARD;
         $cache_key  = sha1($_SESSION['glpiactiveentities_string'] ?? "");
 
         $twig_params = [
@@ -480,7 +510,7 @@ TWIG, $params);
                 'rows'          => $this->grid_rows,
                 'cell_margin'   => $this->cell_margin,
                 'rand'          => $rand,
-                'ajax_cards'    => $ajax_cards,
+                'cached_batch'  => !self::$embed && Environment::get()->shouldForceExtraBrowserCache(),
                 'all_cards'     => $cards,
                 'all_widgets'   => $all_widgets,
                 'context'       => $this->context,
@@ -1154,6 +1184,46 @@ HTML;
         if (\is_array($card_options['args'] ?? null)) {
             $card_options['args'] = Item::cleanCardOptions($card_options['args']);
         }
+        $force = $card_options['args']['force'] ?? $card_options['force'] ?? false;
+
+        try {
+            $card = $this->getAllDasboardCards()[$card_id] ?? null;
+        } catch (Throwable) {
+            $card = null;
+        }
+        $cache_key = $card !== null ? $this->getCardCacheKey($card_id, $card, $card_options) : null;
+
+        // Serve the card from the server cache when a request with the same scope already rendered it. Error and
+        // empty card output is kept as well, so that a failing card is not rendered again on every view; `force`
+        // (the refresh button of a card) renders it again.
+        if ($cache_key !== null && !$force) {
+            $html = $GLPI_CACHE->get($cache_key);
+            if (\is_string($html)) {
+                self::sendCardBrowserCacheHeaders();
+                return $html;
+            }
+        }
+
+        $html = $this->renderCardHtml($card_id, $card_options);
+        if ($cache_key !== null) {
+            $GLPI_CACHE->set($cache_key, $html, self::CARD_CACHE_TTL);
+        }
+
+        return $html;
+    }
+
+    /**
+     * Render the HTML of a card, see {@see self::getCardHtml()}.
+     *
+     * @param array<string, mixed> $card_options
+     */
+    private function renderCardHtml(string $card_id = "", array $card_options = []): string
+    {
+        global $GLPI_CACHE;
+
+        if (\is_array($card_options['args'] ?? null)) {
+            $card_options['args'] = Item::cleanCardOptions($card_options['args']);
+        }
 
         $start = microtime(true);
 
@@ -1182,17 +1252,8 @@ HTML;
             $use_cache = !$force
                 && Environment::get()->shouldForceExtraBrowserCache()
                 && (!isset($card['cache']) || $card['cache'] == true);
-            $cache_age = 40;
-
             if ($use_cache) {
-                // remove headers automatically added by session start
-                header_remove('Pragma');
-                header_remove('Cache-Control');
-                header_remove('Expires');
-
-                // add cache headers
-                header('Cache-Control: public, max-age=' . $cache_age . ', must-revalidate');
-                header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_age));
+                self::sendCardBrowserCacheHeaders();
             }
 
             $html = "";
@@ -1278,6 +1339,149 @@ HTML;
         }
 
         return $html;
+    }
+
+    /**
+     * Return the HTML of a card when the server cache already holds it, null otherwise.
+     *
+     * @param string $card_id identifier returned by @see self::getAllDasboardCards
+     * @param array<string, mixed> $card_options same as @see self::getCardHtml
+     *
+     * @return string|null
+     */
+    public function getCachedCardHtml(string $card_id, array $card_options): ?string
+    {
+        global $GLPI_CACHE;
+
+        if (\is_array($card_options['args'] ?? null)) {
+            $card_options['args'] = Item::cleanCardOptions($card_options['args']);
+        }
+
+        $card = $this->getAllDasboardCards()[$card_id] ?? null;
+        $cache_key = $card !== null ? $this->getCardCacheKey($card_id, $card, $card_options) : null;
+        $html = $cache_key !== null ? $GLPI_CACHE->get($cache_key) : null;
+
+        return \is_string($html) ? $html : null;
+    }
+
+    /**
+     * Let the browser keep a card for a short time.
+     */
+    private static function sendCardBrowserCacheHeaders(): void
+    {
+        $cache_age = 40;
+
+        // remove headers automatically added by session start
+        header_remove('Pragma');
+        header_remove('Cache-Control');
+        header_remove('Expires');
+
+        // add cache headers
+        header('Cache-Control: public, max-age=' . $cache_age . ', must-revalidate');
+        header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_age));
+    }
+
+    /**
+     * Whether a cached card can be served to every user of the same profile and entities.
+     *
+     * It can when its provider is known not to read anything from the user, when the profile sees all the tickets
+     * (otherwise ticket figures follow the user and their groups), and when no filter is bound to the user
+     * ("myself", "my groups"). List widgets follow personal display preferences, so they are never shared.
+     *
+     * @param array<string, mixed> $card Card definition
+     * @param array<string, mixed> $args Card options sent by the dashboard, filters included
+     *
+     * @internal
+     */
+    public static function isCardSharedBetweenUsers(array $card, array $args): bool
+    {
+        $provider = $card['provider'] ?? null;
+        $prefix   = Provider::class . '::';
+        if (!\is_string($provider) || !str_starts_with($provider, $prefix)) {
+            return false;
+        }
+        $method = substr($provider, \strlen($prefix));
+        if (
+            !\in_array($method, self::SHAREABLE_PROVIDERS, true)
+            && !str_starts_with($method, 'bigNumber')
+            && !str_starts_with($method, 'multipleNumber')
+        ) {
+            return false;
+        }
+
+        if (($args['widgettype'] ?? '') === 'searchShowList' || Ticket::getCriteriaFromProfile() !== []) {
+            return false;
+        }
+
+        $filters = $args['apply_filters'] ?? [];
+        if (!\is_array($filters)) {
+            return false;
+        }
+        $filter_classes = [];
+        foreach (Filter::getRegisteredFilterClasses() as $filter_class) {
+            $filter_classes[$filter_class::getId()] = $filter_class;
+        }
+        foreach ($filters as $filter_id => $value) {
+            $filter_class = $filter_classes[$filter_id] ?? null;
+            if (
+                $filter_class === null
+                // filters added by plugins may read the session in ways unknown here
+                || !str_starts_with($filter_class, 'Glpi\\Dashboard\\Filters\\')
+                || $filter_class::isValueBoundToUser($value)
+            ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Key of a card in the server cache, or null when the card is not kept there.
+     *
+     * The key holds what the card output depends on: the card and its options (filters included), the active
+     * profile and entities, the user preferences (language, date and number formats...), the demo mode and the
+     * day, for relative periods; and the user and their groups, unless the card can be shared between users
+     * (see isCardSharedBetweenUsers()). Cards flagged `'cache' => false` are never kept.
+     *
+     * @param array<string, mixed> $card
+     * @param array<string, mixed> $card_options
+     */
+    private function getCardCacheKey(string $card_id, array $card, array $card_options): ?string
+    {
+        global $CFG_GLPI;
+
+        if (
+            self::$embed
+            || !\is_string($card['provider'] ?? null)
+            || (isset($card['cache']) && $card['cache'] == false)
+            || !Environment::get()->shouldForceExtraBrowserCache()
+            || ($_SESSION['glpi_use_mode'] ?? null) === Session::DEBUG_MODE
+        ) {
+            return null;
+        }
+
+        $args = $card_options['args'] ?? [];
+        unset($args['force']);
+
+        $shared = self::isCardSharedBetweenUsers($card, $args);
+
+        $preferences = [];
+        foreach ($shared ? self::SHARED_CARD_PREFERENCES : $CFG_GLPI['user_pref_field'] as $field) {
+            // as strings: the session holds a same value as an integer or as a string depending on its origin
+            $preferences[$field] = (string) ($_SESSION['glpi' . $field] ?? '');
+        }
+
+        return 'dashboard_card_' . sha1(serialize([
+            $card_id,
+            $args,
+            date('Y-m-d'),
+            $shared ? null : [Session::getLoginUserID(), $_SESSION['glpigroups'] ?? []],
+            (int) ($_SESSION['glpiactiveprofile']['id'] ?? 0),
+            $_SESSION['glpiactiveentities_string'] ?? '',
+            $preferences,
+            (bool) ($CFG_GLPI['is_demo_dashboards'] ?? false),
+        ]));
     }
 
 
@@ -1388,6 +1592,10 @@ HTML;
     public function getAllDasboardCards($force = false): array
     {
         global $CFG_GLPI, $GLPI_CACHE;
+
+        if ($this->cards_catalog !== null && !$force) {
+            return $this->cards_catalog;
+        }
 
         Profiler::getInstance()->start(__METHOD__);
         $cards = $GLPI_CACHE->get(self::getAllDashboardCardsCacheKey());
@@ -1512,6 +1720,9 @@ HTML;
                 'closed'             => __('Closed tickets'),
             ];
             foreach ($tickets_cases as $case => $label) {
+                // The approval cards follow the validations of the current user: they are never cached.
+                $cache = $case !== 'waiting_validation';
+
                 $cards["bn_count_tickets_$case"] = [
                     'widgettype' => ["bigNumber"],
                     'itemtype'   => "\\Ticket",
@@ -1524,7 +1735,7 @@ HTML;
                             'validation_check_user' => true,
                         ],
                     ],
-                    'cache'      => false,
+                    'cache'      => $cache,
                     'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
                 ];
 
@@ -1540,6 +1751,7 @@ HTML;
                             'validation_check_user' => true,
                         ],
                     ],
+                    'cache'      => $cache,
                     'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
                 ];
             }
@@ -1955,10 +2167,29 @@ HTML;
             }
         }
 
-        $more_cards = Plugin::doHookFunction(Hooks::DASHBOARD_CARDS);
-        if (is_array($more_cards)) {
-            $cards = array_merge($cards, $more_cards);
+        // Plugins build their cards from the session (rights, entities): keep them per user, profile and entities.
+        $plugin_cards_token = $GLPI_CACHE->get(self::PLUGIN_CARDS_TOKEN_CACHE_KEY);
+        if (!\is_string($plugin_cards_token)) {
+            $plugin_cards_token = bin2hex(random_bytes(8));
+            $GLPI_CACHE->set(self::PLUGIN_CARDS_TOKEN_CACHE_KEY, $plugin_cards_token);
         }
+        $plugin_cards_key = self::getAllDashboardCardsCacheKey() . '_plugins_' . sha1(serialize([
+            $plugin_cards_token,
+            Session::getLoginUserID(),
+            $_SESSION['glpiactiveprofile']['id'] ?? 0,
+            $_SESSION['glpiactiveentities_string'] ?? '',
+        ]));
+        $cache_plugin_cards = !Environment::get()->shouldExpectResourcesToChange();
+        $more_cards = $cache_plugin_cards && !$force ? $GLPI_CACHE->get($plugin_cards_key) : null;
+        if (!is_array($more_cards)) {
+            $more_cards = Plugin::doHookFunction(Hooks::DASHBOARD_CARDS);
+            $more_cards = is_array($more_cards) ? $more_cards : [];
+            if ($cache_plugin_cards) {
+                $GLPI_CACHE->set($plugin_cards_key, $more_cards, self::CARD_CACHE_TTL);
+            }
+        }
+        $cards = array_merge($cards, $more_cards);
+        $this->cards_catalog = $cards;
         Profiler::getInstance()->stop(__METHOD__);
 
         return $cards;

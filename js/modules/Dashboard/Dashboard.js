@@ -73,6 +73,7 @@ window.GLPI.Dashboard = {
  * @property {number|null} [profiles_id] Profile ID of the user who shared the dashboard
  * @property {number|null} [users_id] User ID of the user who shared the dashboard
  * @property {{}[]} [all_cards] All cards
+ * @property {boolean} [cached_batch] Ask first, in one request, for the cards held in the server cache
  * @property {string} [context] Dashboard context
  * @property {string} [current] Current dashboard
  * @property {boolean} [mini] Whether the dashboard is in mini mode (for ticket search page)
@@ -96,7 +97,7 @@ class GLPIDashboard {
         this.edit_mode = false;
         this.filter_mode = false;
         this.embed = false;
-        this.ajax_cards = false;
+        this.cached_batch = false;
         this.context = "core";
         this.markdown_contents = [];
         this.dash_width = 0;
@@ -126,7 +127,7 @@ class GLPIDashboard {
             is_recursive:null,
             profiles_id: null,
             users_id:    null,
-            ajax_cards:  true,
+            cached_batch: false,
             all_cards:   [],
             context:     "core"
         };
@@ -143,7 +144,7 @@ class GLPIDashboard {
         this.is_recursive = options.is_recursive;
         this.profiles_id  = options.profiles_id;
         this.users_id     = options.users_id;
-        this.ajax_cards   = options.ajax_cards;
+        this.cached_batch = options.cached_batch;
         this.all_cards    = options.all_cards;
         this.all_widgets  = options.all_widgets;
         this.context      = options.context;
@@ -213,12 +214,6 @@ class GLPIDashboard {
         // init filters from storage
         this.initFilters();
         this.refreshDashboard();
-
-        // animate the dashboards once all card are loaded (single ajax mode)
-        if (!this.ajax_cards) {
-            this.fitNumbers();
-            this.animateNumbers();
-        }
 
         // change dashboard
         $(`${this.elem_id} .toolbar .dashboard_select`).change((e) => {
@@ -317,7 +312,8 @@ class GLPIDashboard {
                 }
                 const seconds = minutes * 60;
                 this.interval = setInterval(() => {
-                    this.refreshDashboard();
+                    // skip the caches: a wallboard must show fresh figures
+                    this.refreshDashboard(true);
                 }, seconds * 1000);
             } else {
                 clearInterval(this.interval);
@@ -748,7 +744,7 @@ class GLPIDashboard {
         });
     }
 
-    refreshDashboard() {
+    refreshDashboard(force = false) {
         const gridstack = $(this.elem_id+" .grid-stack");
         document.querySelectorAll('div[_echarts_instance_]').forEach((el) => {
             window.echarts.getInstanceByDom(el)?.dispose();
@@ -776,7 +772,7 @@ class GLPIDashboard {
             gridstack.find('.grid-stack-item').each((i, elem) => {
                 this.grid.makeWidget(elem);
             });
-            this.getCardsAjax();
+            this.getCardsAjax('', undefined, force);
 
             const is_placeholder = CFG_GLPI['is_demo_dashboards'] === "1";
             if (is_placeholder) {
@@ -1165,12 +1161,12 @@ class GLPIDashboard {
             .trigger('change');
     }
 
-    getCardsAjax(specific_one, filters) {
+    getCardsAjax(specific_one, filters, force_refresh = false) {
         specific_one = specific_one || "";
 
         // Callers that already know the filters can pass them in to avoid a redundant synch round-trip to the server
         filters = filters || this.getFiltersFromDB();
-        const force = (specific_one.length > 0 ? 1 : 0);
+        const force = (specific_one.length > 0 || force_refresh ? 1 : 0);
 
         const requested_cards = [];
         const card_ajax_data = [];
@@ -1203,49 +1199,17 @@ class GLPIDashboard {
             });
         });
 
-        if (this.ajax_cards) {
-            // Multi ajax mode, spawn a request for each card
-            const promises = [];
-            requested_cards.forEach((requested_card) => {
-                const card = requested_card.card_el;
+        const fetchCard = (requested_card) => {
+            const card = requested_card.card_el;
 
-                const data = {
-                    'action':      'get_card',
-                    'dashboard':   this.current_name,
-                    'card_id':     requested_card.card_id,
-                    'force':       force,
-                    'args':        requested_card.args,
-                    'd_cache_key': this.cache_key,
-                    'c_cache_key': requested_card.args.cache_key || ""
-                };
-                if (this.embed) {
-                    data.embed        = 1;
-                    data.token        = this.token;
-                    data.entities_id  = this.entities_id;
-                    data.is_recursive = this.is_recursive;
-                    data.profiles_id  = this.profiles_id;
-                    data.users_id     = this.users_id;
-                }
-
-                promises.push($.get(CFG_GLPI.root_doc+"/ajax/dashboard.php", data).then((html) => {
-                    card.children('.grid-stack-item-content').html(html);
-
-                    this.fitNumbers(card);
-                    this.animateNumbers(card);
-                }, () => {
-                    card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle' aria-hidden='true'></i></div>");
-                }));
-            });
-
-            return promises;
-        } else {
-            // Single ajax mode, spawn a single request
             const data = {
-                'dashboard': this.current_name,
-                'force': (specific_one.length > 0 ? 1 : 0),
+                'action':      'get_card',
+                'dashboard':   this.current_name,
+                'card_id':     requested_card.card_id,
+                'force':       force,
+                'args':        requested_card.args,
                 'd_cache_key': this.cache_key,
-                'cards': card_ajax_data,
-                'action': 'get_cards'
+                'c_cache_key': requested_card.args.cache_key || ""
             };
             if (this.embed) {
                 data.embed        = 1;
@@ -1256,35 +1220,54 @@ class GLPIDashboard {
                 data.users_id     = this.users_id;
             }
 
-            return $.ajax({
-                url:CFG_GLPI.root_doc+"/ajax/dashboard.php",
-                method: 'POST',
-                data: data
-            }).then((results) => {
-                $.each(requested_cards, (i2, crd) => {
-                    let has_result = false;
-                    const card = crd.card_el;
-                    $.each(results, (card_id, card_result) => {
-                        if (crd.card_id === card_id) {
-                            const html = card_result;
-                            has_result = true;
-                            card.children('.grid-stack-item-content').html(html);
+            return $.get(CFG_GLPI.root_doc+"/ajax/dashboard.php", data).then((html) => {
+                card.children('.grid-stack-item-content').html(html);
 
-                            this.fitNumbers(card);
-                            this.animateNumbers(card);
-                        }
-                    });
-                    if (!has_result) {
-                        card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle' aria-hidden='true'></i></div>");
-                    }
-                });
+                this.fitNumbers(card);
+                this.animateNumbers(card);
             }, () => {
-                $.each(requested_cards, (i2, crd) => {
-                    const card = crd.card_el;
-                    card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle' aria-hidden='true'></i></div>");
-                });
+                card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle' aria-hidden='true'></i></div>");
             });
+        };
+
+        // Ask in one request for the cards the server cache already holds, then one request per missing card.
+        // Cards the server does not keep (unknown, without provider, or flagged as not cacheable) are requested
+        // right away.
+        if (this.cached_batch && !force && !this.embed) {
+            const cacheable = requested_cards.map((requested_card) => {
+                const card = this.all_cards[requested_card.card_id];
+                return card?.provider !== undefined && (card.cache === undefined || Boolean(card.cache));
+            });
+            const batched = requested_cards.filter((requested_card, i) => cacheable[i]);
+            if (batched.length > 1) {
+                const direct = requested_cards.filter((requested_card, i) => !cacheable[i]).map(fetchCard);
+                return [...direct, $.ajax({
+                    url: CFG_GLPI.root_doc + "/ajax/dashboard.php",
+                    method: 'POST',
+                    data: {
+                        'action':      'get_cached_cards',
+                        'dashboard':   this.current_name,
+                        'd_cache_key': this.cache_key,
+                        'cards':       card_ajax_data.filter((data, i) => cacheable[i]),
+                    },
+                }).then((results) => {
+                    const missing = batched.filter((requested_card) => {
+                        const html = (results || {})[requested_card.args.gridstack_id];
+                        if (typeof html !== 'string') {
+                            return true;
+                        }
+                        const card = requested_card.card_el;
+                        card.children('.grid-stack-item-content').html(html);
+                        this.fitNumbers(card);
+                        this.animateNumbers(card);
+                        return false;
+                    });
+                    return Promise.all(missing.map(fetchCard));
+                }, () => Promise.all(batched.map(fetchCard)))];
+            }
         }
+
+        return requested_cards.map(fetchCard);
     }
 
     /**

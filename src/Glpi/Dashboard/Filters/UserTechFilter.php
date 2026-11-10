@@ -36,6 +36,7 @@
 namespace Glpi\Dashboard\Filters;
 
 use Change;
+use Override;
 use Problem;
 use Session;
 use Ticket;
@@ -44,6 +45,12 @@ use User;
 class UserTechFilter extends AbstractFilter
 {
     use AssignedITILUserFilterTrait;
+
+    #[Override]
+    public static function isValueBoundToUser(mixed $value): bool
+    {
+        return $value === 'myself';
+    }
 
     public static function getName(): string
     {

@@ -102,6 +102,15 @@ abstract class AbstractFilter
      */
     abstract public static function getSearchCriteria(string $table, $value): array;
 
+    /**
+     * Whether the given value makes this filter depend on the current user (e.g. "myself"): a card result
+     * filtered that way must not be served to other users.
+     */
+    public static function isValueBoundToUser(mixed $value): bool
+    {
+        return false;
+    }
+
     protected static function getSearchOptionID(string $table, string $name, string $tableToSearch): int
     {
         $data = Search::getOptions(getItemTypeForTable($table), true);

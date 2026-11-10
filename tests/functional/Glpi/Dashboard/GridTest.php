@@ -226,4 +226,33 @@ class GridTest extends DbTestCase
         $this->assertStringContainsString(\htmlescape($expected), $html);
         $this->assertStringNotContainsString('Error rendering card!', $html);
     }
+
+    public function testCardSharedBetweenUsers(): void
+    {
+        $ticket_count = ['provider' => 'Glpi\\Dashboard\\Provider::bigNumberTicket'];
+
+        // A profile that sees all the tickets: audited core providers are shared
+        $this->login();
+        $this->assertTrue(Grid::isCardSharedBetweenUsers($ticket_count, []));
+        $this->assertTrue(Grid::isCardSharedBetweenUsers($ticket_count, ['apply_filters' => ['itilcategory' => '0', 'user_tech' => '2']]));
+        $this->assertTrue(Grid::isCardSharedBetweenUsers(['provider' => 'Glpi\\Dashboard\\Provider::nbTicketsGeneric'], ['widgettype' => 'bigNumber']));
+
+        // Filters bound to the current user, or unknown
+        $this->assertFalse(Grid::isCardSharedBetweenUsers($ticket_count, ['apply_filters' => ['user_tech' => 'myself']]));
+        $this->assertFalse(Grid::isCardSharedBetweenUsers($ticket_count, ['apply_filters' => ['group_tech' => ['3', 'mygroups']]]));
+        $this->assertFalse(Grid::isCardSharedBetweenUsers($ticket_count, ['apply_filters' => ['unknown_filter' => '1']]));
+
+        // Providers that read the user, or that were not audited
+        $this->assertFalse(Grid::isCardSharedBetweenUsers(['provider' => 'Glpi\\Dashboard\\Provider::ticketsActionTimeVsSolveDelay'], []));
+        $this->assertFalse(Grid::isCardSharedBetweenUsers(['provider' => 'Glpi\\Dashboard\\Provider::getArticleListReminder'], []));
+        $this->assertFalse(Grid::isCardSharedBetweenUsers(['provider' => 'PluginFooBar::getProvider'], []));
+        $this->assertFalse(Grid::isCardSharedBetweenUsers([], []));
+
+        // List widgets follow personal display preferences
+        $this->assertFalse(Grid::isCardSharedBetweenUsers(['provider' => 'Glpi\\Dashboard\\Provider::nbTicketsGeneric'], ['widgettype' => 'searchShowList']));
+
+        // A profile that only sees its own tickets
+        $this->login('post-only', 'postonly');
+        $this->assertFalse(Grid::isCardSharedBetweenUsers($ticket_count, []));
+    }
 }
