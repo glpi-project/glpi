@@ -388,6 +388,9 @@ class GraphQLControllerTest extends HLAPITestCase
         foreach ($controllers as $controller) {
             $schemas = $controller::getKnownSchemas(null);
             foreach ($schemas as $schema_name => $schema) {
+                if (!isset($schema['x-itemtype']) || str_starts_with($schema_name, '_') || ($schema['x-graphql-noquery'] ?? false)) {
+                    continue;
+                }
                 if ($schema_name !== 'ServiceCatalogInfo') {
                     continue;
                 }
