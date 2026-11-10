@@ -38,12 +38,21 @@ use Computer;
 use CronTask;
 use Glpi\System\HousekeepingCron;
 use Glpi\Tests\DbTestCase;
+use Item_Environment;
 use Item_Process;
 use Log;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class HousekeepingCronTest extends DbTestCase
 {
-    public function testCleanProcessLogs(): void
+    public static function itemtypeProvider(): iterable
+    {
+        yield [Item_Process::class];
+        yield [Item_Environment::class];
+    }
+
+    #[DataProvider('itemtypeProvider')]
+    public function testCleanLogs(string $itemtype): void
     {
         $computer = getItemByTypeName(Computer::class, '_test_pc01');
         $common_input = [
@@ -52,17 +61,17 @@ class HousekeepingCronTest extends DbTestCase
             'date_mod'      => $_SESSION['glpi_currenttime'],
         ];
 
-        // 3 entries logged on parent, 2 on process itself
+        // 3 entries logged on parent, 2 on item itself
         for ($i = 0; $i < 3; $i++) {
             $this->createItem(Log::class, $common_input + [
                 'itemtype'      => Computer::class,
-                'itemtype_link' => Item_Process::class,
+                'itemtype_link' => $itemtype,
                 'linked_action' => Log::HISTORY_ADD_SUBITEM,
             ]);
         }
         for ($i = 0; $i < 2; $i++) {
             $this->createItem(Log::class, $common_input + [
-                'itemtype'      => Item_Process::class,
+                'itemtype'      => $itemtype,
                 'itemtype_link' => '',
                 'linked_action' => Log::HISTORY_LOCK_SUBITEM,
             ]);
@@ -84,8 +93,8 @@ class HousekeepingCronTest extends DbTestCase
         $this->assertSame(-1, HousekeepingCron::cronHousekeeping($task));
         $this->assertSame(
             1,
-            countElementsInTable(Log::getTable(), ['itemtype_link' => Item_Process::class])
-            + countElementsInTable(Log::getTable(), ['itemtype' => Item_Process::class])
+            countElementsInTable(Log::getTable(), ['itemtype_link' => $itemtype])
+            + countElementsInTable(Log::getTable(), ['itemtype' => $itemtype])
         );
         $this->assertTrue(HousekeepingCron::hasPendingWork());
 
@@ -96,8 +105,8 @@ class HousekeepingCronTest extends DbTestCase
         // nothing left to do
         $this->assertSame(0, HousekeepingCron::cronHousekeeping($task));
 
-        $this->assertSame(0, countElementsInTable(Log::getTable(), ['itemtype_link' => Item_Process::class]));
-        $this->assertSame(0, countElementsInTable(Log::getTable(), ['itemtype' => Item_Process::class]));
+        $this->assertSame(0, countElementsInTable(Log::getTable(), ['itemtype_link' => $itemtype]));
+        $this->assertSame(0, countElementsInTable(Log::getTable(), ['itemtype' => $itemtype]));
         $this->assertTrue((new Log())->getFromDB($kept->getID()));
     }
 
