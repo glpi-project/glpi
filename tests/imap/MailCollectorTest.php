@@ -2065,6 +2065,58 @@ HTML,
             'expected_body'    => '<p>Main message</p>',
             'expected_is_html' => true,
         ];
+
+        yield 'multipart alternative with multiple html representations selects richest one' => [
+            'raw' => implode($crlf, [
+                'From: sender@example.org',
+                'To: collector@example.org',
+                'Subject: multiple html alternatives',
+                'MIME-Version: 1.0',
+                'Content-Type: multipart/alternative; boundary="alt"',
+                '',
+                '--alt',
+                'Content-Type: text/plain; charset=utf-8',
+                '',
+                'Plain text version',
+                '--alt',
+                'Content-Type: text/html; charset=utf-8',
+                '',
+                '<html><body><p>First HTML representation</p></body></html>',
+                '--alt',
+                'Content-Type: text/html; charset=utf-8',
+                '',
+                '<html><body><p>Second richer HTML representation</p></body></html>',
+                '--alt--',
+                '',
+            ]),
+            'expected_body'    => '<p>Second richer HTML representation</p>',
+            'expected_is_html' => true,
+        ];
+
+        yield 'multipart related selects root html body and excludes inline html resource' => [
+            'raw' => implode($crlf, [
+                'From: sender@example.org',
+                'To: collector@example.org',
+                'Subject: related inline html resource',
+                'MIME-Version: 1.0',
+                'Content-Type: multipart/related; boundary="rel"',
+                '',
+                '--rel',
+                'Content-Type: text/html; charset=utf-8',
+                '',
+                '<html><body><p>Root message HTML</p></body></html>',
+                '--rel',
+                'Content-Type: text/html; charset=utf-8',
+                'Content-ID: <resource1@example.org>',
+                'Content-Disposition: inline; filename="resource.html"',
+                '',
+                '<html><body><p>Inline HTML resource</p></body></html>',
+                '--rel--',
+                '',
+            ]),
+            'expected_body'    => '<p>Root message HTML</p>',
+            'expected_is_html' => true,
+        ];
     }
 
     #[DataProvider('splitHtmlBodyProvider')]

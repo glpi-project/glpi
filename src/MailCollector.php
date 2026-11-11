@@ -1817,40 +1817,155 @@ class MailCollector extends CommonDBTM
      *
      * @return string
      **/
-    public function getBody(Message $message)
+    /**
+     * Check if a MIME part represents an attachment that should be excluded from ticket body.
+     */
+    private function isAttachmentPart(Part $part): bool
     {
-        $html_parts    = [];
-        $plain_content = null;
+        if (
+            $part->getHeaders()->has('content-disposition')
+            && (($disp = $part->getHeader('content-disposition')) instanceof ContentDisposition)
+            && strtolower($disp->getDisposition()) === 'attachment'
+        ) {
+            return true;
+        }
+        return false;
+    }
 
-        $parts = !$message->isMultipart()
-            ? new ArrayIterator([$message])
-            : new RecursiveIteratorIterator($message);
+    /**
+     * Get lowercase MIME type of a part, defaulting to text/plain per RFC 2045.
+     */
+    private function getPartMimeType(Part $part, string $default = 'text/plain'): string
+    {
+        if (
+            $part->getHeaders()->has('content-type')
+            && (($ct = $part->getHeader('content-type')) instanceof ContentType)
+        ) {
+            return strtolower($ct->getType());
+        }
+        return $default;
+    }
 
-        foreach ($parts as $part) {
-            if (
-                $part->getHeaders()->has('content-disposition')
-                && (($content_disp_obj = $part->getHeader('content-disposition')) instanceof ContentDisposition)
-                && strtolower($content_disp_obj->getDisposition()) === 'attachment'
-            ) {
-                continue;
+    /**
+     * Recursively collect candidate body parts respecting MIME structure:
+     * - multipart/alternative: selects the richest valid representation (last with non-empty content)
+     * - multipart/related: selects the root part (identified by "start" parameter, or first part)
+     * - multipart/mixed or other: collects body segments in sequence (supporting split HTML bodies)
+     *
+     * @return array{html: Part[], plain: Part[]}
+     */
+    private function collectCandidateBodyParts(Part $part): array
+    {
+        if ($this->isAttachmentPart($part)) {
+            return ['html' => [], 'plain' => []];
+        }
+
+        $type = $this->getPartMimeType($part);
+
+        if (!$part->isMultipart()) {
+            if ($type === 'text/html') {
+                return ['html' => [$part], 'plain' => []];
             }
+            if ($type === 'text/plain') {
+                return ['html' => [], 'plain' => [$part]];
+            }
+            return ['html' => [], 'plain' => []];
+        }
 
-            // Per rfc 2045 (MIME Part One: Format of Internet Message Bodies), the default content type for Internet mail is text/plain.
-            $content_type = 'text/plain';
+        $subtype = explode('/', $type)[1] ?? 'mixed';
+        $childCount = $part->countParts();
+
+        if ($subtype === 'alternative') {
+            // RFC 2046: alternative representations are ordered from simplest to richest.
+            // Search from the last child backwards and select the first branch that yields
+            // at least one non-empty body representation.
+            for ($i = $childCount; $i >= 1; $i--) {
+                $child = $part->getPart($i);
+                $res = $this->collectCandidateBodyParts($child);
+                if (!empty($res['html']) || !empty($res['plain'])) {
+                    $hasContent = false;
+                    foreach ($res['html'] as $hp) {
+                        if (trim($this->extractHtmlPartBody($hp)) !== '') {
+                            $hasContent = true;
+                            break;
+                        }
+                    }
+                    if (!$hasContent) {
+                        foreach ($res['plain'] as $pp) {
+                            if (trim($this->getDecodedContent($pp)) !== '') {
+                                $hasContent = true;
+                                break;
+                            }
+                        }
+                    }
+                    if ($hasContent) {
+                        return $res;
+                    }
+                }
+            }
+            return ['html' => [], 'plain' => []];
+        }
+
+        if ($subtype === 'related') {
+            // RFC 2387: root part is specified by "start" parameter, or defaults to the first part.
+            // Subsequent sibling parts are related resources (e.g. inline images, styles, related HTML).
+            $startPartNum = 1;
             if (
                 $part->getHeaders()->has('content-type')
-                && (($content_type_obj = $part->getHeader('content-type')) instanceof ContentType)
+                && (($ct = $part->getHeader('content-type')) instanceof ContentType)
             ) {
-                $content_type = strtolower($content_type_obj->getType());
-            }
-
-            if ($content_type === 'text/html') {
-                $html_part = $this->extractHtmlPartBody($part);
-                if (trim($html_part) !== '') {
-                    $html_parts[] = rtrim($html_part);
+                $startCid = $ct->getParameter('start');
+                if ($startCid !== null) {
+                    $cleanStart = trim($startCid, '<>');
+                    for ($i = 1; $i <= $childCount; $i++) {
+                        $candidate = $part->getPart($i);
+                        if ($candidate->getHeaders()->has('content-id')) {
+                            $cid = trim($candidate->getHeader('content-id')->getFieldValue(), '<>');
+                            if ($cid === $cleanStart) {
+                                $startPartNum = $i;
+                                break;
+                            }
+                        }
+                    }
                 }
-            } elseif ($content_type === 'text/plain' && ($plain_content === null || trim($plain_content) === '')) {
-                $plain_content = $this->getDecodedContent($part);
+            }
+            return $this->collectCandidateBodyParts($part->getPart($startPartNum));
+        }
+
+        // For multipart/mixed, multipart/signed, etc.: collect body segments in document order
+        $html = [];
+        $plain = [];
+        for ($i = 1; $i <= $childCount; $i++) {
+            $child = $part->getPart($i);
+            $res = $this->collectCandidateBodyParts($child);
+            foreach ($res['html'] as $h) {
+                $html[] = $h;
+            }
+            foreach ($res['plain'] as $p) {
+                $plain[] = $p;
+            }
+        }
+        return ['html' => $html, 'plain' => $plain];
+    }
+
+    public function getBody(Message $message)
+    {
+        $candidates = $this->collectCandidateBodyParts($message);
+
+        $html_parts = [];
+        foreach ($candidates['html'] as $part) {
+            $html_part = $this->extractHtmlPartBody($part);
+            if (trim($html_part) !== '') {
+                $html_parts[] = rtrim($html_part);
+            }
+        }
+
+        $plain_content = null;
+        foreach ($candidates['plain'] as $part) {
+            $decoded = $this->getDecodedContent($part);
+            if (trim($decoded) !== '') {
+                $plain_content = $decoded;
+                break;
             }
         }
 
