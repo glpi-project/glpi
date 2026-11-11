@@ -1819,13 +1819,22 @@ class MailCollector extends CommonDBTM
      **/
     public function getBody(Message $message)
     {
-        $content = null;
+        $html_parts    = [];
+        $plain_content = null;
 
         $parts = !$message->isMultipart()
-         ? new ArrayIterator([$message])
-         : new RecursiveIteratorIterator($message);
+            ? new ArrayIterator([$message])
+            : new RecursiveIteratorIterator($message);
 
         foreach ($parts as $part) {
+            if (
+                $part->getHeaders()->has('content-disposition')
+                && (($content_disp_obj = $part->getHeader('content-disposition')) instanceof ContentDisposition)
+                && strtolower($content_disp_obj->getDisposition()) === 'attachment'
+            ) {
+                continue;
+            }
+
             // Per rfc 2045 (MIME Part One: Format of Internet Message Bodies), the default content type for Internet mail is text/plain.
             $content_type = 'text/plain';
             if (
@@ -1834,100 +1843,117 @@ class MailCollector extends CommonDBTM
             ) {
                 $content_type = strtolower($content_type_obj->getType());
             }
+
             if ($content_type === 'text/html') {
-                $this->body_is_html = true;
-                $raw_content = $this->getDecodedContent($part);
-
-                $content = '';
-
-                // Extract everything located prior to doctype/html declaration
-                $html_opening_matches = [];
-                if (preg_match('/(<!doctype|<html)/uis', $raw_content, $html_opening_matches, PREG_OFFSET_CAPTURE) === 1) {
-                    // Regex offset is in bytes, not in chars, and must be converted for unicode support
-                    $html_opening_pos = mb_strlen(substr($raw_content, 0, $html_opening_matches[1][1] ?? 0));
-
-                    $content .= mb_substr(
-                        $raw_content,
-                        0,
-                        $html_opening_pos
-                    );
+                $html_part = $this->extractHtmlPartBody($part);
+                if (trim($html_part) !== '') {
+                    $html_parts[] = rtrim($html_part);
                 }
-
-                // Extract everything located inside the body
-                $body_opening_matches = [];
-                $body_closing_matches = [];
-                if (
-                    preg_match('/(<body[^>]*>)/uis', $raw_content, $body_opening_matches, PREG_OFFSET_CAPTURE) === 1
-                    && preg_match('/(<\/body>)/uis', $raw_content, $body_closing_matches, PREG_OFFSET_CAPTURE) === 1
-                    && ($body_closing_matches[1][1] ?? 0) > ($body_opening_matches[1][1] ?? 0)
-                ) {
-                    // Regex offset is in bytes, not in chars, and must be converted for unicode support
-                    $body_opening_pos = mb_strlen(substr($raw_content, 0, $body_opening_matches[1][1] ?? 0));
-                    $body_closing_pos = mb_strlen(substr($raw_content, 0, $body_closing_matches[1][1] ?? 0));
-
-                    $body_content_start_pos = $body_opening_pos + mb_strlen($body_opening_matches[1][0] ?? '');
-                    $body_content_end_pos   = $body_closing_pos;
-
-                    $content .= mb_substr(
-                        $raw_content,
-                        $body_content_start_pos,
-                        $body_content_end_pos - $body_content_start_pos
-                    );
-                }
-
-                // Extract everything located after the html closing tag
-                $html_closing_matches = [];
-                if (preg_match('/(<\/html>)/uis', $raw_content, $html_closing_matches, PREG_OFFSET_CAPTURE) === 1) {
-                    // Regex offset is in bytes, not in chars, and must be converted for unicode support
-                    $html_closing_pos = mb_strlen(substr($raw_content, 0, $html_closing_matches[1][1] ?? 0));
-
-                    $content .= mb_substr(
-                        $raw_content,
-                        $html_closing_pos + mb_strlen($html_closing_matches[1][0] ?? ''),
-                        null
-                    );
-                }
-
-                // If we have extracted content, use it, otherwise fallback to original
-                if (trim($content) === '') {
-                    $content = $raw_content;
-                }
-
-                // Strip <style> and <script> tags located in HTML body.
-                // They could be neutralized by RichText::getSafeHtml(), but their content would be displayed,
-                // and end-user would probably prefer having them completely removed.
-                $content = preg_replace(
-                    [
-                        '/<style[^>]*>.*?<\/style>/s',
-                        '/<script[^>]*>.*?<\/script>/s',
-                    ],
-                    '',
-                    $content
-                );
-
-                // Strip IE/Outlook conditional code.
-                // Strip commented conditional code (`<!--[if lte mso 9]>...<![endif]-->`) contents that
-                // is not supposed to be visible outside Outlook/IE context.
-                $content = preg_replace('/<!--\[if\s+[^\]]+\]>.*?<!\[endif\]-->/s', '', $content);
-                // Preserve uncommented conditional code (`<![if !supportLists]>...<![endif]>`) contents that
-                // is supposed to be visible outside Outlook/IE context.
-                $content = preg_replace('/<!\[if\s+[^\]]+\]>(.*?)<!\[endif\]>/s', '$1', $content);
-
-                // Strip namespaced tags.
-                $content = preg_replace('/<\w+:\w+>.*?<\/\w+:\w+>/s', '', $content);
-
-                // do not check for text part if we found html one.
-                break;
-            }
-            if ($content_type === 'text/plain' && $content === null) {
-                $this->body_is_html = false;
-                $content = $this->getDecodedContent($part);
+            } elseif ($content_type === 'text/plain' && ($plain_content === null || trim($plain_content) === '')) {
+                $plain_content = $this->getDecodedContent($part);
             }
         }
 
-        $content = $content === null
-         ? ''
-         : rtrim($content); // Remove extra ending spaces
+        if ($html_parts !== []) {
+            $this->body_is_html = true;
+            $content = implode("\n", $html_parts);
+        } elseif ($plain_content !== null) {
+            $this->body_is_html = false;
+            $content = $plain_content;
+        } else {
+            $this->body_is_html = false;
+            $content = '';
+        }
+
+        return rtrim($content); // Remove extra ending spaces
+    }
+
+    /**
+     * Extract and clean the HTML body content from a single text/html MIME part.
+     */
+    private function extractHtmlPartBody(Part $part): string
+    {
+        $raw_content   = $this->getDecodedContent($part);
+        $content       = '';
+        $has_body_tags = false;
+
+        // Extract everything located prior to doctype/html declaration
+        $html_opening_matches = [];
+        if (preg_match('/(<!doctype|<html)/uis', $raw_content, $html_opening_matches, PREG_OFFSET_CAPTURE) === 1) {
+            // Regex offset is in bytes, not in chars, and must be converted for unicode support
+            $html_opening_pos = mb_strlen(substr($raw_content, 0, $html_opening_matches[1][1] ?? 0));
+
+            $content .= mb_substr(
+                $raw_content,
+                0,
+                $html_opening_pos
+            );
+        }
+
+        // Extract everything located inside the body
+        $body_opening_matches = [];
+        $body_closing_matches = [];
+        if (
+            preg_match('/(<body[^>]*>)/uis', $raw_content, $body_opening_matches, PREG_OFFSET_CAPTURE) === 1
+            && preg_match('/(<\/body>)/uis', $raw_content, $body_closing_matches, PREG_OFFSET_CAPTURE) === 1
+            && ($body_closing_matches[1][1] ?? 0) > ($body_opening_matches[1][1] ?? 0)
+        ) {
+            $has_body_tags = true;
+
+            // Regex offset is in bytes, not in chars, and must be converted for unicode support
+            $body_opening_pos = mb_strlen(substr($raw_content, 0, $body_opening_matches[1][1] ?? 0));
+            $body_closing_pos = mb_strlen(substr($raw_content, 0, $body_closing_matches[1][1] ?? 0));
+
+            $body_content_start_pos = $body_opening_pos + mb_strlen($body_opening_matches[1][0] ?? '');
+            $body_content_end_pos   = $body_closing_pos;
+
+            $content .= mb_substr(
+                $raw_content,
+                $body_content_start_pos,
+                $body_content_end_pos - $body_content_start_pos
+            );
+        }
+
+        // Extract everything located after the html closing tag
+        $html_closing_matches = [];
+        if (preg_match('/(<\/html>)/uis', $raw_content, $html_closing_matches, PREG_OFFSET_CAPTURE) === 1) {
+            // Regex offset is in bytes, not in chars, and must be converted for unicode support
+            $html_closing_pos = mb_strlen(substr($raw_content, 0, $html_closing_matches[1][1] ?? 0));
+
+            $content .= mb_substr(
+                $raw_content,
+                $html_closing_pos + mb_strlen($html_closing_matches[1][0] ?? ''),
+                null
+            );
+        }
+
+        // If we have extracted content, use it; otherwise fallback to original unless an empty <body> wrapper was explicitly present
+        if (trim($content) === '' && !$has_body_tags) {
+            $content = $raw_content;
+        }
+
+        // Strip <style> and <script> tags located in HTML body.
+        // They could be neutralized by RichText::getSafeHtml(), but their content would be displayed,
+        // and end-user would probably prefer having them completely removed.
+        $content = preg_replace(
+            [
+                '/<style[^>]*>.*?<\/style>/s',
+                '/<script[^>]*>.*?<\/script>/s',
+            ],
+            '',
+            $content
+        );
+
+        // Strip IE/Outlook conditional code.
+        // Strip commented conditional code (`<!--[if lte mso 9]>...<![endif]-->`) contents that
+        // is not supposed to be visible outside Outlook/IE context.
+        $content = preg_replace('/<!--\[if\s+[^\]]+\]>.*?<!\[endif\]-->/s', '', $content);
+        // Preserve uncommented conditional code (`<![if !supportLists]>...<![endif]>`) contents that
+        // is supposed to be visible outside Outlook/IE context.
+        $content = preg_replace('/<!\[if\s+[^\]]+\]>(.*?)<!\[endif\]>/s', '$1', $content);
+
+        // Strip namespaced tags.
+        $content = preg_replace('/<\w+:\w+>.*?<\/\w+:\w+>/s', '', $content);
 
         return $content;
     }
