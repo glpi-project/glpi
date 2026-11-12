@@ -45,10 +45,13 @@ final class ITILFollowupFieldConfig implements
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
     public const ITILFOLLOWUPTEMPLATE_IDS = 'itilfollowuptemplate_ids';
+    // Must be named "value" for the form tags to be handled by #[HasFormTags]
+    public const SPECIFIC_CONTENT = 'value';
 
     public function __construct(
         private ITILFollowupFieldStrategy $strategy,
         private ?array $specific_itilfollowuptemplates_ids = null,
+        private string $specific_content = '',
     ) {}
 
     #[Override]
@@ -62,6 +65,7 @@ final class ITILFollowupFieldConfig implements
         return new self(
             strategy: $strategy,
             specific_itilfollowuptemplates_ids: $data[self::ITILFOLLOWUPTEMPLATE_IDS] ?? [],
+            specific_content: $data[self::SPECIFIC_CONTENT] ?? '',
         );
     }
 
@@ -71,6 +75,7 @@ final class ITILFollowupFieldConfig implements
         return [
             self::STRATEGY => $this->strategy->value,
             self::ITILFOLLOWUPTEMPLATE_IDS => $this->specific_itilfollowuptemplates_ids,
+            self::SPECIFIC_CONTENT         => $this->specific_content,
         ];
     }
 
@@ -81,7 +86,7 @@ final class ITILFollowupFieldConfig implements
     }
 
     /**
-     * @return array<ITILFollowupFieldStrategy>
+     * @return non-empty-list<ITILFollowupFieldStrategy>
      */
     public function getStrategies(): array
     {
@@ -91,5 +96,10 @@ final class ITILFollowupFieldConfig implements
     public function getSpecificITILFollowupTemplatesIds(): ?array
     {
         return $this->specific_itilfollowuptemplates_ids;
+    }
+
+    public function getSpecificContent(): string
+    {
+        return $this->specific_content;
     }
 }
