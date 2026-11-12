@@ -51,7 +51,7 @@ use function Safe\json_decode;
 /**
  * Short answers are single line inputs used to answer simple questions.
  */
-abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType implements FormQuestionDataConverterInterface, TranslationAwareQuestionType, ConditionValueTransformerInterface, PredefinedValueValidationInterface, RawAnswerIsHtmlInterface
+abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType implements FormQuestionDataConverterInterface, TranslationAwareQuestionType, ConditionValueTransformerInterface, PredefinedValueValidationInterface
 {
     public const TRANSLATION_KEY_OPTION = 'option';
 
@@ -567,26 +567,29 @@ TWIG;
     #[Override]
     public function formatRawAnswer(mixed $answer, Question $question): string
     {
+        return implode(', ', $this->getAnswerLabels($answer, $question));
+    }
+
+    /**
+     * Get the translated labels of the selected options.
+     *
+     * @return string[]
+     */
+    public function getAnswerLabels(mixed $answer, Question $question): array
+    {
         if (is_string($answer)) {
             $answer = [$answer];
         }
 
         // Replace uuids by translated labels
         $options = $this->getOptions($question);
-        $answer = array_map(
+        return array_map(
             function ($uuid) use ($question, $options) {
                 $key = sprintf('%s-%s', self::TRANSLATION_KEY_OPTION, $uuid);
-                return htmlescape(FormTranslation::translate($question, $key) ?? ($options[$uuid] ?? ''));
+                return FormTranslation::translate($question, $key) ?? ($options[$uuid] ?? '');
             },
             $answer
         );
-
-        if (count($answer) <= 1) {
-            return implode('', $answer);
-        }
-
-        // One answer per line, as in GLPI 10
-        return '<ul><li>' . implode('</li> <li>', $answer) . '</li></ul>';
     }
 
     #[Override]

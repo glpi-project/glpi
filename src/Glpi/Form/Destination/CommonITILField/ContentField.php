@@ -44,6 +44,8 @@ use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
 use Glpi\Form\Migration\TagConversionTrait;
+use Glpi\Form\Question;
+use Glpi\Form\QuestionType\AbstractQuestionTypeSelectable;
 use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\FormTagsManager;
 use Glpi\Form\Tag\QuestionTagProvider;
@@ -175,8 +177,10 @@ TWIG;
                 foreach ($questions as $question) {
                     $question_tag  = $question_provider->getTagForQuestion($question);
                     $answer_tag    = $answer_provider->getTagForQuestion($question);
+                    $answer_html   = $this->getMultipleAnswersList($question, $answers_set)
+                        ?? $answer_tag->html;
 
-                    $html .= "<b>$i) $question_tag->html</b>: $answer_tag->html<br>";
+                    $html .= "<b>$i) $question_tag->html</b>: $answer_html<br>";
                     $i++;
                 }
                 $html .= "</p>";
@@ -184,6 +188,28 @@ TWIG;
         }
 
         return new SimpleValueConfig($html);
+    }
+
+    /**
+     * Render the answers of a question with several selected options as a list,
+     * one answer per line.
+     * Returns null when the answer must be rendered with its tag.
+     */
+    private function getMultipleAnswersList(Question $question, ?AnswersSet $answers_set): ?string
+    {
+        $type = $question->getQuestionType();
+        $answer = $answers_set?->getAnswerByQuestionId($question->getID());
+        if (!$type instanceof AbstractQuestionTypeSelectable || $answer === null) {
+            return null;
+        }
+
+        $labels = $type->getAnswerLabels($answer->getRawAnswer(), $question);
+        if (count($labels) <= 1) {
+            return null;
+        }
+
+        // Items are separated by a space to keep them apart once tags are stripped
+        return '<ul><li>' . implode('</li> <li>', array_map('htmlescape', $labels)) . '</li></ul>';
     }
 
     #[Override]
