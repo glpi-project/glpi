@@ -35,6 +35,7 @@
 /* global _ */
 
 import GenericView from '/js/modules/Search/GenericView.js';
+import HorizontalScroll from '/js/modules/Search/HorizontalScroll.js';
 
 // Explicitly bind to window so Jest tests work properly
 window.GLPI = window.GLPI || {};
@@ -64,6 +65,12 @@ window.GLPI.Search.Table = class Table extends GenericView {
 
         this.shiftSelectAllCheckbox();
         this.toggleSavedSearch(true);
+        this.initHorizontalScroll();
+    }
+
+    initHorizontalScroll() {
+        this.horizontal_scroll?.destroy();
+        this.horizontal_scroll = new HorizontalScroll(this.getElement()[0]);
     }
 
     toggleSavedSearch(isDisable) {
@@ -245,6 +252,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
                     handle_search_failure();
                     return;
                 }
+                this.horizontal_scroll?.destroy();
                 ajax_container.html(content);
 
                 // Rebind the search form from the new content
@@ -255,6 +263,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
                 this.hideLoadingSpinner();
                 this.shiftSelectAllCheckbox();
                 this.toggleSavedSearch(false);
+                this.initHorizontalScroll();
             }, () => {
                 handle_search_failure();
             });
