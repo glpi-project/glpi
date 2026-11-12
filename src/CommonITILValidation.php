@@ -1143,13 +1143,14 @@ abstract class CommonITILValidation extends CommonDBChild
                             </div>
                         </div>
                         <div class="flex-shrink-0">
-                            <span class="ti ti-edit"
-                               role="button"
+                            <button type="button"
+                               class="border-0 bg-transparent p-0"
                                title="{{ edit_button_label }}"
                                id="edit_validation_step_{{ step_id }}_{{ rand }}"
                             >
+                                <i class="ti ti-edit" aria-hidden="true"></i>
                                 <span class="visually-hidden">{{ edit_button_label }}</span>
-                            </span>
+                            </button>
                             <script>
                                 document.getElementById('edit_validation_step_{{ step_id }}_{{ rand }}').addEventListener('click', () => {
                                     glpi_ajax_dialog({{ edit_dialog_params|json_encode|raw }});
