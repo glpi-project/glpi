@@ -41,6 +41,7 @@ use Config;
 use Glpi\Config\ConfigContainer;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Session;
 use User;
 
 /* Test for inc/auth.class.php */
@@ -87,17 +88,17 @@ class AuthTest extends DbTestCase
     {
         $this->login('tech', 'tech');
         $this->removeRightFromProfile('Technician', Config::$rightname, READ | UPDATE);
-        \Session::reloadCurrentProfile();
+        Session::reloadCurrentProfile();
         $this->assertFalse(Auth::getMenuContent());
 
         // Update right alone must not expose the menu, as the target page only checks READ
         $this->addRightToProfile('Technician', Config::$rightname, UPDATE);
-        \Session::reloadCurrentProfile();
+        Session::reloadCurrentProfile();
         $this->assertFalse(Auth::getMenuContent());
 
         $this->removeRightFromProfile('Technician', Config::$rightname, UPDATE);
         $this->addRightToProfile('Technician', Config::$rightname, READ);
-        \Session::reloadCurrentProfile();
+        Session::reloadCurrentProfile();
         $menu = Auth::getMenuContent();
         $this->assertIsArray($menu);
         $this->assertArrayNotHasKey('add', $menu['options'][AuthLDAP::class]['links']);
@@ -106,7 +107,7 @@ class AuthTest extends DbTestCase
         $this->assertArrayNotHasKey('settings', $menu['options']);
 
         $this->addRightToProfile('Technician', Config::$rightname, UPDATE);
-        \Session::reloadCurrentProfile();
+        Session::reloadCurrentProfile();
         $menu = Auth::getMenuContent();
         $this->assertArrayHasKey('add', $menu['options'][AuthLDAP::class]['links']);
         $this->assertArrayHasKey('others', $menu['options']);
@@ -416,6 +417,33 @@ class AuthTest extends DbTestCase
         $this->assertTrue((new Auth())->login('', ''));
 
         //Clean cookie
+        unset($_COOKIE[$cookie_name]);
+    }
+
+    /**
+     * Non-regression test: logging in again (e.g. OAuth SSO link) with "remember me"
+     * while a "remember me" cookie already exists must not reuse the cookie token UID.
+     */
+    public function testRememberMeLoginWithExistingCookie(): void
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['login_remember_time'] = 3600;
+
+        $cookie_name = Auth::getRememberMeCookieName();
+        $this->assertTrue((new Auth())->login(TU_USER, TU_PASS, true, true));
+        $first_cookie_value = $_COOKIE[$cookie_name];
+        $first_uid = explode(':', $first_cookie_value)[0];
+
+        $this->assertTrue((new Auth())->login(TU_USER, TU_PASS, true, true));
+        $second_uid = explode(':', $_COOKIE[$cookie_name])[0];
+        $this->assertNotSame($first_uid, $second_uid);
+        $this->assertSame($second_uid, Session::getLoginSessionUID());
+
+        // The replaced cookie must not be usable anymore
+        $_COOKIE[$cookie_name] = $first_cookie_value;
+        $this->assertFalse((new Auth())->login('', ''));
+
         unset($_COOKIE[$cookie_name]);
     }
 
