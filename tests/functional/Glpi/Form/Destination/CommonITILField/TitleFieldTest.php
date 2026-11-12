@@ -38,6 +38,8 @@ use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
 use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Form;
+use Glpi\Form\QuestionType\QuestionTypeCheckbox;
+use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Tests\DbTestCase;
@@ -84,6 +86,60 @@ final class TitleFieldTest extends DbTestCase
         ]);
 
         $this->assertSame("It's a ticket with an apostrophe", $ticket->fields['name']);
+    }
+
+    public function testTitleWithMultipleCheckboxAnswersIsCommaSeparated(): void
+    {
+        $builder = new FormBuilder("My form name");
+        $builder->addQuestion(
+            name: "Shopping list",
+            type: QuestionTypeCheckbox::class,
+            extra_data: json_encode(new QuestionTypeSelectableExtraDataConfig([
+                'bread' => 'Bread',
+                'milk'  => 'Milk',
+            ]))
+        );
+        $form = $this->createForm($builder);
+
+        $question = current($form->getQuestions());
+        $this->setDestinationFieldConfig(
+            form: $form,
+            key: TitleField::getKey(),
+            config: new SimpleValueConfig((new AnswerTagProvider())->getTagForQuestion($question)->html),
+        );
+
+        $ticket = $this->sendFormAndGetCreatedTicket($form, [
+            "Shopping list" => ['bread', 'milk'],
+        ]);
+
+        $this->assertSame("Bread, Milk", $ticket->fields['name']);
+    }
+
+    public function testEmptyTitleWithMultipleCheckboxAnswersKeepsAnswersSeparated(): void
+    {
+        $builder = new FormBuilder("My form name");
+        $builder->addQuestion(
+            name: "Shopping list",
+            type: QuestionTypeCheckbox::class,
+            extra_data: json_encode(new QuestionTypeSelectableExtraDataConfig([
+                'bread' => 'Bread',
+                'milk'  => 'Milk',
+            ]))
+        );
+        $form = $this->createForm($builder);
+
+        $this->setDestinationFieldConfig(
+            form: $form,
+            key: TitleField::getKey(),
+            config: new SimpleValueConfig(""),
+        );
+
+        $ticket = $this->sendFormAndGetCreatedTicket($form, [
+            "Shopping list" => ['bread', 'milk'],
+        ]);
+
+        // Title is built from the content, answers must not be merged
+        $this->assertStringContainsString("Bread Milk", $ticket->fields['name']);
     }
 
     private function sendFormAndAssertTicketTitle(

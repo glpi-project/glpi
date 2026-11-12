@@ -71,9 +71,30 @@ final class QuestionTypeCheckboxTest extends AbstractQuestionTypeSelectableTest
         ]);
 
         $this->assertStringContainsString(
-            "1) Shopping list: Bread, Milk, Cheese",
-            strip_tags($ticket->fields['content']),
+            "<ul><li>Bread</li> <li>Milk</li> <li>Cheese</li></ul>",
+            $ticket->fields['content'],
         );
+    }
+
+    public function testCheckboxAnswerLabelsAreEscapedInTicketDescription(): void
+    {
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "Shopping list",
+            type: QuestionTypeCheckbox::class,
+            extra_data: json_encode(new QuestionTypeSelectableExtraDataConfig([
+                'bread' => '<script>alert(1)</script>',
+                'milk'  => 'Milk & honey',
+            ]))
+        );
+        $form = $this->createForm($builder);
+
+        $ticket = $this->sendFormAndGetCreatedTicket($form, [
+            "Shopping list" => ['bread', 'milk'],
+        ]);
+
+        $this->assertStringNotContainsString("<script>", $ticket->fields['content']);
+        $this->assertStringContainsString("<li>Milk &amp; honey</li>", $ticket->fields['content']);
     }
 
     public function testMultiplePredefinedValuesAreApplied(): void
