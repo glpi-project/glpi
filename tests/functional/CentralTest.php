@@ -35,7 +35,12 @@
 namespace tests\units;
 
 use Central;
+use Computer;
+use CronTask;
+use Glpi\System\HousekeepingCron;
 use Glpi\Tests\DbTestCase;
+use Item_Process;
+use Log;
 use Reminder;
 use RSSFeed;
 use Ticket;
@@ -161,5 +166,53 @@ class CentralTest extends DbTestCase
             str_contains($output, 'data-itemtype="Reminder"'),
             'Reminder widget must be rendered with permission.',
         );
+    }
+
+    public function testHousekeepingWarning(): void
+    {
+        $this->login();
+
+        $warning = 'Some obsolete data should be removed, but the related automatic action is disabled.';
+        $has_warning = function () use ($warning): bool {
+            $warnings = $this->callPrivateMethod(new Central(), 'getMessages')['warnings'] ?? [];
+            foreach ($warnings as $message) {
+                if (str_contains($message, $warning)) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        $task = new CronTask();
+        $this->assertTrue($task->getFromDBbyName(HousekeepingCron::class, HousekeepingCron::TASK_NAME));
+
+        // nothing to clean
+        $this->assertFalse($has_warning());
+
+        $computer = getItemByTypeName(Computer::class, '_test_pc01');
+        $this->createItem(Log::class, [
+            'itemtype'      => Computer::class,
+            'items_id'      => $computer->getID(),
+            'itemtype_link' => Item_Process::class,
+            'linked_action' => Log::HISTORY_ADD_SUBITEM,
+            'user_name'     => 'test',
+            'date_mod'      => $_SESSION['glpi_currenttime'],
+        ]);
+
+        // automatic action is disabled by default
+        $this->assertTrue($has_warning());
+        $warnings = $this->callPrivateMethod(new Central(), 'getMessages')['warnings'];
+        $this->assertStringContainsString('See automatic action', implode('', $warnings));
+
+        // no link to the automatic action without the right to view it
+        $_SESSION['glpiactiveprofile']['config'] = UPDATE;
+        $this->assertTrue($has_warning());
+        $warnings = $this->callPrivateMethod(new Central(), 'getMessages')['warnings'];
+        $this->assertStringNotContainsString('See automatic action', implode('', $warnings));
+        $_SESSION['glpiactiveprofile']['config'] = READ | UPDATE;
+
+        // automatic action is enabled, it will handle the cleanup
+        $this->updateItem(CronTask::class, $task->getID(), ['state' => CronTask::STATE_WAITING]);
+        $this->assertFalse($has_warning());
     }
 }

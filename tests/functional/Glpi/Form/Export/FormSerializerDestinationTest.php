@@ -246,6 +246,16 @@ final class FormSerializerDestinationTest extends DbTestCase
             ],
         ];
 
+        yield 'ITILFollowupField with specific content' => [
+            'field_key' => ITILFollowupField::getKey(),
+            'config'    => new ITILFollowupFieldConfig(
+                strategy: ITILFollowupFieldStrategy::SPECIFIC_CONTENT,
+                specific_content: '<p>ENTREE VALIDEE</p>',
+            ),
+            // Empty templates list is not stored
+            'keys_to_ignore' => [ITILFollowupFieldConfig::ITILFOLLOWUPTEMPLATE_IDS],
+        ];
+
         yield 'RequestSourceField' => [
             'field_key'        => RequestSourceField::getKey(),
             'config_fn'        => fn($created_items) => new RequestSourceFieldConfig(

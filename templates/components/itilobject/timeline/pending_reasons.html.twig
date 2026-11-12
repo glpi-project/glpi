@@ -38,6 +38,16 @@
    {% set pending_item_parent = call('PendingReason_Item::getForItem', [item, true]) %}
    {% set pendingreasons_id = pending_item.fields['pendingreasons_id'] ?? pending_item_parent.fields['pendingreasons_id'] ?? default_pending.fields['id'] ?? 0 %}
 
+   <script type="module">
+      const checkbox = document.getElementById('enable-pending-reasons-{{ rand }}');
+      const collapsible = document.getElementById('pending-reasons-setup-{{ rand }}');
+      const sync = () => bootstrap.Collapse.getOrCreateInstance(collapsible, {toggle: false})[checkbox.checked ? 'show' : 'hide']();
+      checkbox.addEventListener('change', sync);
+      // Bootstrap ignores show/hide calls during a transition (e.g. on double click), so sync again once it ends
+      collapsible.addEventListener('shown.bs.collapse', sync);
+      collapsible.addEventListener('hidden.bs.collapse', sync);
+   </script>
+
    <div class="row">
       <div class="col-12 col-sm-4" title="{{ "PendingReason"|itemtype_name }}"
            data-bs-toggle="tooltip" data-bs-placement="top">
