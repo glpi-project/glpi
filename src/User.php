@@ -100,6 +100,11 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     private const DB_KEEPALIVE_INTERVAL = 30;
 
+    /**
+     * Prefix of the cache keys of checkDefaultPasswords() results.
+     */
+    private const DEFAULT_PASSWORDS_CACHE_KEY_PREFIX = 'user_default_passwords_';
+
     public static array $undisclosedFields = [
         'password',
         'password_history',
@@ -1282,6 +1287,9 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 'begin_date',
                 'end_date',
 
+                // Prevent changing the login, that is used to match the user with an external authentication source
+                'name',
+
                 // Prevent changing 2fa settings
                 '2fa',
                 '2fa_unenforced',
@@ -1341,6 +1349,14 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 // blank password when authtype changes
                 $input['password'] = '';
             }
+        }
+
+        if (
+            Session::getLoginUserID() !== false // always allow update from backend routines
+            && !Session::haveRight(self::$rightname, self::UPDATEAUTHENT)
+        ) {
+            // prevent unexpected change of the authentication source and of the link with the directory entry
+            unset($input['auths_id'], $input['sync_field'], $input['user_dn'], $input['user_dn_hash']);
         }
 
         // Update User in the database
@@ -5062,6 +5078,9 @@ HTML;
 
         $start       = intval($_GET["start"] ?? 0);
         $get_filters   = $_GET["filters"] ?? [];
+        if (!is_array($get_filters)) {
+            $get_filters = [];
+        }
 
         $sortable_columns = ['type', 'entity', 'name', 'serial', 'otherserial', 'states', 'group', 'users'];
         $sort = $_GET['sort'] ?? 'name';
@@ -5160,28 +5179,38 @@ HTML;
             ];
         }
 
-        $group_choices = [];
-        foreach (getAllDataFromTable('glpi_groups') as $g_id => $row) {
-            $group_choices[$g_id] = $row['completename'];
-        }
-        asort($group_choices);
+        $is_filtered = count($get_filters) > 0;
 
+        // Names caches for displayed rows; groups and users filters use AJAX dropdowns as these tables can be huge
+        $group_choices = [];
         $user_choices = [];
-        foreach (self::getSqlSearchResult(false, 'all') as $row) {
-            $user_choices[$row['id']] = formatUserName($row['id'], $row['name'], $row['realname'], $row['firstname']);
-        }
 
         $array_filters_choices = [
             'type'     => $type_choices,
             'entity'   => $entity_choices,
             'states'   => $state_choices,
-            'group'    => $group_choices,
-            'users'    => $user_choices,
         ];
 
         foreach ($get_filters as $f => $value) {
             if (!empty($value)) {
-                if (isset($array_filters_choices[$f])) {
+                if (in_array($f, ['group', 'users'], true)) {
+                    foreach ((array) $value as $v) {
+                        if (!is_numeric($v) || (int) $v <= 0) {
+                            continue;
+                        }
+                        // Selected users names are displayed in the dropdown, do not disclose users the viewer cannot see
+                        if ($f === 'users') {
+                            $selected_user = new self();
+                            if (
+                                !$selected_user->getFromDB((int) $v)
+                                || !Session::haveAccessToOneOfEntities($selected_user->getEntities())
+                            ) {
+                                continue;
+                            }
+                        }
+                        $filters[$f][] = (int) $v;
+                    }
+                } elseif (isset($array_filters_choices[$f])) {
                     foreach ((array) $value as $v) {
                         if (isset($array_filters_choices[$f][$v])) {
                             $filters[$f][] = $v;
@@ -5325,7 +5354,7 @@ HTML;
                             ? ($state_choices[$data['states_id']] ?? Dropdown::getDropdownName("glpi_states", $data['states_id'], false, true, false, ''))
                             : '',
                         'group'         => implode('<br>', array_filter($group_names)),
-                        'users'         => $user_id > 0 ? ($user_choices[$user_id] ?? '') : '',
+                        'users'         => $user_id > 0 ? $user_choices[$user_id] : '',
                     ];
                     $number++;
                 }
@@ -5365,22 +5394,24 @@ HTML;
                 ],
                 'group'         => [
                     'label'            => Group::getTypeName(Session::getPluralNumber()),
-                    'filter_formatter' => 'array',
+                    'filter_formatter' => 'dropdown',
+                    'filter_itemtype'  => Group::class,
+                    'filter_params'    => ['addicon' => false, 'comments' => false],
                 ],
                 'users'         => [
                     'label'            => self::getTypeName(Session::getPluralNumber()),
-                    'filter_formatter' => 'array',
+                    'filter_formatter' => 'dropdown',
+                    'filter_itemtype'  => self::class,
+                    'filter_params'    => ['right' => 'all'],
                 ],
             ],
             'columns_values'        => [
                 'type'      => $type_choices,
                 'entity'    => $entity_choices,
                 'states'    => $state_choices,
-                'group'     => $group_choices,
-                'users'     => $user_choices,
             ],
-            'filters' => $filters,
-            'additional_params'     => http_build_query(['filters' => $filters]),
+            'filters' => $is_filtered ? $filters : [],
+            'additional_params'     => $is_filtered ? http_build_query(['filters' => $filters]) : '',
             'formatters' => [
                 'name'   => 'raw_html',
                 'group'  => 'raw_html',
@@ -5443,14 +5474,23 @@ HTML;
                         'method' => AuthLDAP::IDENTIFIER_EMAIL,
                         'value'  => $email,
                     ];
+                    $refused = false;
                     $res = AuthLDAP::ldapImportUserByServerId(
                         $params,
                         AuthLDAP::ACTION_IMPORT,
-                        $ldap
+                        $ldap,
+                        false,
+                        false,
+                        $refused
                     );
 
                     if (isset($res['id'])) {
                         return $res['id'];
+                    }
+                    if ($refused) {
+                        // The user exists in LDAP but its import has been refused,
+                        // do not try other servers nor create it from its email.
+                        return 0;
                     }
                 }
             }
@@ -6208,7 +6248,7 @@ HTML;
      */
     public static function checkDefaultPasswords()
     {
-        global $DB;
+        global $DB, $GLPI_CACHE;
 
         $passwords = ['glpi'      => 'glpi',
             'tech'      => 'tech',
@@ -6217,7 +6257,7 @@ HTML;
         ];
         $default_password_set = [];
 
-        $users = $DB->request([
+        $users = iterator_to_array($DB->request([
             'SELECT' => ['name', 'password'],
             'FROM' => self::getTable(),
             'WHERE' => [
@@ -6225,12 +6265,22 @@ HTML;
                 'is_deleted' => 0,
                 'name'       => array_keys($passwords),
             ],
-        ]);
+            'ORDER' => ['name'],
+        ]), false);
+
+        // Verifying a password is slow by design: keep the result for as long as the password hashes stay the same.
+        $cache_key = self::DEFAULT_PASSWORDS_CACHE_KEY_PREFIX . sha1(json_encode($users));
+        $cached = $GLPI_CACHE->get($cache_key);
+        if (is_array($cached)) {
+            return $cached;
+        }
+
         foreach ($users as $data) {
             if (Auth::checkPassword($passwords[strtolower($data['name'])], $data['password'])) {
                 $default_password_set[] = $data['name'];
             }
         }
+        $GLPI_CACHE->set($cache_key, $default_password_set, DAY_TIMESTAMP);
 
         return $default_password_set;
     }

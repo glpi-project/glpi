@@ -55,6 +55,34 @@ use function Safe\unlink;
 
 class SessionTest extends DbTestCase
 {
+    public function testCanViewAllEntitiesFollowsEntitiesChanges(): void
+    {
+        $this->login();
+        $this->setEntity('Root entity', true);
+
+        // The command line can always view all entities, emulate a web request.
+        $GLOBALS['GLPI_IS_COMMAND_LINE'] = false;
+        try {
+            $this->assertTrue(\Session::canViewAllEntities());
+
+            // An added entity is counted, and is added to the active entities of its creator.
+            $entity = $this->createItem(\Entity::class, [
+                'name'        => 'canViewAllEntities test',
+                'entities_id' => 0,
+            ]);
+            $this->assertTrue(\Session::canViewAllEntities());
+
+            unset($_SESSION['glpiactiveentities'][$entity->getID()]);
+            $this->assertFalse(\Session::canViewAllEntities());
+
+            // A purged entity is no longer counted.
+            $this->assertTrue($entity->delete(['id' => $entity->getID()], true));
+            $this->assertTrue(\Session::canViewAllEntities());
+        } finally {
+            unset($GLOBALS['GLPI_IS_COMMAND_LINE']);
+        }
+    }
+
     /**
      * Language used to test the local i18n files.
      * It must be a language that is not used by any other test, as the local
@@ -1610,6 +1638,46 @@ class SessionTest extends DbTestCase
         $this->assertArrayHasKey('content', $_SESSION['glpimenu']['config']);
     }
 
+    public function testSavedSearchMenuDependsOnProfileRight(): void
+    {
+        global $DB;
+
+        // Arrange: create a central user with ticket rights only
+        $profile = $this->createItem(Profile::class, [
+            'name' => 'Assistance only profile',
+            'interface' => 'central',
+        ]);
+        $user = $this->createItem(User::class, [
+            'name' => 'assistance_only_user',
+        ]);
+        $this->createItem(Profile_User::class, [
+            'users_id' => $user->getID(),
+            'profiles_id' => $profile->getID(),
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $DB->update(ProfileRight::getTable(), ['rights' => 0], ['profiles_id' => $profile->getID()]);
+        $DB->update(
+            ProfileRight::getTable(),
+            ['rights' => ALLSTANDARDRIGHT | \Ticket::READALL],
+            ['profiles_id' => $profile->getID(), 'name' => 'ticket']
+        );
+
+        // Act + Assert: no "Saved searches" entry without the "bookmark_public" right
+        $this->login('assistance_only_user');
+        \Html::generateMenuSession(true);
+        $this->assertArrayNotHasKey('savedsearch', $_SESSION['glpimenu']['tools']['content'] ?? []);
+
+        // Granting READ on "bookmark_public" brings the entry back
+        $DB->update(
+            ProfileRight::getTable(),
+            ['rights' => READ],
+            ['profiles_id' => $profile->getID(), 'name' => 'bookmark_public']
+        );
+        $this->login('assistance_only_user');
+        \Html::generateMenuSession(true);
+        $this->assertArrayHasKey('savedsearch', $_SESSION['glpimenu']['tools']['content']);
+    }
+
     public function testLoadEntitySetsParentEntities(): void
     {
         // Non-regression: Session::loadEntity() was not setting glpiparententities,
@@ -1620,5 +1688,34 @@ class SessionTest extends DbTestCase
         $this->assertArrayHasKey('glpiparententities', $_SESSION);
         $this->assertArrayHasKey('glpiparententities_string', $_SESSION);
         $this->assertIsArray($_SESSION['glpiparententities']);
+    }
+
+    public function testCleanOnLogoutOnReplica(): void
+    {
+        global $CFG_GLPI, $DB;
+
+        $this->login();
+        $users_id = \Session::getLoginUserID();
+        $token_uid = bin2hex(random_bytes(8));
+
+        $CFG_GLPI['login_remember_time'] = 3600;
+        $this->callPrivateMethod(\Auth::class, 'setRememberMeCookie', $users_id, $token_uid, bin2hex(random_bytes(16)));
+        $cookie_name = \Auth::getRememberMeCookieName();
+        $this->assertArrayHasKey($cookie_name, $_COOKIE);
+
+        $DB->replica = true;
+        try {
+            \Session::cleanOnLogout();
+        } finally {
+            $DB->replica = false;
+        }
+
+        // Token cannot be deleted from the replica, but the cookie is removed.
+        $this->assertEquals(1, countElementsInTable('glpi_usertokens', [
+            'users_id' => $users_id,
+            'token_uid' => $token_uid,
+            'type' => 'rememberme',
+        ]));
+        $this->assertArrayNotHasKey($cookie_name, $_COOKIE);
     }
 }

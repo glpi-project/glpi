@@ -1063,18 +1063,20 @@ function update94xto950()
             );
             $stmt = $DB->prepare($query);
             foreach ($items as $item) {
-                $stmt->bind_param(
-                    'issiiiis',
-                    $dashboard_id,
-                    $item['gridstack_id'],
-                    $item['card_id'],
-                    $item['x'],
-                    $item['y'],
-                    $item['width'],
-                    $item['height'],
-                    $item['card_options']
+                $DB->executeStatement(
+                    $stmt,
+                    [
+                        $dashboard_id,
+                        $item['gridstack_id'],
+                        $item['card_id'],
+                        $item['x'],
+                        $item['y'],
+                        $item['width'],
+                        $item['height'],
+                        $item['card_options'],
+                    ],
+                    ['i', 's', 's', 'i', 'i', 'i', 'i', 's']
                 );
-                $stmt->execute();
             }
         }
     }
@@ -1459,12 +1461,7 @@ HTML,
         $templates = $template_inst->find();
         foreach ($templates as $template) {
             $new_description = str_replace("\n", '<br>', $template[$fieldname]);
-            $stmt->bind_param(
-                'si',
-                $new_description,
-                $template['id']
-            );
-            $stmt->execute();
+            $DB->executeStatement($stmt, [$new_description, $template['id']], ['s', 'i']);
         }
     }
     /** /update project and itil task templates **/

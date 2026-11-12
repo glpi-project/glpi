@@ -43,7 +43,8 @@ final class Item_Environment extends CommonDBChild
     // From CommonDBChild
     public static string $itemtype = 'itemtype';
     public static string $items_id = 'items_id';
-    public bool $dohistory       = true;
+    public bool $dohistory       = false;
+    public static bool $logs_for_parent = false;
 
 
     public static function getTypeName($nb = 0)

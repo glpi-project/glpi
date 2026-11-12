@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Computer;
 use Glpi\Asset\Capacity;
 use Glpi\Inventory\Asset\Process;
 use Glpi\Inventory\Conf;
@@ -111,7 +112,7 @@ class ProcessTest extends AbstractInventoryAsset
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
-        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $computer = getItemByTypeName(Computer::class, '_test_pc01');
         $asset = new Process($computer, $json->content->processes);
         $asset->setExtraData((array) $json->content);
 
@@ -130,12 +131,12 @@ class ProcessTest extends AbstractInventoryAsset
         ]));
         $this->logout();
 
-        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $computer = getItemByTypeName(Computer::class, '_test_pc01');
 
         //first, check there are no process linked to this computer
         $ipr = new \Item_Process();
         $this->assertFalse(
-            $ipr->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
+            $ipr->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => Computer::class]),
             'A process is already linked to computer!'
         );
 
@@ -146,7 +147,7 @@ class ProcessTest extends AbstractInventoryAsset
         $data = $converter->convert($expected['xml']);
         $json = json_decode($data);
 
-        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $computer = getItemByTypeName(Computer::class, '_test_pc01');
         $asset = new Process($computer, $json->content->processes);
         $asset->setExtraData((array) $json->content);
 
@@ -159,9 +160,67 @@ class ProcessTest extends AbstractInventoryAsset
         $asset->handleLinks();
         $asset->handle();
         $this->assertTrue(
-            $ipr->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
+            $ipr->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => Computer::class]),
             'Process has not been linked to computer :('
         );
+    }
+
+    public function testHandleWithoutHistory(): void
+    {
+        $this->login();
+        $conf = new Conf();
+        $this->assertTrue($conf->saveConf([
+            'import_process' => 1,
+        ]));
+        $this->logout();
+
+        $computer = getItemByTypeName(Computer::class, '_test_pc01');
+        $logs_criteria = [
+            'OR' => [
+                'itemtype'      => \Item_Process::class,
+                'itemtype_link' => \Item_Process::class,
+            ],
+        ];
+        $nb_logs = countElementsInTable(\Log::getTable(), $logs_criteria);
+
+        $converter = new Converter();
+        $json = json_decode($converter->convert($this->assetProvider()[0]['xml']));
+
+        // first inventory: process is added
+        $asset = new Process($computer, $json->content->processes);
+        $asset->setExtraData((array) $json->content);
+        $this->assertTrue($asset->checkConf($conf));
+        $asset->prepare();
+        $asset->handleLinks();
+        $asset->handle();
+
+        // same process, new usage values: process is updated
+        $json->content->processes[0]->cpuusage = '12.3';
+        $json->content->processes[0]->mem = '8.2';
+        $asset = new Process($computer, $json->content->processes);
+        $asset->setExtraData((array) $json->content);
+        $this->assertTrue($asset->checkConf($conf));
+        $asset->prepare();
+        $asset->handleLinks();
+        $asset->handle();
+
+        // restarted process (new PID): old one is deleted, new one is added
+        $json->content->processes[0]->pid = 4242;
+        $asset = new Process($computer, $json->content->processes);
+        $asset->setExtraData((array) $json->content);
+        $this->assertTrue($asset->checkConf($conf));
+        $asset->prepare();
+        $asset->handleLinks();
+        $asset->handle();
+
+        $processes = getAllDataFromTable(
+            \Item_Process::getTable(),
+            ['items_id' => $computer->fields['id'], 'itemtype' => Computer::class]
+        );
+        $this->assertCount(1, $processes);
+        $this->assertSame(4242, (int) current($processes)['pid']);
+
+        $this->assertSame($nb_logs, countElementsInTable(\Log::getTable(), $logs_criteria));
     }
 
     public function testGenericAssetProcess(): void

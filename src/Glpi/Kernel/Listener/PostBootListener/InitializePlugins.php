@@ -35,7 +35,6 @@
 namespace Glpi\Kernel\Listener\PostBootListener;
 
 use Glpi\Debug\Profiler;
-use Glpi\DependencyInjection\PluginContainer;
 use Glpi\Kernel\KernelListenerTrait;
 use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
@@ -45,8 +44,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 final readonly class InitializePlugins implements EventSubscriberInterface
 {
     use KernelListenerTrait;
-
-    public function __construct(private PluginContainer $pluginContainer) {}
 
     public static function getSubscribedEvents(): array
     {
@@ -69,8 +66,6 @@ final readonly class InitializePlugins implements EventSubscriberInterface
         if (!$plugin->isPluginsExecutionSuspended()) {
             $plugin->init();
         }
-
-        $this->pluginContainer->initializeContainer();
 
         Profiler::getInstance()->stop('InitializePlugins::execute');
     }

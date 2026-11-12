@@ -830,6 +830,15 @@ class Entity extends CommonTreeDropdown implements
         $_SESSION['glpiactiveentities_string']              .= ",'" . $this->fields['id'] . "'";
         // Root entity cannot be deleted, so if we added an entity this means GLPI is now multi-entity
         $_SESSION['glpi_multientitiesmode'] = 1;
+
+        Session::clearEntitiesCountCache();
+    }
+
+    public function post_purgeItem()
+    {
+        parent::post_purgeItem();
+
+        Session::clearEntitiesCountCache();
     }
 
     public function post_updateItem($history = true)

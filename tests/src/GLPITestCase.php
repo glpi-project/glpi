@@ -543,6 +543,7 @@ class GLPITestCase extends TestCase
         CommonDBTM::clearSearchOptionCache();
         SearchOption::clearSearchOptionCache();
         Dropdown::resetItemtypesStaticCache();
+        Session::clearEntitiesCountCache();
 
         // Reboot assets definitions
         AssetDefinitionManager::unsetInstance();

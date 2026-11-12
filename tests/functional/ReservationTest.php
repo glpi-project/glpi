@@ -258,6 +258,47 @@ class ReservationTest extends DbTestCase
         $this->assertCount(1, $reservation->find($data));
     }
 
+    /**
+     * The legacy API calls `getEmpty()` (through `can(-1, CREATE)`) before `add()`,
+     * so the `id` field is an empty string while the reservation is checked.
+     */
+    public function testAddReservationAfterGetEmpty(): void
+    {
+        $this->login();
+        $computer = $this->createItem("Computer", [
+            "name"        => "test",
+            "entities_id" => 0,
+        ]);
+        $res_item = $this->createItem("ReservationItem", [
+            "itemtype"    => "Computer",
+            "items_id"    => $computer->getID(),
+            "is_active"   => true,
+            "entities_id" => 0,
+        ]);
+
+        $data = [
+            'begin'               => "2023-11-01 10:00:00",
+            'end'                 => "2023-11-01 12:00:00",
+            'reservationitems_id' => $res_item->getID(),
+            'users_id'            => getItemByTypeName('User', TU_USER, true),
+        ];
+        $reservation = new \Reservation();
+        $reservation->getEmpty();
+        $this->assertGreaterThan(0, $reservation->add($data));
+
+        // An overlapping reservation must still be refused
+        $overlapping = new \Reservation();
+        $overlapping->getEmpty();
+        $this->assertFalse($overlapping->add([
+            'begin' => "2023-11-01 11:00:00",
+            'end'   => "2023-11-01 13:00:00",
+        ] + $data));
+        $this->hasSessionMessages(
+            ERROR,
+            ['The required item is already reserved for this timeframe']
+        );
+    }
+
     public function testDeleteRecurrentReservation(): void
     {
         self::testAddRecurrentReservation();

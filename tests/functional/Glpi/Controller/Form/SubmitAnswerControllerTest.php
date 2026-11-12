@@ -41,6 +41,10 @@ use Glpi\Altcha\AltchaManager;
 use Glpi\Controller\Form\SubmitAnswerController;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
 use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
+use Glpi\Form\Condition\CreationStrategy;
+use Glpi\Form\Condition\LogicOperator;
+use Glpi\Form\Condition\Type;
+use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
@@ -137,6 +141,49 @@ final class SubmitAnswerControllerTest extends DbTestCase
         ]);
 
         $this->assertSame($tickets_count + 1, countElementsInTable(Ticket::getTable()));
+        $this->assertNull($response['redirect_url']);
+    }
+
+    public function testHasCreatedItemsWhenTicketIsCreated(): void
+    {
+        $this->login();
+
+        $form = $this->createSimpleForm();
+        $response = $this->submitForm($form);
+
+        $this->assertTrue($response['has_created_items']);
+    }
+
+    public function testHasNoCreatedItemsWhenNoDestinationConditionMatches(): void
+    {
+        $this->login();
+        $_SESSION['glpibackcreated'] = 1;
+
+        $builder = new FormBuilder("Test form with conditional destination");
+        $builder->addQuestion("Name", QuestionTypeShortText::class);
+        $builder->setShouldInitDestinations(false);
+        $builder->addDestination(FormDestinationTicket::class, "Conditional ticket");
+        $builder->setDestinationCondition(
+            "Conditional ticket",
+            CreationStrategy::CREATED_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Name",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "GLPI",
+                ],
+            ],
+        );
+        $form = $this->createForm($builder);
+        $tickets_count = countElementsInTable(Ticket::getTable());
+
+        // Submitted answer is "John", the condition is not met
+        $response = $this->submitForm($form);
+
+        $this->assertSame($tickets_count, countElementsInTable(Ticket::getTable()));
+        $this->assertFalse($response['has_created_items']);
         $this->assertNull($response['redirect_url']);
     }
 

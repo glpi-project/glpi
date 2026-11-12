@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use AuthLDAP;
+use Computer;
 use DateInterval;
 use DateTime;
 use DBmysql;
@@ -48,14 +49,48 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Profile_User;
 use Psr\Log\LogLevel;
+use ReflectionClass;
 use User;
 use UserCategory;
 
 use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
 use function Safe\strtotime;
 
 class UserTest extends DbTestCase
 {
+    public function testCheckDefaultPasswordsIsCachedWhilePasswordsDoNotChange(): void
+    {
+        global $DB, $GLPI_CACHE;
+
+        $DB->update(User::getTable(), ['password' => \Auth::getPasswordHash('tech')], ['name' => 'tech']);
+        $this->assertContains('tech', User::checkDefaultPasswords());
+
+        // The result is read from the cache...
+        $users = iterator_to_array($DB->request([
+            'SELECT' => ['name', 'password'],
+            'FROM'   => User::getTable(),
+            'WHERE'  => [
+                'is_active'  => 1,
+                'is_deleted' => 0,
+                'name'       => ['glpi', 'tech', 'normal', 'post-only'],
+            ],
+            'ORDER'  => ['name'],
+        ]), false);
+        $cache_key = (new ReflectionClass(User::class))->getConstant('DEFAULT_PASSWORDS_CACHE_KEY_PREFIX')
+            . sha1(json_encode($users));
+        $this->assertContains('tech', $GLPI_CACHE->get($cache_key));
+        $GLPI_CACHE->set($cache_key, ['from cache']);
+        $this->assertSame(['from cache'], User::checkDefaultPasswords());
+
+        // ... until a password changes.
+        $DB->update(User::getTable(), ['password' => \Auth::getPasswordHash('a new password')], ['name' => 'tech']);
+        $default_logins = User::checkDefaultPasswords();
+        $this->assertNotContains('tech', $default_logins);
+        $this->assertNotContains('from cache', $default_logins);
+    }
     public function testLdapGroupLookupMatchesLegacyHtmlEncodedValues(): void
     {
         global $DB;
@@ -767,6 +802,7 @@ class UserTest extends DbTestCase
             '_emails'               => ['test1@example.com', 'test2@example.com'],
             'is_active'             => false,
             'is_deleted'            => true,
+            'name'                  => 'renamed_user',
         ];
 
         foreach ($users_matrix as $login => $targer_users_names) {
@@ -861,6 +897,43 @@ class UserTest extends DbTestCase
         $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), 'authtype' => \Auth::EXTERNAL]);
         $this->assertArrayNotHasKey('authtype', $output);
     }
+
+    public function testPrepareInputForUpdateAuthLinkFields(): void
+    {
+        $this->login();
+
+        $target_user = \getItemByTypeName(User::class, 'glpi');
+        $input = [
+            'id'           => $target_user->getID(),
+            'auths_id'     => 3,
+            'sync_field'   => 'abcdef',
+            'user_dn'      => 'cn=someone,dc=example,dc=org',
+            'user_dn_hash' => md5('cn=someone,dc=example,dc=org'),
+        ];
+
+        // Check with right to update the authentication
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT + User::UPDATEAUTHENT;
+        $output = $target_user->prepareInputForUpdate($input);
+        foreach (['auths_id', 'sync_field', 'user_dn'] as $field) {
+            $this->assertSame($input[$field], $output[$field]);
+        }
+
+        // Check without right to update the authentication
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT;
+        $output = $target_user->prepareInputForUpdate($input);
+        foreach (['auths_id', 'sync_field', 'user_dn', 'user_dn_hash'] as $field) {
+            $this->assertArrayNotHasKey($field, $output);
+        }
+
+        // Backend routines (no session) can still update them
+        $this->logout();
+        $output = $target_user->prepareInputForUpdate($input);
+        foreach (['auths_id', 'sync_field', 'user_dn'] as $field) {
+            $this->assertSame($input[$field], $output[$field]);
+        }
+    }
+
+
 
     public function testPrepareInputForUpdateAuthTypeAsSystemRoutine(): void
     {
@@ -3264,5 +3337,71 @@ class UserTest extends DbTestCase
         // time, so PDF generation does not break.
         $pdf = new \GLPIPDF(['font' => $user->fields['pdffont']]);
         $this->assertSame('helvetica', $pdf->getFontFamily());
+    }
+
+    public function testShowItemsFilters(): void
+    {
+        $this->login();
+
+        $user = getItemByTypeName(User::class, TU_USER);
+        $other_user = $this->createItem(User::class, [
+            'name'      => $this->getUniqueString(),
+            'realname'  => 'OtherUserRealname',
+            '_profiles_id'  => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id'  => $this->getTestRootEntity(true),
+            '_is_recursive' => 1,
+        ]);
+        $this->createItem(Computer::class, [
+            'name'        => 'Computer used by test user',
+            'entities_id' => $this->getTestRootEntity(true),
+            'users_id'    => $user->getID(),
+        ]);
+
+        $render = function (array $get) use ($user): string {
+            $_GET = $get;
+            ob_start();
+            $user->showItems(false);
+            $output = ob_get_clean();
+            $_GET = [];
+            return $output;
+        };
+
+        // Filter row is closed by default
+        $output = $render([]);
+        $this->assertStringContainsString('Computer used by test user', $output);
+        $this->assertStringNotContainsString('filter_row', $output);
+
+        // Non array filters are ignored
+        $output = $render(['filters' => 'invalid']);
+        $this->assertStringContainsString('Computer used by test user', $output);
+        $this->assertStringNotContainsString('filter_row', $output);
+
+        // Users and groups filters are AJAX dropdowns, other users are not listed in the page
+        $output = $render(['filters' => ['active' => 1]]);
+        $this->assertStringContainsString('filter_row', $output);
+        $this->assertStringContainsString('name="filters[users][]"', $output);
+        $this->assertStringContainsString('getDropdownUsers.php', $output);
+        $this->assertStringContainsString('name="filters[group][]"', $output);
+        $this->assertStringNotContainsString('OtherUserRealname', $output);
+
+        // Users filter is applied
+        $output = $render(['filters' => ['active' => 1, 'users' => [$user->getID()]]]);
+        $this->assertStringContainsString('Computer used by test user', $output);
+
+        $output = $render(['filters' => ['active' => 1, 'users' => [$other_user->getID()]]]);
+        $this->assertStringNotContainsString('Computer used by test user', $output);
+        $this->assertStringContainsString('OtherUserRealname', $output);
+
+        // Users the viewer cannot see are ignored
+        $hidden_user = $this->createItem(User::class, [
+            'name'          => $this->getUniqueString(),
+            'realname'      => 'HiddenUserRealname',
+            '_profiles_id'  => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id'  => getItemByTypeName('Entity', '_test_child_2', true),
+            '_is_recursive' => 0,
+        ]);
+        $this->setEntity('_test_child_1', false);
+        $output = $render(['filters' => ['active' => 1, 'users' => [$hidden_user->getID()]]]);
+        $this->assertStringNotContainsString('HiddenUserRealname', $output);
     }
 }

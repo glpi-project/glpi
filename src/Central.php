@@ -42,6 +42,7 @@ use Glpi\Form\Migration\FormMigration;
 use Glpi\Marketplace\Controller;
 use Glpi\Migration\GenericobjectPluginMigration;
 use Glpi\Plugin\Hooks;
+use Glpi\System\HousekeepingCron;
 use Glpi\System\Requirement\PhpSupportedVersion;
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
 
@@ -50,6 +51,11 @@ use Glpi\System\Requirement\SessionsSecurityConfiguration;
  **/
 class Central extends CommonGLPI
 {
+    /**
+     * Cache key of the database schema checks displayed to administrators.
+     */
+    private const DATABASE_SCHEMA_CHECKS_CACHE_KEY = 'central_database_schema_checks';
+
     public static function getTypeName($nb = 0)
     {
 
@@ -560,9 +566,19 @@ class Central extends CommonGLPI
             || Session::haveRight(ProjectTask::$rightname, ProjectTask::READMY);
     }
 
+    /**
+     * Clear the cached database schema checks, to be called when the database schema may have changed.
+     */
+    public static function clearDatabaseSchemaChecksCache(): void
+    {
+        global $GLPI_CACHE;
+
+        $GLPI_CACHE->delete(self::DATABASE_SCHEMA_CHECKS_CACHE_KEY);
+    }
+
     private static function getMessages(): array
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_GLPI, $DB, $GLPI_CACHE;
 
         $messages = [];
 
@@ -609,22 +625,34 @@ class Central extends CommonGLPI
                     );
             }
 
-            if (($myisam_count = $DB->getMyIsamTables()->count()) > 0) {
+            // These checks query the information schema, which is slow when the server hosts many tables.
+            $schema_checks = $GLPI_CACHE->get(self::DATABASE_SCHEMA_CHECKS_CACHE_KEY);
+            if (!is_array($schema_checks)) {
+                $schema_checks = [
+                    'myisam_tables'       => $DB->getMyIsamTables()->count(),
+                    'datetime_columns'    => $DB->getTzIncompatibleTables()->count(),
+                    'non_utf8mb4_tables'  => $DB->getNonUtf8mb4Tables()->count(),
+                    'signed_keys_columns' => $DB->getSignedKeysColumns()->count(),
+                ];
+                $GLPI_CACHE->set(self::DATABASE_SCHEMA_CHECKS_CACHE_KEY, $schema_checks, HOUR_TIMESTAMP);
+            }
+
+            if (($myisam_count = $schema_checks['myisam_tables']) > 0) {
                 $messages['warnings'][] = sprintf(__s('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)
                     . ' '
                     . sprintf(__s('Run the "%1$s" command to migrate them.'), 'php bin/console migration:myisam_to_innodb');
             }
-            if (($datetime_count = $DB->getTzIncompatibleTables()->count()) > 0) {
+            if (($datetime_count = $schema_checks['datetime_columns']) > 0) {
                 $messages['warnings'][] = sprintf(__s('%1$s columns are using the deprecated datetime storage field type.'), $datetime_count)
                     . ' '
                     . sprintf(__s('Run the "%1$s" command to migrate them.'), 'php bin/console migration:timestamps');
             }
-            if (($non_utf8mb4_count = $DB->getNonUtf8mb4Tables()->count()) > 0) {
+            if (($non_utf8mb4_count = $schema_checks['non_utf8mb4_tables']) > 0) {
                 $messages['warnings'][] = sprintf(__s('%1$s tables are using the deprecated utf8mb3 storage charset.'), $non_utf8mb4_count)
                     . ' '
                     . sprintf(__s('Run the "%1$s" command to migrate them.'), 'php bin/console migration:utf8mb4');
             }
-            if (($signed_keys_col_count = $DB->getSignedKeysColumns()->count()) > 0) {
+            if (($signed_keys_col_count = $schema_checks['signed_keys_columns']) > 0) {
                 $messages['warnings'][] = sprintf(__s('%d primary or foreign keys columns are using signed integers.'), $signed_keys_col_count)
                     . ' '
                     . sprintf(__s('Run the "%1$s" command to migrate them.'), 'php bin/console migration:unsigned_keys');
@@ -683,6 +711,24 @@ class Central extends CommonGLPI
                     __s('You have defined pending reasons without any respective active %s.'),
                     $link
                 );
+            }
+
+            // Obsolete data is removed by the housekeeping automatic action, warn if it is disabled
+            $housekeeping = new CronTask();
+            if (
+                $housekeeping->getFromDBbyName(HousekeepingCron::class, HousekeepingCron::TASK_NAME)
+                && (int) $housekeeping->fields['state'] === CronTask::STATE_DISABLE
+                && HousekeepingCron::hasPendingWork()
+            ) {
+                $warning = __s('Some obsolete data should be removed, but the related automatic action is disabled.');
+                if (CronTask::canView()) {
+                    $warning .= ' ' . sprintf(
+                        '<a href="%s">%s</a>',
+                        htmlescape($housekeeping->getLinkURL()),
+                        __s('See automatic action')
+                    );
+                }
+                $messages['warnings'][] = $warning;
             }
 
             // encrypt/decrypt key problems

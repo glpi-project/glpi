@@ -1892,12 +1892,23 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $allowed_fields[] = 'global_validation';
                     $allowed_fields[] = '_validationsteps_id';
                 }
-                // Manage assign and steal right
-                if (static::class === Ticket::class && Session::haveRightsOr(static::$rightname, [Ticket::ASSIGN, Ticket::STEAL])) {
-                    $allowed_fields[] = '_itil_assign';
-                    $allowed_fields[] = '_users_id_assign';
-                    $allowed_fields[] = '_groups_id_assign';
-                    $allowed_fields[] = '_suppliers_id_assign';
+                // Manage assign, steal and own rights
+                if (static::class === Ticket::class) {
+                    if ($this->canAssign()) {
+                        $allowed_fields[] = '_itil_assign';
+                        $allowed_fields[] = '_users_id_assign';
+                        $allowed_fields[] = '_groups_id_assign';
+                        $allowed_fields[] = '_suppliers_id_assign';
+                    } elseif ($this->canAssignToMe()) {
+                        // '_itil_assign' is restricted to self-assignment later; '_users_id_assign' is added without rights check
+                        $allowed_fields[] = '_itil_assign';
+                        if (
+                            is_numeric($input['_users_id_assign'] ?? null)
+                            && (int) $input['_users_id_assign'] === Session::getLoginUserID()
+                        ) {
+                            $allowed_fields[] = '_users_id_assign';
+                        }
+                    }
                 }
 
                 // Can only update initial fields if no followup or task already added
@@ -2308,6 +2319,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                             $useractors = $this->getActorObjectForItem(User::class);
                             if (
                                 isset($input['_auto_update'])
+                                // Assign right does not require the right to update the item
+                                || $this->canAssign()
+                                // Self-assignment ("Associate myself") does not require the right to update the item
+                                || (
+                                    $this->canAssignToMe()
+                                    && (int) ($input['_itil_assign']['users_id'] ?? 0) === Session::getLoginUserID()
+                                )
                                 || $useractors->can(-1, CREATE, $input['_itil_assign'])
                             ) {
                                 $useractors->add($input['_itil_assign']);
@@ -2336,6 +2354,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
                             if (
                                 isset($input['_auto_update'])
+                                || $this->canAssign()
                                 || $groupactors->can(-1, CREATE, $input['_itil_assign'])
                             ) {
                                 $groupactors->add($input['_itil_assign']);
@@ -2365,6 +2384,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                             $supplieractors = $this->getActorObjectForItem(Supplier::class);
                             if (
                                 isset($input['_auto_update'])
+                                || $this->canAssign()
                                 || $supplieractors->can(-1, CREATE, $input['_itil_assign'])
                             ) {
                                 $supplieractors->add($input['_itil_assign']);
