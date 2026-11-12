@@ -91,6 +91,7 @@ final class SubmitAnswerController extends AbstractController
 
             return new JsonResponse([
                 'links_to_created_items' => $links,
+                'has_created_items'      => $created_items !== [],
                 'redirect_url'           => $this->getRedirectUrl($created_items),
             ]);
         } catch (\Throwable $th) {
