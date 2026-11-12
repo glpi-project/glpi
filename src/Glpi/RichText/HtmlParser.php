@@ -51,20 +51,37 @@ use Symfony\Component\HtmlSanitizer\Parser\ParserInterface;
  * is embedded (e.g. the search results list).
  * Wrapping these misplaced elements in a table cell produces a structure that browsers will parse
  * as it is.
- * For the same reason, table elements that are not inside a `<table>` (e.g. `<div><td>x</td></div>`)
+ * For the same reason, table elements that are not in their expected parent (e.g. `<div><td>x</td></div>`)
  * are removed, keeping their content, as browsers ignore these tags.
  */
 final class HtmlParser implements ParserInterface
 {
+    /**
+     * Elements that browsers accept as children of each table container.
+     */
     private const ALLOWED_CHILDREN = [
-        'table' => ['caption', 'colgroup', 'col', 'thead', 'tbody', 'tfoot', 'tr'],
-        'thead' => ['tr'],
-        'tbody' => ['tr'],
-        'tfoot' => ['tr'],
-        'tr'    => ['td', 'th'],
+        'table' => ['caption', 'colgroup', 'col', 'thead', 'tbody', 'tfoot', 'tr', 'script', 'style', 'template'],
+        'thead' => ['tr', 'script', 'style', 'template'],
+        'tbody' => ['tr', 'script', 'style', 'template'],
+        'tfoot' => ['tr', 'script', 'style', 'template'],
+        'tr'    => ['td', 'th', 'script', 'style', 'template'],
     ];
 
-    private const TABLE_ELEMENTS = ['caption', 'colgroup', 'col', 'thead', 'tbody', 'tfoot', 'tr', 'td', 'th'];
+    /**
+     * Parents in which each table element is kept. Cells directly inside a table or a row group
+     * are moved into an implicit row.
+     */
+    private const VALID_PARENTS = [
+        'caption'  => ['table'],
+        'colgroup' => ['table'],
+        'col'      => ['table', 'colgroup'],
+        'thead'    => ['table'],
+        'tbody'    => ['table'],
+        'tfoot'    => ['table'],
+        'tr'       => ['table', 'thead', 'tbody', 'tfoot'],
+        'td'       => ['table', 'thead', 'tbody', 'tfoot', 'tr'],
+        'th'       => ['table', 'thead', 'tbody', 'tfoot', 'tr'],
+    ];
 
     public function parse(string $html): ?DOMNode
     {
@@ -75,52 +92,54 @@ final class HtmlParser implements ParserInterface
         return $fragment;
     }
 
-    private function fixTableStructure(DOMDocument $document, DOMNode $node, bool $in_table = false): void
+    private function fixTableStructure(DOMDocument $document, DOMNode $node): void
     {
-        $in_table = $in_table || strtolower($node->nodeName) === 'table';
-        // Table elements outside a table are removed, so their content must not be wrapped.
-        $allowed = $in_table ? (self::ALLOWED_CHILDREN[strtolower($node->nodeName)] ?? null) : null;
+        $node_name = strtolower($node->nodeName);
+        $allowed = self::ALLOWED_CHILDREN[$node_name] ?? null;
         $implicit_row = null;
 
-        foreach (iterator_to_array($node->childNodes) as $child) {
+        $child = $node->firstChild;
+        while ($child !== null) {
+            $next = $child->nextSibling;
             if (!$child instanceof DOMElement) {
+                $child = $next;
                 continue;
             }
+            $child_name = strtolower($child->nodeName);
 
-            $this->fixTableStructure($document, $child, $in_table);
-
-            if (!$in_table && in_array(strtolower($child->nodeName), self::TABLE_ELEMENTS, true)) {
-                // Table element outside a table: keep only its content.
+            if (isset(self::VALID_PARENTS[$child_name]) && !in_array($node_name, self::VALID_PARENTS[$child_name], true)) {
+                // Misplaced table element: keep only its content, which is processed next.
+                $next = $child->firstChild ?? $next;
                 while ($child->firstChild !== null) {
                     $node->insertBefore($child->firstChild, $child);
                 }
                 $node->removeChild($child);
+                $child = $next;
                 continue;
             }
 
-            if ($allowed === null || in_array(strtolower($child->nodeName), $allowed, true)) {
+            if ($allowed === null || in_array($child_name, $allowed, true)) {
                 $implicit_row = null;
-                continue;
-            }
-
-            if (in_array(strtolower($child->nodeName), ['td', 'th'], true)) {
+            } elseif ($child_name === 'td' || $child_name === 'th') {
                 // Cells outside a row: move consecutive cells into a single row, as browsers do.
                 if ($implicit_row === null) {
                     $implicit_row = $document->createElement('tr');
                     $node->insertBefore($implicit_row, $child);
                 }
                 $implicit_row->appendChild($child);
-                continue;
+            } else {
+                $implicit_row = null;
+                $cell = $wrapper = $document->createElement('td');
+                if ($node_name !== 'tr') {
+                    $wrapper = $document->createElement('tr');
+                    $wrapper->appendChild($cell);
+                }
+                $node->replaceChild($wrapper, $child);
+                $cell->appendChild($child);
             }
-            $implicit_row = null;
 
-            $cell = $wrapper = $document->createElement('td');
-            if (strtolower($node->nodeName) !== 'tr') {
-                $wrapper = $document->createElement('tr');
-                $wrapper->appendChild($cell);
-            }
-            $node->replaceChild($wrapper, $child);
-            $cell->appendChild($child);
+            $this->fixTableStructure($document, $child);
+            $child = $next;
         }
     }
 }
