@@ -942,7 +942,7 @@ TWIG, $twig_params);
                 'FROM'   => $this->getTable(),
                 'WHERE'  => [
                     'completename' => $input['completename'],
-                ],
+                ] + static::getSystemSQLCriteria(),
             ];
             if ($this->isField('entities_id') && isset($input['entities_id'])) {
                 $criteria['WHERE'] += getEntitiesRestrictCriteria(
@@ -967,7 +967,7 @@ TWIG, $twig_params);
                 'WHERE'  => [
                     'name'   => $input['name'],
                     $fk      => ($input[$fk] ?? 0),
-                ],
+                ] + static::getSystemSQLCriteria(),
             ];
             if ($this->isField('entities_id') && isset($input['entities_id'])) {
                 $criteria['WHERE'] += getEntitiesRestrictCriteria(

@@ -183,11 +183,12 @@ foreach ($conditions_tables as $table => $column) {
 // Migrate glpi_forms_answerssets:
 //   - answers: raw_answer {"itemtype":X,"items_id":Y} → {"itemtype":X,"items_ids":[Y]}
 //     for answers whose raw_question_type is QuestionTypeItem or QuestionTypeItemDropdown
+// Payloads can weigh several MB: fetch ids in batches, then load answers one row at a time.
 
 $last_answerssets_id = 0;
 do {
-    $iterator = $DB->request([
-        'SELECT' => ['id', 'answers'],
+    $ids_iterator = $DB->request([
+        'SELECT' => ['id'],
         'FROM' => 'glpi_forms_answerssets',
         'WHERE' => [
             'id'      => ['>', $last_answerssets_id],
@@ -196,9 +197,20 @@ do {
         'ORDER' => 'id ASC',
         'LIMIT' => 250,
     ]);
+    $answerssets_ids = array_column(iterator_to_array($ids_iterator, false), 'id');
 
-    foreach ($iterator as $row) {
-        $last_answerssets_id = $row['id'];
+    foreach ($answerssets_ids as $answerssets_id) {
+        $last_answerssets_id = $answerssets_id;
+
+        $row = $DB->request([
+            'SELECT' => ['answers'],
+            'FROM'   => 'glpi_forms_answerssets',
+            'WHERE'  => ['id' => $answerssets_id],
+        ])->current();
+        if ($row === null) {
+            continue;
+        }
+
         $answers = json_decode($row['answers'], true) ?? [];
         $updated = false;
 
@@ -225,8 +237,9 @@ do {
             $DB->update(
                 'glpi_forms_answerssets',
                 ['answers' => json_encode($answers)],
-                ['id' => $row['id']]
+                ['id' => $answerssets_id]
             );
         }
+        unset($row, $answers);
     }
-} while ($iterator->count() > 0);
+} while ($answerssets_ids !== []);

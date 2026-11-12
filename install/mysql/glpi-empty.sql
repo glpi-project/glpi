@@ -10355,6 +10355,13 @@ CREATE TABLE `glpi_assets_assets` (
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `last_inventory_update` timestamp NULL DEFAULT NULL,
+  `last_boot` timestamp NULL DEFAULT NULL,
+  `sysdescr` text,
+  `snmpcredentials_id` int unsigned NOT NULL DEFAULT '0',
+  `ram` int unsigned DEFAULT NULL,
+  `cpu` int NOT NULL DEFAULT '0',
+  `uptime` varchar(255) DEFAULT NULL,
+  `last_pages_counter` int NOT NULL DEFAULT '0',
   `custom_fields` json,
   PRIMARY KEY (`id`),
   KEY `assets_assetdefinitions_id` (`assets_assetdefinitions_id`),
@@ -10374,7 +10381,8 @@ CREATE TABLE `glpi_assets_assets` (
   KEY `is_dynamic` (`is_dynamic`),
   KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
   KEY `date_creation` (`date_creation`),
-  KEY `date_mod` (`date_mod`)
+  KEY `date_mod` (`date_mod`),
+  KEY `snmpcredentials_id` (`snmpcredentials_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_assets_assetmodels`;

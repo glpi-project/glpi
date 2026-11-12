@@ -35,6 +35,7 @@
 
 namespace Glpi\Console\Migration;
 
+use Central;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Exception\EarlyExitException;
@@ -114,6 +115,8 @@ class MyIsamToInnoDbCommand extends AbstractCommand implements ConfigurationComm
                 }
             }
         }
+
+        Central::clearDatabaseSchemaChecksCache();
 
         if ($errors) {
             throw new EarlyExitException(

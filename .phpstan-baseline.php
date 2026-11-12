@@ -1852,7 +1852,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Binary operation "\\+" between int\\|string and 1 results in an error\\.$#',
 	'identifier' => 'binaryOp.invalid',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/CommonGLPI.php',
 ];
 $ignoreErrors[] = [
@@ -1864,7 +1864,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Binary operation "\\-" between int\\|string and 1 results in an error\\.$#',
 	'identifier' => 'binaryOp.invalid',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/CommonGLPI.php',
 ];
 $ignoreErrors[] = [
@@ -6728,12 +6728,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ITILCategoryField.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method getITILFollowupTemplatesIDs\\(\\) on Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILFollowupFieldStrategy\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ITILFollowupField.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method getTaskTemplatesIDs\\(\\) on Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILTaskFieldStrategy\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -6864,18 +6858,6 @@ $ignoreErrors[] = [
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Dropdown/FormActorsDropdown.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method isEntityAssign\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Export/Context/DatabaseMapper.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call static method getTable\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Form/Export/Context/DatabaseMapper.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Offset int\\|string might not exist on array\\<string, int\\>\\.$#',
@@ -7290,18 +7272,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Helpdesk/DefaultDataManager.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method listTranslationsHandlers\\(\\) on Entity\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Helpdesk/HelpdeskTranslation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Glpi\\\\ItemTranslation\\\\ItemTranslation\\:\\:getTranslationsForItem\\(\\) expects CommonDBTM, Entity\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Helpdesk/HelpdeskTranslation.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$entity of method Glpi\\\\Helpdesk\\\\Tile\\\\TilesManager\\:\\:getTilesForEntityRecursive\\(\\) expects Entity, Entity\\|false given\\.$#',
@@ -15836,12 +15806,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleAsset.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access constant class on CommonDBTM\\|null\\.$#',
-	'identifier' => 'classConstant.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCollection.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on Rule\\|null\\.$#',
 	'identifier' => 'classConstant.nonObject',
 	'count' => 2,
@@ -15963,12 +15927,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$table of static method Dropdown\\:\\:getDropdownName\\(\\) expects string, array\\<int\\|string\\>\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCollection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$itemtype of static method RuleCriteria\\:\\:getConditionByID\\(\\) expects string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleCollection.php',
@@ -17326,12 +17284,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method User\\:\\:getUsersFromDelegatedGroups\\(\\) should return array\\<int, string\\> but returns array\\<int\\|string, string\\>\\.$#',
 	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/User.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset int\\<1, max\\> on array\\<array\\|string\\> on left side of \\?\\? always exists and is not nullable\\.$#',
-	'identifier' => 'nullCoalesce.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/User.php',
 ];

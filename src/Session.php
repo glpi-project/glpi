@@ -82,6 +82,11 @@ class Session
     private static bool $bypass_right_checks = false;
 
     /**
+     * Number of entities, kept for the current request by canViewAllEntities().
+     */
+    private static ?int $entities_count = null;
+
+    /**
      * Destroy the current session
      *
      * @return void
@@ -389,8 +394,22 @@ class Session
     public static function canViewAllEntities()
     {
         // Command line can see all entities
-        return (isCommandLine()
-              || ((countElementsInTable("glpi_entities")) == count($_SESSION["glpiactiveentities"] ?? [])));
+        if (isCommandLine()) {
+            return true;
+        }
+
+        // Called for each user displayed in a timeline: count the entities once per request.
+        self::$entities_count ??= countElementsInTable(Entity::getTable());
+
+        return self::$entities_count === count($_SESSION["glpiactiveentities"] ?? []);
+    }
+
+    /**
+     * Forget the number of entities kept by canViewAllEntities(), to be called when an entity is added or purged.
+     */
+    public static function clearEntitiesCountCache(): void
+    {
+        self::$entities_count = null;
     }
 
 
@@ -2373,7 +2392,7 @@ class Session
         $cookie_name = Auth::getRememberMeCookieName();
         if (is_numeric($users_id) && isset($_COOKIE[$cookie_name])) {
             [$token_uid] = explode(':', $_COOKIE[$cookie_name]);
-            if (!empty($token_uid)) {
+            if (!empty($token_uid) && !$DB->isReplica()) {
                 $DB->delete('glpi_usertokens', [
                     'users_id' => $users_id,
                     'token_uid' => $token_uid,

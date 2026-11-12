@@ -348,7 +348,7 @@ class Reservation extends CommonDBChild
 
         // When modify a reservation do not itself take into account
         $where = [];
-        if (isset($this->fields["id"])) {
+        if ((int) ($this->fields['id'] ?? 0) > 0) {
             $where['id'] = ['<>', $this->fields['id']];
         }
 

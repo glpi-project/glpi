@@ -44,6 +44,7 @@ use Glpi\Inventory\Inventory;
 use Glpi\Marketplace\Controller;
 use Glpi\RichText\UserMention;
 use Glpi\Socket;
+use Glpi\System\HousekeepingCron;
 
 use function Safe\ini_get;
 use function Safe\json_encode;
@@ -1018,6 +1019,18 @@ $empty_data_builder = new class {
                 'hourmax' => 24,
             ], [
                 'id' => 51,
+                'itemtype' => HousekeepingCron::class,
+                'name' => HousekeepingCron::TASK_NAME,
+                'frequency' => HOUR_TIMESTAMP,
+                'param' => HousekeepingCron::DEFAULT_MAX_ROWS,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_EXTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 6,
+            ], [
+                'id' => 52,
                 'itemtype' => 'ProjectTask',
                 'name' => 'projecttasksreminder',
                 'frequency' => HOUR_TIMESTAMP,
@@ -1029,7 +1042,7 @@ $empty_data_builder = new class {
                 'hourmin' => 0,
                 'hourmax' => 24,
             ], [
-                'id' => 52,
+                'id' => 53,
                 'itemtype' => DataAndPrivacyConfig::class,
                 'name' => 'purgesessionhistory',
                 'frequency' => DAY_TIMESTAMP,

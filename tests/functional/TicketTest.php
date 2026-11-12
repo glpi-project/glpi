@@ -7557,6 +7557,157 @@ HTML,
         $this->assertCount(0, $actors);
     }
 
+    public static function assignToMeWithoutUpdateRightProvider(): iterable
+    {
+        yield 'steal' => [Ticket::READALL + Ticket::STEAL, true, true];
+        yield 'steal and assign' => [Ticket::READALL + Ticket::STEAL + Ticket::ASSIGN, true, true];
+        yield 'own on unassigned ticket' => [Ticket::READALL + Ticket::OWN, false, true];
+        yield 'own on assigned ticket' => [Ticket::READALL + Ticket::OWN, true, false];
+        yield 'no assign right' => [Ticket::READALL, false, false];
+    }
+
+    #[DataProvider('assignToMeWithoutUpdateRightProvider')]
+    public function testAssignToMeWithoutUpdateRight(int $rights, bool $already_assigned, bool $expected): void
+    {
+        $this->login();
+        $glpi_id = getItemByTypeName('User', 'glpi', true);
+        $ticket = $this->createItem(Ticket::class, [
+            'name'                => __METHOD__,
+            'content'             => __METHOD__,
+            'entities_id'         => 0,
+            '_skip_auto_assign'   => true,
+            '_users_id_requester' => getItemByTypeName('User', 'normal', true),
+            '_users_id_assign'    => $already_assigned ? $glpi_id : 0,
+        ]);
+
+        $this->changeTechRights(['ticket' => $rights]);
+        $tech_id = Session::getLoginUserID();
+
+        // Same input as the "Associate myself" button
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $ticket->update(array_merge($ticket->fields, [
+            '_itil_assign' => [
+                '_type'            => 'user',
+                'users_id'         => $tech_id,
+                'use_notification' => 1,
+            ],
+        ]));
+
+        // Self-assignment never removes the existing assignee
+        $ticket->getFromDB($ticket->getID());
+        $this->assertSame($expected, $ticket->isUser(CommonITILActor::ASSIGN, $tech_id));
+        $this->assertSame($already_assigned, $ticket->isUser(CommonITILActor::ASSIGN, $glpi_id));
+    }
+
+    public static function assignOtherActorWithoutUpdateRightProvider(): iterable
+    {
+        $actors = [
+            'user'     => fn() => ['_type' => 'user', 'users_id' => getItemByTypeName('User', 'glpi', true)],
+            'group'    => fn() => ['_type' => 'group', 'groups_id' => getItemByTypeName('Group', '_test_group_1', true)],
+            'supplier' => fn() => ['_type' => 'supplier', 'suppliers_id' => getItemByTypeName('Supplier', '_suplier01_name', true)],
+        ];
+        foreach ($actors as $type => $actor) {
+            yield "$type with own" => [Ticket::READALL + Ticket::OWN, $actor, false];
+            yield "$type with steal" => [Ticket::READALL + Ticket::STEAL, $actor, false];
+            yield "$type with assign" => [Ticket::READALL + Ticket::ASSIGN, $actor, true];
+        }
+    }
+
+    #[DataProvider('assignOtherActorWithoutUpdateRightProvider')]
+    public function testAssignOtherActorWithoutUpdateRight(int $rights, callable $actor, bool $expected): void
+    {
+        $this->login();
+        $ticket = $this->createItem(Ticket::class, [
+            'name'                => __METHOD__,
+            'content'             => __METHOD__,
+            'entities_id'         => 0,
+            '_skip_auto_assign'   => true,
+            '_users_id_requester' => getItemByTypeName('User', 'normal', true),
+        ]);
+
+        $this->changeTechRights(['ticket' => $rights]);
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $ticket->update(array_merge($ticket->fields, [
+            '_itil_assign' => $actor() + ['use_notification' => 1],
+        ]));
+
+        $ticket->getFromDB($ticket->getID());
+        $this->assertCount($expected ? 1 : 0, $ticket->getActorsForType(CommonITILActor::ASSIGN));
+    }
+
+    public static function assignActorInputKeyWithoutUpdateRightProvider(): iterable
+    {
+        $inputs = [
+            'self user'  => fn() => ['_users_id_assign' => Session::getLoginUserID()],
+            'other user' => fn() => ['_users_id_assign' => getItemByTypeName('User', 'glpi', true)],
+            'group'      => fn() => ['_groups_id_assign' => getItemByTypeName('Group', '_test_group_1', true)],
+            'supplier'   => fn() => ['_suppliers_id_assign' => getItemByTypeName('Supplier', '_suplier01_name', true)],
+        ];
+        foreach ($inputs as $type => $input) {
+            yield "$type with own" => [Ticket::READALL + Ticket::OWN, $input, $type === 'self user'];
+            yield "$type with steal" => [Ticket::READALL + Ticket::STEAL, $input, $type === 'self user'];
+            yield "$type with assign" => [Ticket::READALL + Ticket::ASSIGN, $input, true];
+        }
+        yield 'self user with own on assigned ticket' => [Ticket::READALL + Ticket::OWN, $inputs['self user'], false, true];
+    }
+
+    #[DataProvider('assignActorInputKeyWithoutUpdateRightProvider')]
+    public function testAssignActorInputKeyWithoutUpdateRight(
+        int $rights,
+        callable $input,
+        bool $expected,
+        bool $already_assigned = false
+    ): void {
+        $this->login();
+        $ticket = $this->createItem(Ticket::class, [
+            'name'                => __METHOD__,
+            'content'             => __METHOD__,
+            'entities_id'         => 0,
+            '_skip_auto_assign'   => true,
+            '_users_id_requester' => getItemByTypeName('User', 'normal', true),
+            '_users_id_assign'    => $already_assigned ? getItemByTypeName('User', 'glpi', true) : 0,
+        ]);
+
+        $this->changeTechRights(['ticket' => $rights]);
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $ticket->update(['id' => $ticket->getID()] + $input());
+
+        $ticket->getFromDB($ticket->getID());
+        $this->assertCount(
+            (int) $already_assigned + (int) $expected,
+            $ticket->getActorsForType(CommonITILActor::ASSIGN)
+        );
+    }
+
+    public function testAssignToMeOnFollowupWithoutUpdateRight(): void
+    {
+        $this->login();
+        $ticket = $this->createItem(Ticket::class, [
+            'name'                => __METHOD__,
+            'content'             => __METHOD__,
+            'entities_id'         => 0,
+            '_skip_auto_assign'   => true,
+            '_users_id_requester' => getItemByTypeName('User', 'normal', true),
+        ]);
+
+        $this->changeTechRights(['ticket' => Ticket::READALL + Ticket::STEAL]);
+        $tech_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_followup_tech' => 1]);
+        $tech_user->loadPreferencesInSession();
+
+        // Ticket::assignToMe() sends '_users_id_assign' set to the followup author
+        $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => __METHOD__,
+            'users_id' => $tech_user->getID(),
+        ]);
+
+        $ticket->getFromDB($ticket->getID());
+        $this->assertTrue($ticket->isUser(CommonITILActor::ASSIGN, $tech_user->getID()));
+    }
+
     public static function mailCollectorFollowupSetAssigneeProvider(): array
     {
         return [

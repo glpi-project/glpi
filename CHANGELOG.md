@@ -280,6 +280,29 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::stripslashes_deep()`
 
 
+## [11.0.13] unreleased
+
+### Added
+
+### Changed
+- The session cookie name now includes the GLPI version. Users will have to log in again after each GLPI update, unless they use the "remember me" feature.
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+- `Auth::getRememberMeCookieName()` to get the "remember me" cookie name, which no longer derives from the session name.
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
 ## [11.0.12] 2026-10-28
 
 ### Added
