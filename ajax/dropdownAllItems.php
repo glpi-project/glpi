@@ -83,6 +83,9 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
         $p['entity_restrict']           = $entity_restrict;
         $idor_params['entity_restrict'] = $entity_restrict;
     }
+    if (isset($_POST['condition']) && is_array($_POST['condition'])) {
+        $_POST['condition'] = $_POST['condition'][$_POST['idtable']] ?? null;
+    }
     if (isset($_POST['condition'])) {
         $p['condition']           = $_POST['condition'];
         $idor_params['condition'] = $_POST['condition'];

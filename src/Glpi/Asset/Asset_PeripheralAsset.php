@@ -306,21 +306,18 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $canedit = $asset->canEdit($ID);
         $rand    = mt_rand();
 
-        $datas = [];
-        $used  = [];
+        $datas      = [];
+        $conditions = [];
         foreach ($CFG_GLPI['directconnect_types'] as $itemtype) {
             if ($itemtype::canView()) {
                 $iterator = self::getPeripheralAssets($asset, $itemtype);
-                $usediterator = self::getUnavailablePeripherals($asset, $itemtype);
 
                 foreach ($iterator as $data) {
                     $data['assoc_itemtype'] = $itemtype;
                     $datas[]           = $data;
                 }
 
-                foreach ($usediterator as $data) {
-                    $used[$itemtype][] = $data['id'];
-                }
+                $conditions[$itemtype] = self::getAvailablePeripheralsCondition($asset, $itemtype);
             }
         }
 
@@ -346,7 +343,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                 'dropdown_options' => [
                     'entity'      => $asset->getEntityID(),
                     'entity_sons' => $asset->isRecursive(),
-                    'used'        => $used,
+                    'condition'   => $conditions,
                 ],
                 'form_label' => __('Connect an item'),
                 'add_button_label' => _x('button', 'Connect'),
@@ -998,47 +995,43 @@ TWIG, $twig_params);
     }
 
     /**
-     * Returns peripherals that cannot be connected to the given asset.
+     * Returns the dropdown condition that excludes peripherals that cannot be connected to the given asset.
      *
      * @param CommonDBTM               $asset    Main asset.
-     * @param class-string<CommonDBTM> $itemtype Itemtype of the peripherals to retrieve.
+     * @param class-string<CommonDBTM> $itemtype Itemtype of the peripherals.
      *
-     * @return DBmysqlIterator
+     * @return array<string, mixed>
      */
-    private static function getUnavailablePeripherals(CommonDBTM $asset, string $itemtype): DBmysqlIterator
+    private static function getAvailablePeripheralsCondition(CommonDBTM $asset, string $itemtype): array
     {
-        global $DB;
+        $peripheral_table = $itemtype::getTable();
 
-        $peripheral = getItemForItemtype($itemtype);
-
-        return $DB->request([
-            'SELECT' => self::getTypeItemsQueryParams_Select($peripheral),
-            'FROM'   => $peripheral::getTable(),
+        return [
             'LEFT JOIN' => [
                 self::getTable() => [
                     'FKEY' => [
-                        self::getTable()      => 'items_id_peripheral',
-                        $peripheral::getTable() => 'id',
+                        self::getTable()  => 'items_id_peripheral',
+                        $peripheral_table => 'id',
                         [
                             'AND' => [
                                 self::getTable() . '.itemtype_peripheral' => $itemtype,
+                                self::getTable() . '.is_deleted'          => 0,
+                                'OR' => [
+                                    $peripheral_table . '.is_global' => 0,
+                                    [
+                                        self::getTable() . '.itemtype_asset' => $asset::class,
+                                        self::getTable() . '.items_id_asset' => $asset->getID(),
+                                    ],
+                                ],
                             ],
                         ],
                     ],
                 ],
             ],
             'WHERE' => [
-                self::getTable() . '.is_deleted' => 0,
-                'OR' => [
-                    $peripheral::getTable() . '.is_global' => 0,
-                    [
-                        self::getTable() . '.itemtype_asset' => $asset::class,
-                        self::getTable() . '.items_id_asset' => $asset->getID(),
-                    ],
-                ],
-            ] + getEntitiesRestrictCriteria($peripheral::getTable()),
-            'ORDER' => $peripheral::getTable() . '.' . $peripheral::getNameField(),
-        ]);
+                self::getTable() . '.id' => null,
+            ],
+        ];
     }
 
     /**
