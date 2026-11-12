@@ -35,6 +35,7 @@
 
 use donatj\UserAgent\UserAgentParser;
 use Glpi\Application\Environment;
+use Glpi\Application\View\ScriptType;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
@@ -4504,9 +4505,13 @@ HTML;
      * @psalm-taint-escape html
      * @psalm-taint-escape has_quotes
      */
-    public static function scriptBlock($script)
+    public static function scriptBlock($script, ScriptType $type = ScriptType::Javascript)
     {
-        return sprintf('<script type="text/javascript">%s</script>', $script);
+        return sprintf(
+            '<script type="%s">%s</script>',
+            htmlescape($type->value),
+            $script,
+        );
     }
 
 
