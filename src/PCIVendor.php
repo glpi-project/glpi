@@ -50,6 +50,8 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
     /**
      * List loaded by this instance, so that successive lookups do not fetch
      * the whole list (more than 1 MB) from the cache backend each time.
+     * Lookup instances are meant to be short-lived (e.g. one inventory step);
+     * a long-lived instance will not see changes made through another instance.
      *
      * @var array<array-key, string>|null
      */
