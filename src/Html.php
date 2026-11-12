@@ -4510,8 +4510,6 @@ HTML;
      */
     public static function scriptBlock($script)
     {
-        $script = "\n" . '//<![CDATA[' . "\n\n" . $script . "\n\n" . '//]]>' . "\n";
-
         return sprintf('<script type="text/javascript">%s</script>', $script);
     }
 
