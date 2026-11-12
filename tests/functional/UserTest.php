@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use AuthLDAP;
+use Computer;
 use DateInterval;
 use DateTime;
 use DBmysql;
@@ -51,6 +52,8 @@ use User;
 use UserCategory;
 
 use function Safe\json_decode;
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
 use function Safe\strtotime;
 
 class UserTest extends DbTestCase
@@ -3183,5 +3186,71 @@ class UserTest extends DbTestCase
             '_is_recursive' => 1,
         ]);
         $this->assertTrue(User::isValidUserForEntity($recursive_user->getID(), $child1_entity_id));
+    }
+
+    public function testShowItemsFilters(): void
+    {
+        $this->login();
+
+        $user = getItemByTypeName(User::class, TU_USER);
+        $other_user = $this->createItem(User::class, [
+            'name'      => $this->getUniqueString(),
+            'realname'  => 'OtherUserRealname',
+            '_profiles_id'  => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id'  => $this->getTestRootEntity(true),
+            '_is_recursive' => 1,
+        ]);
+        $this->createItem(Computer::class, [
+            'name'        => 'Computer used by test user',
+            'entities_id' => $this->getTestRootEntity(true),
+            'users_id'    => $user->getID(),
+        ]);
+
+        $render = function (array $get) use ($user): string {
+            $_GET = $get;
+            ob_start();
+            $user->showItems(false);
+            $output = ob_get_clean();
+            $_GET = [];
+            return $output;
+        };
+
+        // Filter row is closed by default
+        $output = $render([]);
+        $this->assertStringContainsString('Computer used by test user', $output);
+        $this->assertStringNotContainsString('filter_row', $output);
+
+        // Non array filters are ignored
+        $output = $render(['filters' => 'invalid']);
+        $this->assertStringContainsString('Computer used by test user', $output);
+        $this->assertStringNotContainsString('filter_row', $output);
+
+        // Users and groups filters are AJAX dropdowns, other users are not listed in the page
+        $output = $render(['filters' => ['active' => 1]]);
+        $this->assertStringContainsString('filter_row', $output);
+        $this->assertStringContainsString('name="filters[users][]"', $output);
+        $this->assertStringContainsString('getDropdownUsers.php', $output);
+        $this->assertStringContainsString('name="filters[group][]"', $output);
+        $this->assertStringNotContainsString('OtherUserRealname', $output);
+
+        // Users filter is applied
+        $output = $render(['filters' => ['active' => 1, 'users' => [$user->getID()]]]);
+        $this->assertStringContainsString('Computer used by test user', $output);
+
+        $output = $render(['filters' => ['active' => 1, 'users' => [$other_user->getID()]]]);
+        $this->assertStringNotContainsString('Computer used by test user', $output);
+        $this->assertStringContainsString('OtherUserRealname', $output);
+
+        // Users the viewer cannot see are ignored
+        $hidden_user = $this->createItem(User::class, [
+            'name'          => $this->getUniqueString(),
+            'realname'      => 'HiddenUserRealname',
+            '_profiles_id'  => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id'  => getItemByTypeName('Entity', '_test_child_2', true),
+            '_is_recursive' => 0,
+        ]);
+        $this->setEntity('_test_child_1', false);
+        $output = $render(['filters' => ['active' => 1, 'users' => [$hidden_user->getID()]]]);
+        $this->assertStringNotContainsString('HiddenUserRealname', $output);
     }
 }

@@ -36,6 +36,8 @@ namespace Glpi\Asset\CustomFieldType;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldOption\NumberOption;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use InvalidArgumentException;
 
 class NumberType extends AbstractType
@@ -91,14 +93,45 @@ TWIG, $twig_params);
         return max($min, min($max, $is_int ? (int) $value : (float) $value));
     }
 
+    /**
+     * Get the number of decimals of the field values, based on the `min` and `step` options.
+     *
+     * @return int
+     */
+    private function getDecimalsCount(float $min, float $step): int
+    {
+        $decimals_count = 0;
+        foreach ([$min, $step] as $value) {
+            // Always use the scientific notation, as `(string)` switches to it only for very small or large values,
+            // e.g. `1.27500000000000e+1`: decimals count = significant mantissa decimals - exponent.
+            [$mantissa, $exponent] = explode('e', sprintf('%.14e', $value));
+            [, $mantissa_fraction] = explode('.', $mantissa);
+            $mantissa_decimals = strlen(rtrim($mantissa_fraction, '0'));
+            $decimals_count = max($decimals_count, $mantissa_decimals - (int) $exponent);
+        }
+        return $decimals_count;
+    }
+
     public function getSearchOption(): ?array
     {
         $opt = $this->getCommonSearchOptionData();
+        // A cleared value is stored as JSON null, that JSON_UNQUOTE() returns as the 'null' string: convert it to SQL NULL.
+        // JSON_UNQUOTE() returns a string, convert it to a number to get a numeric sort and comparison.
+        $opt['computation'] = new QueryExpression(
+            QueryFunction::nullif(
+                $opt['computation'],
+                new QueryExpression("'null'") // not quoteValue(), which converts 'null' to NULL
+            ) . ' + 0'
+        );
         $opt['datatype'] = 'number';
         $field_opts = $this->custom_field->fields['field_options'] ?? [];
         $opt['min'] = $field_opts['min'] ?? 0;
         $opt['max'] = $field_opts['max'] ?? PHP_INT_MAX;
         $opt['step'] = $field_opts['step'] ?? 1;
+        $opt['decimals'] = $this->getDecimalsCount(
+            is_numeric($opt['min']) ? (float) $opt['min'] : 0,
+            is_numeric($opt['step']) ? (float) $opt['step'] : 1
+        );
         return $opt;
     }
 }

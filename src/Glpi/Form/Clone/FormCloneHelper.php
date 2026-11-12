@@ -552,6 +552,11 @@ final class FormCloneHelper
             return $input;
         }
 
+        // The value may be missing, e.g. for a strategy that doesn't use it
+        if (!is_string($input['value'] ?? null)) {
+            return $input;
+        }
+
         $tags_manager = (new FormTagsManager());
         $input['value'] = $tags_manager->replaceIdsInTags(
             $input['value'],

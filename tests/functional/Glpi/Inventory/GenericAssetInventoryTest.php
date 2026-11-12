@@ -170,6 +170,14 @@ class GenericAssetInventoryTest extends InventoryTestCase
             'date_creation' => $asset->fields['date_creation'],
             'is_recursive' => 0,
             'last_inventory_update' => $asset->fields['last_inventory_update'],
+            // invalid boot time sent by the agent ("2019-54-17 10:54:37") is ignored
+            'last_boot' => null,
+            'sysdescr' => null,
+            'snmpcredentials_id' => 0,
+            'ram' => null,
+            'cpu' => 0,
+            'uptime' => null,
+            'last_pages_counter' => 0,
             'groups_id' => [],
             'groups_id_tech' => [],
         ];
@@ -860,6 +868,13 @@ class GenericAssetInventoryTest extends InventoryTestCase
             'date_creation' => $asset->fields['date_creation'],
             'is_recursive' => 0,
             'last_inventory_update' => $asset->fields['last_inventory_update'],
+            'last_boot' => '2020-06-09 07:58:08',
+            'sysdescr' => null,
+            'snmpcredentials_id' => 0,
+            'ram' => null,
+            'cpu' => 0,
+            'uptime' => null,
+            'last_pages_counter' => 0,
             'groups_id' => [],
             'groups_id_tech' => [],
         ];
