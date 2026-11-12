@@ -57,7 +57,9 @@ trait ITILSubItemRights
             $values[self::UPDATEALL] = __('Update all');
             $values[self::ADDALLITEM] = __('Add to all items');
             $values[self::SEEPRIVATE] = __('See private ones');
-            $values[self::SEEPRIVATEGROUPS] = __('See private of my groups');
+            if ($this instanceof CommonITILTask) {
+                $values[self::SEEPRIVATEGROUPS] = __('See private of my groups');
+            }
         }
 
         $values[self::ADD_AS_GROUP] = [

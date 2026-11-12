@@ -867,4 +867,10 @@ HTML,
 
         $this->assertEquals(0, countElementsInTable(CoreITILFollowup::getTable(), ['itemtype' => Problem::class, 'items_id' => $id_a]));
     }
+
+    public function testSeePrivateOfMyGroupsRightIsOnlyForTasks(): void
+    {
+        $this->assertArrayNotHasKey(CoreITILFollowup::SEEPRIVATEGROUPS, (new CoreITILFollowup())->getRights());
+        $this->assertArrayHasKey(\TicketTask::SEEPRIVATEGROUPS, (new \TicketTask())->getRights());
+    }
 }
