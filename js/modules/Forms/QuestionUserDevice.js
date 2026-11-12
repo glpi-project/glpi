@@ -1,5 +1,3 @@
-<?php
-
 /**
  * ---------------------------------------------------------------------
  *
@@ -32,13 +30,25 @@
  * ---------------------------------------------------------------------
  */
 
-class PluginTesterFakeStorage extends Laminas\Mail\Storage\Imap
-{
-    public function __construct($params)
-    {
-    }
+export class GlpiFormQuestionTypeUserDevice {
+    /**
+     * Create a new GlpiFormQuestionTypeUserDevice instance.
+     */
+    constructor() {
+        document.addEventListener('change', (e) => {
+            const input = e.target.closest('[data-glpi-form-question-user-device-multiple-toggle]');
+            if (input === null) {
+                return;
+            }
 
-    public function close()
-    {
+            const selects = $(input).closest('section[data-glpi-form-editor-question]')
+                .find('div .devices-dropdown');
+
+            // Toggle all selects visibility
+            selects.toggleClass('d-none');
+
+            // Handle hidden input for multiple devices
+            selects.find('input[type="hidden"]').prop('disabled', !input.checked);
+        });
     }
 }

@@ -8,8 +8,13 @@ The present file will list all changes made to the project; according to the
 ### Added
 - Documents, contracts and notes on cables.
 - Date variables (e.g. `{YEAR}`, `{MONTH_NAME+1}`, `{WEEK}` with `{YEAR_OF_WEEK}`) in the predefined title of recurrent tickets and changes, computed from the occurrence date.
+- "Impact" question type in forms, which can be used to define the impact of the created tickets, changes and problems.
+- Contract technician in charge and group in charge, usable as ticket notification recipients.
+- SLA and OLA escalation actions sending a single notification of the automatic reminder event.
+- SLA status dropdown on tickets, assignable by SLA escalation levels.
 
 ### Changes
+- Mails receivers now rely on the `directorytree/imapengine` library to connect to IMAP servers.
 
 ### Deprecated
 
@@ -23,8 +28,10 @@ The present file will list all changes made to the project; according to the
 #### Added
 
 #### Changes
+- `NotificationEvent::raiseEvent()` has a new optional `$notifications_id` parameter to send only one notification of the event.
 
 #### Deprecated
+- `toogle()` JavaScript function.
 
 #### Removed
 - `Session::getNewCSRFToken()`
@@ -40,6 +47,10 @@ The present file will list all changes made to the project; according to the
 - `Html::link()`.
 - `confirmaction` option of `Html::submit()`. Confirmation is now handled through the `data-glpi-confirm` attribute, so no additional action can be run on confirmation.
 - `AuthLDAP::isLdapPageSizeAvailable()`. The LDAP page size is always available now (with an automatic fallback at least).
+- `onclick` key of the `addbuttons` option of `CommonDBTM::showFormButtons()`.
+- `onclick` option of `Html::getCheckbox()`, `Html::showCheckbox()`, `Html::getMassiveActionCheckBox()` and `Html::showMassiveActionCheckBox()`.
+- `laminas/laminas-mail` and `laminas/laminas-mime` PHP libraries. Use `directorytree/imapengine` and `zbateson/mail-mime-parser` instead.
+- `Toolbox::getMailServerStorageInstance()`. Use `Toolbox::getMailServerMailboxInstance()` instead.
 
 ## [12.0.2] unreleased
 

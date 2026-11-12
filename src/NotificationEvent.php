@@ -138,12 +138,14 @@ class NotificationEvent extends CommonDBTM
      * @param array           $options array of options used
      * @param CommonDBTM|null $trigger item that raises the notification (in case notification was raised by a child item)
      * @param string          $label   used for debugEvent()
+     * @param int|null        $notifications_id only send this notification, instead of all the notifications of the event
      *
      * @return bool
      *
      * @since 11.0.0 Param `$trigger` has been added.
+     * @since 13.0.0 Param `$notifications_id` has been added.
      **/
-    public static function raiseEvent($event, $item, $options = [], ?CommonDBTM $trigger = null, $label = '')
+    public static function raiseEvent($event, $item, $options = [], ?CommonDBTM $trigger = null, $label = '', ?int $notifications_id = null)
     {
         global $CFG_GLPI;
 
@@ -167,6 +169,9 @@ class NotificationEvent extends CommonDBTM
             $processed = []; // targets list
             $grouped_items_option = $notificationtarget->getGroupedItemsOptionName();
             foreach ($notifications as $data) {
+                if ($notifications_id !== null && (int) $data['id'] !== $notifications_id) {
+                    continue;
+                }
                 $notification_options = $options;
 
                 // Check notification filter
