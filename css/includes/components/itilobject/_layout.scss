@@ -151,12 +151,7 @@
                     display: inline-flex;
 
                     // Align the icon (1.25em, centered in the button) with the accordion items icons
-                    inset-inline-start: calc(
-                        var(--tblr-accordion-padding-x)
-                        - var(--tblr-btn-border-width)
-                        - var(--tblr-btn-padding-y)
-                        - (var(--tblr-btn-line-height) - 1.25em) / 2
-                    );
+                    inset-inline-start: calc(var(--tblr-accordion-padding-x) - var(--tblr-btn-border-width) - var(--tblr-btn-padding-y) - (var(--tblr-btn-line-height) - 1.25em) / 2);
                 }
             }
 
