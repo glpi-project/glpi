@@ -131,4 +131,18 @@ class USBVendorTest extends DbTestCase
             $vendors->getProductName('0001', '7778')
         );
     }
+
+    public function testListIsFetchedOnceFromCache()
+    {
+        global $GLPI_CACHE;
+
+        $vendors = new \USBVendor();
+        $this->assertSame('Fry\'s Electronics', $vendors->getManufacturer('0001'));
+
+        // Remove the list from cache: next lookups on the same instance must not fetch it again
+        $GLPI_CACHE->delete($vendors->getListCacheKey());
+        $this->assertSame('Counterfeit flash drive [Kingston]', $vendors->getProductName('0001', '7778'));
+        $this->assertSame('Fry\'s Electronics', $vendors->getManufacturer('0001'));
+        $this->assertFalse($GLPI_CACHE->has($vendors->getListCacheKey()));
+    }
 }

@@ -48,6 +48,14 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
 {
     public string $cache_key = 'glpi_usbvendors';
 
+    /**
+     * List loaded by this instance, so that successive lookups do not fetch
+     * the whole list (more than 1 MB) from the cache backend each time.
+     *
+     * @var array<array-key, string>|null
+     */
+    private ?array $list = null;
+
     public static function getTypeName($nb = 0)
     {
         return _n('USB vendor', 'USB vendors', $nb);
@@ -152,6 +160,7 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
     {
         global $GLPI_CACHE;
 
+        $this->list = null;
         $GLPI_CACHE->delete($this->cache_key);
     }
 
@@ -164,7 +173,7 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
      */
     public function getManufacturer($vendorid): false|string
     {
-        $usbids = self::getList();
+        $usbids = $this->list ??= self::getList();
 
         $vendorid = strtolower($vendorid);
 
@@ -188,7 +197,7 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
      */
     public function getProductName($vendorid, $deviceid): false|string
     {
-        $usbids = self::getList();
+        $usbids = $this->list ??= self::getList();
 
         $vendorid = strtolower($vendorid);
         $deviceid = strtolower($deviceid);

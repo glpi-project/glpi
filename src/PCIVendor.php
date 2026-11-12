@@ -47,6 +47,14 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
 {
     public string $cache_key = 'glpi_pcivendors';
 
+    /**
+     * List loaded by this instance, so that successive lookups do not fetch
+     * the whole list (more than 1 MB) from the cache backend each time.
+     *
+     * @var array<array-key, string>|null
+     */
+    private ?array $list = null;
+
     public static function getTypeName($nb = 0)
     {
         return _n('PCI vendor', 'PCI vendors', $nb);
@@ -150,6 +158,7 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
     {
         global $GLPI_CACHE;
 
+        $this->list = null;
         $GLPI_CACHE->delete($this->cache_key);
     }
 
@@ -162,7 +171,7 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
      */
     public function getManufacturer($vendorid): false|string
     {
-        $pciids = self::getList();
+        $pciids = $this->list ??= self::getList();
 
         return $pciids[$vendorid] ?? false;
     }
@@ -177,7 +186,7 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
      */
     public function getProductName($vendorid, $deviceid): false|string
     {
-        $pciids = self::getList();
+        $pciids = $this->list ??= self::getList();
 
         return $pciids[$vendorid . '::' . $deviceid] ?? false;
     }
