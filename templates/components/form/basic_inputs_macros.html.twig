@@ -335,8 +335,15 @@
         {% else %}
             {% set format_hint = call('Toolbox::getDateFormat', ['php']) %}
         {% endif %}
+        {# While the page is loading, flatpickr is not there yet. In a content received from an AJAX request it is, and a jQuery ready callback would only run after the content is painted. #}
         <script>
-            $(function() {
+            (function(init) {
+                if (document.readyState === 'loading') {
+                    $(init);
+                } else {
+                    init();
+                }
+            })(function() {
                 $("#{{ options.id|e('css')|e('js') }}").flatpickr({
                     wrap: true,
                     altInput: true,
