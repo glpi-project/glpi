@@ -1171,7 +1171,7 @@ TWIG, ['authldaps_id' => $ID]);
                     'BaseDN'            => 'basedn',
                     'Connection filter' => 'condition',
                     'RootDN'            => 'rootdn',
-                    'Use TLS'           => 'use_tls',
+                    'Use StartTLS'      => 'use_tls',
                 ];
                 $msg   = '';
                 $first = true;
