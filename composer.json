@@ -42,7 +42,7 @@
         "glpi-project/inventory_format": "^1.2",
         "guzzlehttp/psr7": "^2.13",
         "html2text/html2text": "^4.3",
-        "laminas/laminas-i18n": "^2.33",
+        "laminas/laminas-i18n": "^3.0",
         "league/commonmark": "^2.10",
         "league/html-to-markdown": "^5.2",
         "league/oauth2-client": "^2.9",
