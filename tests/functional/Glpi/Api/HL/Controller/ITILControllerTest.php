@@ -561,6 +561,53 @@ class ITILControllerTest extends HLAPITestCase
         });
     }
 
+    public function testCreateTimelineDocumentByUpload()
+    {
+        $this->login();
+
+        $ticket = new Ticket();
+        $this->assertGreaterThan(0, $tickets_id = $ticket->add([
+            'name' => __FUNCTION__,
+            'content' => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]));
+
+        $file_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/bar.txt');
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="file"; filename="bar.txt"
+Content-Type: text/plain
+
+$file_content
+-----boundary--
+EOT;
+
+        $request = new Request('POST', "/Assistance/Ticket/$tickets_id/Timeline/Document", [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+
+        $new_location = null;
+        $this->api->call($request, function ($call) use (&$new_location) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$new_location) {
+                    $new_location = $content['href'];
+                });
+        });
+
+        $this->api->call(new Request('GET', $new_location), function ($call) use ($tickets_id) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($tickets_id) {
+                    $this->assertEquals('Ticket', $content['itemtype']);
+                    $this->assertEquals($tickets_id, $content['items_id']);
+                    $this->assertGreaterThan(0, $content['documents_id']);
+                });
+        });
+
+        $this->assertEquals(1, countElementsInTable(Document_Item::getTable(), ['itemtype' => 'Ticket', 'items_id' => $tickets_id]));
+    }
+
     public function testCRUDNoRights()
     {
         /** @var array<class-string<CommonITILObject>, string> $itil_types */
