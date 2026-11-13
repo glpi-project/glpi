@@ -41,6 +41,8 @@ test('Inline positioning in timeline content does not escape the timeline', asyn
         name: 'Ticket with pasted positioned content',
         content: '<p>before</p>'
             + '<div style="position: absolute; top: 0px; left: 0px; transform: translateY(400px);">pasted line</div>'
+            + '<div class="position-fixed top-0 translate-middle">bootstrap line</div>'
+            + '<div style="translate: 0 400px;">translated line</div>'
             + '<p>after</p>',
         entities_id: getWorkerEntityId(),
     });
@@ -51,4 +53,11 @@ test('Inline positioning in timeline content does not escape the timeline', asyn
     const pasted_line = page.getByTestId('itil-timeline').getByText('pasted line');
     await expect(pasted_line).toHaveCSS('position', 'static');
     await expect(pasted_line).toHaveCSS('transform', 'none');
+
+    const bootstrap_line = page.getByTestId('itil-timeline').getByText('bootstrap line');
+    await expect(bootstrap_line).toHaveCSS('position', 'static');
+    await expect(bootstrap_line).toHaveCSS('transform', 'none');
+
+    const translated_line = page.getByTestId('itil-timeline').getByText('translated line');
+    await expect(translated_line).toHaveCSS('translate', 'none');
 });

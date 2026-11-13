@@ -107,12 +107,18 @@ body.mce-content-body {
 
 // Prevent pasted inline positioning from escaping timeline items and overlaying the page.
 .itil-timeline .rich_text_container {
-    [style*="position"] {
+    [style*="position"],
+    [class*="position-"],
+    [class*="fixed-"],
+    [class*="sticky-"] {
         position: static !important;
     }
 
-    [style*="transform"] {
+    [style*="transform"],
+    [style*="translate"],
+    [class*="translate-"] {
         transform: none !important;
+        translate: none !important;
     }
 }
 
