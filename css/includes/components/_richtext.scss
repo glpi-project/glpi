@@ -76,6 +76,11 @@ body.mce-content-body {
 
     img {
         max-width: 100%;
+
+        // Gallery thumbnails have both dimensions: keep their ratio when `max-width` reduces the width
+        &[itemprop="thumbnail"] {
+            height: auto;
+        }
     }
 
     table {
