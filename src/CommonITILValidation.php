@@ -1233,7 +1233,7 @@ abstract class CommonITILValidation extends CommonDBChild
                     }
                 }
 
-                $script = "";
+                $html = "";
                 if ($canedit) {
                     $edit_title = __s('Edit');
                     $item_id = (int) $itil->fields['id'];
@@ -1247,27 +1247,28 @@ abstract class CommonITILValidation extends CommonDBChild
 
                     $rand_id = htmlescape($item_id . $row_id . $rand);
 
-                    $script = <<<HTML
+                    $script = Html::scriptBlock(<<<JAVASCRIPT
+                        function viewEditValidation{$rand_id}() {
+                            glpi_ajax_dialog({
+                                url: CFG_GLPI.root_doc + "/ajax/viewsubitem.php",
+                                modalclass: 'modal-xl',
+                                params: $params_json,
+                            });
+                        };
+                        document.getElementById('viewvalidation{$rand_id}').addEventListener('click', () => {
+                            viewEditValidation{$rand_id}();
+                        });
+                JAVASCRIPT);
+                    $html = <<<HTML
                         <span class="ti ti-edit" style="cursor:pointer" title="{$edit_title}"
                               id="viewvalidation{$rand_id}">
                         </span>
-                        <script>
-                            function viewEditValidation{$rand_id}() {
-                                glpi_ajax_dialog({
-                                    url: CFG_GLPI.root_doc + "/ajax/viewsubitem.php",
-                                    modalclass: 'modal-xl',
-                                    params: $params_json,
-                                });
-                            };
-                            document.getElementById('viewvalidation{$rand_id}').addEventListener('click', () => {
-                                viewEditValidation{$rand_id}();
-                            });
-                        </script>
+                        $script
 HTML;
                 }
 
                 $values[] = [
-                    'edit'                  => $script,
+                    'edit'                  => $html,
                     'status'                => $status,
                     'type_name'             => $type_name,
                     'target_name'           => $target_name,

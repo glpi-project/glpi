@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\ScriptType;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 use Glpi\RichText\RichText;
@@ -592,16 +593,14 @@ class Reservation extends CommonDBChild
         $can_reserve_js = $can_reserve ? "true" : "false";
         $now = jsescape(Session::getCurrentTime());
         $default_date = jsescape($default_date);
-        echo <<<HTML
-            <script type="module">
-                window.Vue.createApp(window.Vue.components['Reservations/ReservationScheduler'].component, {
-                    id: $ID,
-                    can_reserve: $can_reserve_js,
-                    now: '$now',
-                    default_date: '$default_date',
-                }).mount('#reservations_planning_$rand');
-            </script>
-HTML;
+        echo Html::scriptBlock(<<<JAVASCRIPT
+            window.Vue.createApp(window.Vue.components['Reservations/ReservationScheduler'].component, {
+                id: $ID,
+                can_reserve: $can_reserve_js,
+                now: '$now',
+                default_date: '$default_date',
+            }).mount('#reservations_planning_$rand');
+        JAVASCRIPT, ScriptType::Module);
     }
 
     public static function getEvents(array $params): array
@@ -1067,17 +1066,15 @@ HTML;
             && count(self::getReservableItemtypes()) > 0
         ) ? "true" : "false";
         $now = jsescape(Session::getCurrentTime());
-        echo <<<HTML
-            <script type="module">
-                window.Vue.createApp(window.Vue.components['Reservations/ReservationScheduler'].component, {
-                    id: $ID,
-                    can_reserve: $can_reserve_js,
-                    now: '$now',
-                    default_date: '$default_date',
-                    current_view: 'listFull',
-                }).mount('#reservations_planning_$rand');
-            </script>
-HTML;
+        echo Html::scriptBlock(<<<JAVASCRIPT
+            window.Vue.createApp(window.Vue.components['Reservations/ReservationScheduler'].component, {
+                id: $ID,
+                can_reserve: $can_reserve_js,
+                now: '$now',
+                default_date: '$default_date',
+                current_view: 'listFull',
+            }).mount('#reservations_planning_$rand');
+        JAVASCRIPT, ScriptType::Module);
         echo "</div>";
     }
 
