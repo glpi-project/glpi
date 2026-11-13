@@ -232,6 +232,7 @@ class CronTask extends CommonDBTM
         if ($signo === SIGTERM) {
             pcntl_signal(SIGTERM, SIG_DFL);
             $this->handleAbnormalTermination();
+            exit(); // @phpstan-ignore glpi.forbidExit (CLI context)
         }
     }
 
