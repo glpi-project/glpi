@@ -30,7 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set pending_reason_item_parent = call("PendingReason_Item::getForItem", [item]) %}
+{% set pending_reason_item_parent = pending_reason_item_parent ?? call("PendingReason_Item::getForItem", [item]) %}
 {% set display_for_parent = display_for_parent|default(false) %}
 
 {% set pending_reason_contexts = {
@@ -52,7 +52,7 @@
 {% if display_for_parent %}
     {% set pending_reason = pending_reason_item_parent ? call("PendingReason::getById", [pending_reason_item_parent.fields['pendingreasons_id']]) : false %}
 {% else %}
-    {% set pending_item = pending_item ?? call(entry['type'] ~ "::getById", [entry_i['id']]) %}
+    {% set pending_item = pending_item ?? entry_object ?? call(entry['type'] ~ "::getById", [entry_i['id']]) %}
     {% set pending_reason_item = pending_item ? call("PendingReason_Item::getForItem", [pending_item]) : false %}
     {% set pending_reason = pending_reason_item ? call("PendingReason::getById", [pending_reason_item.fields['pendingreasons_id']]) : false %}
     {# Only needed to display a pending reason: skip the lookup for the other timeline entries #}

@@ -3499,4 +3499,32 @@ HTML;
         $this->assertContains('Connect monitor assigned to me', $names);
         $this->assertNotContains('Connect monitor of someone else', $names);
     }
+
+    public function testShowSelectItemFromItemtypesWithDefaultItemtype(): void
+    {
+        $this->login();
+
+        $params = [
+            'itemtypes' => [Ticket::class, Computer::class],
+            'display'   => false,
+        ];
+
+        // The dropdown of the items of the default itemtype is requested on load
+        $output = Dropdown::showSelectItemFromItemtypes($params + ['default_itemtype' => Ticket::class]);
+        $this->assertStringContainsString("trigger('setValue', 'Ticket')", $output);
+        $this->assertSame(2, substr_count($output, 'dropdownAllItems.php'));
+
+        // There is no dropdown to request without a default itemtype: the only reference
+        // to the endpoint is the one used when an itemtype is selected.
+        foreach (['', 0] as $empty_itemtype) {
+            $output = Dropdown::showSelectItemFromItemtypes($params + ['default_itemtype' => $empty_itemtype]);
+            $this->assertStringNotContainsString("trigger('setValue'", $output);
+            $this->assertSame(1, substr_count($output, 'dropdownAllItems.php'));
+        }
+
+        // Same without the option
+        $output = Dropdown::showSelectItemFromItemtypes($params);
+        $this->assertStringNotContainsString("trigger('setValue'", $output);
+        $this->assertSame(1, substr_count($output, 'dropdownAllItems.php'));
+    }
 }

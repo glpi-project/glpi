@@ -42,6 +42,7 @@ use Glpi\Tests\DbTestCase;
 use ITILFollowup as CoreITILFollowup;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
+use Symfony\Component\DomCrawler\Crawler;
 use Ticket;
 use Ticket_User;
 use User;
@@ -891,5 +892,37 @@ HTML,
         ]));
 
         $this->assertEquals(0, countElementsInTable(CoreITILFollowup::getTable(), ['itemtype' => Problem::class, 'items_id' => $id_a]));
+    }
+
+    public function testNewFollowupFormRequestedByTheTimeline(): void
+    {
+        $this->login();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Ticket',
+            'content'     => 'Ticket',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // The timeline requests the form on its own, without any display mode
+        $request = [
+            'action'     => 'viewsubitem',
+            'type'       => CoreITILFollowup::class,
+            'parenttype' => Ticket::class,
+            'tickets_id' => $ticket->getID(),
+        ];
+        $_REQUEST = $request + $_REQUEST;
+
+        ob_start();
+        try {
+            include GLPI_ROOT . '/ajax/timeline.php';
+        } finally {
+            $output = ob_get_clean();
+            $_REQUEST = array_diff_key($_REQUEST, $request);
+        }
+
+        $crawler = new Crawler($output);
+        $this->assertCount(1, $crawler->filter('textarea[name="content"]'));
+        $this->assertCount(1, $crawler->filter('button[name="add"]'));
     }
 }
