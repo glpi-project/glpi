@@ -102,7 +102,6 @@ class GLPIDashboard {
         this.dash_width = 0;
         this.cell_margin = 3;
         this.cols = 26;
-        this.cache_key = "";
         this.filters = "{}";
         this.filters_selector = "";
         this._filters_cache = null;
@@ -150,7 +149,6 @@ class GLPIDashboard {
         this.dash_width   = this.element.width();
         this.cell_margin  = options.cell_margin;
         this.cols         = options.cols;
-        this.cache_key    = options.cache_key || "";
         this.filters_selector = this.elem_id + ' .filters';
 
         // compute the width offset of gridstack container relatively to viewport
@@ -668,7 +666,6 @@ class GLPIDashboard {
         form_data.card_options.gridstack_id = form_data.gridstack_id;
 
         const args = form_data.card_options;
-        args.force = true;
         args.apply_filters = this.getFiltersFromDB();
 
         // add the new widget
@@ -681,7 +678,6 @@ class GLPIDashboard {
                 action:    'get_card',
                 dashboard: this.current_name,
                 card_id:   form_data.card_id,
-                cache_key: this.cache_key,
                 args:      args,
             }
         }).then((card_html) => {
@@ -1170,7 +1166,6 @@ class GLPIDashboard {
 
         // Callers that already know the filters can pass them in to avoid a redundant synch round-trip to the server
         filters = filters || this.getFiltersFromDB();
-        const force = (specific_one.length > 0 ? 1 : 0);
 
         const requested_cards = [];
         const card_ajax_data = [];
@@ -1190,16 +1185,14 @@ class GLPIDashboard {
             // append filters
             card_opt.apply_filters = filters;
 
-            card_ajax_data.push({
+            const card_data = {
                 'card_id': card_id,
-                'force': force,
                 'args': card_opt,
-                'c_cache_key': card_opt.cache_key || ""
-            });
+            };
+            card_ajax_data.push(card_data);
             requested_cards.push({
                 'card_el': card,
-                'card_id': card_id,
-                'args': card_opt,
+                ...card_data,
             });
         });
 
@@ -1213,10 +1206,7 @@ class GLPIDashboard {
                     'action':      'get_card',
                     'dashboard':   this.current_name,
                     'card_id':     requested_card.card_id,
-                    'force':       force,
                     'args':        requested_card.args,
-                    'd_cache_key': this.cache_key,
-                    'c_cache_key': requested_card.args.cache_key || ""
                 };
                 if (this.embed) {
                     data.embed        = 1;
@@ -1242,8 +1232,6 @@ class GLPIDashboard {
             // Single ajax mode, spawn a single request
             const data = {
                 'dashboard': this.current_name,
-                'force': (specific_one.length > 0 ? 1 : 0),
-                'd_cache_key': this.cache_key,
                 'cards': card_ajax_data,
                 'action': 'get_cards'
             };

@@ -109,7 +109,7 @@ class SessionManagerTest extends DbTestCase
             ];
             yield [
                 'root_doc'     => $root_doc,
-                'path'         => $root_doc . '/ajax/dashboard.php?action=get_card&dashboard=central&card_id=bn_count_Group&force=0&args%5Bcolor%5D=%23e0e0e0&args%5Bwidgettype%5D=bigNumber&args%5Buse_gradient%5D=0&args%5Blimit%5D=7&args%5Bcard_id%5D=bn_count_Group&args%5Bgridstack_id%5D=bn_count_Group_b84a93f2-a26c-49d7-82a4-5446697cc5b0&d_cache_key=8edf7b23477238c731e8a785ebc0f5a22f127e12&c_cache_key=&embed=1&token=e0c6ae82-e544-564f-b565-e37e6afd7ed6&entities_id=0&is_recursive=1',
+                'path'         => $root_doc . '/ajax/dashboard.php?action=get_card&dashboard=central&card_id=bn_count_Group&args%5Bcolor%5D=%23e0e0e0&args%5Bwidgettype%5D=bigNumber&args%5Buse_gradient%5D=0&args%5Blimit%5D=7&args%5Bcard_id%5D=bn_count_Group&args%5Bgridstack_id%5D=bn_count_Group_b84a93f2-a26c-49d7-82a4-5446697cc5b0&embed=1&token=e0c6ae82-e544-564f-b565-e37e6afd7ed6&entities_id=0&is_recursive=1',
                 'is_stateless' => true,
             ];
 

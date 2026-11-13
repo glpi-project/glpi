@@ -459,7 +459,6 @@ TWIG, $params);
         }
 
         $ajax_cards = GLPI_AJAX_DASHBOARD;
-        $cache_key  = sha1($_SESSION['glpiactiveentities_string'] ?? "");
 
         $twig_params = [
             'mini' => $mini,
@@ -484,7 +483,6 @@ TWIG, $params);
                 'all_cards'     => $cards,
                 'all_widgets'   => $all_widgets,
                 'context'       => $this->context,
-                'cache_key'     => $cache_key,
                 'embed'         => self::$embed,
                 'token'         => $token,
                 'entities_id'   => Session::getActiveEntity(),
@@ -1141,23 +1139,18 @@ HTML;
      * @param string $card_id identifier return by @see self::getAllDasboardCards
      * @param array $card_options contains these keys:
      * - array 'args':
-     *    - string 'gridstack_id' unique identifier of the card in the grid, used to return html by cache
-     *    - bool 'force' if true, cache will be bypassed
+     *    - string 'gridstack_id' unique identifier of the card in the grid
      *    - bool 'embed' is the dashboard emebeded or not
      *
      * @return string html of the card
      */
     public function getCardHtml(string $card_id = "", array $card_options = []): string
     {
-        global $GLPI_CACHE;
-
         if (\is_array($card_options['args'] ?? null)) {
             $card_options['args'] = Item::cleanCardOptions($card_options['args']);
         }
 
         $start = microtime(true);
-
-        $force = ($card_options['args']['force'] ?? $card_options['force'] ?? false);
 
         // retrieve card
         $notfound_html = "<div class='empty-card card-warning '>
@@ -1178,22 +1171,6 @@ HTML;
                 return $notfound_html;
             }
             $card = $cards[$card_id];
-
-            $use_cache = !$force
-                && Environment::get()->shouldForceExtraBrowserCache()
-                && (!isset($card['cache']) || $card['cache'] == true);
-            $cache_age = 40;
-
-            if ($use_cache) {
-                // remove headers automatically added by session start
-                header_remove('Pragma');
-                header_remove('Cache-Control');
-                header_remove('Expires');
-
-                // add cache headers
-                header('Cache-Control: public, max-age=' . $cache_age . ', must-revalidate');
-                header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_age));
-            }
 
             $html = "";
 
@@ -1524,7 +1501,6 @@ HTML;
                             'validation_check_user' => true,
                         ],
                     ],
-                    'cache'      => false,
                     'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
                 ];
 
