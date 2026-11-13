@@ -181,7 +181,7 @@ export class GlpiFormFieldDestinationAssociatedItem {
             script.text = script.text.replace(/rand:[0-9]+/g, `rand:'${id}'`);
 
             // Execute the script
-            $.globalEval(script.text);
+            $.globalEval(script.text, { nonce: CFG_GLPI.csp_nonce });
         });
     }
 }

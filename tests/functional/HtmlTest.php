@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Glpi\Application\View\ScriptType;
+use Glpi\Security\ContentSecurityPolicy\NonceContext;
 use Glpi\Tests\DbTestCase;
 use Glpi\Toolbox\FrontEnd;
 use GlpiPlugin\Tester\MyPsr4Class;
@@ -533,7 +534,8 @@ class HtmlTest extends DbTestCase
         $dir = str_replace(realpath(GLPI_ROOT), '', realpath(GLPI_TMP_DIR));
         $version_key = FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $base_expected = '<script type="text/javascript" src="'
-         . $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . $version_key . '"></script>';
+         . $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . $version_key . '"'
+         . ' nonce="' . NonceContext::getServiceInstance()->getNonce() . '"></script>';
 
         //create test files
         foreach ($fake_files as $fake_file) {
@@ -607,21 +609,23 @@ class HtmlTest extends DbTestCase
 
     public static function scriptBlockProvider(): iterable
     {
+        $nonce = NonceContext::getServiceInstance()->getNonce();
+
         yield 'default type' => [
             'type'     => null,
-            'expected' => '<script type="text/javascript">console.log("test");</script>',
+            'expected' => '<script type="text/javascript" nonce="' . $nonce . '">console.log("test");</script>',
         ];
         yield 'javascript' => [
             'type'     => ScriptType::Javascript,
-            'expected' => '<script type="text/javascript">console.log("test");</script>',
+            'expected' => '<script type="text/javascript" nonce="' . $nonce . '">console.log("test");</script>',
         ];
         yield 'module' => [
             'type'     => ScriptType::Module,
-            'expected' => '<script type="module">console.log("test");</script>',
+            'expected' => '<script type="module" nonce="' . $nonce . '">console.log("test");</script>',
         ];
         yield 'importmap' => [
             'type'     => ScriptType::ImportMap,
-            'expected' => '<script type="importmap">console.log("test");</script>',
+            'expected' => '<script type="importmap" nonce="' . $nonce . '">console.log("test");</script>',
         ];
     }
 
