@@ -4640,6 +4640,8 @@ final class SQLProvider implements SearchProviderInterface
      * Inner-subquery ORDER BY: bare main-table column per sort field + trailing `id` for stable
      * paging. The outer ORDER BY can't be reused (it uses the `ITEM_x` SELECT aliases, absent
      * here); canUseDeferredJoin() guarantees each sort field is a plain column, so this is valid.
+     * The `id` follows the direction of the last sort field: a mixed `col DESC, id ASC` prevents
+     * the engine from reading the page through the `col` index and makes it sort every row.
      *
      * @param array<int|string, mixed> $sort_fields
      * @param array<int|string, mixed> $searchopt
@@ -4657,14 +4659,54 @@ final class SQLProvider implements SearchProviderInterface
             $order      = (($sort_field['order'] ?? 'ASC') === 'ASC') ? 'ASC' : 'DESC';
             $criteria[] = $DB::quoteName("{$itemtable}.{$searchopt[$ID]['field']}") . ' ' . $order;
         }
-        $criteria[] = $DB::quoteName("{$itemtable}.id") . ' ASC';
+        $criteria[] = $DB::quoteName("{$itemtable}.id") . ' ' . self::getTieBreakerOrder($sort_fields);
 
         return ' ORDER BY ' . implode(', ', $criteria);
     }
 
     /**
-     * Inner subquery resolving the page of main-table IDs alone (no display 1:N joins), grouped
-     * by id with ORDER BY + LIMIT. getParams() order: minimal-FROM, then WHERE.
+     * Direction of the `id` tie-breaker: the direction of the last sort field.
+     *
+     * @param array<int|string, mixed> $sort_fields
+     */
+    private static function getTieBreakerOrder(array $sort_fields): string
+    {
+        $last = end($sort_fields);
+        return (is_array($last) && ($last['order'] ?? 'ASC') !== 'ASC') ? 'DESC' : 'ASC';
+    }
+
+    /**
+     * Whether every join of the given FROM clause yields at most one row per item, i.e. is a
+     * plain `LEFT JOIN` from a main-table column to the `id` of the joined table. Anything else
+     * (default join, 1:N join, extra join condition) is considered as possibly multiplying rows.
+     */
+    private static function hasOnlyOneToOneJoins(string $itemtable, string $from): bool
+    {
+        $from_main = trim(self::buildFrom($itemtable));
+        $joins     = trim($from);
+        if (!str_starts_with($joins, $from_main)) {
+            return false;
+        }
+        $joins = ltrim(substr($joins, strlen($from_main)));
+
+        while ($joins !== '') {
+            if (
+                !preg_match('/^LEFT JOIN `(\w+)`(?: AS `(\w+)`)? ON \(`(\w+)`\.`\w+` = `(\w+)`\.`id`\)\s*/', $joins, $matches)
+                || $matches[3] !== $itemtable
+                || $matches[4] !== ($matches[2] !== '' ? $matches[2] : $matches[1])
+            ) {
+                return false;
+            }
+            $joins = substr($joins, strlen($matches[0]));
+        }
+        return true;
+    }
+
+    /**
+     * Inner subquery resolving the page of main-table IDs alone (no display 1:N joins), with
+     * ORDER BY + LIMIT. It is grouped by id only when a join may multiply rows: MySQL does not
+     * optimise the GROUP BY away and then sorts every matching row instead of reading the sort
+     * index. getParams() order: minimal-FROM, then WHERE.
      *
      * @param array{query: string, params: array<int, mixed>} $minimal_from
      * @param array<int, mixed>                                $WHERE_VALUES
@@ -4680,7 +4722,7 @@ final class SQLProvider implements SearchProviderInterface
         $query = 'SELECT `' . $itemtable . '`.`id`'
             . $minimal_from['query']
             . $WHERE
-            . ' GROUP BY `' . $itemtable . '`.`id`'
+            . (self::hasOnlyOneToOneJoins($itemtable, $minimal_from['query']) ? '' : ' GROUP BY `' . $itemtable . '`.`id`')
             . $inner_order
             . $LIMIT;
 
@@ -4711,9 +4753,124 @@ final class SQLProvider implements SearchProviderInterface
     }
 
     /**
+     * Whether the search option is a column of a table linked by a foreign key of the main table
+     * (standard join on the linked table id): such a join yields at most one row per item.
+     *
+     * @param class-string<CommonDBTM>  $itemtype
+     * @param array<string, mixed>      $opt
+     */
+    private static function isLinkedTableSortOption(string $itemtype, array $opt, string $itemtable): bool
+    {
+        return isset($opt['table'], $opt['field'])
+            && $opt['table'] !== $itemtable
+            && !empty($opt['linkfield'])
+            && !Search::isVirtualField($opt['linkfield'])
+            && empty($opt['forcegroupby'])
+            && empty($opt['usehaving'])
+            && empty($opt['nosort'])
+            && !isset($opt['computation'])
+            && empty($opt['nosql'])
+            && !isset($opt['joinparams']['beforejoin'])
+            && ($opt['joinparams']['jointype'] ?? 'standard') === 'standard'
+            // Plugins may define their own joins and order expressions
+            && isPluginItemType($itemtype) === false
+            && !str_starts_with($opt['table'], 'glpi_plugin_');
+    }
+
+    /**
+     * Inner subquery of the deferred join when sorting on columns of linked tables: the sort
+     * columns are selected (the outer ORDER BY relies on their `ITEM_x` aliases), then only the
+     * ids are kept. Null when it cannot be built safely.
+     *
+     * @param array{query: string, params: array<int, mixed>} $minimal_from
+     * @param array<int, mixed>                                $WHERE_VALUES
+     * @param array<int|string, mixed>                         $sort_fields
+     */
+    private static function buildDeferredInnerQueryWithSortColumns(
+        string $itemtype,
+        string $itemtable,
+        array $minimal_from,
+        string $WHERE,
+        array $WHERE_VALUES,
+        array $sort_fields,
+        string $ORDER,
+        string $LIMIT
+    ): ?Select {
+        // A derived table cannot contain duplicated column names, whereas some search options
+        // select the same aliased column twice.
+        $columns = ['id' => '`' . $itemtable . '`.`id` AS `id`'];
+        foreach ($sort_fields as $sort_field) {
+            $select = Search::addSelect($itemtype, (int) $sort_field['searchopt_id']);
+            if ($select->getParams() !== []) {
+                return null;
+            }
+            foreach (self::splitSelectExpressions($select->getQuery()) as $expression) {
+                if (!preg_match('/\sAS\s+`?([^`\s]+)`?$/i', $expression, $matches)) {
+                    return null;
+                }
+                $columns[$matches[1]] ??= $expression;
+            }
+        }
+        // Every table referenced by the sort must be joined in the minimal FROM.
+        if (!self::minimalFromCoversWhere($minimal_from['query'], implode(' ', $columns) . $ORDER)) {
+            return null;
+        }
+
+        $query = 'SELECT `id` FROM ('
+            . 'SELECT ' . implode(', ', $columns)
+            . $minimal_from['query']
+            . $WHERE
+            . (self::hasOnlyOneToOneJoins($itemtable, $minimal_from['query']) ? '' : ' GROUP BY `' . $itemtable . '`.`id`')
+            . $ORDER . ', `' . $itemtable . '`.`id` ' . self::getTieBreakerOrder($sort_fields)
+            . $LIMIT
+            . ') AS `deferred_sorted`';
+
+        return (new Select())
+            ->setQuery($query)
+            ->setParams(array_merge($minimal_from['params'], $WHERE_VALUES));
+    }
+
+    /**
+     * Split a SELECT expression list on its top-level commas.
+     *
+     * @return list<string>
+     */
+    private static function splitSelectExpressions(string $select): array
+    {
+        $expressions = [];
+        $current = '';
+        $depth = 0;
+        $quote = null;
+        $length = strlen($select);
+        for ($i = 0; $i < $length; $i++) {
+            $char = $select[$i];
+            if ($quote !== null) {
+                if ($char === $quote) {
+                    $quote = null;
+                }
+            } elseif ($char === '`' || $char === "'" || $char === '"') {
+                $quote = $char;
+            } elseif ($char === '(') {
+                $depth++;
+            } elseif ($char === ')') {
+                $depth--;
+            } elseif ($char === ',' && $depth === 0) {
+                $expressions[] = trim($current);
+                $current = '';
+                continue;
+            }
+            $current .= $char;
+        }
+        $expressions[] = trim($current);
+
+        return array_values(array_filter($expressions, static fn(string $expr) => $expr !== ''));
+    }
+
+    /**
      * Whether deferred-join pagination is safe: grouped, limited, ordered, non-union search with
      * no meta/`view`/`all` criterion, no HAVING, and every sort field a plain main-table column
-     * (so the page can be resolved and ordered from the main table alone). HAVING / 1:N-aggregate
+     * or a column of a table linked by a foreign key of the main table (so the page can be
+     * resolved and ordered from the minimal FROM alone). HAVING / 1:N-aggregate
      * sorts are excluded on purpose — the aggregate must be computed over the whole relation
      * anyway, so deferral buys little. Otherwise the normal query is emitted.
      *
@@ -4759,6 +4916,11 @@ final class SQLProvider implements SearchProviderInterface
                 return false;
             }
             $opt = $searchopt[$ID];
+            // Columns of a table linked by a foreign key of the main table are joined in the
+            // minimal FROM (1:1 join), so the inner subquery can sort on them too.
+            if (self::isLinkedTableSortOption($data['itemtype'], $opt, $itemtable)) {
+                continue;
+            }
             // Only plain main-table columns are orderable in the inner subquery.
             if (
                 $opt['table'] !== $itemtable
@@ -5501,25 +5663,46 @@ final class SQLProvider implements SearchProviderInterface
                 );
             }
 
+            $inner = null;
             if ($can_defer && $minimal_from !== null) {
+                $sorts_on_linked_table = false;
+                foreach ($sort_fields as $sort_field) {
+                    if (self::isLinkedTableSortOption($data['itemtype'], $searchopt[$sort_field['searchopt_id']], $itemtable)) {
+                        $sorts_on_linked_table = true;
+                        break;
+                    }
+                }
                 // Two-phase: inner subquery picks the page of ids (no display 1:N joins), outer
                 // query attaches the display joins to just those ids.
-                $inner = self::buildDeferredInnerQuery(
-                    $itemtable,
-                    $minimal_from,
-                    $WHERE,
-                    $WHERE_VALUES,
-                    self::buildInnerOrderBy($itemtable, $sort_fields, $searchopt),
-                    $LIMIT
-                );
+                $inner = $sorts_on_linked_table
+                    ? self::buildDeferredInnerQueryWithSortColumns(
+                        $data['itemtype'],
+                        $itemtable,
+                        $minimal_from,
+                        $WHERE,
+                        $WHERE_VALUES,
+                        $sort_fields,
+                        $ORDER,
+                        $LIMIT
+                    )
+                    : self::buildDeferredInnerQuery(
+                        $itemtable,
+                        $minimal_from,
+                        $WHERE,
+                        $WHERE_VALUES,
+                        self::buildInnerOrderBy($itemtable, $sort_fields, $searchopt),
+                        $LIMIT
+                    );
+            }
 
+            if ($inner !== null) {
                 $QUERY = $SELECT
                     . " FROM `" . $itemtable . "`"
                     . " INNER JOIN (" . $inner->getQuery() . ") AS `deferred_page`"
                     . " ON `" . $itemtable . "`.`id` = `deferred_page`.`id` "
                     . $FROM_JOINS
                     . $GROUPBY
-                    . $ORDER;
+                    . $ORDER . ', `' . $itemtable . '`.`id` ' . self::getTieBreakerOrder($sort_fields);
                 // Param order matches the `?` order: outer SELECT, inner subquery (its WHERE
                 // included), then outer display joins — inner WHERE BEFORE the joins here.
                 $QUERY_VALUES = array_merge($SELECT_VALUES, $inner->getParams(), $FROM_JOINS_VALUES);
@@ -7441,18 +7624,27 @@ final class SQLProvider implements SearchProviderInterface
                     return \htmlescape($tmp->getDescription($data[$ID][0]['name']));
 
                 case 'glpi_changes.status':
+                    if ($data[$ID][0]['name'] === null) {
+                        return '';
+                    }
                     $status = Change::getStatus($data[$ID][0]['name']);
                     return "<span class='text-nowrap'>"
                         . Change::getStatusIcon($data[$ID][0]['name'], false) . "&nbsp;" . \htmlescape($status)
                         . "</span>";
 
                 case 'glpi_problems.status':
+                    if ($data[$ID][0]['name'] === null) {
+                        return '';
+                    }
                     $status = Problem::getStatus($data[$ID][0]['name']);
                     return "<span class='text-nowrap'>"
                         . Problem::getStatusIcon($data[$ID][0]['name'], false) . "&nbsp;" . \htmlescape($status)
                         . "</span>";
 
                 case 'glpi_tickets.status':
+                    if ($data[$ID][0]['name'] === null) {
+                        return '';
+                    }
                     $status = Ticket::getStatus($data[$ID][0]['name']);
                     return "<span class='text-nowrap'>"
                         . Ticket::getStatusIcon($data[$ID][0]['name'], false) . "&nbsp;" . \htmlescape($status)
