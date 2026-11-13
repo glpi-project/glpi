@@ -32,12 +32,22 @@
 
 {% import "pages/tools/kb/_actions_menu.html.twig" as actions_menu %}
 
+{# A form can embed several articles: each script must find its own. #}
+{% set article_rand = random() %}
+
 <div
+    id="kb-article-{{ article_rand }}"
     class="d-flex mx-n2 my-n2 pe-none"
     data-glpi-knowbase-article
     data-glpi-kb-item-id="{{ item_id }}"
     data-glpi-kb-can-edit="{{ can_edit ? 'true' : 'false' }}"
     data-glpi-kb-can-comment="{{ can_comment ? 'true' : 'false' }}"
+    {% if legacy_heading_ids is defined and legacy_heading_ids is not empty %}
+        data-glpi-kb-legacy-heading-ids="{{ legacy_heading_ids|json_encode }}"
+    {% endif %}
+    {% if article_url is defined %}
+        data-glpi-kb-article-url="{{ article_url }}"
+    {% endif %}
     {% if prefilled_parent is defined %}
         data-glpi-kb-prefilled-parent-id="{{ prefilled_parent.id }}"
     {% endif %}
@@ -123,6 +133,29 @@
                 data-placeholder="{{ __('Untitled article') }}"
                 spellcheck="true"
             >{{ subject }}</h1>
+            {% if mode == "view" or mode == "edit" %}
+                {# Table of contents toggle, shown by JS when the content has headings.
+                   Becomes a dropdown when there is no space for the column. #}
+                <div class="dropdown flex-shrink-0 ms-2 d-none" data-glpi-kb-toc-toggle-container>
+                    <button
+                        type="button"
+                        class="btn btn-ghost-secondary btn-icon kb-toc-toggle"
+                        aria-label="{{ __('Table of contents') }}"
+                        aria-pressed="false"
+                        aria-keyshortcuts="Control+Alt+H"
+                        data-bs-toggle="dropdown"
+                        data-bs-auto-close="true"
+                        data-glpi-kb-toc-toggle
+                    >
+                        <i class="ti ti-align-right" aria-hidden="true"></i>
+                    </button>
+                    <div class="dropdown-menu kb-toc-dropdown p-2">
+                        <nav aria-label="{{ __('Table of contents') }}">
+                            <ul class="kb-toc list-unstyled mb-0" data-glpi-kb-toc-list></ul>
+                        </nav>
+                    </div>
+                </div>
+            {% endif %}
             <div class="ms-auto d-flex align-items-center gap-2">
                 {# Share (publish to web) #}
                 {% if can_edit and mode != 'add' %}
@@ -304,16 +337,33 @@
 
         {% endif %}
 
-        {# Tiptap editor container #}
-        <div
-            id="kb-tiptap-editor"
-            class="rich_text_container article-container mt-4 {{ mode in ['add', 'edit'] ? 'kb-editor-reserved' }}"
-            data-glpi-kb-content
-            data-glpi-comment-anchors="{{ (comment_anchors ?? [])|json_encode|e('html_attr') }}"
-            data-glpi-comment-anchor-max-length="{{ comment_anchor_max_length ?? 0 }}"
-            data-testid="content"
-        >
-            {{ answer|enhanced_html({text_maxsize: 0}) }}
+        <div class="kb-article-body d-flex mt-4" data-glpi-kb-article-body>
+            {# Tiptap editor container #}
+            <div
+                id="kb-tiptap-editor"
+                class="rich_text_container article-container flex-grow-1 {{ mode in ['add', 'edit'] ? 'kb-editor-reserved' }}"
+                data-glpi-kb-content
+                data-glpi-comment-anchors="{{ (comment_anchors ?? [])|json_encode|e('html_attr') }}"
+                data-glpi-comment-anchor-max-length="{{ comment_anchor_max_length ?? 0 }}"
+                data-testid="content"
+            >
+                {{ answer|enhanced_html({text_maxsize: 0}) }}
+            </div>
+
+            {% if mode == "view" or mode == "edit" %}
+                {# Filled and shown by JS #}
+                <nav
+                    class="kb-toc-column d-none"
+                    aria-label="{{ __('Table of contents') }}"
+                    data-glpi-kb-toc-column
+                >
+                    <div class="kb-toc-title text-muted fw-bold mb-2">{{ __('Contents') }}</div>
+                    <p class="text-muted small mb-0 d-none" data-glpi-kb-toc-empty>
+                        {{ __('This article has no headings.') }}
+                    </p>
+                    <ul class="kb-toc list-unstyled mb-0" data-glpi-kb-toc-list></ul>
+                </nav>
+            {% endif %}
         </div>
 
         {# Sub-articles, Documents and Related Items section #}
@@ -572,6 +622,7 @@
 <div
     class="offcanvas offcanvas-end"
     tabindex="-1"
+    id="kb-article-offcanvas-{{ article_rand }}"
     data-glpi-knowbase-side-panel-offcanvas
     data-testid="offcanvas"
 >
@@ -584,16 +635,17 @@
         const module = await import(
             "/js/modules/Knowbase/ArticleController.js"
         );
+        const article = document.getElementById('kb-article-{{ article_rand }}');
         new module.GlpiKnowbaseArticleController(
-            document.querySelector('[data-glpi-knowbase-article]'),
-            document.querySelector('[data-glpi-knowbase-side-panel]'),
-            document.querySelector('[data-glpi-knowbase-side-panel-offcanvas]'),
+            article,
+            article.querySelector('[data-glpi-knowbase-side-panel]'),
+            document.getElementById('kb-article-offcanvas-{{ article_rand }}'),
             '{{ mode|e('js') }}',
         );
 
         // Initialize document upload controller eagerly so the submit
         // handler is bound before any user interaction with the modal.
-        const uploadModal = document.getElementById('kb-add-document-modal');
+        const uploadModal = article.querySelector('#kb-add-document-modal');
         const uploadPane = uploadModal?.querySelector('#kb-modal-upload-pane');
         if (uploadPane) {
             const uploadModule = await import(
@@ -602,7 +654,7 @@
             new uploadModule.DocumentUploadController(uploadPane, uploadModal);
         }
 
-        const share_dropdown = document.querySelector('[data-glpi-share-dropdown]');
+        const share_dropdown = article.querySelector('[data-glpi-share-dropdown]');
         if (share_dropdown) {
             const { GlpiKnowbaseSharePopoverController } = await import(
                 "/js/modules/Knowbase/SharePopoverController.js"

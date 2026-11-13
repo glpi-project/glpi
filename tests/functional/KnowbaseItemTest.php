@@ -881,30 +881,32 @@ HTML,
         $this->assertNotContains($articles['future']->fields['name'], $names);
     }
 
-    public function testGetAnswerAnchors(): void
+    public function testGetAnswerKeepsHeadingsUnchanged(): void
     {
-        // Create test KB with multiple headers
-        $kb_name = 'Test testGetAnswerAnchors' . mt_rand();
-        $input = [
-            'name' => $kb_name,
-            'answer' => '<h1>title 1a</h1><h2>title2</h2><h1>title 1b</h1><h1>title 1c</h1>',
-        ];
-        $this->createItems('KnowbaseItem', [$input]);
+        $answer = '<h1>title 1a</h1><h2>title2</h2><h1>title 1b</h1>';
+        $kbi = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__,
+            'answer' => $answer,
+        ]);
 
-        // Load KB
-        /** @var KnowbaseItem */
-        $kbi = getItemByTypeName("KnowbaseItem", $kb_name);
-        $answer = $kbi->getAnswer();
+        $this->assertSame($answer, $kbi->getAnswer());
+    }
 
-        // Test anchors, there should be one per header
-        $this->assertStringContainsString('<h1 id="title-1a">', $answer);
-        $this->assertStringContainsString('<a href="#title-1a">', $answer);
-        $this->assertStringContainsString('<h2 id="title2">', $answer);
-        $this->assertStringContainsString('<a href="#title2">', $answer);
-        $this->assertStringContainsString('<h1 id="title-1b">', $answer);
-        $this->assertStringContainsString('<a href="#title-1b">', $answer);
-        $this->assertStringContainsString('<h1 id="title-1c">', $answer);
-        $this->assertStringContainsString('<a href="#title-1c">', $answer);
+    public function testGetLegacyHeadingIds(): void
+    {
+        $kbi = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__,
+            'answer' => '<h2>Привет</h2><h2><strong>Setup</strong></h2><h3>2. Setup</h3><h4>Привет</h4><h2> </h2><h2>🚀</h2>',
+        ]);
+
+        $this->assertSame(
+            [
+                'privet'              => 'Привет',
+                'strong-setup-strong' => 'Setup',
+                'slug_2.-setup'       => '2. Setup',
+            ],
+            $kbi->getLegacyHeadingIds($kbi->getAnswer())
+        );
     }
 
     public function testCreateWithParents()
