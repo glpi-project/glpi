@@ -75,7 +75,7 @@
         "tinycolor2": "^1.6.0",
         "tinymce": "^8.10.1",
         "tinymce-i18n": "^26.11.2",
-        "vue": "^3.5.44",
+        "vue": "^3.5.45",
         "wunderbaum": "^0.14.1"
     },
     "scripts": {
