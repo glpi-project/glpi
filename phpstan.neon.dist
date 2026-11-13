@@ -23,7 +23,6 @@ parameters:
     universalObjectCratesClasses:
         - Sabre\VObject\Node
     dynamicConstantNames:
-        - GLPI_AJAX_DASHBOARD
         - GLPI_ALLOW_IFRAME_IN_RICH_TEXT
         - GLPI_CACHE_DIR
         - GLPI_CALDAV_IMPORT_STATE

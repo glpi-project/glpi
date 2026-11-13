@@ -820,6 +820,10 @@ $break_tablet: 1400px;
     }
 
     .big-number {
+        // The number and the label are sized from the card, as fitText did: width / 11.6 and width / 9.6 (at
+        // least 12px). A wide card uses its height / 0.7 as the width, see the big-number container query.
+        container: big-number / size;
+
         .content {
             margin: 0;
         }
@@ -831,6 +835,7 @@ $break_tablet: 1400px;
 
         .formatted-number {
             display: flex;
+            font-size: calc(100cqw / (var(--dashboard-text-offset, 1.16) * 10));
 
             .number,
             .suffix {
@@ -844,6 +849,7 @@ $break_tablet: 1400px;
         }
 
         .label {
+            font-size: max(12px, calc(100cqw / ((var(--dashboard-text-offset, 1.16) - 0.2) * 10)));
             max-width: calc(100%);
             overflow: hidden;
             text-overflow: ellipsis;
@@ -891,6 +897,7 @@ $break_tablet: 1400px;
                 text-align: center;
 
                 .line {
+                    container-type: inline-size;
                     flex-grow: 1;
                     display: flex;
                     flex-direction: column-reverse;
@@ -905,11 +912,12 @@ $break_tablet: 1400px;
 
                         .formatted-number {
                             flex-grow: 1;
+                            font-size: max(12px, calc(100cqw / ((var(--dashboard-text-offset, 1.16) - 0.65) * 10)));
                         }
                     }
 
                     .label {
-                        font-size: 1.5em;
+                        font-size: max(12px, calc(100cqw / ((var(--dashboard-text-offset, 1.16) - 0.2) * 10)));
                     }
 
                     &:not(:first-child) {
@@ -1435,5 +1443,18 @@ $break_tablet: 1400px;
 html[data-glpi-theme-dark="1"] {
     .widgettype_field img {
         filter: invert(1);
+    }
+}
+
+// Wide big number cards: size the number and the label from the card height (height / 0.7 used as the width)
+@container big-number (aspect-ratio > 1) {
+    .dashboard .big-number {
+        .formatted-number {
+            font-size: calc(100cqh / 0.7 / (var(--dashboard-text-offset, 1.16) * 10));
+        }
+
+        .label {
+            font-size: max(12px, calc(100cqh / 0.7 / ((var(--dashboard-text-offset, 1.16) - 0.2) * 10)));
+        }
     }
 }

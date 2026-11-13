@@ -66,7 +66,6 @@
     }
 
     // Other constants
-    define('GLPI_AJAX_DASHBOARD', $random_val([false, true]));
     define('GLPI_ALLOW_IFRAME_IN_RICH_TEXT', $random_val([false, true]));
     define('GLPI_CALDAV_IMPORT_STATE', $random_val([0, 1, 2]));
     define('GLPI_CENTRAL_WARNINGS', $random_val([false, true]));

@@ -15,10 +15,12 @@ The present file will list all changes made to the project; according to the
 
 ### Changes
 - Mails receivers now rely on the `directorytree/imapengine` library to connect to IMAP servers.
+- Dashboard cards are kept in the server cache for five minutes, and the cards in cache are loaded in one request.
 
 ### Deprecated
 
 ### Removed
+- `GLPI_AJAX_DASHBOARD` constant: dashboard cards can no longer be loaded all in one request, which rendered them one after the other.
 - `itemtype` criteria for Ticket and Change rules. This has been non-operational since 0.85 (over 11 years ago).
 - POP protocol support for mails receivers and mail authentication servers. Existing mails receivers and authentication servers using it are disabled during the update.
 
