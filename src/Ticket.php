@@ -2759,18 +2759,12 @@ JAVASCRIPT;
         // OLA TTO exceeded
         $tab[] = [
             'id'                 => '187',
-            'table'              => Item_Ola::getTable(),
-            'field'              => 'is_late',
+            'table'              => $this->getTable(),
+            'field'              => 'ola_tto_is_late',
             'name'               => __('OLA') . ' ' . __('time to own exceeded'),
             'datatype'           => 'bool',
             'massiveaction'      => false,
-            'computation'        => self::generateSLAOLAComputation('internal_time_to_own'),
-            'joinparams' => [
-                'jointype'  => 'itemtype_item',
-                'condition' => ['NEWTABLE.ola_type' => SLM::TTO,],
-            ],
-            'forcegroupby'       => true,
-            'usehaving' => true, // needed because of generateSLAOLAComputation() use a group function (max).
+            'computation'        => self::getOlaIsLateComputation('internal_time_to_own'),
         ];
 
         // associated OLA TTR names
@@ -2830,18 +2824,12 @@ JAVASCRIPT;
         // OLA TTR exceeded
         $tab[] = [
             'id'                 => '182',
-            'table'              => Item_Ola::getTable(),
-            'field'              => 'is_late',
+            'table'              => $this->getTable(),
+            'field'              => 'ola_ttr_is_late',
             'name'               => __('OLA') . ' ' . __('time to resolve exceeded'),
             'datatype'           => 'bool',
             'massiveaction'      => false,
-            'computation'        => self::generateSLAOLAComputation('internal_time_to_resolve'),
-            'joinparams' => [
-                'jointype'  => 'itemtype_item',
-                'condition' => ['NEWTABLE.ola_type' => SLM::TTR,],
-            ],
-            'forcegroupby'       => true,
-            'usehaving' => true, // needed because of generateSLAOLAComputation() use a group function (max).
+            'computation'        => self::getOlaIsLateComputation('internal_time_to_resolve'),
         ];
 
         // Ola levels
@@ -3165,6 +3153,25 @@ JAVASCRIPT;
         }
 
         return $tab;
+    }
+
+    /**
+     * Get the "OLA exceeded" search option computation, as a subquery so it can be used in a WHERE clause.
+     *
+     * @param string $type 'internal_time_to_own' or 'internal_time_to_resolve'
+     */
+    private static function getOlaIsLateComputation(string $type): QueryExpression
+    {
+        $subquery = new QuerySubQuery([
+            'SELECT' => [self::generateSLAOLAComputation($type, Item_Ola::getTable())],
+            'FROM'   => Item_Ola::getTable(),
+            'WHERE'  => [
+                Item_Ola::getTable() . '.itemtype' => self::class,
+                Item_Ola::getTable() . '.items_id' => new QueryExpression('TABLE.id'),
+            ],
+        ]);
+
+        return QueryFunction::ifnull($subquery, new QueryExpression('0'));
     }
 
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
