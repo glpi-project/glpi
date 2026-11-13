@@ -414,8 +414,7 @@ HTML;
             echo "<div class='tab-content p-2 flex-grow-1 card $border' style='min-height: 150px'>";
             foreach ($tabs as $val) {
                 $id = str_replace('\\', '_', $val['id']);
-                // The pane of the tab displayed on load is rendered visible: Bootstrap would otherwise keep it
-                // transparent for 155 ms, then fade it in, which hides contents that are received early.
+                // Without this, Bootstrap keeps the initial pane transparent for 155 ms, then fades it in.
                 $pane_state = $id === $active_id ? ' show active' : '';
                 echo "<div data-glpi-tab-content class='tab-pane fade{$pane_state}' role='tabpanel' id='" . htmlescape($id) . "'></div>";
             }
