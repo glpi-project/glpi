@@ -131,13 +131,13 @@
         {{ fields.checkboxField('use_oauth', item.fields['use_oauth'], __('Use OAuth')) }}
         {{ fields.textField('oauth_url', item.fields['oauth_url'], __('URL')) }}
         {{ fields.textField('clientid', item.fields['clientid'], __('Client ID')) }}
-        {# The autocomplete, readonly, and onfocus stuff for the password field is an attempt to keep browsers from filling or asking to save the content automatically #}
+        {# The autocomplete, readonly, and readonly-until-focus stuff for the password field is an attempt to keep browsers from filling or asking to save the content automatically #}
         {{ fields.passwordField('clientsecret', item.fields['clientsecret']|decrypt, __('Client Secret'), {
             is_disclosable: true,
             readonly: true,
             additional_attributes: {
                 autocomplete: 'off',
-                onfocus: 'this.removeAttribute("readonly");'
+                'data-glpi-readonly-until-focus': '',
             }
         }) }}
 

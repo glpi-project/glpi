@@ -36,12 +36,15 @@
 {{ fields.largeTitle(__('Information about system installation and configuration'), 'ti ti-file-info') }}
 {{ fields.htmlField('', inputs.button('copy-sysinfo', __('Copy system information'), 'button', 1, {
    icon: 'ti ti-copy',
-   additional_attributes: {
-      onclick: "copyTextToClipboard(tableToDetails('#sysinfo_accordion'));flashIconButton(this, 'btn btn-success', 'ti ti-check', 1500);"
-   }
 }), '', {
    no_label: true
 }) }}
+<script>
+   document.querySelector('button[name="copy-sysinfo"]').addEventListener('click', (e) => {
+      copyTextToClipboard(tableToDetails('#sysinfo_accordion'));
+      flashIconButton(e.currentTarget, 'btn btn-success', 'ti ti-check', 1500);
+   });
+</script>
 
 {% macro sysinfo_section(label, content, raw = false, raw_precontent = '') %}
    {% set rand = random() %}
