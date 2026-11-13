@@ -4263,7 +4263,12 @@ JS;
             }
         }
 
-        $output .= Html::scriptBlock('$(function() {' . $js . '});');
+        // The script comes before its select, so it waits for the DOM while the page is loading. In a content received
+        // from an AJAX request the select is already there, and a jQuery ready callback would only run after the
+        // content is painted.
+        $output .= Html::scriptBlock(
+            '(function(init) { if (document.readyState === "loading") { $(init); } else { init(); } })(function() {' . $js . '});'
+        );
         $output .= self::select($name, $values, $options);
 
         return $output;
