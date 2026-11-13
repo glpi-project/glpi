@@ -71,7 +71,14 @@ if (isset($_POST['key']) && isset($_POST["action"])) {
         $marketplace_ctrl->disablePlugin();
     }
 
-    echo MarketplaceView::getButtons($_POST['key']);
+    if (in_array($_POST['tab'] ?? null, ['installed', 'discover'], true)) {
+        // Return the whole plugin card, to reflect all changes (version, state, buttons, ...)
+        echo MarketplaceView::getPluginCardByKey($_POST['key'], $_POST['tab']);
+    } else {
+        echo MarketplaceView::getButtons($_POST['key']);
+    }
+} elseif (($_GET["action"] ?? null) == "get_updatable_alert") {
+    echo (new Plugin())->getPluginsUpdatableAlert();
 } elseif (($_GET["action"] ?? null) == "refresh_plugin_list") {
     switch ($_GET['tab']) {
         default:

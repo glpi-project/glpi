@@ -45,10 +45,10 @@ $(document).ready(function() {
     // plugin actions (install, enable, etc)
     $(document).on('click', '.marketplace .modify_plugin', function() {
         var button       = $(this);
-        var buttons      = button.closest('.buttons');
+        var marketplace  = button.closest('.marketplace');
         var li           = button.closest('li.plugin');
         var icon         = button.children('i');
-        var installed    = button.closest('.marketplace').hasClass('installed');
+        var installed    = marketplace.hasClass('installed');
         var action       = button.data('action');
         var plugin_key   = li.data('key');
         var plugin_state = li.data('state');
@@ -66,18 +66,24 @@ $(document).ready(function() {
             ajax_done = false;
             $.post(ajax_url, {
                 'action': action,
-                'key': plugin_key
+                'key': plugin_key,
+                'tab': marketplace.data('tab'),
             }).done(function(html) {
                 ajax_done = true;
 
                 if (html.indexOf("cleaned") !== -1 && installed) {
                     li.remove();
                 } else {
+                    // replace the whole card by the server-rendered one,
+                    // to reflect every change (version, state, buttons, updatable highlight, ...)
                     html = html.replace('cleaned', '');
-                    buttons.html(html);
+                    li.replaceWith(html);
+
                     displayAjaxMessageAfterRedirect();
                     addTooltips();
                 }
+
+                refreshUpdatableAlert();
             });
         };
 
@@ -206,6 +212,15 @@ var refreshPlugins = function(page, force) {
         current_page = page;
 
         addTooltips();
+    });
+};
+
+// refresh the "X plugins to update" alert with its server-rendered version
+var refreshUpdatableAlert = function() {
+    $.get(ajax_url, {
+        'action': 'get_updatable_alert',
+    }).done(function(html) {
+        $('.marketplace .updatable-plugins-alert').html(html);
     });
 };
 
