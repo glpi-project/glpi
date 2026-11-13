@@ -3199,15 +3199,9 @@ class AuthLdapTest extends DbTestCase
     #[RequiresPhpExtension('ldap')]
     public function testConnectToServerTlsError()
     {
-        $error = implode(
-            "\n",
-            [
-                'Unable to start TLS connection to LDAP server `openldap:3890`',
-                'error: Protocol error (2)',
-                'extended error: unsupported extended operation',
-                'err string: unsupported extended operation',
-            ]
-        );
+        // The exact LDAP/OpenSSL error depends on the server TLS capabilities
+        // (e.g. "unsupported extended operation" or "no cipher match"), so only check the stable part.
+        $error = 'Unable to start TLS connection to LDAP server `openldap:3890`';
 
         AuthLDAP::connectToServer(
             'openldap',
@@ -3656,5 +3650,24 @@ class AuthLdapTest extends DbTestCase
         $user->getFromDB($user_id);
         $this->assertSame(1, (int) $user->fields['is_active']);
         $this->assertSame(0, (int) $user->fields['is_deleted_ldap']);
+    }
+
+    public static function tlsCipherSuiteProvider(): iterable
+    {
+        $excluded = ':!VERS-TLS1.0:!VERS-TLS1.1';
+        yield ['1.2', 'NORMAL:+VERS-TLS1.2:!VERS-TLS1.3' . $excluded];
+        yield ['1.3', 'NORMAL:!VERS-TLS1.2:+VERS-TLS1.3' . $excluded];
+        yield ['', 'NORMAL' . $excluded];
+        yield ['1.1', 'NORMAL' . $excluded];
+        yield ['bogus', 'NORMAL' . $excluded];
+    }
+
+    #[DataProvider('tlsCipherSuiteProvider')]
+    public function testGetTlsCipherSuite(string $tls_version, string $expected): void
+    {
+        $result = AuthLDAP::getTlsCipherSuite($tls_version);
+        $this->assertSame($expected, $result);
+        $this->assertStringContainsString('!VERS-TLS1.0', $result);
+        $this->assertStringContainsString('!VERS-TLS1.1', $result);
     }
 }
