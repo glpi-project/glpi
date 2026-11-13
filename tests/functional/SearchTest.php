@@ -8373,6 +8373,104 @@ class SearchTest extends DbTestCase
         $this->assertSame($created, $ids);
     }
 
+    public function testDeferredJoinSortedOnLinkedTableColumn(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        // Computer name => location name
+        foreach ([1 => 'C', 2 => 'A', 3 => 'B'] as $i => $location_name) {
+            $location = $this->createItem(Location::class, [
+                'name'        => __FUNCTION__ . ' ' . $location_name,
+                'entities_id' => $entity_id,
+            ]);
+            $this->createItem(Computer::class, [
+                'name'         => __FUNCTION__ . ' ' . $i,
+                'entities_id'  => $entity_id,
+                'locations_id' => $location->getID(),
+            ]);
+        }
+
+        $name = __FUNCTION__;
+        $search = static fn(int $start, string $order): array => \Search::getDatas(
+            Computer::class,
+            [
+                'reset'      => 'reset',
+                'criteria'   => [['field' => 1, 'searchtype' => 'contains', 'value' => $name]],
+                'sort'       => [3], // location
+                'order'      => [$order],
+                'start'      => $start,
+                'list_limit' => 2,
+            ],
+            [49] // forcegroupby column: triggers the GROUP BY, hence the deferred join
+        );
+        $get_names = static fn(array $data): array => array_values(array_map(
+            static fn($row) => $row['Computer_1'][0]['name'],
+            $data['data']['rows']
+        ));
+
+        $data = $search(0, 'ASC');
+        $query = $data['sql']['search']->getQuery();
+        $this->assertSame(1, preg_match('/INNER JOIN \((.*)\) AS `deferred_page`/', $query, $matches), $query);
+        $this->assertStringContainsString('deferred_sorted', $matches[1]);
+        $this->assertStringNotContainsString('GROUP BY', $matches[1], 'only 1:1 joins in the inner query');
+        $this->assertSame(3, (int) $data['data']['totalcount']);
+        $this->assertSame([__FUNCTION__ . ' 2', __FUNCTION__ . ' 3'], $get_names($data));
+
+        $data = $search(2, 'ASC');
+        $this->assertSame(3, (int) $data['data']['totalcount']);
+        $this->assertSame([__FUNCTION__ . ' 1'], $get_names($data));
+
+        $data = $search(0, 'DESC');
+        $this->assertSame([__FUNCTION__ . ' 1', __FUNCTION__ . ' 3'], $get_names($data));
+    }
+
+    public static function deferredJoinSortedOnEachOptionProvider(): iterable
+    {
+        yield [Ticket::class];
+        yield [Computer::class];
+        yield [Software::class];
+    }
+
+    /**
+     * Every sortable option, in both directions, must return the matching item, whether the
+     * deferred join applies or not.
+     */
+    #[DataProvider('deferredJoinSortedOnEachOptionProvider')]
+    public function testDeferredJoinSortedOnEachOption(string $itemtype): void
+    {
+        $this->login();
+
+        $this->createItem($itemtype, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ] + ($itemtype === Ticket::class ? ['content' => __FUNCTION__] : []));
+
+        $deferred_count = 0;
+        foreach (SearchOption::getOptionsForItemtype($itemtype) as $id => $option) {
+            if (!is_int($id) || !is_array($option) || ($option['nosort'] ?? false)) {
+                continue;
+            }
+            foreach (['ASC', 'DESC'] as $order) {
+                $data = $this->doSearch(
+                    $itemtype,
+                    [
+                        'criteria' => [['field' => 1, 'searchtype' => 'contains', 'value' => __FUNCTION__]],
+                        'sort'     => [$id],
+                        'order'    => [$order],
+                    ],
+                    $itemtype === Ticket::class ? [] : [49]
+                );
+                $this->assertSame(1, (int) $data['data']['totalcount'], "Sort on option $id $order");
+                $this->assertCount(1, $data['data']['rows'], "Sort on option $id $order");
+                if (str_contains($data['sql']['search']->getQuery(), 'deferred_sorted')) {
+                    $deferred_count++;
+                }
+            }
+        }
+        $this->assertGreaterThan(0, $deferred_count);
+    }
+
     /**
      * Requesting a page past the last one under an active SQL LIMIT (stale bookmark / edited URL
      * / API) must not error: it falls back to the first page, matching the pre-optimization
