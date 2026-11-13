@@ -529,6 +529,59 @@ test('Priority recalculates when urgency or impact changes', async ({ profile, p
     await expect(ticket.getDropdownByLabel('Priority')).toContainText('Very high');
 });
 
+test('Fields panel shows sections state and panel width toggle direction', async ({ profile, page, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const ticket_id = await api.createItem('Ticket', {
+        name: 'Test fields panel state',
+        content: 'Test fields panel state',
+        entities_id: getWorkerEntityId(),
+    });
+
+    const ticket = new TicketPage(page);
+    await ticket.goto(ticket_id);
+
+    const waitForLayoutSave = () => page.waitForResponse(
+        (response) => response.url().includes('/ajax/itillayout.php')
+    );
+
+    // Main section is expanded by default, with a chevron indicating its state
+    const main_section_button = page.getByRole('region', { name: 'Ticket', exact: true }).getByRole('button').first();
+    await expect(main_section_button).toHaveAttribute('aria-expanded', 'true');
+    // eslint-disable-next-line playwright/no-raw-locators -- decorative chevron, hidden from the accessibility tree
+    await expect(main_section_button.locator('.accordion-button-toggle')).toBeVisible();
+
+    // Collapsed state is reflected and kept after a reload
+    let layout_saved = waitForLayoutSave();
+    await main_section_button.click();
+    await layout_saved;
+    await expect(main_section_button).toHaveAttribute('aria-expanded', 'false');
+    await page.reload();
+    await expect(main_section_button).toHaveClass(/collapsed/);
+    await expect(main_section_button).toHaveAttribute('aria-expanded', 'false');
+
+    // Panel width toggle icon points to the direction of the next width change
+    const switch_button = page.getByRole('button', { name: 'Toggle panels width' });
+    // eslint-disable-next-line playwright/no-raw-locators -- decorative icon, hidden from the accessibility tree
+    const switch_icon = switch_button.locator('i');
+    await expect(switch_icon).toHaveClass(/ti-caret-left-filled/);
+    layout_saved = waitForLayoutSave();
+    await switch_button.click();
+    await layout_saved;
+    await expect(switch_icon).toHaveClass(/ti-caret-right-filled/);
+    await page.reload();
+    await expect(switch_icon).toHaveClass(/ti-caret-right-filled/);
+
+    // Restore the default layout, as it is stored in the worker user preferences
+    layout_saved = waitForLayoutSave();
+    await switch_button.click();
+    await layout_saved;
+    await expect(switch_icon).toHaveClass(/ti-caret-left-filled/);
+    layout_saved = waitForLayoutSave();
+    await main_section_button.click();
+    await layout_saved;
+    await expect(main_section_button).toHaveAttribute('aria-expanded', 'true');
+});
+
 test('Open category dropdown is not orphaned when type change reloads it', async ({ profile, page, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const ticket_id = await api.createItem('Ticket', {

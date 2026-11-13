@@ -140,10 +140,7 @@
                     }
 
                     .accordion-button {
-                        &::after {
-                            display: none;
-                        }
-
+                        .accordion-button-toggle,
                         .btn {
                             display: none;
                         }
@@ -151,7 +148,10 @@
                 }
 
                 .switch-panel-width {
-                    display: inline-block;
+                    display: inline-flex;
+
+                    // Align the icon (1.25em, centered in the button) with the accordion items icons
+                    inset-inline-start: calc(var(--tblr-accordion-padding-x) - var(--tblr-btn-border-width) - var(--tblr-btn-padding-y) - (var(--tblr-btn-line-height) - 1.25em) / 2);
                 }
             }
 
@@ -169,6 +169,19 @@
                     display: none;
                 }
             }
+        }
+    }
+
+    // Tabler filled carets are drawn off-center in their glyph box (shifted towards the pointed direction),
+    // compensate it to get the arrows visually centered in the panel buttons.
+    .switch-panel-width,
+    .collapse-panel {
+        .ti-caret-left-filled {
+            translate: 0.045em 0;
+        }
+
+        .ti-caret-right-filled {
+            translate: -0.0425em 0;
         }
     }
 }
