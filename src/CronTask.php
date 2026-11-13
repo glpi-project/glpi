@@ -442,8 +442,6 @@ class CronTask extends CommonDBTM
     {
         global $DB;
 
-        $this->is_running = false;
-
         $DB->update(
             self::getTable(),
             [
@@ -456,6 +454,9 @@ class CronTask extends CommonDBTM
                 'state'  => self::STATE_RUNNING,
             ]
         );
+
+        // Cleared only after the row left its running state, so a failure above can still be aborted on shutdown.
+        $this->is_running = false;
 
         if ($DB->getAffectedRows() > 0) {
             // No gettext for log but add gettext line to be parsed for pot generation
