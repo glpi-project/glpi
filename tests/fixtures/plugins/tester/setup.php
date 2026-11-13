@@ -38,6 +38,7 @@ use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\ServiceCatalog\HomeSearchManager;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
+use Glpi\Form\Tag\FormTagsManager;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\Http\SessionManager;
 use Glpi\Plugin\Hooks;
@@ -49,6 +50,7 @@ use GlpiPlugin\Tester\Form\ExternalIDField;
 use GlpiPlugin\Tester\Form\QuestionTypeColor;
 use GlpiPlugin\Tester\Form\QuestionTypeRange;
 use GlpiPlugin\Tester\Form\TesterCategory;
+use GlpiPlugin\Tester\Form\UppercaseFormTitleTagProvider;
 use GlpiPlugin\Tester\MyPsr4Class;
 
 function plugin_version_tester()
@@ -113,6 +115,10 @@ function plugin_init_tester(): void
         FormDestinationTicket::class,
         new ExternalIDField()
     );
+
+    // Register form tag provider
+    $tags_manager = FormTagsManager::getInstance();
+    $tags_manager->registerPluginTagProvider(new UppercaseFormTitleTagProvider('pink'));
 
     // Register custom tiles types
     $tiles_manager = TilesManager::getInstance();
