@@ -21,6 +21,7 @@ The present file will list all changes made to the project; according to the
 ### Removed
 - `itemtype` criteria for Ticket and Change rules. This has been non-operational since 0.85 (over 11 years ago).
 - POP protocol support for mails receivers and mail authentication servers. Existing mails receivers and authentication servers using it are disabled during the update.
+- "Used paged results" option for LDAP authentication. If an LDAP server is not able to handle paged results, it will automatically be handled now.
 
 ### API changes
 
@@ -45,6 +46,7 @@ The present file will list all changes made to the project; according to the
 - `Html::getConfirmationOnActionScript()`. Use the `data-glpi-confirm="<message>"` attribute instead.
 - `Html::link()`.
 - `confirmaction` option of `Html::submit()`. Confirmation is now handled through the `data-glpi-confirm` attribute, so no additional action can be run on confirmation.
+- `AuthLDAP::isLdapPageSizeAvailable()`. The LDAP page size is always available now (with an automatic fallback at least).
 - `onclick` key of the `addbuttons` option of `CommonDBTM::showFormButtons()`.
 - `onclick` option of `Html::getCheckbox()`, `Html::showCheckbox()`, `Html::getMassiveActionCheckBox()` and `Html::showMassiveActionCheckBox()`.
 - `on_change` option of `Dropdown::showFromArray()` and of the methods relying on it. It is now ignored and triggers a warning.
