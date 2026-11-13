@@ -104,6 +104,44 @@ PLAINTEXT,
 HTML,
         ];
 
+        // Misplaced table content is wrapped in a cell, to prevent browsers from closing the parent table early
+        yield [
+            'content'                => '<table><tr><td>a</td></tr><table><tr><td>b</td></tr></table></td></tr></table>'
+                . '<table><tbody><tr><div>c</div></tr></tbody></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table><tr><td>a</td></tr><tr><td><table><tr><td>b</td></tr></table></td></tr></table>'
+                . '<table><tbody><tr><td><div>c</div></td></tr></tbody></table>',
+        ];
+
+        // Cells outside a row are moved into a row, without being nested in another cell
+        yield [
+            'content'                => '<table><td>a</td><td>b</td></table><table><tbody><th>c</th></tbody></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table><tr><td>a</td><td>b</td></tr></table><table><tbody><tr><th>c</th></tr></tbody></table>',
+        ];
+
+        // Table elements outside a table are removed, but their content is kept
+        yield [
+            'content'                => '<div><td>a</td></div><p><caption>b</caption></p><span><th>c</th></span>'
+                . '<tr><table><tr><td>d</td></tr></table></tr>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<div>a</div><p>b</p><span>c</span><table><tr><td>d</td></tr></table>',
+        ];
+
+        // Table elements that are not in their expected parent inside a table are removed too
+        yield [
+            'content'                => '<table><tr><td><div><td>a</td></div><table><tr><td>b</td></tr></table></td></tr></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table><tr><td><div>a</div><table><tr><td>b</td></tr></table></td></tr></table>',
+        ];
+
+        // Scripts and styles inside a table are dropped without leaving an empty row
+        yield [
+            'content'                => '<table><tr><td>a</td></tr><style>p{}</style><tr><script>x()</script><td>b</td></tr></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table><tr><td>a</td></tr><tr><td>b</td></tr></table>',
+        ];
+
         // Cleaning of HTML structure
         yield [
             'content'                => <<<HTML
