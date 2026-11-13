@@ -39,6 +39,7 @@ use CronTaskLog;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Search;
@@ -446,6 +447,23 @@ class CronTaskTest extends DbTestCase
         $this->assertTrue($crontask->getFromDB($crontask->getID()));
         $this->assertSame($expected_state, $crontask->fields['state']);
         $this->assertSame(0, $crontask->fields['error_count']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testShutdownHandlerDoesNotAbortEndedTask(): void
+    {
+        $crontask = new CronTask();
+        $this->assertTrue($crontask->getFromDBbyName(CronTask::class, 'graph'));
+
+        $_SESSION['glpicronuserrunning'] = 'cron_graph';
+        $this->assertTrue($crontask->start());
+        $this->assertTrue($crontask->end(0));
+
+        // Called on script shutdown, it would exit the process if the task was considered as aborted
+        $this->callPrivateMethod($crontask, 'handleAbnormalTermination');
+
+        $this->assertTrue($crontask->getFromDB($crontask->getID()));
+        $this->assertSame(CronTask::STATE_WAITING, $crontask->fields['state']);
     }
 
     public function testDuplicateCronTaskName()
