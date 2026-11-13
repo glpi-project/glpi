@@ -8472,6 +8472,29 @@ class SearchTest extends DbTestCase
     }
 
     /**
+     * The status of the linked problems (Ticket option 202) must be empty when the ticket has no
+     * linked problem.
+     */
+    public function testLinkedStatusWithoutLinkedItem(): void
+    {
+        $this->login();
+
+        $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        $data = $this->doSearch(
+            Ticket::class,
+            ['criteria' => [['field' => 1, 'searchtype' => 'contains', 'value' => __FUNCTION__]]],
+            [202]
+        );
+        $this->assertSame(1, (int) $data['data']['totalcount']);
+        $this->assertSame('', $data['data']['rows'][0]['Ticket_202']['displayname']);
+    }
+
+    /**
      * Requesting a page past the last one under an active SQL LIMIT (stale bookmark / edited URL
      * / API) must not error: it falls back to the first page, matching the pre-optimization
      * behaviour where the full result was fetched and the start clamped.
