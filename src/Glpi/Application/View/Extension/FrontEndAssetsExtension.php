@@ -38,6 +38,7 @@ namespace Glpi\Application\View\Extension;
 use DBmysql;
 use Entity;
 use Glpi\Application\ImportMapGenerator;
+use Glpi\Application\View\ScriptType;
 use Glpi\Config\ConfigContainer;
 use Glpi\Locale\LanguageRegistry;
 use Glpi\Toolbox\FrontEnd;
@@ -354,9 +355,12 @@ class FrontEndAssetsExtension extends AbstractExtension
     {
         $import_map = ImportMapGenerator::getInstance()->generate();
 
-        return '<script type="importmap">' . json_encode(
-            $import_map,
-            JSON_PRETTY_PRINT
-        ) . '</script>';
+        return Html::scriptBlock(
+            json_encode(
+                $import_map,
+                JSON_PRETTY_PRINT
+            ),
+            ScriptType::ImportMap,
+        );
     }
 }
