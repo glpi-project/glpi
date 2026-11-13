@@ -109,4 +109,38 @@ class DeviceHardDriveTest extends DbTestCase
         ];
         $this->assertTrue($obj->delete($in));
     }
+
+    public function testAddCapacityUsingAlternateUnit(): void
+    {
+        $this->login();
+        $obj = new \DeviceHardDrive();
+
+        $id = $obj->add([
+            'designation' => __METHOD__,
+            'capacity_default' => 0,
+            '_unit_value' => ['capacity_default' => '1,79'],
+            '_unit' => ['capacity_default' => 'TiB'],
+        ]);
+
+        $this->assertGreaterThan(0, $id);
+        $this->assertTrue($obj->getFromDB($id));
+        $this->assertSame(1876951, $obj->getField('capacity_default'));
+    }
+
+    public function testInvalidAlternateUnitFallsBackToCanonicalValue(): void
+    {
+        $this->login();
+        $obj = new \DeviceHardDrive();
+
+        $id = $obj->add([
+            'designation' => __METHOD__,
+            'capacity_default' => 2048,
+            '_unit_value' => ['capacity_default' => '2'],
+            '_unit' => ['capacity_default' => 'invalid'],
+        ]);
+
+        $this->assertGreaterThan(0, $id);
+        $this->assertTrue($obj->getFromDB($id));
+        $this->assertSame(2048, $obj->getField('capacity_default'));
+    }
 }

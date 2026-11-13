@@ -55,10 +55,14 @@ class DeviceGraphicCard extends CommonDevice
                 ],
                 [
                     'name'  => 'memory_default',
-                    'label' => __('Memory by default'),
+                    'label' => sprintf(__('%1$s (%2$s)'), __('Memory by default'), _x('size', 'MiB')),
                     'type'  => 'integer',
-                    'min'  => 0,
-                    'unit'  => __('Mio'),
+                    'min'   => 0,
+                    'unit_factors' => [
+                        _x('size', 'MiB') => 1,
+                        _x('size', 'GiB') => 1024,
+                        _x('size', 'TiB') => 1024 ** 2,
+                    ],
                 ],
                 [
                     'name'  => 'interfacetypes_id',
@@ -126,6 +130,7 @@ class DeviceGraphicCard extends CommonDevice
      **/
     public function prepareInputForAddOrUpdate($input)
     {
+        $input = $this->prepareUnitAwareInput($input);
         foreach (['memory_default'] as $field) {
             if (isset($input[$field]) && !is_numeric($input[$field])) {
                 $input[$field] = 0;
