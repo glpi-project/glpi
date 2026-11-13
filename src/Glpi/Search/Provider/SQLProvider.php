@@ -4640,6 +4640,8 @@ final class SQLProvider implements SearchProviderInterface
      * Inner-subquery ORDER BY: bare main-table column per sort field + trailing `id` for stable
      * paging. The outer ORDER BY can't be reused (it uses the `ITEM_x` SELECT aliases, absent
      * here); canUseDeferredJoin() guarantees each sort field is a plain column, so this is valid.
+     * The `id` follows the direction of the last sort field: a mixed `col DESC, id ASC` prevents
+     * the engine from reading the page through the `col` index and makes it sort every row.
      *
      * @param array<int|string, mixed> $sort_fields
      * @param array<int|string, mixed> $searchopt
@@ -4657,14 +4659,54 @@ final class SQLProvider implements SearchProviderInterface
             $order      = (($sort_field['order'] ?? 'ASC') === 'ASC') ? 'ASC' : 'DESC';
             $criteria[] = $DB::quoteName("{$itemtable}.{$searchopt[$ID]['field']}") . ' ' . $order;
         }
-        $criteria[] = $DB::quoteName("{$itemtable}.id") . ' ASC';
+        $criteria[] = $DB::quoteName("{$itemtable}.id") . ' ' . self::getTieBreakerOrder($sort_fields);
 
         return ' ORDER BY ' . implode(', ', $criteria);
     }
 
     /**
-     * Inner subquery resolving the page of main-table IDs alone (no display 1:N joins), grouped
-     * by id with ORDER BY + LIMIT. getParams() order: minimal-FROM, then WHERE.
+     * Direction of the `id` tie-breaker: the direction of the last sort field.
+     *
+     * @param array<int|string, mixed> $sort_fields
+     */
+    private static function getTieBreakerOrder(array $sort_fields): string
+    {
+        $last = end($sort_fields);
+        return (is_array($last) && ($last['order'] ?? 'ASC') !== 'ASC') ? 'DESC' : 'ASC';
+    }
+
+    /**
+     * Whether every join of the given FROM clause yields at most one row per item, i.e. is a
+     * plain `LEFT JOIN` from a main-table column to the `id` of the joined table. Anything else
+     * (default join, 1:N join, extra join condition) is considered as possibly multiplying rows.
+     */
+    private static function hasOnlyOneToOneJoins(string $itemtable, string $from): bool
+    {
+        $from_main = trim(self::buildFrom($itemtable));
+        $joins     = trim($from);
+        if (!str_starts_with($joins, $from_main)) {
+            return false;
+        }
+        $joins = ltrim(substr($joins, strlen($from_main)));
+
+        while ($joins !== '') {
+            if (
+                !preg_match('/^LEFT JOIN `(\w+)`(?: AS `(\w+)`)? ON \(`(\w+)`\.`\w+` = `(\w+)`\.`id`\)\s*/', $joins, $matches)
+                || $matches[3] !== $itemtable
+                || $matches[4] !== ($matches[2] !== '' ? $matches[2] : $matches[1])
+            ) {
+                return false;
+            }
+            $joins = substr($joins, strlen($matches[0]));
+        }
+        return true;
+    }
+
+    /**
+     * Inner subquery resolving the page of main-table IDs alone (no display 1:N joins), with
+     * ORDER BY + LIMIT. It is grouped by id only when a join may multiply rows: MySQL does not
+     * optimise the GROUP BY away and then sorts every matching row instead of reading the sort
+     * index. getParams() order: minimal-FROM, then WHERE.
      *
      * @param array{query: string, params: array<int, mixed>} $minimal_from
      * @param array<int, mixed>                                $WHERE_VALUES
@@ -4680,7 +4722,7 @@ final class SQLProvider implements SearchProviderInterface
         $query = 'SELECT `' . $itemtable . '`.`id`'
             . $minimal_from['query']
             . $WHERE
-            . ' GROUP BY `' . $itemtable . '`.`id`'
+            . (self::hasOnlyOneToOneJoins($itemtable, $minimal_from['query']) ? '' : ' GROUP BY `' . $itemtable . '`.`id`')
             . $inner_order
             . $LIMIT;
 
@@ -5519,7 +5561,7 @@ final class SQLProvider implements SearchProviderInterface
                     . " ON `" . $itemtable . "`.`id` = `deferred_page`.`id` "
                     . $FROM_JOINS
                     . $GROUPBY
-                    . $ORDER;
+                    . $ORDER . ', `' . $itemtable . '`.`id` ' . self::getTieBreakerOrder($sort_fields);
                 // Param order matches the `?` order: outer SELECT, inner subquery (its WHERE
                 // included), then outer display joins — inner WHERE BEFORE the joins here.
                 $QUERY_VALUES = array_merge($SELECT_VALUES, $inner->getParams(), $FROM_JOINS_VALUES);

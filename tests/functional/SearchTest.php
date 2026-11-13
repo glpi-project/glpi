@@ -5187,8 +5187,8 @@ class SearchTest extends DbTestCase
             'search_option'    => 15, // date
             'searchtype'       => 'equals',
             'value'            => 'NULL',
-            'expected_and'     => "AND ({$ticket_date} IS NULL) GROUP BY",
-            'expected_and_not' => "AND (NOT ({$ticket_date} IS NULL)) GROUP BY",
+            'expected_and'     => "AND ({$ticket_date} IS NULL) ORDER BY",
+            'expected_and_not' => "AND (NOT ({$ticket_date} IS NULL)) ORDER BY",
             'expected_values'    => [],
         ];
     }
@@ -6016,7 +6016,8 @@ class SearchTest extends DbTestCase
                     'value' => '',
                 ],
             ],
-            'order' => 1,
+            'sort' => [2], // id
+            'order' => ['ASC'],
         ];
 
         $data = $this->doSearch(Ticket::class, $search_params);
@@ -8291,6 +8292,85 @@ class SearchTest extends DbTestCase
             count($data['sql']['search']->getParams()),
             'placeholder/param count mismatch: ' . $query
         );
+    }
+
+    /**
+     * The deferred inner subquery must let the engine read the page through the sort index:
+     * the `id` tie-breaker follows the sort direction, and there is no GROUP BY when every join
+     * of the minimal FROM yields at most one row per item. A 1:N filter join keeps the GROUP BY.
+     */
+    public function testDeferredJoinInnerQueryUsesSortIndex()
+    {
+        $this->login();
+
+        $get_inner = function (array $params): string {
+            $data = \Search::prepareDatasForSearch(Computer::class, $params + ['reset' => 'reset'], [49]);
+            \Search::constructSQL($data);
+            $query = $data['sql']['search']->getQuery();
+            $this->assertSame(1, preg_match('/INNER JOIN \((.*)\) AS `deferred_page`/', $query, $matches), $query);
+            return $matches[1];
+        };
+
+        foreach (['ASC', 'DESC'] as $order) {
+            $inner = $get_inner([
+                'sort'     => [1], // name
+                'order'    => [$order],
+                'criteria' => [['field' => 'view', 'searchtype' => 'contains', 'value' => '']],
+            ]);
+            $this->assertStringContainsString(
+                "ORDER BY `glpi_computers`.`name` $order, `glpi_computers`.`id` $order LIMIT",
+                $inner
+            );
+            $this->assertStringContainsString('LEFT JOIN', $inner, '1:1 display joins are part of the minimal FROM');
+            $this->assertStringNotContainsString('GROUP BY', $inner);
+        }
+
+        // Option 49 ("Group in charge") is a 1:N join: filtering on it keeps it in the inner query.
+        $inner = $get_inner([
+            'sort'     => [1],
+            'order'    => ['DESC'],
+            'criteria' => [['field' => 49, 'searchtype' => 'contains', 'value' => 'whatever']],
+        ]);
+        $this->assertStringContainsString('GROUP BY `glpi_computers`.`id`', $inner);
+    }
+
+    /**
+     * Paging a descending sort over equal values must return every item exactly once, ordered
+     * by descending id within the ties.
+     */
+    public function testDeferredJoinPaginationWithTiesDescending()
+    {
+        $this->login();
+        $entity = (int) $_SESSION['glpiactive_entity'];
+
+        $token    = 'deferredties_' . mt_rand();
+        $computer = new Computer();
+        $created  = [];
+        for ($i = 0; $i < 5; $i++) {
+            $id = $computer->add(['name' => $token, 'entities_id' => $entity]);
+            $this->assertGreaterThan(0, $id);
+            $created[] = (int) $id;
+        }
+        rsort($created);
+
+        $base = [
+            'reset'    => 'reset',
+            'sort'     => [1], // name, equal for every computer
+            'order'    => ['DESC'],
+            'criteria' => [['field' => 1, 'searchtype' => 'contains', 'value' => $token]],
+        ];
+        $get_ids = static fn(array $d): array => array_values(
+            array_map('intval', array_column(array_column($d['data']['rows'], 'raw'), 'id'))
+        );
+
+        $ids = [];
+        foreach ([0, 2, 4] as $start) {
+            $page = \Search::getDatas(Computer::class, $base + ['start' => $start, 'list_limit' => 2], [49]);
+            $this->assertStringContainsString('deferred_page', $page['sql']['search']->getQuery());
+            $this->assertSame(5, $page['data']['totalcount']);
+            $ids = array_merge($ids, $get_ids($page));
+        }
+        $this->assertSame($created, $ids);
     }
 
     /**
