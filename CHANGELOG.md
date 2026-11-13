@@ -4,7 +4,28 @@ The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
 
-## [12.0.2] unreleased
+## [12.0.3] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [12.0.2] 2026-11-12
 
 ### Added
 

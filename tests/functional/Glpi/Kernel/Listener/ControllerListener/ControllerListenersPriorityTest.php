@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Kernel\Listener\ControllerListener;
 
 use Glpi\Controller\Session\ChangeProfileController;
 use Glpi\Exception\SessionExpiredException;
+use Glpi\Http\CsrfChecker;
 use Glpi\Http\Firewall;
 use Glpi\Http\SessionManager;
 use Glpi\Kernel\Listener\ControllerListener\CheckCsrfListener;
@@ -65,7 +66,7 @@ final class ControllerListenersPriorityTest extends DbTestCase
         $session_manager = new SessionManager();
 
         $dispatcher = new EventDispatcher();
-        $dispatcher->addSubscriber(new CheckCsrfListener($session_manager));
+        $dispatcher->addSubscriber(new CheckCsrfListener($session_manager, new CsrfChecker()));
         $dispatcher->addSubscriber(new FirewallStrategyListener(new Firewall(), $session_manager));
 
         return $dispatcher;

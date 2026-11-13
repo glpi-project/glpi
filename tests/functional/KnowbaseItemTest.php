@@ -2907,7 +2907,7 @@ HTML,
             'content' => __FUNCTION__,
         ]);
 
-        $document = $this->createItem(\Document::class, [
+        $document = $this->createDocumentWithFilename([
             'name'     => __FUNCTION__,
             'filename' => 'test.txt',
         ]);
@@ -2956,7 +2956,7 @@ HTML,
             'content' => __FUNCTION__,
         ]);
 
-        $document = $this->createItem(\Document::class, [
+        $document = $this->createDocumentWithFilename([
             'name'     => __FUNCTION__,
             'filename' => 'test.txt',
         ]);

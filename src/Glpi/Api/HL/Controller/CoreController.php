@@ -46,6 +46,7 @@ use Glpi\Api\HL\RouteVersion;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Error\ErrorHandler;
+use Glpi\Http\CsrfChecker;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -689,7 +690,13 @@ HTML;
             $user = new \Glpi\OAuth\User();
             $user->setIdentifier($user_id);
             $auth_request->setUser($user);
-            if (!$request->hasParameter('accept') && !$request->hasParameter('deny')) {
+            // Request parameters merge the query string and the body: only what the form posted counts,
+            // otherwise a URL carrying `accept` would turn a click on "Deny" into an approval.
+            $posted = array_diff_key($request->getParameters(), $request->getQueryParams());
+            $has_decision = array_key_exists('accept', $posted) || array_key_exists('deny', $posted);
+            // The consent decision is only accepted from the form POST. A decision passed in a GET
+            // query string would let any third-party page approve the client on behalf of the user.
+            if (!$has_decision || $request->getMethod() !== 'POST') {
                 // Display the authorization page
                 $glpi_user = new User();
                 $glpi_user->getFromDB($user_id);
@@ -702,7 +709,25 @@ HTML;
                 return new Response(200, ['Content-Type' => 'text/html'], $authorize_form);
             }
 
-            $auth_request->setAuthorizationApproved($request->hasParameter('accept'));
+            // API routes are stateless and skipped by the global CSRF check, so it is done here.
+            $server_var = [
+                'REQUEST_METHOD'      => $request->getMethod(),
+            ];
+            if ($request->hasHeader('Sec-Fetch-Site')) {
+                $server_var['HTTP_SEC_FETCH_SITE'] = $request->getHeaderLine('Sec-Fetch-Site');
+            }
+            if ($request->hasHeader('Origin')) {
+                $server_var['HTTP_ORIGIN'] = $request->getHeaderLine('Origin');
+            }
+            if ($request->hasHeader('Host')) {
+                $server_var['HTTP_HOST'] = $request->getHeaderLine('Host');
+            }
+            $symfony_request = new \Symfony\Component\HttpFoundation\Request(server: $server_var);
+            if ((new CsrfChecker())->isRequestSafeFromCSRF($symfony_request) === false) {
+                return self::getAccessDeniedErrorResponse();
+            }
+
+            $auth_request->setAuthorizationApproved(array_key_exists('accept', $posted));
             /** @var Response $response */
             $response = Server::getAuthorizationServer()->completeAuthorizationRequest($auth_request, new Response());
             return $response;

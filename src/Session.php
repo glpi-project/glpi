@@ -161,10 +161,11 @@ class Session
         $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
 
         $cookie_name = Auth::getRememberMeCookieName();
-        if (isset($_COOKIE[$cookie_name])) {
+        if ($auth->getAuthType() === Auth::COOKIE && isset($_COOKIE[$cookie_name])) {
+            // Session restored from the "Remember me" cookie: keep its login session UID.
             $login_session_uid = explode(':', $_COOKIE[$cookie_name])[0];
         } else {
-            // Login is not using "Remember me", so a new UID is used just for this PHP-based session for consistency.
+            // Fresh login, a new UID is used (an existing "Remember me" cookie belongs to another login session).
             $login_session_uid = bin2hex(random_bytes(8));
         }
         $_SESSION['login_session_uid'] = $login_session_uid;
@@ -1909,24 +1910,59 @@ class Session
                 }
             }
 
-            // check all stored data for the IDOR token are present (and identical) in the posted data
+            // Only check data already present in the IDOR token data.
+            $checked_data = array_filter(
+                $data,
+                static fn($key) => in_array($key, array_keys($idor_data), true),
+                ARRAY_FILTER_USE_KEY
+            );
+
+            // Check that data stored in IDOR token has not be altered in the posted data.
             $match_expected = function ($expected, $given) use (&$match_expected) {
                 if (is_array($expected)) {
                     if (!is_array($given)) {
                         return false;
                     }
+
+                    if (count($expected) !== count($given)) {
+                        return false;
+                    }
+
                     foreach ($expected as $key => $value) {
                         if (!array_key_exists($key, $given) || !$match_expected($value, $given[$key])) {
                             return false;
                         }
                     }
                     return true;
-                } else {
-                    return $expected == $given;
                 }
+
+                if ($expected === null) {
+                    return $given === null;
+                }
+
+                if (!is_scalar($given)) {
+                    // non scalar values are not expected
+                    return false;
+                }
+
+                if (in_array($expected, [true, false, 1, 0, "1", "0"], true)) {
+                    return in_array($given, [true, false, 1, 0, "1", "0"], true)
+                        && (bool) $expected === (bool) $given;
+                }
+
+                if (is_integer($expected)) {
+                    return (is_int($given) || (is_string($given) && preg_match('/^-?\d+$/', $given) === 1))
+                        && $expected === (int) $given;
+                }
+
+                if (is_float($expected)) {
+                    return is_numeric($given)
+                        && $expected === floatval($given);
+                }
+                return $expected === (string) $given;
             };
 
-            return $match_expected($idor_data, $data);
+            return $match_expected($idor_data, $checked_data);
         }
 
         return false;

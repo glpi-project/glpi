@@ -61,6 +61,7 @@ use Throwable;
 use Ticket;
 use Toolbox;
 
+use function Safe\ini_get;
 use function Safe\json_encode;
 use function Safe\preg_replace;
 
@@ -695,6 +696,18 @@ TWIG, $twig_params);
             throw new AccessDeniedHttpException();
         }
 
+        if (
+            session_status() === PHP_SESSION_ACTIVE
+            || filter_var(ini_get('session.use_cookies'), FILTER_VALIDATE_BOOLEAN)
+        ) {
+            // The embed session must be built in the isolated context of a stateless request
+            // (see `SessionManager::isResourceStateless()`), never on top of the session
+            // of the current visitor, as it would replace their identity and rights.
+            // Session cookies are disabled for stateless requests, so a cookie-enabled
+            // context means that `Session::start()` could resume the visitor session.
+            throw new AccessDeniedHttpException();
+        }
+
         self::$embed = true;
         $this->initEmbedSession($params);
     }
@@ -780,6 +793,12 @@ TWIG, $twig_params);
         );
         if (hash_equals($token, (string) $params['token'])) {
             return true;
+        }
+
+        // The legacy token binds no identity: honor it only when the request carries no
+        // users_id/profiles_id, else its holder could impersonate any user (e.g. Super-Admin).
+        if ((int) $params['users_id'] !== 0 || (int) $params['profiles_id'] !== 0) {
+            return false;
         }
 
         $legacy_token = self::getLegacyToken(

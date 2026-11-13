@@ -4641,8 +4641,7 @@ class TicketTest extends DbTestCase
         ]));
 
         // Add a document to the child ticket
-        $documents_id = $this->createItem(
-            \Document::class,
+        $documents_id = $this->createDocumentWithFilename(
             [
                 'name'     => 'Child ticket document',
                 'filename' => 'doc.xls',

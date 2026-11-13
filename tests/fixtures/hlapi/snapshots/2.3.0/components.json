@@ -6088,7 +6088,8 @@
                     "type": "boolean"
                 },
                 "filename": {
-                    "type": "string"
+                    "type": "string",
+                    "readOnly": true
                 },
                 "filepath": {
                     "type": "string",
@@ -6099,10 +6100,12 @@
                     "readOnly": true
                 },
                 "mime": {
-                    "type": "string"
+                    "type": "string",
+                    "readOnly": true
                 },
                 "sha1sum": {
-                    "type": "string"
+                    "type": "string",
+                    "readOnly": true
                 },
                 "category": {
                     "type": "object",
