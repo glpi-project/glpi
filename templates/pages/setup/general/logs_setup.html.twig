@@ -53,8 +53,12 @@
 
    {{ fields.dropdownArrayField('init_all', 0, logs_interval_options, __('Change all'), {
       label_class: 'col-xxl-5 fst-italic',
-      on_change: '$(this).closest(`form`).find(`.purgelog_interval select`).val(this.value).trigger("change");'
    }) }}
+   <script>
+      $('select[name=init_all]').on('change', function() {
+         $(this).closest('form').find('.purgelog_interval select').val(this.value).trigger('change');
+      });
+   </script>
 
     {% set crontask_config %}
         {% if logspurge_crontask.fields['state'] == 0 %}

@@ -183,6 +183,10 @@ function displayOtherSelectOptions(select_object, other_option_name) {
     return true;
 }
 
+$(document).on('change', '[data-glpi-other-option]', function() {
+    displayOtherSelectOptions(this, this.dataset.glpiOtherOption);
+});
+
 
 
 
@@ -1618,6 +1622,17 @@ $(() => {
     // Same on change, with `%value%` replaced by the field value (attribute may be on an ancestor)
     $(document).on('change', '[data-glpi-reload-tab-on-change]', function(e) {
         reloadTab($(this).attr('data-glpi-reload-tab-on-change').replace('%value%', encodeURIComponent($(e.target).val() ?? '')));
+    });
+    // Submit the field's form on change
+    $(document).on('change', '[data-glpi-submit-on-change]', function() {
+        this.form.submit();
+    });
+    // Navigate to the URL selected in the field, or to the attribute URL with `%value%` replaced by the field value
+    $(document).on('change', '[data-glpi-navigate-on-change]', function() {
+        if (this.value !== '' && this.value !== '0') {
+            const url = $(this).attr('data-glpi-navigate-on-change');
+            window.location.href = url !== '' ? url.replace('%value%', encodeURIComponent(this.value)) : this.value;
+        }
     });
 });
 
