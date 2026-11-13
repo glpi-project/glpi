@@ -302,6 +302,16 @@
 {% endmacro %}
 
 
+{% macro timeField(name, value, label = '', options = {}) %}
+   {% set field %}
+        {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
+        {{ _inputs.time(name, value, options|merge({'field_label': label})) }}
+   {% endset %}
+
+   {{ _self.field(name, field, label, options) }}
+{% endmacro %}
+
+
 {% macro colorField(name, value, label = '', options = {}) %}
     {% set options = {
         'id': '%id%'
