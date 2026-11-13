@@ -37,6 +37,7 @@
 import { SlashCommands } from '/js/modules/TipTap/SlashCommandsExtension.js';
 import { Base64ImageHandler } from '/js/modules/TipTap/Base64ImageHandlerExtension.js';
 import { VideoEmbed } from '/js/modules/TipTap/VideoEmbedExtension.js';
+import { Notice } from '/js/modules/TipTap/NoticeExtension.js';
 import { TableGrips } from '/js/modules/TipTap/TableGripsExtension.js';
 import { post } from '/js/modules/Ajax.js';
 import { FileUploader } from '/js/modules/FileUploader.js';
@@ -170,6 +171,7 @@ class KnowbaseEditor {
             }),
             TableGrips,
             VideoEmbed,
+            Notice,
             CommentHighlight.configure({ anchors: this.#options.comment_anchors }),
         ];
 

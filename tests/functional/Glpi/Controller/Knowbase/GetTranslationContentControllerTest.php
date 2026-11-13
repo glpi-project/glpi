@@ -65,4 +65,28 @@ class GetTranslationContentControllerTest extends DbTestCase
         $this->assertStringContainsString('<p>Texte</p>', $answer);
         $this->assertStringNotContainsString('onerror', $answer);
     }
+
+    public function testAnswerRendersNotices(): void
+    {
+        $this->login();
+        $kbitem = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Translated ' . $this->getUniqueString(),
+            'answer' => '<p>x</p>',
+        ]);
+        $this->createItem(KnowbaseItemTranslation::class, [
+            'knowbaseitems_id' => $kbitem->getID(),
+            'language'         => 'fr_FR',
+            'name'             => 'Traduit',
+            'answer'           => '<div class="kb-notice kb-notice-danger"><div class="kb-notice-content"><p>Attention</p></div></div>',
+        ]);
+
+        $request = Request::create('/Knowbase/KnowbaseItem/' . $kbitem->getID() . '/Translation/fr_FR');
+        $request->attributes->set('knowbaseitems_id', $kbitem->getID());
+        $request->attributes->set('language', 'fr_FR');
+        $response = (new GetTranslationContentController())->__invoke($request);
+
+        $answer = json_decode($response->getContent(), true)['answer'];
+        $this->assertStringContainsString('role="note"', $answer);
+        $this->assertStringContainsString('alert alert-danger', $answer);
+    }
 }

@@ -75,7 +75,8 @@ final class GetTranslationContentController extends AbstractController
             return new JsonResponse([
                 'exists' => true,
                 'name' => $translation->fields['name'],
-                'answer' => RichText::getSafeHtml($translation->fields['answer']),
+                // Same rendering as the article page: in view mode, this HTML is shown as is.
+                'answer' => RichText::getEnhancedHtml($translation->fields['answer'], ['text_maxsize' => 0]),
             ]);
         }
 
