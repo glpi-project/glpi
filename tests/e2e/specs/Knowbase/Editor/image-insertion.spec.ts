@@ -135,7 +135,7 @@ test.describe('Knowledge Base Editor - Image Insertion', () => {
             await dialog.getByRole('button', { name: 'Save' }).click();
 
             await expect(dialog).toBeVisible();
-            await expect(dialog.getByRole('alert')).toBeVisible();
+            await expect(dialog.getByRole('alert').filter({ hasText: 'An image source is required.' })).toBeVisible();
             await expect(dialog.getByLabel('Source')).toHaveAttribute('aria-invalid', 'true');
         });
 
@@ -235,23 +235,7 @@ test.describe('Knowledge Base Editor - Image Insertion', () => {
                 response => response.url().includes('/UploadInlineImage') && response.request().method() === 'POST'
             );
 
-            // eslint-disable-next-line playwright/no-raw-locators
-            await kb.editor.contentContainer.locator('.ProseMirror').evaluate((element, base64) => {
-                const binary = atob(base64);
-                const bytes = new Uint8Array(binary.length);
-                for (let i = 0; i < binary.length; i++) {
-                    bytes[i] = binary.charCodeAt(i);
-                }
-                const blob = new Blob([bytes], { type: 'image/png' });
-                const file = new File([blob], 'paste.png', { type: 'image/png' });
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(file);
-                element.dispatchEvent(new ClipboardEvent('paste', {
-                    bubbles: true,
-                    cancelable: true,
-                    clipboardData: dataTransfer,
-                }));
-            }, TEST_IMAGE_BASE64);
+            await kb.editor.doPastePngFile(TEST_IMAGE_BASE64);
 
             const response = await uploadResponse;
             expect(response.status()).toBe(200);

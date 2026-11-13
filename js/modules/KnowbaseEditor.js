@@ -30,11 +30,12 @@
  * ---------------------------------------------------------------------
  */
 
-/* global TiptapCore, TiptapStarterKit, TiptapImage, TiptapPlaceholder, TiptapBubbleMenu */
-/* global TableKit, TiptapPMTables */
+/* global TiptapCore, TiptapStarterKit, TiptapPlaceholder, TiptapBubbleMenu */
+/* global TableKit, TiptapPMTables, TiptapPMState */
 /* global TiptapFileHandler, glpi_toast_error */
 
-import { SlashCommands } from '/js/modules/TipTap/SlashCommandsExtension.js';
+import { SlashCommands, showImageDialog } from '/js/modules/TipTap/SlashCommandsExtension.js';
+import { ResizableImage } from '/js/modules/TipTap/ResizableImageExtension.js';
 import { Base64ImageHandler } from '/js/modules/TipTap/Base64ImageHandlerExtension.js';
 import { VideoEmbed } from '/js/modules/TipTap/VideoEmbedExtension.js';
 import { TableGrips } from '/js/modules/TipTap/TableGripsExtension.js';
@@ -44,6 +45,7 @@ import { CommentHighlight, getRefreshedCommentAnchors, getResolvedCommentAnchors
 import { buildPmTextIndex, pmPositionToOffset } from '/js/modules/TipTap/CommentPosition.js';
 import { extractAnchor } from '/js/modules/Knowbase/CommentAnchor.js';
 import { showLinkDialog } from '/js/modules/TipTap/LinkDialog.js';
+import { trackPosition } from '/js/modules/TipTap/TrackPosition.js';
 
 // Used to hide the bubble menu explicitly when focus leaves it or the editor.
 const BUBBLE_MENU_PLUGIN_KEY = 'kb-editor-bubble-menu';
@@ -141,9 +143,21 @@ class KnowbaseEditor {
                     },
                 },
             }),
-            TiptapImage.configure({
+            ResizableImage.configure({
                 inline: false,
                 allowBase64: true,
+                resize: {
+                    enabled: true,
+                    directions: ['top-left', 'top-right', 'bottom-left', 'bottom-right'],
+                    minWidth: 50,
+                    minHeight: 50,
+                    alwaysPreserveAspectRatio: true,
+                },
+                // A drag changes no state, so the bubble menu would stay at the old center.
+                onLiveResize: () => {
+                    if (!this.#editor || this.#editor.isDestroyed) return;
+                    this.#editor.view.dispatch(this.#editor.state.tr.setMeta(BUBBLE_MENU_PLUGIN_KEY, 'updatePosition'));
+                },
             }),
             TiptapPlaceholder.configure({
                 placeholder: this.#options.placeholder,
@@ -156,7 +170,6 @@ class KnowbaseEditor {
                 shouldShow: ({ editor, state, view }) => editor.isEditable
                     && !state.selection.empty
                     && (view.hasFocus() || this.#bubbleMenuElement.contains(document.activeElement))
-                    && !editor.isActive('image')
                     && !(state.selection instanceof TiptapPMTables.CellSelection),
                 options: {
                     placement: 'top',
@@ -229,9 +242,18 @@ class KnowbaseEditor {
                     }
                     return false;
                 },
+                handleDoubleClickOn: (view, pos, node, node_pos) => this.#editor.isEditable && this.#editImage(node_pos),
                 // Jump straight into the bubble menu on Tab instead of leaving
                 // the keyboard user to tab through unrelated page controls first.
                 handleKeyDown: (view, event) => {
+                    // Drag handles are pointer-only: Enter opens the size dialog instead.
+                    const has_modifier = event.shiftKey || event.ctrlKey || event.metaKey || event.altKey;
+                    if (event.key === 'Enter' && !has_modifier && this.#isImageSelected()) {
+                        event.preventDefault();
+                        this.#editImage(view.state.selection.from);
+                        return true;
+                    }
+
                     // Escape closes the menu even if focus never left the editor.
                     if (event.key === 'Escape') {
                         if (!this.#bubbleMenuElement?.isConnected || this.#bubbleMenuElement.style.visibility === 'hidden') {
@@ -285,6 +307,7 @@ class KnowbaseEditor {
         // so the container itself isn't a second, dead tab stop.
         if (this.#bubbleMenuElement) {
             this.#bubbleMenuElement.tabIndex = -1;
+            this.#updateBubbleMenuState();
         }
 
         // Tiptap's own blur handling wrongly treats focus moving anywhere
@@ -360,6 +383,9 @@ class KnowbaseEditor {
                 { command: 'comment', icon: 'ti ti-message-circle-plus', title: _x('button', 'Comment'), special: 'comment' },
             );
         }
+
+        // Only shown when an image is selected, in place of the text buttons.
+        buttons.push({ command: 'editImage', icon: 'ti ti-photo-edit', title: __('Edit image'), special: 'image' });
 
         buttons.forEach((btn) => {
             if (btn.type === 'divider') {
@@ -496,7 +522,15 @@ class KnowbaseEditor {
      */
     #closeBubbleMenu() {
         if (!this.#editor || this.#editor.isDestroyed) return;
-        const { to } = this.#editor.state.selection;
+        const { doc, selection } = this.#editor.state;
+        let { to } = selection;
+        // After a block node (image), `to` is between blocks: move to the nearest text.
+        if (selection instanceof TiptapPMState.NodeSelection) {
+            const $to = doc.resolve(to);
+            const near = TiptapPMState.Selection.findFrom($to, 1, true)
+                ?? TiptapPMState.Selection.findFrom($to, -1, true);
+            to = near?.from ?? to;
+        }
         this.#editor.chain().setTextSelection(to).focus().run();
     }
 
@@ -517,9 +551,31 @@ class KnowbaseEditor {
             this.#editor.chain().toggleHeading({ level }).run();
         } else if (special === 'comment') {
             this.#dispatchCommentSelection();
+        } else if (special === 'image') {
+            this.#editImage(this.#editor.state.selection.from);
         } else if (this.#editor.chain()[command]) {
             this.#editor.chain()[command]().run();
         }
+    }
+
+    /**
+     * @returns {boolean}
+     */
+    #isImageSelected() {
+        if (!this.#editor?.isEditable) return false;
+        return this.#editor.state.selection.node?.type.name === 'image';
+    }
+
+    /**
+     * Open the image dialog on the image at `pos`, prefilled with its attributes.
+     * @param {number} pos
+     * @returns {boolean} false when there is no image at `pos`
+     */
+    #editImage(pos) {
+        const node = this.#editor?.state.doc.nodeAt(pos);
+        if (node?.type.name !== 'image') return false;
+        showImageDialog(this.#editor, node.attrs, pos);
+        return true;
     }
 
     /**
@@ -564,19 +620,28 @@ class KnowbaseEditor {
     #updateBubbleMenuState() {
         if (!this.#editor || !this.#bubbleMenuElement) return;
 
+        const image_selected = this.#isImageSelected();
+        this.#bubbleMenuElement.setAttribute('aria-label', image_selected ? __('Image') : __('Text formatting'));
+        this.#bubbleMenuElement.querySelectorAll('.bubble-menu-divider').forEach((divider) => {
+            divider.style.display = image_selected ? 'none' : '';
+        });
+
         const buttons = this.#bubbleMenuElement.querySelectorAll('.bubble-menu-btn');
         buttons.forEach((btn) => {
             const command = btn.dataset.command;
             const special = btn.dataset.special;
             const level = btn.dataset.level ? parseInt(btn.dataset.level, 10) : null;
 
+            // The text buttons are hidden: their state is computed again on the next text selection.
+            if (image_selected) {
+                btn.style.display = special === 'image' ? '' : 'none';
+                return;
+            }
+
             let isActive = false;
             if (special === 'link' || special === 'unlink') {
                 isActive = this.#editor.isActive('link');
-                // Hide unlink button if no link, show link button always
-                if (special === 'unlink') {
-                    btn.style.display = isActive ? '' : 'none';
-                } else {
+                if (special === 'link') {
                     // Inline code and code blocks can't carry a link mark: the dialog would be impossible to confirm.
                     btn.disabled = !this.#editor.can().setMark('link');
                 }
@@ -599,6 +664,10 @@ class KnowbaseEditor {
             } else if (special === 'comment') {
                 this.#updateCommentButtonAvailability(btn);
             }
+
+            // The unlink button only shows on a link.
+            const hidden = special === 'image' || (special === 'unlink' && !isActive);
+            btn.style.display = hidden ? 'none' : '';
 
             btn.classList.toggle('is-active', isActive);
             // is-active is CSS-only; toggle buttons also need aria-pressed.
@@ -733,21 +802,30 @@ class KnowbaseEditor {
      * @param {number|undefined} pos - Insert position (undefined = current cursor)
      */
     async #uploadAndInsertImage(editor, file, pos) {
+        // Insert at the paste or drop point: a selection made during the upload would be replaced.
+        const from = trackPosition(editor, pos ?? editor.state.selection.from, -1);
+        const to = trackPosition(editor, pos ?? editor.state.selection.to, 1);
         try {
             const image_url = await this.#uploadImageFile(file);
-
-            const attrs = { src: image_url };
-            if (pos !== undefined) {
-                editor.chain().focus().insertContentAt(pos, {
-                    type: 'image',
-                    attrs,
-                }).run();
-            } else {
-                editor.chain().focus().setImage(attrs).run();
+            if (editor.isDestroyed) {
+                return;
             }
+
+            const chain = editor.chain();
+            // A dialog opened during the upload keeps the focus.
+            if (!document.activeElement?.closest('[aria-modal="true"]')) {
+                chain.focus();
+            }
+            chain.insertContentAt({ from: from.pos, to: Math.max(from.pos, to.pos) }, {
+                type: 'image',
+                attrs: { src: image_url },
+            }).run();
         } catch (error) {
             glpi_toast_error(__('Image upload failed'));
             console.error('Image upload error:', error);
+        } finally {
+            from.stop();
+            to.stop();
         }
     }
 
