@@ -835,6 +835,52 @@ class TransferTest extends DbTestCase
         $this->assertEquals($task_cat['id'], $ticket_task->fields['taskcategories_id']);
     }
 
+    public function testTransferTicketKeepsLegacyEncodedRecursiveITILCategory(): void
+    {
+        global $DB;
+
+        $this->login();
+        $source_entity      = getItemByTypeName('Entity', '_test_root_entity', true);
+        $destination_entity = getItemByTypeName('Entity', '_test_child_1', true);
+
+        $level1 = $this->createItem(\ITILCategory::class, [
+            'name'         => __FUNCTION__,
+            'entities_id'  => $source_entity,
+            'is_recursive' => 1,
+        ]);
+        // Simulate GLPI 10.0.x encoded data
+        $level2 = $this->createItem(\ITILCategory::class, [
+            'name'              => 'TELECOM &#38; RESEAU',
+            'itilcategories_id' => $level1->getID(),
+            'entities_id'       => $source_entity,
+            'is_recursive'      => 1,
+        ]);
+        $level3 = $this->createItem(\ITILCategory::class, [
+            'name'              => 'Incident',
+            'itilcategories_id' => $level2->getID(),
+            'entities_id'       => $source_entity,
+            'is_recursive'      => 1,
+        ]);
+        $DB->setMustUnsanitizeData(true);
+
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'              => __FUNCTION__,
+            'content'           => 'content',
+            'entities_id'       => $source_entity,
+            'itilcategories_id' => $level3->getID(),
+        ]);
+
+        $count_before = countElementsInTable(\ITILCategory::getTable());
+
+        $transfer = new \Transfer();
+        $transfer->moveItems([\Ticket::class => [$ticket->getID()]], $destination_entity, []);
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertEquals($destination_entity, $ticket->fields['entities_id']);
+        $this->assertEquals($level3->getID(), $ticket->fields['itilcategories_id']);
+        $this->assertEquals($count_before, countElementsInTable(\ITILCategory::getTable()));
+    }
+
     public function testGenericAssetTransfer(): void
     {
         $this->login();

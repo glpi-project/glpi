@@ -167,6 +167,23 @@ class DropdownTest extends DbTestCase
         }
     }
 
+    public function testImportFindsLegacyEncodedValue(): void
+    {
+        global $DB;
+
+        // Simulate GLPI 10.0.x encoded data
+        $manufacturer = $this->createItem(\Manufacturer::class, ['name' => __FUNCTION__ . ' AT&#38;T']);
+        $DB->setMustUnsanitizeData(true);
+
+        $count_before = countElementsInTable(\Manufacturer::getTable());
+
+        $this->assertSame(
+            $manufacturer->getID(),
+            (int) Dropdown::import(\Manufacturer::class, ['name' => __FUNCTION__ . ' AT&T'])
+        );
+        $this->assertSame($count_before, countElementsInTable(\Manufacturer::getTable()));
+    }
+
     public function testGetDropdownNameAndComment()
     {
         $ret = Dropdown::getDropdownName('not_a_known_table', 1);

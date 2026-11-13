@@ -105,4 +105,42 @@ class SanitizedStringsDecoder
             )
         );
     }
+
+    /**
+     * Encode HTML special chars, as done in GLPI 10.0.x.
+     */
+    public function encodeHtmlSpecialChars(string $value): string
+    {
+        return strtr($value, self::CHARS_MAPPING);
+    }
+
+    /**
+     * Encode HTML special chars in completename field value.
+     */
+    public function encodeHtmlSpecialCharsInCompletename(string $value): string
+    {
+        $separator = '>';
+
+        return implode(
+            $separator,
+            array_map(
+                fn(string $chunk) => $this->encodeHtmlSpecialChars($chunk),
+                explode($separator, $value)
+            )
+        );
+    }
+
+    /**
+     * Get the values to search in DB, including the GLPI 10.0.x encoded value.
+     *
+     * @return string|string[]
+     */
+    public function getSearchableValues(string $value, bool $is_completename = false): string|array
+    {
+        $encoded = $is_completename
+            ? $this->encodeHtmlSpecialCharsInCompletename($value)
+            : $this->encodeHtmlSpecialChars($value);
+
+        return $encoded !== $value ? [$value, $encoded] : $value;
+    }
 }

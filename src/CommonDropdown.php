@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Features\AssetImage;
+use Glpi\Toolbox\SanitizedStringsDecoder;
 
 use function Safe\preg_grep;
 
@@ -704,7 +705,7 @@ abstract class CommonDropdown extends CommonDBTM
                 'SELECT' => 'id',
                 'FROM'   => $this->getTable(),
                 'WHERE'  => [
-                    'name'   => $input['name'],
+                    'name'   => (new SanitizedStringsDecoder())->getSearchableValues($input['name']),
                 ],
                 'LIMIT'  => 1,
             ];
