@@ -67,6 +67,7 @@ class CronTask extends CommonDBTM
     private float $timer           = 0.0;
     private int $startlog        = 0;
     private int $volume          = 0;
+    private bool $is_running     = false;
     public static string $rightname        = 'config';
 
     /** The automatic action is disabled */
@@ -231,6 +232,7 @@ class CronTask extends CommonDBTM
         if ($signo === SIGTERM) {
             pcntl_signal(SIGTERM, SIG_DFL);
             $this->handleAbnormalTermination();
+            exit(); // @phpstan-ignore glpi.forbidExit (CLI context)
         }
     }
 
@@ -242,7 +244,7 @@ class CronTask extends CommonDBTM
      */
     private function handleAbnormalTermination(): void
     {
-        if (!isset($_SESSION["glpicronuserrunning"])) {
+        if (!$this->is_running || !isset($_SESSION["glpicronuserrunning"])) {
             return;
         }
 
@@ -296,6 +298,7 @@ class CronTask extends CommonDBTM
         if ($DB->getAffectedRows() > 0) {
             $this->timer  = microtime(true);
             $this->volume = 0;
+            $this->is_running = true;
             $log = new CronTaskLog();
             // No gettext for log
             $txt = sprintf(
@@ -451,6 +454,9 @@ class CronTask extends CommonDBTM
                 'state'  => self::STATE_RUNNING,
             ]
         );
+
+        // Cleared only after the row left its running state, so a failure above can still be aborted on shutdown.
+        $this->is_running = false;
 
         if ($DB->getAffectedRows() > 0) {
             // No gettext for log but add gettext line to be parsed for pot generation
