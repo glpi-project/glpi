@@ -44,10 +44,12 @@ use CommonDBTM;
 use Document;
 use GLPIKey;
 use GLPIUploadHandler;
+use LogicException;
 use ReflectionClass;
 use Safe\Exceptions\JsonException;
 use Safe\Exceptions\UrlException;
 use stdClass;
+use Ticket;
 use Toolbox;
 
 use function Safe\base64_decode;
@@ -59,6 +61,8 @@ use function Safe\strtotime;
 
 class APIRest extends API
 {
+    private ?string $idempotency_key = null;
+
     public static function getTypeName($nb = 0)
     {
         return __('Rest API');
@@ -160,7 +164,9 @@ class APIRest extends API
         // retrieve session (if exist)
         $this->retrieveSession();
         $this->initApi();
-        $this->manageUploadedFiles();
+        if ($this->idempotency_key === null) {
+            $this->manageUploadedFiles();
+        }
 
         // retrieve param who permit session writing
         if (isset($this->parameters['session_write'])) {
@@ -175,6 +181,10 @@ class APIRest extends API
         // Check API session unless blacklisted (init session, ...)
         if (!$is_inline_doc && !in_array($resource, $this->getRessourcesAllowedWithoutSession())) {
             $this->initEndpoint(true, $resource);
+        }
+
+        if ($this->idempotency_key !== null) {
+            $this->createIdempotentTicket($resource, $this->idempotency_key);
         }
 
         // inline documentation (api/)
@@ -396,6 +406,57 @@ class APIRest extends API
         $this->messageLostError();
     }
 
+
+    private function createIdempotentTicket(string $resource, string $key): void
+    {
+        global $DB;
+
+        $input = $this->parameters['input'] ?? null;
+        if (
+            $this->verb !== 'POST'
+            || strcasecmp($resource, Ticket::class) !== 0
+            || count($this->url_elements) !== 1
+            || $this->format !== 'json'
+            || !$input instanceof stdClass
+            || !empty($_FILES)
+            || isset($input->_filename)
+            || isset($input->_content)
+            || isset($this->parameters['upload_result'])
+        ) {
+            $this->returnError(
+                __('Idempotency-Key is only supported for a single JSON ticket without uploads.'),
+                400,
+                'ERROR_IDEMPOTENCY_UNSUPPORTED_REQUEST',
+                false
+            );
+            return;
+        }
+
+        $ticket_input = (array) $input;
+        if (!(new Ticket())->can(-1, CREATE, $ticket_input)) {
+            $this->messageRightError();
+            return;
+        }
+
+        $result = (new TicketCreationIdempotency($DB))->execute(
+            $key,
+            $input,
+            $this->apiclients_id,
+            (bool) $this->debug,
+            function (): array {
+                $response = $this->createItems(Ticket::class, $this->parameters);
+                if (!isset($response['id'])) {
+                    throw new LogicException('Ticket creation returned no identifier.');
+                }
+                return [
+                    'body' => $response,
+                    'status' => 201,
+                    'headers' => ['location' => self::$api_url . '/Ticket/' . (int) $response['id']],
+                ];
+            }
+        );
+        $this->returnResponse($result['body'], $result['status'], $result['headers']);
+    }
 
     /**
      * Retrieve and check itemtype from $this->url_elements
@@ -634,6 +695,8 @@ class APIRest extends API
         if (isset($headers['App-Token'])) {
             $parameters['app_token'] = $headers['App-Token'];
         }
+
+        $this->idempotency_key = $headers['Idempotency-Key'] ?? null;
 
         // check boolean parameters
         foreach ($parameters as $key => &$parameter) {

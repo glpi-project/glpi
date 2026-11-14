@@ -260,7 +260,7 @@ abstract class API
 
             if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
                 header("Access-Control-Allow-Headers: "
-                   . "origin, content-type, accept, session-token, authorization, app-token");
+                   . "origin, content-type, accept, session-token, authorization, app-token, idempotency-key");
             }
             exit(0); // @phpstan-ignore glpi.forbidExit (API response is streamed)
         }

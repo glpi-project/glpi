@@ -40,6 +40,8 @@ use Computer;
 use Config;
 use Glpi\Api\API;
 use Glpi\Api\APIRest;
+use Glpi\Api\TicketCreationIdempotency;
+use Glpi\DBAL\QueryExpression;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
@@ -63,6 +65,7 @@ use ReflectionClass;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Mime\Part\DataPart;
 use Symfony\Component\Mime\Part\Multipart\FormDataPart;
+use Symfony\Component\Process\Process;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use Ticket;
@@ -77,6 +80,7 @@ class APIRestTest extends TestCase
     protected HttpClientInterface $http_client;
     protected $base_uri = "";
     protected $last_error;
+    private array $idempotency_ticket_ids = [];
 
     public function setUp(): void
     {
@@ -117,6 +121,10 @@ class APIRestTest extends TestCase
 
     public function tearDown(): void
     {
+        foreach (array_unique($this->idempotency_ticket_ids) as $id) {
+            (new Ticket())->delete(['id' => $id], true);
+        }
+
         // Check that no errors occurred on the test server
         $errors = file_get_contents($this->getLogFilePath());
         $this->assertEmpty($errors, $errors);
@@ -126,6 +134,233 @@ class APIRestTest extends TestCase
     protected function getLogFilePath(): string
     {
         return GLPI_LOG_DIR . "/php-errors.log";
+    }
+
+    private function postIdempotencyTicket(array $options): ResponseInterface
+    {
+        $response = $this->doHttpRequest('POST', 'Ticket', $options);
+        if ($response->getStatusCode() === 201) {
+            $this->idempotency_ticket_ids[] = $response->toArray()['id'];
+        }
+        return $response;
+    }
+
+    public function testTicketIdempotencyReplay(): void
+    {
+        global $DB;
+
+        $key = bin2hex(random_bytes(16));
+        $options = [
+            'headers' => [
+                'Session-Token' => $this->session_token,
+                'Idempotency-Key' => $key,
+            ],
+            'json' => ['input' => ['name' => $key, 'content' => 'Synthetic retry test']],
+        ];
+        $first = $this->postIdempotencyTicket($options);
+        $this->assertSame(201, $first->getStatusCode());
+        $body = $first->getContent();
+
+        // A refreshed session must still identify the same operation.
+        $this->initSessionCredentials();
+        $options['headers']['Session-Token'] = $this->session_token;
+        $retry = $this->postIdempotencyTicket($options);
+        $this->assertSame(201, $retry->getStatusCode());
+        $this->assertSame($body, $retry->getContent());
+        $this->assertSame($first->getHeaders()['location'], $retry->getHeaders()['location']);
+        $this->assertSame(['true'], $retry->getHeaders()['idempotency-replayed']);
+        $this->assertCount(1, $DB->request(['FROM' => Ticket::getTable(), 'WHERE' => ['name' => $key]]));
+
+        $legacy = $this->http_client->request('POST', rtrim(GLPI_URI, '/') . '/apirest.php/Ticket', $options);
+        $this->assertSame(201, $legacy->getStatusCode());
+        $this->idempotency_ticket_ids[] = $legacy->toArray()['id'];
+        $this->assertSame($body, $legacy->getContent());
+        $this->assertSame($first->getHeaders()['location'], $legacy->getHeaders()['location']);
+
+        unset($options['headers']['Idempotency-Key']);
+        $unkeyed = $this->postIdempotencyTicket($options);
+        $this->assertSame(201, $unkeyed->getStatusCode());
+        $this->assertNotSame($body, $unkeyed->getContent());
+    }
+
+    public function testTicketIdempotencyPayloadConflict(): void
+    {
+        $options = [
+            'headers' => [
+                'Session-Token' => $this->session_token,
+                'Idempotency-Key' => bin2hex(random_bytes(16)),
+            ],
+            'json' => ['input' => ['name' => 'Synthetic conflict test']],
+        ];
+        $first = $this->postIdempotencyTicket($options);
+        $this->assertSame(201, $first->getStatusCode());
+
+        $options['json']['input']['name'] = 'Different input';
+        $retry = $this->postIdempotencyTicket($options);
+        $this->assertSame(409, $retry->getStatusCode());
+        $this->assertSame('ERROR_IDEMPOTENCY_CONFLICT', $retry->toArray(false)[0]);
+    }
+
+    public function testTicketIdempotencyConcurrentRequests(): void
+    {
+        global $DB;
+
+        $key = bin2hex(random_bytes(16));
+        $options = [
+            'headers' => [
+                'Session-Token' => $this->session_token,
+                'Idempotency-Key' => $key,
+            ],
+            'json' => ['input' => ['name' => $key]],
+        ];
+        $responses = [];
+        for ($i = 0; $i < 8; $i++) {
+            $responses[] = $this->doHttpRequest('POST', 'Ticket', $options);
+        }
+        $ids = [];
+        foreach ($responses as $response) {
+            $this->assertContains($response->getStatusCode(), [201, 409]);
+            $data = $response->toArray(false);
+            if ($response->getStatusCode() === 201) {
+                $ids[] = $data['id'];
+                $this->idempotency_ticket_ids[] = $data['id'];
+            } else {
+                $this->assertSame('ERROR_IDEMPOTENCY_IN_PROGRESS', $data[0]);
+            }
+        }
+        $this->assertNotEmpty($ids);
+        $this->assertCount(1, array_unique($ids));
+        $this->assertCount(1, $DB->request(['FROM' => Ticket::getTable(), 'WHERE' => ['name' => $key]]));
+        $retry = $this->postIdempotencyTicket($options);
+        $this->assertSame(201, $retry->getStatusCode());
+        $this->assertSame($ids[0], $retry->toArray()['id']);
+    }
+
+    public function testTicketIdempotencyInFlightLock(): void
+    {
+        global $DB;
+
+        $options = [
+            'headers' => [
+                'Session-Token' => $this->session_token,
+                'Idempotency-Key' => bin2hex(random_bytes(16)),
+            ],
+            'json' => ['input' => ['name' => 'Synthetic lock test']],
+        ];
+        $first = $this->postIdempotencyTicket($options);
+        $this->assertSame(201, $first->getStatusCode());
+        $record = $DB->request([
+            'FROM' => TicketCreationIdempotency::TABLE,
+            'WHERE' => ['tickets_id' => $first->toArray()['id']],
+        ])->current();
+        $lock_name = hash('sha256', $DB->dbdefault . '.ticket-idempotency.' . $record['key_hash']);
+        $lock = $DB->request([
+            'SELECT' => new QueryExpression('GET_LOCK(?, 0)', 'locked', [$lock_name]),
+            'FROM' => new QueryExpression('DUAL'),
+        ])->current();
+        $this->assertSame(1, (int) $lock['locked']);
+        try {
+            $retry = $this->postIdempotencyTicket($options);
+            $this->assertSame(409, $retry->getStatusCode());
+            $this->assertSame('ERROR_IDEMPOTENCY_IN_PROGRESS', $retry->toArray(false)[0]);
+        } finally {
+            $DB->request([
+                'SELECT' => new QueryExpression('RELEASE_LOCK(?)', 'released', [$lock_name]),
+                'FROM' => new QueryExpression('DUAL'),
+            ]);
+        }
+        $retry = $this->postIdempotencyTicket($options);
+        $this->assertSame($first->getContent(), $retry->getContent());
+    }
+
+    public static function ticketIdempotencyInvalidRequestProvider(): iterable
+    {
+        yield 'empty key' => ['', ['name' => 'Synthetic invalid key'], 'ERROR_IDEMPOTENCY_INVALID_KEY'];
+        yield 'long key' => [str_repeat('a', 256), ['name' => 'Synthetic invalid key'], 'ERROR_IDEMPOTENCY_INVALID_KEY'];
+        yield 'combined keys' => ['first,second', ['name' => 'Synthetic invalid key'], 'ERROR_IDEMPOTENCY_INVALID_KEY'];
+        yield 'bulk' => ['bulk-key', [['name' => 'Synthetic bulk request']], 'ERROR_IDEMPOTENCY_UNSUPPORTED_REQUEST'];
+        yield 'upload reference' => ['upload-key', ['name' => 'Synthetic upload', '_filename' => ['unused.txt']], 'ERROR_IDEMPOTENCY_UNSUPPORTED_REQUEST'];
+    }
+
+    #[DataProvider('ticketIdempotencyInvalidRequestProvider')]
+    public function testTicketIdempotencyInvalidRequest(string $key, array $input, string $error): void
+    {
+        global $DB;
+
+        $before = count($DB->request(['FROM' => Ticket::getTable()]));
+        $response = $this->postIdempotencyTicket([
+            'headers' => ['Session-Token' => $this->session_token, 'Idempotency-Key' => $key],
+            'json' => ['input' => $input],
+        ]);
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame($error, $response->toArray(false)[0]);
+        $this->assertCount($before, $DB->request(['FROM' => Ticket::getTable()]));
+    }
+
+    public function testTicketIdempotencyRequiresAuthentication(): void
+    {
+        $key = bin2hex(random_bytes(16));
+        $options = [
+            'headers' => ['Session-Token' => $this->session_token, 'Idempotency-Key' => $key],
+            'json' => ['input' => ['name' => 'Synthetic authentication test']],
+        ];
+        $first = $this->postIdempotencyTicket($options);
+        $this->assertSame(201, $first->getStatusCode());
+        unset($options['headers']['Session-Token']);
+        $retry = $this->postIdempotencyTicket($options);
+        $this->assertSame(400, $retry->getStatusCode());
+        $this->assertSame('ERROR_SESSION_TOKEN_MISSING', $retry->toArray(false)[0]);
+
+        $storage = $this->doHttpRequest('GET', rawurlencode(TicketCreationIdempotency::class), [
+            'headers' => ['Session-Token' => $this->session_token],
+        ]);
+        $this->assertSame(400, $storage->getStatusCode());
+        $this->assertSame('ERROR_RESOURCE_NOT_FOUND_NOR_COMMONDBTM', $storage->toArray(false)[0]);
+    }
+
+    public function testTicketIdempotencyWorkerExitRollsBack(): void
+    {
+        global $DB;
+
+        $key = bin2hex(random_bytes(16));
+        $script = <<<'PHP'
+            <?php
+            require 'tests/bootstrap.php';
+            (new Auth())->login(TU_USER, TU_PASS, true);
+            $input = (object) ['name' => getenv('IDEMPOTENCY_TEST_KEY'), 'entities_id' => $_SESSION['glpiactive_entity']];
+            $result = (new Glpi\Api\TicketCreationIdempotency($DB))->execute(
+                getenv('IDEMPOTENCY_TEST_KEY'), $input, 0, false,
+                function () use ($input): array {
+                    $id = (new Ticket())->add((array) $input);
+                    if (!$id) {
+                        throw new RuntimeException('Synthetic ticket creation failed');
+                    }
+                    if (getenv('IDEMPOTENCY_TEST_ABORT') === '1') {
+                        echo $id;
+                        exit(0);
+                    }
+                    return ['body' => ['id' => $id], 'status' => 201, 'headers' => []];
+                }
+            );
+            echo json_encode($result);
+            PHP;
+        $aborted = new Process([PHP_BINARY], GLPI_ROOT, [
+            'IDEMPOTENCY_TEST_KEY' => $key,
+            'IDEMPOTENCY_TEST_ABORT' => '1',
+        ], $script);
+        $aborted->mustRun();
+        $this->assertGreaterThan(0, (int) $aborted->getOutput());
+        $this->assertCount(0, $DB->request(['FROM' => Ticket::getTable(), 'WHERE' => ['name' => $key]]));
+
+        $retry = new Process([PHP_BINARY], GLPI_ROOT, [
+            'IDEMPOTENCY_TEST_KEY' => $key,
+            'IDEMPOTENCY_TEST_ABORT' => '0',
+        ], $script);
+        $retry->mustRun();
+        $data = json_decode($retry->getOutput(), true);
+        $this->idempotency_ticket_ids[] = $data['body']['id'];
+        $this->assertSame(201, $data['status']);
+        $this->assertCount(1, $DB->request(['FROM' => Ticket::getTable(), 'WHERE' => ['name' => $key]]));
     }
 
     public function testAppToken()
@@ -1940,6 +2175,7 @@ class APIRestTest extends TestCase
         $this->assertStringContainsString('session-token', $headers['access-control-allow-headers'][0]);
         $this->assertStringContainsString('authorization', $headers['access-control-allow-headers'][0]);
         $this->assertStringContainsString('app-token', $headers['access-control-allow-headers'][0]);
+        $this->assertStringContainsString('idempotency-key', $headers['access-control-allow-headers'][0]);
     }
 
     public function testInlineDocumentation()

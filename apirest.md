@@ -1044,6 +1044,54 @@ criteria\[0\]\[link\]\=AND\
     * Location when adding a single item.
     * Link on bulk addition.
 
+### Idempotent ticket creation
+
+Since GLPI 13.0, a single JSON `POST /Ticket` can include an optional
+`Idempotency-Key` header. The same behavior is available through
+`api.php/v1/Ticket` and `apirest.php/Ticket`. Requests without the header retain
+their existing behavior, including creating another ticket for repeated input.
+An external identifier is not an idempotency key or a uniqueness constraint.
+
+Generate a fresh, unpredictable key for each intended creation, and retain it
+when retrying after a timeout. Keys contain 1–255 characters from
+`A-Z`, `a-z`, `0-9`, `.`, `_`, `:`, and `-`. A surrounding pair of double quotes
+is also accepted. Empty keys, combined header values and other characters return
+`400 ERROR_IDEMPOTENCY_INVALID_KEY`.
+
+Keys are scoped to the authenticated user, API client, ticket creation operation,
+active profile, active entity and active entity set. Renewing a session token
+does not change the scope. Changing that authorization context starts a different
+scope, so clients must keep it unchanged when retrying an operation.
+
+Within **24 hours of a successful creation**, a matching retry returns the stored
+`201` status, JSON body and `Location` header, plus `Idempotency-Replayed: true`.
+JSON object property order does not matter; array order, values and the `debug`
+option must match. Retries do not extend the expiry. Once the record expires,
+the same key can create another ticket. Expired records are collected on the
+next keyed request. Only hashes of the key, scope and input are stored alongside
+the response and ticket identifier; session and application tokens are not stored.
+
+| Result | Meaning |
+| --- | --- |
+| `409 ERROR_IDEMPOTENCY_CONFLICT` | The same key was used with different input. |
+| `409 ERROR_IDEMPOTENCY_IN_PROGRESS` | Another request owns the key; retry later with the same key and input. |
+| `409 ERROR_IDEMPOTENCY_RESULT_UNAVAILABLE` | The original ticket was deleted; it is not recreated. |
+| `403 ERROR_RIGHT_MISSING` | Current session rights do not allow creation or reading the original ticket. |
+| `400 ERROR_IDEMPOTENCY_UNSUPPORTED_REQUEST` | The header was used outside single JSON ticket creation, or with uploads. |
+
+Every request still requires normal API authentication and creation rights.
+Replays additionally check access to the original ticket. Bulk inputs, multipart
+uploads and upload references (`_filename` or `_content`) are not supported with
+this header. Validation failures are not retained and can be corrected and retried.
+
+The ticket and replay record are committed in one database transaction. Concurrent
+workers coordinate through a connection-owned lock on the same primary database
+server; all workers must use that server. A failed or interrupted transaction rolls
+back its database writes and releases the lock when its connection closes.
+This does not make external effects from plugins, synchronous notifications or
+filesystem writes transactional. Database errors fail the request rather than
+executing it without idempotency protection.
+
 Examples usage (CURL):
 
 ```bash
