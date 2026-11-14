@@ -47,7 +47,7 @@ final class TicketCreationIdempotencyTest extends DbTestCase
         global $DB;
         $this->login();
         $service = new TicketCreationIdempotency($DB);
-        $input = ['name' => 'Synthetic rollback test', 'entities_id' => 0];
+        $input = ['name' => 'Synthetic rollback test', 'entities_id' => $_SESSION['glpiactive_entity']];
         $ticket = new Ticket();
         $failure = new RuntimeException('Synthetic failure after inserting the ticket');
 
@@ -75,11 +75,12 @@ final class TicketCreationIdempotencyTest extends DbTestCase
         global $DB;
         $this->login();
         $service = new TicketCreationIdempotency($DB);
-        $input = ['name' => 'Synthetic ticket access test', 'entities_id' => 0];
+        $input = ['name' => 'Synthetic ticket access test', 'entities_id' => $_SESSION['glpiactive_entity']];
         $create = static fn() => (new Ticket())->add($input);
         $id = $service->create('access-test', $input, $create);
         $this->assertIsInt($id);
         $this->assertGreaterThan(0, $id);
+        $this->assertSame($id, $service->create('access-test', $input, $create));
 
         $_SESSION['glpiactiveprofile'][Ticket::$rightname] = CREATE;
         $denied = $service->create('access-test', $input, $create);
