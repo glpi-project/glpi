@@ -83,6 +83,17 @@ The endpoint will respond (if successful) with a JSON object containing the foll
 Authentication with the client credentials grant is only supported for the `inventory` scope.
 Access to other API resources requires an actual user to be authenticated which is not possible with the client credentials grant.
 
+## Retrying ticket creation
+
+Send an `Idempotency-Key` header with a JSON `POST /Assistance/Ticket` request to opt in to retries. Use a unique key per logical creation, such as a UUID. Keys are case-sensitive and contain 1–255 ASCII letters, digits, dots, underscores, colons or hyphens. A single pair of surrounding double quotes is also accepted.
+
+- Send the same key and effective ticket input if the first response is lost. The key is scoped to the authenticated user and OAuth client and is independent of the access token and API version. Input defaults, such as the active entity, are included in the comparison.
+- For 24 hours after a successful creation, a matching request returns `201 Created` with the original ticket ID and `Location`. It still requires permission to create a ticket with the supplied input and to read the original ticket.
+- A request with the same key while another one is processing returns `409 Conflict` with `ERROR_IDEMPOTENCY_IN_PROGRESS`. Retry with backoff and the same key. Reusing a completed key with different input, or after the original ticket is deleted during the retention window, also returns `409`.
+- Failed creations do not reserve the key. After expiry, the same key can create a new ticket. A request without the header follows the usual create behavior.
+
+This contract covers creation of the ticket in GLPI. Effects outside the database transaction, such as external calls made by plugins, are outside this guarantee.
+
 ## RSQL Filtering
 
 The GLPI supports "REST Query Language" (RSQL) filtering in a `filter` parameter for certain endpoints that return collections of items.

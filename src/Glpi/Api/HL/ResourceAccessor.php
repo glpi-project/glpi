@@ -353,9 +353,10 @@ final class ResourceAccessor
      *      The array can contain an 'id' property which is the name of the parameter that the resulting ID is set to ('id' by default).
      *      The array may also contain a 'mapped' property which is an array of parameter names and static values.
      *      For example ['mapped' => ['subitem_type' => 'Followup']] would set the 'subitem_type' parameter to 'Followup'.
+     * @param string|null $ticket_idempotency_key Optional retry key for JSON ticket creation.
      * @return Response
      */
-    public static function createBySchema(array $schema, array $request_params, array $get_route, array $extra_get_route_params = []): Response
+    public static function createBySchema(array $schema, array $request_params, array $get_route, array $extra_get_route_params = [], ?string $ticket_idempotency_key = null): Response
     {
         $schema = self::applyFieldReadRestrictions($schema);
         if (!isset($request_params['entity']) && isset($_SESSION['glpiactive_entity'])) {
@@ -374,7 +375,15 @@ final class ResourceAccessor
         if (!$item->can($item->getID(), CREATE, $input)) {
             return AbstractController::getAccessDeniedErrorResponse();
         }
-        $items_id = $item->add($input);
+        if ($ticket_idempotency_key !== null) {
+            global $DB;
+            $items_id = (new TicketCreationIdempotency($DB))->create($ticket_idempotency_key, $input, static fn() => $item->add($input));
+            if ($items_id instanceof Response) {
+                return $items_id;
+            }
+        } else {
+            $items_id = $item->add($input);
+        }
         [$controller, $method] = $get_route;
 
         $id_field = $extra_get_route_params['id'] ?? 'id';
