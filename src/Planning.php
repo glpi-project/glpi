@@ -2232,7 +2232,7 @@ TWIG, $twig_params);
                                     // else update relation
                                     $team_old->update([
                                         'id'       => $team_old->fields['id'],
-                                        'itemtype' => $params['new_actor_itemtype'],
+                                        'itemtype' => $actor_new::class,
                                         'items_id' => $params['new_actor_items_id'],
                                     ]);
                                 }

@@ -330,7 +330,7 @@ class PlanningTest extends DbTestCase
         ]];
         yield 'old actor has no team relation' => [[
             'old_actor_itemtype' => 'Group',
-            'old_actor_items_id' => 99999999,
+            'old_actor_items_id' => getItemByTypeName('Group', '_test_group_1', true),
         ]];
     }
 
@@ -408,7 +408,7 @@ class PlanningTest extends DbTestCase
             'end'                => '2020-01-02 01:00:00',
             'old_actor_itemtype' => 'User',
             'old_actor_items_id' => $old_user_id,
-            'new_actor_itemtype' => 'User',
+            'new_actor_itemtype' => 'user',
             'new_actor_items_id' => $new_user_id,
         ]));
 
