@@ -5611,6 +5611,21 @@
                         },
                         "x-full-schema": "DashboardItem"
                     }
+                },
+                "rights": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Glpi\\Dashboard\\Right",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "DashboardRight"
+                    }
                 }
             }
         },
@@ -5764,6 +5779,10 @@
                 },
                 "card_options": {
                     "type": "string"
+                },
+                "value": {
+                    "type": "string",
+                    "readOnly": true
                 }
             }
         },

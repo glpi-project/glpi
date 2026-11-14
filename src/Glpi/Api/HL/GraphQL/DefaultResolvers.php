@@ -95,11 +95,19 @@ class DefaultResolvers
         }
         $parent_schema = $this->schema_cache[$info->parentType->name];
         $schema_partial = $parent_schema['properties'][$field_name]['items'] ?? $parent_schema['properties'][$field_name];
-        if (array_key_exists('x-itemtype', $schema_partial) && is_subclass_of($schema_partial['x-itemtype'], CommonDBTM::class) && !$schema_partial['x-itemtype']::canView()) {
-            // Cannot view this itemtype so we shouldn't expand it further
-            return [$info->parentType->name . '.' . $field_name, $schema_partial];
-        }
         $schema_name = $schema_partial['x-full-schema'] ?? null;
+        if (array_key_exists('x-itemtype', $schema_partial) && is_subclass_of($schema_partial['x-itemtype'], CommonDBTM::class) && !$schema_partial['x-itemtype']::canView()) {
+            // Schemas may opt out of this check if they manage row-level access themselves (x-rights-conditions)
+            $skip_check = false;
+            if ($schema_name !== null) {
+                $full_schema = $this->schema_cache[$schema_name] ?? $this->getSchemaForObjectName($schema_name);
+                $skip_check = (bool) ($full_schema['x-skip-itemtype-canview'] ?? false);
+            }
+            if (!$skip_check) {
+                // Cannot view this itemtype so we shouldn't expand it further
+                return [$info->parentType->name . '.' . $field_name, $schema_partial];
+            }
+        }
         if ($schema_name === null) {
             return [$info->parentType->name . '.' . $field_name, $schema_partial];
         }
@@ -363,9 +371,23 @@ class DefaultResolvers
             }
         }
 
+        // if any selected fields are computed by a custom resolver, ensure the fields they need are also selected
+        foreach ($field_selection as $field_name) {
+            foreach ($schema['properties'][$field_name]['x-graphql-requires'] ?? [] as $required_field) {
+                if (!in_array($required_field, $field_selection, true) && array_key_exists($required_field, $schema['properties'])) {
+                    $field_selection[] = $required_field;
+                    $schema['properties'][$required_field]['x-skipped'] = false;
+                }
+            }
+        }
+
         $search = new Search($schema, $request_params);
 
         foreach ($field_selection as $field_name) {
+            // computed fields have no column to select
+            if (isset($schema['properties'][$field_name]['x-graphql-requires'])) {
+                continue;
+            }
             // skip mapped fields unless mapped from themselves
             if (isset($schema['properties'][$field_name]['x-mapper']) && $schema['properties'][$field_name]['x-mapped-from'] !== $field_name) {
                 continue;
