@@ -38,6 +38,22 @@ namespace Glpi\Dashboard;
 use CommonDBChild;
 use Glpi\DBAL\QueryParam;
 
+/**
+ * @phpstan-type DashboardItemFields array{
+ *     id: int,
+ *     dashboards_dashboards_id: int,
+ *     gridstack_id: string,
+ *     card_id: string,
+ *     x: int,
+ *     y: int,
+ *     width: int,
+ *     height: int,
+ *     card_options: string|array<string, mixed>,
+ *     ...
+ * }
+ *
+ * @phpstan-type DashboardItemFieldsDecoded DashboardItemFields & array{ card_options: array<string, mixed>, ... }
+ */
 class Item extends CommonDBChild
 {
     public static string $itemtype = Dashboard::class;
@@ -63,7 +79,7 @@ class Item extends CommonDBChild
      *
      * @param int $dashboards_id
      *
-     * @return array the items
+     * @return DashboardItemFieldsDecoded[] the items
      */
     public static function getForDashboard(int $dashboards_id = 0): array
     {
@@ -99,7 +115,7 @@ class Item extends CommonDBChild
      * Save items in DB for the provided dashboard
      *
      * @param int $dashboards_id id (not key) of the dashboard
-     * @param array $items cards of the dashboard, contains:
+     * @param DashboardItemFieldsDecoded[] $items cards of the dashboard, contains:
      *    - gridstack_id: unique id of the card in the grid, usually build like card_id.uuidv4
      *    - card_id: key of array return by getAllDasboardCards
      *    - x: position in grid

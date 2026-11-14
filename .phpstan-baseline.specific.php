@@ -159,12 +159,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/DatabasesPluginToCoreCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Possibly invalid array key type class\\-string\\<CommonDBTM\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.invalidOffset',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Dashboard/FakeProvider.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type int\\|string\\|null\\.$#',
 	'identifier' => 'offsetAccess.invalidOffset',
 	'count' => 1,
