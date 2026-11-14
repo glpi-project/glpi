@@ -2312,7 +2312,7 @@ $empty_data_builder = new class {
                 'ext' => 'zip',
                 'icon' => 'zip-dist.png',
                 'mime' => 'application/zip',
-                'is_uploadable' => 1,
+                'is_uploadable' => 0,
             ], [
                 'name' => 'OpenOffice Calc',
                 'ext' => 'sxc',
