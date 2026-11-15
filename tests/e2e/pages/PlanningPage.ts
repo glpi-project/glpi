@@ -30,15 +30,35 @@
  * ---------------------------------------------------------------------
  */
 
-import { Page } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 import { GlpiPage } from "./GlpiPage";
 import {expect} from "../fixtures/glpi_fixture";
 
 export class PlanningPage extends GlpiPage
 {
+    public readonly new_event_dialog: Locator;
+    public readonly all_day_radio: Locator;
+    public readonly time_slot_radio: Locator;
+    public readonly time_slot_label: Locator;
+    public readonly start_time_input: Locator;
+    public readonly end_time_input: Locator;
+    public readonly plan_begin_input: Locator;
+    public readonly plan_end_input: Locator;
+
     public constructor(page: Page)
     {
         super(page);
+
+        this.new_event_dialog = page.getByRole('dialog', { name: 'Add an event' });
+        this.all_day_radio    = this.new_event_dialog.getByRole('radio', { name: 'All day' });
+        this.time_slot_radio  = this.new_event_dialog.getByRole('radio', { name: 'Time slot' });
+        // Radios are rendered as a segmented control, only their labels can be clicked
+        this.time_slot_label  = this.new_event_dialog.getByText('Time slot', { exact: true });
+        this.start_time_input = this.new_event_dialog.getByRole('textbox', { name: 'Start time' });
+        this.end_time_input   = this.new_event_dialog.getByRole('textbox', { name: 'End time' });
+        // Submitted values are stored in hidden inputs
+        this.plan_begin_input = this.new_event_dialog.getByTestId('planning-event-begin');
+        this.plan_end_input   = this.new_event_dialog.getByTestId('planning-event-end');
     }
 
     public async goto(): Promise<void>
@@ -54,20 +74,27 @@ export class PlanningPage extends GlpiPage
         }
     }
 
-    public async fillNewEventForm(input: {name: string, description: string, start_time: string, period: string}): Promise<void>
+    public async doFillNewEventForm(input: {name: string, description: string, start_time: string, end_time: string}): Promise<void>
     {
-        const dialog = this.page.getByRole('dialog', { name: 'Add an event' });
+        const dialog = this.new_event_dialog;
         await expect(dialog).toBeVisible();
         await dialog.getByRole('textbox', { name: 'Title' }).fill(input.name);
         await this.getRichTextByLabel('Description', dialog).fill(input.description);
-        // eslint-disable-next-line playwright/no-raw-locators
-        const start_date_input = dialog.locator('label', { hasText: 'Start date' }).locator('+ div input:not(.flatpickr-input)');
-        const date = (await start_date_input.inputValue()).split(' ')[0];
-        await start_date_input.fill(`${date} ${input.start_time}`);
-        await this.page.getByRole('button', { name: 'Save' }).click();
-        // eslint-disable-next-line playwright/no-raw-locators
-        const period_select = dialog.locator('label', { hasText: 'Period' }).locator('+ div .select2').getByRole('combobox');
-        await this.doSetDropdownValue(period_select, input.period);
+
+        // Clicking on a day creates an "All day" event, switch to a time slot to be able to set hours
+        await expect(this.all_day_radio).toBeChecked();
+        await expect(this.start_time_input).toBeHidden();
+        await this.time_slot_label.click();
+        await expect(this.time_slot_radio).toBeChecked();
+
+        await this.start_time_input.fill(input.start_time);
+        await this.start_time_input.press('Tab');
+        await this.end_time_input.fill(input.end_time);
+        await this.end_time_input.press('Tab');
+
+        await expect(this.plan_begin_input).toHaveValue(new RegExp(` ${input.start_time}:00$`));
+        await expect(this.plan_end_input).toHaveValue(new RegExp(` ${input.end_time}:00$`));
+
         await dialog.getByRole('button', { name: 'Add', exact: true }).click();
         await expect(dialog).toBeHidden();
     }

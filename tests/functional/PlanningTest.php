@@ -579,4 +579,64 @@ class PlanningTest extends DbTestCase
             $this->hasNoSessionMessages([WARNING]);
         }
     }
+
+    public static function eventDatesFormProvider(): iterable
+    {
+        yield 'missing dates' => [
+            'params'         => [],
+            'expected_begin' => null,
+            'expected_end'   => null,
+        ];
+        // A new item has empty dates
+        yield 'empty dates' => [
+            'params'         => ['begin' => '', 'end' => ''],
+            'expected_begin' => null,
+            'expected_end'   => null,
+        ];
+        yield 'unparsable dates' => [
+            'params'         => ['begin' => 'not a date', 'end' => 'not a date either'],
+            'expected_begin' => null,
+            'expected_end'   => null,
+        ];
+        yield 'valid dates' => [
+            'params'         => ['begin' => '2026-09-15 09:00:00', 'end' => '2026-09-15 10:30:00'],
+            'expected_begin' => '2026-09-15 09:00:00',
+            'expected_end'   => '2026-09-15 10:30:00',
+        ];
+        yield 'end before begin' => [
+            'params'         => ['begin' => '2026-09-15 09:00:00', 'end' => '2026-09-15 08:00:00'],
+            'expected_begin' => '2026-09-15 09:00:00',
+            'expected_end'   => '2026-09-15 10:00:00',
+        ];
+    }
+
+    #[DataProvider('eventDatesFormProvider')]
+    public function testShowEventDatesForm(array $params, ?string $expected_begin, ?string $expected_end): void
+    {
+        $this->login();
+
+        ob_start();
+        \Planning::showEventDatesForm($params);
+        $output = ob_get_clean();
+
+        $dates = [];
+        foreach (['begin', 'end'] as $key) {
+            $this->assertSame(
+                1,
+                preg_match('/name="plan\[' . $key . '\]" value="([^"]*)"/', $output, $matches),
+                "Submitted `plan[$key]` value not found"
+            );
+            $dates[$key] = $matches[1];
+            $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $dates[$key]);
+        }
+
+        if ($expected_begin !== null) {
+            $this->assertSame($expected_begin, $dates['begin']);
+            $this->assertSame($expected_end, $dates['end']);
+        } else {
+            // Dates are computed from the current time, the event lasts one hour
+            $this->assertEqualsWithDelta(time(), strtotime($dates['begin']), HOUR_TIMESTAMP);
+            $this->assertSame(strtotime($dates['begin']) + HOUR_TIMESTAMP, strtotime($dates['end']));
+        }
+    }
 }
