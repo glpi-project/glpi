@@ -38,9 +38,11 @@ use Glpi\Controller\User\InfoCardController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\HttpFoundation\Request;
 use User;
 
+#[Group('reauth')]
 final class InfoCardControllerTest extends DbTestCase
 {
     use ReAuthTrait;
