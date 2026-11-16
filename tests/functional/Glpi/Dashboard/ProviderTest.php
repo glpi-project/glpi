@@ -761,6 +761,36 @@ class ProviderTest extends DbTestCase
         }
     }
 
+    public function testNbItemByFkCounts(): void
+    {
+        $this->login();
+
+        $category_1 = $this->createItem(\ITILCategory::class, ['name' => 'nbItemByFk category 1']);
+        $category_2 = $this->createItem(\ITILCategory::class, ['name' => 'nbItemByFk category 2']);
+        $group      = $this->createItem(\Group::class, ['name' => 'nbItemByFk group']);
+
+        foreach ([$category_1->getID(), $category_1->getID(), $category_1->getID(), $category_2->getID(), 0] as $i => $categories_id) {
+            $this->createItem(\Ticket::class, [
+                'name'              => "nbItemByFk ticket $i",
+                'content'           => 'foo',
+                'itilcategories_id' => $categories_id,
+                'entities_id'       => $this->getTestRootEntity(true),
+                '_groups_id_assign' => $group->getID(),
+            ]);
+        }
+
+        // The counts are the same without any join, and with the join added by a filter.
+        foreach ([[], ['group_tech' => $group->getID()]] as $filters) {
+            $result  = Provider::nbItemByFk(new \Ticket(), new \ITILCategory(), ['apply_filters' => $filters, 'limit' => 500]);
+            $numbers = array_column($result['data'], 'number', 'label');
+
+            $this->assertSame(3, $numbers['nbItemByFk category 1']);
+            $this->assertSame(1, $numbers['nbItemByFk category 2']);
+            $this->assertGreaterThanOrEqual(1, $numbers[__('without')]);
+        }
+        $this->assertSame(1, $numbers[__('without')]);
+    }
+
 
     public function testTicketsByStatus()
     {
