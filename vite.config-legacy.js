@@ -71,12 +71,16 @@ const filesToCopy = [
         to: 'public/lib/tinymce-i18n/langs8/',
     },
     {
-        from: 'node_modules/rfs/scss.scss',
-        to: 'css/lib/rfs/',
+        from: 'node_modules/tinymce/skins/ui/oxide/skin.css',
+        to: 'css/lib/tinymce/skins/ui/oxide/',
     },
     {
-        from: 'node_modules/select2/src/scss/**/*.scss',
-        to: 'css/lib/select2/',
+        from: 'node_modules/tinymce/skins/ui/oxide-dark/skin.css',
+        to: 'css/lib/tinymce/skins/ui/oxide-dark/',
+    },
+    {
+        from: 'node_modules/rfs/scss.scss',
+        to: 'css/lib/rfs/',
     },
     {
         from: 'node_modules/leaflet/dist/images/*.*',
