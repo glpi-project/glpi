@@ -142,6 +142,13 @@ HTML,
             'expected_result'        => '<table><tr><td>a</td></tr><tr><td>b</td></tr></table>',
         ];
 
+        // Elements dropped by the sanitizer inside a table do not leave an empty cell or row
+        yield [
+            'content'                => '<table><tr><td>a</td></tr><iframe src="x"></iframe><tr><td>b</td><form><input></form><td>c</td></tr></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table><tr><td>a</td></tr><tr><td>b</td><td>c</td></tr></table>',
+        ];
+
         // Cleaning of HTML structure
         yield [
             'content'                => <<<HTML

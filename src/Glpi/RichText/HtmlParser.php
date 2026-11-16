@@ -38,6 +38,7 @@ namespace Glpi\RichText;
 use DOMDocument;
 use DOMElement;
 use DOMNode;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 use Symfony\Component\HtmlSanitizer\Parser\MastermindsParser;
 use Symfony\Component\HtmlSanitizer\Parser\ParserInterface;
 
@@ -83,6 +84,8 @@ final class HtmlParser implements ParserInterface
         'th'       => ['table', 'thead', 'tbody', 'tfoot', 'tr'],
     ];
 
+    public function __construct(private HtmlSanitizerConfig $config) {}
+
     public function parse(string $html): ?DOMNode
     {
         $fragment = (new MastermindsParser(['disable_html_ns' => true]))->parse($html);
@@ -107,12 +110,27 @@ final class HtmlParser implements ParserInterface
             }
             $child_name = strtolower($child->nodeName);
 
-            if (isset(self::VALID_PARENTS[$child_name]) && !in_array($node_name, self::VALID_PARENTS[$child_name], true)) {
-                // Misplaced table element: keep only its content, which is processed next.
+            // Element that is not accepted at this place of a table (cells are moved into an implicit row instead).
+            $misplaced_in_table = $allowed !== null && !in_array($child_name, $allowed, true)
+                && $child_name !== 'td' && $child_name !== 'th';
+
+            if (
+                (isset(self::VALID_PARENTS[$child_name]) && !in_array($node_name, self::VALID_PARENTS[$child_name], true))
+                || ($misplaced_in_table && isset($this->config->getBlockedElements()[$child_name]))
+            ) {
+                // Misplaced table element, or element whose tag will be removed by the sanitizer:
+                // keep only its content, which is processed next.
                 $next = $child->firstChild ?? $next;
                 while ($child->firstChild !== null) {
                     $node->insertBefore($child->firstChild, $child);
                 }
+                $node->removeChild($child);
+                $child = $next;
+                continue;
+            }
+
+            if ($misplaced_in_table && !isset($this->config->getAllowedElements()[$child_name])) {
+                // Element that will be dropped by the sanitizer: remove it now, so it does not leave an empty cell.
                 $node->removeChild($child);
                 $child = $next;
                 continue;
