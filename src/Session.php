@@ -1944,7 +1944,7 @@ class Session
                         && (bool) $expected === (bool) $given;
                 }
 
-                if (is_integer($expected)) {
+                if (is_int($expected)) {
                     return (is_int($given) || (is_string($given) && preg_match('/^-?\d+$/', $given) === 1))
                         && $expected === (int) $given;
                 }

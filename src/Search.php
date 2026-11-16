@@ -564,7 +564,7 @@ class Search
         $select_criteria = SQLProvider::getDefaultSelectCriteria($itemtype);
         $select_string = '';
         foreach ($select_criteria as $criteria) {
-            if (is_a($criteria, QueryExpression::class)) {
+            if ($criteria instanceof QueryExpression) {
                 $select_string .= $criteria->getValue() . ', ';
             } else {
                 $select_string .= $criteria . ', ';
@@ -594,7 +594,7 @@ class Search
         $select_criteria = SQLProvider::getSelectCriteria((string) $itemtype, (int) $ID, (bool) $meta, (string) $meta_type);
         $select_string = '';
         foreach ($select_criteria as $criteria) {
-            if (is_a($criteria, QueryExpression::class)) {
+            if ($criteria instanceof QueryExpression) {
                 $select_string .= $criteria->getValue() . ', ';
             } else {
                 $select_string .= $criteria . ', ';

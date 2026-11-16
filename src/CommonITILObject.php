@@ -676,7 +676,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         $type = null;
-        if (is_a($this, Ticket::class)) {
+        if ($this instanceof Ticket) {
             $type = ($ID ? $this->fields['type'] : $options['type']);
         }
         // Load template if available

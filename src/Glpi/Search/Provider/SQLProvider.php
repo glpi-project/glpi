@@ -1416,7 +1416,7 @@ final class SQLProvider implements SearchProviderInterface
             if ($SEARCH === []) {
                 return;
             }
-            if (is_a($value, QueryExpression::class)) {
+            if ($value instanceof QueryExpression) {
                 $search_str = '';
                 $iterator = new DBmysqlIterator(null);
                 foreach ($SEARCH as $token) {
@@ -1830,7 +1830,7 @@ final class SQLProvider implements SearchProviderInterface
         $tocompute      = $DB::quoteName("$table.$field");
         $tocomputetrans = $DB::quoteName($table . "_trans_" . $field . ".value");
         if (isset($opt["computation"])) {
-            $is_query_exp = is_a($opt["computation"], QueryExpression::class);
+            $is_query_exp = $opt["computation"] instanceof QueryExpression;
             /** @var string|QueryExpression $tocompute */
             $tocompute = $opt["computation"];
             $tocompute = str_replace($DB::quoteName('TABLE'), 'TABLE', $tocompute);
@@ -2180,7 +2180,7 @@ final class SQLProvider implements SearchProviderInterface
 
                         if (is_array($value)) {
                             $new_criteria[$new_key] = $replace_placeholders($value);
-                        } elseif (is_a($value, QueryExpression::class)) {
+                        } elseif ($value instanceof QueryExpression) {
                             $value_string = $value->getValue();
                             $new_value = strtr($value_string, $placeholders);
                             $new_criteria[$new_key] = new QueryExpression($new_value);
@@ -3023,7 +3023,7 @@ final class SQLProvider implements SearchProviderInterface
                 $add_link = 'AND';
                 if (is_array($additional_criteria)) {
                     $first_criteria = reset($additional_criteria) ?? '';
-                    if (is_string($first_criteria) || is_a($first_criteria, QueryExpression::class)) {
+                    if (is_string($first_criteria) || $first_criteria instanceof QueryExpression) {
                         $first_criteria = trim($first_criteria);
                         // If the first criteria starts with AND or OR, use it as a link operator
                         if (preg_match('/^(AND|OR)\s+/', $first_criteria, $matches)) {
@@ -3058,7 +3058,7 @@ final class SQLProvider implements SearchProviderInterface
                     $replaced_key = (string) $new_key !== (string) $key;
                     if (is_array($value)) {
                         $new_criteria[$new_key] = $replace_placeholders($value);
-                    } elseif (is_a($value, QueryExpression::class)) {
+                    } elseif ($value instanceof QueryExpression) {
                         $value_string = $value->getValue();
                         $new_value = strtr($value_string, $placeholders);
                         $new_criteria[$new_key] = new QueryExpression($new_value);
