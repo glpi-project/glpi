@@ -5496,6 +5496,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $update,
                 ['id' => $ID]
             );
+            $this->fields = array_merge($this->fields, $update);
         }
     }
 
