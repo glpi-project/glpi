@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <FIRMWARES>
+        <DESCRIPTION>device firmware</DESCRIPTION>
+        <MANUFACTURER>Huawei</MANUFACTURER>
+        <NAME>OceanProtect E1000</NAME>
+        <TYPE>device</TYPE>
+        <VERSION>7.38</VERSION>
+      </FIRMWARES>
+      <FIRMWARES>
+        <DESCRIPTION>Active UBOOT firmware</DESCRIPTION>
+        <MANUFACTURER>Huawei</MANUFACTURER>
+        <NAME>Active UBOOT</NAME>
+        <TYPE>device</TYPE>
+        <VERSION>19.1.20.1</VERSION>
+      </FIRMWARES>
+      <FIRMWARES>
+        <DESCRIPTION>Active iBMC firmware</DESCRIPTION>
+        <MANUFACTURER>Huawei</MANUFACTURER>
+        <NAME>Active iBMC</NAME>
+        <TYPE>device</TYPE>
+        <VERSION>3.11.00.35</VERSION>
+      </FIRMWARES>
+      <FIRMWARES>
+        <DESCRIPTION>Available iBMC firmware</DESCRIPTION>
+        <MANUFACTURER>Huawei</MANUFACTURER>
+        <NAME>Available iBMC</NAME>
+        <TYPE>device</TYPE>
+        <VERSION>3.11.00.35</VERSION>
+      </FIRMWARES>
+      <FIRMWARES>
+        <DESCRIPTION>Backup UBOOT firmware</DESCRIPTION>
+        <MANUFACTURER>Huawei</MANUFACTURER>
+        <NAME>Backup UBOOT</NAME>
+        <TYPE>device</TYPE>
+        <VERSION>19.1.20.1</VERSION>
+      </FIRMWARES>
+      <FIRMWARES>
+        <DESCRIPTION>Backup iBMC firmware</DESCRIPTION>
+        <MANUFACTURER>Huawei</MANUFACTURER>
+        <NAME>Backup iBMC</NAME>
+        <TYPE>device</TYPE>
+        <VERSION>3.11.00.35</VERSION>
+      </FIRMWARES>
+      <FIRMWARES>
+        <DESCRIPTION>CPLD firmware</DESCRIPTION>
+        <MANUFACTURER>Huawei</MANUFACTURER>
+        <NAME>CPLD</NAME>
+        <TYPE>device</TYPE>
+        <VERSION>2.06</VERSION>
+      </FIRMWARES>
+      <FIRMWARES>
+        <DESCRIPTION>Disk BP1-CPLD firmware</DESCRIPTION>
+        <MANUFACTURER>Huawei</MANUFACTURER>
+        <NAME>Disk BP1-CPLD</NAME>
+        <TYPE>device</TYPE>
+        <VERSION>2.08</VERSION>
+      </FIRMWARES>
+      <FIRMWARES>
+        <DESCRIPTION>Disk BP5-CPLD firmware</DESCRIPTION>
+        <MANUFACTURER>Huawei</MANUFACTURER>
+        <NAME>Disk BP5-CPLD</NAME>
+        <TYPE>device</TYPE>
+        <VERSION>1.12</VERSION>
+      </FIRMWARES>
+      <FIRMWARES>
+        <DESCRIPTION>NIC 2 (TM281)-Cdr5902L_Board firmware</DESCRIPTION>
+        <MANUFACTURER>Huawei</MANUFACTURER>
+        <NAME>NIC 2 (TM281)-Cdr5902L_Board</NAME>
+        <TYPE>device</TYPE>
+        <VERSION>10.1.12.2</VERSION>
+      </FIRMWARES>
+      <INFO>
+        <COMMENTS>Hardware management system</COMMENTS>
+        <CONTACT>http://enterprise.huawei.com/</CONTACT>
+        <FIRMWARE>7.38</FIRMWARE>
+        <ID>0</ID>
+        <IPS>
+          <IP>127.0.0.1</IP>
+          <IP>192.0.2.10</IP>
+        </IPS>
+        <MAC>02:00:00:00:00:10</MAC>
+        <MANUFACTURER>Huawei</MANUFACTURER>
+        <MEMORY>0</MEMORY>
+        <MODEL>OceanProtect E1000</MODEL>
+        <NAME>iBMC</NAME>
+        <RAM>880</RAM>
+        <SERIAL>HUAWEIIBMC0000000001</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+        <UPTIME>6 days, 00:02:29.12</UPTIME>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <IFDESCR>lo</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>26514579</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0.00 seconds</IFLASTCHANGE>
+          <IFMTU>65536</IFMTU>
+          <IFNAME>lo</IFNAME>
+          <IFNUMBER>1</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>26514579</IFOUTOCTETS>
+          <IFSPEED>10000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>24</IFTYPE>
+          <IP>127.0.0.1</IP>
+          <IPS>
+            <IP>127.0.0.1</IP>
+          </IPS>
+        </PORT>
+        <PORT>
+          <IFDESCR>eth0</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0.00 seconds</IFLASTCHANGE>
+          <IFMTU>1500</IFMTU>
+          <IFNAME>eth0</IFNAME>
+          <IFNUMBER>2</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>10000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+        </PORT>
+        <PORT>
+          <IFDESCR>eth1</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0.00 seconds</IFLASTCHANGE>
+          <IFMTU>1500</IFMTU>
+          <IFNAME>eth1</IFNAME>
+          <IFNUMBER>3</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>10000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>02:00:00:00:00:21</MAC>
+              <MAC>02:00:00:00:00:22</MAC>
+              <MAC>02:00:00:00:00:23</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFDESCR>eth2</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>3729392934</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0.00 seconds</IFLASTCHANGE>
+          <IFMTU>1500</IFMTU>
+          <IFNAME>eth2</IFNAME>
+          <IFNUMBER>4</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>663138461</IFOUTOCTETS>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <IP>192.0.2.10</IP>
+          <IPS>
+            <IP>192.0.2.10</IP>
+          </IPS>
+          <MAC>02:00:00:00:00:10</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>eth3</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>2</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0.00 seconds</IFLASTCHANGE>
+          <IFMTU>1500</IFMTU>
+          <IFNAME>eth3</IFNAME>
+          <IFNUMBER>5</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>10000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+        </PORT>
+        <PORT>
+          <IFDESCR>veth</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0.00 seconds</IFLASTCHANGE>
+          <IFMTU>1500</IFMTU>
+          <IFNAME>veth</IFNAME>
+          <IFNUMBER>6</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>0</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>8.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>
