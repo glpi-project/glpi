@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-import '/build/vue/app.js';
+import '/js/src/vue/app.js';
 import PlanningEvent from '/js/src/vue/Planning/PlanningEvent.vue';
 import {enableAutoUnmount, flushPromises, mount} from "@vue/test-utils";
 import { ref } from 'vue';

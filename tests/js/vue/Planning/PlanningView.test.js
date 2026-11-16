@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-import '/build/vue/app.js';
+import '/js/src/vue/app.js';
 import PlanningView from '/js/src/vue/Planning/PlanningView.vue';
 import {enableAutoUnmount, flushPromises, mount} from "@vue/test-utils";
 
