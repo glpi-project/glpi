@@ -36,6 +36,8 @@
 namespace Glpi\Toolbox;
 
 use Glpi\Application\Environment;
+use Safe\Exceptions\FilesystemException;
+use Safe\Exceptions\JsonException;
 
 use function Safe\fclose;
 use function Safe\file_get_contents;
@@ -76,18 +78,18 @@ class FrontEnd
                 $is_vite_running = false;
             }
         }
-        return (bool)$is_vite_running;
+        return (bool) $is_vite_running;
     }
 
     public static function getViteDevServerClient(): string
     {
-        return 'http://localhost:' . (int)GLPI_VITE_DEV_SERVER_PORT . '/@vite/client';
+        return 'http://localhost:' . (int) GLPI_VITE_DEV_SERVER_PORT . '/@vite/client';
     }
 
     /**
      * @return array<string, string>
-     * @throws \Safe\Exceptions\FilesystemException
-     * @throws \Safe\Exceptions\JsonException
+     * @throws FilesystemException
+     * @throws JsonException
      */
     private static function getManifest(): array
     {
@@ -106,7 +108,7 @@ class FrontEnd
     public static function getViteVueEntrypoint(): string
     {
         if (self::isViteDevServerRunning()) {
-            return 'http://localhost:' . (int)GLPI_VITE_DEV_SERVER_PORT . '/js/src/vue/app.js';
+            return 'http://localhost:' . (int) GLPI_VITE_DEV_SERVER_PORT . '/js/src/vue/app.js';
         }
         return 'build/vue/' . self::getManifest()['app'];
     }
