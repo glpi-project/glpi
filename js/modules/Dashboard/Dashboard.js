@@ -151,6 +151,13 @@ class GLPIDashboard {
         this.cols         = options.cols;
         this.filters_selector = this.elem_id + ' .filters';
 
+        // The page carries the items and the filters of `options.current`, the browser may have restored another selection
+        const is_page_dashboard = this.current_name === options.current;
+        if (is_page_dashboard && options.filters !== undefined && options.filters !== null) {
+            // Filters sent with the page (an empty set is serialized as an array)
+            this._filters_cache[this.current_name] = Array.isArray(options.filters) ? {} : options.filters;
+        }
+
         // compute the width offset of gridstack container relatively to viewport
         const elem_domRect = this.elem_dom.getBoundingClientRect();
         const width_offset = elem_domRect.left + (window.innerWidth - elem_domRect.right) + 0.02;
@@ -187,7 +194,12 @@ class GLPIDashboard {
 
         // init filters from storage
         this.initFilters();
-        this.refreshDashboard();
+        if (is_page_dashboard) {
+            // The grid items are rendered with the page, only their content is left to load
+            this.loadCards();
+        } else {
+            this.refreshDashboard();
+        }
 
         // animate the dashboards once all card are loaded (single ajax mode)
         if (!this.ajax_cards) {
@@ -749,19 +761,26 @@ class GLPIDashboard {
             gridstack.find('.grid-stack-item').each((i, elem) => {
                 this.grid.makeWidget(elem);
             });
-            this.getCardsAjax();
-
-            const is_placeholder = CFG_GLPI['is_demo_dashboards'] === "1";
-            if (is_placeholder) {
-                // Hide filters toolbar and show the placeholder info
-                $(this.elem_id).find('.filters_toolbar').addClass('d-none');
-                $(this.elem_id).find('.placeholder_info').removeClass('d-none');
-            } else {
-                // Hide the placeholder info and show filters toolbar
-                $(this.elem_id).find('.placeholder_info').addClass('d-none');
-                $(this.elem_id).find('.filters_toolbar').removeClass('d-none');
-            }
+            this.loadCards();
         });
+    }
+
+    /**
+     * Load the content of the cards present in the grid
+     */
+    loadCards() {
+        this.getCardsAjax();
+
+        const is_placeholder = CFG_GLPI['is_demo_dashboards'] === "1";
+        if (is_placeholder) {
+            // Hide filters toolbar and show the placeholder info
+            $(this.elem_id).find('.filters_toolbar').addClass('d-none');
+            $(this.elem_id).find('.placeholder_info').removeClass('d-none');
+        } else {
+            // Hide the placeholder info and show filters toolbar
+            $(this.elem_id).find('.placeholder_info').addClass('d-none');
+            $(this.elem_id).find('.filters_toolbar').removeClass('d-none');
+        }
     }
 
     setLastDashboard() {
@@ -779,6 +798,10 @@ class GLPIDashboard {
     saveFilter(filter_id, value) {
         // store current filter in localStorage
         const filters = this.getFiltersFromDB();
+        if (JSON.stringify(filters[filter_id] ?? null) === JSON.stringify(value ?? null)) {
+            // Filters call this when they are initialized: nothing to save, no card to refresh
+            return;
+        }
         filters[filter_id] = value;
 
         // persist (async, no need to wait: the refresh below carries the filters)

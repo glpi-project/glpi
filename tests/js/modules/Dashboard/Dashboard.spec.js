@@ -38,6 +38,7 @@ describe('Dashboard', () => {
     beforeAll(() => {
         // Make backups of some methods on the prototype we will mock by default because they are called from the constructor
         GLPIDashboard.prototype._refreshDashboard = GLPIDashboard.prototype.refreshDashboard;
+        GLPIDashboard.prototype._loadCards = GLPIDashboard.prototype.loadCards;
     });
     beforeEach(() => {
         vi.clearAllMocks();
@@ -47,6 +48,7 @@ describe('Dashboard', () => {
 
         // Mock some instance methods we don't want to test but are called from the constructor
         GLPIDashboard.prototype.refreshDashboard = vi.fn().mockImplementation(() => {});
+        GLPIDashboard.prototype.loadCards = vi.fn().mockImplementation(() => {});
 
         // Mock GridStack
         window.GridStack = {
@@ -107,6 +109,61 @@ describe('Dashboard', () => {
     test('Init with an empty dashboard select', () => {
         $('#dashboard-12345 .dashboard_select').empty();
         expect(() => new GLPIDashboard({'rand': '12345'})).not.toThrow();
+    });
+
+    test('Init loads the cards of the grid items sent with the page', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345', 'current': 'current_dashboard'});
+        expect(dashboard.loadCards).toHaveBeenCalledTimes(1);
+        expect(dashboard.refreshDashboard).not.toHaveBeenCalled();
+    });
+
+    test('Init with the filters sent with the page', () => {
+        const ajax = vi.spyOn($, 'ajax');
+
+        let dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard',
+            'filters': {'filter1': 'value1'},
+        });
+        expect(dashboard.getFiltersFromDB()).toEqual({'filter1': 'value1'});
+
+        // An empty set of filters is serialized as an array
+        dashboard = new GLPIDashboard({'rand': '12345', 'current': 'current_dashboard', 'filters': []});
+        expect(dashboard.getFiltersFromDB()).toEqual({});
+
+        expect(ajax).not.toHaveBeenCalledWith(expect.objectContaining({
+            data: expect.objectContaining({action: 'get_filter_data'}),
+        }));
+        ajax.mockRestore();
+    });
+
+    test('Init ignores the items and the filters of the page when another dashboard is selected', () => {
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'stale_dashboard_from_php',
+            'filters': {'filter1': 'value1'},
+        });
+        expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(1);
+        expect(dashboard.loadCards).not.toHaveBeenCalled();
+
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+            action: 'get_filter_data',
+            dashboard: 'current_dashboard',
+        }, () => {
+            return JSON.stringify({});
+        }));
+        dashboard.getFiltersFromDB();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+    });
+
+    test('loadCards', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.getCardsAjax = vi.fn().mockImplementation(() => {});
+        dashboard.loadCards = GLPIDashboard.prototype._loadCards;
+
+        dashboard.loadCards();
+        expect(dashboard.getCardsAjax).toHaveBeenCalledTimes(1);
     });
 
     test('saveMarkdown', () => {
@@ -509,6 +566,7 @@ describe('Dashboard', () => {
 
         // Restore refreshDashboard so it can be tested
         dashboard.refreshDashboard = GLPIDashboard.prototype._refreshDashboard;
+        dashboard.loadCards = GLPIDashboard.prototype._loadCards;
         dashboard.refreshDashboard();
         // We need to wait for the next tick to be sure that the async code is finished
         await new Promise(process.nextTick);
@@ -563,6 +621,7 @@ describe('Dashboard', () => {
 
         // Restore refreshDashboard so it can be tested
         dashboard.refreshDashboard = GLPIDashboard.prototype._refreshDashboard;
+        dashboard.loadCards = GLPIDashboard.prototype._loadCards;
         dashboard.refreshDashboard();
         // We need to wait for the next tick to be sure that the async code is finished
         await new Promise(process.nextTick);
@@ -670,6 +729,42 @@ describe('Dashboard', () => {
         expect(dashboard.getFiltersFromDB()).toEqual({filter: 'new_value'});
         dashboard.current_name = 'other_dashboard_1';
         expect(dashboard.getFiltersFromDB()).toEqual({filter: 'other_value'});
+    });
+
+    test('saveFilter with an unchanged value', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {
+                'filter1': 'filter1_value',
+                'filter2': ['1', '2'],
+            };
+        });
+        dashboard.setFiltersInDB = vi.fn().mockImplementation(() => {});
+        dashboard.refreshCardsImpactedByFilter = vi.fn().mockImplementation(() => {});
+
+        // Filters save their value when they are initialized
+        dashboard.saveFilter('filter1', 'filter1_value');
+        dashboard.saveFilter('filter2', ['1', '2']);
+
+        expect(dashboard.setFiltersInDB).not.toHaveBeenCalled();
+        expect(dashboard.refreshCardsImpactedByFilter).not.toHaveBeenCalled();
+    });
+
+    test('saveFilter with a new empty filter', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.filters_selector = '#filter-selector';
+
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {};
+        });
+        dashboard.setFiltersInDB = vi.fn().mockImplementation(() => {});
+        window.sortable = vi.fn().mockImplementation(() => {});
+        dashboard.refreshCardsImpactedByFilter = vi.fn().mockImplementation(() => {});
+
+        dashboard.saveFilter('filter1', []);
+
+        expect(dashboard.setFiltersInDB).toHaveBeenCalledWith({'filter1': []});
     });
 
     test('refreshCardsImpactedByFilter', () => {
@@ -1489,6 +1584,28 @@ describe('Dashboard', () => {
         expect(dashboard.setLastDashboard).toHaveBeenCalled();
         expect(dashboard.initFilters).toHaveBeenCalled();
         expect($('.dashboard-name').val()).toBe('Other Dashboard 2');
+    });
+
+    test('Change selected dashboard does not apply the filters sent with the page', () => {
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard',
+            'filters': {'filter1': 'value1'},
+        });
+        dashboard.setLastDashboard = vi.fn().mockImplementation(() => {});
+        dashboard.initFilters = vi.fn().mockImplementation(() => {});
+
+        $('.dashboard_select option[value="other_dashboard_2"]').prop('selected', true).trigger('change');
+
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+            action: 'get_filter_data',
+            dashboard: 'other_dashboard_2',
+        }, () => {
+            return JSON.stringify({});
+        }));
+        dashboard.getFiltersFromDB();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
     });
 
     test('Click add dashboard button', () => {
