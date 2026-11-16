@@ -233,6 +233,26 @@ class GridTest extends DbTestCase
         $this->assertStringContainsString('"filters":{"itilcategory":"1"}', $html);
     }
 
+    public function testShowLoadsTheCardsInBatchesExceptInADebugSession(): void
+    {
+        $show = static function (): string {
+            Grid::$all_dashboards = [];
+            \ob_start();
+            (new Grid('central'))->show();
+            return (string) \ob_get_clean();
+        };
+
+        $this->assertStringContainsString('"batches":4', $show());
+
+        // Each card keeps its own request, and its own profile, in a debug session.
+        $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
+        try {
+            $this->assertStringContainsString('"batches":0', $show());
+        } finally {
+            $_SESSION['glpi_use_mode'] = \Session::NORMAL_MODE;
+        }
+    }
+
     #[DataProvider('accessDeniedProvider')]
     public function testGetCardHtmlWithAccessDeniedProvider(string $provider, string $expected): void
     {

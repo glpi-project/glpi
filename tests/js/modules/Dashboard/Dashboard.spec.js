@@ -89,6 +89,39 @@ describe('Dashboard', () => {
         `);
     });
 
+    afterEach(() => {
+        vi.unstubAllGlobals();
+        console_error?.mockRestore();
+        console_error = null;
+    });
+
+    let console_error = null;
+
+    // Cards as getCardsAjax() hands them to the loading methods, one per given widget type
+    const getRequestedCards = (widgettypes) => widgettypes.map((widgettype, i) => ({
+        card_el: $(`<div class="grid-stack-item" gs-id="card${i}"><div class="grid-stack-item-content"></div></div>`),
+        card_id: `card${i}`,
+        args: {gridstack_id: `card${i}`, widgettype: widgettype},
+    }));
+
+    // Response of the streamed cards endpoint, its body is delivered in the given chunks
+    const getCardsResponse = (chunks, status = 200) => {
+        const queue = [...chunks];
+        return {
+            ok: status === 200,
+            status: status,
+            body: {
+                getReader: () => ({
+                    read: () => Promise.resolve(queue.length > 0 ? {done: false, value: queue.shift()} : {done: true, value: undefined}),
+                }),
+                cancel: vi.fn(),
+            },
+        };
+    };
+
+    // Lines of the streamed cards endpoint for the given cards, as bytes
+    const getCardsLines = (lines) => new TextEncoder().encode(lines.map((line) => typeof line === 'string' ? line : JSON.stringify(line)).join('\n'));
+
     test('Class availability', () => {
         // Expect class to be available as a global
         expect(window.GLPI.Dashboard.GLPIDashboard).toBeDefined();
@@ -1357,6 +1390,272 @@ describe('Dashboard', () => {
         expect($('.grid-stack-item[gs-id="2"] .empty-card.card-error').length).toBe(1);
         // card 1 and 3 should still be present without error
         expect($('.grid-stack-item > *:not(.empty-card)').length).toBe(2);
+    });
+
+    test('getCardsAjax batches', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345', 'batches': 2});
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {'filter1': 'value1'};
+        });
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.loadCardsBatch = vi.fn().mockImplementation(() => Promise.resolve());
+        $('.grid-stack-item').each((index, item) => {
+            $(item).data('card-options', {});
+        });
+        // Card requests expected from the multi ajax mode, any other request fails
+        const expectCardRequests = (card_ids, data = {}) => {
+            card_ids.forEach((card_id) => {
+                window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+                    action: 'get_card',
+                    card_id: card_id,
+                    ...data,
+                }, () => {
+                    return '<div></div>';
+                }));
+            });
+        };
+        window.AjaxMock.start();
+
+        // Whole dashboard: one request per group of cards
+        expect(dashboard.getCardsAjax().length).toBe(2);
+        expect(dashboard.loadCardsBatch.mock.calls.map((call) => call[0].map((card) => card.args.gridstack_id))).toEqual([['1', '3'], ['2']]);
+        expect(dashboard.loadCardsBatch.mock.calls[0][0][0].args.apply_filters).toEqual({'filter1': 'value1'});
+        dashboard.loadCardsBatch.mockClear();
+
+        // A single card keeps its own request
+        expectCardRequests([2]);
+        expect(dashboard.getCardsAjax('[gs-id="2"]').length).toBe(1);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+
+        // So do the cards of an embedded dashboard
+        dashboard.embed = true;
+        expectCardRequests([1, 2, 3], {embed: 1});
+        expect(dashboard.getCardsAjax().length).toBe(3);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+        dashboard.embed = false;
+
+        // And the cards of a dashboard without batches
+        dashboard.batches = 0;
+        expectCardRequests([1, 2, 3]);
+        expect(dashboard.getCardsAjax().length).toBe(3);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+
+        // The single ajax mode is left alone
+        dashboard.batches = 2;
+        dashboard.ajax_cards = false;
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
+            action: 'get_cards',
+        }, () => {
+            return {};
+        }));
+        dashboard.getCardsAjax();
+        await new Promise(process.nextTick);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+
+        expect(dashboard.loadCardsBatch).not.toHaveBeenCalled();
+    });
+
+    test('splitCardsInBatches', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345', 'batches': 3});
+        const cards = getRequestedCards(['bar', 'bigNumber', 'pie', 'summaryNumbers', 'line', 'multipleNumber', 'donut']);
+        const ids = (batches) => batches.map((batch) => batch.map((card) => card.card_id));
+
+        // Number widgets come first, then the cards are dealt in turn
+        expect(ids(dashboard.splitCardsInBatches(cards))).toEqual([
+            ['card1', 'card0', 'card6'],
+            ['card3', 'card2'],
+            ['card5', 'card4'],
+        ]);
+
+        // Never more groups than cards, never an empty group
+        expect(ids(dashboard.splitCardsInBatches(cards.slice(0, 2)))).toEqual([['card1'], ['card0']]);
+        expect(dashboard.splitCardsInBatches([])).toEqual([]);
+    });
+
+    test('loadCardsBatch', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.getCardsAjax = vi.fn().mockImplementation(() => [Promise.resolve()]);
+        console_error = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const cards = getRequestedCards(['bigNumber', 'bar', 'pie']);
+
+        // Three chunks: the first one ends inside a character of the first line, the second one inside the last line
+        const bytes = getCardsLines([
+            {id: 'card0', html: '<div class="card">Réponse 0</div>'},
+            {id: 'unknown', html: '<div class="card">Unknown</div>'},
+            'not a JSON line',
+            {id: 'card2', html: '<div class="card">Response 2</div>'},
+            '',
+        ]);
+        const first_cut = bytes.indexOf(0xC3) + 1;
+        const chunks    = [bytes.slice(0, first_cut), bytes.slice(first_cut, bytes.length - 10), bytes.slice(bytes.length - 10)];
+        vi.stubGlobal('fetch', vi.fn().mockResolvedValue(getCardsResponse(chunks)));
+
+        await dashboard.loadCardsBatch(cards);
+
+        expect(fetch).toHaveBeenCalledTimes(1);
+        const [url, options] = fetch.mock.calls[0];
+        expect(url).toBe('/Dashboard/Cards');
+        expect(options.method).toBe('POST');
+        expect(options.headers).toEqual({'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'});
+        expect(JSON.parse(options.body)).toEqual({
+            dashboard: 'current_dashboard',
+            cards: cards.map((card) => ({gridstack_id: card.card_id, card_id: card.card_id, args: card.args})),
+        });
+
+        // The cards the server sent are filled, whatever the chunks
+        expect(cards[0].card_el.find('.grid-stack-item-content').html()).toBe('<div class="card">Réponse 0</div>');
+        expect(cards[2].card_el.find('.grid-stack-item-content').html()).toBe('<div class="card">Response 2</div>');
+        expect(dashboard.animateNumbers).toHaveBeenCalledTimes(2);
+        // The unreadable line is reported, the one of another card is ignored
+        expect(console_error).toHaveBeenCalledTimes(1);
+        expect($('body').text()).not.toContain('Unknown');
+        // The card the server did not send gets its own request
+        expect(dashboard.getCardsAjax.mock.calls).toEqual([['[gs-id="card1"]']]);
+    });
+
+    test('loadCardsBatch with a truncated response', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.getCardsAjax = vi.fn().mockImplementation(() => [Promise.resolve()]);
+        console_error = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const cards = getRequestedCards(['bigNumber', 'bar', 'pie']);
+
+        // The last line of a response may lack its line break: it is displayed if it is complete
+        const bytes = getCardsLines([
+            {id: 'card0', html: '<div class="card">Response 0</div>'},
+            {id: 'card1', html: '<div class="card">Response 1</div>'},
+        ]);
+        await dashboard.loadCardsBatch(cards.slice(0, 2), Promise.resolve(getCardsResponse([bytes])));
+        expect(cards[1].card_el.find('.grid-stack-item-content').html()).toBe('<div class="card">Response 1</div>');
+        expect(dashboard.getCardsAjax).not.toHaveBeenCalled();
+
+        // A response cut in the middle of a card: that card and the following ones get their own request
+        const cut = getCardsLines([
+            {id: 'card0', html: '<div class="card">Response 0, again</div>'},
+            {id: 'card1', html: '<div class="card">Response 1, again</div>'},
+        ]).slice(0, -12);
+        await dashboard.loadCardsBatch(cards, Promise.resolve(getCardsResponse([cut])));
+        expect(cards[0].card_el.find('.grid-stack-item-content').html()).toBe('<div class="card">Response 0, again</div>');
+        expect(cards[1].card_el.find('.grid-stack-item-content').html()).toBe('<div class="card">Response 1</div>');
+        expect(dashboard.getCardsAjax.mock.calls).toEqual([['[gs-id="card1"]'], ['[gs-id="card2"]']]);
+    });
+
+    test('loadCardsBatch with filters or a dashboard changed meanwhile', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.getCardsAjax = vi.fn().mockImplementation(() => [Promise.resolve()]);
+        const cards = getRequestedCards(['bigNumber', 'bigNumber', 'bigNumber']);
+        const bytes = getCardsLines([
+            {id: 'card0', html: '<div class="card">Response 0</div>'},
+            {id: 'card1', html: '<div class="card">Response 1</div>'},
+            {id: 'card2', html: '<div class="card">Response 2</div>'},
+            '',
+        ]);
+
+        // A filter saved after the first card: the next ones were computed with the former filters
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
+            action: 'save_filter_data',
+        }, () => true));
+        dashboard.animateNumbers = vi.fn().mockImplementationOnce(() => {
+            dashboard.setFiltersInDB({'filter1': 'value1'});
+        });
+        await dashboard.loadCardsBatch(cards, Promise.resolve(getCardsResponse([bytes])));
+        expect(cards[0].card_el.find('.grid-stack-item-content').html()).toBe('<div class="card">Response 0</div>');
+        expect(cards[1].card_el.find('.grid-stack-item-content').html()).toBe('');
+        expect(cards[2].card_el.find('.grid-stack-item-content').html()).toBe('');
+        expect(dashboard.getCardsAjax.mock.calls).toEqual([['[gs-id="card1"]'], ['[gs-id="card2"]']]);
+        dashboard.getCardsAjax.mockClear();
+
+        // Another dashboard selected after the first card: the next ones are gone, nothing is requested for them
+        dashboard.animateNumbers = vi.fn().mockImplementationOnce(() => {
+            dashboard.current_name = 'other_dashboard_1';
+        });
+        await dashboard.loadCardsBatch(cards, Promise.resolve(getCardsResponse([bytes])));
+        expect(cards[1].card_el.find('.grid-stack-item-content').html()).toBe('');
+        expect(dashboard.getCardsAjax).not.toHaveBeenCalled();
+    });
+
+    test('loadCardsBatch with a card failing to render', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.animateNumbers = vi.fn().mockImplementationOnce(() => {
+            throw new Error('Unable to animate');
+        });
+        dashboard.getCardsAjax = vi.fn().mockImplementation(() => [Promise.resolve()]);
+        console_error = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const cards = getRequestedCards(['bigNumber', 'bigNumber']);
+
+        const bytes = getCardsLines([
+            {id: 'card0', html: '<div class="card">Response 0</div>'},
+            {id: 'card1', html: '<div class="card">Response 1</div>'},
+            '',
+        ]);
+        await dashboard.loadCardsBatch(cards, Promise.resolve(getCardsResponse([bytes])));
+
+        // The next card is displayed, and the failing one was received: it is not requested again
+        expect(console_error).toHaveBeenCalledTimes(1);
+        expect(cards[1].card_el.find('.grid-stack-item-content').html()).toBe('<div class="card">Response 1</div>');
+        expect(dashboard.getCardsAjax).not.toHaveBeenCalled();
+    });
+
+    test('loadCardsBatch with a failed request', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.getCardsAjax = vi.fn().mockImplementation(() => [Promise.resolve()]);
+        console_error = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const cards = getRequestedCards(['bigNumber', 'bar', 'pie']);
+        const every_card = [['[gs-id="card0"]'], ['[gs-id="card1"]'], ['[gs-id="card2"]']];
+
+        // Error status: the response is dropped unread and every card gets its own request
+        const response = getCardsResponse([getCardsLines([{id: 'card0', html: '<div class="card">Error page</div>'}])], 500);
+        vi.stubGlobal('fetch', vi.fn().mockResolvedValue(response));
+        await dashboard.loadCardsBatch(cards);
+        expect(response.body.cancel).toHaveBeenCalledTimes(1);
+        expect(cards[0].card_el.find('.grid-stack-item-content').html()).toBe('');
+        expect(dashboard.getCardsAjax.mock.calls).toEqual(every_card);
+        dashboard.getCardsAjax.mockClear();
+
+        // Request that could not be sent, and a card whose own request fails too: the batch still settles
+        vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('Failed to fetch')));
+        dashboard.getCardsAjax.mockImplementationOnce(() => [Promise.reject(new Error('Unable to load the card'))]);
+        await expect(dashboard.loadCardsBatch(cards)).resolves.toBeUndefined();
+        expect(dashboard.getCardsAjax.mock.calls).toEqual(every_card);
+    });
+
+    test('loadCardsBatch requests a missing card as a card refresh does', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345', 'batches': 2});
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {};
+        });
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+        const cards = [];
+        $('.grid-stack-item').each((index, item) => {
+            $(item).data('card-options', {}).html('<div class="grid-stack-item-content"></div>');
+            cards.push({card_el: $(item), card_id: $(item).attr('gs-id'), args: {gridstack_id: $(item).attr('gs-id')}});
+        });
+
+        // The response has no line for the second card: the single card request of the multi ajax mode is sent
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+            action: 'get_card',
+            dashboard: 'current_dashboard',
+            card_id: 2,
+        }, () => {
+            return '<div class="card">Own response 2</div>';
+        }));
+        const bytes = getCardsLines([
+            {id: '1', html: '<div class="card">Response 1</div>'},
+            {id: '3', html: '<div class="card">Response 3</div>'},
+            '',
+        ]);
+        await dashboard.loadCardsBatch(cards, Promise.resolve(getCardsResponse([bytes])));
+
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+        expect($('.grid-stack-item').map((index, item) => $(item).find('.grid-stack-item-content').html()).get()).toEqual([
+            '<div class="card">Response 1</div>',
+            '<div class="card">Own response 2</div>',
+            '<div class="card">Response 3</div>',
+        ]);
     });
 
     test('initFilters', async () => {

@@ -75,6 +75,11 @@ class Grid
     protected Dashboard $dashboard;
     protected array $items           = [];
     protected string $context            = '';
+    /** @var array<string, array<string, array<string, mixed>>> Card catalog already built by this instance, by cache key. */
+    private array $all_cards = [];
+
+    /** Number of parallel requests that load the cards of a dashboard: two of the six HTTP/1.1 connections stay free for the page. */
+    private const CARDS_BATCHES = 4;
 
     public static bool $embed              = false;
     public static array $all_dashboards     = [];
@@ -465,6 +470,11 @@ TWIG, $params);
             ? null
             : json_decode(Filter::getForDashboard((int) (self::$all_dashboards[$this->current]['id'] ?? 0)), true);
 
+        // A debug session keeps one request per card, each with its own profile.
+        $batches = self::$embed || !GLPI_AJAX_DASHBOARD || $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE
+            ? 0
+            : self::CARDS_BATCHES;
+
         $ajax_cards = GLPI_AJAX_DASHBOARD;
         $cache_key  = sha1($_SESSION['glpiactiveentities_string'] ?? "");
 
@@ -489,6 +499,7 @@ TWIG, $params);
                 'cell_margin'   => $this->cell_margin,
                 'rand'          => $rand,
                 'ajax_cards'    => $ajax_cards,
+                'batches'       => $batches,
                 'all_cards'     => $cards,
                 'all_widgets'   => $all_widgets,
                 'context'       => $this->context,
@@ -1415,8 +1426,14 @@ HTML;
     {
         global $CFG_GLPI, $GLPI_CACHE;
 
+        $cache_key = self::getAllDashboardCardsCacheKey();
+        if (!$force && isset($this->all_cards[$cache_key])) {
+            // The plugins hook is costly: a request that renders several cards must not run it for each of them.
+            return $this->all_cards[$cache_key];
+        }
+
         Profiler::getInstance()->start(__METHOD__);
-        $cards = $GLPI_CACHE->get(self::getAllDashboardCardsCacheKey());
+        $cards = $GLPI_CACHE->get($cache_key);
 
         if ($cards === null || $force) {
             $cards = [];
@@ -1740,7 +1757,7 @@ HTML;
 
             if (!Environment::get()->shouldExpectResourcesToChange()) {
                 // Do not cache dashboard cards on `development` envs
-                $GLPI_CACHE->set(self::getAllDashboardCardsCacheKey(), $cards);
+                $GLPI_CACHE->set($cache_key, $cards);
             }
         }
 
@@ -1749,6 +1766,8 @@ HTML;
             $cards = array_merge($cards, $more_cards);
         }
         Profiler::getInstance()->stop(__METHOD__);
+
+        $this->all_cards[$cache_key] = $cards;
 
         return $cards;
     }
