@@ -139,4 +139,50 @@ class SanitizedStringsDecoderTest extends GLPITestCase
         // Calling method multiple times should not corrupt unsanitized value
         $this->assertEquals($result, $decoder->decodeHtmlSpecialCharsInCompletename($result));
     }
+
+    public function testEncodeHtmlSpecialChars(): void
+    {
+        $decoder = new SanitizedStringsDecoder();
+
+        $this->assertEquals('TELECOM &#38; RESEAU', $decoder->encodeHtmlSpecialChars('TELECOM & RESEAU'));
+        $this->assertEquals('&#60;a&#62; &#38;#60;', $decoder->encodeHtmlSpecialChars('<a> &#60;'));
+        $this->assertEquals('no special chars', $decoder->encodeHtmlSpecialChars('no special chars'));
+
+        $this->assertEquals('A&B<C>', $decoder->decodeHtmlSpecialChars($decoder->encodeHtmlSpecialChars('A&B<C>')));
+    }
+
+    public function testEncodeHtmlSpecialCharsInCompletename(): void
+    {
+        $decoder = new SanitizedStringsDecoder();
+
+        $this->assertEquals(
+            '#NETWORK OPERATION > TELECOM &#38; RESEAU > Incident',
+            $decoder->encodeHtmlSpecialCharsInCompletename('#NETWORK OPERATION > TELECOM & RESEAU > Incident')
+        );
+        $this->assertEquals(
+            'A&B > &foo',
+            $decoder->decodeHtmlSpecialCharsInCompletename($decoder->encodeHtmlSpecialCharsInCompletename('A&B > &foo'))
+        );
+    }
+
+    public function testGetSearchableValues(): void
+    {
+        $decoder = new SanitizedStringsDecoder();
+
+        $this->assertSame('no special chars', $decoder->getSearchableValues('no special chars'));
+        $this->assertSame('A > B', $decoder->getSearchableValues('A > B', true));
+
+        $this->assertSame(
+            ['TELECOM & RESEAU', 'TELECOM &#38; RESEAU'],
+            $decoder->getSearchableValues('TELECOM & RESEAU')
+        );
+        $this->assertSame(
+            ['A > B', 'A &#62; B'],
+            $decoder->getSearchableValues('A > B')
+        );
+        $this->assertSame(
+            ['#NETWORK OPERATION > TELECOM & RESEAU > Incident', '#NETWORK OPERATION > TELECOM &#38; RESEAU > Incident'],
+            $decoder->getSearchableValues('#NETWORK OPERATION > TELECOM & RESEAU > Incident', true)
+        );
+    }
 }
