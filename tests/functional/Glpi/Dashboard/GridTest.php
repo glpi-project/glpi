@@ -242,12 +242,17 @@ class GridTest extends DbTestCase
             return (string) \ob_get_clean();
         };
 
-        $this->assertStringContainsString('"batches":6', $show());
+        $html = $show();
+        $this->assertStringContainsString('"batches":6', $html);
+        // The page sends the requests itself, without waiting for its scripts.
+        $this->assertStringContainsString('window.glpi_dashboard_early_cards', $html);
 
         // Each card keeps its own request, and its own profile, in a debug session.
         $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
         try {
-            $this->assertStringContainsString('"batches":0', $show());
+            $html = $show();
+            $this->assertStringContainsString('"batches":0', $html);
+            $this->assertStringNotContainsString('window.glpi_dashboard_early_cards', $html);
         } finally {
             $_SESSION['glpi_use_mode'] = \Session::NORMAL_MODE;
         }
