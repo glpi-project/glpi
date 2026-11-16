@@ -646,8 +646,9 @@ JAVASCRIPT;
                 $config = $config->allowAttribute($attribute, 'span');
             }
 
-            // The native HTML5 parser, used by Symfony on PHP 8.4+ when available, already handles misplaced table elements.
-            $use_native_parser = PHP_VERSION_ID >= 80400 && class_exists('Symfony\\Component\\HtmlSanitizer\\Parser\\NativeParser');
+            // The native HTML5 parser (PHP 8.4+), used by Symfony when available, already handles misplaced table elements.
+            $use_native_parser = class_exists('Dom\\HTMLDocument')
+                && class_exists('Symfony\\Component\\HtmlSanitizer\\Parser\\NativeParser');
             $sanitizer = new HtmlSanitizer($config, $use_native_parser ? null : new HtmlParser($config));
         }
 
