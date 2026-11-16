@@ -1,0 +1,135 @@
+diff --git a/generated/8.1/misc.php b/generated/8.1/misc.php
+index f4e8d22..22c6ddc 100644
+--- a/generated/8.1/misc.php
++++ b/generated/8.1/misc.php
+@@ -14,7 +14,11 @@ use Safe\Exceptions\MiscException;
+ function define(string $constant_name, $value, bool $case_insensitive = false): void
+ {
+     error_clear_last();
+-    $safeResult = \define($constant_name, $value, $case_insensitive);
++    if ($case_insensitive) {
++        $safeResult = \define($constant_name, $value, $case_insensitive);
++    } else {
++        $safeResult = \define($constant_name, $value);
++    }
+     if ($safeResult === false) {
+         throw MiscException::createFromPhpError();
+     }
+diff --git a/generated/8.2/misc.php b/generated/8.2/misc.php
+index 5a8b545..ba1d4e7 100644
+--- a/generated/8.2/misc.php
++++ b/generated/8.2/misc.php
+@@ -14,7 +14,11 @@ use Safe\Exceptions\MiscException;
+ function define(string $constant_name, $value, bool $case_insensitive = false): void
+ {
+     error_clear_last();
+-    $safeResult = \define($constant_name, $value, $case_insensitive);
++    if ($case_insensitive) {
++        $safeResult = \define($constant_name, $value, $case_insensitive);
++    } else {
++        $safeResult = \define($constant_name, $value);
++    }
+     if ($safeResult === false) {
+         throw MiscException::createFromPhpError();
+     }
+diff --git a/generated/8.4/misc.php b/generated/8.4/misc.php
+index f9a6bcb..aa3fd30 100644
+--- a/generated/8.4/misc.php
++++ b/generated/8.4/misc.php
+@@ -14,7 +14,11 @@ use Safe\Exceptions\MiscException;
+ function define(string $constant_name, $value, bool $case_insensitive = false): void
+ {
+     error_clear_last();
+-    $safeResult = \define($constant_name, $value, $case_insensitive);
++    if ($case_insensitive) {
++        $safeResult = \define($constant_name, $value, $case_insensitive);
++    } else {
++        $safeResult = \define($constant_name, $value);
++    }
+     if ($safeResult === false) {
+         throw MiscException::createFromPhpError();
+     }
+diff --git a/lib/DateTimeImmutable.php b/lib/DateTimeImmutable.php
+index f111399..5999130 100644
+--- a/lib/DateTimeImmutable.php
++++ b/lib/DateTimeImmutable.php
+@@ -96,6 +96,7 @@ class DateTimeImmutable extends \DateTimeImmutable
+      * @return DateTimeImmutable
+      * @throws DatetimeException
+      */
++    #[\ReturnTypeWillChange]
+     public function modify($modify): self
+     {
+         /** @var \DateTimeImmutable|false $result */
+@@ -113,6 +114,7 @@ class DateTimeImmutable extends \DateTimeImmutable
+      * @return DateTimeImmutable
+      * @throws DatetimeException
+      */
++    #[\ReturnTypeWillChange]
+     public function setDate($year, $month, $day): self
+     {
+         /** @var \DateTimeImmutable|false $result */
+@@ -130,6 +132,7 @@ class DateTimeImmutable extends \DateTimeImmutable
+      * @return DateTimeImmutable
+      * @throws DatetimeException
+      */
++    #[\ReturnTypeWillChange]
+     public function setISODate($year, $week, $day = 1): self
+     {
+         /** @var \DateTimeImmutable|false $result */
+@@ -148,6 +151,7 @@ class DateTimeImmutable extends \DateTimeImmutable
+      * @return DateTimeImmutable
+      * @throws DatetimeException
+      */
++    #[\ReturnTypeWillChange]
+     public function setTime($hour, $minute, $second = 0, $microseconds = 0): self
+     {
+         /** @var \DateTimeImmutable|false $result */
+@@ -163,6 +167,7 @@ class DateTimeImmutable extends \DateTimeImmutable
+      * @return DateTimeImmutable
+      * @throws DatetimeException
+      */
++    #[\ReturnTypeWillChange]
+     public function setTimestamp($unixtimestamp): self
+     {
+         /** @var \DateTimeImmutable|false $result */
+@@ -178,6 +183,7 @@ class DateTimeImmutable extends \DateTimeImmutable
+      * @return DateTimeImmutable
+      * @throws DatetimeException
+      */
++    #[\ReturnTypeWillChange]
+     public function setTimezone($timezone): self
+     {
+         /** @var \DateTimeImmutable|false $result */
+@@ -193,6 +199,7 @@ class DateTimeImmutable extends \DateTimeImmutable
+      * @return DateTimeImmutable
+      * @throws DatetimeException
+      */
++    #[\ReturnTypeWillChange]
+     public function sub($interval): self
+     {
+         /** @var \DateTimeImmutable|false $result */
+@@ -223,6 +230,7 @@ class DateTimeImmutable extends \DateTimeImmutable
+      * @param \DateInterval $interval
+      * @return DateTimeImmutable
+      */
++    #[\ReturnTypeWillChange]
+     public function add($interval): self
+     {
+         return self::createFromRegular($this->innerDateTime->add($interval));
+@@ -243,6 +251,7 @@ class DateTimeImmutable extends \DateTimeImmutable
+     /**
+      * @return DateTimeImmutable
+      */
++    #[\ReturnTypeWillChange]
+     public static function createFromInterface(\DateTimeInterface $object): self
+     {
+         if ($object instanceof \DateTime) {
+@@ -257,6 +266,7 @@ class DateTimeImmutable extends \DateTimeImmutable
+      * @param mixed[] $array
+      * @return DateTimeImmutable
+      */
++    #[\ReturnTypeWillChange]
+     public static function __set_state($array): self
+     {
+         return self::createFromRegular(parent::__set_state($array));

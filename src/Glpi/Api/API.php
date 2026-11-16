@@ -2591,7 +2591,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
             if (is_array($value)) {
                 $value = self::parseDropdowns($value, $params);
             }
-            if (is_integer($key)) {
+            if (is_int($key)) {
                 continue;
             }
             if (isForeignKeyField($key)) {
@@ -2614,7 +2614,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
                 }
 
                 if (
-                    is_integer($value)
+                    is_int($value)
                     && ($value > 0 || ($key === 'entities_id' && $value >= 0))
                 ) {
                     $tablename = getTableNameForForeignKeyField($key);
