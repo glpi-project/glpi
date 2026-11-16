@@ -120,6 +120,13 @@ HTML,
             'expected_result'        => '<table><tr><td>a</td><td>b</td></tr></table><table><tbody><tr><th>c</th></tr></tbody></table>',
         ];
 
+        // Misplaced content of a column group is wrapped in a row, to prevent browsers from closing the parent table early
+        yield [
+            'content'                => '<table><colgroup><col><table><tr><td>a</td></tr></table></colgroup><tr><td>b</td></tr></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table><colgroup><col /><tr><td><table><tr><td>a</td></tr></table></td></tr></colgroup><tr><td>b</td></tr></table>',
+        ];
+
         // Table elements outside a table are removed, but their content is kept
         yield [
             'content'                => '<div><td>a</td></div><p><caption>b</caption></p><span><th>c</th></span>'

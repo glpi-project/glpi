@@ -47,7 +47,7 @@ return $config
         // 'src' Loaded from the autoloader
     ], false)
 
-    ->ignoreUnknownClasses(['DB', 'DbTestCase', 'PluginGenericobjectType', 'Dom\HTMLDocument']) // `Dom\HTMLDocument` only exists on PHP 8.4+
+    ->ignoreUnknownClasses(['DB', 'DbTestCase', 'PluginGenericobjectType'])
 
     // Ignore errors on extensions that are suggested but not required
     ->ignoreErrorsOnExtensionAndPaths('ext-exif', [

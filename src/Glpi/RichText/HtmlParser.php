@@ -62,6 +62,7 @@ final class HtmlParser implements ParserInterface
      */
     private const ALLOWED_CHILDREN = [
         'table' => ['caption', 'colgroup', 'col', 'thead', 'tbody', 'tfoot', 'tr', 'script', 'style', 'template'],
+        'colgroup' => ['col', 'template'],
         'thead' => ['tr', 'script', 'style', 'template'],
         'tbody' => ['tr', 'script', 'style', 'template'],
         'tfoot' => ['tr', 'script', 'style', 'template'],
@@ -88,6 +89,8 @@ final class HtmlParser implements ParserInterface
 
     public function parse(string $html): ?DOMNode
     {
+        // Without the HTML namespace, elements moved out of their parent would be renamed (e.g. `default:table`) by libxml
+        // and then dropped by the sanitizer.
         $fragment = (new MastermindsParser(['disable_html_ns' => true]))->parse($html);
         if ($fragment?->ownerDocument !== null) {
             $this->fixTableStructure($fragment->ownerDocument, $fragment);

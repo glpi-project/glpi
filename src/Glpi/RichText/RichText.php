@@ -36,7 +36,6 @@
 namespace Glpi\RichText;
 
 use Document;
-use Dom\HTMLDocument;
 use Html;
 use Html2Text\Html2Text;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
@@ -647,10 +646,7 @@ JAVASCRIPT;
                 $config = $config->allowAttribute($attribute, 'span');
             }
 
-            // The native HTML5 parser (PHP 8.4+), used by Symfony when available, already handles misplaced table elements.
-            $use_native_parser = class_exists(HTMLDocument::class)
-                && class_exists('Symfony\\Component\\HtmlSanitizer\\Parser\\NativeParser');
-            $sanitizer = new HtmlSanitizer($config, $use_native_parser ? null : new HtmlParser($config));
+            $sanitizer = new HtmlSanitizer($config, new HtmlParser($config));
         }
 
         return $sanitizer;
