@@ -81,6 +81,7 @@ class DownloadCommand extends AbstractMarketplaceCommand
             }
         }
 
+        $has_failures = false;
         foreach ($plugin_versions as $plugin => $version) {
             // If the plugin is already downloaded, refuse to download it again
             if (!$input->getOption('force') && is_dir(GLPI_MARKETPLACE_DIR . '/' . $plugin)) {
@@ -102,6 +103,7 @@ class DownloadCommand extends AbstractMarketplaceCommand
                     $output->writeln("<info>$success_msg</info>");
                 } else {
                     $output->writeln("<error>$error_msg</error>");
+                    $has_failures = true;
                 }
             } else {
                 $output->writeln('<error>' . sprintf(__('Plugin "%s" cannot be downloaded'), $plugin) . '</error>');
@@ -109,7 +111,7 @@ class DownloadCommand extends AbstractMarketplaceCommand
             }
         }
 
-        return 0; // Success
+        return $has_failures ? 1 : 0;
     }
 
     protected function getPluginChoiceQuestion(): string

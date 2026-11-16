@@ -105,7 +105,7 @@ class GLPIDashboard {
         this.cache_key = "";
         this.filters = "{}";
         this.filters_selector = "";
-        this._filters_cache = null;
+        this._filters_cache = {};
 
         GridStack.renderCB = (el, w) => {
             el.parentElement.innerHTML = w.content;
@@ -1327,10 +1327,11 @@ class GLPIDashboard {
             return [];
         }
 
-        if (this._filters_cache !== null) {
-            // Avoid a synchronous round trip to the server on every call, several of which
-            // happen on a single dashboard load (init, refresh, filter changes...).
-            return this._filters_cache;
+        // Avoid a synchronous round trip to the server on every call, several of which
+        // happen on a single dashboard load (init, refresh, filter changes...).
+        // Cache is keyed by dashboard, as the user can switch dashboards without a page reload.
+        if (this._filters_cache[this.current_name] !== undefined) {
+            return this._filters_cache[this.current_name];
         }
 
         let filters;
@@ -1347,9 +1348,9 @@ class GLPIDashboard {
             }
         });
 
-        this._filters_cache = filters || {};
+        this._filters_cache[this.current_name] = filters || {};
 
-        return this._filters_cache;
+        return this._filters_cache[this.current_name];
     }
 
     /**
@@ -1363,7 +1364,7 @@ class GLPIDashboard {
             filters[this.current_name] = sub_filters;
         }
 
-        this._filters_cache = sub_filters;
+        this._filters_cache[this.current_name] = sub_filters;
 
         return $.ajax({
             method: 'POST',

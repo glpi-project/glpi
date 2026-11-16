@@ -444,7 +444,7 @@ class CommonGLPI implements CommonGLPIInterface
         switch ($itemtype) {
             default:
                 if (
-                    !is_integer($itemtype)
+                    !is_int($itemtype)
                     && ($obj = getItemForItemtype($itemtype))
                 ) {
                     $titles = $obj->getTabNameForItem($this, $withtemplate);

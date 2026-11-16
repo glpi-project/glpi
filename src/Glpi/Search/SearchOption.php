@@ -96,7 +96,7 @@ final class SearchOption implements ArrayAccess
     {
         $result = [];
         foreach ($search_options as $search_option) {
-            if (is_a($search_option, self::class)) {
+            if ($search_option instanceof self) {
                 // Already wrapped, nothing to do
                 $result[] = $search_option;
             }

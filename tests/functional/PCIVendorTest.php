@@ -119,4 +119,18 @@ class PCIVendorTest extends DbTestCase
             $vendors->getProductName('0010', '8139')
         );
     }
+
+    public function testListIsFetchedOnceFromCache()
+    {
+        global $GLPI_CACHE;
+
+        $vendors = new \PCIVendor();
+        $this->assertSame('Allied Telesis, Inc (Wrong ID)', $vendors->getManufacturer('0010'));
+
+        // Remove the list from cache: next lookups on the same instance must not fetch it again
+        $GLPI_CACHE->delete($vendors->getListCacheKey());
+        $this->assertSame('AT-2500TX V3 Ethernet', $vendors->getProductName('0010', '8139'));
+        $this->assertSame('Allied Telesis, Inc (Wrong ID)', $vendors->getManufacturer('0010'));
+        $this->assertFalse($GLPI_CACHE->has($vendors->getListCacheKey()));
+    }
 }

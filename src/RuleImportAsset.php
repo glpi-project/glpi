@@ -967,7 +967,7 @@ class RuleImportAsset extends Rule
                     }
 
                     $back_class = Unmanaged::class;
-                    if (is_a($class, MainAsset::class)) {
+                    if ($class instanceof MainAsset) {
                         $back_class = $class->getItemtype();
                     }
                     if ($class && !isset($params['return'])) {
@@ -1015,7 +1015,7 @@ class RuleImportAsset extends Rule
                         }
 
                         $back_class = Unmanaged::class;
-                        if (is_a($class, MainAsset::class)) {
+                        if ($class instanceof MainAsset) {
                             $back_class = $class->getItemtype();
                         }
 
