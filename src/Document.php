@@ -1833,19 +1833,14 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     }
 
     /**
-     * Remove $input fields that should not be provided by user input
+     * Remove $input fields that should not be provided by user input, but computed from the uploaded file directly.
      *
      * @param  array<string, mixed> $input
      * @return array<string, mixed>
      */
     private function filterFields(array $input): array
     {
-        // security (don't accept filename from $_REQUEST)
-        if (array_key_exists('filename', $_REQUEST)) {
-            unset($input['filename']);
-        }
-
-        $blacklisted = ['filepath', 'sha1sum'];
+        $blacklisted = ['filename', 'mime', 'filepath', 'sha1sum'];
         return array_filter($input, static fn($v, $k) => !in_array($k, $blacklisted), ARRAY_FILTER_USE_BOTH);
     }
 }

@@ -41,6 +41,7 @@ use Auth;
 use AutoUpdateSystem;
 use Blacklist;
 use CommonDBTM;
+use DateTime;
 use Domain;
 use Domain_Item;
 use DomainRelation;
@@ -161,7 +162,12 @@ abstract class MainAsset extends InventoryAsset
                 && property_exists($this->raw_data->content, 'operatingsystem')
                 && property_exists($this->raw_data->content->operatingsystem, 'boot_time')
             ) {
-                $val->last_boot = $entry->content->operatingsystem->boot_time;
+                $boot_time = $entry->content->operatingsystem->boot_time;
+                // Prevent invalid dates (e.g. "2019-54-17 10:54:37"), that would make the SQL query fail
+                $boot_date = DateTime::createFromFormat('Y-m-d H:i:s', (string) $boot_time);
+                if ($boot_date !== false && $boot_date->format('Y-m-d H:i:s') === $boot_time) {
+                    $val->last_boot = $boot_time;
+                }
             }
 
             if (isset($this->extra_data['hardware'])) {

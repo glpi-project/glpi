@@ -179,6 +179,38 @@ test('Search for Solution', async ({ profile, page, api }) => {
     await expect(followup_rich_text).not.toBeEmpty();
 });
 
+test('KB search result actions stay reachable with unbreakable preview content', async ({ profile, page, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const name = `KB unbreakable preview ${randomUUID()}`;
+    const ticket_id = await api.createItem('Ticket', {
+        name: name,
+        content: name,
+        entities_id: getWorkerEntityId(),
+    });
+    // Blockquote content is converted with non-breaking spaces in the text preview
+    const long_text = 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. '.repeat(3);
+    await api.createItem('KnowbaseItem', {
+        name: name,
+        answer: `<p>Intro</p><blockquote><p>${long_text}</p></blockquote><p>${'x'.repeat(400)}</p>`,
+    });
+
+    const ticket = new TicketPage(page);
+    await ticket.goto(ticket_id);
+    await ticket.getButton('Answer').click();
+    await ticket.getButton('Search in the knowledge base').click();
+
+    const kb_modal = page.getByRole('dialog', { name: 'Search in the knowledge base' });
+    const result = kb_modal.getByRole('listitem').filter({ hasText: name });
+    await expect(result).toBeVisible();
+    await expect(result.getByTitle('Use this entry')).toBeInViewport();
+    await expect(result.getByTitle('Preview')).toBeInViewport();
+
+    await result.getByTitle('Use this entry').click();
+    await expect(kb_modal).not.toBeAttached();
+    const followup_block = page.getByTestId('new-ITILFollowup-block');
+    await expect(ticket.getRichTextByLabel('Followup', followup_block)).toContainText('Intro');
+});
+
 test('Validation step template without validation step set', async ({ profile, page, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const rand = randomUUID();

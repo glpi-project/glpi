@@ -36,6 +36,7 @@ namespace tests\units;
 
 use Entity;
 use Generator;
+use Glpi\Exception\RedirectException;
 use Glpi\Tests\DbTestCase;
 use Group;
 use Group_User;
@@ -43,8 +44,10 @@ use Notification;
 use NotificationEventMailing;
 use NotificationTarget;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Profile;
 use Psr\Log\LogLevel;
 use Session;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Ticket;
 use User;
 
@@ -874,5 +877,96 @@ class NotificationTargetTest extends DbTestCase
         $notification_target->addItemGroupTechInCharge();
 
         $this->assertSame([], $notification_target->target);
+    }
+
+    public function testUpdateRecipientsFormWithNotificationRight(): void
+    {
+        // --- arrange ---
+        $this->login(); // super-admin, has notification UPDATE right
+        $this->setEntity('Root entity', true); // the notification belongs to the root entity
+        $notifications_id = $this->getPasswordForgetNotificationId();
+        $profiles_id = getItemByTypeName(Profile::class, 'Observer', true);
+        $existing_targets = array_map(
+            static fn(array $row) => ['type' => $row['type'], 'items_id' => $row['items_id']],
+            getAllDataFromTable(NotificationTarget::getTable(), ['notifications_id' => $notifications_id])
+        );
+        assert(count($existing_targets) > 0);
+        assert(!(new NotificationTarget())->getFromDBForTarget($notifications_id, Notification::PROFILE_TYPE, $profiles_id));
+
+        // same payload as the recipients form: every checked target, existing ones included
+        $_POST = [
+            'update'           => 1,
+            'itemtype'         => User::class,
+            'notifications_id' => $notifications_id,
+            // Same payload as the recipients form: every recipient to keep, as "<type>_<items_id>",
+            // since updateTargets() deletes the active ones that are not posted, plus the Observer profile to add.
+            '_targets'         => [
+                ...array_map(static fn(array $target) => $target['type'] . '_' . $target['items_id'], array_values($existing_targets)),
+                Notification::PROFILE_TYPE . '_' . $profiles_id,
+            ],
+        ];
+
+        // --- act ---
+        $exception = null;
+        try {
+            include GLPI_ROOT . '/front/notificationtarget.form.php';
+        } catch (\Throwable $e) {
+            $exception = $e;
+        } finally {
+            $_POST = [];
+        }
+
+        // --- assert ---
+        // Html::back() ends the controller by throwing a RedirectException
+        $this->assertInstanceOf(RedirectException::class, $exception, (string) $exception?->getMessage());
+        $this->assertTrue((new NotificationTarget())->getFromDBForTarget($notifications_id, Notification::PROFILE_TYPE, $profiles_id));
+        foreach ($existing_targets as $target) {
+            $this->assertTrue((new NotificationTarget())->getFromDBForTarget($notifications_id, $target['type'], $target['items_id']));
+        }
+    }
+
+    public function testUpdateRecipientsFormWithoutNotificationRight(): void
+    {
+        // --- arrange ---
+        $this->login('normal'); // Observer profile: central interface, no notification right
+        assert(Session::getCurrentInterface() === 'central');
+        assert(!Session::haveRight(Notification::$rightname, UPDATE));
+        $notifications_id = $this->getPasswordForgetNotificationId();
+        $profiles_id = getItemByTypeName(Profile::class, 'Observer', true);
+        $targets_before = getAllDataFromTable(NotificationTarget::getTable(), ['notifications_id' => $notifications_id]);
+        assert(count($targets_before) > 0);
+
+        $_POST = [
+            'update'           => 1,
+            'itemtype'         => User::class,
+            'notifications_id' => $notifications_id,
+            '_targets'         => [Notification::PROFILE_TYPE . '_' . $profiles_id],
+        ];
+
+        // --- act ---
+        $exception = null;
+        try {
+            include GLPI_ROOT . '/front/notificationtarget.form.php';
+        } catch (\Throwable $e) {
+            $exception = $e;
+        } finally {
+            $_POST = [];
+        }
+
+        // --- assert ---
+        $this->assertInstanceOf(AccessDeniedHttpException::class, $exception);
+        // neither the requested target is added nor the existing ones are removed
+        $this->assertEquals(
+            $targets_before,
+            getAllDataFromTable(NotificationTarget::getTable(), ['notifications_id' => $notifications_id])
+        );
+    }
+
+    private function getPasswordForgetNotificationId(): int
+    {
+        $notification = new Notification();
+        assert($notification->getFromDBByCrit(['itemtype' => User::class, 'event' => 'passwordforget']));
+
+        return $notification->getID();
     }
 }

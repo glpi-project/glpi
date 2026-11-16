@@ -57,6 +57,9 @@ use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\ITILFollowupField;
+use Glpi\Form\Destination\CommonITILField\ITILFollowupFieldConfig;
+use Glpi\Form\Destination\CommonITILField\ITILFollowupFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsField;
 use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsFieldConfig;
 use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsFieldStrategy;
@@ -1658,6 +1661,11 @@ final class FormSerializerTest extends DbTestCase
                 . $description_tag_provider->getTags($form)[0]->html
                 . $description_tag_provider->getTags($form)[1]->html
             ))->jsonSerialize(),
+            // Use answer data in the followup content
+            ITILFollowupField::getKey() => (new ITILFollowupFieldConfig(
+                strategy: ITILFollowupFieldStrategy::SPECIFIC_CONTENT,
+                specific_content: $answers_tag_provider->getTags($form)[0]->html,
+            ))->jsonSerialize(),
         ];
         $this->updateItem(
             $destination::class,
@@ -1717,6 +1725,40 @@ final class FormSerializerTest extends DbTestCase
         $this->assertStringContainsString(
             "data-form-tag-value=\"{$imported_comment_2->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\CommentDescriptionTagProvider\"",
             $imported_destination->getConfig()[ContentField::getKey()]['value'],
+        );
+        $this->assertStringContainsString(
+            "data-form-tag-value=\"{$imported_question->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\AnswerTagProvider\"",
+            $imported_destination->getConfig()[ITILFollowupField::getKey()][ITILFollowupFieldConfig::SPECIFIC_CONTENT],
+        );
+    }
+
+    public function testFollowupConfigWithoutContentIsImportedAsIs(): void
+    {
+        // Arrange: create a form with a followup config that has no content,
+        // like configs saved before the "specific content" strategy existed
+        // or saved with another strategy (the hidden editor is not submitted)
+        $form = $this->createForm(new FormBuilder("My form"));
+        $destinations = $form->getDestinations();
+        $destination = array_pop($destinations);
+        $legacy_config = [
+            ITILFollowupFieldConfig::STRATEGY => ITILFollowupFieldStrategy::NO_FOLLOWUP->value,
+        ];
+        $this->updateItem(
+            $destination::class,
+            $destination->getId(),
+            ['config' => [ITILFollowupField::getKey() => $legacy_config]],
+            ["config"],
+        );
+
+        // Act: export then import the form
+        $imported_form = $this->exportAndImportForm($form);
+        $imported_destinations = $imported_form->getDestinations();
+        $imported_destination = array_pop($imported_destinations);
+
+        // Assert: the followup config is unchanged
+        $this->assertEquals(
+            $legacy_config,
+            $imported_destination->getConfig()[ITILFollowupField::getKey()],
         );
     }
 

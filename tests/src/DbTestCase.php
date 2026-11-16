@@ -337,6 +337,28 @@ class DbTestCase extends GLPITestCase
     }
 
     /**
+     * Create a Document with a known filename/mime but no uploaded file. Document input no longer
+     * accepts these fields (GLPI sets them from the uploaded file), so they are written directly.
+     *
+     * @param array $input
+     *
+     * @return Document
+     */
+    protected function createDocumentWithFilename(array $input): Document
+    {
+        global $DB;
+
+        $forced   = array_intersect_key($input, ['filename' => true, 'mime' => true]);
+        $document = $this->createItem(Document::class, array_diff_key($input, $forced));
+        if ($forced !== []) {
+            $this->assertTrue($DB->update(Document::getTable(), $forced, ['id' => $document->getID()]));
+            $this->assertTrue($document->getFromDB($document->getID()));
+        }
+
+        return $document;
+    }
+
+    /**
      * Delete an item of the given class
      *
      * @param string $itemtype

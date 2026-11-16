@@ -600,24 +600,28 @@ class Toolbox
             throw new NotFoundHttpException();
         }
 
+        // Strip control chars: a CR/LF here would break the Content-disposition header and let
+        // the file be served inline.
+        $filename = preg_replace('/[\x00-\x1F\x7F]/', '', $filename);
+
         // if $mime is defined, ignore mime type by extension
         if ($mime === null && preg_match('/\.(...)$/', $path)) {
             $mime = self::getMime($path);
         }
+        // The stored mime may come from the client (a value set before it was filtered)
+        $mime = self::normalizeMimeType($mime);
 
         $can_be_inlined = false;
-        if ($mime !== null) {
-            if (
-                str_starts_with(strtolower($mime), 'image/')
-                && strtolower($mime) !== 'image/svg+xml'
-            ) {
-                // images files can be inlined
-                // except for svg (vector of attack, see https://github.com/glpi-project/glpi/issues/3873)
-                $can_be_inlined = true;
-            } elseif (strtolower($mime) === 'application/pdf') {
-                // PDF files can be inlined
-                $can_be_inlined = true;
-            }
+        if (
+            str_starts_with($mime, 'image/')
+            && $mime !== 'image/svg+xml'
+        ) {
+            // images files can be inlined
+            // except for svg (vector of attack, see https://github.com/glpi-project/glpi/issues/3873)
+            $can_be_inlined = true;
+        } elseif ($mime === 'application/pdf') {
+            // PDF files can be inlined
+            $can_be_inlined = true;
         }
         $attachment = $can_be_inlined === false ? ' attachment;' : '';
 
@@ -645,6 +649,8 @@ class Toolbox
             . rawurlencode($filename);
         $headers['Content-Disposition'] = $content_disposition;
         $headers['Content-type'] = $mime;
+        // Never let the browser sniff/override the declared type for a downloaded file.
+        $headers['X-Content-Type-Options'] = 'nosniff';
 
         // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
         // http://tools.ietf.org/html/rfc7232#section-3.3
@@ -697,6 +703,26 @@ class Toolbox
         Toolbox::deprecated();
 
         static::getFileAsResponse($file, $filename, $mime, $expires_headers)->send();
+    }
+
+    /**
+     * Keep only the lowercased `type/subtype` of a mime type, without parameters.
+     * Parameters (`image/svg+xml;charset=utf-8`) or control chars would bypass the inline check
+     * or break the `Content-type` header; an invalid value falls back to `application/octet-stream`.
+     */
+    private static function normalizeMimeType(?string $mime): string
+    {
+        if ($mime === null) {
+            return 'application/octet-stream';
+        }
+
+        $mime = strtolower(trim(explode(';', preg_replace('/[\x00-\x1F\x7F]/', '', $mime), 2)[0]));
+        if (preg_match('/^[a-z0-9_.+-]+\/[a-z0-9_.+-]+$/', $mime) !== 1) {
+            // We just validate the format, not the mime type validity.
+            return 'application/octet-stream';
+        }
+
+        return $mime;
     }
 
 
