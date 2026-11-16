@@ -538,16 +538,11 @@ test('Fields panel shows sections state and panel width toggle direction', async
     await expect(switch_icon).toHaveClass(/ti-caret-right-filled/);
     await page.reload();
     await expect(switch_icon).toHaveClass(/ti-caret-right-filled/);
+});
 
-    // Restore the default layout, as it is stored in the worker user preferences
-    layout_saved = waitForLayoutSave();
-    await switch_button.click();
-    await layout_saved;
-    await expect(switch_icon).toHaveClass(/ti-caret-left-filled/);
-    layout_saved = waitForLayoutSave();
-    await main_section_button.click();
-    await layout_saved;
-    await expect(main_section_button).toHaveAttribute('aria-expanded', 'true');
+test.afterEach(async ({ api }) => {
+    // The layout is stored in the worker user preferences, reset it even if a test failed
+    await api.updateItem('User', getWorkerUserId(), { itil_layout: null });
 });
 
 test('Open category dropdown is not orphaned when type change reloads it', async ({ profile, page, api }) => {

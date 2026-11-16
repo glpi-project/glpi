@@ -160,7 +160,7 @@ $(function() {
 
         // Hide all accordion item
         $('#itil-data .accordion-collapse').removeClass('show');
-        $('#itil-data .accordion-button').addClass('collapsed');
+        $('#itil-data .accordion-button').addClass('collapsed').attr('aria-expanded', 'false');
 
        saveFieldPanelState();
     });
