@@ -79,8 +79,9 @@
         Reference: https://github.com/glpi-project/glpi/pull/10300
     #}
     {% set safe_item_fields = item.fields|filter((value, key) => key != 'content') %}
-    <script type="module" defer>
-        import ItemtypeCommentPopover from '/js/modules/Form/ItemtypeCommentPopover.js';
+    <script>
+    (function() {
+        'use strict';
 
         const actorytype = '{{ actortype|e('js') }}';
 
@@ -158,7 +159,7 @@
             const option_element = $(`<span class="actor_entry" data-itemtype="${_.escape(itemtype)}" data-items-id="${_.escape(items_id)}" data-actortype="${_.escape(actorytype)}" data-testid="actor-entry-${_.escape(actorytype)}-${_.escape(itemtype)}-${_.escape(items_id)}">${indent}${icon}${option_text}${actions}</span>`);
 
             if (is_selection && ['User', 'Group', 'Supplier'].includes(itemtype)) {
-                commentPopover.attachTo(option_element, itemtype, items_id);
+                comment_popover.then((popover) => popover.attachTo(option_element, itemtype, items_id));
             }
 
             // manage ticket information (number of assigned ticket for an actor)
@@ -194,9 +195,9 @@
         const select2_width = "{{ canassigntome ? 'calc(100% - 30px)' : '100%' }}";
 
         const actor_select = $("#actor_{{ rand }}");
-        const commentPopover = new ItemtypeCommentPopover(
-            actor_select.parent(),
-            ['.user-info-card', '.group-info-card', '.supplier-info-card']
+        // The select is initialized right away; the module is only needed once an actor is hovered.
+        const comment_popover = import('/js/modules/Form/ItemtypeCommentPopover.js').then(
+            (module) => new module.default(actor_select.parent(), ['.user-info-card', '.group-info-card', '.supplier-info-card'])
         );
         actor_select.select2({
             tags: true,
@@ -323,5 +324,6 @@
         {% if itiltemplate.isHiddenField('_groups_id_' ~ actortype) %}
         $(".actor_entry[data-itemtype=\"Group\"][data-actortype=\"{{ actortype|e('css')|e('js') }}\"]").parent().css("display", "none");
         {% endif %}
+    })();
     </script>
 {% endif %}

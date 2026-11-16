@@ -49,7 +49,39 @@ class WidgetTest extends DbTestCase
     public function tearDown(): void
     {
         Grid::$embed = false;
+
+        if (filter_var(ini_get('session.use_cookies'), FILTER_VALIDATE_BOOLEAN) === false) {
+            // Restore expected value for `session.use_cookies`.
+            session_write_close();
+            ini_set('session.use_cookies', '1');
+        }
+
         parent::tearDown();
+    }
+
+    /**
+     * Mirror the context of a stateless request (see `SessionStart` listener):
+     * no active session, and session cookies disabled.
+     */
+    private function simulateStatelessContext(): void
+    {
+        session_write_close();
+        ini_set('session.use_cookies', '0');
+    }
+
+    /**
+     * Return the parameters of a valid share link for the given context.
+     */
+    private function getEmbedParams(int $entities_id, int $is_recursive, int $profiles_id, int $users_id): array
+    {
+        return [
+            'dashboard'    => 'test_dashboard',
+            'entities_id'  => $entities_id,
+            'is_recursive' => $is_recursive,
+            'profiles_id'  => $profiles_id,
+            'users_id'     => $users_id,
+            'token'        => Grid::getToken('test_dashboard', $entities_id, $is_recursive, $profiles_id, $users_id),
+        ];
     }
 
     /**
@@ -202,19 +234,65 @@ class WidgetTest extends DbTestCase
         // This profile is never assigned to the logged in user, so even
         // though the token is valid for this exact combination, the
         // DB-backed assignment check must reject it.
-        $profiles_id = 999999;
+        // It exists, so that the rejection does not come from the profile lookup.
+        $profiles_id = getItemByTypeName('Profile', 'Observer', true);
 
-        $token = Grid::getToken('test_dashboard', $entities_id, $is_recursive, $profiles_id, $users_id);
+        $params = $this->getEmbedParams($entities_id, (int) $is_recursive, $profiles_id, $users_id);
+
+        // Run in a stateless context, so that the rejection comes from the profile check.
+        $this->simulateStatelessContext();
 
         $grid = new Grid('test_dashboard');
-        $grid->initEmbed([
-            'dashboard'    => 'test_dashboard',
-            'entities_id'  => $entities_id,
-            'is_recursive' => $is_recursive,
-            'profiles_id'  => $profiles_id,
-            'users_id'     => $users_id,
-            'token'        => $token,
-        ]);
+        $grid->initEmbed($params);
+    }
+
+    public function testInitEmbedInStatelessContext(): void
+    {
+        $this->login();
+        $entities_id  = (int) $_SESSION['glpiactive_entity'];
+        $is_recursive = (int) $_SESSION['glpiactive_entity_recursive'];
+        $profiles_id  = (int) $_SESSION['glpiactiveprofile']['id'];
+        $users_id     = (int) Session::getLoginUserID();
+
+        $params = $this->getEmbedParams($entities_id, $is_recursive, $profiles_id, $users_id);
+
+        $this->simulateStatelessContext();
+
+        $grid = new Grid('test_dashboard');
+        $grid->initEmbed($params);
+
+        $this->assertTrue(Grid::$embed);
+        $this->assertSame($users_id, $_SESSION['glpiID']);
+        $this->assertSame('embed_dashboard', $_SESSION['glpiname']);
+        $this->assertSame($profiles_id, (int) $_SESSION['glpiactiveprofile']['id']);
+    }
+
+    public function testInitEmbedDoesNotAlterAuthenticatedSession(): void
+    {
+        // A Self-Service user holding a valid share link of a Super-Admin dashboard
+        // must not be able to turn their own session into the Super-Admin one.
+        $this->login('post-only', 'postonly');
+        $attacker_id = (int) Session::getLoginUserID();
+        $profile_id  = (int) $_SESSION['glpiactiveprofile']['id'];
+
+        $params = $this->getEmbedParams(
+            0,
+            1,
+            getItemByTypeName('Profile', 'Super-Admin', true),
+            getItemByTypeName('User', 'glpi', true)
+        );
+
+        $grid = new Grid('test_dashboard');
+        try {
+            $grid->initEmbed($params);
+            $this->fail('An embed session must not be initialized in a stateful context.');
+        } catch (AccessDeniedHttpException) {
+            // expected
+        }
+
+        $this->assertFalse(Grid::$embed);
+        $this->assertSame($attacker_id, (int) $_SESSION['glpiID']);
+        $this->assertSame($profile_id, (int) $_SESSION['glpiactiveprofile']['id']);
     }
 
     public function testGetAllTypes()

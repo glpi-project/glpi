@@ -54,9 +54,11 @@ unset($request_data['data']);
 // Session check is disabled for this script when "embed" mode is used.
 // Indeed, it is declared as stateless by `\Glpi\Http\SessionManager::isResourceStateless()`,
 // to prevent using the session cookie for embed dashboards.
+// The `embed` flag is read from the request parameters only, not from the JSON payload,
+// so that this detection matches the one done by `isResourceStateless()`.
 $is_embed_request = in_array($_REQUEST['action'], ['get_dashboard_items', 'get_card', 'get_cards'])
-    && array_key_exists('embed', $request_data)
-    && (bool) $request_data['embed'];
+    && array_key_exists('embed', $_REQUEST)
+    && (bool) $_REQUEST['embed'];
 
 if ($is_embed_request) {
     // Right checks must be enforced at the controller/front file level, not only relied on

@@ -75,7 +75,7 @@
         "tinycolor2": "^1.6.0",
         "tinymce": "^8.10.1",
         "tinymce-i18n": "^26.11.2",
-        "vue": "^3.5.44",
+        "vue": "^3.5.45",
         "wunderbaum": "^0.15.0"
     },
     "scripts": {
@@ -118,7 +118,7 @@
         "eslint-plugin-playwright": "^2.12.0",
         "eslint-plugin-vue": "^10.12.0",
         "exports-loader": "^5.0.0",
-        "glob": "^14.0.3",
+        "glob": "^14.0.4",
         "globals": "^17.14.0",
         "jsdom": "^30.1.1",
         "mini-css-extract-plugin": "^2.10.2",
@@ -139,7 +139,7 @@
         "typescript": "^6.0.3",
         "vite": "^8.3.2",
         "vitest": "^5.0.3",
-        "vue-eslint-parser": "^10.4.1",
+        "vue-eslint-parser": "^10.4.2",
         "vue-loader": "^17.4.2",
         "vue3-gettext": "^4.0.1",
         "webpack": "^5.112.2",

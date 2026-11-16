@@ -433,4 +433,40 @@ class SavedSearchTest extends DbTestCase
             'is_private' => 1,
         ]));
     }
+
+    /**
+     * Without the `bookmark_public` right, a user keeps full access to its own
+     * private searches, and only to them.
+     */
+    public function testOwnerAccessToPrivateSearch(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(true);
+        $normal_id = getItemByTypeName(\User::class, 'normal', true);
+        $glpi_id   = getItemByTypeName(\User::class, 'glpi', true);
+
+        $input = [
+            'type'         => 1,
+            'itemtype'     => 'Ticket',
+            'is_private'   => 1,
+            'entities_id'  => $entity_id,
+            'url'          => 'front/ticket.php?itemtype=Ticket',
+        ];
+        $own   = $this->createItem(SavedSearch::class, ['name' => 'own', 'users_id' => $normal_id] + $input, ['url']);
+        $other = $this->createItem(SavedSearch::class, ['name' => 'other', 'users_id' => $glpi_id] + $input, ['url']);
+
+        $this->login('normal', 'normal');
+        $_SESSION['glpiactiveprofile'][SavedSearch::$rightname] = 0;
+
+        $own_input = ['users_id' => $normal_id] + $input;
+        $this->assertTrue((new SavedSearch())->can(-1, CREATE, $own_input));
+        $other_input = ['users_id' => $glpi_id] + $input;
+        $this->assertFalse((new SavedSearch())->can(-1, CREATE, $other_input));
+
+        foreach ([READ, UPDATE, DELETE, PURGE] as $right) {
+            $this->assertTrue((new SavedSearch())->can($own->getID(), $right), "Owner right $right");
+            $this->assertFalse((new SavedSearch())->can($other->getID(), $right), "Non-owner right $right");
+        }
+        $this->assertFalse((new SavedSearch())->can($own->getID(), READNOTE));
+    }
 }

@@ -40,18 +40,26 @@ use Computer;
 use DisplayPreference;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Capacity\CapacityInterface;
+use Glpi\Asset\Capacity\IsInventoriableCapacity;
 use Glpi\Asset\CustomFieldType\DropdownType;
+use Glpi\Asset\CustomFieldType\NumberType;
 use Glpi\Asset\CustomFieldType\RawType;
 use Glpi\Asset\CustomFieldType\StringType;
 use Glpi\Asset\CustomFieldType\TextType;
+use Glpi\Asset\CustomFieldType\TypeInterface;
 use Glpi\CustomObject\AbstractDefinition;
 use Glpi\Features\AssetImage;
+use Glpi\Inventory\MainAsset\GenericAsset;
+use Glpi\Inventory\MainAsset\MainAsset;
+use Glpi\Inventory\MainAsset\NetworkEquipment as NetworkEquipmentMainAsset;
+use Glpi\Inventory\MainAsset\Printer as PrinterMainAsset;
 use Group;
 use Location;
 use LogicException;
 use Manufacturer;
 use Profile;
 use Session;
+use SNMPCredential;
 use User;
 
 use function Safe\json_decode;
@@ -791,11 +799,81 @@ TWIG, $twig_params);
             ],
         ];
 
+        $fields += $this->getInventoryFields();
+
         foreach ($this->getCustomFieldDefinitions() as $custom_field_def) {
             $fields['custom_' . $custom_field_def->fields['system_name']] = [
                 'customfields_id'    => $custom_field_def->getID(),
                 'text' => $custom_field_def->computeFriendlyName(),
                 'type' => $custom_field_def->fields['type'],
+            ];
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Get the inventory main asset class used for the assets of this definition.
+     *
+     * @return class-string<MainAsset>|null `null` if the assets are not inventoriable.
+     */
+    public function getInventoryMainAsset(): ?string
+    {
+        if (!$this->hasCapacityEnabled(new IsInventoriableCapacity())) {
+            return null;
+        }
+
+        $main_asset = $this->getCapacityConfiguration(IsInventoriableCapacity::class)->getValue('inventory_mainasset');
+        if (!is_string($main_asset) || !is_a($main_asset, MainAsset::class, true)) {
+            // Default main asset, see `Glpi\Inventory\Inventory::getMainClass()`
+            return GenericAsset::class;
+        }
+
+        return $main_asset;
+    }
+
+    /**
+     * Get the fields filled by the inventory, depending on the inventory main asset type.
+     *
+     * @return array<string, array{text: string, type: class-string<TypeInterface>}>
+     */
+    private function getInventoryFields(): array
+    {
+        $main_asset = $this->getInventoryMainAsset();
+        if ($main_asset === null) {
+            return [];
+        }
+
+        if (!is_a($main_asset, NetworkEquipmentMainAsset::class, true)) {
+            // Computer like assets
+            return [
+                'last_boot' => [
+                    'text' => __('Last boot date'),
+                    'type' => RawType::class,
+                ],
+            ];
+        }
+
+        // Network equipment like assets (including printers)
+        $fields = [
+            'sysdescr' => [
+                'text' => __('Sysdescr'),
+                'type' => TextType::class,
+            ],
+            'snmpcredentials_id' => [
+                'text' => SNMPCredential::getTypeName(1),
+                'type' => DropdownType::class,
+            ],
+            'ram' => [
+                'text' => sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio')),
+                'type' => NumberType::class,
+            ],
+        ];
+
+        if (is_a($main_asset, PrinterMainAsset::class, true)) {
+            $fields['last_pages_counter'] = [
+                'text' => __('Current counter of pages'),
+                'type' => NumberType::class,
             ];
         }
 

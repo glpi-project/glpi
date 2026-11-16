@@ -39,6 +39,23 @@ use Glpi\Asset\Asset;
 
 class GenericPrinterAsset extends Printer
 {
+    public function prepare(): array
+    {
+        $data = parent::prepare();
+
+        // Native printers store the memory in a dedicated `memory_size` field,
+        // whereas generic assets use the `ram` field, like network equipments.
+        // Objects are shared with `$this->data`, so it is updated too.
+        foreach ($data as $val) {
+            if (property_exists($val, 'memory_size')) {
+                $val->ram = $val->memory_size;
+                unset($val->memory_size);
+            }
+        }
+
+        return $data;
+    }
+
     protected function getModelsFieldName(): string
     {
         /** @var Asset $item */

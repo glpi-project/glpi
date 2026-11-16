@@ -41,6 +41,9 @@
  * - columns: Column definitions as 'colkey' => 'label pairs. May be extended with
  *   'raw_header' (boolean), 'nosort' (boolean), 'no_filter' (boolean) and
  *   'filter_formatter' (string) options.
+ *   With 'filter_formatter' set to 'dropdown', the filter is an AJAX multiple dropdown
+ *   rendered by the 'filter_itemtype' (string) class, with optional 'filter_params'
+ *   (array) passed to its dropdown() method.
  * - total_number: Total count of all rows before any filtering.
  * - filtered_number: Count of rows after active filters are applied.
  * - formatters: Column rendering types to control cell output. Supported types are:
@@ -238,6 +241,14 @@
                                                 </option>
                                             {% endfor %}
                                         </select>
+                                    {% elseif formatter == "dropdown" and colum['filter_itemtype'] is defined %}
+                                        {{ call(colum['filter_itemtype'] ~ '::dropdown', [{
+                                            'name': 'filters[' ~ colkey ~ '][]',
+                                            'multiple': true,
+                                            'value': filters[colkey] ?? [],
+                                            'width': '100%',
+                                            'display': false,
+                                        }|merge(colum['filter_params'] ?? {})])|raw }}
                                     {% elseif formatter == "datetime" %}
                                         {{ call("Html::showDateTimeField", [
                                             "filters[" ~ colkey ~ "]",

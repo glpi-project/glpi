@@ -51,6 +51,7 @@ use Printer;
 use RuleImportAsset;
 use RuleMatchedLog;
 use Session;
+use SNMPCredential;
 
 class IsInventoriableCapacity extends AbstractCapacity
 {
@@ -89,7 +90,11 @@ class IsInventoriableCapacity extends AbstractCapacity
 
     public function getSearchOptions(string $classname): array
     {
-        $tab = Agent::rawSearchOptionsToAdd();
+        $tab = [];
+        $tab[] = [
+            'id'                 => 'inventory',
+            'name'               => Inventory::getTypeName(1),
+        ];
         $tab[] = [
             'id'                 => 42,
             'table'              => 'glpi_autoupdatesystems',
@@ -97,7 +102,49 @@ class IsInventoriableCapacity extends AbstractCapacity
             'name'               => AutoUpdateSystem::getTypeName(1),
             'datatype'           => 'dropdown',
         ];
-        return $tab;
+
+        $main_asset = $classname::getDefinition()->getInventoryMainAsset() ?? GenericAsset::class;
+
+        if (!is_a($main_asset, \Glpi\Inventory\MainAsset\NetworkEquipment::class, true)) {
+            // Computer like assets
+            $tab[] = [
+                'id'                 => 10,
+                'table'              => $classname::getTable(),
+                'field'              => 'last_boot',
+                'name'               => __('Last boot date'),
+                'datatype'           => 'datetime',
+                'massiveaction'      => false,
+            ];
+            return array_merge($tab, Agent::rawSearchOptionsToAdd());
+        }
+
+        // Network equipment like assets (including printers)
+        $tab[] = [
+            'id'                 => 15,
+            'table'              => $classname::getTable(),
+            'field'              => 'ram',
+            'name'               => sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio')),
+            'datatype'           => 'number',
+        ];
+        $tab[] = [
+            'id'                 => 73,
+            'table'              => SNMPCredential::getTable(),
+            'field'              => 'name',
+            'name'               => SNMPCredential::getTypeName(1),
+            'datatype'           => 'dropdown',
+        ];
+
+        if (is_a($main_asset, \Glpi\Inventory\MainAsset\Printer::class, true)) {
+            $tab[] = [
+                'id'                 => 33,
+                'table'              => $classname::getTable(),
+                'field'              => 'last_pages_counter',
+                'name'               => __('Current counter of pages'),
+                'datatype'           => 'number',
+            ];
+        }
+
+        return array_merge($tab, Agent::rawSearchOptionsToAdd());
     }
 
     public function getCloneRelations(): array

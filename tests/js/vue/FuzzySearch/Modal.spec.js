@@ -144,6 +144,40 @@ describe('FuzzySearch/Modal Vue Component', () => {
         expect($('#fuzzysearch .results li').length).toBe(1);
         expect($('#fuzzysearch .results li a').attr('href')).toBe('url2');
     });
+    test('highlighting does not break escaped HTML entities', async () => {
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/fuzzysearch.php', 'GET', {}, () => {
+            return [
+                {
+                    url: 'url1',
+                    title: 'Administration > Rules > Rules for assigning a ticket'
+                },
+                {
+                    url: 'url2',
+                    title: 'Assets > <img src=x onerror=alert(1)>'
+                }
+            ];
+        }));
+
+        const wrapper = mount(FuzzySearchModal, {
+            attachTo: '#fuzzy-search-modal'
+        });
+        await new Promise(process.nextTick);
+        $('.trigger-fuzzy').click();
+        await new Promise(process.nextTick);
+
+        // "g" is also a letter of the "&gt;" entity
+        await wrapper.find('input').setValue('rulesg');
+        expect($('#fuzzysearch .results li').length).toBe(1);
+        expect($('#fuzzysearch .results li a').text()).toBe('Administration > Rules > Rules for assigning a ticket');
+        expect($('#fuzzysearch .results li a b').length).toBe(6);
+
+        // titles are still escaped
+        await wrapper.find('input').setValue('img');
+        expect($('#fuzzysearch .results li').length).toBe(1);
+        expect($('#fuzzysearch .results li a img').length).toBe(0);
+        expect($('#fuzzysearch .results li a').text()).toBe('Assets > <img src=x onerror=alert(1)>');
+    });
     test('close modal', async () => {
         const wrapper = mount(FuzzySearchModal, {
             attachTo: '#fuzzy-search-modal'

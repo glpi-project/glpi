@@ -419,7 +419,7 @@ HTML;
 
         $image_matches = [];
         preg_match_all(
-            '/<a[^>]*>\s*<img[^>]*src=["\']([^"\']*document\.send\.php\?docid=([0-9]+)(?:&[^"\']+)?)["\'][^>]*>\s*<\/a>/',
+            '/<a[^>]*>\s*<img[^>]*src=["\']([^"\']*document\.send\.php\?docid(?:=|&#61;)([0-9]+)(?:&[^"\']+)?)["\'][^>]*>\s*<\/a>/',
             $content,
             $image_matches,
             PREG_SET_ORDER
@@ -430,10 +430,15 @@ HTML;
             $docid   = $image_match[2];
 
             // Special chars are encoded in `src` attribute. We decode them to be sure to work with "raw" data.
-            $docsrc  = htmlspecialchars_decode($image_match[1], ENT_QUOTES);
+            $docsrc  = html_entity_decode($image_match[1], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+            // Same check as `front/document.send.php`: the size of an image is not given to a user who cannot view it.
+            $params = [];
+            parse_str(explode('#', explode('?', $docsrc, 2)[1] ?? '')[0], $params);
+            $params = array_filter($params, 'is_string');
 
             $document = new Document();
-            if ($document->getFromDB($docid)) {
+            if ($document->getFromDB($docid) && $document->canViewFile($params)) {
                 $docpath = GLPI_DOC_DIR . '/' . $document->fields['filepath'];
                 if (Document::isImage($docpath)) {
                     //find width / height define by user
@@ -504,15 +509,25 @@ HTML;
             }
             $out .= "<figure itemprop='associatedMedia' itemscope itemtype='http://schema.org/ImageObject'>";
             $out .= "<a href='" . htmlescape($img['src']) . "' itemprop='contentUrl' data-index='0'>";
+            if (($img['w'] ?? 0) > 0 && ($img['h'] ?? 0) > 0) {
+                // Both dimensions are needed for the browser to reserve the box of the image before it is loaded.
+                $img['thumbnail_w'] ??= (int) round(($img['thumbnail_h'] ?? $img['h']) * $img['w'] / $img['h']);
+                $img['thumbnail_h'] ??= (int) round($img['thumbnail_w'] * $img['h'] / $img['w']);
+            }
             $width_attr = isset($img['thumbnail_w']) ? "width='" . ((int) $img['thumbnail_w']) . "'" : "";
             $height_attr = isset($img['thumbnail_h']) ? "height='" . ((int) $img['thumbnail_h']) . "'" : "";
-            $out .= "<img src='" . htmlescape($img['thumbnail_src']) . "' itemprop='thumbnail' loading='lazy' {$width_attr} {$height_attr}>";
+            // The height of a thumbnail is automatic (see `_richtext.scss`): without an explicit ratio, the one of the
+            // file replaces the one of the attributes once it is loaded, and the image changes its height.
+            $ratio_attr = (int) ($img['thumbnail_w'] ?? 0) > 0 && (int) ($img['thumbnail_h'] ?? 0) > 0
+                ? "style='aspect-ratio: " . ((int) $img['thumbnail_w']) . " / " . ((int) $img['thumbnail_h']) . "'"
+                : "";
+            $out .= "<img src='" . htmlescape($img['thumbnail_src']) . "' itemprop='thumbnail' loading='lazy' {$width_attr} {$height_attr} {$ratio_attr}>";
             $out .= "</a>";
             $out .= "</figure>";
         }
         $out .= "</div>";
 
-        $items_json = json_encode($imgs);
+        $items_json = json_encode($imgs, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
         $close_json = json_encode($p['controls']['close'] ?? false);
         $zoom_json  = json_encode($p['controls']['zoom'] ?? false);
 

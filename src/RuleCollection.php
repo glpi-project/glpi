@@ -1256,7 +1256,7 @@ TWIG, $twig_params);
                             $refused_rule['reasons']['criteria'][] = [
                                 'id' => $k_crit,
                                 'name' => $tmprule->getCriteriaName($criteria["criteria"]),
-                                'label' => RuleCriteria::getConditionByID($criteria["condition"], $item::class, $criteria["criteria"]),
+                                'label' => RuleCriteria::getConditionByID($criteria["condition"], $tmprule::class, $criteria["criteria"]),
                                 'pattern' => $criteria["pattern"],
                             ];
                         } else {

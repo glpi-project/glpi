@@ -5187,8 +5187,8 @@ class SearchTest extends DbTestCase
             'search_option'    => 15, // date
             'searchtype'       => 'equals',
             'value'            => 'NULL',
-            'expected_and'     => "AND {$ticket_date} IS NULL GROUP BY",
-            'expected_and_not' => "AND NOT ({$ticket_date} IS NULL) GROUP BY",
+            'expected_and'     => "AND ({$ticket_date} IS NULL) GROUP BY",
+            'expected_and_not' => "AND (NOT ({$ticket_date} IS NULL)) GROUP BY",
             'expected_values'    => [],
         ];
     }
@@ -8323,6 +8323,39 @@ class SearchTest extends DbTestCase
         $this->assertSame(1, $data['data']['totalcount']);
         $ids = array_values(array_map('intval', array_column(array_column($data['data']['rows'], 'raw'), 'id')));
         $this->assertSame([$id], $ids);
+    }
+
+    public function testOrCriteriaDoNotBypassEntityRestriction(): void
+    {
+        $this->login();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Pending ticket in another entity',
+            'content'     => '',
+            'entities_id' => getItemByTypeName('Entity', '_test_child_2', true),
+        ]);
+        $this->updateItem(Ticket::class, $ticket->getID(), ['status' => \CommonITILObject::WAITING]);
+
+        $this->setEntity('_test_child_1', false);
+
+        $data = $this->doSearch(Ticket::class, [
+            'criteria' => [
+                [
+                    'field'      => 12,
+                    'searchtype' => 'equals',
+                    'value'      => 'process',
+                ],
+                [
+                    'link'       => 'OR',
+                    'field'      => 12,
+                    'searchtype' => 'equals',
+                    'value'      => \CommonITILObject::WAITING,
+                ],
+            ],
+        ]);
+
+        $this->assertNotContains($ticket->getID(), array_column($data['data']['rows'], 'id'));
+        $this->assertSame(0, $data['data']['totalcount']);
     }
 }
 

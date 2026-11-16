@@ -1104,6 +1104,15 @@ final class SQLProvider implements SearchProviderInterface
 
             case KnowbaseItem::class:
                 $criteria = KnowbaseItem::getVisibilityCriteria(false)['WHERE'];
+                // Hide articles outside their visibility period, except to KB admins and to their author
+                if (!Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN)) {
+                    $date_criteria = KnowbaseItem::getVisibilityDateCriteria();
+                    // No author exemption when anonymous: `false` would match articles of purged users (users_id = 0)
+                    $users_id = Session::getLoginUserID();
+                    $criteria[] = $users_id === false
+                        ? $date_criteria
+                        : ['OR' => [['glpi_knowbaseitems.users_id' => $users_id], $date_criteria]];
+                }
                 break;
 
             case Form::class:
@@ -1442,7 +1451,7 @@ final class SQLProvider implements SearchProviderInterface
             if ($SEARCH === []) {
                 return;
             }
-            if (is_a($value, QueryExpression::class)) {
+            if ($value instanceof QueryExpression) {
                 $values = $value->getParams();
                 $search_str = '';
                 $iterator = new DBmysqlIterator(null);
@@ -2231,7 +2240,7 @@ final class SQLProvider implements SearchProviderInterface
 
                         if (is_array($value)) {
                             $new_criteria[$new_key] = $replace_placeholders($value);
-                        } elseif (is_a($value, QueryExpression::class)) {
+                        } elseif ($value instanceof QueryExpression) {
                             $value_string = $value->getValue();
                             $new_value = strtr($value_string, $placeholders);
                             $new_criteria[$new_key] = new QueryExpression($new_value, values: $value->getParams());
@@ -3069,7 +3078,7 @@ final class SQLProvider implements SearchProviderInterface
                 $add_link = 'AND';
                 if (is_array($additional_criteria)) {
                     $first_criteria = reset($additional_criteria) ?? '';
-                    if (is_string($first_criteria) || is_a($first_criteria, QueryExpression::class)) {
+                    if (is_string($first_criteria) || $first_criteria instanceof QueryExpression) {
                         $first_criteria = trim($first_criteria);
                         // If the first criteria starts with AND or OR, use it as a link operator
                         if (preg_match('/^(AND|OR)\s+/', $first_criteria, $matches)) {
@@ -3104,7 +3113,7 @@ final class SQLProvider implements SearchProviderInterface
                     $replaced_key = (string) $new_key !== (string) $key;
                     if (is_array($value)) {
                         $new_criteria[$new_key] = $replace_placeholders($value);
-                    } elseif (is_a($value, QueryExpression::class)) {
+                    } elseif ($value instanceof QueryExpression) {
                         $value_string = $value->getValue();
                         $new_value = strtr($value_string, $placeholders);
                         $new_criteria[$new_key] = new QueryExpression($new_value, values: $value->getParams());
@@ -5026,10 +5035,10 @@ final class SQLProvider implements SearchProviderInterface
         // If there are search items
         if (count($data['search']['criteria'])) {
             $main_where = self::constructCriteriaSQL($data['search']['criteria'], $data, $searchopt);
-            if ($WHERE !== '' && $main_where->getQuery() !== '') {
-                $WHERE .= ' AND ';
+            if ($main_where->getQuery() !== '') {
+                // Group the criteria so that their OR links do not bypass the restrictions above
+                $WHERE .= ($WHERE !== '' ? ' AND ' : '') . '(' . $main_where->getQuery() . ')';
             }
-            $WHERE  .= $main_where->getQuery();
             $WHERE_VALUES = array_merge($WHERE_VALUES, $main_where->getParams());
             $main_having = self::constructCriteriaSQL($data['search']['criteria'], $data, $searchopt, true);
             $HAVING = $main_having->getQuery();
@@ -7998,7 +8007,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $out .= $separate;
                             }
                             $count_display++;
-                            $out .= $so['toadd'][$data[$ID][$k]['name']] ?? Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit);
+                            $out .= $so['toadd'][$data[$ID][$k]['name']] ?? Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit, $so['decimals'] ?? 0);
                         }
                     }
                     $out = "<span class='text-nowrap'>" . \htmlescape($out) . "</span>";

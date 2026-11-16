@@ -109,3 +109,35 @@ test('Can terminate sessions', async ({
         anonymousPage.getByRole('link', { name: "Log in again" })
     ).toBeVisible();
 });
+
+test('Displays the error message when the revocation fails', async ({ page, profile }) => {
+    await profile.set(Profiles.SuperAdmin);
+
+    // Never let the request reach the server: revoking all sessions would
+    // terminate the sessions used by the other tests.
+    let accept_header: string | undefined;
+    await page.route('**/Security/Session/All/Revoke', async (route) => {
+        accept_header = route.request().headers()['accept'];
+        await route.fulfill({
+            status: 403,
+            contentType: 'application/json',
+            body: JSON.stringify({
+                error: true,
+                title: 'Access denied',
+                message: 'Sessions cannot be revoked for now.',
+            }),
+        });
+    });
+
+    await page.goto("/front/security/securityconfig.form.php?forcetab=Glpi\\Security\\SecurityConfig$2");
+    await expect(page.getByText("Session list")).toBeVisible();
+    await page.getByRole("button", { name: "Revoke all active sessions" }).click();
+
+    const confirm_dialog = page.getByRole('dialog');
+    await expect(confirm_dialog).toHaveAttribute('data-glpi-modal-shown', 'true');
+    await confirm_dialog.getByRole("button", { name: "Revoke" }).click();
+
+    // The error message returned by the server is displayed to the user.
+    await expect(page.getByText('Sessions cannot be revoked for now.')).toBeVisible();
+    expect(accept_header).toContain('application/json');
+});

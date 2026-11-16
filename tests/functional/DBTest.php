@@ -579,6 +579,66 @@ class DBTest extends GLPITestCase
         $this->assertCount(1, $tables);
     }
 
+    public function testSchemaChecksOnNonCompliantTables(): void
+    {
+        $db = new \DB();
+        $db->log_deprecation_warnings = false; // Prevent deprecation warning from MySQL server
+        // Prevent GLPI warnings about the non-compliant definitions below.
+        $db->use_utf8mb4 = true;
+        $db->allow_datetime = true;
+        $db->allow_signed_keys = true;
+
+        $core_table   = sprintf('glpi_testschemachecks_%s', uniqid());
+        $plugin_table = sprintf('glpi_plugin_testschemachecks_%s', uniqid());
+        foreach ([$core_table, $plugin_table] as $table) {
+            $db->doQuery(
+                sprintf(
+                    'CREATE TABLE `%s` (
+                        `id` int NOT NULL AUTO_INCREMENT,
+                        `users_id` int NOT NULL DEFAULT 0,
+                        `items_id` int unsigned NOT NULL DEFAULT 0,
+                        `date` datetime NULL,
+                        `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NULL,
+                        PRIMARY KEY (`id`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci',
+                    $table
+                )
+            );
+        }
+
+        try {
+            foreach ([false, true] as $exclude_plugins) {
+                $expected_tables = $exclude_plugins ? [$core_table] : [$core_table, $plugin_table];
+                $found_tables = static fn(iterable $rows): array => array_values(array_intersect(
+                    [$core_table, $plugin_table],
+                    array_column(iterator_to_array($rows, false), 'TABLE_NAME')
+                ));
+
+                $this->assertSame($expected_tables, $found_tables($db->getTzIncompatibleTables($exclude_plugins)));
+                $this->assertSame($expected_tables, $found_tables($db->getNonUtf8mb4Tables($exclude_plugins)));
+
+                $signed_keys = [];
+                foreach ($db->getSignedKeysColumns($exclude_plugins) as $row) {
+                    if (in_array($row['TABLE_NAME'], [$core_table, $plugin_table], true)) {
+                        $signed_keys[] = $row['TABLE_NAME'] . '.' . $row['COLUMN_NAME'];
+                    }
+                }
+                sort($signed_keys);
+                $expected_signed_keys = [];
+                foreach ($expected_tables as $table) {
+                    $expected_signed_keys[] = $table . '.id';
+                    $expected_signed_keys[] = $table . '.users_id';
+                }
+                sort($expected_signed_keys);
+                $this->assertSame($expected_signed_keys, $signed_keys);
+            }
+        } finally {
+            foreach ([$core_table, $plugin_table] as $table) {
+                $db->doQuery(sprintf('DROP TABLE `%s`', $table));
+            }
+        }
+    }
+
     public function testTablesHasItemtype()
     {
         $dbu = new \DbUtils();
