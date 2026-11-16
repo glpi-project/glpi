@@ -62,6 +62,7 @@ use Ticket;
 use Toolbox;
 
 use function Safe\ini_get;
+use function Safe\json_decode;
 use function Safe\json_encode;
 use function Safe\preg_replace;
 
@@ -304,7 +305,8 @@ HTML;
         $save_label       = _sx('button', "Save");
         $reset_label      = __s("Reset dashboard to default");
 
-        $gridstack_items = $this->getGridItemsHtml(!$mini);
+        // Same items as the `get_dashboard_items` action: the script loads their content without fetching them again.
+        $gridstack_items = $this->getGridItemsHtml();
 
         $dropdown_dashboards = "";
         if ($nb_dashboards) {
@@ -458,6 +460,11 @@ HTML;
 TWIG, $params);
         }
 
+        // The displayed dashboard is not `$this->dashboard` when the last one viewed on this page was restored.
+        $saved_filters = self::$embed || !$can_view_current
+            ? null
+            : json_decode(Filter::getForDashboard((int) (self::$all_dashboards[$this->current]['id'] ?? 0)), true);
+
         $ajax_cards = GLPI_AJAX_DASHBOARD;
         $cache_key  = sha1($_SESSION['glpiactiveentities_string'] ?? "");
 
@@ -476,6 +483,7 @@ TWIG, $params);
             'js_params' => [
                 'mini'          => $mini,
                 'current'       => $this->current,
+                'filters'       => $saved_filters,
                 'cols'          => $this->grid_cols,
                 'rows'          => $this->grid_rows,
                 'cell_margin'   => $this->cell_margin,

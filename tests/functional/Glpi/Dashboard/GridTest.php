@@ -207,6 +207,32 @@ class GridTest extends DbTestCase
         ];
     }
 
+    public function testShowSendsTheFiltersOfTheDisplayedDashboard(): void
+    {
+        global $CFG_GLPI;
+
+        (new Dashboard('assistance'))->saveFilter('{"requesttype":"2"}');
+        (new Dashboard('central'))->saveFilter('{"itilcategory":"1"}');
+        $_REQUEST['_target'] = $CFG_GLPI['root_doc'] . '/front/dashboard_helpdesk.php';
+
+        $show = static function (): string {
+            Grid::$all_dashboards = [];
+            \ob_start();
+            (new Grid('assistance'))->show();
+            return (string) \ob_get_clean();
+        };
+
+        $html = $show();
+        $this->assertStringContainsString('"current":"assistance"', $html);
+        $this->assertStringContainsString('"filters":{"requesttype":"2"}', $html);
+
+        // The last dashboard viewed on the page is displayed instead, with its own filters.
+        $_SESSION['last_dashboards']['/front/dashboard_helpdesk.php'] = 'central';
+        $html = $show();
+        $this->assertStringContainsString('"current":"central"', $html);
+        $this->assertStringContainsString('"filters":{"itilcategory":"1"}', $html);
+    }
+
     #[DataProvider('accessDeniedProvider')]
     public function testGetCardHtmlWithAccessDeniedProvider(string $provider, string $expected): void
     {
