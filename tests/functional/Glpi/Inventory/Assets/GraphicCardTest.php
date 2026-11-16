@@ -75,6 +75,32 @@ class GraphicCardTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
                 'expected'  => '{"chipset": "Intel(R) HD Graphics Family", "name": "Intel(R) HD Graphics 530", "resolution": "1920x1080", "designation": "Intel(R) HD Graphics 530", "is_dynamic": 1}',
+            ], [ //with controller manufacturer extraction
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <CONTROLLERS>
+      <CAPTION>GeminiLake [UHD Graphics 600]</CAPTION>
+      <MANUFACTURER>Intel Corporation</MANUFACTURER>
+      <NAME>GeminiLake [UHD Graphics 600]</NAME>
+      <PCISLOT>00:02.0</PCISLOT>
+      <PCISUBSYSTEMID>0000:0000</PCISUBSYSTEMID>
+      <PRODUCTID>3185</PRODUCTID>
+      <TYPE>Microsoft Basic Display Driver</TYPE>
+      <VENDORID>8086</VENDORID>
+    </CONTROLLERS>
+    <VIDEOS>
+      <CHIPSET>Intel(R) BXT Mobile/Desktop Gra</CHIPSET>
+      <NAME>Microsoft Basic Display Driver</NAME>
+      <RESOLUTION>1360x768</RESOLUTION>
+      <PCISLOT>00:02.0</PCISLOT>
+    </VIDEOS>
+    <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+  </REQUEST>",
+                'expected'  => '{"chipset": "UHD Graphics 600", "name": "GeminiLake", "resolution": "1360x768", "pcislot": "00:02.0", "designation": "GeminiLake [UHD Graphics 600]", "is_dynamic": 1, "manufacturers_id": "Intel Corporation", "devicegraphiccardmodels_id": "GeminiLake [UHD Graphics 600]"}',
             ],
         ];
     }
