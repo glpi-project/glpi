@@ -53,7 +53,6 @@ class FirewallTest extends DbTestCase
             null,
             [
                 'ajax' => [
-                    'common.tabs.php' => '',
                     'dashboard.php' => '',
                     'getDropdown.php' => '',
                     'telemetry.php' => '',
@@ -194,7 +193,6 @@ class FirewallTest extends DbTestCase
             }
 
             $legacy_no_check_urls = [
-                '/ajax/common.tabs.php',
                 '/ajax/telemetry.php',
                 '/front/css.php',
                 '/front/document.send.php',
