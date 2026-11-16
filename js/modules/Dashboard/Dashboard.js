@@ -76,6 +76,7 @@ window.GLPI.Dashboard = {
  * @property {string} [context] Dashboard context
  * @property {string} [current] Current dashboard
  * @property {boolean} [mini] Whether the dashboard is in mini mode (for ticket search page)
+ * @property {number} [batches] Number of parallel streamed requests loading the cards of a whole dashboard (0: one request per card)
  */
 
 class GLPIDashboard {
@@ -97,6 +98,7 @@ class GLPIDashboard {
         this.filter_mode = false;
         this.embed = false;
         this.ajax_cards = false;
+        this.batches = 0;
         this.context = "core";
         this.markdown_contents = [];
         this.dash_width = 0;
@@ -126,6 +128,7 @@ class GLPIDashboard {
             profiles_id: null,
             users_id:    null,
             ajax_cards:  true,
+            batches:     0,
             all_cards:   [],
             context:     "core"
         };
@@ -143,6 +146,7 @@ class GLPIDashboard {
         this.profiles_id  = options.profiles_id;
         this.users_id     = options.users_id;
         this.ajax_cards   = options.ajax_cards;
+        this.batches      = parseInt(options.batches) || 0;
         this.all_cards    = options.all_cards;
         this.all_widgets  = options.all_widgets;
         this.context      = options.context;
@@ -1108,6 +1112,11 @@ class GLPIDashboard {
         });
 
         if (this.ajax_cards) {
+            if (specific_one.length === 0 && !this.embed && this.batches > 0) {
+                // Whole dashboard: a few parallel requests, each one streaming its cards as they are computed
+                return this.splitCardsInBatches(requested_cards).map((batch) => this.loadCardsBatch(batch));
+            }
+
             // Multi ajax mode, spawn a request for each card
             const promises = [];
             requested_cards.forEach((requested_card) => {
@@ -1182,6 +1191,95 @@ class GLPIDashboard {
                 });
             });
         }
+    }
+
+    /**
+     * Split the cards into the groups loaded by one request each, number widgets (cheap) first in every group
+     *
+     * @param {{card_el: jQuery, card_id: string, args: Object}[]} cards
+     * @return {Array[]}
+     */
+    splitCardsInBatches(cards) {
+        const is_number = (card) => ['bigNumber', 'summaryNumbers', 'multipleNumber'].includes(card.args.widgettype);
+        const sorted    = [...cards.filter(is_number), ...cards.filter((card) => !is_number(card))];
+        const batches   = Array.from({length: Math.min(Math.max(this.batches, 1), sorted.length)}, () => []);
+        sorted.forEach((card, i) => batches[i % batches.length].push(card));
+
+        return batches;
+    }
+
+    /**
+     * Load a group of cards with a single request, each card is displayed as soon as the server sends it
+     *
+     * @param {{card_el: jQuery, card_id: string, args: Object}[]} cards
+     * @param {Promise<Response>} [started] Request already sent for these cards
+     * @return {Promise<void>}
+     */
+    async loadCardsBatch(cards, started) {
+        const pending = new Map(cards.map((card) => [card.args.gridstack_id, card.card_el]));
+        const display = (line) => {
+            if (line.trim() === '') {
+                return;
+            }
+            try {
+                const result = JSON.parse(line);
+                const card   = pending.get(result.id);
+                if (card === undefined || typeof result.html !== 'string') {
+                    return;
+                }
+                pending.delete(result.id);
+
+                card.children('.grid-stack-item-content').html(result.html);
+
+                this.animateNumbers(card);
+            } catch (e) {
+                // An unreadable line or a card failing to render must not stop the next ones
+                console.error(e);
+            }
+        };
+
+        try {
+            const response = await (started ?? fetch(`${CFG_GLPI.root_doc}/Dashboard/Cards`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify({
+                    dashboard: this.current_name,
+                    cards: cards.map((card) => ({
+                        gridstack_id: card.args.gridstack_id,
+                        card_id: card.card_id,
+                        args: card.args,
+                    })),
+                }),
+            }));
+            if (!response.ok) {
+                // The error page is not read: release the connection
+                response.body?.cancel();
+                throw new Error(`Unable to load the dashboard cards (HTTP ${response.status})`);
+            }
+
+            // One JSON object per line: a chunk may hold several lines or end in the middle of one
+            const reader  = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+            let ended  = false;
+            while (!ended) {
+                const {done, value} = await reader.read();
+                ended   = done;
+                buffer += decoder.decode(value, {stream: !done});
+                const lines = buffer.split('\n');
+                // The last piece is an unfinished line until the stream ends
+                buffer = ended ? '' : lines.pop();
+                lines.forEach(display);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+
+        // Cards the server did not send (failed request, truncated response, card it could not render) get their own request
+        await Promise.allSettled([...pending.keys()].flatMap((id) => this.getCardsAjax(`[gs-id="${CSS.escape(id)}"]`)));
     }
 
     /**
