@@ -79,11 +79,13 @@ Reports scoring an attacker with a standard-interface profile as PR:L will be re
 
 ## Disclosure
 
-Critical and High advisories are published one month after the fix release; other advisories are published one week after the fix release. You will receive credit on the advisory unless you request anonymity. Unilateral disclosure before a fix ships ends our engagement.
+Only **High and Critical** vulnerabilities will receive a GHSA identifier and a CVE identifier.
+Their advisory will be published one month after the fix release.
+You will receive credit on the advisory unless you request anonymity. Unilateral disclosure before a fix ships ends our engagement.
+
+**Moderate and Low** vulnerabilities will now be fixed in public merge requests and will not receive any GHSA or CVE identifiers anymore.
 
 We do not offer monetary rewards.
-
-While all vulnerabilities will receive fixes and a GHSA identifier, GLPI requests CVE identifiers only for confirmed **High and Critical** vulnerabilities. Please reference lower-severity ones with their GHSA ID.
 
 ## AI-assisted reports
 
