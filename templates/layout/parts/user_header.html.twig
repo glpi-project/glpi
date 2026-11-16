@@ -127,13 +127,16 @@
          <div class="modal-dialog">
             <div class="modal-content">
                <div class="modal-header">
-                  <h4 class="modal-title" id="about_modal_title_{{ rand_header }}">{{ __('About') }}</h4>
+                  <h4 class="modal-title d-flex align-items-center" id="about_modal_title_{{ rand_header }}">
+                       <i class="ti ti-info-circle me-2" aria-hidden="true"></i>
+                       <span>{{ __('About') }}</span>
+                    </h4>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}" title="{{ __('Close') }}" data-bs-toggle="tooltip" data-bs-placement="left"></button>
                </div>
                <div class="modal-body text-center">
-                  <p>
-                     <img src="{{ path('pics/logos/logo-GLPI-100-grey.png') }}" alt="" style="max-width:100px; height:auto;" />
-                  </p>
+                  <div class="page-anonymous">
+                     <span class="glpi-logo mx-auto" title="GLPI"></span>
+                  </div>
                   {% if not call('\\Glpi\\Toolbox\\VersionParser::isStableRelease', [constant('GLPI_VERSION')]) %}
                       <div class='alert alert-important alert-warning d-flex'>
                         <strong>⚠️  {{ __("This version is UNSTABLE and some SECURITY FIXES may not be included.") }} ⚠️</strong>
