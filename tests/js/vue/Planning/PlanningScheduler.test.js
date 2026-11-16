@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-import '/build/vue/app.js';
+import '/js/src/vue/app.js';
 import 'flatpickr';
 import PlanningScheduler from '/js/src/vue/Planning/PlanningScheduler.vue';
 import {enableAutoUnmount, flushPromises, mount} from "@vue/test-utils";

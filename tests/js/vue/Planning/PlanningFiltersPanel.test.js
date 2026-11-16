@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-import '/build/vue/app.js';
+import '/js/src/vue/app.js';
 import PlanningFiltersPanel from '/js/src/vue/Planning/PlanningFiltersPanel.vue';
 import {enableAutoUnmount, flushPromises, mount} from "@vue/test-utils";
 
