@@ -44,13 +44,14 @@
     <div class="timeline-day-separator" role="separator" aria-label="{{ label }}">{{ label }}</div>
 {% endmacro %}
 
-{% macro meta(users_id, user_object, anonym_user, date, anchor, is_right) %}
+{% macro meta(users_id, user_object, anonym_user, date, anchor, is_right, info_card = null) %}
     <div class="timeline-meta {{ is_right ? 'timeline-meta-right' : '' }}">
         {% if users_id > 0 %}
             <span class="timeline-author">
                 {{ include('components/user/link_with_tooltip.html.twig', {
                     'users_id': users_id,
                     'user_object': user_object,
+                    'info_card': info_card,
                     'enable_anonymization': anonym_user,
                 }, with_context = false) }}
             </span>
@@ -329,7 +330,7 @@
                     {% endif %}
                 </div>
                 <div class="col-12 col-sm d-flex flex-column content-part">
-                    {{ _self.meta(users_id, entry_user, anonym_user, date_creation, anchor, 'right' in item_position) }}
+                    {{ _self.meta(users_id, entry_user, anonym_user, date_creation, anchor, 'right' in item_position, user_info_card) }}
                     <div class="timeline-content {{ solution_class }} flex-grow-1 {{ item_position }} card">
                         <div class="card-body px-1 px-xxl-3">
                             {{ include('components/itilobject/timeline/timeline_item_header.html.twig', {
