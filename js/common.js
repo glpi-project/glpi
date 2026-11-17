@@ -1895,17 +1895,15 @@ function waitForElement(selector) {
  * injected script that was blocked by the CSP would be executed)
  *
  * @param {HTMLScriptElement} script
- * @returns {boolean} True if the script was executed.
+ * @throws {Error} If the script lacks the page's CSP nonce
  */
 function reExecuteTrustedScript(script) {
     const nonce = CFG_GLPI.csp_nonce;
     if (!nonce || script.nonce !== nonce) {
-        console.error('Script was not executed because it lack the CSP nonce of the page.', script);
-        return false;
+        throw new Error('Script was not executed because it lacks the CSP nonce of the page.');
     }
 
     $.globalEval(script.text, { nonce: nonce });
-    return true;
 }
 
 /**
