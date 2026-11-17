@@ -108,6 +108,7 @@ class Contract extends CommonDBTM implements StateInterface
                 Contract_Item::class,
                 Contract_Supplier::class,
                 ContractCost::class,
+                Ticket_Contract::class,
             ]
         );
 

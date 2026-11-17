@@ -1155,9 +1155,24 @@ TWIG;
         );
         $this->assertSame(4, $this->countQueuedRequestForWebhook($webhook));
 
+        // Purging the contract unlinks it from the ticket
+        $this->assertTrue($contract->delete(['id' => $contract->getID()], true));
+        $this->assertSame(0, countElementsInTable(Ticket_Contract::getTable(), ['tickets_id' => $ticket->getID()]));
+        $this->assertSame([], $this->getLastQueuedWebhookItem($webhook)['contracts']);
+        $this->assertSame(5, $this->countQueuedRequestForWebhook($webhook));
+
+        $this->createItem(Ticket_Contract::class, [
+            'tickets_id'   => $ticket->getID(),
+            'contracts_id' => $this->createItem(Contract::class, [
+                'name'        => 'Other contract',
+                'entities_id' => $entity_id,
+            ])->getID(),
+        ]);
+        $this->assertSame(6, $this->countQueuedRequestForWebhook($webhook));
+
         // Purging the ticket raises its "delete" webhook only
         $this->assertTrue($ticket->delete(['id' => $ticket->getID()], true));
-        $this->assertSame(4, $this->countQueuedRequestForWebhook($webhook));
+        $this->assertSame(6, $this->countQueuedRequestForWebhook($webhook));
     }
 
     private function getLastQueuedWebhookItem(Webhook $webhook): array
