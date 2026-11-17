@@ -47,7 +47,7 @@ class MissingNonceFinderTest extends GLPITestCase
     public static function invalidProvider(): iterable
     {
         yield 'bare script' => ['<script>alert(1);</script>', 1, 0, '`<script>` must carry the CSP nonce'];
-        yield 'script with attributes' => ['<p></p><script type="module" defer>x();</script>', 1, 7, '`<script type="module" defer>` must carry'];
+        yield 'script with attributes' => ['<p></p><script type="module" defer>x();</script>', 1, 7, '`<script type="module" defer>` must carry the CSP nonce'];
         yield 'external script' => ['<script src="{{ js_path(file) }}"></script>', 1, 0, 'must carry the CSP nonce'];
         yield 'twig expression containing a ">"' => [
             '<script type="{{ a > b ? \'module\' : \'text/javascript\' }}"></script>',
@@ -55,7 +55,7 @@ class MissingNonceFinderTest extends GLPITestCase
             0,
             'must carry the CSP nonce',
         ];
-        yield 'multi line tag' => ["<div>\n    <script\n        type=\"module\"\n    >\n</script>", 2, 4, '`<script type="module" >` must carry'];
+        yield 'multi line tag' => ["<div>\n    <script\n        type=\"module\"\n    >\n</script>", 2, 4, '`<script type="module" >` must carry the CSP nonce'];
         yield 'foreign nonce' => ['<script nonce="{{ some_nonce }}"></script>', 1, 0, 'must be `{{ csp_nonce() }}`'];
         yield 'nonce in another attribute' => ['<script data-nonce="{{ csp_nonce() }}"></script>', 1, 0, 'must carry the CSP nonce'];
     }
