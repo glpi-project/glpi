@@ -162,6 +162,17 @@ describe('EntitySelector Vue Component', () => {
             json: async () => mockEntityTreeData,
         });
 
+        const input = document.createElement('input');
+        document.body.appendChild(input);
+        const inputEvent = new KeyboardEvent('keydown', {ctrlKey: true, altKey: true, key: '€', code: 'KeyE', bubbles: true, cancelable: true});
+        input.dispatchEvent(inputEvent);
+        await flushPromises();
+        vi.advanceTimersByTime(1500);
+        await flushPromises();
+        expect(inputEvent.defaultPrevented).toBe(false);
+        expect(fetchMock).toHaveBeenCalledTimes(0);
+        input.remove();
+
         const event = new KeyboardEvent('keydown', {ctrlKey: true, altKey: true, key: '€', code: 'KeyE'});
         document.dispatchEvent(event);
         await flushPromises();
