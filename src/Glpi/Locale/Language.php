@@ -118,9 +118,6 @@ final class Language
         return self::isRTLWithoutIntl($this->code);
     }
 
-    /**
-     * Fallback used when the intl extension is not available.
-     */
     private static function isRTLWithoutIntl(string $code): bool
     {
         return (bool) preg_match('/^(?:ar|he|fa|ur|ps|sd|ug|ckb|yi|dv|ku_arab|ku-arab)(?:[_-].*)?$/i', $code);
