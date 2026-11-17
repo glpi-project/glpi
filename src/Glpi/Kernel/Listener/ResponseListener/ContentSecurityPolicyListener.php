@@ -47,6 +47,8 @@ final class ContentSecurityPolicyListener implements EventSubscriberInterface
 {
     private const string CSP_HEADER_NAME = 'Content-Security-Policy';
 
+    public function __construct(private NonceContext $nonce_context) {}
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -56,8 +58,6 @@ final class ContentSecurityPolicyListener implements EventSubscriberInterface
             ],
         ];
     }
-
-    public function __construct(private NonceContext $nonce_context) {}
 
     public function onKernelResponse(ResponseEvent $event): void
     {
