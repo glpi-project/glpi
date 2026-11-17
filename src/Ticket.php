@@ -1342,6 +1342,8 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             $ticketcontract->add([
                 'contracts_id' => $contract_id,
                 'tickets_id'   => $this->getID(),
+                // The ticket "new"/"update" webhook raised right after already exposes its contracts
+                '_no_ticket_webhook' => true,
             ]);
         }
     }

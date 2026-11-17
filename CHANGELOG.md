@@ -12,6 +12,8 @@ The present file will list all changes made to the project; according to the
 - Contract technician in charge and group in charge, usable as ticket notification recipients.
 - SLA and OLA escalation actions sending a single notification of the automatic reminder event.
 - SLA status dropdown on tickets, assignable by SLA escalation levels.
+- Contracts linked to a ticket in the Ticket schema of High-Level API v3.1, available in webhook payloads as `item.contracts`.
+- Ticket "update" webhook raised when a contract is linked to or unlinked from an existing ticket.
 
 ### Changes
 - Mails receivers now rely on the `directorytree/imapengine` library to connect to IMAP servers.
