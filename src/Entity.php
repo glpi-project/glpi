@@ -2286,14 +2286,14 @@ class Entity extends CommonTreeDropdown implements
                 // Value inherited: parse parent data
                 $current_id = $entity_data['entities_id'];
             }
-        }
 
-        $GLPI_CACHE->setMultiple(
-            [
-                $ref_cache_key => $ref,
-                $val_cache_key => $val,
-            ]
-        );
+            $GLPI_CACHE->setMultiple(
+                [
+                    $ref_cache_key => $ref,
+                    $val_cache_key => $val,
+                ]
+            );
+        }
 
         return $val ?? $default_value;
     }

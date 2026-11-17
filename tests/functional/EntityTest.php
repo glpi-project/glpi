@@ -38,6 +38,7 @@ use CommonITILActor;
 use Contract;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Cache\SimpleCache;
 use Glpi\Controller\ServiceCatalog\IndexController;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Form\Category;
@@ -53,6 +54,7 @@ use NotificationTargetTicket;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Profile_User;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Ticket;
@@ -736,6 +738,34 @@ class EntityTest extends DbTestCase
         $this->assertTrue($entity->update(['id' => $grandchild_id] + $grandchild_values));
 
         $this->assertEquals($expected_result, call_user_func_array([Entity::class, 'getUsedConfig'], $params));
+    }
+
+    public function testGetUsedConfigDoesNotWriteCacheOnHit(): void
+    {
+        global $GLPI_CACHE;
+
+        $entities_id = getItemByTypeName('Entity', '_test_child_1', true);
+
+        $original_cache = $GLPI_CACHE;
+        $GLPI_CACHE = new class (new ArrayAdapter()) extends SimpleCache {
+            public int $set_multiple_calls = 0;
+
+            public function setMultiple($values, $ttl = null): bool
+            {
+                $this->set_multiple_calls++;
+                return parent::setMultiple($values, $ttl);
+            }
+        };
+
+        try {
+            $first_value = Entity::getUsedConfig('2fa_enforcement_strategy', $entities_id, '', 0);
+            $this->assertSame(1, $GLPI_CACHE->set_multiple_calls);
+
+            $this->assertSame($first_value, Entity::getUsedConfig('2fa_enforcement_strategy', $entities_id, '', 0));
+            $this->assertSame(1, $GLPI_CACHE->set_multiple_calls);
+        } finally {
+            $GLPI_CACHE = $original_cache;
+        }
     }
 
     public static function getInheritedValueBadgeProvider(): iterable
