@@ -1213,5 +1213,92 @@ export class KnowbaseItemPage extends GlpiPage
     {
         await this.page.getByRole('button', { name: 'Regenerate', exact: true }).click();
     }
+
+    public async gotoHeading(id: number, hash: string): Promise<void>
+    {
+        await this.page.goto(`/front/knowbaseitem.form.php?id=${id}#${hash}`);
+    }
+
+    /**
+     * The button that shows the table of contents column, or its dropdown
+     * when the column has no space.
+     */
+    public get tocToggle(): Locator
+    {
+        return this.page.getByRole('button', { name: 'Table of contents' });
+    }
+
+    /**
+     * The table of contents, in the column or in the dropdown.
+     */
+    public get toc(): Locator
+    {
+        return this.page.getByRole('navigation', { name: 'Table of contents' });
+    }
+
+    public get tocEmptyMessage(): Locator
+    {
+        return this.page.getByText('This article has no headings.');
+    }
+
+    public getTocLink(name: string): Locator
+    {
+        return this.toc.getByRole('link', { name });
+    }
+
+    /**
+     * A link of the table of contents, also while the list is closed. The
+     * column and the dropdown hold the same links: this is the first one.
+     */
+    public getClosedTocLink(name: string): Locator
+    {
+        return this.page
+            .getByRole('navigation', { name: 'Table of contents', includeHidden: true })
+            .getByRole('link', { name, includeHidden: true })
+            .first();
+    }
+
+    public getHeadingCopyLink(heading: string): Locator
+    {
+        return this.getHeading(heading).getByRole('link', { name: 'Copy link to this section' });
+    }
+
+    public async doToggleTableOfContents(): Promise<void>
+    {
+        await this.tocToggle.click();
+    }
+
+    public async doPressTableOfContentsShortcut(): Promise<void>
+    {
+        await this.page.keyboard.press('Control+Alt+KeyH');
+    }
+
+    public async doCopyHeadingLink(heading: string): Promise<void>
+    {
+        await this.getHeading(heading).hover();
+        await this.getHeadingCopyLink(heading).click();
+    }
+
+    /**
+     * The FAQ icons that open an article embedded in the form of another item.
+     */
+    public get embeddedArticleToggles(): Locator
+    {
+        return this.page.getByTitle('Knowledge base');
+    }
+
+    public async doOpenEmbeddedArticle(): Promise<void>
+    {
+        await this.embeddedArticleToggles.first().click();
+        await expect(this.tocToggle).toBeVisible();
+    }
+
+    /**
+     * Scroll the article, or the element around it, to put the heading at the top.
+     */
+    public async doScrollToHeading(heading: string): Promise<void>
+    {
+        await this.getHeading(heading).evaluate((element) => element.scrollIntoView({ block: 'start' }));
+    }
 }
 

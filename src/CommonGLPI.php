@@ -1487,14 +1487,14 @@ class CommonGLPI implements CommonGLPIInterface
             $kbitem = new KnowbaseItem();
             $kbitem->getFromDB(reset($found_kbitem)['id']);
             $ret .= "<div class='faqadd_block'>";
-            $ret .= "<label for='display_faq_chkbox$rand'>";
-            $ret .= "<i class='ti ti-zoom-question cursor-pointer'></i>";
+            $ret .= "<label for='display_faq_chkbox$rand' title='" . htmlescape(KnowbaseItem::getTypeName(1)) . "'>";
+            $ret .= "<i class='ti ti-zoom-question cursor-pointer' aria-hidden='true'></i>";
             $ret .= "</label>";
             $ret .= "<input type='checkbox' class='display_faq_chkbox' id='display_faq_chkbox$rand'>";
             $ret .= "<div class='faqadd_entries' style='position:relative;'>";
             if (count($found_kbitem) == 1) {
                 $ret .= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
-                $ret .= $kbitem->showFull(['display' => false]);
+                $ret .= $kbitem->showFull(['display' => false, 'embedded' => true]);
                 $ret .= "</div>"; // .faqadd_block_content
             } else {
                 $ret .= Html::scriptBlock("
@@ -1520,7 +1520,7 @@ class CommonGLPI implements CommonGLPIInterface
                     'on_change' => "getKnowbaseItemAnswer$rand()",
                 ]);
                 $ret .= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
-                $ret .= $kbitem->showFull(['display' => false]);
+                $ret .= $kbitem->showFull(['display' => false, 'embedded' => true]);
                 $ret .= "</div>"; // .faqadd_block_content
             }
             $ret .= "</div>"; // .faqadd_entries
