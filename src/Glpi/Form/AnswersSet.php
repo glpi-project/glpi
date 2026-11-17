@@ -37,6 +37,7 @@ namespace Glpi\Form;
 
 use CommonDBChild;
 use CommonDBTM;
+use Glpi\Form\Condition\EngineCreationOutput;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use InvalidArgumentException;
 use Override;
@@ -54,6 +55,11 @@ final class AnswersSet extends CommonDBChild
     public static $items_id = 'forms_forms_id';
 
     public array $files = [];
+
+    /**
+     * Destinations that will be created from this answers set, null if unknown.
+     */
+    private ?EngineCreationOutput $creation_output = null;
 
     public DelegationData $delegation;
 
@@ -276,6 +282,16 @@ final class AnswersSet extends CommonDBChild
     public function setSubmittedFiles(array $files): void
     {
         $this->files = $files;
+    }
+
+    public function getCreationOutput(): ?EngineCreationOutput
+    {
+        return $this->creation_output;
+    }
+
+    public function setCreationOutput(EngineCreationOutput $creation_output): void
+    {
+        $this->creation_output = $creation_output;
     }
 
     /**
