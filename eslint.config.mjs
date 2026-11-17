@@ -108,7 +108,7 @@ export default [
     },
     {
         // Modules
-        files: ["js/modules/**", "eslint.config.mjs"],
+        files: ["js/modules/**", "eslint.config.mjs", "vite.config-vue.js", "vite.config-legacy.js"],
         languageOptions: {
             sourceType: "module"
         }
@@ -152,7 +152,9 @@ export default [
     },
     {
         // Config files
-        "files": ["eslint.config.mjs", ".stylelintrc.js", ".webpack.config.js", ".vue.webpack.config.js"],
+        "files": [
+            "eslint.config.mjs", ".stylelintrc.js", "tests/cypress.config.js", "vite.config-vue.js", "vite.config-legacy.js"
+        ],
         "languageOptions": {
             "globals": {...globals.node}
         },
