@@ -155,6 +155,21 @@ describe('EntitySelector Vue Component', () => {
         expect(fetchMock).toHaveBeenCalledTimes(2);
     });
 
+    test('hotkeys with AltGr keyboard layout', async () => {
+        await mountEntitySelector();
+        const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+            ok: true,
+            json: async () => mockEntityTreeData,
+        });
+
+        const event = new KeyboardEvent('keydown', {ctrlKey: true, altKey: true, key: '€', code: 'KeyE'});
+        document.dispatchEvent(event);
+        await flushPromises();
+        vi.advanceTimersByTime(1500);
+        await flushPromises();
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+
     test('keyboard navigation', async () => {
         const wrapper = await mountEntitySelector();
         const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue({

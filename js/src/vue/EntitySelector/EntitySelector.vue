@@ -32,7 +32,7 @@
     let total_filtered = ref(0);
 
     async function hotkey_listener(e) {
-        if ((e.ctrlKey || e.metaKey) && e.altKey && e.key.toLowerCase() === 'e') {
+        if ((e.ctrlKey || e.metaKey) && e.altKey && (e.key.toLowerCase() === 'e' || e.code === 'KeyE')) {
             e.stopPropagation();
             e.preventDefault();
             $('.user-menu-dropdown-toggle:visible').dropdown('show');
