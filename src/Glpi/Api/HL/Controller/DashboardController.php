@@ -36,9 +36,13 @@ namespace Glpi\Api\HL\Controller;
 
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Route;
+use Glpi\Api\HL\RouteVersion;
 use Glpi\Dashboard;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Error\ErrorHandler;
+use Glpi\Http\JSONResponse;
+use Glpi\Http\Request;
+use Glpi\Http\Response;
 use GraphQL\Deferred;
 use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ResolveInfo;
@@ -715,5 +719,38 @@ final class DashboardController extends AbstractController
             ErrorHandler::logCaughtException($e);
             throw new Error('Unable to get the value of the dashboard card "' . $card_id . '"');
         }
+    }
+
+    #[Route(path: '/Dashboard/{dashboard_id}/Filter', methods: ['PUT'])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\UpdateRoute(schema_name: 'DashboardFilter', description: 'Update the saved filters for a dashboard. The filters are personal and only affect the current user.')]
+    public function updateDashboardFilters(Request $request): Response
+    {
+        $dashboard_id = (int) $request->getAttribute('dashboard_id');
+        $dashboard = new Dashboard\Dashboard();
+        if (!$dashboard->getFromDBByRequest(['id' => $dashboard_id]) || !$dashboard->canViewCurrent()) {
+            return self::getNotFoundErrorResponse();
+        }
+        if (!$dashboard->canUpdateCurrent()) {
+            return self::getAccessDeniedErrorResponse();
+        }
+
+        $prepared_filters = [];
+        $given_filters = $request->getParsedBody();
+
+        // get filter classes and make their IDs the keys of the array for easier lookup
+        $known_filters = Dashboard\Filter::getRegisteredFilterClasses();
+        $known_filters = array_combine(array_map(static fn($f) => $f::getId(), $known_filters), $known_filters);
+
+        // Do validation ourselves since the core dashboard code just saves given filters to the DB as-is.
+        foreach ($given_filters as $filter_id => $filter_value) {
+            if (!array_key_exists($filter_id, $known_filters) || !$known_filters[$filter_id]::validateValue($filter_value)) {
+                continue;
+            }
+            $prepared_filters[$filter_id] = $filter_value;
+        }
+        $dashboard->saveFilter(json_encode($prepared_filters));
+
+        return new JSONResponse($prepared_filters);
     }
 }

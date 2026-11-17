@@ -73,6 +73,11 @@ abstract class AbstractGroupFilter extends AbstractFilter
             || in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()], true);
     }
 
+    public static function validateValue(mixed $value): bool
+    {
+        return (filter_var($value, FILTER_VALIDATE_INT) !== false && (int) $value > 0) || $value === 'mygroups';
+    }
+
     public static function getCriteria(string $table, $value): array
     {
         global $DB;

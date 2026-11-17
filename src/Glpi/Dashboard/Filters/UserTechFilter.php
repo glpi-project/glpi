@@ -63,6 +63,11 @@ class UserTechFilter extends AbstractFilter
             || in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()]);
     }
 
+    public static function validateValue(mixed $value): bool
+    {
+        return (filter_var($value, FILTER_VALIDATE_INT) !== false && (int) $value > 0) || $value === 'myself';
+    }
+
     public static function getCriteria(string $table, $value): array
     {
         global $DB;

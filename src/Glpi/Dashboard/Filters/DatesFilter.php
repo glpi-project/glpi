@@ -64,6 +64,14 @@ class DatesFilter extends AbstractFilter
             );
     }
 
+    public static function validateValue(mixed $value): bool
+    {
+        return is_array($value)
+            && count($value) === 2
+            && (empty($value[0]) || strtotime($value[0]) !== false)
+            && (empty($value[1]) || strtotime($value[1]) !== false);
+    }
+
     public static function getCriteria(string $table, $value): array
     {
         global $DB;
