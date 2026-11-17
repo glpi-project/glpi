@@ -135,7 +135,7 @@ abstract class AbstractQuestionTypeSelectableTest extends DbTestCase
         // Formcreator stored a single value without wrapping it in a json array.
         yield 'single scalar value' => [
             'raw_data' => ['values' => '1'],
-            'expected' => [1 => 1],
+            'expected' => [1 => '1'],
         ];
     }
 

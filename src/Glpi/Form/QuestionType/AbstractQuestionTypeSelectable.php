@@ -275,7 +275,7 @@ TWIG;
     {
         $values = json_decode($rawData['values'] ?? '[]', true) ?? [];
         if (!is_array($values)) {
-            $values = [$values];
+            $values = [$rawData['values']];
         }
 
         // Formcreator may include some empty values, remove them
