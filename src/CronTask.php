@@ -48,6 +48,7 @@ use function Safe\filemtime;
 use function Safe\glob;
 use function Safe\ini_get;
 use function Safe\pcntl_signal;
+use function Safe\pcntl_sigprocmask;
 use function Safe\preg_match;
 use function Safe\rmdir;
 use function Safe\scandir;
@@ -280,6 +281,12 @@ class CronTask extends CommonDBTM
         // Shutdown handler will be used to catch unexpected PHP script execution ending (unrecoverable errors, uncaught errors, unexpected exit, etc).
         register_shutdown_function($this->handleAbnormalTermination(...));
 
+        // Hold SIGTERM until the running flag matches the database state, so the handler can still abort the task.
+        $block_sigterm = isCommandLine() && function_exists('pcntl_sigprocmask');
+        if ($block_sigterm) {
+            pcntl_sigprocmask(SIG_BLOCK, [SIGTERM]);
+        }
+
         $DB->update(
             self::getTable(),
             [
@@ -295,10 +302,15 @@ class CronTask extends CommonDBTM
             ]
         );
 
-        if ($DB->getAffectedRows() > 0) {
+        $this->is_running = $DB->getAffectedRows() > 0;
+
+        if ($block_sigterm) {
+            pcntl_sigprocmask(SIG_UNBLOCK, [SIGTERM]);
+        }
+
+        if ($this->is_running) {
             $this->timer  = microtime(true);
             $this->volume = 0;
-            $this->is_running = true;
             $log = new CronTaskLog();
             // No gettext for log
             $txt = sprintf(
