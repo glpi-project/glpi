@@ -224,4 +224,10 @@
 
 
    {{ include('components/form/buttons.html.twig') }}
+
+   {% if params['formfooter'] ?? true %}
+      <div class="card-footer">
+         {{ include('components/form/dates.html.twig') }}
+      </div>
+   {% endif %}
 </div>

@@ -716,6 +716,8 @@ class GenericAssetInventoryTest extends InventoryTestCase
             $component = array_values($components[$type]);
             //hack to replace expected fkeys
             foreach ($expected as $i => &$row) {
+                $row['date_creation'] = $_SESSION['glpi_currenttime'];
+                $row['date_mod'] = $_SESSION['glpi_currenttime'];
                 foreach (array_keys($row) as $key) {
                     if (isForeignKeyField($key)) {
                         $row[$key] = $component[$i][$key];
@@ -1796,6 +1798,8 @@ class GenericAssetInventoryTest extends InventoryTestCase
             $component = array_values($components[$type]);
             //hack to replace expected fkeys
             foreach ($expected as $i => &$row) {
+                $row['date_creation'] = $_SESSION['glpi_currenttime'];
+                $row['date_mod'] = $_SESSION['glpi_currenttime'];
                 foreach (array_keys($row) as $key) {
                     if (isForeignKeyField($key)) {
                         $row[$key] = $component[$i][$key];
@@ -2002,6 +2006,9 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 $expected[$key] = $battery[$key];
             }
         }
+
+        $expected['date_creation'] = $_SESSION['glpi_currenttime'];
+        $expected['date_mod'] = $_SESSION['glpi_currenttime'];
 
         $this->assertIsArray($battery);
         $this->assertSame($expected, $battery);
