@@ -7,7 +7,9 @@ ignore_pr_authors = ["\\[bot\\]$"] # GitHub reserves the suffix for apps
 ignore_pr_labels = ["no-ai-review"]
 
 [github_app]
-pr_commands = ["/agentic_review"] # default also runs /agentic_describe
+# Automatic reviews are paused while CodeRabbit handles them; comment
+# /agentic_review on a pull request to run Qodo manually.
+pr_commands = []
 
 [review_agent]
 publish_in_progress_comment = false
