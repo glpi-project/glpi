@@ -144,6 +144,16 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
+     * Open the article in edit mode and select its image named `image_name`.
+     */
+    public async doSelectImageInEditMode(id: number, image_name: string): Promise<Locator>
+    {
+        await this.goto(id);
+        await this.editor.enterEditMode();
+        return this.editor.doSelectImage(image_name);
+    }
+
+    /**
      * The helpdesk FAQ view of an article, which renders the same aside as the
      * central knowledge base.
      */
