@@ -171,3 +171,15 @@
       </tbody>
    </table>
 </div>
+{% if count > 0 %}
+   <div class="search-horizontal-scroll" hidden>
+      <button type="button" class="btn btn-secondary btn-icon" data-scroll-direction="-1"
+              aria-label="{{ __('Scroll left') }}" title="{{ __('Scroll left') }}" aria-controls="{{ searchform_id }}">
+         <i class="ti ti-chevron-left" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="btn btn-secondary btn-icon" data-scroll-direction="1"
+              aria-label="{{ __('Scroll right') }}" title="{{ __('Scroll right') }}" aria-controls="{{ searchform_id }}">
+         <i class="ti ti-chevron-right" aria-hidden="true"></i>
+      </button>
+   </div>
+{% endif %}
