@@ -852,8 +852,12 @@ class Entity extends CommonTreeDropdown implements
             'date_mod',
             'date_creation',
         ];
+        // A moved entity may inherit any config from its new ancestors
+        $updated_fields = in_array('entities_id', $this->updates, true)
+            ? array_keys($this->fields)
+            : $this->updates;
         $cache_entries = [];
-        foreach ($this->updates as $field) {
+        foreach ($updated_fields as $field) {
             if (in_array($field, $ignored_fields, true)) {
                 continue; // Ignore fields that cannot be used as config inheritance logic
             }
