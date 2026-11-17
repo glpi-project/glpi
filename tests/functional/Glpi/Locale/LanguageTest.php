@@ -119,4 +119,10 @@ final class LanguageTest extends GLPITestCase
         $language = new Language(code: $code, native_name: 'whatever');
         $this->assertSame($expected, $language->isRTL());
     }
+
+    #[DataProvider('rtlProvider')]
+    public function testIsRTLWithoutIntl(string $code, bool $expected): void
+    {
+        $this->assertSame($expected, $this->callPrivateMethod(Language::class, 'isRTLWithoutIntl', $code));
+    }
 }

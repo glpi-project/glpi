@@ -34,6 +34,8 @@
 
 namespace Glpi\Locale;
 
+use function Safe\preg_match;
+
 /**
  * Immutable description of a GLPI language.
  *
@@ -109,7 +111,19 @@ final class Language
      */
     public function isRTL(): bool
     {
-        return locale_is_right_to_left($this->code);
+        if (function_exists('locale_is_right_to_left')) {
+            return locale_is_right_to_left($this->code);
+        }
+
+        return self::isRTLWithoutIntl($this->code);
+    }
+
+    /**
+     * Fallback used when the intl extension is not available.
+     */
+    private static function isRTLWithoutIntl(string $code): bool
+    {
+        return (bool) preg_match('/^(?:ar|he|fa|ur|ps|sd|ug|ckb|yi|dv|ku_arab|ku-arab)(?:[_-].*)?$/i', $code);
     }
 
     private static function regionlessCode(string $code): string
