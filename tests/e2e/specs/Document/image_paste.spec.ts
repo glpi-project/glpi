@@ -34,6 +34,7 @@ import { test, expect } from '../../fixtures/glpi_fixture';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
 import { pasteImageInRichText } from '../../utils/ImagePasteHelpers';
+import { TicketPage } from '../../pages/TicketPage';
 
 test('pasted image is uploaded as document, not stored as base64', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
@@ -44,7 +45,7 @@ test('pasted image is uploaded as document, not stored as base64', async ({ page
         entities_id: getWorkerEntityId(),
     });
 
-    await page.goto(`/front/ticket.form.php?id=${ticket_id}`);
+    await new TicketPage(page).goto(ticket_id);
 
     await page.getByRole('button', { name: 'Answer' }).click();
     await expect(page.getByRole('application')).toBeVisible();

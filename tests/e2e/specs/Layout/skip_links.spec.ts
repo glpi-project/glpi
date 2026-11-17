@@ -31,6 +31,7 @@
  */
 
 import { test, expect } from '../../fixtures/glpi_fixture';
+import { TicketPage } from '../../pages/TicketPage';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
@@ -58,7 +59,7 @@ test('Skip link to ITIL timeline', async ({ page, profile, api }) => {
         content: 'Test ticket',
         entities_id: getWorkerEntityId(),
     });
-    await page.goto(`/front/ticket.form.php?id=${ticket_id}`);
+    await new TicketPage(page).goto(ticket_id);
     await expect(page.getByTestId('itil-timeline')).toBeAttached();
 
     await page.keyboard.press('Tab');
