@@ -70,7 +70,7 @@
     <div class="toast-container {{ toast_location }} p-3 messages_after_redirect" id="messages_after_redirect">
         {{ toasts_html }}
 
-        <script type="text/javascript">
+        <script nonce="{{ csp_nonce() }}" type="text/javascript">
         var initMessagesAfterRedirectToasts = function() {
             var toastElList = [].slice.call(document.querySelectorAll('#messages_after_redirect .toast:not(.show)'));
             var toastList = toastElList.map(function (toastEl) {

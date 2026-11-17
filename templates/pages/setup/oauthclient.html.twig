@@ -106,7 +106,7 @@
                                     {{ __('Add URI') }}
                                 </button>
                             </div>
-                            <script>
+                            <script nonce="{{ csp_nonce() }}">
                                 $('button[name="add_uri"]').on('click', () => {
                                     const template = $($('#authorized-uri-fields-template').html());
                                     $('.authorized-uri-fields button[name="add_uri"]').before(template);

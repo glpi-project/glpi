@@ -162,7 +162,7 @@
     </div>
 </div>
 
-<script type="module">
+<script nonce="{{ csp_nonce() }}" type="module">
     $('#sviewlist').on('click', (e) => {
         $('#viewlist').show();
         $('#viewgraph').hide();

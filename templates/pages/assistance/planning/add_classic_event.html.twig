@@ -72,7 +72,7 @@
             <div id="date_end{{ rand }}"></div>
 
             {% if display_dates %}
-                <script>
+                <script nonce="{{ csp_nonce() }}">
                     $(function() {
                         const getEventParams = (duration) => {
                             return {

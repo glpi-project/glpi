@@ -111,7 +111,7 @@
                     </div>
                 </div>
             </div>
-            <script type="module">
+            <script nonce="{{ csp_nonce() }}" type="module">
                 (async () => {
                     const { GlpiKnowbasePermissionsFormController } = await import(
                         "/js/modules/Knowbase/PermissionsFormController.js"
@@ -128,7 +128,7 @@
 {% endif %}
 
 {% if can_edit %}
-<script>
+<script nonce="{{ csp_nonce() }}">
     (() => {
         const list = document.querySelector('[data-glpi-permissions-list]');
         if (!list) {

@@ -53,7 +53,7 @@
     <a href="" data-glpi-dropdown-count-preview></a>
 </div>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
     // Each time the dropdown is modified, populate the helper link
     const $select = $("select[name='_access_control[{{ access_control.getId() }}][_allow_list_dropdown][]']")
     $select.on('change', async function() {

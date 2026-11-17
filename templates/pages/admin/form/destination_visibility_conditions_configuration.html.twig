@@ -47,7 +47,7 @@
         {{ parent() }}
     </div>
 
-    <script defer type="module">
+    <script nonce="{{ csp_nonce() }}" defer type="module">
         import { GlpiFormConditionVisibilityEditorController } from '/js/modules/Forms/ConditionVisibilityEditorController.js';
 
         // Load form sections state from backend

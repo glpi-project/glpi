@@ -67,7 +67,7 @@
         {% endif %}
     </div>
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         $(() => {
             $('#customfield_form_container input[name="system_name"]').on('input', () => {
                 if ($('input[name="system_name"]').val() === '') {

@@ -84,7 +84,7 @@
 </div>
 
 {% if not readonly %}
-    <script type="module">
+    <script nonce="{{ csp_nonce() }}" type="module">
         const rating_container = document.getElementById('rating_selector{{ rand }}');
         const rating_input = document.getElementById('{{ field_id }}');
 

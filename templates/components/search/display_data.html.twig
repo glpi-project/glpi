@@ -98,7 +98,7 @@
    </div>
 
    {% if not as_map %}
-      <script>
+      <script nonce="{{ csp_nonce() }}">
           window.initFluidSearch{{ rand }}  = () => {
              const allowed_forced_params = ['hide_controls', 'usesession', 'forcetoview', 'criteria', 'showmassiveactions'];
              let forced_params = {};

@@ -40,6 +40,6 @@
              aria-label="{{ __('Digit %1$s of %2$s')|format(i, this.digits) }}">
    {% endfor %}
 </div>
-<script type="module">
+<script nonce="{{ csp_nonce() }}" type="module">
     import('/js/modules/Security/MfaCodeInput.js').then((m) => m.MfaCodeInput.init());
 </script>

@@ -136,7 +136,7 @@
                                   }
                                ) }}
 
-                               <script>
+                               <script nonce="{{ csp_nonce() }}">
                                    $(() => {
                                        $('select[name="itemtype"]').trigger('change');
                                    });

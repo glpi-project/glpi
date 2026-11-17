@@ -40,7 +40,7 @@
 {% endif %}
 
 {# Apply the persisted collapsed state and width before first paint to avoid a flash of the open aside. #}
-<script>
+<script nonce="{{ csp_nonce() }}">
     (() => {
         try {
             const aside = document.currentScript.closest('[data-main-page-aside="knowbaseitem"]');
@@ -167,7 +167,7 @@
 </div>
 
 {# Static import: evaluated before DOMContentLoaded, so the server-rendered toggles never predate their listeners. #}
-<script type="module">
+<script nonce="{{ csp_nonce() }}" type="module">
     import { GlpiKnowbaseAsideController } from "/js/modules/Knowbase/AsideController.js";
 
     const aside = document.querySelector('[data-main-page-aside="knowbaseitem"]');

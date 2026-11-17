@@ -221,7 +221,7 @@
 {% set openfollowup = (_get['_openfollowup'] ?? false) %}
 {% set is_timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
 
-<script type="text/javascript">
+<script nonce="{{ csp_nonce() }}" type="text/javascript">
 
 (function(){
     {#

@@ -79,7 +79,7 @@
         Reference: https://github.com/glpi-project/glpi/pull/10300
     #}
     {% set safe_item_fields = item.fields|filter((value, key) => key != 'content') %}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
     (function() {
         'use strict';
 

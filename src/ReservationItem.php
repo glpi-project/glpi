@@ -344,7 +344,7 @@ class ReservationItem extends CommonDBChild
                         {{ toggle_state_label }}
                     </button>
                     <input type="hidden" name="id" value="{{ id }}">
-                    <script>
+                    <script nonce="{{ csp_nonce() }}">
                         $(() => $('#reservation_actions button[name="purge"]').on('click', () => confirm('{{ purge_warning }}')));
                     </script>
                 {% endif %}

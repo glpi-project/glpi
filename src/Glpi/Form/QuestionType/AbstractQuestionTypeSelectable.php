@@ -479,7 +479,7 @@ TWIG;
             {{ _self.addOption(input_type, false, '', translations, null, values|length, true, true, hide_default_value_input, extra_input_attributes) }}
         </div>
 
-        <script>
+        <script nonce="{{ csp_nonce() }}">
             // TODO: avoid this, the script should probably run in a dedicated method that the framework can call at
             // the right time.
             $("[data-glpi-form-editor-container]").on('initialized', () => {

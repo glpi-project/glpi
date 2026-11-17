@@ -99,7 +99,7 @@
     {% endif %}
 {% endif %}
 
-<script>
+<script nonce="{{ csp_nonce() }}">
     import('/js/modules/ObjectLock.js').then((m) => {
         $(() => {
             if ($('.navigationheader').length > 0) {

@@ -630,7 +630,7 @@
     </div>
 </div>
 
-<script type="module">
+<script nonce="{{ csp_nonce() }}" type="module">
     (async () => {
         const module = await import(
             "/js/modules/Knowbase/ArticleController.js"
