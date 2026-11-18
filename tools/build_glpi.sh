@@ -116,7 +116,7 @@ echo "Clearing Symfony cache compiled with dev dependencies..."
 rm -rf $WORKING_DIR/files/_cache/*
 
 echo "Generating file manifest..."
-$WORKING_DIR/bin/console build:generate_code_manifest -a crc32c
+GLPI_ENVIRONMENT_TYPE=production $WORKING_DIR/bin/console build:generate_code_manifest -a crc32c
 
 echo "Removing user generated files..."
 # Remove user generated files (i.e. cache and log from CLI commands ran during release)
