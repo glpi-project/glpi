@@ -77,7 +77,7 @@
         <ul class="dropdown-menu">
             {% for key, value in timerange_presets %}
                 <li>
-                    <span class="dropdown-item {{ interval == key and (not start_date or not end_date) ? 'active' }}" href="#" data-key="{{ key }}" onclick="update_date_preset_{{ options['rand'] }}(this)">{{ value }}</span>
+                    <span class="dropdown-item {{ interval == key and (not start_date or not end_date) ? 'active' }}" href="#" data-key="{{ key }}">{{ value }}</span>
                 </li>
             {% endfor %}
             <li><hr class="dropdown-divider"></li>
@@ -93,7 +93,7 @@
                     'full_width': true,
                     'mb': 'my-2',
                 })) }}
-                <button class="btn btn-primary w-full mb-1" type="button" onclick="update_custom_date_range_{{ options['rand'] }}()">{{ __('Apply') }}</button>
+                <button id="apply_custom_range_{{ options['rand'] }}" class="btn btn-primary w-full mb-1" type="button">{{ __('Apply') }}</button>
             </li>
         </ul>
     </div>
@@ -105,7 +105,7 @@
         <ul class="dropdown-menu">
             {% for key, value in format_presets %}
                 <li>
-                    <span class="dropdown-item {{ format_presets[format] == value ? 'active' }}" href="#" data-key="{{ key }}" onclick="update_format_{{ options['rand'] }}(this)">{{ value }}</span>
+                    <span class="dropdown-item {{ format_presets[format] == value ? 'active' }}" href="#" data-key="{{ key }}">{{ value }}</span>
                 </li>
             {% endfor %}
         </ul>
@@ -131,7 +131,7 @@
                     'full_width': true,
                     'is_horizontal': false,
                 })) }}
-                <button class="btn btn-primary w-full mb-1" type="button" onclick="update_compare_printers_{{ options['rand'] }}()">{{ __('Apply') }}</button>
+                <button id="apply_compare_printers_{{ options['rand'] }}" class="btn btn-primary w-full mb-1" type="button">{{ __('Apply') }}</button>
             </li>
         </ul>
     </div>
@@ -215,6 +215,19 @@
 
         reloadTab_{{ options['rand'] }}();
     }
+
+    document.querySelectorAll('#select_range_dropdown .dropdown-item[data-key]').forEach((element) => {
+        element.addEventListener('click', () => update_date_preset_{{ options['rand'] }}(element));
+    });
+    document.querySelectorAll('#select_format_dropdown .dropdown-item[data-key]').forEach((element) => {
+        element.addEventListener('click', () => update_format_{{ options['rand'] }}(element));
+    });
+    document.getElementById('apply_custom_range_{{ options['rand'] }}').addEventListener('click', () => {
+        update_custom_date_range_{{ options['rand'] }}();
+    });
+    document.getElementById('apply_compare_printers_{{ options['rand'] }}').addEventListener('click', () => {
+        update_compare_printers_{{ options['rand'] }}();
+    });
 
     $(document).ready(function () {
         let range_date = $('#range_date_{{ options['rand'] }}')[0];

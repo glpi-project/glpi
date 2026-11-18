@@ -291,6 +291,11 @@
                             end: "{{ subitem.fields['end']|e('js') }}",
                         });
                     }
+                    $(() => {
+                        document.getElementById('plan{{ rand }}')?.addEventListener('click', () => {
+                            showPlanUpdate{{ rand }}(true);
+                        });
+                    });
                 </script>
                 <div class="col-12">
                 {% if subitem.can(subitem.fields['id'], constant('UPDATE')) and subitem.fields['begin'] %}
@@ -303,7 +308,7 @@
                         <span>{{ __('Unplan') }}</span>
                     </button>
                 {% elseif item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::PLANNED')) or constant('CommonITILObject::PLANNED') not in item.getAllStatusArray() %}
-                    <button id="plan{{ rand }}" class="btn btn-outline-secondary text-truncate" onclick="showPlanUpdate{{ rand }}(true)" type="button">
+                    <button id="plan{{ rand }}" class="btn btn-outline-secondary text-truncate" type="button">
                         <i class="ti ti-calendar" aria-hidden="true"></i>
                         <span>{{ __('Plan this task') }}</span>
                     </button>
