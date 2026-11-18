@@ -44,6 +44,10 @@ then
     exit 1
 fi
 
+# Force the production environment: the build may run in a container that defines another environment
+# (e.g. `testing` in the GitHub Actions image), whose resources (`tests/` directory) are removed during the build.
+export GLPI_ENVIRONMENT_TYPE=production
+
 echo "Installing dependencies..."
 # PHP dev dependencies are usefull at this point as they are used by some build operations
 $WORKING_DIR/bin/console dependencies install --composer-options="--ignore-platform-reqs --prefer-dist --no-progress"
