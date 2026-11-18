@@ -544,7 +544,9 @@ class RuleCollection extends CommonDBTM
                 {% import 'components/form/fields_macros.html.twig' as fields %}
                 <div class="d-flex justify-content-center">
                     {{ fields.dropdownArrayField('condition', p.condition, conditions, label, {
-                        on_change: 'reloadTab("start=0&inherited=' ~ p.inherited ~ '&childrens=' ~ p.childrens ~ '&condition=" + this.value)'
+                        add_data_attributes: {
+                            'glpi-reload-tab-on-change': 'start=0&inherited=' ~ p.inherited ~ '&childrens=' ~ p.childrens ~ '&condition=%value%',
+                        }
                     }) }}
                 </div>
 TWIG, $twig_params);
