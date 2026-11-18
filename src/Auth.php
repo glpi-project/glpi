@@ -40,6 +40,7 @@ use Glpi\Error\ErrorHandler;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\TOTPManager;
+use Glpi\Toolbox\Filesystem;
 use Safe\Exceptions\LdapException;
 
 use function Safe\ini_get;
@@ -566,8 +567,32 @@ class Auth extends CommonGLPI
                     false
                 );
 
-                // no SSL validation for the CAS server
-                phpCAS::setNoCasServerValidation();
+                if (($CFG_GLPI['cas_certificate_filepath'] ?? '') !== '') {
+                    // Set the certificate to use.
+                    // Block the authentication if the certificate file cannot be used.
+                    if (
+                        !Filesystem::isFilepathSafe($CFG_GLPI['cas_certificate_filepath'])
+                        || !file_exists($CFG_GLPI['cas_certificate_filepath'])
+                    ) {
+                        trigger_error('The CAS certificate file path is not valid.', E_USER_WARNING);
+                        return false;
+                    } else {
+                        try {
+                            phpCAS::setCasServerCACert($CFG_GLPI['cas_certificate_filepath']);
+                        } catch (CAS_Exception $e) {
+                            global $PHPLOGGER;
+                            $PHPLOGGER->error(
+                                'Unable to use the CAS certificate file.',
+                                ['exception' => $e]
+                            );
+                            return false;
+                        }
+                    }
+                } else {
+                    // No SSL validation for the CAS server.
+                    // This is unsafe but the administrator knows what he is doing.
+                    phpCAS::setNoCasServerValidation();
+                }
 
                 // force CAS authentication
                 phpCAS::forceAuthentication();

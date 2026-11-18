@@ -48,6 +48,7 @@ use Glpi\Plugin\Hooks;
 use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\ArrayNormalizer;
+use Glpi\Toolbox\Filesystem;
 use Glpi\UI\ThemeManager;
 use Safe\Exceptions\OpcacheException;
 
@@ -211,6 +212,20 @@ class Config extends CommonDBTM
                 Session::addMessageAfterRedirect(__s('Invalid base URL!'), false, ERROR);
                 return false;
             }
+        }
+
+        // Check CAS certificate file path validity.
+        if (
+            isset($input['cas_certificate_filepath'])
+            && $input['cas_certificate_filepath'] !== ''
+            && (!Filesystem::isFilepathSafe($input['cas_certificate_filepath']) || !file_exists($input['cas_certificate_filepath']))
+        ) {
+            Session::addMessageAfterRedirect(
+                __s('The CAS certificate file path is not valid.'),
+                false,
+                ERROR
+            );
+            return false;
         }
 
         if (isset($input['ssologout_url']) && !empty($input['ssologout_url'])) {
