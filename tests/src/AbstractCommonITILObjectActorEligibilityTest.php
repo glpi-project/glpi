@@ -39,6 +39,7 @@ use CommonITILObject;
 use Entity;
 use Group;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 use Profile;
 use Session;
 use Supplier;
@@ -638,6 +639,57 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
 
         // --- assert ---
         $this->assertActorNotLinked($itil, User::class, $new_assignee_id, CommonITILActor::ASSIGN, 'User without Ticket OWN should be ignored');
+    }
+
+    /**
+     * Entities (_test_root_entity > _test_child_1, _test_child_2): ITIL object in _test_child_1, user whose single profile (Self-Service) is in its sibling _test_child_2, not recursive.
+     *
+     * Non-regression test: the rule is applied by updateActors() through User::isValidUserForEntity(), not by the eligibility filter (isActorEligible()).
+     */
+    #[TestWith(['requester'])]
+    #[TestWith(['observer'])]
+    public function testCannotAddUserWithoutProfileInEntity(string $role): void
+    {
+        // --- arrange ---
+        $this->login();
+        $itil_entity = getItemByTypeName(Entity::class, '_test_child_1');
+        $user_entity = getItemByTypeName(Entity::class, '_test_child_2');
+        assert($itil_entity->fields['entities_id'] === $user_entity->fields['entities_id'], 'Both entities must have the same parent entity');
+        assert(!in_array($user_entity->getID(), getAncestorsOf(Entity::getTable(), $itil_entity->getID())), 'User profile entity must not be a parent of the ITIL object entity');
+        $itil = $this->createItil(['entities_id' => $itil_entity->getID()]);
+        $new_user = $this->createUserWithProfile(getItemByTypeName(Profile::class, 'Self-Service', true), '_test_child_2', 0);
+
+        // --- act ---
+        // buildActorInput() only handles groups and suppliers
+        // update() not checked: may fail when the whole input is filtered
+        $itil->update(['id' => $itil->getID(), '_users_id_' . $role => $new_user->getID()]);
+
+        // --- assert ---
+        $this->assertActorNotLinked($itil, User::class, $new_user->getID(), $this->getActorType($role), "User without profile in the entity of the ITIL object should not be added as $role");
+    }
+
+    /**
+     * Entities (_test_root_entity > _test_child_1, _test_child_2): ITIL object in _test_child_1, user whose single profile (Self-Service) is in its parent _test_root_entity, recursive.
+     *
+     * Control case of testCannotAddUserWithoutProfileInEntity(): the rule is applied by updateActors() through User::isValidUserForEntity(), not by the eligibility filter (isActorEligible()).
+     */
+    #[TestWith(['requester'])]
+    #[TestWith(['observer'])]
+    public function testAddUserHavingRecursiveProfileInParentEntity(string $role): void
+    {
+        // --- arrange ---
+        $this->login();
+        $itil_entity_id = getItemByTypeName(Entity::class, '_test_child_1', true);
+        assert(in_array($this->getTestRootEntity(true), getAncestorsOf(Entity::getTable(), $itil_entity_id)), 'User profile entity must be a parent of the ITIL object entity: only recursion makes the user valid');
+        $itil = $this->createItil(['entities_id' => $itil_entity_id]);
+        $new_user = $this->createUserWithProfile(getItemByTypeName(Profile::class, 'Self-Service', true), '_test_root_entity', 1);
+
+        // --- act ---
+        // buildActorInput() only handles groups and suppliers
+        $this->updateItem($itil::class, $itil->getID(), ['_users_id_' . $role => $new_user->getID()]);
+
+        // --- assert ---
+        $this->assertActorLinked($itil, User::class, $new_user->getID(), $this->getActorType($role), "User with a recursive profile in a parent entity should be added as $role");
     }
 
     /**
