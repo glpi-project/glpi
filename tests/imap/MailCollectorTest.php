@@ -46,7 +46,6 @@ use NotificationTargetSoftwareLicense;
 use NotificationTargetTicket;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
-use ReflectionProperty;
 use SoftwareLicense;
 use Ticket;
 
@@ -967,6 +966,12 @@ class MailCollectorTest extends DbTestCase
                     '53 - Large HTML Email Test',
                     '54 - Invalid charset',
                     '55 - Invalid UTF-8 body',
+                    '56 - Split HTML body around inline attachment',
+                    '57 - HTML content before and after inline attachment',
+                    '58 - Empty HTML wrapper falls back to plain text',
+                    '59 - HTML file attachment excluded from body',
+                    '60 - Multipart alternative selects richest HTML',
+                    '61 - Multipart related selects root HTML body',
                     $long_subject_expected,
                 ],
             ],
@@ -1115,6 +1120,23 @@ HTML,
             '55 - Invalid UTF-8 body' => <<<HTML
 <p>This message declares the UTF-8 charset but contains invalid bytes: café and pièces jointes.</p>
 HTML,
+            '56 - Split HTML body around inline attachment' => <<<HTML
+<p>Hello, this is the text below the attachment.</p>
+HTML,
+            '57 - HTML content before and after inline attachment' => <<<HTML
+<p>Before attachment</p>
+<p>After attachment</p>
+HTML,
+            '58 - Empty HTML wrapper falls back to plain text' => 'Fallback plain text',
+            '59 - HTML file attachment excluded from body' => <<<HTML
+<p>Main message</p>
+HTML,
+            '60 - Multipart alternative selects richest HTML' => <<<HTML
+<p>Second richer HTML representation</p>
+HTML,
+            '61 - Multipart related selects root HTML body' => <<<HTML
+<p>Root message HTML</p>
+HTML,
         ];
 
         foreach ($actors_specs as $actor_specs) {
@@ -1171,6 +1193,9 @@ HTML,
             '1234567890_3' => 'text/plain',
             '37-red-dot.png' => 'image/png',
             '41-blue-dot.png' => 'image/png',
+            '56-inline-attachment.txt' => 'text/plain',
+            '57-inline-attachment.txt' => 'text/plain',
+            '59-report.html' => 'text/html',
         ];
 
         $iterator = $DB->request(
@@ -1895,239 +1920,4 @@ HTML,
         $this->assertSame($expected, trim($collector->getDecodedContent(new Message(['raw' => $raw]))));
     }
 
-    public static function splitHtmlBodyProvider(): iterable
-    {
-        $crlf = "\r\n";
-
-        yield 'empty html part followed by attachment and text html part' => [
-            'raw' => implode($crlf, [
-                'From: sender@example.org',
-                'To: collector@example.org',
-                'Subject: split html body',
-                'MIME-Version: 1.0',
-                'Content-Type: multipart/alternative; boundary="alt"',
-                '',
-                '--alt',
-                'Content-Type: text/plain; charset=utf-8',
-                '',
-                'Hello, this is the text below the attachment.',
-                '--alt',
-                'Content-Type: multipart/mixed; boundary="mix"',
-                '',
-                '--mix',
-                'Content-Type: text/html; charset=us-ascii',
-                '',
-                '<html aria-label="message body"><head><meta http-equiv="content-type" content="text/html; charset=us-ascii"></head><body style="overflow-wrap: break-word;"></body></html>',
-                '--mix',
-                'Content-Type: application/pdf; name="file.pdf"',
-                'Content-Disposition: inline; filename="file.pdf"',
-                'Content-Transfer-Encoding: base64',
-                '',
-                'JVBERi0xLjQKJcOkw7zDtsOfCg==',
-                '--mix',
-                'Content-Type: text/html; charset=utf-8',
-                '',
-                '<html><head></head><body>Hello, this is the text below the attachment.</body></html>',
-                '--mix--',
-                '--alt--',
-                '',
-            ]),
-            'expected_body'    => 'Hello, this is the text below the attachment.',
-            'expected_is_html' => true,
-        ];
-
-        yield 'multipart signed wrapping split html body' => [
-            'raw' => implode($crlf, [
-                'From: sender@example.org',
-                'To: collector@example.org',
-                'Subject: smime split html body',
-                'MIME-Version: 1.0',
-                'Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="signed"',
-                '',
-                '--signed',
-                'Content-Type: multipart/alternative; boundary="alt"',
-                '',
-                '--alt',
-                'Content-Type: text/plain; charset=utf-8',
-                '',
-                'Signed message after attachment.',
-                '--alt',
-                'Content-Type: multipart/mixed; boundary="mix"',
-                '',
-                '--mix',
-                'Content-Type: text/html; charset=us-ascii',
-                '',
-                '<html><head></head><body></body></html>',
-                '--mix',
-                'Content-Type: application/pdf; name="doc.pdf"',
-                'Content-Disposition: inline; filename="doc.pdf"',
-                'Content-Transfer-Encoding: base64',
-                '',
-                'JVBERi0xLjQ=',
-                '--mix',
-                'Content-Type: text/html; charset=utf-8',
-                '',
-                '<html><head></head><body><p>Signed message after attachment.</p></body></html>',
-                '--mix--',
-                '--alt--',
-                '--signed',
-                'Content-Type: application/pkcs7-signature; name=smime.p7s',
-                'Content-Transfer-Encoding: base64',
-                '',
-                'MII=',
-                '--signed--',
-                '',
-            ]),
-            'expected_body'    => '<p>Signed message after attachment.</p>',
-            'expected_is_html' => true,
-        ];
-
-        yield 'html content before and after inline attachment' => [
-            'raw' => implode($crlf, [
-                'From: sender@example.org',
-                'To: collector@example.org',
-                'Subject: text before and after attachment',
-                'MIME-Version: 1.0',
-                'Content-Type: multipart/alternative; boundary="alt"',
-                '',
-                '--alt',
-                'Content-Type: text/plain; charset=utf-8',
-                '',
-                "Before attachment{$crlf}{$crlf}After attachment",
-                '--alt',
-                'Content-Type: multipart/mixed; boundary="mix"',
-                '',
-                '--mix',
-                'Content-Type: text/html; charset=utf-8',
-                '',
-                '<html><head></head><body><p>Before attachment</p></body></html>',
-                '--mix',
-                'Content-Type: application/pdf; name="file.pdf"',
-                'Content-Disposition: inline; filename="file.pdf"',
-                'Content-Transfer-Encoding: base64',
-                '',
-                'JVBERi0xLjQKJcOkw7zDtsOfCg==',
-                '--mix',
-                'Content-Type: text/html; charset=utf-8',
-                '',
-                '<html><head></head><body><p>After attachment</p></body></html>',
-                '--mix--',
-                '--alt--',
-                '',
-            ]),
-            'expected_body'    => "<p>Before attachment</p>\n<p>After attachment</p>",
-            'expected_is_html' => true,
-        ];
-
-        yield 'empty html wrapper falls back to plain text alternative' => [
-            'raw' => implode($crlf, [
-                'From: sender@example.org',
-                'To: collector@example.org',
-                'Subject: empty html wrapper only',
-                'MIME-Version: 1.0',
-                'Content-Type: multipart/alternative; boundary="alt"',
-                '',
-                '--alt',
-                'Content-Type: text/plain; charset=utf-8',
-                '',
-                'Fallback plain text',
-                '--alt',
-                'Content-Type: text/html; charset=utf-8',
-                '',
-                '<html><head></head><body></body></html>',
-                '--alt--',
-                '',
-            ]),
-            'expected_body'    => 'Fallback plain text',
-            'expected_is_html' => false,
-        ];
-
-        yield 'html file attachment is excluded from body' => [
-            'raw' => implode($crlf, [
-                'From: sender@example.org',
-                'To: collector@example.org',
-                'Subject: html attachment ignored in body',
-                'MIME-Version: 1.0',
-                'Content-Type: multipart/mixed; boundary="mix"',
-                '',
-                '--mix',
-                'Content-Type: text/html; charset=utf-8',
-                '',
-                '<html><body><p>Main message</p></body></html>',
-                '--mix',
-                'Content-Type: text/html; charset=utf-8; name="report.html"',
-                'Content-Disposition: attachment; filename="report.html"',
-                '',
-                '<html><body><p>Attached HTML file</p></body></html>',
-                '--mix--',
-                '',
-            ]),
-            'expected_body'    => '<p>Main message</p>',
-            'expected_is_html' => true,
-        ];
-
-        yield 'multipart alternative with multiple html representations selects richest one' => [
-            'raw' => implode($crlf, [
-                'From: sender@example.org',
-                'To: collector@example.org',
-                'Subject: multiple html alternatives',
-                'MIME-Version: 1.0',
-                'Content-Type: multipart/alternative; boundary="alt"',
-                '',
-                '--alt',
-                'Content-Type: text/plain; charset=utf-8',
-                '',
-                'Plain text version',
-                '--alt',
-                'Content-Type: text/html; charset=utf-8',
-                '',
-                '<html><body><p>First HTML representation</p></body></html>',
-                '--alt',
-                'Content-Type: text/html; charset=utf-8',
-                '',
-                '<html><body><p>Second richer HTML representation</p></body></html>',
-                '--alt--',
-                '',
-            ]),
-            'expected_body'    => '<p>Second richer HTML representation</p>',
-            'expected_is_html' => true,
-        ];
-
-        yield 'multipart related selects root html body and excludes inline html resource' => [
-            'raw' => implode($crlf, [
-                'From: sender@example.org',
-                'To: collector@example.org',
-                'Subject: related inline html resource',
-                'MIME-Version: 1.0',
-                'Content-Type: multipart/related; boundary="rel"',
-                '',
-                '--rel',
-                'Content-Type: text/html; charset=utf-8',
-                '',
-                '<html><body><p>Root message HTML</p></body></html>',
-                '--rel',
-                'Content-Type: text/html; charset=utf-8',
-                'Content-ID: <resource1@example.org>',
-                'Content-Disposition: inline; filename="resource.html"',
-                '',
-                '<html><body><p>Inline HTML resource</p></body></html>',
-                '--rel--',
-                '',
-            ]),
-            'expected_body'    => '<p>Root message HTML</p>',
-            'expected_is_html' => true,
-        ];
-    }
-
-    #[DataProvider('splitHtmlBodyProvider')]
-    public function testGetBodyWithSplitHtmlParts(string $raw, string $expected_body, bool $expected_is_html): void
-    {
-        $collector = new \MailCollector();
-        $body      = $collector->getBody(new Message(['raw' => $raw]));
-
-        $body_is_html_prop = new ReflectionProperty(\MailCollector::class, 'body_is_html');
-
-        $this->assertSame($expected_body, $body);
-        $this->assertSame($expected_is_html, $body_is_html_prop->getValue($collector));
-    }
 }

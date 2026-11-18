@@ -1,0 +1,18 @@
+Date: Tue, 10 Nov 2026 10:05:00 +0100 (CET)
+From: Normal User <normal@glpi-project.org>
+To: GLPI debug <unittests@glpi-project.org>
+Message-ID: <61-multipart-related-html@glpi-project.org>
+Subject: 61 - Multipart related selects root HTML body
+MIME-Version: 1.0
+Content-Type: multipart/related; boundary="rel61"
+
+--rel61
+Content-Type: text/html; charset=utf-8
+
+<html><body><p>Root message HTML</p></body></html>
+--rel61
+Content-Type: text/html; charset=utf-8
+Content-ID: <resource1@glpi-project.org>
+
+<html><body><p>Inline HTML resource</p></body></html>
+--rel61--

@@ -1,0 +1,21 @@
+Date: Tue, 10 Nov 2026 10:04:00 +0100 (CET)
+From: Normal User <normal@glpi-project.org>
+To: GLPI debug <unittests@glpi-project.org>
+Message-ID: <60-multi-html-alt@glpi-project.org>
+Subject: 60 - Multipart alternative selects richest HTML
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="alt60"
+
+--alt60
+Content-Type: text/plain; charset=utf-8
+
+Plain text version
+--alt60
+Content-Type: text/html; charset=utf-8
+
+<html><body><p>First HTML representation</p></body></html>
+--alt60
+Content-Type: text/html; charset=utf-8
+
+<html><body><p>Second richer HTML representation</p></body></html>
+--alt60--

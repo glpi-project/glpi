@@ -1,0 +1,18 @@
+Date: Tue, 10 Nov 2026 10:03:00 +0100 (CET)
+From: Normal User <normal@glpi-project.org>
+To: GLPI debug <unittests@glpi-project.org>
+Message-ID: <59-html-attachment@glpi-project.org>
+Subject: 59 - HTML file attachment excluded from body
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="mix59"
+
+--mix59
+Content-Type: text/html; charset=utf-8
+
+<html><body><p>Main message</p></body></html>
+--mix59
+Content-Type: text/html; charset=utf-8; name="59-report.html"
+Content-Disposition: attachment; filename="59-report.html"
+
+<!DOCTYPE html><html><body><p>Attached HTML file</p></body></html>
+--mix59--

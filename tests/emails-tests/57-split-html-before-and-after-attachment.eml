@@ -1,0 +1,33 @@
+Date: Tue, 10 Nov 2026 10:01:00 +0100 (CET)
+From: Normal User <normal@glpi-project.org>
+To: GLPI debug <unittests@glpi-project.org>
+Message-ID: <57-split-html-before-after@glpi-project.org>
+Subject: 57 - HTML content before and after inline attachment
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="alt57"
+
+--alt57
+Content-Type: text/plain; charset=utf-8
+
+Before attachment
+
+After attachment
+--alt57
+Content-Type: multipart/mixed; boundary="mix57"
+
+--mix57
+Content-Type: text/html; charset=utf-8
+
+<html><head></head><body><p>Before attachment</p></body></html>
+--mix57
+Content-Type: application/octet-stream; name="57-inline-attachment.txt"
+Content-Disposition: inline; filename="57-inline-attachment.txt"
+Content-Transfer-Encoding: base64
+
+dGVzdA==
+--mix57
+Content-Type: text/html; charset=utf-8
+
+<html><head></head><body><p>After attachment</p></body></html>
+--mix57--
+--alt57--
