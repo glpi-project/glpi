@@ -813,11 +813,8 @@ class GLPIDashboard {
     }
 
     refreshCardsImpactedByFilter(filter_id, filters) {
-        $('.dashboard .card.filter-'+filter_id).each((i, elem) => {
-            const gridstack_item = $(elem).closest(".grid-stack-item");
-            const card_id = gridstack_item.attr('gs-id');
-            this.getCardsAjax(`[gs-id="${CSS.escape(card_id)}"]`, filters);
-        });
+        // One call for all the impacted cards, so that they are requested together
+        this.getCardsAjax(`:has(.card.filter-${CSS.escape(filter_id)})`, filters);
     }
 
     saveDashboard(force_refresh) {
@@ -1082,7 +1079,15 @@ class GLPIDashboard {
             .trigger('change');
     }
 
-    getCardsAjax(specific_one, filters) {
+    /**
+     * Load the content of the cards, all of them or the ones matching a selector
+     *
+     * @param {string} [specific_one] Selector added to the grid items one, to load only some cards
+     * @param {Object} [filters] Filters to apply, the saved ones by default
+     * @param {boolean} [batches=true] Whether several cards may share a request
+     * @return {Promise[]}
+     */
+    getCardsAjax(specific_one, filters, batches = true) {
         specific_one = specific_one || "";
 
         // Callers that already know the filters can pass them in to avoid a redundant synch round-trip to the server
@@ -1121,15 +1126,18 @@ class GLPIDashboard {
         });
 
         if (this.ajax_cards) {
-            if (specific_one.length === 0 && !this.embed && this.batches > 0) {
-                // Whole dashboard: a few parallel requests, each one streaming its cards as they are computed
-                const early = window.glpi_dashboard_early_cards?.[this.rand];
+            // The page sent requests for its cards while its scripts were loading: the first load of the whole grid reads them, once
+            const early = specific_one.length === 0 ? window.glpi_dashboard_early_cards?.[this.rand] : undefined;
+            if (early !== undefined) {
+                delete window.glpi_dashboard_early_cards[this.rand];
+            }
+
+            if (batches && !this.embed && this.batches > 0 && (requested_cards.length > 1 || early !== undefined)) {
+                // Several cards: a few parallel requests, each one streaming its cards as they are computed
                 if (early === undefined) {
                     return this.splitCardsInBatches(requested_cards).map((batch) => this.loadCardsBatch(batch));
                 }
 
-                // The page sent these requests while its scripts were loading: they are read once
-                delete window.glpi_dashboard_early_cards[this.rand];
                 const by_id   = new Map(requested_cards.map((card) => [card.args.gridstack_id, card]));
                 const covered = new Set();
                 const started = early.map((batch) => {
@@ -1262,6 +1270,10 @@ class GLPIDashboard {
         const dashboard  = this.current_name;
         const filters    = this._filters_version;
         const is_current = () => this.current_name === dashboard && this._filters_version === filters;
+        // A later batch asking for the same card takes it over: this one no longer displays it nor requests it again
+        const batch    = Symbol('cards batch');
+        const is_owner = (card) => card.data('cards-batch') === batch;
+        cards.forEach((card) => card.card_el.data('cards-batch', batch));
         const display = (line) => {
             if (line.trim() === '') {
                 return;
@@ -1269,7 +1281,14 @@ class GLPIDashboard {
             try {
                 const result = JSON.parse(line);
                 const card   = pending.get(result.id);
-                if (card === undefined || typeof result.html !== 'string' || !is_current()) {
+                if (card === undefined || typeof result.html !== 'string') {
+                    return;
+                }
+                if (!is_owner(card)) {
+                    pending.delete(result.id);
+                    return;
+                }
+                if (!is_current()) {
                     return;
                 }
                 pending.delete(result.id);
@@ -1329,7 +1348,8 @@ class GLPIDashboard {
         }
 
         // Cards not displayed (failed request, truncated response, card the server could not render, filters changed meanwhile) get their own request
-        await Promise.allSettled([...pending.keys()].flatMap((id) => this.getCardsAjax(`[gs-id="${CSS.escape(id)}"]`)));
+        const missing = [...pending].filter(([, card]) => is_owner(card)).map(([id]) => id);
+        await Promise.allSettled(missing.flatMap((id) => this.getCardsAjax(`[gs-id="${CSS.escape(id)}"]`, undefined, false)));
     }
 
     /**
