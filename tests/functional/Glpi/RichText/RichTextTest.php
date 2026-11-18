@@ -120,11 +120,25 @@ HTML,
             'expected_result'        => '<table><tr><td>a</td><td>b</td></tr></table><table><tbody><tr><th>c</th></tr></tbody></table>',
         ];
 
-        // Misplaced content of a column group is wrapped in a row, to prevent browsers from closing the parent table early
+        // Content of a column group that follows its columns is moved after it, as browsers do
         yield [
             'content'                => '<table><colgroup><col><table><tr><td>a</td></tr></table></colgroup><tr><td>b</td></tr></table>',
             'encode_output_entities' => false,
-            'expected_result'        => '<table><colgroup><col /><tr><td><table><tr><td>a</td></tr></table></td></tr></colgroup><tr><td>b</td></tr></table>',
+            'expected_result'        => '<table><colgroup><col /></colgroup><tr><td><table><tr><td>a</td></tr></table></td></tr><tr><td>b</td></tr></table>',
+        ];
+        yield [
+            'content'                => '<table><colgroup><col><tbody><tr><td>a</td><td>b</td></tr></tbody></table>'
+                . '<table><colgroup><col><tr><td>c</td></tr></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table><colgroup><col /></colgroup><tbody><tr><td>a</td><td>b</td></tr></tbody></table>'
+                . '<table><colgroup><col /></colgroup><tr><td>c</td></tr></table>',
+        ];
+
+        // Scripts and styles between cells outside a row do not split the implicit row
+        yield [
+            'content'                => '<table><td>a</td><script>x()</script><td>b</td></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table><tr><td>a</td><td>b</td></tr></table>',
         ];
 
         // Table elements outside a table are removed, but their content is kept

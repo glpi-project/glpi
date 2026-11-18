@@ -38,6 +38,7 @@ namespace Glpi\RichText;
 use DOMDocument;
 use DOMElement;
 use DOMNode;
+use DOMText;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 use Symfony\Component\HtmlSanitizer\Parser\MastermindsParser;
 use Symfony\Component\HtmlSanitizer\Parser\ParserInterface;
@@ -62,7 +63,6 @@ final class HtmlParser implements ParserInterface
      */
     private const ALLOWED_CHILDREN = [
         'table' => ['caption', 'colgroup', 'col', 'thead', 'tbody', 'tfoot', 'tr', 'script', 'style', 'template'],
-        'colgroup' => ['col', 'template'],
         'thead' => ['tr', 'script', 'style', 'template'],
         'tbody' => ['tr', 'script', 'style', 'template'],
         'tfoot' => ['tr', 'script', 'style', 'template'],
@@ -139,8 +139,31 @@ final class HtmlParser implements ParserInterface
                 continue;
             }
 
+            if ($child_name === 'colgroup') {
+                // Browsers close a column group at its first child that is not a column (e.g. a row when `</colgroup>`
+                // is omitted) and process it and the following content in the table: move them after the column group.
+                $moved = $child->firstChild;
+                while (
+                    $moved !== null
+                    && ($moved instanceof DOMElement
+                        ? in_array(strtolower($moved->nodeName), ['col', 'template'], true)
+                        : !$moved instanceof DOMText || trim($moved->data) === '')
+                ) {
+                    $moved = $moved->nextSibling;
+                }
+                while ($moved !== null) {
+                    $following = $moved->nextSibling;
+                    $node->insertBefore($moved, $next);
+                    $moved = $following;
+                }
+                $next = $child->nextSibling;
+            }
+
             if ($allowed === null || in_array($child_name, $allowed, true)) {
-                $implicit_row = null;
+                if ($child_name !== 'script' && $child_name !== 'style') {
+                    // Scripts and styles are dropped by the sanitizer, so they must not split an implicit row.
+                    $implicit_row = null;
+                }
             } elseif ($child_name === 'td' || $child_name === 'th') {
                 // Cells outside a row: move consecutive cells into a single row, as browsers do.
                 if ($implicit_row === null) {
