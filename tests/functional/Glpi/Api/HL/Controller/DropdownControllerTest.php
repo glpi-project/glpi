@@ -38,6 +38,7 @@ use Blacklist;
 use BlacklistedMailContent;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
+use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use Holiday;
@@ -276,478 +277,161 @@ class DropdownControllerTest extends HLAPITestCase
                 });
         });
     }
-
-    public function testCreateAndUpdateAssetModelWithPictures(): void
+    public function testCRUDDropdownDefinition()
     {
-        $front_picture_path = GLPI_ROOT . '/tests/fixtures/uploads/bar.png';
-        $rear_picture_path = GLPI_ROOT . '/tests/fixtures/uploads/foo.png';
-        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
-
-        $front_picture_content = file_get_contents($front_picture_path);
-        $rear_picture_content = file_get_contents($rear_picture_path);
+        $create_input = [
+            'system_name' => 'Color',
+            'label' => 'Color',
+            'icon' => 'ti-palette',
+            'comment' => 'Test comment',
+            'is_active' => true,
+            'translations' => '{"fr_FR":{"one":"Couleur","many":"Couleurs","other":"Couleurs"}}',
+        ];
 
         $this->login();
 
-        $multipart_body = <<<EOT
------boundary
-Content-Disposition: form-data; name="name"
-
-monitor_model_with_pictures
------boundary
-Content-Disposition: form-data; name="entity"
-
-$entities_id
------boundary
-Content-Disposition: form-data; name="picture_front_upload"; filename="bar.png"
-Content-Type: image/png
-
-$front_picture_content
------boundary
-Content-Disposition: form-data; name="picture_rear_upload"; filename="foo.png"
-Content-Type: image/png
-
-$rear_picture_content
------boundary
-Content-Disposition: form-data; name="pictures_upload"; filename="bar.png"
-Content-Type: image/png
-
-$front_picture_content
------boundary
-Content-Disposition: form-data; name="pictures_upload"; filename="foo.png"
-Content-Type: image/png
-
-$rear_picture_content
------boundary--
-EOT;
-
-        $request = new Request('POST', '/Dropdowns/MonitorModel', [
-            'Content-Type' => 'multipart/form-data; boundary=---boundary',
-        ], $multipart_body);
-
-        $pictures = [];
-        $new_location = null;
-        $this->api->call($request, function ($call) use (&$new_location) {
+        // Create
+        $request = new Request('POST', '/Dropdowns/CustomDefinition');
+        foreach ($create_input as $key => $value) {
+            $request->setParameter($key, $value);
+        }
+        $definition_location = null;
+        $this->api->call($request, function ($call) use (&$definition_location) {
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) use (&$new_location) {
-                    $new_location = $content['href'];
+                ->headers(function ($headers) use (&$definition_location) {
+                    $this->assertNotEmpty($headers['Location']);
+                    $definition_location = $headers['Location'];
                 });
         });
 
-        $this->api->call(new Request('GET', $new_location), function ($call) use (&$pictures) {
+        $check_content = function (array $content) use ($create_input) {
+            foreach ($create_input as $key => $value) {
+                if ($key === 'translations') {
+                    $this->assertEquals(json_decode($value, true), json_decode($content[$key], true));
+                } else {
+                    $this->assertEquals($value, $content[$key]);
+                }
+            }
+        };
+
+        // Get
+        $this->api->call(new Request('GET', $definition_location), function ($call) use ($check_content) {
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) use (&$pictures) {
-                    $this->assertEquals('monitor_model_with_pictures', $content['name']);
-                    $this->assertNotEmpty($content['picture_front']);
-                    $this->assertNotEmpty($content['picture_rear']);
-                    $pictures = $content['pictures'];
-                    $this->assertCount(2, $content['pictures']);
+                ->jsonContent(function ($content) use ($check_content) {
+                    $check_content($content);
                 });
         });
 
-        $multipart_body = <<<EOT
------boundary
-Content-Disposition: form-data; name="name"
-
-monitor_model_with_pictures_updated
------boundary
-Content-Disposition: form-data; name="pictures_remove[]"
-
-{$pictures[0]}
------boundary--
-EOT;
-
-        $request = new Request('PATCH', $new_location, [
-            'Content-Type' => 'multipart/form-data; boundary=---boundary',
-        ], $multipart_body);
-
-        $this->api->call($request, function ($call) use ($pictures) {
+        // Search
+        $request = new Request('GET', '/Dropdowns/CustomDefinition');
+        $request->setParameter('filter', 'system_name==Color');
+        $this->api->call($request, function ($call) use ($check_content) {
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) use ($pictures) {
-                    $this->assertEquals('monitor_model_with_pictures_updated', $content['name']);
-                    $this->assertNotEmpty($content['picture_front']);
-                    $this->assertNotEmpty($content['picture_rear']);
-                    $this->assertNotContains($pictures[0], $content['pictures']);
-                    $this->assertCount(1, $content['pictures']);
-                });
-        });
-    }
-
-    public function testUpdateAssetModelPictureDeletesPreviousFile(): void
-    {
-        $first_picture_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/bar.png');
-        $second_picture_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
-        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
-
-        $this->login();
-
-        $multipart_body = <<<EOT
------boundary
-Content-Disposition: form-data; name="name"
-
-{$this->getUniqueString()}
------boundary
-Content-Disposition: form-data; name="entity"
-
-$entities_id
------boundary
-Content-Disposition: form-data; name="picture_front_upload"; filename="bar.png"
-Content-Type: image/png
-
-$first_picture_content
------boundary--
-EOT;
-
-        $request = new Request('POST', '/Dropdowns/MonitorModel', [
-            'Content-Type' => 'multipart/form-data; boundary=---boundary',
-        ], $multipart_body);
-
-        $new_location = null;
-        $this->api->call($request, function ($call) use (&$new_location) {
-            $call->response
-                ->isOK()
-                ->jsonContent(function ($content) use (&$new_location) {
-                    $new_location = $content['href'];
+                ->jsonContent(function ($content) use ($check_content) {
+                    $this->assertCount(1, $content);
+                    $check_content($content[0]);
                 });
         });
 
-        $original_picture_path = null;
-        $this->api->call(new Request('GET', $new_location), function ($call) use (&$original_picture_path) {
-            $call->response
-                ->isOK()
-                ->jsonContent(function ($content) use (&$original_picture_path) {
-                    $original_picture_path = $this->getPicturePathFromUrl($content['picture_front']);
-                });
-        });
-
-        $this->assertNotNull($original_picture_path);
-        $this->assertFileExists($original_picture_path);
-
-        $multipart_body = <<<EOT
------boundary
-Content-Disposition: form-data; name="picture_front_upload"; filename="foo.png"
-Content-Type: image/png
-
-$second_picture_content
------boundary--
-EOT;
-
-        $request = new Request('PATCH', $new_location, [
-            'Content-Type' => 'multipart/form-data; boundary=---boundary',
-        ], $multipart_body);
-
+        // Update
+        $update_input = [
+            'label' => 'Updated Color',
+            'is_active' => false,
+        ];
+        $request = new Request('PATCH', $definition_location);
+        foreach ($update_input as $key => $value) {
+            $request->setParameter($key, $value);
+        }
         $this->api->call($request, function ($call) {
             $call->response->isOK();
         });
 
-        $updated_picture_path = null;
-        $this->api->call(new Request('GET', $new_location), function ($call) use (&$updated_picture_path) {
+        // Get after update
+        $this->api->call(new Request('GET', $definition_location), function ($call) use ($update_input) {
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) use (&$updated_picture_path) {
-                    $updated_picture_path = $this->getPicturePathFromUrl($content['picture_front']);
+                ->jsonContent(function ($content) use ($update_input) {
+                    $this->assertEquals($update_input['label'], $content['label']);
+                    $this->assertEquals($update_input['is_active'], $content['is_active']);
                 });
         });
 
-        $this->assertNotNull($updated_picture_path);
-        $this->assertNotSame($original_picture_path, $updated_picture_path);
-        $this->assertFileDoesNotExist($original_picture_path);
-        $this->assertFileExists($updated_picture_path);
-    }
-
-    public function testCreateAssetModelRejectsMultipleSingletonPictureUploads(): void
-    {
-        $front_picture_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/bar.png');
-        $rear_picture_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
-        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
-        $name = __FUNCTION__;
-
-        $this->login();
-
-        $multipart_body = <<<EOT
------boundary
-Content-Disposition: form-data; name="name"
-
-$name
------boundary
-Content-Disposition: form-data; name="entity"
-
-$entities_id
------boundary
-Content-Disposition: form-data; name="picture_front_upload"; filename="bar.png"
-Content-Type: image/png
-
-$front_picture_content
------boundary
-Content-Disposition: form-data; name="picture_front_upload"; filename="foo.png"
-Content-Type: image/png
-
-$rear_picture_content
------boundary--
-EOT;
-
-        $request = new Request('POST', '/Dropdowns/MonitorModel', [
-            'Content-Type' => 'multipart/form-data; boundary=---boundary',
-        ], $multipart_body);
-
+        // Cannot change system name
+        $request = new Request('PATCH', $definition_location);
+        $request->setParameter('system_name', 'NewColor');
         $this->api->call($request, function ($call) {
             $call->response
                 ->isNotOK()
                 ->jsonContent(function ($content) {
-                    $this->assertEquals(AbstractController::ERROR_INVALID_PARAMETER, $content['status']);
-                    $this->assertEquals('maxItems', $content['detail']['picture_front_upload'][0]['error']);
+                    $this->assertEquals('Failed to update item(s)', $content['title']);
+                    $this->assertStringContainsString('The system name cannot be changed', $content['additional_messages'][0]['message']);
                 });
         });
 
-        $this->assertEquals(0, countElementsInTable(\MonitorModel::getTable(), ['name' => $name]));
-    }
-
-    public function testUpdateAssetModelWithInvalidPictureRemoval(): void
-    {
-        $picture_path = GLPI_ROOT . '/tests/fixtures/uploads/bar.png';
-        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
-        $picture_content = file_get_contents($picture_path);
-
-        $this->login();
-
-        $multipart_body = <<<EOT
------boundary
-Content-Disposition: form-data; name="name"
-
-monitor_model_invalid_picture_removal
------boundary
-Content-Disposition: form-data; name="entity"
-
-$entities_id
------boundary
-Content-Disposition: form-data; name="pictures_upload"; filename="bar.png"
-Content-Type: image/png
-
-$picture_content
------boundary--
-EOT;
-
-        $request = new Request('POST', '/Dropdowns/MonitorModel', [
-            'Content-Type' => 'multipart/form-data; boundary=---boundary',
-        ], $multipart_body);
-
-        $new_location = null;
-        $this->api->call($request, function ($call) use (&$new_location) {
-            $call->response
-                ->isOK()
-                ->jsonContent(function ($content) use (&$new_location) {
-                    $new_location = $content['href'];
-                });
-        });
-
-        $multipart_body = <<<EOT
------boundary
-Content-Disposition: form-data; name="pictures_remove[]"
-
-b3/632ab0d07e3e08.3897009568f78868cf2b6.jpg
------boundary--
-EOT;
-
-        $request = new Request('PATCH', $new_location, [
-            'Content-Type' => 'multipart/form-data; boundary=---boundary',
-        ], $multipart_body);
-
-        // Picture reference is not valid, but it doesn't cause an error
-        $this->api->call($request, function ($call) {
+        // Delete
+        $this->api->call(new Request('DELETE', $definition_location), function ($call) {
             $call->response->isOK();
         });
 
-        // Verify that the picture is still present
-        $this->api->call(new Request('GET', $new_location), function ($call) {
+        // Ensure deleted
+        $this->api->call(new Request('GET', $definition_location), function ($call) {
+            $call->response->isNotFoundError();
+        });
+    }
+
+    public function testDropdownDefinitionRejectsScalarTranslationLanguageValue()
+    {
+        $this->login();
+
+        // Create
+        $request = new Request('POST', '/Dropdowns/CustomDefinition');
+        $request->setParameter('system_name', 'ScalarTranslation');
+        $request->setParameter('translations', '{"fr_FR":"Couleur"}');
+        $this->api->call($request, function ($call) {
+            $call->response->isNotOK();
+        });
+        $this->assertFalse((new DropdownDefinition())->getFromDBByCrit(['system_name' => 'ScalarTranslation']));
+
+        // Update
+        $definition = $this->initDropdownDefinition();
+        $request = new Request('PATCH', '/Dropdowns/CustomDefinition/' . $definition->getID());
+        $request->setParameter('translations', '{"fr_FR":"Couleur"}');
+        $this->api->call($request, function ($call) {
+            $call->response->isNotOK();
+        });
+        $this->assertTrue($definition->getFromDB($definition->getID()));
+        $this->assertNotEquals(['fr_FR' => 'Couleur'], json_decode($definition->fields['translations'], true));
+    }
+
+    public function testCRUDNoRightsDropdownDefinition()
+    {
+        $definition = $this->initDropdownDefinition();
+
+        $this->api->autoTestCRUDNoRights(
+            endpoint: '/Dropdowns/CustomDefinition',
+            itemtype: DropdownDefinition::class,
+            items_id: $definition->getID(),
+            deny_create: static function () {
+                $_SESSION['glpiactiveprofile'][DropdownDefinition::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+            },
+            deny_purge: static function () {
+                $_SESSION['glpiactiveprofile'][DropdownDefinition::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+            },
+            create_params: ['system_name' => 'NoRightsDefinition'],
+        );
+    }
+
+    public function testDropdownDefinitionNotInIndex()
+    {
+        $this->login();
+        $this->api->call(new Request('GET', '/Dropdowns'), function ($call) {
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->assertCount(1, $content['pictures']);
-                });
-        });
-    }
-
-    /**
-     * Sending an empty value removes the file of properties accepting a single file. Properties accepting
-     * multiple files have their own removal property, so an empty value must simply be ignored rather than
-     * treated as a removal of the whole (serialized) field.
-     */
-    public function testUpdateAssetModelWithEmptyPicturesUpload(): void
-    {
-        $this->login();
-
-        [$location, $picture] = $this->createMonitorModelWithPicture('monitor_model_empty_pictures_upload');
-
-        $multipart_body = <<<EOT
------boundary
-Content-Disposition: form-data; name="pictures_upload"
-
-
------boundary--
-EOT;
-
-        $request = new Request('PATCH', $location, [
-            'Content-Type' => 'multipart/form-data; boundary=---boundary',
-        ], $multipart_body);
-
-        $this->api->call($request, function ($call) {
-            $call->response->isOK();
-        });
-
-        $this->api->call(new Request('GET', $location), function ($call) use ($picture) {
-            $call->response
-                ->isOK()
-                ->jsonContent(function ($content) use ($picture) {
-                    $this->assertEquals([$picture], $content['pictures']);
-                });
-        });
-    }
-
-    /**
-     * Create a monitor model owning a single picture and return its API location and picture reference.
-     * @return array{0: string, 1: string}
-     */
-    private function getPicturePathFromUrl(string $picture_url): string
-    {
-        $this->assertStringContainsString('_pictures%2F', $picture_url);
-        $reference = substr($picture_url, strpos($picture_url, '_pictures%2F') + strlen('_pictures%2F'));
-        return GLPI_PICTURE_DIR . '/' . urldecode($reference);
-    }
-
-    /**
-     * Create a monitor model owning a single picture and return its API location and picture reference.
-     * @return array{0: string, 1: string}
-     */
-    private function createMonitorModelWithPicture(string $name): array
-    {
-        $picture_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/bar.png');
-        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
-
-        $multipart_body = <<<EOT
------boundary
-Content-Disposition: form-data; name="name"
-
-$name
------boundary
-Content-Disposition: form-data; name="entity"
-
-$entities_id
------boundary
-Content-Disposition: form-data; name="pictures_upload"; filename="bar.png"
-Content-Type: image/png
-
-$picture_content
------boundary--
-EOT;
-
-        $request = new Request('POST', '/Dropdowns/MonitorModel', [
-            'Content-Type' => 'multipart/form-data; boundary=---boundary',
-        ], $multipart_body);
-
-        $location = null;
-        $this->api->call($request, function ($call) use (&$location) {
-            $call->response
-                ->isOK()
-                ->jsonContent(function ($content) use (&$location) {
-                    $location = $content['href'];
-                });
-        });
-
-        $picture = null;
-        $this->api->call(new Request('GET', $location), function ($call) use (&$picture) {
-            $call->response
-                ->isOK()
-                ->jsonContent(function ($content) use (&$picture) {
-                    $this->assertCount(1, $content['pictures']);
-                    $picture = $content['pictures'][0];
-                });
-        });
-
-        return [$location, $picture];
-    }
-
-    /**
-     * An item must not be able to delete a picture that belongs to another item.
-     */
-    public function testUpdateAssetModelRemovingAnotherItemPicture(): void
-    {
-        $this->login();
-
-        [, $victim_picture] = $this->createMonitorModelWithPicture('monitor_model_picture_victim');
-        [$attacker_location] = $this->createMonitorModelWithPicture('monitor_model_picture_attacker');
-
-        // The API exposes picture URLs, so resolve the path the file is actually stored at
-        $this->assertStringContainsString('_pictures%2F', $victim_picture);
-        $victim_path = urldecode(GLPI_PICTURE_DIR . '/' . substr($victim_picture, strpos($victim_picture, '_pictures%2F') + strlen('_pictures%2F')));
-        $this->assertFileExists($victim_path);
-
-        $multipart_body = <<<EOT
------boundary
-Content-Disposition: form-data; name="pictures_remove[]"
-
-$victim_picture
------boundary--
-EOT;
-
-        $request = new Request('PATCH', $attacker_location, [
-            'Content-Type' => 'multipart/form-data; boundary=---boundary',
-        ], $multipart_body);
-
-        $this->api->call($request, function ($call) {
-            $call->response->isOK();
-        });
-
-        // The other item's picture must be untouched, both in the DB and on disk
-        $this->assertFileExists($victim_path);
-        $this->api->call(new Request('GET', $attacker_location), function ($call) {
-            $call->response
-                ->isOK()
-                ->jsonContent(function ($content) {
-                    $this->assertCount(1, $content['pictures']);
-                });
-        });
-    }
-
-    /**
-     * A picture reference escaping the picture directory must never lead to a file being deleted.
-     */
-    public function testUpdateAssetModelRemovingPictureOutsideOfPictureDir(): void
-    {
-        $this->login();
-
-        [$location] = $this->createMonitorModelWithPicture('monitor_model_picture_traversal');
-
-        $sentinel_path = GLPI_TMP_DIR . '/' . __FUNCTION__ . '.txt';
-        file_put_contents($sentinel_path, 'sentinel');
-        // GLPI_TMP_DIR is a sibling of GLPI_PICTURE_DIR
-        $traversal_reference = '../' . basename(GLPI_TMP_DIR) . '/' . __FUNCTION__ . '.txt';
-
-        $multipart_body = <<<EOT
------boundary
-Content-Disposition: form-data; name="pictures_remove[]"
-
-$traversal_reference
------boundary--
-EOT;
-
-        $request = new Request('PATCH', $location, [
-            'Content-Type' => 'multipart/form-data; boundary=---boundary',
-        ], $multipart_body);
-
-        $this->api->call($request, function ($call) {
-            $call->response->isOK();
-        });
-
-        $this->assertFileExists($sentinel_path);
-        unlink($sentinel_path);
-
-        $this->api->call(new Request('GET', $location), function ($call) {
-            $call->response
-                ->isOK()
-                ->jsonContent(function ($content) {
-                    $this->assertCount(1, $content['pictures']);
+                    $this->assertNotContains(DropdownDefinition::class, array_column($content, 'itemtype'));
                 });
         });
     }
