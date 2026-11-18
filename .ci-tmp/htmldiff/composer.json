@@ -1,0 +1,50 @@
+{
+    "name": "ssddanbrown/htmldiff",
+    "description": "HTML Content Diff Generator",
+	"homepage": "https://codeberg.org/danb/HtmlDiff",
+	"license": "MIT",
+	"type": "library",
+	"authors": [
+        {
+            "name": "Dan Brown",
+            "homepage": "https://danb.me",
+			"role": "Developer"
+        }
+    ],
+    "require": {
+		"php": ">=8.0",
+		"ext-mbstring": "*"
+	},
+    "require-dev": {
+        "phpunit/phpunit": "^9.6.22",
+        "vimeo/psalm": "^4.10"
+    },
+	"autoload": {
+		"psr-4": {
+			"Ssddanbrown\\HtmlDiff\\": "src"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Ssddanbrown\\HtmlDiff\\Tests\\": "tests"
+		}
+	},
+	"dist": {
+		"type": "zip",
+		"url": "https://codeberg.org/api/v1/repos/danb/HtmlDiff/archive/%prettyVersion%.zip"
+	},
+	"scripts": {
+		"test": "vendor/bin/phpunit",
+		"test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+	},
+	"funding": [
+        {
+            "type": "kofi",
+            "url": "https://ko-fi.com/ssddanbrown"
+        },
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/ssddanbrown"
+        }
+    ]
+}

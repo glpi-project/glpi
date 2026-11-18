@@ -218,5 +218,16 @@
             "VENDOR_DIR='vendor/symfony/http-client/' PATCH_FILE='tools/patches/symfony-http-client-no-private-network-allow-list.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
             "VENDOR_DIR='vendor/thecodingmachine/safe/' PATCH_FILE='tools/patches/thecodingmachine-safe-php8.6.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'"
         ]
-    }
+    },
+    "repositories": [{
+        "name": "htmldiff",
+        "type": "path",
+        "url": ".ci-tmp/htmldiff",
+        "options": {
+            "symlink": false,
+            "versions": {
+                "ssddanbrown/htmldiff": "2.0.0"
+            }
+        }
+    }]
 }
