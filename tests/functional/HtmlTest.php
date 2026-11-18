@@ -770,15 +770,15 @@ class HtmlTest extends DbTestCase
     {
         $string = 'Are U\' OK?';
         $expected = 'onclick="if (window.confirm(&quot;Are U&amp;#039; OK?&quot;)){ ;return true;} else { return false;}"';
-        $this->assertSame($expected, Html::addConfirmationOnAction($string));
+        $this->assertSame($expected, @Html::addConfirmationOnAction($string));
 
         $strings = ['Are you', 'OK?'];
         $expected = 'onclick="if (window.confirm(&quot;Are you\nOK?&quot;)){ ;return true;} else { return false;}"';
-        $this->assertSame($expected, Html::addConfirmationOnAction($strings));
+        $this->assertSame($expected, @Html::addConfirmationOnAction($strings));
 
         $actions = '$("#mydiv").focus();';
         $expected = 'onclick="if (window.confirm(&quot;Are U&amp;#039; OK?&quot;)){ $(&quot;#mydiv&quot;).focus();return true;} else { return false;}"';
-        $this->assertSame($expected, Html::addConfirmationOnAction($string, $actions));
+        $this->assertSame($expected, @Html::addConfirmationOnAction($string, $actions));
     }
 
     public function testJsFunctions()
@@ -826,17 +826,17 @@ class HtmlTest extends DbTestCase
         $url = 'mylink.php';
 
         $expected = '<a href="mylink.php" >My link</a>';
-        $this->assertSame($expected, Html::link($text, $url));
+        $this->assertSame($expected, @Html::link($text, $url));
 
         $options = [
             'confirm'   => 'U sure?',
         ];
         $expected = '<a href="mylink.php" onclick="if (window.confirm(&quot;U sure?&quot;)){ ;return true;} else { return false;}">My link</a>';
-        $this->assertSame($expected, Html::link($text, $url, $options));
+        $this->assertSame($expected, @Html::link($text, $url, $options));
 
         $options['confirmaction'] = 'window.close();';
         $expected = '<a href="mylink.php" onclick="if (window.confirm(&quot;U sure?&quot;)){ window.close();return true;} else { return false;}">My link</a>';
-        $this->assertSame($expected, Html::link($text, $url, $options));
+        $this->assertSame($expected, @Html::link($text, $url, $options));
     }
 
     public function testHidden()
