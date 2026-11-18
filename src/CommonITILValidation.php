@@ -1259,7 +1259,6 @@ abstract class CommonITILValidation extends CommonDBChild
 
                     $script = <<<HTML
                         <span class="ti ti-edit" style="cursor:pointer" title="{$edit_title}"
-                              onclick="viewEditValidation{$rand_id}();"
                               id="viewvalidation{$rand_id}">
                         </span>
                         <script>
@@ -1270,6 +1269,9 @@ abstract class CommonITILValidation extends CommonDBChild
                                     params: $params_json,
                                 });
                             };
+                            document.getElementById('viewvalidation{$rand_id}').addEventListener('click', () => {
+                                viewEditValidation{$rand_id}();
+                            });
                         </script>
 HTML;
                 }
