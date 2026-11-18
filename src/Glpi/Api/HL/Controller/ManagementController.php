@@ -221,7 +221,7 @@ final class ManagementController extends AbstractController
      */
     private static function getBudgetTotalSpentSQL(): string
     {
-        global $DB;
+        global $CFG_GLPI, $DB;
 
         $excluded_infocom_types = [ConsumableItem::class, CartridgeItem::class, Software::class];
         $cost_itemtypes = [Contract::class, Ticket::class, Problem::class, Change::class, Project::class];
@@ -230,19 +230,14 @@ final class ManagementController extends AbstractController
 
         $terms = [];
 
-        // Infocoms: only count those linked to an existing, non-template item
-        $infocom_itemtypes = $DB->request([
-            'SELECT' => 'itemtype',
-            'DISTINCT' => true,
-            'FROM' => Infocom::getTable(),
-            'WHERE' => ['NOT' => ['itemtype' => array_merge($excluded_infocom_types, $cost_itemtypes)]],
-        ]);
-        foreach ($infocom_itemtypes as $row) {
-            $itemtype = $row['itemtype'];
-            $item = getItemForItemtype($itemtype);
+        // The eligible itemtypes come from the static configuration rather so the expression doesn't depend on
+        // data that could change between requests/queries and is identical for every property using it.
+        $infocom_itemtypes = array_diff($CFG_GLPI['infocom_types'], $excluded_infocom_types, $cost_itemtypes);
+        foreach ($infocom_itemtypes as $itemtype) {
             if (!is_a($itemtype, CommonDBTM::class, true)) {
                 continue;
             }
+            $item = getItemForItemtype($itemtype);
             $item_table = $itemtype::getTable();
             $criteria = [
                 'SELECT' => [QueryFunction::coalesce([QueryFunction::sum('glpi_infocoms.value'), $zero])],
