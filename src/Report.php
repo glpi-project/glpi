@@ -189,7 +189,7 @@ class Report extends CommonGLPI
                 <div class="card-body">
                     {{ fields.dropdownArrayField('statmenu', selected, values, null, {
                         no_label: true,
-                        on_change: "window.location=this.options[this.selectedIndex].value"
+                        add_data_attributes: {'glpi-navigate-on-change': ''}
                     }) }}
                 </div>
             </div>

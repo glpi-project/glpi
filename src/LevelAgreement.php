@@ -207,7 +207,6 @@ abstract class LevelAgreement extends CommonDBChild
             'definition_time',
             $possible_values,
             ['value'     => $this->fields["definition_time"],
-                'on_change' => 'appearhideendofworking()',
             ]
         );
 
@@ -226,6 +225,7 @@ abstract class LevelAgreement extends CommonDBChild
                 }
             }
             appearhideendofworking();
+            $('#dropdown_definition_time$rand').on('change', appearhideendofworking);
 JAVASCRIPT
         );
 

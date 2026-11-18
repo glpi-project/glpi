@@ -471,7 +471,6 @@ TWIG, $twig_params);
                 $field_name                           = 'networkports_id_alias';
                 $selectOptions['display_emptychoice'] = true;
                 $selectOptions['multiple']            = false;
-                $selectOptions['on_change']           = 'updateForm(this.options[this.selectedIndex].value)';
                 $netport_types[]                      = 'NetworkPortAggregate';
                 break;
 
@@ -549,7 +548,14 @@ TWIG, $twig_params);
             echo Html::scriptBlock($js);
         }
 
-        Dropdown::showFromArray($field_name, $possible_ports, $selectOptions);
+        $rand = Dropdown::showFromArray($field_name, $possible_ports, $selectOptions);
+        if (!$selectOptions['multiple']) {
+            echo Html::scriptBlock("
+                $('#dropdown_{$field_name}{$rand}').on('change', function() {
+                    updateForm(this.value);
+                });
+            ");
+        }
         echo "</td>";
     }
 

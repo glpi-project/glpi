@@ -990,7 +990,6 @@ class Conf extends CommonGLPI
                 self::getStaleAgentActions(),
                 [
                     'values' => importArrayFromDB($action),
-                    'on_change' => 'changestatus();',
                     'multiple' => true,
                     'rand' => $rand,
                 ]
@@ -1003,6 +1002,7 @@ class Conf extends CommonGLPI
                     $('#bloc_status_action2').toggle(display);
                 }
                 changestatus();
+                $('#dropdown_stale_agents_action$rand').on('change', changestatus);
             ");
             echo "</td>";
             echo "</tr>";
