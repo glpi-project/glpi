@@ -120,15 +120,12 @@ final class OpenAPIGenerator
         $to_keep = $this->getPublicVendorExtensions();
         // Recursively walk through every key of the schema
         foreach ($schema as $key => &$value) {
-            // If the key is a vendor extension
-            // If the key is not a public vendor extension
             if ($key === 'computation' && $parent_key !== 'properties') {
                 // Server-side SQL computation for a property. Not part of the public schema.
                 unset($schema[$key]);
                 continue;
             }
             if (str_starts_with($key, 'x-') && !in_array($key, $to_keep, true)) {
-                // Remove the key from the schema
                 unset($schema[$key]);
                 continue;
             }
@@ -138,7 +135,6 @@ final class OpenAPIGenerator
                     $value['readOnly'] = true;
                 }
             }
-            // If the value is an array
             if (is_array($value)) {
                 // Clean the value
                 /** @phpstan-var T $value */
