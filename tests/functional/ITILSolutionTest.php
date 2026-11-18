@@ -798,6 +798,22 @@ HTML,
         $this->assertSolutionAnswer($solution, \CommonITILValidation::REFUSED, 0);
     }
 
+    public function testReopeningOfAnApprovedItemUnlinksTheApproval()
+    {
+        [$ticket, $solution] = $this->createSolvedTicket();
+
+        $this->login('post-only', 'postonly');
+        $approval = $this->addFollowup($ticket, ['add_close' => '1']);
+        $this->assertSolutionAnswer($solution, \CommonITILValidation::ACCEPTED, $approval->getID());
+
+        // The approval is not the reason of the refusal
+        $this->addFollowup($ticket, ['add_reopen' => '1', 'content' => 'Another problem']);
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertFalse($ticket->isClosed());
+        $this->assertSolutionAnswer($solution, \CommonITILValidation::REFUSED, 0);
+    }
+
     public function testTriggerAloneDoesNotUpdateTheItem()
     {
         $this->login();

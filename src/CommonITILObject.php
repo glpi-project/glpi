@@ -1135,7 +1135,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         global $DB;
 
         $solution = $DB->request([
-            'SELECT' => ['id', 'itilfollowups_id'],
+            'SELECT' => ['id', 'status', 'itilfollowups_id'],
             'FROM'   => ITILSolution::getTable(),
             'WHERE'  => [
                 'itemtype' => static::class,
@@ -1146,6 +1146,15 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         ])->current();
         if ($solution === null) {
             return;
+        }
+
+        // A refused solution must not stay linked to the followup that approved it
+        if (
+            $approval['status'] === CommonITILValidation::REFUSED
+            && (int) $solution['status'] === CommonITILValidation::ACCEPTED
+        ) {
+            $solution['itilfollowups_id'] = null;
+            $approval['itilfollowups_id'] = null;
         }
 
         // Only a followup answering a solved item (not a closed one) answers its solution
@@ -4830,7 +4839,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 ITILSolution::getTable() . '.items_id' => new QueryIdentifier('REFTABLE.id'),
                 ITILSolution::getTable() . '.itemtype' => static::class,
             ],
-            'ORDER'  => ITILSolution::getTable() . '.id DESC',
+            'ORDER'  => [ITILSolution::getTable() . '.date_creation DESC', ITILSolution::getTable() . '.id DESC'],
             'LIMIT'  => 1,
         ]);
         $tab[] = [
