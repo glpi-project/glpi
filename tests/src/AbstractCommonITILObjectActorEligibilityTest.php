@@ -66,7 +66,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
 {
     use ITILActorAssertionsTrait;
 
-    private const array ROLE_FLAGS = [
+    private const ROLE_FLAGS = [
         'requester' => 'is_requester',
         'observer'  => 'is_watcher',
         'assign'    => 'is_assign',
