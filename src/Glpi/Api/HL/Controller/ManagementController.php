@@ -43,6 +43,7 @@ use BusinessCriticity;
 use CartridgeItem;
 use Cluster;
 use ClusterType;
+use Change;
 use ChangeCost;
 use CommonDBTM;
 use CommonITILObject;
@@ -88,7 +89,9 @@ use LineOperator;
 use LineType;
 use Location;
 use Manufacturer;
+use Problem;
 use ProblemCost;
+use Project;
 use ProjectCost;
 use Software;
 use SoftwareLicense;
@@ -96,6 +99,7 @@ use SoftwareLicenseType;
 use State;
 use Supplier;
 use SupplierType;
+use Ticket;
 use TicketCost;
 use User;
 
@@ -217,36 +221,82 @@ final class ManagementController extends AbstractController
     {
         global $DB;
 
-        $terms = [
-            new QuerySubQuery([
-                'SELECT' => [QueryFunction::coalesce([QueryFunction::sum('value'), new QueryExpression('0')])],
+        $excluded_infocom_types = [ConsumableItem::class, CartridgeItem::class, Software::class];
+        $cost_itemtypes = [Contract::class, Ticket::class, Problem::class, Change::class, Project::class];
+        $budget_id = new QueryExpression($DB::quoteName('_.id'));
+        $zero = new QueryExpression('0');
+
+        $terms = [];
+
+        // Infocoms: only count those linked to an existing, non-template item
+        $infocom_itemtypes = $DB->request([
+            'SELECT' => 'itemtype',
+            'DISTINCT' => true,
+            'FROM' => Infocom::getTable(),
+            'WHERE' => ['NOT' => ['itemtype' => array_merge($excluded_infocom_types, $cost_itemtypes)]],
+        ]);
+        foreach ($infocom_itemtypes as $row) {
+            $itemtype = $row['itemtype'];
+            $item = getItemForItemtype($itemtype);
+            if (!is_a($itemtype, CommonDBTM::class, true)) {
+                continue;
+            }
+            $item_table = $itemtype::getTable();
+            $criteria = [
+                'SELECT' => [QueryFunction::coalesce([QueryFunction::sum('glpi_infocoms.value'), $zero])],
                 'FROM' => Infocom::getTable(),
-                'WHERE' => [
-                    'budgets_id' => new QueryExpression($DB::quoteName('_.id')),
-                    'itemtype' => ['NOT IN', [ConsumableItem::class, CartridgeItem::class, Software::class]],
+                'INNER JOIN' => [
+                    $item_table => [
+                        'ON' => [
+                            $item_table => 'id',
+                            Infocom::getTable() => 'items_id',
+                        ],
+                    ],
                 ],
-            ]),
-        ];
-        foreach ([ContractCost::class, ProjectCost::class] as $cost_class) {
-            /** @var CommonDBTM $cost_class */
-            $terms[] = new QuerySubQuery([
-                'SELECT' => [QueryFunction::coalesce([QueryFunction::sum('cost'), new QueryExpression('0')])],
-                'FROM' => $cost_class::getTable(),
                 'WHERE' => [
-                    'budgets_id' => new QueryExpression($DB::quoteName('_.id')),
+                    'glpi_infocoms.budgets_id' => $budget_id,
+                    'glpi_infocoms.itemtype' => $itemtype,
                 ],
-            ]);
+            ];
+            if ($item->maybeTemplate()) {
+                $criteria['WHERE'][$item_table . '.is_template'] = 0;
+            }
+            $terms[] = new QuerySubQuery($criteria);
         }
-        foreach ([TicketCost::class, ProblemCost::class, ChangeCost::class] as $cost_class) {
-            /** @var CommonDBTM $cost_class */
-            $alg = new QueryExpression('(`actiontime` * `cost_time` / ' . HOUR_TIMESTAMP . ' + `cost_fixed` + `cost_material`)');
-            $terms[] = new QuerySubQuery([
-                'SELECT' => [QueryFunction::coalesce([QueryFunction::sum($alg), new QueryExpression('0')])],
-                'FROM' => $cost_class::getTable(),
-                'WHERE' => [
-                    'budgets_id' => new QueryExpression($DB::quoteName('_.id')),
+
+        // Costs: only count those linked to an existing, non-template item
+        foreach ($cost_itemtypes as $itemtype) {
+            /** @var class-string<CommonDBTM> $itemtype */
+            $cost_class = $itemtype . 'Cost';
+            $cost_table = $cost_class::getTable();
+            $item_table = $itemtype::getTable();
+            $sum = match ($itemtype) {
+                Ticket::class, Problem::class, Change::class => new QueryExpression(
+                    '(`' . $cost_table . '`.`actiontime` * `' . $cost_table . '`.`cost_time` / ' . HOUR_TIMESTAMP
+                    . ' + `' . $cost_table . '`.`cost_fixed` + `' . $cost_table . '`.`cost_material`)'
+                ),
+                default => $cost_table . '.cost',
+            };
+            $criteria = [
+                'SELECT' => [QueryFunction::coalesce([QueryFunction::sum($sum), $zero])],
+                'FROM' => $cost_table,
+                'INNER JOIN' => [
+                    $item_table => [
+                        'ON' => [
+                            $item_table => 'id',
+                            $cost_table => $itemtype::getForeignKeyField(),
+                        ],
+                    ],
                 ],
-            ]);
+                'WHERE' => [
+                    $cost_table . '.budgets_id' => $budget_id,
+                ],
+            ];
+            $item = getItemForItemtype($itemtype);
+            if ($item->maybeTemplate()) {
+                $criteria['WHERE'][$item_table . '.is_template'] = 0;
+            }
+            $terms[] = new QuerySubQuery($criteria);
         }
 
         return '(' . implode(' + ', $terms) . ')';

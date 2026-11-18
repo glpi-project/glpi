@@ -207,6 +207,76 @@ class ManagementControllerTest extends HLAPITestCase
         });
     }
 
+    public function testBudgetTotalSpentIgnoresTemplates()
+    {
+        $this->loginWeb();
+        $entities_id = $this->getTestRootEntity(true);
+        $budgets_id = $this->createItem('Budget', [
+            'name' => __FUNCTION__,
+            'entities_id' => $entities_id,
+            'value' => 1000,
+        ])->getID();
+
+        // Regular items: should be counted
+        $computers_id = $this->createItem('Computer', [
+            'name' => __FUNCTION__,
+            'entities_id' => $entities_id,
+        ])->getID();
+        $this->createItem('Infocom', [
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
+            'budgets_id' => $budgets_id,
+            'value' => 100,
+        ]);
+        $contracts_id = $this->createItem('Contract', [
+            'name' => __FUNCTION__,
+            'entities_id' => $entities_id,
+        ])->getID();
+        $this->createItem('ContractCost', [
+            'contracts_id' => $contracts_id,
+            'budgets_id' => $budgets_id,
+            'name' => __FUNCTION__,
+            'cost' => 50,
+        ]);
+
+        // Template items: should NOT be counted
+        $template_computers_id = $this->createItem('Computer', [
+            'name' => __FUNCTION__ . '_template',
+            'template_name' => __FUNCTION__ . '_template',
+            'is_template' => 1,
+            'entities_id' => $entities_id,
+        ])->getID();
+        $this->createItem('Infocom', [
+            'itemtype' => 'Computer',
+            'items_id' => $template_computers_id,
+            'budgets_id' => $budgets_id,
+            'value' => 700,
+        ]);
+        $template_contracts_id = $this->createItem('Contract', [
+            'name' => __FUNCTION__ . '_template',
+            'template_name' => __FUNCTION__ . '_template',
+            'is_template' => 1,
+            'entities_id' => $entities_id,
+        ])->getID();
+        $this->createItem('ContractCost', [
+            'contracts_id' => $template_contracts_id,
+            'budgets_id' => $budgets_id,
+            'name' => __FUNCTION__ . '_template',
+            'cost' => 300,
+        ]);
+
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $this->api->call(new Request('GET', '/Management/Budget/' . $budgets_id), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals(150, $content['total_spent']);
+                    $this->assertEquals(850, $content['amount_remaining']);
+                });
+        });
+    }
+
     public function testCRUDDomainItemLink()
     {
         $this->loginWeb();
