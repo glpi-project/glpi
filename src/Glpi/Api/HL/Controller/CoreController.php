@@ -354,36 +354,38 @@ EOT,
         });
         $doc_json_paths = json_encode($doc_json_paths, JSON_THROW_ON_ERROR);
 
+        $script = Html::scriptBlock(<<<JAVASCRIPT
+            const ui = window.SwaggerUIBundle({
+                urls: {$doc_json_paths},
+                dom_id: '#swagger-ui',
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                layout: 'StandaloneLayout',
+                docExpansion: 'none',
+                validatorUrl: 'none',
+                filter: true,
+                showExtensions: true,
+                oauth2RedirectUrl: '{$CFG_GLPI['root_doc']}/api.php/swagger-oauth-redirect',
+                // Sort operations by name and then by method
+                operationsSorter: (a, b) => {
+                    const method_order = ['get', 'post', 'put', 'patch', 'delete'];
+                    if (a.get('path') === b.get('path')) {
+                        return method_order.indexOf(a.get('method')) - method_order.indexOf(b.get('method'));
+                    }
+                    return a.get('path').localeCompare(b.get('path'));
+                },
+                tagsSorter: (a, b) => a.localeCompare(b),
+            });
+        JAVASCRIPT);
+
         $swagger_content .= <<<HTML
         <link rel="shortcut icon" type="images/x-icon" href="$favicon" />
         </head>
         <body style="margin:0; padding:0;">
             <div id="swagger-ui"></div>
-            <script>
-                const ui = window.SwaggerUIBundle({
-                    urls: {$doc_json_paths},
-                    dom_id: '#swagger-ui',
-                    presets: [
-                      SwaggerUIBundle.presets.apis,
-                      SwaggerUIStandalonePreset
-                    ],
-                    layout: 'StandaloneLayout',
-                    docExpansion: 'none',
-                    validatorUrl: 'none',
-                    filter: true,
-                    showExtensions: true,
-                    oauth2RedirectUrl: '{$CFG_GLPI['root_doc']}/api.php/swagger-oauth-redirect',
-                    // Sort operations by name and then by method
-                    operationsSorter: (a, b) => {
-                        const method_order = ['get', 'post', 'put', 'patch', 'delete'];
-                        if (a.get('path') === b.get('path')) {
-                            return method_order.indexOf(a.get('method')) - method_order.indexOf(b.get('method'));
-                        }
-                        return a.get('path').localeCompare(b.get('path'));
-                    },
-                    tagsSorter: (a, b) => a.localeCompare(b),
-                });
-            </script>
+            $script
         </body>
 HTML;
 
