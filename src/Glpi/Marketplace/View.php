@@ -462,6 +462,9 @@ HTML;
             $plugin = new Plugin();
             $plugin_message = $plugin->getPluginsUpdatableAlert();
 
+            $script = Html::scriptBlock(<<<JAVASCRIPT
+                var marketplace_total_plugin = {$nb_plugins};
+            JAVASCRIPT);
             $marketplace  = <<<HTML
                 <div class='marketplace $tab' data-tab='{$tab}'>
                     {$tags_list}
@@ -485,9 +488,7 @@ HTML;
                         </a>
                     </div>
                 </div>
-                <script>
-                    var marketplace_total_plugin = {$nb_plugins};
-                </script>
+                $script
 HTML;
             echo $marketplace;
         } else {
