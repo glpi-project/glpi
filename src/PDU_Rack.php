@@ -482,7 +482,6 @@ class PDU_Rack extends CommonDBRelation
             'side_rack' => __('placed at rack side'),
         ], [
             'display_emptychoice' => true,
-            'on_change'           => 'showAddPduSubForm()',
             'rand'                => $rand,
         ]);
 
@@ -506,6 +505,7 @@ class PDU_Rack extends CommonDBRelation
             $('#pdu_add_sub_form$rand').html("");
          }
       }
+      $('#dropdown_sub_form{$rand}').on('change', showAddPduSubForm);
 JAVASCRIPT;
         echo Html::scriptBlock($js);
         echo "<div id='pdu_add_sub_form$rand'></div>";

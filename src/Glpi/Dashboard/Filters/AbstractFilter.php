@@ -189,7 +189,6 @@ abstract class AbstractFilter
             'display_emptychoice' => false,
             'emptylabel'          => '',
             'placeholder'         => $label,
-            'on_change'           => "on_change_{$rand}()",
             'allowClear'          => true,
             'width'               => '',
         ] + $add_params);
@@ -203,6 +202,7 @@ abstract class AbstractFilter
 
                 $(dom_elem).closest('fieldset').toggleClass('filled', selected !== null);
             };
+            $('#dropdown_" . \jsescape($fieldname . $rand) . "').on('change', on_change_{$rand});
         ";
         $field .= Html::scriptBlock($js);
 
