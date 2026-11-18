@@ -832,12 +832,13 @@ trait PlanningEvent
                         ? "none" : "table";
 
         $out .= "<span id='toggle_ar' style='display: $display_tar'>";
-        $out .= "<a class='btn btn-primary'
-                 title='" . __("Personalization") . "'
-                 onclick='$(\"#advanced_repetition$rand\").toggle()'>
+        $out .= "<button type='button' class='btn btn-primary'
+                 title='" . __s("Personalization") . "' aria-label='" . __s("Personalization") . "'
+                 data-bs-toggle='collapse' data-bs-target='#advanced_repetition$rand'
+                 aria-expanded='" . ($display_ar === 'none' ? 'false' : 'true') . "' aria-controls='advanced_repetition$rand'>
                  <i class='ti ti-settings' aria-hidden='true'></i>
-              </a>";
-        $out .= "<div id='advanced_repetition$rand' style='display: $display_ar; max-width: 23'>";
+              </button>";
+        $out .= "<div id='advanced_repetition$rand' class='collapse" . ($display_ar === 'none' ? '' : ' show') . "'>";
 
         $out .= "<div class='field'>";
         $out .= "<label for='dropdown_interval$rand'>" . __s("Interval") . "</label>";

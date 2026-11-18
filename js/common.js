@@ -1122,6 +1122,10 @@ function updateProgress(progressid) {
     });
 }
 
+$(document).on('change', '[data-progressid]', function () {
+    updateProgress(this.dataset.progressid);
+});
+
 // fullscreen api
 function GoInFullscreen(element) {
     if (element.requestFullscreen) {
