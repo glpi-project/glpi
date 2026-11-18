@@ -49,6 +49,22 @@ CREATE TABLE `glpi_alerts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
+### Dump table glpi_apiticketrequests
+
+DROP TABLE IF EXISTS `glpi_apiticketrequests`;
+CREATE TABLE `glpi_apiticketrequests` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `key_hash` char(64) NOT NULL,
+  `fingerprint` char(64) NOT NULL,
+  `tickets_id` int unsigned NOT NULL,
+  `expires_at` timestamp NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `key_hash` (`key_hash`),
+  KEY `tickets_id` (`tickets_id`),
+  KEY `expires_at` (`expires_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+
 ### Dump table glpi_authldapreplicates
 
 DROP TABLE IF EXISTS `glpi_authldapreplicates`;

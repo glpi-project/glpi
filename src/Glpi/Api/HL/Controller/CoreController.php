@@ -514,7 +514,7 @@ HTML;
         }
         if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
             $response_headers['Access-Control-Allow-Headers'] = [
-                'Content-Type', 'Authorization', 'Origin', 'Accept',
+                'Content-Type', 'Authorization', 'Origin', 'Accept', 'Idempotency-Key',
                 'GLPI-API-Version', 'GLPI-Profile', 'GLPI-Entity', 'GLPI-Entity-Recursive',
                 'X-Debug-Mode', 'X-Requested-With', 'Accept-Language', 'Accept-Encoding', 'User-Agent',
             ];
