@@ -135,6 +135,148 @@ class ManagementControllerTest extends HLAPITestCase
         ]);
     }
 
+    public function testBudgetComputedFields()
+    {
+        $this->loginWeb();
+        $entities_id = $this->getTestRootEntity(true);
+        $budgets_id = $this->createItem('Budget', [
+            'name' => __FUNCTION__,
+            'entities_id' => $entities_id,
+            'value' => 1000,
+        ])->getID();
+        $contracts_id = $this->createItem('Contract', [
+            'name' => __FUNCTION__,
+            'entities_id' => $entities_id,
+        ])->getID();
+        $this->createItem('ContractCost', [
+            'contracts_id' => $contracts_id,
+            'budgets_id' => $budgets_id,
+            'name' => __FUNCTION__,
+            'cost' => 100,
+        ]);
+        $tickets_id = $this->createItem('Ticket', [
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'entities_id' => $entities_id,
+        ])->getID();
+        $this->createItem('TicketCost', [
+            'tickets_id' => $tickets_id,
+            'budgets_id' => $budgets_id,
+            'name' => __FUNCTION__,
+            'actiontime' => 3600,
+            'cost_time' => 10,
+            'cost_fixed' => 20,
+            'cost_material' => 30,
+        ]);
+
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        // 100 (contract) + 10 + 20 + 30 (ticket)
+        $this->api->call(new Request('GET', '/Management/Budget/' . $budgets_id), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals(160, $content['total_spent']);
+                    $this->assertEquals(840, $content['amount_remaining']);
+                });
+        });
+
+        $filters = [
+            ['name==' . __FUNCTION__, 'total_spent==160', 1],
+            ['name==' . __FUNCTION__, 'total_spent=gt=160', 0],
+            ['name==' . __FUNCTION__, 'amount_remaining==840', 1],
+            ['name==' . __FUNCTION__, 'amount_remaining=lt=500', 0],
+        ];
+        foreach ($filters as [$name_filter, $computed_filter, $expected_count]) {
+            $request = new Request('GET', '/Management/Budget');
+            $request->setParameter('filter', [$name_filter, $computed_filter]);
+            $this->api->call($request, function ($call) use ($expected_count) {
+                $call->response
+                    ->isOK()
+                    ->jsonContent(function ($content) use ($expected_count) {
+                        $this->assertCount($expected_count, $content);
+                    });
+            });
+        }
+
+        $request = new Request('GET', '/Management/Budget');
+        $request->setParameter('filter', ['name==' . __FUNCTION__]);
+        $request->setParameter('sort', 'amount_remaining:desc');
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
+        });
+    }
+
+    public function testBudgetTotalSpentIgnoresTemplates()
+    {
+        $this->loginWeb();
+        $entities_id = $this->getTestRootEntity(true);
+        $budgets_id = $this->createItem('Budget', [
+            'name' => __FUNCTION__,
+            'entities_id' => $entities_id,
+            'value' => 1000,
+        ])->getID();
+
+        // Regular items: should be counted
+        $computers_id = $this->createItem('Computer', [
+            'name' => __FUNCTION__,
+            'entities_id' => $entities_id,
+        ])->getID();
+        $this->createItem('Infocom', [
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
+            'budgets_id' => $budgets_id,
+            'value' => 100,
+        ]);
+        $contracts_id = $this->createItem('Contract', [
+            'name' => __FUNCTION__,
+            'entities_id' => $entities_id,
+        ])->getID();
+        $this->createItem('ContractCost', [
+            'contracts_id' => $contracts_id,
+            'budgets_id' => $budgets_id,
+            'name' => __FUNCTION__,
+            'cost' => 50,
+        ]);
+
+        // Template items: should NOT be counted
+        $template_computers_id = $this->createItem('Computer', [
+            'name' => __FUNCTION__ . '_template',
+            'template_name' => __FUNCTION__ . '_template',
+            'is_template' => 1,
+            'entities_id' => $entities_id,
+        ])->getID();
+        $this->createItem('Infocom', [
+            'itemtype' => 'Computer',
+            'items_id' => $template_computers_id,
+            'budgets_id' => $budgets_id,
+            'value' => 700,
+        ]);
+        $template_contracts_id = $this->createItem('Contract', [
+            'name' => __FUNCTION__ . '_template',
+            'template_name' => __FUNCTION__ . '_template',
+            'is_template' => 1,
+            'entities_id' => $entities_id,
+        ])->getID();
+        $this->createItem('ContractCost', [
+            'contracts_id' => $template_contracts_id,
+            'budgets_id' => $budgets_id,
+            'name' => __FUNCTION__ . '_template',
+            'cost' => 300,
+        ]);
+
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $this->api->call(new Request('GET', '/Management/Budget/' . $budgets_id), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals(150, $content['total_spent']);
+                    $this->assertEquals(850, $content['amount_remaining']);
+                });
+        });
+    }
+
     public function testCRUDDomainItemLink()
     {
         $this->loginWeb();
