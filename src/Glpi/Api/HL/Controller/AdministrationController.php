@@ -1395,9 +1395,7 @@ EOT,
         if (!$user->can($users_id, READ) && $users_id !== $this->getMyUserID()) {
             return self::getAccessDeniedErrorResponse();
         }
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';user.id==' . $users_id;
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, "user.id==$users_id");
         return ResourceAccessor::searchBySchema(
             schema: $this->getKnownSchema('EmailAddress', $this->getAPIVersion($request)),
             request_params: $request->getParameters()
@@ -1515,9 +1513,7 @@ EOT,
         if (!(new User())->can($users_id, READ)) {
             return self::getAccessDeniedErrorResponse();
         }
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';user.id==' . $users_id;
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, "user.id==$users_id");
         return ResourceAccessor::searchBySchema(
             schema: $this->getKnownSchema('ProfileAuthorization', $this->getAPIVersion($request)),
             request_params: $request->getParameters()
@@ -1536,9 +1532,7 @@ EOT,
         if (!(new User())->can($users_id, READ)) {
             return self::getAccessDeniedErrorResponse();
         }
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';user.id==' . $users_id;
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, "user.id==$users_id");
         return ResourceAccessor::getOneBySchema(
             schema: $this->getKnownSchema('ProfileAuthorization', $this->getAPIVersion($request)),
             request_attrs: $request->getAttributes(),
