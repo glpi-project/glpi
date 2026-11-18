@@ -215,6 +215,8 @@ final class ManagementController extends AbstractController
     /**
      * Get the SQL expression (as a parenthesized string) used to compute the total amount spent for a budget.
      * Expects the budget table to be aliased as `_`.
+     * Intentionally does not consider read permissions of related itemtypes, as it could make the computation inconsistent with the budget's value, even if the web UI currently does show incorrect values in such cases.
+     * Similarly, entity restrictions on the related items are not considered either; only the budget's entity restriction is considered, as it is the only one that matters for the budget's value.
      * @return string
      */
     private static function getBudgetTotalSpentSQL(): string
