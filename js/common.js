@@ -190,6 +190,13 @@ function checkAsCheckboxes(reference, container_id, checkboxes_selector = 'input
     return true;
 }
 
+document.addEventListener('click', (e) => {
+    const element = e.target.closest('[data-glpi-check-all]');
+    if (element) {
+        checkAsCheckboxes(element, element.dataset.glpiCheckAll, '.massive_action_checkbox');
+    }
+}, true);
+
 /**
  * Permit to use Shift key on a group of checkboxes
  * Usage: $form.find('input[type="checkbox"]').shiftSelectable();
