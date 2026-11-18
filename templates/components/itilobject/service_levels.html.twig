@@ -101,8 +101,7 @@
                      </span>
 
                      {% if can_assign_sla_ola %}
-                        <i class="ti ti-x ms-1" role="button"
-                           onclick="delete_date_{{ rand }}(event)"
+                        <i id="delete_button_{{ rand }}" class="ti ti-x ms-1" role="button"
                            title="{{ _x('button', 'Delete permanently') }}"
                            data-bs-toggle="tooltip" data-bs-placement="top"></i>
                      {% endif %}
@@ -140,6 +139,9 @@
                         'delete_date': delete_date
                      });
                   }
+                  document.getElementById('delete_button_{{ rand }}')?.addEventListener('click', (e) => {
+                     delete_date_{{ rand }}(e);
+                  });
                </script>
             {% endif %}
          {% else %}
