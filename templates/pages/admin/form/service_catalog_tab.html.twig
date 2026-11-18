@@ -41,8 +41,7 @@
                 <label class="form-check mb-0 ms-auto form-switch">
                     <input type="hidden" value="0" name="show_in_service_catalog">
                     <input aria-label="{{ __(" Active") }}" class="form-check-input" type="checkbox"
-                        name="show_in_service_catalog" value="1"
-                        onchange="$('[data-service-catalog-config]').css({'opacity': this.checked ? 1 : 0.5, 'pointer-events': this.checked ? 'auto' : 'none'})"
+                        name="show_in_service_catalog" value="1" data-service-catalog-toggle
                         {{ item.fields.show_in_service_catalog == true ? "checked" : "" }}
                     >
                 </label>
@@ -111,3 +110,14 @@
         </div>
     </div>
 </form>
+
+{% if item.isField('show_in_service_catalog') %}
+    <script>
+        $('[data-service-catalog-toggle]').on('change', function () {
+            $('[data-service-catalog-config]').css({
+                'opacity': this.checked ? 1 : 0.5,
+                'pointer-events': this.checked ? 'auto' : 'none',
+            });
+        });
+    </script>
+{% endif %}
