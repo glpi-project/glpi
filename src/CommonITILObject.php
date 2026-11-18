@@ -2555,12 +2555,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     {
         $actor_key = sprintf('_%s_%s', getForeignKeyFieldForItemType($actor_itemtype), $role); // _<fk>_<type> ex _users_id_requester
 
-        // `_additional_*` keys, built as in updateActors()
-        $additional_key = $actor_itemtype === User::class
-            ? sprintf('_additional_%ss', $role)
-            : sprintf('_additional_%ss_%ss', strtolower($actor_itemtype), $role); // ex _additional_requesters, _additional_groups_requesters
-        unset($input[$additional_key]);
-
         // deletion of existing actors - ex _users_id_requester_deleted
         unset($input[$actor_key . '_deleted']);
 
@@ -11512,7 +11506,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * Handle
      * - historical format _<fk>_<type> (e.g. _users_id_requester )
-     * - rules format _additional_ (e.g. _additional_requesters, _additional_groups_assigns)
+     * - rules format _additional_ (e.g. _additional_requesters, _additional_groups_assigns): always
+     *   removed, it is the output of the rules, not an input format
      * - _deleted entries (e.g. _users_id_assign_deleted)
      *
      * _actors key is not handled, no removal on it.
@@ -11600,48 +11595,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         // Format 2 : rules keys: _additional_((groups|suppliers)_)?(requesters|observers|assigns)
         // e.g. _additional_suppliers_assigns, _additional_requesters
+        // They are the output of the rules, which run after this filter: not expected in the input, always removed
         foreach (['', '_groups', '_suppliers'] as $actor_type) { // '' stands for 'users'
             foreach (['requesters', 'observers', 'assigns'] as $role) {
-                $key = sprintf('_additional%s_%s', $actor_type, $role); //
-                if (!isset($input[$key])) {
-                    // key not defined, nothing to filter.
-                    continue;
-                }
-                $input_key_array = (array) $input[$key]; // copy $input[$key] and always have an array inside
-
-                $check_each_actors_strategy
-                    // user assignments uses canAssignToMe() which can be used only if it maches the current user (so an actor_id is required)
-                    = ($role === 'assigns' && $actor_type === '') // 'users' type
-                    // requester uses canDelegateeCreateTicket() which requires the actor_id and can only be used on creation, not on update
-                    || ($this instanceof Ticket && $role === 'requesters' && $actor_type === '' && $is_new_item);
-
-                if ($check_each_actors_strategy) {
-                    foreach ($input_key_array as $actor_key => $element) {
-                        $actor_id = is_array($element) && array_key_exists('users_id', $element) ? $element['users_id'] : $element;
-                        // rights check
-                        $allowed = match ($role) {
-                            'assigns' => $can_assign || ($actor_id == Session::getLoginUserID() && $this->canAssignToMe()),
-                            'requesters' => $is_user_logged_in && is_numeric($actor_id) && Ticket::canDelegateeCreateTicket((int) $actor_id, $input['entities_id'] ?? null),
-                        };
-
-                        if (!$allowed) {
-                            if (is_array($input[$key])) {
-                                unset($input[$key][$actor_key]);
-                            } else {
-                                unset($input[$key]);
-                            }
-                        }
-                    }
-                } else {
-                    $allowed = match ($role) {
-                        'assigns' => $can_assign,
-                        'requesters', 'observers' => $is_new_item || $can_update_existing_item,
-                    };
-
-                    if (!$allowed) {
-                        unset($input[$key]);
-                    }
-                }
+                unset($input[sprintf('_additional%s_%s', $actor_type, $role)]);
             }
         }
 
@@ -11681,8 +11638,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * - an assigned user must have the Ticket OWN right in the entity of the ITIL object, also for
      *   changes and problems, which have no right of their own (users_right 'own_ticket' of the form)
      *
-     * Handle the same keys as removeActorChangesNotAllowed(), except the _deleted entries, and the single
-     * actor keys _itil_<type> (e.g. _itil_assign), applied later by prepareInputForUpdate().
+     * Handle the historical keys _<fk>_<type> (the _additional_* keys are already removed by
+     * removeActorChangesNotAllowed()), and the single actor keys _itil_<type> (e.g. _itil_assign), applied
+     * later by prepareInputForUpdate().
      * No filtering for cron and for calls made with right checks disabled.
      *
      * @param array<string, mixed> $input
@@ -11708,34 +11666,24 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         foreach (['requester', 'observer', 'assign'] as $role) {
             foreach ([User::class, Group::class, Supplier::class] as $actor_itemtype) {
-                $fkey = getForeignKeyFieldForItemType($actor_itemtype);
-                $keys = [
-                    // historical keys, e.g. _users_id_assign, _groups_id_requester
-                    sprintf('_%s_%s', $fkey, $role),
-                    // rules keys, built as in updateActors(), e.g. _additional_assigns, _additional_groups_requesters
-                    $actor_itemtype === User::class
-                        ? sprintf('_additional_%ss', $role)
-                        : sprintf('_additional_%ss_%ss', strtolower($actor_itemtype), $role),
-                ];
+                // historical keys, e.g. _users_id_assign, _groups_id_requester
+                // (the _additional_* keys are already removed by removeActorChangesNotAllowed())
+                $key = sprintf('_%s_%s', getForeignKeyFieldForItemType($actor_itemtype), $role);
+                if (!isset($input[$key])) {
+                    // key not defined, nothing to filter.
+                    continue;
+                }
 
-                foreach ($keys as $key) {
-                    if (!isset($input[$key])) {
-                        // key not defined, nothing to filter.
+                // elements: an id, or an array of ids
+                foreach ((array) $input[$key] as $actor_key => $actor_id) {
+                    if ($this->isActorEligible($actor_itemtype, $actor_id, $role, $itil_entities_id)) {
                         continue;
                     }
 
-                    // elements: an id, or an array of ids or of arrays holding the foreign key
-                    foreach ((array) $input[$key] as $actor_key => $element) {
-                        $actor_id = is_array($element) ? ($element[$fkey] ?? null) : $element;
-                        if ($this->isActorEligible($actor_itemtype, $actor_id, $role, $itil_entities_id)) {
-                            continue;
-                        }
-
-                        if (is_array($input[$key])) {
-                            unset($input[$key][$actor_key]);
-                        } else {
-                            unset($input[$key]);
-                        }
+                    if (is_array($input[$key])) {
+                        unset($input[$key][$actor_key]);
+                    } else {
+                        unset($input[$key]);
                     }
                 }
             }

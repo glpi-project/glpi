@@ -3594,25 +3594,19 @@ class TicketTest extends DbTestCase
          */
             [
                 'input'    => [
-                    '_additional_assigns' => [
-                        ['users_id' => '4'], // "tech"
-                    ],
+                    '_users_id_assign' => ['4'], // "tech"
                 ],
                 'computed' => true, // computed on asignment
             ],
             [
                 'input'    => [
-                    '_additional_observers' => [
-                        ['users_id' => '4'], // "tech"
-                    ],
+                    '_users_id_observer' => ['4'], // "tech"
                 ],
                 'computed' => false, // not computed as new actor is not assigned
             ],
             [
                 'input'    => [
-                    '_additional_requesters' => [
-                        ['users_id' => '2'], // "post-only"
-                    ],
+                    '_users_id_requester' => ['2'], // "post-only"
                 ],
                 'computed' => false, // not computed as new actor is not assigned
             ],
@@ -3636,19 +3630,19 @@ class TicketTest extends DbTestCase
             ],
             [
                 'input'    => [
-                    '_additional_groups_assigns' => [$group_id],
+                    '_groups_id_assign' => [$group_id],
                 ],
                 'computed' => true, // computed on asignment
             ],
             [
                 'input'    => [
-                    '_additional_groups_observers' => [$group_id],
+                    '_groups_id_observer' => [$group_id],
                 ],
                 'computed' => false, // not computed as new actor is not assigned
             ],
             [
                 'input'    => [
-                    '_additional_groups_requesters' => [$group_id],
+                    '_groups_id_requester' => [$group_id],
                 ],
                 'computed' => false, // not computed as new actor is not assigned
             ],
@@ -3662,9 +3656,7 @@ class TicketTest extends DbTestCase
          */
             [
                 'input'    => [
-                    '_additional_suppliers_assigns' => [
-                        ['suppliers_id' => '1'], // "_suplier01_name"
-                    ],
+                    '_suppliers_id_assign' => ['1'], // "_suplier01_name"
                 ],
                 'computed' => true, // computed on asignment
             ],

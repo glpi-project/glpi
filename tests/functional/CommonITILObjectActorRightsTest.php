@@ -62,24 +62,20 @@ class CommonITILObjectActorRightsTest extends DbTestCase
 {
     use ITILActorAssertionsTrait;
 
-    #[TestWith(['legacy'], 'legacy')]
-    #[TestWith(['additional_array'], 'additional_array')]
-    public function testSelfServiceCreatesTicketForHimself(string $format): void
+    public function testSelfServiceCreatesTicketForHimself(): void
     {
         // --- arrange ---
         $this->loginAsSelfService();
         $self_id = Session::getLoginUserID();
 
         // --- act ---
-        $ticket = $this->createItem(Ticket::class, $this->buildActorInput($format, 'requester', User::class, $self_id) + $this->getMinimalCreationInput(Ticket::class));
+        $ticket = $this->createItem(Ticket::class, ['_users_id_requester' => $self_id] + $this->getMinimalCreationInput(Ticket::class));
 
         // --- assert ---
         $this->assertActorLinked($ticket, User::class, $self_id, CommonITILActor::REQUESTER, 'Self-Service user should be requester of his ticket');
     }
 
-    #[TestWith(['legacy'], 'legacy')]
-    #[TestWith(['additional_array'], 'additional_array')]
-    public function testSelfServiceCreatesTicketForDelegatingUser(string $format): void
+    public function testSelfServiceCreatesTicketForDelegatingUser(): void
     {
         // --- arrange post-only is delegatee of normal ---
         $this->login();
@@ -89,7 +85,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         assert(Ticket::canDelegateeCreateTicket($new_requester->getID()), 'Delegation is required: the Self-Service user may create tickets for this user');
 
         // --- act ---
-        $ticket = $this->createItem(Ticket::class, $this->buildActorInput($format, 'requester', User::class, $new_requester->getID()) + $this->getMinimalCreationInput(Ticket::class));
+        $ticket = $this->createItem(Ticket::class, ['_users_id_requester' => $new_requester->getID()] + $this->getMinimalCreationInput(Ticket::class));
 
         // --- assert ---
         $this->assertActorLinked($ticket, User::class, $new_requester->getID(), CommonITILActor::REQUESTER, 'Delegating user should be requester');
@@ -101,8 +97,6 @@ class CommonITILObjectActorRightsTest extends DbTestCase
      * with a lowercase itemtype, which is converted to the historical keys before the check.
      */
     #[TestWith(['legacy'], 'legacy')]
-    #[TestWith(['additional'], 'additional')]
-    #[TestWith(['additional_array'], 'additional_array')]
     #[TestWith(['actors'], 'actors')]
     #[TestWith(['actors_lowercase'], 'actors_lowercase')]
     public function testSelfServiceCannotCreateTicketForUserWithoutDelegation(string $format): void
@@ -225,9 +219,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         $this->assertActorNotLinked($itil, $actor_itemtype, $new_assignee_id, CommonITILActor::ASSIGN, 'Assignee without assign right should be ignored');
     }
 
-    #[TestWith(['legacy'], 'legacy')]
-    #[TestWith(['additional_array'], 'additional_array')]
-    public function testCreateTicketAssignedToHimselfWithOwnRight(string $format): void
+    public function testCreateTicketAssignedToHimselfWithOwnRight(): void
     {
         // --- arrange ---
         $this->login('tech');
@@ -237,7 +229,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         assert(Session::haveRight(Ticket::$rightname, Ticket::OWN), 'Own right is required: a new ticket has no assignee yet');
 
         // --- act ---
-        $ticket = $this->createItem(Ticket::class, $this->buildActorInput($format, 'assign', User::class, $self_id) + $this->getMinimalCreationInput(Ticket::class));
+        $ticket = $this->createItem(Ticket::class, ['_users_id_assign' => $self_id] + $this->getMinimalCreationInput(Ticket::class));
 
         // --- assert ---
         $this->assertActorLinked($ticket, User::class, $self_id, CommonITILActor::ASSIGN, 'Technician should be assigned');
@@ -555,7 +547,6 @@ class CommonITILObjectActorRightsTest extends DbTestCase
      */
     #[TestWith(['legacy', User::class, 'normal'], 'legacy User')]
     #[TestWith(['legacy', Group::class, '_test_group_1'], 'legacy Group')]
-    #[TestWith(['additional', User::class, 'normal'], 'additional User')]
     #[TestWith(['actors', User::class, 'normal'], 'actors User')]
     public function testCannotAddObserverToTicketFromSimplifiedInterface(string $format, string $actor_itemtype, string $actor_name): void
     {
@@ -622,6 +613,69 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         $this->assertActorLinked($ticket, Group::class, $new_assignee_group_id, CommonITILActor::ASSIGN, 'Group assigned by the rule should be kept');
     }
 
+    /**
+     * `_additional_*` keys are the output format of the business rules: sent in the input, they are removed
+     * before the rules run, whatever the rights. Super-admin session: no right is missing.
+     *
+     * Counterpart of testAdditionalActorKeysAreKeptInCron().
+     */
+    #[TestWith(['_additional_assigns', User::class, 'tech', CommonITILActor::ASSIGN], 'User assigned')]
+    #[TestWith(['_additional_groups_requesters', Group::class, '_test_group_1', CommonITILActor::REQUESTER], 'Group requester')]
+    public function testAdditionalActorKeysFromInputAreIgnoredOnCreate(string $additional_key, string $actor_itemtype, string $actor_name, int $actor_type): void
+    {
+        // --- arrange ---
+        $this->login();
+        $new_actor_id = getItemByTypeName($actor_itemtype, $actor_name, true);
+        assert((new Ticket())->canAssign(), 'Super-admin must have every right: only the input format may make the actor ignored');
+
+        // --- act ---
+        $ticket = $this->createItem(Ticket::class, [$additional_key => [$new_actor_id]] + $this->getMinimalCreationInput(Ticket::class));
+
+        // --- assert ---
+        $this->assertActorNotLinked($ticket, $actor_itemtype, $new_actor_id, $actor_type, "Actor sent through $additional_key should be ignored");
+    }
+
+    /**
+     * Same as testAdditionalActorKeysFromInputAreIgnoredOnCreate(), on update.
+     */
+    #[TestWith(['_additional_assigns', User::class, 'tech', CommonITILActor::ASSIGN], 'User assigned')]
+    #[TestWith(['_additional_groups_requesters', Group::class, '_test_group_1', CommonITILActor::REQUESTER], 'Group requester')]
+    public function testAdditionalActorKeysFromInputAreIgnoredOnUpdate(string $additional_key, string $actor_itemtype, string $actor_name, int $actor_type): void
+    {
+        // --- arrange ---
+        $this->login();
+        $ticket = $this->createItil(Ticket::class);
+        $new_actor_id = getItemByTypeName($actor_itemtype, $actor_name, true);
+        assert($this->reloadItem($ticket)->canAssign(), 'Super-admin must have every right: only the input format may make the actor ignored');
+
+        // --- act ---
+        // update() not checked: may fail when the whole input is filtered
+        $ticket->update(['id' => $ticket->getID(), $additional_key => [$new_actor_id]]);
+
+        // --- assert ---
+        $this->assertActorNotLinked($ticket, $actor_itemtype, $new_actor_id, $actor_type, "Actor sent through $additional_key should be ignored");
+    }
+
+    /**
+     * The actor filter is skipped in cron (e.g. recurrent tickets): `_additional_*` keys are kept.
+     */
+    #[TestWith(['_additional_assigns', User::class, 'tech', CommonITILActor::ASSIGN], 'User assigned')]
+    #[TestWith(['_additional_groups_requesters', Group::class, '_test_group_1', CommonITILActor::REQUESTER], 'Group requester')]
+    public function testAdditionalActorKeysAreKeptInCron(string $additional_key, string $actor_itemtype, string $actor_name, int $actor_type): void
+    {
+        // --- arrange ---
+        $this->login();
+        $new_actor_id = getItemByTypeName($actor_itemtype, $actor_name, true);
+        $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
+        assert(Session::isCron(), 'Cron mode is required: the actor filter must be skipped');
+
+        // --- act ---
+        $ticket = $this->createItem(Ticket::class, [$additional_key => [$new_actor_id]] + $this->getMinimalCreationInput(Ticket::class));
+
+        // --- assert ---
+        $this->assertActorLinked($ticket, $actor_itemtype, $new_actor_id, $actor_type, "Actor sent through $additional_key should be kept in cron");
+    }
+
     public static function itilClassProvider(): iterable
     {
         yield Ticket::class => ['itil_class' => Ticket::class];
@@ -637,26 +691,17 @@ class CommonITILObjectActorRightsTest extends DbTestCase
             Supplier::class => '_suplier01_name',
         ];
         // every input format on Ticket
-        foreach (['legacy', 'additional'] as $format) {
-            foreach ($actors as $actor_itemtype => $actor_name) {
-                yield "Ticket $format $actor_itemtype" => [
-                    'itil_class' => Ticket::class,
-                    'format' => $format,
-                    'actor_itemtype' => $actor_itemtype,
-                    'actor_name' => $actor_name,
-                ];
-            }
+        foreach ($actors as $actor_itemtype => $actor_name) {
+            yield "Ticket legacy $actor_itemtype" => [
+                'itil_class' => Ticket::class,
+                'format' => 'legacy',
+                'actor_itemtype' => $actor_itemtype,
+                'actor_name' => $actor_name,
+            ];
         }
         yield 'Ticket actors User' => [
             'itil_class' => Ticket::class,
             'format' => 'actors',
-            'actor_itemtype' => User::class,
-            'actor_name' => 'tech',
-        ];
-        // array items, as produced by rules: users only
-        yield 'Ticket additional_array User' => [
-            'itil_class' => Ticket::class,
-            'format' => 'additional_array',
             'actor_itemtype' => User::class,
             'actor_name' => 'tech',
         ];
@@ -715,23 +760,13 @@ class CommonITILObjectActorRightsTest extends DbTestCase
     }
 
     /**
-     * @param string $format `legacy` (`_<fk>_<type>`), `additional` (`_additional_*`),
-     *                       `additional_array` (`_additional_*` with array items, as produced by rules; users only),
-     *                       `actors` (`_actors`), `actors_lowercase` (`_actors` with a lowercase itemtype)
+     * @param string $format `legacy` (`_<fk>_<type>`), `actors` (`_actors`), `actors_lowercase` (`_actors` with a lowercase itemtype)
      * @param string $actor_type `requester`, `observer` or `assign`
      */
     private function buildActorInput(string $format, string $actor_type, string $actor_itemtype, int $actor_id): array
     {
-        assert($format !== 'additional_array' || $actor_itemtype === User::class, 'additional_array format is only for users');
-
         return match ($format) {
             'legacy' => [sprintf('_%s_%s', getForeignKeyFieldForItemType($actor_itemtype), $actor_type) => $actor_id],
-            'additional' => [
-                ($actor_itemtype === User::class
-                    ? sprintf('_additional_%ss', $actor_type)
-                    : sprintf('_additional_%ss_%ss', strtolower($actor_itemtype), $actor_type)) => [$actor_id],
-            ],
-            'additional_array' => [sprintf('_additional_%ss', $actor_type) => [['users_id' => $actor_id, 'use_notification' => 1]]],
             'actors' => ['_actors' => [$actor_type => [['itemtype' => $actor_itemtype, 'items_id' => $actor_id]]]],
             'actors_lowercase' => ['_actors' => [$actor_type => [['itemtype' => strtolower($actor_itemtype), 'items_id' => $actor_id]]]],
         };
