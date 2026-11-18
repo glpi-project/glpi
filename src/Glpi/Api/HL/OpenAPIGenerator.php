@@ -119,6 +119,7 @@ final class OpenAPIGenerator
      * @param string|null $parent_key
      * @param array<string, mixed>|null $parent_schema
      * @return T
+     * @todo Rename to a generic cleaning function
      */
     private function cleanVendorExtensions(array $schema, ?string $parent_key = null, ?array $parent_schema = null, bool $in_request_body = false): array
     {
@@ -137,6 +138,7 @@ final class OpenAPIGenerator
                     // Implicitly set the id property as read-only but not for partials
                     $value['readOnly'] = true;
                 }
+                unset($value['computation']);
             }
             // If the value is an array
             if (is_array($value)) {
