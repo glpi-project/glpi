@@ -22,6 +22,8 @@ The present file will list all changes made to the project; according to the
 - Updating the password of the user you are logged in as through the legacy REST API or the High-Level API now requires supplying the current password in the `current_password` field.
 
 #### Deprecated
+- `Html::printCleanArray()`. Use Symfony `dump()` or `dd()` functions instead.
+- `showHideDiv()` JavaScript function.
 
 #### Removed
 
