@@ -68,8 +68,10 @@ test('Virtual machine tab loads', async ({ page, profile, api }) => {
     const tabpanel = page.getByRole('tabpanel');
     await expect(tabpanel.getByRole('cell')).toContainText('No results found');
 
-    await tabpanel.getByRole('button', { name: 'Add a virtual machine' }).click();
+    const add_button = tabpanel.getByRole('button', { name: 'Add a virtual machine' });
+    await add_button.click();
     await tabpanel.getByRole('textbox', { name: 'Name', exact: true }).fill('Test VM');
+    await expect(add_button).toBeHidden();
     await tabpanel.getByRole('button', { name: 'Add', exact: true }).click();
     await expect(tabpanel.getByRole('cell', { name: 'Test VM' })).toBeVisible();
 });
@@ -87,8 +89,10 @@ test('Antivirus tab loads', async ({ page, profile, api }) => {
     const tabpanel = page.getByRole('tabpanel');
     await expect(tabpanel.getByRole('cell')).toContainText('No results found');
 
-    await tabpanel.getByRole('button', { name: 'Add an antivirus' }).click();
+    const add_button = tabpanel.getByRole('button', { name: 'Add an antivirus' });
+    await add_button.click();
     await tabpanel.getByRole('textbox', { name: 'Name', exact: true }).fill('Test AV');
+    await expect(add_button).toBeHidden();
     await tabpanel.getByRole('button', { name: 'Add', exact: true }).click();
     await expect(tabpanel.getByRole('cell', { name: 'Test AV' })).toBeVisible();
 });
