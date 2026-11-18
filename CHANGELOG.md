@@ -21,6 +21,7 @@ The present file will list all changes made to the project; according to the
 #### Changes
 
 #### Deprecated
+- Support of `javascript:` values for the `add_link` parameter of `components/tab/addlink_block.html.twig`.
 
 #### Removed
 
