@@ -114,7 +114,7 @@
                            type="submit"
                            name="purge"
                            value="1"
-                           onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');"
+                           data-glpi-confirm="{{ __('Confirm the final deletion?') }}"
                            aria-label="{{ _x('button', 'Delete permanently') }}"
                         >
                            <i class="ti ti-trash" aria-hidden="true"></i>
@@ -139,7 +139,7 @@
                            class="btn btn-outline-danger me-2"
                            type="submit"
                            name="purge"
-                           onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');"
+                           data-glpi-confirm="{{ __('Confirm the final deletion?') }}"
                            value="1"
                            aria-label="{{ _x('button', 'Delete permanently') }}"
                         >
