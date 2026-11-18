@@ -251,16 +251,13 @@ class ObjectLock extends CommonDBTM
             // this mask is mandatory to prevent read of information
             // that are not permitted to view by active profile
             $rights = ProfileRight::getAllPossibleRights();
-            foreach ($rights as $key => $val) {
-                if (isset($_SESSION['glpilocksavedprofile'][$key])) {
-                    $_SESSION['glpiactiveprofile'][$key]
-                    = (int) $_SESSION['glpilocksavedprofile'][$key]
-                    & (isset($CFG_GLPI['lock_lockprofile'][$key])
-                         ? (int) $CFG_GLPI['lock_lockprofile'][$key] : 0);
-                }
+            foreach (array_keys($rights) as $key) {
+                $current_right  = (int) ($_SESSION['glpilocksavedprofile'][$key] ?? 0);
+                $readonly_right = (int) ($CFG_GLPI['lock_lockprofile'][$key] ?? 0);
+                $_SESSION['glpiactiveprofile'][$key] = $current_right & $readonly_right;
             }
             // don't forget entities
-            $_SESSION['glpiactiveprofile']['entities'] = $_SESSION['glpilocksavedprofile']['entities'];
+            $_SESSION['glpiactiveprofile']['entities'] = $_SESSION['glpilocksavedprofile']['entities'] ?? [];
         }
     }
 
