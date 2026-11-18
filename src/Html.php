@@ -3932,7 +3932,7 @@ JAVASCRIPT
             $button[$btname] = $btname;
         }
         $fields          = array_merge($button, $fields);
-        $link = "<a ";
+        $link = "<button type='button'";
 
         if (!empty($btoption)) {
             $link .= ' ' . $btoption . ' ';
@@ -3942,10 +3942,11 @@ JAVASCRIPT
             if (empty($btimage)) {
                 $link .= " class='btn btn-primary' ";
             } else {
-                $link .= " class='pointer' ";
+                $link .= " class='pointer btn-as-link' ";
             }
         }
-        $action  = " submitGetLink('" . jsescape($action) . "', " . json_encode($fields) . ");";
+        $link .= ' data-glpi-submit-get-link="' . htmlescape($action) . '"';
+        $link .= ' data-glpi-submit-get-link-fields="' . htmlescape(json_encode($fields)) . '"';
 
         if (is_array($confirm)) {
             $confirm = implode("\n", $confirm);
@@ -3953,7 +3954,6 @@ JAVASCRIPT
         if (strlen($confirm)) {
             $link .= sprintf(' data-glpi-confirm="%s"', htmlescape($confirm));
         }
-        $link .= " onclick=\"" . htmlescape($action) . "\" ";
 
         // Ensure $btlabel is properly escaped
         $btlabel = htmlescape($btlabel);
@@ -3970,7 +3970,7 @@ JAVASCRIPT
                 $link .= "<img src='$btimage' title='$btlabel' alt='$btlabel' class='pointer'>";
             }
         }
-        $link .= "</a>";
+        $link .= "</button>";
 
         return $link;
     }
