@@ -239,7 +239,7 @@ class ObjectLock extends CommonDBTM
         global $CFG_GLPI;
 
         // to prevent double set ReadOnlyProfile
-        if (!isset($_SESSION['glpilocksavedprofile']) && isset($CFG_GLPI['lock_lockprofile'])) {
+        if (!array_key_exists('glpilocksavedprofile', $_SESSION) && isset($CFG_GLPI['lock_lockprofile'])) {
             if (!self::$shutdownregistered) {
                 // this is a security in case of a fatal error that can prevent correct revert of profile
                 register_shutdown_function([self::class,  'revertProfile']);
@@ -268,7 +268,7 @@ class ObjectLock extends CommonDBTM
      **/
     public static function revertProfile()
     {
-        if (isset($_SESSION['glpilocksavedprofile'])) {
+        if (array_key_exists('glpilocksavedprofile', $_SESSION)) {
             $_SESSION['glpiactiveprofile'] = $_SESSION['glpilocksavedprofile'];
             unset($_SESSION['glpilocksavedprofile']);
         }
