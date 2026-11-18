@@ -327,7 +327,7 @@ class ObjectLockTest extends DbTestCase
 
         // Assert
         foreach ($expected_profile as $key => $expected_value) {
-            $this->assertEquals($expected_value, $_SESSION['glpiactiveprofile'][$key] ?? null);
+            $this->assertEquals($expected_value, $_SESSION['glpiactiveprofile'][$key]);
         }
     }
 }
