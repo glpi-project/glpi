@@ -11240,12 +11240,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$string of static method Html\\:\\:addConfirmationOnAction\\(\\) expects string, array\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\.\\.\\.\\$arrays of function array_merge expects array, array\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,

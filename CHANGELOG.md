@@ -24,6 +24,9 @@ The present file will list all changes made to the project; according to the
 - `Html::printCleanArray()`. Use Symfony `dump()` or `dd()` functions instead.
 - `showHideDiv()` JavaScript function.
 - Support of `javascript:` values for the `add_link` parameter of `components/tab/addlink_block.html.twig`.
+- `Html::addConfirmationOnAction()`. Use the `data-glpi-confirm="<message>"` attribute instead.
+- `Html::getConfirmationOnActionScript()`. Use the `data-glpi-confirm="<message>"` attribute instead.
+- `confirmaction` option of `Html::submit()`. Confirmation is now handled through the `data-glpi-confirm` attribute, so no additional action can be run on confirmation.
 
 #### Removed
 
