@@ -83,7 +83,7 @@ abstract class AbstractController
      */
     protected function getAPIVersion(Request $request): string
     {
-        return $request->getHeaderLine('GLPI-API-Version') ?: Router::API_VERSION;
+        return Router::normalizeAPIVersion($request->getHeaderLine('GLPI-API-Version') ?: Router::API_VERSION);
     }
 
     /**
