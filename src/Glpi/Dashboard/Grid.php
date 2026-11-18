@@ -44,6 +44,7 @@ use Glpi\Debug\Profiler;
 use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Plugin\Hooks;
+use Glpi\Security\ContentSecurityPolicy\CspState;
 use Html;
 use Item_Devices;
 use Location;
@@ -520,7 +521,8 @@ JAVASCRIPT);
         }
 
         $ajax_cards = GLPI_AJAX_DASHBOARD;
-        $cache_key  = sha1($_SESSION['glpiactiveentities_string'] ?? "");
+        // Cards are not cached by the browser when the CSP is enabled, as cached contents would contain outdated nonces.
+        $cache_key  = CspState::isEnabled() ? '' : sha1($_SESSION['glpiactiveentities_string'] ?? "");
 
         $twig_params = [
             'early_cards_script' => $early_cards_script,
@@ -1224,16 +1226,14 @@ HTML;
      * @param string $card_id identifier return by @see self::getAllDasboardCards
      * @param array $card_options contains these keys:
      * - array 'args':
-     *    - string 'gridstack_id' unique identifier of the card in the grid, used to return html by cache
-     *    - bool 'force' if true, cache will be bypassed
+     *    - string 'gridstack_id' unique identifier of the card in the grid
+     *    - bool 'force' if true, cache will be bypassed; ignored when the Content-Security-Policy is enabled
      *    - bool 'embed' is the dashboard emebeded or not
      *
      * @return string html of the card
      */
     public function getCardHtml(string $card_id = "", array $card_options = []): string
     {
-        global $GLPI_CACHE;
-
         if (\is_array($card_options['args'] ?? null)) {
             $card_options['args'] = Item::cleanCardOptions($card_options['args']);
         }
@@ -1262,7 +1262,12 @@ HTML;
             }
             $card = $cards[$card_id];
 
-            $use_cache = !$force
+            if (\array_key_exists('cache', $card)) {
+                Toolbox::deprecated(sprintf('The `cache` key of dashboard cards definitions is deprecated (found in `%s` card).', $card_id));
+            }
+
+            $use_cache = !CspState::isEnabled()
+                && !$force
                 && Environment::get()->shouldForceExtraBrowserCache()
                 && (!isset($card['cache']) || $card['cache'] == true);
             $cache_age = 40;
@@ -1613,7 +1618,6 @@ HTML;
                             'validation_check_user' => true,
                         ],
                     ],
-                    'cache'      => false,
                     'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
                 ];
 

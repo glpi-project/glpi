@@ -32,6 +32,7 @@ The present file will list all changes made to the project; according to the
 - `onclick` option of `Html::getCheckbox()`, `Html::showCheckbox()`, `Html::getMassiveActionCheckBox()` and `Html::showMassiveActionCheckBox()`.
 - `on_change` option of `Dropdown::showFromArray()` and of the methods relying on it.
 - `$onchange` parameter of `Dropdown::showListLimit()`.
+- `cache` key of dashboard cards definitions. It has no effect when the Content-Security-Policy is enabled.
 
 #### Removed
 
