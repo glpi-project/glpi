@@ -231,6 +231,12 @@ var deleteImagePasted = function(elementsIdToRemove, tagToRemove, editor) {
     }
 };
 
+$(document).on('click', '[data-glpi-fileupload-remove]', (e) => {
+    const button = e.currentTarget;
+    const editor = button.dataset.editorId ? tinyMCE.get(button.dataset.editorId) : null;
+    deleteImagePasted([button.dataset.uploadId, `${button.dataset.uploadId}2`], button.dataset.tag, editor);
+});
+
 /**
  * Set given rich text editor content.
  */
