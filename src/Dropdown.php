@@ -45,6 +45,7 @@ use Glpi\Form\Category;
 use Glpi\Locale\LanguageRegistry;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\Provider\SQLProvider;
+use Glpi\Security\ContentSecurityPolicy\CspState;
 use Glpi\SocketModel;
 
 use function Safe\json_encode;
@@ -1487,7 +1488,7 @@ HTML;
     {
         Toolbox::deprecated(version: '12.0.0');
         $params = [
-            'on_change'             => "var _value = this.options[this.selectedIndex].value; if (_value != 0) {window.location.href=_value;}",
+            'on_change'             => '',
             'width'                 => '300px',
             'display_emptychoice'   => true,
         ];
@@ -1514,6 +1515,7 @@ HTML;
         echo "<div class='col-sm-11'>";
         Dropdown::showFromArray('dpmenu', $values, [
             'on_change'           => $params['on_change'],
+            'add_data_attributes' => $params['on_change'] === '' ? ['glpi-navigate-on-change' => ''] : '',
             'value'               => $selected,
             'display_emptychoice' => $params['display_emptychoice'],
             'width'               => $params['width'],
@@ -2286,7 +2288,7 @@ HTML;
      *    - value               : integer / preselected value (default 0)
      *    - used                : array / Already used items ID: not to display in dropdown (default empty)
      *    - readonly            : boolean / used as a readonly item (default false)
-     *    - on_change           : string / value to transmit to "onChange"
+     *    - on_change           : string / value to transmit to "onChange" (deprecated, ignored when the CSP is enabled)
      *    - multiple            : boolean / can select several values (default false)
      *    - size                : integer / number of rows for the select (default = 1)
      *    - display             : boolean / display or return string
@@ -2355,9 +2357,14 @@ HTML;
             }
         }
 
+        if (!empty($param['on_change'])) {
+            Toolbox::deprecated('The `on_change` option of `Dropdown::showFromArray()` is deprecated.');
+        }
+
         $other_select_option = $name . '_other_value';
         if ($param['other'] !== false) {
-            $param['on_change'] .= "displayOtherSelectOptions(this, \"" . jsescape($other_select_option) . "\");";
+            $param['add_data_attributes'] = (is_array($param['add_data_attributes']) ? $param['add_data_attributes'] : [])
+                + ['glpi-other-option' => $other_select_option];
 
             // If $param['other'] is a string, then we must highlight "other" option
             if (is_string($param['other'])) {
@@ -2415,7 +2422,7 @@ HTML;
                 $output .= ' class="' . htmlescape($param['class']) . '"';
             }
 
-            if (!empty($param["on_change"])) {
+            if (!empty($param["on_change"]) && !CspState::isEnabled()) {
                 $output .= " onChange='" . htmlescape($param["on_change"]) . "'";
             }
 
@@ -2837,7 +2844,7 @@ HTML;
     /**
      * show dropdown to select list limit
      *
-     * @param string $onchange  Optional, for ajax (default '')
+     * @param string $onchange  Deprecated, ignored when the CSP is enabled (default '')
      * @param bool $display
      * @param array<string, mixed> $options Additional options passed to Dropdown::showFromArray()
      *
@@ -2846,6 +2853,10 @@ HTML;
     public static function showListLimit($onchange = '', $display = true, array $options = [])
     {
         global $CFG_GLPI;
+
+        if ($onchange !== '') {
+            Toolbox::deprecated('The `$onchange` parameter of `Dropdown::showListLimit()` is deprecated.');
+        }
 
         if (isset($_SESSION['glpilist_limit'])) {
             $list_limit = $_SESSION['glpilist_limit'];
