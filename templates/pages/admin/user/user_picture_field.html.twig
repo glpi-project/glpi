@@ -81,11 +81,7 @@
                     multiple: false,
                 }) }}
                 {% if item.fields['picture'] is not empty %}
-                    {{ fields.checkboxField('_blank_picture', 0, __('Clear'), {
-                        additional_attributes: {
-                            onclick: '$(this).closest(".modal").find("[data-current-avatar], [data-default-avatar], .fileupload").toggleClass("d-none");'
-                        }
-                    }) }}
+                    {{ fields.checkboxField('_blank_picture', 0, __('Clear')) }}
                 {% endif %}
                 <script type="module">
                     function updateAvatarVisibilities() {
@@ -96,6 +92,7 @@
                         $('[data-preview-avatar]').toggleClass('d-none', !has_pending_file || will_clear);
                         $('[data-current-avatar]').toggleClass('d-none', has_pending_file || will_clear);
                         $('[data-default-avatar]').toggleClass('d-none', !will_clear);
+                        document.querySelector('#modal_picture_{{ rand_field }} .fileupload').classList.toggle('d-none', will_clear);
                     }
 
                     $('#modal_picture_{{ rand_field }}').on('mouseup', '.remove_file_upload', (e) => {
