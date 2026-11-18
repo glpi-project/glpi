@@ -39,6 +39,7 @@ use Config;
 use DBmysql;
 use Entity;
 use Glpi\Application\ImportMapGenerator;
+use Glpi\Application\View\ScriptType;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\UI\Theme;
 use Glpi\UI\ThemeManager;
@@ -360,9 +361,12 @@ class FrontEndAssetsExtension extends AbstractExtension
     {
         $import_map = ImportMapGenerator::getInstance()->generate();
 
-        return '<script type="importmap">' . json_encode(
-            $import_map,
-            JSON_PRETTY_PRINT
-        ) . '</script>';
+        return Html::scriptBlock(
+            json_encode(
+                $import_map,
+                JSON_PRETTY_PRINT
+            ),
+            ScriptType::ImportMap,
+        );
     }
 }
