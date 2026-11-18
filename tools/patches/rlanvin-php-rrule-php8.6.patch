@@ -1,0 +1,26 @@
+diff --git a/src/RRule.php b/src/RRule.php
+index 9f2c7c5..fc106c7 100755
+--- a/src/RRule.php
++++ b/src/RRule.php
+@@ -234,7 +234,7 @@ public function __construct($parts, $dtstart = null)
+ 		}
+ 
+ 		// FREQ
+-		if (is_integer($parts['FREQ'])) {
++		if (is_int($parts['FREQ'])) {
+ 			if ($parts['FREQ'] <= self::SECONDLY && $parts['FREQ'] >= self::YEARLY) {
+ 				$this->freq = $parts['FREQ'];
+ 			}
+diff --git a/src/RRuleTrait.php b/src/RRuleTrait.php
+index 71ed882..be83f18 100755
+--- a/src/RRuleTrait.php
++++ b/src/RRuleTrait.php
+@@ -184,7 +184,7 @@ static public function parseDate($date)
+ 		// DateTimeInterface is only on PHP 5.5+, and includes DateTimeImmutable
+ 		if (! $date instanceof \DateTime && ! $date instanceof \DateTimeInterface) {
+ 			try {
+-				if (is_integer($date)) {
++				if (is_int($date)) {
+ 					$date = \DateTime::createFromFormat('U',$date);
+ 					$date->setTimezone(new \DateTimeZone('UTC')); // default is +00:00 (see issue #15)
+ 				}

@@ -207,8 +207,12 @@
             "bin/console dependencies install --allow-superuser"
         ],
         "patch": [
+            "VENDOR_DIR='vendor/mikey179/vfsstream/' PATCH_FILE='tools/patches/mikey179-vfsstream-php8.6.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
             "VENDOR_DIR='vendor/guzzlehttp/guzzle/' PATCH_FILE='tools/patches/guzzlehttp-guzzle-restrict-http-methods.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
-            "VENDOR_DIR='vendor/laminas/laminas-mail/' PATCH_FILE='tools/patches/laminas-laminas-mail-invalid-header-ignore.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'"
+            "VENDOR_DIR='vendor/laminas/laminas-mail/' PATCH_FILE='tools/patches/laminas-laminas-mail-invalid-header-ignore.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/rlanvin/php-rrule/' PATCH_FILE='tools/patches/rlanvin-php-rrule-php8.6.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/scssphp/source-span/' PATCH_FILE='tools/patches/scssphp-source-span-php8.6.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/thecodingmachine/safe/' PATCH_FILE='tools/patches/thecodingmachine-safe-php8.6.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'"
         ]
     }
 }
