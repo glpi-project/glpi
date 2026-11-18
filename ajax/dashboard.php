@@ -38,6 +38,7 @@ use Glpi\Dashboard\Grid;
 use Glpi\Debug\Profiler;
 use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\UnprocessableEntityHttpException;
 
 use function Safe\json_decode;
@@ -213,7 +214,11 @@ switch ($_REQUEST['action']) {
         if (!$dashboard->canUpdateCurrent()) {
             throw new AccessDeniedHttpException();
         }
+        if (empty($_REQUEST)) {
+            throw new BadRequestHttpException();
+        }
 
+        /** @phpstan-ignore-next-line */
         $grid->displayWidgetForm($_REQUEST);
         break;
 
@@ -254,6 +259,7 @@ switch ($_REQUEST['action']) {
         Profiler::getInstance()->start('Get cards HTML');
         foreach ($cards as $card) {
             try {
+                // @phpstan-ignore-next-line
                 $result[$card['card_id']] = $grid->getCardHtml($card['card_id'], array_merge($request_data, $card));
             } catch (Throwable $e) {
                 // Send exception to logger without actually exiting.
