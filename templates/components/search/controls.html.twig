@@ -134,8 +134,7 @@
                 {% endif %}
             </div>
 
-            {% set submit_search_form = "this.closest('[data-glpi-search-container]').querySelector('[data-glpi-search-form]').submit()" %}
-            <div class="secondary-controls">
+            <div class="secondary-controls" id="search-secondary-controls{{ rand }}">
                 {% if may_be_located %}
                     <div class="btn-group me-1 me-xl-2 shadow-none" role="group">
                         {% set table_class = (data['search']['as_map'] == 0 ? "btn-ghost-info" : "") %}
@@ -146,7 +145,7 @@
                             value="1"
                             autocomplete="off"
                             id="show_as_table"
-                            onclick="toogle('as_map','','',''); {{ submit_search_form }};"
+                            data-glpi-search-toggle="as_map"
                             {{ data['search']['as_map'] == 0 ? 'checked' : '' }}
                         >
                             <label class="btn btn-icon btn-sm btn-pill px-2 py-1 {{ table_class }}" title="{{ __('Show as table') }}"
@@ -164,7 +163,7 @@
                             value="1"
                             autocomplete="off"
                             id="show_as_map"
-                            onclick="toogle('as_map','','',''); {{ submit_search_form }};"
+                            data-glpi-search-toggle="as_map"
                             {{ data['search']['as_map'] == 1 ? 'checked' : '' }}
                         >
                         <label class="btn btn-icon btn-sm btn-pill px-2 py-1 {{ located_class }}" title="{{ __('Show as map') }}"
@@ -184,7 +183,7 @@
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
                         aria-pressed="{{ data['search']['browse']|default(false) == 1 ? 'true' : 'false' }}"
-                        onclick="toogle('browse','','',''); {{ submit_search_form }};"
+                        data-glpi-search-toggle="browse"
                     >
                         <i class="ti {{ data['search']['browse']|default(false) == 1 ? "ti-checkbox" : "ti-square" }}" aria-hidden="true"></i>
                         <span class="d-flex align-bottom">
@@ -201,7 +200,7 @@
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
                         aria-pressed="{{ data['search']['is_deleted'] == 1 ? 'true' : 'false' }}"
-                        onclick="toogle('is_deleted','','',''); {{ submit_search_form }};"
+                        data-glpi-search-toggle="is_deleted"
                     >
                         <i class="ti {{ data['search']['is_deleted'] == 1 ? "ti-checkbox" : "ti-square" }}" aria-hidden="true"></i>
                         <span class="d-flex align-bottom">
@@ -219,7 +218,7 @@
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
                         aria-pressed="{{ show_unpublished ? 'true' : 'false' }}"
-                        onclick="toogle('unpublished','','',''); {{ submit_search_form }};"
+                        data-glpi-search-toggle="unpublished"
                     >
                         <i
                             class="ti {{ show_unpublished ? "ti-checkbox" : "ti-square" }}"
@@ -346,6 +345,16 @@ $(document).ready(function() {
          window.location.reload();
       }
    };
+
+   document.getElementById('search-secondary-controls{{ rand }}')?.addEventListener('click', (e) => {
+      const toggle = e.target.closest('[data-glpi-search-toggle]');
+      if (toggle === null) {
+         return;
+      }
+      const input = document.getElementById(toggle.dataset.glpiSearchToggle);
+      input.value = input.value === '0' ? '1' : '0';
+      toggle.closest('[data-glpi-search-container]').querySelector('[data-glpi-search-form]').submit();
+   });
 
    $('.show_displaypreference_modal').click(function(e) {
       e.preventDefault();
