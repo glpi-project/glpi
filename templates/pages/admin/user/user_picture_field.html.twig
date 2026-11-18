@@ -83,7 +83,7 @@
                 {% if item.fields['picture'] is not empty %}
                     {{ fields.checkboxField('_blank_picture', 0, __('Clear')) }}
                 {% endif %}
-                <script type="module">
+                <script nonce="{{ csp_nonce() }}" type="module">
                     function updateAvatarVisibilities() {
                         // Cannot rely on 'fileuploadprocessstop' event or files property as they flat out don't work. fileupload_info content is not updated fast enough to be seen from change event.
                         const has_pending_file = $('#modal_picture_{{ rand_field }} [data-preview-avatar] img').attr('src') !== '';

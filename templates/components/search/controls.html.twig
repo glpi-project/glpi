@@ -319,7 +319,7 @@
                         </a>
                         {% endif %}
                     </div>
-                    <script>
+                    <script nonce="{{ csp_nonce() }}">
                         // Ugly trick to fix z-index context issue by placing our dropdown at the end of the body
                         $("#dropdown-export-{{ rand }}").on("show.bs.dropdown", function() {
                             $(document.body).append($("ul[aria-labelledby=dropdown-export-{{ rand }}]").detach());
@@ -331,7 +331,7 @@
     {% endif %}
 </div>
 
-<script type="text/javascript">
+<script nonce="{{ csp_nonce() }}" type="text/javascript">
 $(document).ready(function() {
    const refreshSearchResults = function() {
       const search_display = $('.ajax-container.search-display-data');

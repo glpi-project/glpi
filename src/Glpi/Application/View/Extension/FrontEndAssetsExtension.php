@@ -41,6 +41,7 @@ use Glpi\Application\ImportMapGenerator;
 use Glpi\Application\View\ScriptType;
 use Glpi\Config\ConfigContainer;
 use Glpi\Locale\LanguageRegistry;
+use Glpi\Security\ContentSecurityPolicy\NonceContext;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\UI\Theme;
 use Glpi\UI\ThemeManager;
@@ -339,7 +340,12 @@ class FrontEndAssetsExtension extends AbstractExtension
             \array_map(fn(string $plugin_key) => "/plugins/{$plugin_key}", Plugin::getPlugins())
         );
 
+        $nonce = NonceContext::getServiceInstance()->getNonce();
         $script = sprintf('window.CFG_GLPI = %s;', json_encode($cfg_glpi, JSON_PRETTY_PRINT))
+            . "\n"
+            // Set the nonce into the general config so it can be reused by ajax
+            // requests and webpack chunks.
+            . \sprintf('window.CFG_GLPI.csp_nonce = %s;', json_encode($nonce))
             . "\n"
             . sprintf('window.GLPI_PLUGINS_PATH = %s;', json_encode($plugins_path, JSON_PRETTY_PRINT));
 

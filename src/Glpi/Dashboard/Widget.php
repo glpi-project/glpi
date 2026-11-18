@@ -919,7 +919,7 @@ HTML;
         ];
         // language=Twig
         $js = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-            <script type="module">
+            <script nonce="{{ csp_nonce() }}" type="module">
                 (async () => {
                     await import('/js/modules/Dashboard/Dashboard.js');
 
@@ -1506,7 +1506,7 @@ HTML;
         ];
         // language=Twig
         $js = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-            <script type="module">
+            <script nonce="{{ csp_nonce() }}" type="module">
                 (async () => {
                     await import('/js/modules/Dashboard/Dashboard.js');
 
@@ -1841,7 +1841,7 @@ HTML;
         ];
         // language=Twig
         $js = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-            <script type="module">
+            <script nonce="{{ csp_nonce() }}" type="module">
                 (async () => {
                     await import('/js/modules/Dashboard/Dashboard.js');
 

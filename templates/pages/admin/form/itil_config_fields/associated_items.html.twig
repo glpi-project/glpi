@@ -155,7 +155,7 @@
     ) }}
 </div>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
     import("/js/modules/Forms/FieldDestinationAssociatedItem.js").then((m) => {
         new m.GlpiFormFieldDestinationAssociatedItem(
             $('[data-glpi-associated-items-specific-values-extra-field="{{ rand }}"]'),

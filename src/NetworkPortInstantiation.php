@@ -362,7 +362,7 @@ class NetworkPortInstantiation extends CommonDBChild
                         display_emptychoice: true,
                     }
                 ) }}
-                <script>
+                <script nonce="{{ csp_nonce() }}">
                     $(`select[name="items_devicenetworkcards_id"]`).on('change', (e) => {
                         const val = e.target.value;
                         const fields = {{ device_attributes|json_encode|raw }};

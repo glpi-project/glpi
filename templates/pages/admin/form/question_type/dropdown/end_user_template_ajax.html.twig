@@ -46,7 +46,7 @@
     </select>
 </div>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
 (function() {
     var el = $('#dropdown_{{ rand }}');
     el.select2({

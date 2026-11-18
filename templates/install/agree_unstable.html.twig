@@ -46,7 +46,7 @@
       id: 'agree_unstable'
    }) }}
 </div>
-<script>
+<script nonce="{{ csp_nonce() }}">
    $(function() {
        $('[name="continue"]').on('click', function(event){
            if (!$('#agree_unstable').is(':checked')) {

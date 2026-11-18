@@ -40,7 +40,7 @@
         <i class="ti ti-user-plus" aria-hidden="true"></i>
     </span>
 </span>
-<script type="text/javascript">
+<script nonce="{{ csp_nonce() }}" type="text/javascript">
     $(function() {
         const button   = $('#create_user_{{ item.fields['id'] }}');
 

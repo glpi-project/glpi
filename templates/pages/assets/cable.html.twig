@@ -144,7 +144,7 @@
                         {% endif %}
                      </span>
 
-                     <script>
+                     <script nonce="{{ csp_nonce() }}">
                         //listener to remove socket selector and breadcrumb
                         $(document).on('change', '#dropdown_itemtype_endpoint_{{ side }}{{ rand_side }}', function(e) {
                            $('#show_{{ side }}_asset_breadcrumb').empty();

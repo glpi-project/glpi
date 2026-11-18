@@ -54,7 +54,7 @@
 </div>
 
 {% if not nodata %}
-    <script type="module">
+    <script nonce="{{ csp_nonce() }}" type="module">
         const chart_options = {{ options|json_encode|raw }};
         const open_url = (params) => {
             const data_url = _.get(params, 'data.url', '');

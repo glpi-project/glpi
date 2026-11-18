@@ -73,7 +73,7 @@
                     rand: rand
                 }]) %}
             </span>
-            <script>
+            <script nonce="{{ csp_nonce() }}">
                 $(() => {
                     $('#dropdown_language{{ rand }}').on('change', (e) => {
                         $('#span_fields_{{ rand }}').load(

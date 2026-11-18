@@ -39,7 +39,7 @@
 }), '', {
    no_label: true
 }) }}
-<script>
+<script nonce="{{ csp_nonce() }}">
    document.querySelector('button[name="copy-sysinfo"]').addEventListener('click', (e) => {
       copyTextToClipboard(tableToDetails('#sysinfo_accordion'));
       flashIconButton(e.currentTarget, 'btn btn-success', 'ti ti-check', 1500);
@@ -154,7 +154,7 @@ Requirements:
    {% endif %}
 </div>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
    $(() => {
        // Search all .section-content text content and Replace all instances of a '#' followed by a number so that there is a zero-width space between the # and the number
        $('.section-content').each(function() {

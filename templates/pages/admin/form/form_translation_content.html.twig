@@ -98,7 +98,7 @@
         </button>
     </div>
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         $(function() {
             $('[data-translation-action-copy-default-value="{{ rand }}"]')
                 .on('click', (event) => {
