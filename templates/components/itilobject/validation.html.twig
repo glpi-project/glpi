@@ -55,9 +55,9 @@
     {% if canadd %}
         {% if item.fields['status'] not in donestatus %}
             <div class="card-body mb-3 p-0 text-center">
-                <a class='btn btn-primary' role="button" href='javascript:viewAddValidation{{ tID }}{{ rand }}()'>
+                <button type="button" id="addValidation{{ tID }}{{ rand }}" class="btn btn-primary">
                     {{ __('Send an approval request') }}
-                </a>
+                </button>
             </div>
         {% endif %}
     {% endif %}
@@ -75,4 +75,5 @@
         };
         $('#viewvalidation{{ tID }}{{ rand }}').load('{{ config('root_doc')|e('js') }}/ajax/viewsubitem.php', params);
     };
+    document.getElementById('addValidation{{ tID }}{{ rand }}')?.addEventListener('click', viewAddValidation{{ tID }}{{ rand }});
 </script>
