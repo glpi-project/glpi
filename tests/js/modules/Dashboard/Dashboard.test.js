@@ -148,7 +148,6 @@ describe('Dashboard', () => {
                 limit: 7,
                 card_id: undefined,
                 gridstack_id: 'undefined_12345678-1234-1234-1234-123456789012',
-                force: true,
                 apply_filters: {},
             },
             gridstack_id: 'undefined_12345678-1234-1234-1234-123456789012',
@@ -203,7 +202,6 @@ describe('Dashboard', () => {
                 legend: 1,
                 limit: 10,
                 gridstack_id: 'mycard_12345678-1234-1234-1234-123456789012',
-                force: true,
                 apply_filters: {'1': 'test'},
             },
             // TODO These duplicated values probably shouldn't be here
@@ -326,7 +324,6 @@ describe('Dashboard', () => {
             action: 'get_card',
             dashboard: 'current_dashboard',
             card_id: undefined,
-            cache_key: '',
             args: {
                 color: null,
                 widgettype: null,
@@ -337,7 +334,6 @@ describe('Dashboard', () => {
                 limit: 7,
                 card_id: undefined,
                 gridstack_id: 'undefined_12345678-1234-1234-1234-123456789012',
-                force: true,
                 apply_filters: {'1': 'test'},
             }
         }, () => {
@@ -1299,12 +1295,10 @@ describe('Dashboard', () => {
         });
         window.AjaxMock.start();
         const data = {
-            "force": 0,
-            "d_cache_key": "",
             "cards": [
-                {"card_id":"1","force":0,"args":{"gridstack_id":"1","apply_filters":{"filter1":"value1","filter2":"value2"}},"c_cache_key":""},
-                {"card_id":"2","force":0,"args":{"gridstack_id":"2","apply_filters":{"filter1":"value1","filter2":"value2"}},"c_cache_key":""},
-                {"card_id":"3","force":0,"args":{"gridstack_id":"3","apply_filters":{"filter1":"value1","filter2":"value2"}},"c_cache_key":""}
+                {"card_id":"1","args":{"gridstack_id":"1","apply_filters":{"filter1":"value1","filter2":"value2"}}},
+                {"card_id":"2","args":{"gridstack_id":"2","apply_filters":{"filter1":"value1","filter2":"value2"}}},
+                {"card_id":"3","args":{"gridstack_id":"3","apply_filters":{"filter1":"value1","filter2":"value2"}}}
             ],
             "embed": 1,
             "token": "mytoken",
