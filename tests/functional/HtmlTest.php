@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use Glpi\Application\View\ScriptType;
 use Glpi\Tests\DbTestCase;
 use Glpi\Toolbox\FrontEnd;
 use GlpiPlugin\Tester\MyPsr4Class;
@@ -602,6 +603,37 @@ class HtmlTest extends DbTestCase
         foreach ($fake_files as $fake_file) {
             unlink(GLPI_TMP_DIR . '/' . $fake_file);
         }
+    }
+
+    public static function scriptBlockProvider(): iterable
+    {
+        yield 'default type' => [
+            'type'     => null,
+            'expected' => '<script type="text/javascript">console.log("test");</script>',
+        ];
+        yield 'javascript' => [
+            'type'     => ScriptType::Javascript,
+            'expected' => '<script type="text/javascript">console.log("test");</script>',
+        ];
+        yield 'module' => [
+            'type'     => ScriptType::Module,
+            'expected' => '<script type="module">console.log("test");</script>',
+        ];
+        yield 'importmap' => [
+            'type'     => ScriptType::ImportMap,
+            'expected' => '<script type="importmap">console.log("test");</script>',
+        ];
+    }
+
+    #[DataProvider('scriptBlockProvider')]
+    public function testScriptBlock(?ScriptType $type, string $expected): void
+    {
+        $script = 'console.log("test");';
+        $result = $type === null
+            ? Html::scriptBlock($script)
+            : Html::scriptBlock($script, $type);
+
+        $this->assertSame($expected, $result);
     }
 
     public function testManageRefreshPage()
