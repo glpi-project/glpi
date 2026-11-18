@@ -118,18 +118,21 @@ final class OpenAPIGenerator
      * @param T $schema
      * @param string|null $parent_key
      * @param array<string, mixed>|null $parent_schema
+     * @param bool $in_request_body
+     * @param bool $is_properties_map True if $schema is a map of property names to schemas (the value of a "properties" keyword), as opposed to a schema itself.
      * @return T
-     * @todo Rename to a generic cleaning function
      */
-    private function cleanVendorExtensions(array $schema, ?string $parent_key = null, ?array $parent_schema = null, bool $in_request_body = false): array
+    private function cleanVendorExtensions(array $schema, ?string $parent_key = null, ?array $parent_schema = null, bool $in_request_body = false, bool $is_properties_map = false): array
     {
         $to_keep = $this->getPublicVendorExtensions();
         // Recursively walk through every key of the schema
         foreach ($schema as $key => &$value) {
-            // If the key is a vendor extension
-            // If the key is not a public vendor extension
             if (str_starts_with($key, 'x-') && !in_array($key, $to_keep, true)) {
-                // Remove the key from the schema
+                unset($schema[$key]);
+                continue;
+            }
+            if ($key === 'computation' && !$is_properties_map) {
+                // Internal-only key (SQL expression), not a valid OpenAPI property
                 unset($schema[$key]);
                 continue;
             }
@@ -138,13 +141,11 @@ final class OpenAPIGenerator
                     // Implicitly set the id property as read-only but not for partials
                     $value['readOnly'] = true;
                 }
-                unset($value['computation']);
             }
-            // If the value is an array
             if (is_array($value)) {
                 // Clean the value
                 /** @phpstan-var T $value */
-                $schema[$key] = $this->cleanVendorExtensions($value, $key, $schema, $in_request_body || $key === 'requestBody');
+                $schema[$key] = $this->cleanVendorExtensions($value, $key, $schema, $in_request_body || $key === 'requestBody', $key === 'properties' && !$is_properties_map);
             }
         }
         /** @phpstan-var T $schema */
