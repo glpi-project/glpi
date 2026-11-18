@@ -113,19 +113,21 @@ final class OpenAPIGenerator
      * @param T $schema
      * @param string|null $parent_key
      * @param array<string, mixed>|null $parent_schema
+     * @param bool $in_request_body
+     * @param bool $is_properties_map True if $schema is a map of property names to schemas (the value of a "properties" keyword), as opposed to a schema itself.
      * @return T
      */
-    private function cleanVendorExtensions(array $schema, ?string $parent_key = null, ?array $parent_schema = null, bool $in_request_body = false): array
+    private function cleanVendorExtensions(array $schema, ?string $parent_key = null, ?array $parent_schema = null, bool $in_request_body = false, bool $is_properties_map = false): array
     {
         $to_keep = $this->getPublicVendorExtensions();
         // Recursively walk through every key of the schema
         foreach ($schema as $key => &$value) {
-            if ($key === 'computation' && $parent_key !== 'properties') {
-                // Server-side SQL computation for a property. Not part of the public schema.
+            if (str_starts_with($key, 'x-') && !in_array($key, $to_keep, true)) {
                 unset($schema[$key]);
                 continue;
             }
-            if (str_starts_with($key, 'x-') && !in_array($key, $to_keep, true)) {
+            if ($key === 'computation' && !$is_properties_map) {
+                // Internal-only key (SQL expression), not a valid OpenAPI property
                 unset($schema[$key]);
                 continue;
             }
@@ -138,7 +140,7 @@ final class OpenAPIGenerator
             if (is_array($value)) {
                 // Clean the value
                 /** @phpstan-var T $value */
-                $schema[$key] = $this->cleanVendorExtensions($value, $key, $schema, $in_request_body || $key === 'requestBody');
+                $schema[$key] = $this->cleanVendorExtensions($value, $key, $schema, $in_request_body || $key === 'requestBody', $key === 'properties' && !$is_properties_map);
             }
         }
         /** @phpstan-var T $schema */
