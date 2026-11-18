@@ -36,6 +36,7 @@ namespace tests\units;
 
 use Change;
 use CommonITILActor;
+use Contract;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Router;
 use Glpi\Search\CriteriaFilter;
@@ -48,6 +49,7 @@ use QueuedWebhook;
 use Supplier;
 use Supplier_Ticket;
 use Ticket;
+use Ticket_Contract;
 use TicketTask;
 use TicketValidation;
 use User;
@@ -1035,5 +1037,150 @@ JSON;
         ]);
 
         $this->assertEquals($expected_count, $this->countQueuedRequestForWebhook($webhook));
+    }
+
+    public function testTicketContractsInPayload(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        $contract = $this->createItem(Contract::class, [
+            'name'        => 'Support contract',
+            'entities_id' => $entity_id,
+        ]);
+        $ticket_with_contract = $this->createItem(Ticket::class, [
+            'name'          => 'Ticket with contract',
+            'content'       => 'Ticket with contract',
+            'entities_id'   => $entity_id,
+            '_contracts_id' => $contract->getID(),
+        ]);
+        $ticket_without_contract = $this->createItem(Ticket::class, [
+            'name'        => 'Ticket without contract',
+            'content'     => 'Ticket without contract',
+            'entities_id' => $entity_id,
+        ]);
+
+        $payload = <<<TWIG
+            {
+                "ticket_id": {{ item.id }},
+                "contract_id": {% if item.contracts|length > 0 %}{{ item.contracts[0].id }}{% else %}null{% endif %},
+                "contract_name": {% if item.contracts|length > 0 %}"{{ item.contracts[0].name }}"{% else %}null{% endif %}
+            }
+TWIG;
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test webhook',
+            'entities_id'         => $entity_id,
+            'url'                 => 'http://localhost',
+            'itemtype'            => Ticket::class,
+            'event'               => 'update',
+            'is_active'           => 1,
+            'use_default_payload' => 0,
+            'payload'             => $payload,
+        ]);
+
+        foreach ([$ticket_with_contract, $ticket_without_contract] as $ticket) {
+            $this->updateItem(Ticket::class, $ticket->getID(), ['name' => 'Updated']);
+        }
+
+        $bodies = array_map(
+            static fn(array $queued) => json_decode($queued['body'], true),
+            array_values(getAllDataFromTable(QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]))
+        );
+        $this->assertSame(
+            [
+                [
+                    'ticket_id'     => $ticket_with_contract->getID(),
+                    'contract_id'   => $contract->getID(),
+                    'contract_name' => 'Support contract',
+                ],
+                [
+                    'ticket_id'     => $ticket_without_contract->getID(),
+                    'contract_id'   => null,
+                    'contract_name' => null,
+                ],
+            ],
+            $bodies
+        );
+    }
+
+    public function testTicketUpdateWebhookOnContractLink(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        $contract = $this->createItem(Contract::class, [
+            'name'        => 'Support contract',
+            'entities_id' => $entity_id,
+        ]);
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test webhook',
+            'entities_id'         => $entity_id,
+            'url'                 => 'http://localhost',
+            'itemtype'            => Ticket::class,
+            'event'               => 'update',
+            'is_active'           => 1,
+            'use_default_payload' => 1,
+        ]);
+
+        // Linking on creation is covered by the "new" webhook
+        $ticket = $this->createItem(Ticket::class, [
+            'name'          => 'Ticket',
+            'content'       => 'Ticket',
+            'entities_id'   => $entity_id,
+            '_contracts_id' => $contract->getID(),
+        ]);
+        $this->assertSame(0, $this->countQueuedRequestForWebhook($webhook));
+
+        $this->assertTrue((new Ticket_Contract())->deleteByCriteria(['tickets_id' => $ticket->getID()], true));
+        $this->assertSame([], $this->getLastQueuedWebhookItem($webhook)['contracts']);
+        $this->assertSame(1, $this->countQueuedRequestForWebhook($webhook));
+
+        // Linking from the ticket update input is covered by the ticket "update" webhook
+        $this->updateItem(Ticket::class, $ticket->getID(), ['_contracts_id' => $contract->getID()]);
+        $this->assertSame(
+            [['id' => $contract->getID(), 'name' => 'Support contract']],
+            $this->getLastQueuedWebhookItem($webhook)['contracts']
+        );
+        $this->assertSame(2, $this->countQueuedRequestForWebhook($webhook));
+        $this->assertTrue((new Ticket_Contract())->deleteByCriteria(['tickets_id' => $ticket->getID()], true));
+        $this->assertSame(3, $this->countQueuedRequestForWebhook($webhook));
+
+        $this->createItem(Ticket_Contract::class, [
+            'tickets_id'   => $ticket->getID(),
+            'contracts_id' => $contract->getID(),
+        ]);
+        $this->assertSame(
+            [['id' => $contract->getID(), 'name' => 'Support contract']],
+            $this->getLastQueuedWebhookItem($webhook)['contracts']
+        );
+        $this->assertSame(4, $this->countQueuedRequestForWebhook($webhook));
+
+        // Purging the contract unlinks it from the ticket
+        $this->assertTrue($contract->delete(['id' => $contract->getID()], true));
+        $this->assertSame(0, countElementsInTable(Ticket_Contract::getTable(), ['tickets_id' => $ticket->getID()]));
+        $this->assertSame([], $this->getLastQueuedWebhookItem($webhook)['contracts']);
+        $this->assertSame(5, $this->countQueuedRequestForWebhook($webhook));
+
+        $this->createItem(Ticket_Contract::class, [
+            'tickets_id'   => $ticket->getID(),
+            'contracts_id' => $this->createItem(Contract::class, [
+                'name'        => 'Other contract',
+                'entities_id' => $entity_id,
+            ])->getID(),
+        ]);
+        $this->assertSame(6, $this->countQueuedRequestForWebhook($webhook));
+
+        // Purging the ticket raises its "delete" webhook only
+        $this->assertTrue($ticket->delete(['id' => $ticket->getID()], true));
+        $this->assertSame(6, $this->countQueuedRequestForWebhook($webhook));
+    }
+
+    private function getLastQueuedWebhookItem(Webhook $webhook): array
+    {
+        $queued = getAllDataFromTable(QueuedWebhook::getTable(), [
+            'WHERE' => ['webhooks_id' => $webhook->getID()],
+            'ORDER' => 'id DESC',
+        ]);
+        return json_decode(reset($queued)['body'], true)['item'];
     }
 }

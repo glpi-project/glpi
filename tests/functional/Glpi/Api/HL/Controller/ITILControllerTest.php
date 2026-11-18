@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Api\HL\Controller;
 use Change;
 use ChangeValidation;
 use CommonITILObject;
+use Contract;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
@@ -403,6 +404,42 @@ class ITILControllerTest extends HLAPITestCase
                 $this->assertEquals($tickets_id, $content['items_id']);
                 $this->assertEquals('Ticket', $content['itemtype']);
             });
+        });
+    }
+
+    public function testTicketContractsRequireContractRight(): void
+    {
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+        $entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $contract = $this->createItem(Contract::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entity_id,
+        ]);
+        $ticket = $this->createItem(Ticket::class, [
+            'name'          => __FUNCTION__,
+            'content'       => 'test',
+            'entities_id'   => $entity_id,
+            '_contracts_id' => $contract->getID(),
+        ]);
+        $request = new Request('GET', '/Assistance/Ticket/' . $ticket->getID());
+
+        $this->api->call($request, function ($call) use ($contract) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($contract) {
+                    $this->assertSame([['id' => $contract->getID(), 'name' => $contract->fields['name']]], $content['contracts']);
+                });
+        });
+
+        $_SESSION['glpiactiveprofile'][Contract::$rightname] = 0;
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertArrayNotHasKey('contracts', $content);
+                });
         });
     }
 
