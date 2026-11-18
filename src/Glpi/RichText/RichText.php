@@ -320,6 +320,8 @@ final class RichText
         // no access to the video. No-op when no placeholder is present.
         $content = (new VideoEmbedRenderer())->renderAll($content);
 
+        $content = (new NoticeRenderer())->renderAll($content);
+
         if ($p['text_maxsize'] > 0 && $content_size > $p['text_maxsize']) {
             // Safe: $content has been through getSafeHtml + htmlescaping transformers above; the wrapping markup is static.
             $content = <<<HTML
