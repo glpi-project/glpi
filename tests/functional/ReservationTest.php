@@ -1153,4 +1153,43 @@ class ReservationTest extends DbTestCase
         $this->assertFalse($reservation2->canUpdateItem(), "Users with only RESERVEANITEM should not be able to update others' reservations");
         $this->assertFalse($reservation2->canPurgeItem(), "Users with only RESERVEANITEM should not be able to purge others' reservations");
     }
+
+    public function testUpdateEventRequiresTheRightToUpdateTheReservation(): void
+    {
+        $this->login();
+        $root_entity_id = getItemByTypeName("Entity", "_test_root_entity", true);
+
+        $computer = $this->createItem("Computer", ["name" => "test computer", "entities_id" => $root_entity_id]);
+        $res_item = $this->createItem("ReservationItem", [
+            "itemtype"    => "Computer",
+            "items_id"    => $computer->getID(),
+            "is_active"   => true,
+            "entities_id" => $root_entity_id,
+        ]);
+        $reservation = $this->createItem('Reservation', [
+            'begin'               => '2024-01-01 10:00:00',
+            'end'                 => '2024-01-01 12:00:00',
+            'reservationitems_id' => $res_item->getID(),
+            'users_id'            => Session::getLoginUserID(),
+        ]);
+
+        $event = [
+            'id'    => $reservation->getID(),
+            'start' => '2024-02-01T10:00:00',
+            'end'   => '2024-02-01T12:00:00',
+        ];
+
+        // A user that can reserve items but did not make this reservation cannot move it
+        $this->login('post-only', 'postonly');
+        $_SESSION['glpiactiveprofile']['reservation'] = ReservationItem::RESERVEANITEM;
+        $this->assertFalse(\Reservation::updateEvent($event));
+        $this->assertTrue($reservation->getFromDB($reservation->getID()));
+        $this->assertSame('2024-01-01 10:00:00', $reservation->fields['begin']);
+
+        // The owner of the reservation can move it
+        $this->login();
+        $this->assertTrue(\Reservation::updateEvent($event));
+        $this->assertTrue($reservation->getFromDB($reservation->getID()));
+        $this->assertSame('2024-02-01 10:00:00', $reservation->fields['begin']);
+    }
 }
