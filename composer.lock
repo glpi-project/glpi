@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f29d7489bae979924add31cdc71e1f24",
+    "content-hash": "1de37a33220b7c2f5a3c4e5d738e43b5",
     "packages": [
         {
             "name": "altcha-org/altcha",
@@ -6612,11 +6612,16 @@
         },
         {
             "name": "ssddanbrown/htmldiff",
-            "version": "2.0.0",
+            "version": "v2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://codeberg.org/danb/HtmlDiff",
+                "reference": "b7bc848b01ae6e26a3e4ad4f07cd816e6faa8fe8"
+            },
             "dist": {
-                "type": "path",
-                "url": ".ci-tmp/htmldiff",
-                "reference": "63a1915fc3f6d6ed3e7bb9e7d4bbfcdce5b3c07e"
+                "type": "zip",
+                "url": "https://codeberg.org/api/v1/repos/danb/HtmlDiff/archive/%prettyVersion%.zip",
+                "reference": "b7bc848b01ae6e26a3e4ad4f07cd816e6faa8fe8"
             },
             "require": {
                 "ext-mbstring": "*",
@@ -6632,19 +6637,7 @@
                     "Ssddanbrown\\HtmlDiff\\": "src"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Ssddanbrown\\HtmlDiff\\Tests\\": "tests"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "vendor/bin/phpunit"
-                ],
-                "test-coverage": [
-                    "vendor/bin/phpunit --coverage-html coverage"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -6659,18 +6652,15 @@
             "homepage": "https://codeberg.org/danb/HtmlDiff",
             "funding": [
                 {
-                    "type": "kofi",
-                    "url": "https://ko-fi.com/ssddanbrown"
+                    "url": "https://github.com/sponsors/ssddanbrown",
+                    "type": "github"
                 },
                 {
-                    "type": "github",
-                    "url": "https://github.com/sponsors/ssddanbrown"
+                    "url": "https://ko-fi.com/ssddanbrown",
+                    "type": "kofi"
                 }
             ],
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
+            "time": "2025-07-07T11:55:59+00:00"
         },
         {
             "name": "swaggest/json-diff",
