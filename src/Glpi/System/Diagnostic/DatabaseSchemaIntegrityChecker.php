@@ -364,7 +364,7 @@ class DatabaseSchemaIntegrityChecker
             }
             throw new Exception(sprintf('Unable to get table "%s" structure', $table_name), $e->getCode(), $e);
         }
-        return $create_table_res->fetch_assoc()['Create Table'];
+        return $create_table_res->fetchAssoc()['Create Table'];
     }
 
     /**

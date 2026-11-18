@@ -1733,8 +1733,7 @@ final class Transfer extends CommonDBTM
                         ],
                         ['s', 'i', 'i']
                     );
-                    $result = $DB->getStatementResult($stmt);
-                    $row = $result->fetch_assoc();
+                    $row = $stmt->getResult()?->fetchAssoc();
 
                     if ($row['cpt'] > 0) {
                         $DB->delete(Item_SoftwareVersion::getTable(), ['id' => $data['id']]);

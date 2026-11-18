@@ -932,13 +932,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/migrations/update_9.1.x_to_9.2.0.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$result of method DBmysql\\:\\:fetchAssoc\\(\\) expects mysqli_result, mysqli_result\\|true given\\.$#',
+	'message' => '#^Parameter \\#1 \\$result of method DBmysql\\:\\:fetchAssoc\\(\\) expects Glpi\\\\DBAL\\\\Result, Glpi\\\\DBAL\\\\Result\\|true given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/install/migrations/update_9.1.x_to_9.2.0.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$result of method DBmysql\\:\\:numrows\\(\\) expects mysqli_result, mysqli_result\\|true given\\.$#',
+	'message' => '#^Parameter \\#1 \\$result of method DBmysql\\:\\:numrows\\(\\) expects Glpi\\\\DBAL\\\\Result, Glpi\\\\DBAL\\\\Result\\|true given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/install/migrations/update_9.1.x_to_9.2.0.php',
@@ -3392,12 +3392,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DBmysql.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Possibly invalid array key type float\\|int\\|string\\|null\\.$#',
-	'identifier' => 'offsetAccess.invalidOffset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysql.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method dataSeek\\(\\) on DBmysql\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -3405,12 +3399,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method fetchAssoc\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysqlIterator.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method fetch_fields\\(\\) on bool\\|mysqli_result\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBmysqlIterator.php',
@@ -3518,13 +3506,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$result of method DBmysql\\:\\:fetchAssoc\\(\\) expects mysqli_result, mysqli_result\\|true given\\.$#',
+	'message' => '#^Parameter \\#1 \\$result of method DBmysql\\:\\:fetchAssoc\\(\\) expects Glpi\\\\DBAL\\\\Result, Glpi\\\\DBAL\\\\Result\\|true given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$result of method DBmysql\\:\\:numrows\\(\\) expects mysqli_result, mysqli_result\\|true given\\.$#',
+	'message' => '#^Parameter \\#1 \\$result of method DBmysql\\:\\:numrows\\(\\) expects Glpi\\\\DBAL\\\\Result, Glpi\\\\DBAL\\\\Result\\|true given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DbUtils.php',
@@ -8570,33 +8558,33 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$cnt on stdClass\\|false\\|null\\.$#',
+	'message' => '#^Cannot access property \\$cnt on stdClass\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$id on stdClass\\|false\\|null\\.$#',
+	'message' => '#^Cannot access property \\$id on stdClass\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$items_id on stdClass\\|false\\|null\\.$#',
+	'message' => '#^Cannot access property \\$items_id on stdClass\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$num_rows on mysqli_result\\|false\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 3,
+	'message' => '#^Cannot call method fetchObject\\(\\) on Glpi\\\\DBAL\\\\Result\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 4,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method fetch_object\\(\\) on mysqli_result\\|false\\.$#',
+	'message' => '#^Cannot call method numRows\\(\\) on Glpi\\\\DBAL\\\\Result\\|null\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 4,
+	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
 ];
 $ignoreErrors[] = [
@@ -8684,13 +8672,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$cnt on stdClass\\|false\\|null\\.$#',
+	'message' => '#^Cannot access property \\$cnt on stdClass\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$id on stdClass\\|false\\|null\\.$#',
+	'message' => '#^Cannot access property \\$id on stdClass\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
@@ -8714,7 +8702,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$items_id on stdClass\\|false\\|null\\.$#',
+	'message' => '#^Cannot access property \\$items_id on stdClass\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
@@ -8732,15 +8720,15 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$num_rows on mysqli_result\\|false\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 3,
+	'message' => '#^Cannot call method fetchObject\\(\\) on Glpi\\\\DBAL\\\\Result\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 4,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method fetch_object\\(\\) on mysqli_result\\|false\\.$#',
+	'message' => '#^Cannot call method numRows\\(\\) on Glpi\\\\DBAL\\\\Result\\|null\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 4,
+	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
@@ -9332,7 +9320,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Software.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method fetch_object\\(\\) on mysqli_result\\|false\\.$#',
+	'message' => '#^Cannot call method fetchObject\\(\\) on Glpi\\\\DBAL\\\\Result\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Software.php',
@@ -9506,7 +9494,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/VirtualMachine.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$cnt on stdClass\\|false\\|null\\.$#',
+	'message' => '#^Cannot access property \\$cnt on stdClass\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/VirtualMachine.php',
@@ -9524,13 +9512,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/VirtualMachine.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$id on stdClass\\|false\\|null\\.$#',
+	'message' => '#^Cannot access property \\$id on stdClass\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/VirtualMachine.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$items_id on stdClass\\|false\\|null\\.$#',
+	'message' => '#^Cannot access property \\$items_id on stdClass\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/VirtualMachine.php',
@@ -9545,12 +9533,6 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$networks on array\\<string\\>\\|float\\|stdClass\\|string\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/VirtualMachine.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$num_rows on mysqli_result\\|false\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/VirtualMachine.php',
 ];
 $ignoreErrors[] = [
@@ -9572,7 +9554,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/VirtualMachine.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method fetch_object\\(\\) on mysqli_result\\|false\\.$#',
+	'message' => '#^Cannot call method fetchObject\\(\\) on Glpi\\\\DBAL\\\\Result\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 4,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/VirtualMachine.php',
@@ -9581,6 +9563,12 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot call method getEntityID\\(\\) on Glpi\\\\Inventory\\\\MainAsset\\\\MainAsset\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/VirtualMachine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method numRows\\(\\) on Glpi\\\\DBAL\\\\Result\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/VirtualMachine.php',
 ];
 $ignoreErrors[] = [
@@ -9992,31 +9980,25 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$cnt on stdClass\\|false\\|null\\.$#',
+	'message' => '#^Cannot access property \\$cnt on stdClass\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$id on stdClass\\|false\\|null\\.$#',
+	'message' => '#^Cannot access property \\$id on stdClass\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$items_id on stdClass\\|false\\|null\\.$#',
+	'message' => '#^Cannot access property \\$items_id on stdClass\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$num_rows on mysqli_result\\|false\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method fetch_object\\(\\) on mysqli_result\\|false\\.$#',
+	'message' => '#^Cannot call method fetchObject\\(\\) on Glpi\\\\DBAL\\\\Result\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 4,
 	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
@@ -10025,6 +10007,12 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot call method getAllActions\\(\\) on Rule\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method numRows\\(\\) on Glpi\\\\DBAL\\\\Result\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
 ];
 $ignoreErrors[] = [
@@ -11444,27 +11432,15 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Stat/Data/Sglobal/StatDataTicketNumber.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method fetch_all\\(\\) on mysqli_result\\|true\\.$#',
+	'message' => '#^Cannot call method fetchAllAssoc\\(\\) on Glpi\\\\DBAL\\\\Result\\|true\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/AbstractDatabaseChecker.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method fetch_assoc\\(\\) on mysqli_result\\|true\\.$#',
+	'message' => '#^Cannot call method fetchAssoc\\(\\) on Glpi\\\\DBAL\\\\Result\\|true\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/AbstractDatabaseChecker.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$key of function array_key_exists expects int\\|string, float\\|int\\|string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/AbstractDatabaseChecker.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Possibly invalid array key type float\\|int\\|string\\|null\\.$#',
-	'identifier' => 'offsetAccess.invalidOffset',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/AbstractDatabaseChecker.php',
 ];
 $ignoreErrors[] = [
@@ -11486,20 +11462,14 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/DatabaseSchemaConsistencyChecker.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'Create Table\' on array\\<string, float\\|int\\|string\\|null\\>\\|false\\|null\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/DatabaseSchemaIntegrityChecker.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method fetch_assoc\\(\\) on mysqli_result\\|true\\.$#',
+	'message' => '#^Cannot call method fetchAssoc\\(\\) on Glpi\\\\DBAL\\\\Result\\|true\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/DatabaseSchemaIntegrityChecker.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\System\\\\Diagnostic\\\\DatabaseSchemaIntegrityChecker\\:\\:getEffectiveCreateTableSql\\(\\) should return string but returns float\\|int\\|string\\|null\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Offset \'Create Table\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/DatabaseSchemaIntegrityChecker.php',
 ];
@@ -11522,8 +11492,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/System/Log/LogParser.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'innodb_page_size\' on array\\<string, float\\|int\\|string\\|null\\>\\|false\\|null\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
+	'message' => '#^Offset \'innodb_page_size\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/System/Requirement/DbConfiguration.php',
 ];
@@ -17864,14 +17834,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'cpt\' on array\\<string, float\\|int\\|string\\|null\\>\\|false\\|null\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Transfer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method fetch_assoc\\(\\) on mysqli_result\\|false\\.$#',
-	'identifier' => 'method.nonObject',
+	'message' => '#^Offset \'cpt\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Transfer.php',
 ];

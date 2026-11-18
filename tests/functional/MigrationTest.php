@@ -38,16 +38,17 @@ use ArrayIterator;
 use Computer;
 use CronTask;
 use DBmysql;
+use Doctrine\DBAL\Connection;
 use Glpi\DBAL\Parts\BasePart;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\Result;
+use Glpi\DBAL\Statement;
 use Glpi\Exception\Database\QueryException;
 use Glpi\Progress\AbstractProgressIndicator;
 use Glpi\Socket;
 use Glpi\Tests\DbTestCase;
 use LogicException;
 use Migration;
-use mysqli_result;
-use mysqli_stmt;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use RuntimeException;
@@ -1607,16 +1608,13 @@ class MigrationTest extends DbTestCase
             private array $_mock_options;
             public array $_queries = [];
             public $dbdefault = 'mockedglpi';
-            private \WeakMap $_prepared_queries;
-
             public function __construct(array $options)
             {
                 $this->_mock_options = $options;
-                $this->_prepared_queries = new \WeakMap();
                 parent::__construct();
             }
 
-            public function doQuery(BasePart|string $query): true|mysqli_result
+            public function doQuery(BasePart|string $query): true|Result
             {
                 $this->_queries[] = ['sql' => $query];
                 if (isset($this->_mock_options['_mock_doQuery'])) {
@@ -1689,26 +1687,21 @@ class MigrationTest extends DbTestCase
                 return $DB->quote($value, $type);
             }
 
+            public function getConnection(): Connection
+            {
+                // Proxy connection to the real DB instance since the mock is not connected
+                global $DB;
+                return $DB->getConnection();
+            }
+
             public function prepare($query)
             {
                 // Proxy prepare to the real DB instance since the mock has no mysqli handler
                 global $DB;
-                $res = $DB->prepare($query);
-                if (!$res) {
-                    throw new RuntimeException(
-                        sprintf(
-                            'MySQL prepare error: %s (%d) in SQL query "%s".',
-                            $this->dbh->error,
-                            $this->dbh->errno,
-                            $query
-                        )
-                    );
-                }
-                $this->_prepared_queries[$res] = $query;
-                return $res;
+                return $DB->prepare($query);
             }
 
-            public function executeStatement(mysqli_stmt $stmt, ?array $params = null, ?array $types = null): void
+            public function executeStatement(Statement $stmt, ?array $params = null, ?array $types = null): void
             {
                 $params = array_values($params); //no need for the keys
                 foreach ($params as &$param) {
@@ -1717,7 +1710,7 @@ class MigrationTest extends DbTestCase
                     }
                 }
                 $this->_queries[] = [
-                    'sql' => $this->_prepared_queries[$stmt] ?? '',
+                    'sql' => $stmt->getQuery(),
                     'values' => $params,
                 ];
 
@@ -1725,13 +1718,6 @@ class MigrationTest extends DbTestCase
                 // prepared on its connection and the mock has no mysqli handler.
                 global $DB;
                 $DB->executeStatement($stmt, $params, $types);
-            }
-
-            public function getStatementResult(mysqli_stmt $stmt): mysqli_result|false
-            {
-                // Proxy result retrieval to the real DB instance since the statement was executed on its connection.
-                global $DB;
-                return $DB->getStatementResult($stmt);
             }
         };
         $db->disableTableCaching();

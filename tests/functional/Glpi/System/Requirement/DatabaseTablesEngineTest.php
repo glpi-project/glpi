@@ -45,13 +45,13 @@ final class DatabaseTablesEngineTest extends GLPITestCase
         global $DB;
 
         // Arrange: create some MyIsam tables
-        $this->getDbHandle()->query(<<<SQL
+        $this->getDbConnection()->executeStatement(<<<SQL
             CREATE TABLE `glpi_tmp_testTablesWithIncorrectEngineAreFound1` (
                 `id` int unsigned NOT NULL AUTO_INCREMENT,
                 PRIMARY KEY (`id`)
             ) ENGINE=MyIsam CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC
         SQL);
-        $this->getDbHandle()->query(<<<SQL
+        $this->getDbConnection()->executeStatement(<<<SQL
             CREATE TABLE `glpi_tmp_testTablesWithIncorrectEngineAreFound2` (
                 `id` int unsigned NOT NULL AUTO_INCREMENT,
                 PRIMARY KEY (`id`)

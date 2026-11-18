@@ -42,12 +42,12 @@ use DBmysqlIterator;
 use Dropdown;
 use FQDNLabel;
 use Glpi\DBAL\QueryParam;
+use Glpi\DBAL\Statement;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\MainAsset\MainAsset;
 use IPAddress;
 use IPNetwork;
 use Item_DeviceNetworkCard;
-use mysqli_stmt;
 use NetworkName;
 use NetworkPort;
 use NetworkPortAggregate;
@@ -65,8 +65,8 @@ trait InventoryNetworkPort
 {
     /** @var object[]  */
     protected array $ports = [];
-    protected mysqli_stmt $ipnetwork_stmt;
-    protected mysqli_stmt $idevice_stmt;
+    protected Statement $ipnetwork_stmt;
+    protected Statement $idevice_stmt;
     /** @var object[]  */
     protected array $networks = [];
     /** @var ?class-string<CommonDBTM> */
@@ -173,10 +173,10 @@ trait InventoryNetworkPort
         foreach ($this->ports as $port) {
             if (!$this->isMainPartial() && property_exists($port, 'mac') && $port->mac != '') {
                 $DB->executeStatement($stmt, [Unmanaged::class, $port->mac,]);
-                $results = $DB->getStatementResult($stmt);
+                $results = $stmt->getResult();
 
-                if ($results->num_rows > 0) {
-                    $row = $results->fetch_object();
+                if ($results->numRows() > 0) {
+                    $row = $results->fetchObject();
                     $unmanageds_id = $row->items_id;
                     $input = [
                         'logical_number'  => $port->logical_number,
@@ -242,9 +242,9 @@ trait InventoryNetworkPort
                     $port->gateway,
                 ]
             );
-            $results = $DB->getStatementResult($stmt);
+            $results = $stmt->getResult();
 
-            $row = $results->fetch_object();
+            $row = $results->fetchObject();
             $count = $row->cnt;
 
             if ($count == 0) {
@@ -476,10 +476,10 @@ trait InventoryNetworkPort
                     }
 
                     $DB->executeStatement($netname_stmt, [NetworkPort::class, $keydb]);
-                    $results = $DB->getStatementResult($netname_stmt);
+                    $results = $netname_stmt->getResult();
 
-                    if ($results->num_rows) {
-                        $row = $results->fetch_object();
+                    if ($results->numRows()) {
+                        $row = $results->fetchObject();
                         $netname_id = $row->id;
                     } else {
                         if (!empty($datadb['name'])) {
@@ -667,10 +667,10 @@ trait InventoryNetworkPort
                     $data->mac,
                 ]
             );
-            $results = $DB->getStatementResult($stmt);
+            $results = $stmt->getResult();
 
-            if ($results->num_rows > 0) {
-                $row = $results->fetch_object();
+            if ($results->numRows() > 0) {
+                $row = $results->fetchObject();
                 $input['items_devicenetworkcards_id'] = $row->id;
             }
         }

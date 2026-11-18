@@ -35,6 +35,8 @@
         "apereo/phpcas": "^1.6",
         "bacon/bacon-qr-code": "^3.1",
         "directorytree/imapengine": "^1.25",
+        "doctrine/dbal": "^4.6",
+        "doctrine/doctrine-bundle": "^2.19",
         "donatj/phpuseragentparser": "^1.12",
         "egulias/email-validator": "^4.0",
         "elvanto/litemoji": "^5.2",

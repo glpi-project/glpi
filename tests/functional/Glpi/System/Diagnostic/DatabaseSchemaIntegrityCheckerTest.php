@@ -36,9 +36,9 @@ namespace tests\units\Glpi\System\Diagnostic;
 
 use ArrayIterator;
 use Glpi\DBAL\Parts\BasePart;
+use Glpi\DBAL\Result;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\Tests\GLPITestCase;
-use mysqli_result;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -1492,7 +1492,7 @@ DIFF,
 
             $checker = new DatabaseSchemaIntegrityChecker(
                 $this->getDbMock($args + [
-                    '_mock_doQuery' => $this->getMysqliResultMock(['Create Table' => $effective_sql]),
+                    '_mock_doQuery' => fn() => $this->getSingleRowResult(['Create Table' => $effective_sql]),
                 ]),
                 $args['strict'],
                 $args['ignore_innodb_migration'],
@@ -1556,7 +1556,7 @@ DIFF,
                 '_mock_doQuery' => function ($query) use ($effective_tables) {
                     $table_name = preg_replace('/SHOW CREATE TABLE `([^`]+)`/', '$1', $query);
                     if (array_key_exists($table_name, $effective_tables)) {
-                        return $this->getMysqliResultMock(['Create Table' => $effective_tables[$table_name]]);
+                        return $this->getSingleRowResult(['Create Table' => $effective_tables[$table_name]]);
                     }
                     return false;
                 },
@@ -1649,7 +1649,7 @@ SQL,
                             break;
                     }
                     if ($result !== null) {
-                        return $this->getMysqliResultMock($result);
+                        return $this->getSingleRowResult($result);
                     }
                     return false;
                 },
@@ -1758,7 +1758,7 @@ SQL;
                 // Case 1: "DEFAULT ''" not returned by MySQL should not be detected as a difference for GLPI < 10.0.1
                 '_mock_doQuery' => function ($query) {
                     if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
-                        return $this->getMysqliResultMock([
+                        return $this->getSingleRowResult([
                             'Create Table' => <<<SQL
 CREATE TABLE `glpi_impactcontexts` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -1807,7 +1807,7 @@ SQL,
                 // Case 2: "DEFAULT ''" returned by MariaDB should be detected as a difference for GLPI >= 10.0.1
                 '_mock_doQuery' => function ($query) {
                     if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
-                        return $this->getMysqliResultMock([
+                        return $this->getSingleRowResult([
                             'Create Table' => <<<SQL
 CREATE TABLE `glpi_impactcontexts` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -1896,7 +1896,7 @@ SQL;
             $checker = new DatabaseSchemaIntegrityChecker($this->getDbMock([
                 '_mock_doQuery' => function ($query) {
                     if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
-                        return $this->getMysqliResultMock([
+                        return $this->getSingleRowResult([
                             'Create Table' => <<<SQL
 CREATE TABLE `glpi_notimportedemails` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -1983,7 +1983,7 @@ SQL;
                 'use_utf8mb4' => true,
                 '_mock_doQuery' => function ($query) {
                     if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
-                        return $this->getMysqliResultMock([
+                        return $this->getSingleRowResult([
                             'Create Table' => <<<SQL
 CREATE TABLE `glpi_notimportedemails` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -2196,7 +2196,7 @@ DIFF,
                 return true;
             }
 
-            public function doQuery(BasePart|string $query): true|mysqli_result
+            public function doQuery(BasePart|string $query): true|Result
             {
                 if (isset($this->_mock_options['_mock_doQuery'])) {
                     return is_callable($this->_mock_options['_mock_doQuery'])
@@ -2221,21 +2221,9 @@ DIFF,
         return $db;
     }
 
-    private function getMysqliResultMock(array $fetch_assoc_return): mysqli_result
+    private function getSingleRowResult(array $row): Result
     {
-        return new class ($fetch_assoc_return) extends mysqli_result {
-            private array $_fetch_assoc_return;
-
-            public function __construct($fetch_assoc_return)
-            {
-                $this->_fetch_assoc_return = $fetch_assoc_return;
-            }
-
-            public function fetch_assoc(): array|false|null
-            {
-                return $this->_fetch_assoc_return;
-            }
-        };
+        return $this->buildDbResult([$row]);
     }
 
     public function testIndexTypesAreNormalized(): void

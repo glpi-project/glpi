@@ -114,7 +114,7 @@ abstract class AbstractDatabaseChecker
     {
         if (!array_key_exists($table_name, $this->columns)) {
             $columns_res = $this->db->doQuery('SHOW COLUMNS FROM ' . $this->db->quoteName($table_name));
-            $this->columns[$table_name] = $columns_res->fetch_all(MYSQLI_ASSOC);
+            $this->columns[$table_name] = $columns_res->fetchAllAssoc();
         }
     }
 
@@ -132,7 +132,7 @@ abstract class AbstractDatabaseChecker
             $keys_res = $this->db->doQuery('SHOW INDEX FROM ' . $this->db->quoteName($table_name));
 
             $index = [];
-            while ($key_specs = $keys_res->fetch_assoc()) {
+            while ($key_specs = $keys_res->fetchAssoc()) {
                 if ($key_specs['Index_type'] === 'FULLTEXT') {
                     continue; // Ignore FULLTEXT keys
                 }
