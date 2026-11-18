@@ -52,6 +52,7 @@ use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Inventory\Inventory;
 use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
+use Glpi\Security\ContentSecurityPolicy\CspState;
 use Glpi\System\Log\LogViewer;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\URL;
@@ -4023,9 +4024,16 @@ JAVASCRIPT
      * @param bool $jsexpand  Expand using JS ?
      *
      * @return void
+     *
+     * @deprecated 11.0.14 Use Symfony's `dump()` or `dd()` functions instead.
      **/
     public static function printCleanArray($tab, $pad = 0, $jsexpand = false)
     {
+        Toolbox::deprecated('Use Symfony\'s `dump()` or `dd()` functions instead.');
+
+        if (CspState::isEnabled()) {
+            return;
+        }
 
         if (count($tab)) {
             echo "<table class='array-debug table table-striped'>";

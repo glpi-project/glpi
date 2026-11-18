@@ -21,6 +21,8 @@ The present file will list all changes made to the project; according to the
 #### Changes
 
 #### Deprecated
+- `Html::printCleanArray()`. Use Symfony `dump()` or `dd()` functions instead.
+- `showHideDiv()` JavaScript function.
 
 #### Removed
 
