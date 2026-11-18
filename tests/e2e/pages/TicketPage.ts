@@ -38,6 +38,7 @@ export class TicketPage extends GlpiPage
     public notes_area: Locator;
     public readonly followup_pending_switch: Locator;
     public readonly followup_pending_reasons: Locator;
+    public readonly add_button: Locator;
 
     public constructor(page: Page)
     {
@@ -48,6 +49,7 @@ export class TicketPage extends GlpiPage
         const followup_block = page.getByTestId('new-ITILFollowup-block');
         this.followup_pending_switch = followup_block.getByTestId('pending-checkbox');
         this.followup_pending_reasons = followup_block.getByTestId('pending-reasons');
+        this.add_button = page.getByTestId('itil-add-button');
     }
 
     public async doOpenFollowupForm(): Promise<void>

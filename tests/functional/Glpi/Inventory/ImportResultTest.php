@@ -134,7 +134,10 @@ class ImportResultTest extends GLPITestCase
 
         TemplateRenderer::getInstance()->render(
             'pages/admin/inventory/upload_result.html.twig',
-            ['imported_files' => ['computer_1.json' => $result]]
+            [
+                'imported_files' => ['computer_1.json' => $result],
+                'back_url'       => '/',
+            ]
         );
 
         restore_error_handler();

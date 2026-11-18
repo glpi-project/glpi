@@ -204,6 +204,10 @@ final class InventoryController extends AbstractController
             'pages/admin/inventory/upload_result.html.twig',
             [
                 'imported_files' => $imported_files,
+                'back_url'       => $this->router->generate('glpi_inventory_configuration', [
+                    'itemtype' => Conf::class,
+                    'glpi_tab' => Conf::class . '$2',
+                ]),
             ]
         );
     }

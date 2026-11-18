@@ -487,7 +487,7 @@ test('Create/update a ticket using a template with readonly fields', async ({ pr
     const add_response = page.waitForResponse(
         (resp) => resp.url().includes('/front/ticket.form.php') && resp.request().method() === 'POST'
     );
-    await ticket.getButton('Add').click();
+    await ticket.add_button.click();
     await add_response;
 
     // Server should have ignored the readonly field change — urgency must be 4
@@ -662,7 +662,7 @@ test.describe('Mandatory technician field', () => {
         // eslint-disable-next-line playwright/no-raw-locators -- select2 remove button has no accessible role/label
         await assign_dropdown.locator('.select2-selection__choice__remove').click();
 
-        await ticket.getButton('Add').click();
+        await ticket.add_button.click();
 
         const error_alert = ticket.getAlert('Mandatory fields are not filled');
         await expect(error_alert).toBeVisible();
@@ -672,7 +672,7 @@ test.describe('Mandatory technician field', () => {
         const add_response = page.waitForResponse(
             (resp) => resp.url().includes('/front/ticket.form.php') && resp.request().method() === 'POST'
         );
-        await ticket.getButton('Add').click();
+        await ticket.add_button.click();
         await add_response;
 
         await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
