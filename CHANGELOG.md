@@ -23,6 +23,10 @@ The present file will list all changes made to the project; according to the
 #### Deprecated
 - `Html::printCleanArray()`. Use Symfony `dump()` or `dd()` functions instead.
 - `showHideDiv()` JavaScript function.
+- `Html::addConfirmationOnAction()`. Use the `data-glpi-confirm="<message>"` attribute instead.
+- `Html::getConfirmationOnActionScript()`. Use the `data-glpi-confirm="<message>"` attribute instead.
+- `Html::link()`.
+- `confirmaction` option of `Html::submit()`. Confirmation is now handled through the `data-glpi-confirm` attribute, so no additional action can be run on confirmation.
 
 #### Removed
 

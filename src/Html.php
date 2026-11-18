@@ -674,9 +674,17 @@ class Html
      *                                     (default '')
      *
      * @return string
+     *
+     * @deprecated 11.0.14 Use the `data-glpi-confirm="<message>"` attribute instead.
      **/
     public static function addConfirmationOnAction($string, $additionalactions = '')
     {
+        Toolbox::deprecated('Use the `data-glpi-confirm="<message>"` attribute instead.');
+
+        if (CspState::isEnabled()) {
+            return '';
+        }
+
         return "onclick=\"" . htmlescape(Html::getConfirmationOnActionScript($string, $additionalactions)) . "\"";
     }
 
@@ -691,9 +699,16 @@ class Html
      *                                     (default '')
      *
      * @return string confirmation script
+     *
+     * @deprecated 11.0.14 Use the `data-glpi-confirm="<message>"` attribute instead.
      **/
     public static function getConfirmationOnActionScript($string, $additionalactions = '')
     {
+        Toolbox::deprecated('Use the `data-glpi-confirm="<message>"` attribute instead.');
+
+        if (CspState::isEnabled()) {
+            return '';
+        }
 
         if (!is_array($string)) {
             $string = [$string];
@@ -2537,11 +2552,14 @@ TWIG,
             $out .= "<a role=\"button\" title='" . __s('Massive actions') . "'
                      data-bs-toggle='tooltip' data-bs-placement='" . ($p['ontop'] ? "bottom" : "top") . "'
                      class='" . htmlescape($p['action_button_classes']) . "' ";
-            if (is_array($p['confirm']) || strlen($p['confirm'])) {
-                $out .= self::addConfirmationOnAction($p['confirm'], "modal_massiveaction_window$identifier.show();");
-            } else {
-                $out .= "onclick='modal_massiveaction_window$identifier.show();'";
+
+            if (is_array($p['confirm'])) {
+                $p['confirm'] = implode("\n", $p['confirm']);
             }
+            if (strlen($p['confirm'])) {
+                $out .= sprintf(' data-glpi-confirm="%s"', htmlescape($p['confirm']));
+            }
+            $out .= " onclick='modal_massiveaction_window$identifier.show();'";
             $out .= " href='#modal_massaction_content$identifier' title=\"" . htmlescape($p['title']) . "\">";
             if ($p['display_arrow']) {
                 $out .= "<i class='ti ti-corner-left-" . ($p['ontop'] ? 'down' : 'up') . " mt-1' style='margin-left: -2px;'></i>";
@@ -4358,11 +4376,13 @@ JAVASCRIPT
         }
         $action  = " submitGetLink('" . jsescape($action) . "', " . json_encode($fields) . ");";
 
-        if (is_array($confirm) || strlen($confirm)) {
-            $link .= self::addConfirmationOnAction($confirm, $action);
-        } else {
-            $link .= " onclick=\"" . htmlescape($action) . "\" ";
+        if (is_array($confirm)) {
+            $confirm = implode("\n", $confirm);
         }
+        if (strlen($confirm)) {
+            $link .= sprintf(' data-glpi-confirm="%s"', htmlescape($confirm));
+        }
+        $link .= " onclick=\"" . htmlescape($action) . "\" ";
 
         // Ensure $btlabel is properly escaped
         $btlabel = htmlescape($btlabel);
@@ -4835,10 +4855,15 @@ JS;
      *     - `confirmaction` optional action to do on confirmation
      * @return string an `a` element.
      *
-     * @TODO Deprecate this method in GLPI 11.1, it is not used anymore in GLPI itself.
+     * @deprecated 11.0.14
      **/
     public static function link($text, $url, $options = [])
     {
+        Toolbox::deprecated();
+
+        if (CspState::isEnabled()) {
+            return '';
+        }
 
         if (isset($options['confirm'])) {
             if (!empty($options['confirm'])) {
@@ -4992,7 +5017,8 @@ JS;
      * @param array  $options  Array of options.
      *     - image : will use a submit image input
      *     - `confirm` JavaScript confirmation message.
-     *     - `confirmaction` optional action to do on confirmation
+     *     - `confirmaction` optional action to do on confirmation (deprecated since 11.0.14,
+     *                       ignored when the Content-Security-Policy is enforced)
      *
      * @return string A HTML submit button
      **/
@@ -5011,19 +5037,28 @@ JS;
         if (!isset($options['class'])) {
             $options['class'] = 'btn';
         }
+        $confirm_action = '';
+        if (isset($options['confirmaction'])) {
+            Toolbox::deprecated('The `confirmaction` option is deprecated. Confirmation is now handled through the `data-glpi-confirm` attribute.');
+            if (!CspState::isEnabled()) {
+                $confirm_action = $options['confirmaction'];
+            }
+            unset($options['confirmaction']);
+        }
         if (isset($options['confirm'])) {
             if (!empty($options['confirm'])) {
-                $confirmAction  = '';
-                if (isset($options['confirmaction'])) {
-                    if (!empty($options['confirmaction'])) {
-                        $confirmAction = $options['confirmaction'];
+                if (!empty($confirm_action)) {
+                    // Legacy behavior, kept until the `confirmaction` option is removed.
+                    $options['onclick'] = Html::getConfirmationOnActionScript( // @phpstan-ignore staticMethod.deprecated
+                        $options['confirm'],
+                        $confirm_action
+                    );
+                } else {
+                    if (is_array($options['confirm'])) {
+                        $options['confirm'] = implode("\n", $options['confirm']);
                     }
-                    unset($options['confirmaction']);
+                    $options['data-glpi-confirm'] = $options['confirm'];
                 }
-                $options['onclick'] = Html::getConfirmationOnActionScript(
-                    $options['confirm'],
-                    $confirmAction
-                );
             }
             unset($options['confirm']);
         }
