@@ -1148,11 +1148,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             return;
         }
 
-        // A refused solution must not stay linked to the followup that approved it
-        if (
-            $approval['status'] === CommonITILValidation::REFUSED
-            && (int) $solution['status'] === CommonITILValidation::ACCEPTED
-        ) {
+        // The followup answering a former approval or refusal does not answer the new one
+        if ((int) $solution['status'] !== $approval['status']) {
             $solution['itilfollowups_id'] = null;
             $approval['itilfollowups_id'] = null;
         }
