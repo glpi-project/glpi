@@ -34,13 +34,50 @@
 
 namespace Glpi\Security\ContentSecurityPolicy;
 
+use Plugin;
+
 /**
  * Indicates whether the Content-Security-Policy is enforced.
+ *
+ * The CSP is enabled unless an active plugin does not declare itself as compatible
+ * with it, using the `'csp_compliant' => true` entry of its `plugin_version_*()` function.
  */
 final class CspState
 {
+    /**
+     * Active plugins list used to compute the cached state.
+     */
+    private static ?string $cached_plugins_key = null;
+
+    /**
+     * Cached state, valid as long as the active plugins list does not change.
+     */
+    private static bool $cached_state = true;
+
     public static function isEnabled(): bool
     {
-        return false;
+        $plugins = Plugin::getPlugins();
+        $plugins_key = \implode(',', $plugins);
+
+        if (self::$cached_plugins_key !== $plugins_key) {
+            self::$cached_state = self::computeState($plugins);
+            self::$cached_plugins_key = $plugins_key;
+        }
+
+        return self::$cached_state;
+    }
+
+    /**
+     * @param array<string> $plugins Active plugins keys
+     */
+    private static function computeState(array $plugins): bool
+    {
+        foreach ($plugins as $plugin_key) {
+            if (Plugin::getInfo($plugin_key, 'csp_compliant') !== true) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
