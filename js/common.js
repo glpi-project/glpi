@@ -1827,6 +1827,31 @@ function waitForElement(selector) {
 }
 
 /**
+ * Re-execute an inline script that was rendered by the server.
+ *
+ * Scripts that do not already carry the CSP nonce of the page are ignored (they
+ * were not emitted by GLPI and must never be executed, otherwise an
+ * injected script that was blocked by the CSP would be executed)
+ *
+ * @param {HTMLScriptElement} script
+ * @throws {Error} If the script lacks the page's CSP nonce
+ */
+function reExecuteTrustedScript(script) {
+    const nonce = CFG_GLPI.csp_nonce;
+    if (!nonce) {
+        // The CSP is not enabled, the nonce is not available.
+        $.globalEval(script.text);
+        return;
+    }
+
+    if (script.nonce !== nonce) {
+        throw new Error('Script was not executed because it lacks the CSP nonce of the page.');
+    }
+
+    $.globalEval(script.text, { nonce: nonce });
+}
+
+/**
  * Get UUID using crypto.randomUUID() if possible
  * Else fallback to uniqid()
  */
@@ -2262,3 +2287,51 @@ if (typeof module !== 'undefined' && module.exports) {
         tableToDetails,
     };
 }
+
+/**
+ * Add `X-Glpi-Csp-Nonce` to ajax requests (XMLHttpRequest and native fetch).
+ */
+(function () {
+    const nonce = CFG_GLPI.csp_nonce;
+    if (!nonce || window.glpi_csp_nonce_patched) {
+        return;
+    }
+
+    const header_name = 'X-Glpi-Csp-Nonce';
+
+    const isSameOrigin = (url) => {
+        try {
+            return new URL(String(url), window.location.href).origin === window.location.origin;
+        } catch {
+            // Invalid URL, let the native function handle the error.
+            return false;
+        }
+    };
+
+    // `XMLHttpRequest` requests (which is used by jQuery's `$.ajax()`, `$.get()`, ...)
+    const native_xhr_open = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function (method, url, ...args) {
+        native_xhr_open.call(this, method, url, ...args);
+        if (isSameOrigin(url)) {
+            // Never leak the nonce to another origin.
+            this.setRequestHeader(header_name, nonce);
+        }
+    };
+
+    // `fetch()` requests.
+    const native_fetch = window.fetch;
+    window.fetch = function (resource, options) {
+        const url = resource instanceof Request ? resource.url : resource;
+        if (!isSameOrigin(url)) {
+            // Never leak the nonce to another origin.
+            return native_fetch.call(this, resource, options);
+        }
+
+        const headers = new Headers(options?.headers ?? (resource instanceof Request ? resource.headers : undefined));
+        headers.set(header_name, nonce);
+        return native_fetch.call(this, resource, { ...options, headers: headers });
+    };
+
+    // Safety check to make sure this only run once.
+    window.glpi_csp_nonce_patched = true;
+})();
