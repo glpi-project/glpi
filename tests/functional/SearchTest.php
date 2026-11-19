@@ -5187,8 +5187,8 @@ class SearchTest extends DbTestCase
             'search_option'    => 15, // date
             'searchtype'       => 'equals',
             'value'            => 'NULL',
-            'expected_and'     => "AND ({$ticket_date} IS NULL) GROUP BY",
-            'expected_and_not' => "AND (NOT ({$ticket_date} IS NULL)) GROUP BY",
+            'expected_and'     => "AND ({$ticket_date} IS NULL) ORDER BY",
+            'expected_and_not' => "AND (NOT ({$ticket_date} IS NULL)) ORDER BY",
             'expected_values'    => [],
         ];
     }
@@ -6016,7 +6016,8 @@ class SearchTest extends DbTestCase
                     'value' => '',
                 ],
             ],
-            'order' => 1,
+            'sort' => [2], // id
+            'order' => ['ASC'],
         ];
 
         $data = $this->doSearch(Ticket::class, $search_params);
@@ -8291,6 +8292,206 @@ class SearchTest extends DbTestCase
             count($data['sql']['search']->getParams()),
             'placeholder/param count mismatch: ' . $query
         );
+    }
+
+    /**
+     * The deferred inner subquery must let the engine read the page through the sort index:
+     * the `id` tie-breaker follows the sort direction, and there is no GROUP BY when every join
+     * of the minimal FROM yields at most one row per item. A 1:N filter join keeps the GROUP BY.
+     */
+    public function testDeferredJoinInnerQueryUsesSortIndex()
+    {
+        $this->login();
+
+        $get_inner = function (array $params): string {
+            $data = \Search::prepareDatasForSearch(Computer::class, $params + ['reset' => 'reset'], [49]);
+            \Search::constructSQL($data);
+            $query = $data['sql']['search']->getQuery();
+            $this->assertSame(1, preg_match('/INNER JOIN \((.*)\) AS `deferred_page`/', $query, $matches), $query);
+            return $matches[1];
+        };
+
+        foreach (['ASC', 'DESC'] as $order) {
+            $inner = $get_inner([
+                'sort'     => [1], // name
+                'order'    => [$order],
+                'criteria' => [['field' => 'view', 'searchtype' => 'contains', 'value' => '']],
+            ]);
+            $this->assertStringContainsString(
+                "ORDER BY `glpi_computers`.`name` $order, `glpi_computers`.`id` $order LIMIT",
+                $inner
+            );
+            $this->assertStringContainsString('LEFT JOIN', $inner, '1:1 display joins are part of the minimal FROM');
+            $this->assertStringNotContainsString('GROUP BY', $inner);
+        }
+
+        // Option 49 ("Group in charge") is a 1:N join: filtering on it keeps it in the inner query.
+        $inner = $get_inner([
+            'sort'     => [1],
+            'order'    => ['DESC'],
+            'criteria' => [['field' => 49, 'searchtype' => 'contains', 'value' => 'whatever']],
+        ]);
+        $this->assertStringContainsString('GROUP BY `glpi_computers`.`id`', $inner);
+    }
+
+    /**
+     * Paging a descending sort over equal values must return every item exactly once, ordered
+     * by descending id within the ties.
+     */
+    public function testDeferredJoinPaginationWithTiesDescending()
+    {
+        $this->login();
+        $entity = (int) $_SESSION['glpiactive_entity'];
+
+        $token    = 'deferredties_' . mt_rand();
+        $computer = new Computer();
+        $created  = [];
+        for ($i = 0; $i < 5; $i++) {
+            $id = $computer->add(['name' => $token, 'entities_id' => $entity]);
+            $this->assertGreaterThan(0, $id);
+            $created[] = (int) $id;
+        }
+        rsort($created);
+
+        $base = [
+            'reset'    => 'reset',
+            'sort'     => [1], // name, equal for every computer
+            'order'    => ['DESC'],
+            'criteria' => [['field' => 1, 'searchtype' => 'contains', 'value' => $token]],
+        ];
+        $get_ids = static fn(array $d): array => array_values(
+            array_map('intval', array_column(array_column($d['data']['rows'], 'raw'), 'id'))
+        );
+
+        $ids = [];
+        foreach ([0, 2, 4] as $start) {
+            $page = \Search::getDatas(Computer::class, $base + ['start' => $start, 'list_limit' => 2], [49]);
+            $this->assertStringContainsString('deferred_page', $page['sql']['search']->getQuery());
+            $this->assertSame(5, $page['data']['totalcount']);
+            $ids = array_merge($ids, $get_ids($page));
+        }
+        $this->assertSame($created, $ids);
+    }
+
+    public function testDeferredJoinSortedOnLinkedTableColumn(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        // Computer name => location name
+        foreach ([1 => 'C', 2 => 'A', 3 => 'B'] as $i => $location_name) {
+            $location = $this->createItem(Location::class, [
+                'name'        => __FUNCTION__ . ' ' . $location_name,
+                'entities_id' => $entity_id,
+            ]);
+            $this->createItem(Computer::class, [
+                'name'         => __FUNCTION__ . ' ' . $i,
+                'entities_id'  => $entity_id,
+                'locations_id' => $location->getID(),
+            ]);
+        }
+
+        $name = __FUNCTION__;
+        $search = static fn(int $start, string $order): array => \Search::getDatas(
+            Computer::class,
+            [
+                'reset'      => 'reset',
+                'criteria'   => [['field' => 1, 'searchtype' => 'contains', 'value' => $name]],
+                'sort'       => [3], // location
+                'order'      => [$order],
+                'start'      => $start,
+                'list_limit' => 2,
+            ],
+            [49] // forcegroupby column: triggers the GROUP BY, hence the deferred join
+        );
+        $get_names = static fn(array $data): array => array_values(array_map(
+            static fn($row) => $row['Computer_1'][0]['name'],
+            $data['data']['rows']
+        ));
+
+        $data = $search(0, 'ASC');
+        $query = $data['sql']['search']->getQuery();
+        $this->assertSame(1, preg_match('/INNER JOIN \((.*)\) AS `deferred_page`/', $query, $matches), $query);
+        $this->assertStringContainsString('deferred_sorted', $matches[1]);
+        $this->assertStringNotContainsString('GROUP BY', $matches[1], 'only 1:1 joins in the inner query');
+        $this->assertSame(3, (int) $data['data']['totalcount']);
+        $this->assertSame([__FUNCTION__ . ' 2', __FUNCTION__ . ' 3'], $get_names($data));
+
+        $data = $search(2, 'ASC');
+        $this->assertSame(3, (int) $data['data']['totalcount']);
+        $this->assertSame([__FUNCTION__ . ' 1'], $get_names($data));
+
+        $data = $search(0, 'DESC');
+        $this->assertSame([__FUNCTION__ . ' 1', __FUNCTION__ . ' 3'], $get_names($data));
+    }
+
+    public static function deferredJoinSortedOnEachOptionProvider(): iterable
+    {
+        yield [Ticket::class];
+        yield [Computer::class];
+        yield [Software::class];
+    }
+
+    /**
+     * Every sortable option, in both directions, must return the matching item, whether the
+     * deferred join applies or not.
+     */
+    #[DataProvider('deferredJoinSortedOnEachOptionProvider')]
+    public function testDeferredJoinSortedOnEachOption(string $itemtype): void
+    {
+        $this->login();
+
+        $this->createItem($itemtype, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ] + ($itemtype === Ticket::class ? ['content' => __FUNCTION__] : []));
+
+        $deferred_count = 0;
+        foreach (SearchOption::getOptionsForItemtype($itemtype) as $id => $option) {
+            if (!is_int($id) || !is_array($option) || ($option['nosort'] ?? false)) {
+                continue;
+            }
+            foreach (['ASC', 'DESC'] as $order) {
+                $data = $this->doSearch(
+                    $itemtype,
+                    [
+                        'criteria' => [['field' => 1, 'searchtype' => 'contains', 'value' => __FUNCTION__]],
+                        'sort'     => [$id],
+                        'order'    => [$order],
+                    ],
+                    $itemtype === Ticket::class ? [] : [49]
+                );
+                $this->assertSame(1, (int) $data['data']['totalcount'], "Sort on option $id $order");
+                $this->assertCount(1, $data['data']['rows'], "Sort on option $id $order");
+                if (str_contains($data['sql']['search']->getQuery(), 'deferred_sorted')) {
+                    $deferred_count++;
+                }
+            }
+        }
+        $this->assertGreaterThan(0, $deferred_count);
+    }
+
+    /**
+     * The status of the linked problems (Ticket option 202) must be empty when the ticket has no
+     * linked problem.
+     */
+    public function testLinkedStatusWithoutLinkedItem(): void
+    {
+        $this->login();
+
+        $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        $data = $this->doSearch(
+            Ticket::class,
+            ['criteria' => [['field' => 1, 'searchtype' => 'contains', 'value' => __FUNCTION__]]],
+            [202]
+        );
+        $this->assertSame(1, (int) $data['data']['totalcount']);
+        $this->assertSame('', $data['data']['rows'][0]['Ticket_202']['displayname']);
     }
 
     /**
