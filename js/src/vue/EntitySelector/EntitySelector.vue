@@ -32,7 +32,10 @@
     let total_filtered = ref(0);
 
     async function hotkey_listener(e) {
-        if ((e.ctrlKey || e.metaKey) && e.altKey && e.key.toLowerCase() === 'e') {
+        // AltGr is reported as Ctrl+Alt, so AltGr+E must still type a character in text fields
+        const is_text_field = $(e.target).is('input, textarea, select') || e.target.isContentEditable;
+        const is_e_key = e.key.toLowerCase() === 'e' || (e.code === 'KeyE' && !is_text_field);
+        if ((e.ctrlKey || e.metaKey) && e.altKey && is_e_key) {
             e.stopPropagation();
             e.preventDefault();
             $('.user-menu-dropdown-toggle:visible').dropdown('show');
