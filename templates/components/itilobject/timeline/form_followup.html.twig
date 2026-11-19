@@ -280,7 +280,7 @@
          </form>
       </div>
 
-      <script type="text/javascript">
+      <script nonce="{{ csp_nonce() }}" type="text/javascript">
          function itilfollowuptemplate_update{{ rand }}(value) {
             $.ajax({
                url: `${CFG_GLPI.root_doc}/ajax/itilfollowup.php`,

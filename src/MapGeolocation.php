@@ -51,7 +51,7 @@ trait MapGeolocation
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             {% set rand = random() %}
             <div id="setlocation_container_{{ rand }}"></div>
-            <script type="module">
+            <script nonce="{{ csp_nonce() }}" type="module">
                 import('/js/modules/Form/GeolocationField.js').then((m) => {
                     new m.default('setlocation_container_{{ rand }}');
                 });

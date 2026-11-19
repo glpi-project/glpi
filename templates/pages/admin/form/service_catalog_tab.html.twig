@@ -112,7 +112,7 @@
 </form>
 
 {% if item.isField('show_in_service_catalog') %}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         $('[data-service-catalog-toggle]').on('change', function () {
             $('[data-service-catalog-config]').css({
                 'opacity': this.checked ? 1 : 0.5,

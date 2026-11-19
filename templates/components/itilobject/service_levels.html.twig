@@ -121,7 +121,7 @@
                      </span>
                   {% endif %}
                </span>
-               <script type="text/javascript">
+               <script nonce="{{ csp_nonce() }}" type="text/javascript">
                   function delete_date_{{ rand }}(e) {
                      e.preventDefault();
 
@@ -200,7 +200,7 @@
                         }
                      ) }}
 
-                     <script type="text/javascript">
+                     <script nonce="{{ csp_nonce() }}" type="text/javascript">
                         function toggleAssignLA_{{ rand }}() {
                            // hide button clicked
                            $("#button_{{ assign_la_id }}").hide();
@@ -218,7 +218,7 @@
                      </script>
 
                      {% if item.fields[la_field.lafieldname] != 0 %}
-                        <script type="text/javascript">
+                        <script nonce="{{ csp_nonce() }}" type="text/javascript">
                            $(document).ready(function() {
                               toggleAssignLA_{{ rand }}();
                            });

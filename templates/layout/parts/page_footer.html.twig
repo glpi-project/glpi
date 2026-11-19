@@ -46,11 +46,11 @@
    {% endif %}
 
    {% for js_file in js_files %}
-      <script type="text/javascript" src="{{ js_path(js_file.path, js_file.options ?? []) }}"></script>
+      <script nonce="{{ csp_nonce() }}" type="text/javascript" src="{{ js_path(js_file.path, js_file.options ?? []) }}"></script>
    {% endfor %}
 
    {% for js_file in js_modules %}
-      <script type="module" src="{{ js_path(js_file.path, js_file.options ?? []) }}"></script>
+      <script nonce="{{ csp_nonce() }}" type="module" src="{{ js_path(js_file.path, js_file.options ?? []) }}"></script>
    {% endfor %}
 
     {% if debug_info is not null %}

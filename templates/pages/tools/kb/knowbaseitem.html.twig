@@ -100,7 +100,7 @@
 
         {% set visibility_fields %}
             <span id="visibility{{ rand }}"></span>
-            <script>
+            <script nonce="{{ csp_nonce() }}">
                 $(() => {
                     $('#dropdown__visibility__type_{{ rand }}').on('change', (e) => {
                         const selected_type = e.target.value;

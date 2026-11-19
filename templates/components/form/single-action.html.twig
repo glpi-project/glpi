@@ -55,7 +55,7 @@
       {% endfor %}
    </div>
 </div>
-<script>
+<script nonce="{{ csp_nonce() }}">
 $(function () {
    var ma = {{ input|json_encode|raw }};
 

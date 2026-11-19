@@ -115,7 +115,7 @@ class ReminderTranslation extends CommonDBChild
                     <button id="addtranslation{{ item.getID() ~ rand }}" class="btn btn-primary">{{ button_msg }}</button>
                 </div>
                 <div id="viewtranslation{{ item.getID() ~ rand }}" class="mb-3"></div>
-                <script>
+                <script nonce="{{ csp_nonce() }}">
                     function showTranslation{{ item.getID() ~ rand }}(translations_id) {
                         $.ajax({
                             url: CFG_GLPI.root_doc + '/ajax/viewsubitem.php',

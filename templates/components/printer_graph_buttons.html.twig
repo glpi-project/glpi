@@ -140,7 +140,7 @@
       </a>
 </div>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
     var date_range_data = {
         'format': {{ format|json_encode|raw }},
         'interval': {{ interval|json_encode|raw }},

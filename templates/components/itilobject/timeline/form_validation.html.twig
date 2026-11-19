@@ -324,12 +324,12 @@
         </form>
 
       {% if scroll ?? false %}
-         <script type="text/javascript">
+         <script nonce="{{ csp_nonce() }}" type="text/javascript">
             window.scrollTo(0,document.body.scrollHeight);
          </script>
       {% endif %}
 
-      <script type="text/javascript">
+      <script nonce="{{ csp_nonce() }}" type="text/javascript">
          // --- fill form with template data
          function itilvalidationtemplate_update{{ rand }}(value) {
             $.ajax({

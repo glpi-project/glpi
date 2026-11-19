@@ -177,7 +177,7 @@
         </div>
     </div>
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
     $(function () {
         $('button.expand-log-entry').on('click', (e) => {
             $(e.currentTarget).siblings('.log_long_text').toggleClass('expanded');

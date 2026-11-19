@@ -103,7 +103,7 @@
             <i class="ti ti-message-circle" aria-hidden="true"></i>
             <span>{{ __('Add a comment') }}</span>
         </button>
-        <script>
+        <script nonce="{{ csp_nonce() }}">
             $('button.add_new_comment').on('click', (e) => {
                 e.preventDefault();
                 $('.new_comment_form').removeClass('d-none');
@@ -133,7 +133,7 @@
                 {{ _self.kb_comment(comment, 0, can_comment) }}
             {% endfor %}
         </ul>
-        <script>
+        <script nonce="{{ csp_nonce() }}">
             $(() => {
                 const _bindForm = function(form) {
                     form.find('input[type=reset]').on('click', (e) => {

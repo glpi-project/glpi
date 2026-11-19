@@ -2542,7 +2542,7 @@ abstract class API
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             <div class='documentation'>{{ md|raw }}</div>
-            <script type="module">
+            <script nonce="{{ csp_nonce() }}" type="module">
                 import('/js/modules/Monaco/MonacoEditor.js').then(() => {
                     const lang_elements = $('code[class^="language-"]');
                     lang_elements.each((index, element) => {

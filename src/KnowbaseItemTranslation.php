@@ -175,7 +175,7 @@ TWIG, $twig_params);
                 <div class="text-center mb-3">
                     <button name="add_translation{{ rand }}" class="btn btn-primary">{{ btn_msg }}</button>
                 </div>
-                <script>
+                <script nonce="{{ csp_nonce() }}">
                     $(() => {
                         function addTranslation{{ item.getID() ~ rand }}() {
                             $('#viewtranslation{{ item.getID() ~ rand }}').load(

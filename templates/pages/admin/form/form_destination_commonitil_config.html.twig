@@ -275,7 +275,7 @@
         {% endif %}
     </section>
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         import("/js/modules/Forms/FieldDestinationMultipleConfig.js").then((m) => {
             new m.GlpiFormFieldDestinationMultipleConfig(
                 $('[data-glpi-itildestination-field="{{ field_container_rand }}"]'),
