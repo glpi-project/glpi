@@ -52,6 +52,7 @@ The present file will list all changes made to the project; according to the
 - `laminas/laminas-mail` and `laminas/laminas-mime` PHP libraries. Use `directorytree/imapengine` and `zbateson/mail-mime-parser` instead.
 - `Toolbox::getMailServerStorageInstance()`. Use `Toolbox::getMailServerMailboxInstance()` instead.
 - `/front/pluginimage.send.php` endpoint.
+- `fittext.js` JS library and its `fitText()` jQuery plugin.
 
 ## [12.0.3] unreleased
 
