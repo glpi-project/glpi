@@ -885,6 +885,30 @@ class ProviderTest extends DbTestCase
         }
     }
 
+    public function testNbTicketsActorGroupLabel(): void
+    {
+        $this->login();
+
+        $group = $this->createItem(\Group::class, [
+            'name'        => 'Dashboard requester group',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'        => 'Dashboard ticket',
+            'content'     => 'content',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->createItem(\Group_Ticket::class, [
+            'tickets_id' => $ticket->getID(),
+            'groups_id'  => $group->getID(),
+            'type'       => \CommonITILActor::REQUESTER,
+        ]);
+
+        $result = Provider::nbTicketsActor('group_requester');
+
+        $this->assertContains('Dashboard requester group', array_column($result['data'], 'label'));
+    }
+
     public static function monthYearProvider()
     {
         return [
