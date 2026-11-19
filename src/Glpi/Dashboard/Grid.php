@@ -62,6 +62,7 @@ use Ticket;
 use Toolbox;
 
 use function Safe\ini_get;
+use function Safe\json_decode;
 use function Safe\json_encode;
 use function Safe\preg_replace;
 
@@ -74,6 +75,11 @@ class Grid
     protected Dashboard $dashboard;
     protected array $items           = [];
     protected string $context            = '';
+    /** @var array<string, array<string, array<string, mixed>>> Card catalog already built by this instance, by cache key. */
+    private array $all_cards = [];
+
+    /** Number of parallel requests that load the cards of a dashboard: two of the six HTTP/1.1 connections stay free for the page. */
+    private const CARDS_BATCHES = 4;
 
     public static bool $embed              = false;
     public static array $all_dashboards     = [];
@@ -304,7 +310,8 @@ HTML;
         $save_label       = _sx('button', "Save");
         $reset_label      = __s("Reset dashboard to default");
 
-        $gridstack_items = $this->getGridItemsHtml(!$mini);
+        // Same items as the `get_dashboard_items` action: the script loads their content without fetching them again.
+        $gridstack_items = $this->getGridItemsHtml();
 
         $dropdown_dashboards = "";
         if ($nb_dashboards) {
@@ -458,10 +465,65 @@ HTML;
 TWIG, $params);
         }
 
+        // The displayed dashboard is not `$this->dashboard` when the last one viewed on this page was restored.
+        $saved_filters = self::$embed || !$can_view_current
+            ? null
+            : json_decode(Filter::getForDashboard((int) (self::$all_dashboards[$this->current]['id'] ?? 0)), true);
+
+        // A debug session keeps one request per card, each with its own profile.
+        $batches = self::$embed || !GLPI_AJAX_DASHBOARD || $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE
+            ? 0
+            : self::CARDS_BATCHES;
+
+        // Requests the page sends for its cards as soon as the grid is parsed, before its scripts are loaded.
+        $early_cards_script = '';
+        if ($batches > 0) {
+            $early_cards_config = json_encode([
+                'rand'      => $rand,
+                'dashboard' => $this->current,
+                'filters'   => $saved_filters,
+                'batches'   => $batches,
+                'url'       => Html::getPrefixedUrl('/Dashboard/Cards'),
+            ], JSON_HEX_TAG | JSON_HEX_AMP);
+            $early_cards_script = Html::scriptBlock("(() => {\n    const config = {$early_cards_config};\n" . <<<'JAVASCRIPT'
+    const filters = config.filters === null || Array.isArray(config.filters) ? {} : config.filters;
+    const cards   = [...document.querySelectorAll('#grid-stack-' + config.rand + ' .grid-stack-item:not(.lock-bottom)')].map((item) => {
+        const args = JSON.parse(item.dataset.cardOptions || '{}');
+        args.gridstack_id  = item.getAttribute('gs-id');
+        args.apply_filters = filters;
+        return {gridstack_id: args.gridstack_id, card_id: args.card_id || args.gridstack_id, args: args};
+    });
+    if (cards.length === 0) {
+        return;
+    }
+
+    // Same groups as `GLPIDashboard.splitCardsInBatches()`: number widgets first, dealt in turn.
+    const is_number = (card) => ['bigNumber', 'summaryNumbers', 'multipleNumber'].includes(card.args.widgettype);
+    const sorted    = [...cards.filter(is_number), ...cards.filter((card) => !is_number(card))];
+    const batches   = Array.from({length: Math.min(config.batches, sorted.length)}, () => []);
+    sorted.forEach((card, i) => batches[i % batches.length].push(card));
+
+    // `GLPIDashboard.getCardsAjax()` reads the responses, once its module is loaded.
+    window.glpi_dashboard_early_cards ??= {};
+    window.glpi_dashboard_early_cards[config.rand] = batches.map((batch) => {
+        const response = fetch(config.url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
+            body: JSON.stringify({dashboard: config.dashboard, cards: batch}),
+        });
+        // A failure is handled by the reader of the response.
+        response.catch(() => {});
+        return {dashboard: config.dashboard, ids: batch.map((card) => card.gridstack_id), response: response};
+    });
+})();
+JAVASCRIPT);
+        }
+
         $ajax_cards = GLPI_AJAX_DASHBOARD;
         $cache_key  = sha1($_SESSION['glpiactiveentities_string'] ?? "");
 
         $twig_params = [
+            'early_cards_script' => $early_cards_script,
             'mini' => $mini,
             'embed_class' => $embed_class,
             'mini_class' => $mini_class,
@@ -476,11 +538,13 @@ TWIG, $params);
             'js_params' => [
                 'mini'          => $mini,
                 'current'       => $this->current,
+                'filters'       => $saved_filters,
                 'cols'          => $this->grid_cols,
                 'rows'          => $this->grid_rows,
                 'cell_margin'   => $this->cell_margin,
                 'rand'          => $rand,
                 'ajax_cards'    => $ajax_cards,
+                'batches'       => $batches,
                 'all_cards'     => $cards,
                 'all_widgets'   => $all_widgets,
                 'context'       => $this->context,
@@ -512,6 +576,7 @@ TWIG, $params);
                     {{ gridstack_items|raw }}
                 </div>
             </div>
+            {{ early_cards_script|raw }}
             {% if mini %}
                     </div>
                 </div>
@@ -1407,8 +1472,14 @@ HTML;
     {
         global $CFG_GLPI, $GLPI_CACHE;
 
+        $cache_key = self::getAllDashboardCardsCacheKey();
+        if (!$force && isset($this->all_cards[$cache_key])) {
+            // The plugins hook is costly: a request that renders several cards must not run it for each of them.
+            return $this->all_cards[$cache_key];
+        }
+
         Profiler::getInstance()->start(__METHOD__);
-        $cards = $GLPI_CACHE->get(self::getAllDashboardCardsCacheKey());
+        $cards = $GLPI_CACHE->get($cache_key);
 
         if ($cards === null || $force) {
             $cards = [];
@@ -1732,7 +1803,7 @@ HTML;
 
             if (!Environment::get()->shouldExpectResourcesToChange()) {
                 // Do not cache dashboard cards on `development` envs
-                $GLPI_CACHE->set(self::getAllDashboardCardsCacheKey(), $cards);
+                $GLPI_CACHE->set($cache_key, $cards);
             }
         }
 
@@ -1741,6 +1812,8 @@ HTML;
             $cards = array_merge($cards, $more_cards);
         }
         Profiler::getInstance()->stop(__METHOD__);
+
+        $this->all_cards[$cache_key] = $cards;
 
         return $cards;
     }

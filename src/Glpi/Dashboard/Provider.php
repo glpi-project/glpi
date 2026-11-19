@@ -937,19 +937,44 @@ class Provider
             $where += getEntitiesRestrictCriteria($c_table, '', '', $item->maybeRecursive());
         }
 
+        $fk_field       = getForeignKeyFieldForItemType($fk_itemtype);
+        $items_criteria = array_merge_recursive(
+            count($where) ? ['WHERE' => $where] : [],
+            self::getFiltersCriteria($c_table, $params['apply_filters']),
+            $item instanceof Ticket ? Ticket::getCriteriaFromProfile() : []
+        );
+        $has_join = array_filter(array_keys($items_criteria), static fn($key) => str_contains((string) $key, 'JOIN')) !== [];
+
+        if ($params['join_key'] === 'LEFT JOIN' && !$has_join) {
+            // No join can repeat an item: count them per foreign key first, then join the names of the few groups left.
+            $from = new QuerySubQuery(
+                [
+                    'SELECT'  => ["$c_table.$fk_field", 'COUNT' => "$c_table.id AS cpt"],
+                    'FROM'    => $c_table,
+                    'GROUPBY' => "$c_table.$fk_field",
+                ] + $items_criteria,
+                'counts'
+            );
+            $from_alias     = 'counts';
+            $count          = ['SUM' => 'counts.cpt AS cpt'];
+            $items_criteria = [];
+        } else {
+            $from = $from_alias = $c_table;
+            $count = ['COUNT DISTINCT' => "$c_table.id AS cpt"];
+        }
+
         $criteria = array_merge_recursive(
             [
                 'SELECT'    => [
                     "$fk_table.$name AS fk_name",
                     "$fk_table.id AS fk_id",
-                    'COUNT DISTINCT' => "$c_table.id AS cpt",
-                ],
-                'FROM'      => $c_table,
+                ] + $count,
+                'FROM'      => $from,
                 $params['join_key'] => [
                     $fk_table => [
                         'ON' => [
-                            $fk_table => 'id',
-                            $c_table  => getForeignKeyFieldForItemType($fk_itemtype),
+                            $fk_table   => 'id',
+                            $from_alias => $fk_field,
                         ],
                     ],
                 ],
@@ -957,9 +982,7 @@ class Provider
                 'ORDERBY'   => "cpt DESC",
                 'LIMIT'     => $params['limit'],
             ],
-            count($where) ? ['WHERE' => $where] : [],
-            self::getFiltersCriteria($c_table, $params['apply_filters']),
-            $item instanceof Ticket ? Ticket::getCriteriaFromProfile() : []
+            $items_criteria
         );
         Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
         $iterator = $DB->request($criteria);
@@ -977,7 +1000,7 @@ class Provider
                 'value'      => $result['fk_id'] ?? 0,
             ];
             $data[] = [
-                'number' => $result['cpt'],
+                'number' => (int) $result['cpt'],
                 'label'  => $result['fk_name'] ?? __("without"),
                 'url'    => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
                     'criteria' => $result_criteria,

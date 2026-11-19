@@ -76,6 +76,7 @@ window.GLPI.Dashboard = {
  * @property {string} [context] Dashboard context
  * @property {string} [current] Current dashboard
  * @property {boolean} [mini] Whether the dashboard is in mini mode (for ticket search page)
+ * @property {number} [batches] Number of parallel streamed requests loading the cards of a whole dashboard (0: one request per card)
  */
 
 class GLPIDashboard {
@@ -97,6 +98,7 @@ class GLPIDashboard {
         this.filter_mode = false;
         this.embed = false;
         this.ajax_cards = false;
+        this.batches = 0;
         this.context = "core";
         this.markdown_contents = [];
         this.dash_width = 0;
@@ -106,6 +108,7 @@ class GLPIDashboard {
         this.filters = "{}";
         this.filters_selector = "";
         this._filters_cache = {};
+        this._filters_version = 0;
 
         GridStack.renderCB = (el, w) => {
             el.parentElement.innerHTML = w.content;
@@ -127,6 +130,7 @@ class GLPIDashboard {
             profiles_id: null,
             users_id:    null,
             ajax_cards:  true,
+            batches:     0,
             all_cards:   [],
             context:     "core"
         };
@@ -144,6 +148,7 @@ class GLPIDashboard {
         this.profiles_id  = options.profiles_id;
         this.users_id     = options.users_id;
         this.ajax_cards   = options.ajax_cards;
+        this.batches      = parseInt(options.batches) || 0;
         this.all_cards    = options.all_cards;
         this.all_widgets  = options.all_widgets;
         this.context      = options.context;
@@ -152,6 +157,13 @@ class GLPIDashboard {
         this.cols         = options.cols;
         this.cache_key    = options.cache_key || "";
         this.filters_selector = this.elem_id + ' .filters';
+
+        // The page carries the items and the filters of `options.current`, the browser may have restored another selection
+        const is_page_dashboard = this.current_name === options.current;
+        if (is_page_dashboard && options.filters !== undefined && options.filters !== null) {
+            // Filters sent with the page (an empty set is serialized as an array)
+            this._filters_cache[this.current_name] = Array.isArray(options.filters) ? {} : options.filters;
+        }
 
         // compute the width offset of gridstack container relatively to viewport
         const elem_domRect = this.elem_dom.getBoundingClientRect();
@@ -182,6 +194,8 @@ class GLPIDashboard {
         // Apply mobile layout if needed on initial load
         window.requestAnimationFrame(() => {
             this.switchColumnLayout(options.cols);
+            // the single column layout changes the ratios of the card numbers
+            this.fitNumbers();
         });
 
         // set the width of the select box to match the selected option
@@ -189,11 +203,15 @@ class GLPIDashboard {
 
         // init filters from storage
         this.initFilters();
-        this.refreshDashboard();
+        if (is_page_dashboard) {
+            // The grid items are rendered with the page, only their content is left to load
+            this.loadCards();
+        } else {
+            this.refreshDashboard();
+        }
 
         // animate the dashboards once all card are loaded (single ajax mode)
         if (!this.ajax_cards) {
-            this.fitNumbers();
             this.animateNumbers();
         }
 
@@ -312,7 +330,8 @@ class GLPIDashboard {
             debounce = window.setTimeout(() => {
                 this.switchColumnLayout(this.cols);
 
-                // fit again numbers
+                // fit again numbers, for the new width of the dashboard
+                this.dash_width = this.element.width();
                 this.fitNumbers();
             }, 200);
         });
@@ -357,13 +376,7 @@ class GLPIDashboard {
         this.grid.on('resizestop', (event, elem) => {
             this.saveDashboard();
 
-            // Used after "resize.fittext" event to reset our custom width "trick"
-            // See computeWidth() function for more info on the trick
-            this.resetComputedWidth($('body').find('.big-number').find('.formatted-number'));
-            this.resetComputedWidth($('body').find('.big-number').find('.label'));
-
             // animate the number
-            this.fitNumbers($(elem));
             this.animateNumbers($(elem));
         });
 
@@ -562,14 +575,8 @@ class GLPIDashboard {
             this.saveMarkdown($(e.target));
         });
 
-        // FitText() add an event listener that recompute the font size of all
-        // "fittexted" elements of the page.
-        // This means we need to apply our max-width "trick" on this event
-        // See computeWidth() function for more info on the trick
-        $(window).on('resize.fittext', () => {
-            this.computeWidth($('body').find('.big-number').find('.formatted-number'));
-            this.computeWidth($('body').find('.big-number').find('.label'));
-        });
+        // ratios of the card numbers for the dashboard width
+        this.fitNumbers();
 
         // Keep track of instance
         window.GLPI.Dashboard.dashboards[this.rand] = this;
@@ -665,7 +672,6 @@ class GLPIDashboard {
             widget
                 .children('.grid-stack-item-content')
                 .append(card_html);
-            this.fitNumbers(widget);
             this.animateNumbers(widget);
             this.saveDashboard();
         });
@@ -753,19 +759,26 @@ class GLPIDashboard {
             gridstack.find('.grid-stack-item').each((i, elem) => {
                 this.grid.makeWidget(elem);
             });
-            this.getCardsAjax();
-
-            const is_placeholder = CFG_GLPI['is_demo_dashboards'] === "1";
-            if (is_placeholder) {
-                // Hide filters toolbar and show the placeholder info
-                $(this.elem_id).find('.filters_toolbar').addClass('d-none');
-                $(this.elem_id).find('.placeholder_info').removeClass('d-none');
-            } else {
-                // Hide the placeholder info and show filters toolbar
-                $(this.elem_id).find('.placeholder_info').addClass('d-none');
-                $(this.elem_id).find('.filters_toolbar').removeClass('d-none');
-            }
+            this.loadCards();
         });
+    }
+
+    /**
+     * Load the content of the cards present in the grid
+     */
+    loadCards() {
+        this.getCardsAjax();
+
+        const is_placeholder = CFG_GLPI['is_demo_dashboards'] === "1";
+        if (is_placeholder) {
+            // Hide filters toolbar and show the placeholder info
+            $(this.elem_id).find('.filters_toolbar').addClass('d-none');
+            $(this.elem_id).find('.placeholder_info').removeClass('d-none');
+        } else {
+            // Hide the placeholder info and show filters toolbar
+            $(this.elem_id).find('.placeholder_info').addClass('d-none');
+            $(this.elem_id).find('.filters_toolbar').removeClass('d-none');
+        }
     }
 
     setLastDashboard() {
@@ -783,6 +796,10 @@ class GLPIDashboard {
     saveFilter(filter_id, value) {
         // store current filter in localStorage
         const filters = this.getFiltersFromDB();
+        if (JSON.stringify(filters[filter_id] ?? null) === JSON.stringify(value ?? null)) {
+            // Filters call this when they are initialized: nothing to save, no card to refresh
+            return;
+        }
         filters[filter_id] = value;
 
         // persist (async, no need to wait: the refresh below carries the filters)
@@ -796,11 +813,8 @@ class GLPIDashboard {
     }
 
     refreshCardsImpactedByFilter(filter_id, filters) {
-        $('.dashboard .card.filter-'+filter_id).each((i, elem) => {
-            const gridstack_item = $(elem).closest(".grid-stack-item");
-            const card_id = gridstack_item.attr('gs-id');
-            this.getCardsAjax(`[gs-id="${CSS.escape(card_id)}"]`, filters);
-        });
+        // One call for all the impacted cards, so that they are requested together
+        this.getCardsAjax(`:has(.card.filter-${CSS.escape(filter_id)})`, filters);
     }
 
     saveDashboard(force_refresh) {
@@ -856,46 +870,6 @@ class GLPIDashboard {
     }
 
     /**
-     * FitText() only use the width of an item into consideration (and ignore the height).
-     * This means that if you keep increasing the width of a card without also
-     * increasing the height then your text will overflow the card's height at
-     * some point.
-     *
-     * This function fix this by reducing the available width of the parent DOM
-     * element to ensure a decent height / width ratio will be used by fitText()
-     *
-     * @param {*} items
-     */
-    computeWidth(items) {
-        items.each(function() {
-            // Compute parent dimension
-            const parent_width = $(this).parent().parent().width();
-            const parent_height = $(this).parent().parent().height();
-
-            // Only for "wide" cards
-            if (parent_width > parent_height) {
-                // FitText "ideal" ratio to avoid any overflow
-                // This value was found by using fitText() on a ~1600px wide span and
-                // checking the resulting text height.
-                // It probably wont be the perfect ratio for every possible texts
-                // length but it is a safe ratio to use for our calculation
-                const target_ratio = 0.35;
-
-                // Compute what our desired height would be if we want to match the
-                // target ratio
-                const desired_width = parent_height / target_ratio;
-                const desired_width_percent = (desired_width / parent_width) * 100;
-
-                // Keep half the space since we have two items to display (value and label)
-                const desired_width_percent_half = desired_width_percent / 2;
-
-                // Apply the width
-                $(this).css('width', desired_width_percent_half + '%');
-            }
-        });
-    }
-
-    /**
      * Switch between single-column (mobile) and multi-column (desktop) layout depending on the
      * current grid container width vs the mobile threshold.
      *
@@ -929,52 +903,15 @@ class GLPIDashboard {
     }
 
     /**
-     * Remove the custom width as it should only be used temporarily to 'trick'
-     * fitText into using a different fontSize and should not be applied to the
-     * actual text
-     *
-     * @param {*} items
+     * Card numbers and labels are sized in CSS from their card (see dashboard.scss). Narrow dashboards, and the
+     * single column layout, use larger ratios, set here through `--dashboard-text-offset`.
      */
-    resetComputedWidth(items) {
-        items.each(function() {
-            $(this).css('width', '100%');
-        });
-    }
-
-    fitNumbers(parent_item) {
-        parent_item = parent_item || $('body');
-
-        let text_offset = 1.16;
-
-        // responsive mode
-        if (this.dash_width <= 700
-            || $(this.grid.el).hasClass('gs-1')) {
-            text_offset = 1.8;
+    fitNumbers() {
+        const text_offset = (this.dash_width <= 700 || $(this.grid?.el).hasClass('gs-1')) ? '1.8' : '1.16';
+        if (this.text_offset !== text_offset) {
+            this.text_offset = text_offset;
+            this.element.css('--dashboard-text-offset', text_offset);
         }
-
-        // Set temporary max width to trick fitText and avoid overflow
-        this.computeWidth(parent_item.find('.big-number').find('.formatted-number'));
-        this.computeWidth(parent_item.find('.big-number').find('.label'));
-
-        parent_item
-            .find('.big-number')
-            .find('.formatted-number').fitText(text_offset);
-
-        parent_item
-            .find('.summary-numbers')
-            .find('.formatted-number').fitText(text_offset-0.65);
-
-        parent_item
-            .find('.summary-numbers')
-            .find('.line .label').fitText(text_offset-0.2);
-
-        parent_item
-            .find('.big-number')
-            .find('.label').fitText(text_offset - 0.2, { minFontSize: '12px'});
-
-        // Remove temporary width
-        this.resetComputedWidth(parent_item.find('.big-number').find('.formatted-number'));
-        this.resetComputedWidth(parent_item.find('.big-number').find('.label'));
     }
 
     animateNumbers(parent_item) {
@@ -1142,7 +1079,15 @@ class GLPIDashboard {
             .trigger('change');
     }
 
-    getCardsAjax(specific_one, filters) {
+    /**
+     * Load the content of the cards, all of them or the ones matching a selector
+     *
+     * @param {string} [specific_one] Selector added to the grid items one, to load only some cards
+     * @param {Object} [filters] Filters to apply, the saved ones by default
+     * @param {boolean} [batches=true] Whether several cards may share a request
+     * @return {Promise[]}
+     */
+    getCardsAjax(specific_one, filters, batches = true) {
         specific_one = specific_one || "";
 
         // Callers that already know the filters can pass them in to avoid a redundant synch round-trip to the server
@@ -1181,6 +1126,41 @@ class GLPIDashboard {
         });
 
         if (this.ajax_cards) {
+            // The page sent requests for its cards while its scripts were loading: the first load of the whole grid reads them, once
+            const early = specific_one.length === 0 ? window.glpi_dashboard_early_cards?.[this.rand] : undefined;
+            if (early !== undefined) {
+                delete window.glpi_dashboard_early_cards[this.rand];
+            }
+
+            if (batches && !this.embed && this.batches > 0 && (requested_cards.length > 1 || early !== undefined)) {
+                // Several cards: a few parallel requests, each one streaming its cards as they are computed
+                if (early === undefined) {
+                    return this.splitCardsInBatches(requested_cards).map((batch) => this.loadCardsBatch(batch));
+                }
+
+                const by_id   = new Map(requested_cards.map((card) => [card.args.gridstack_id, card]));
+                const covered = new Set();
+                const started = early.map((batch) => {
+                    // Another dashboard may hold items with the same ids: only the dashboard the page asked for can use them
+                    const cards = batch.dashboard === this.current_name
+                        ? batch.ids.map((id) => by_id.get(id)).filter((card) => card !== undefined)
+                        : [];
+                    if (cards.length === 0) {
+                        // Requests sent for a dashboard that is no longer the displayed one
+                        batch.response.then((response) => response.body?.cancel(), () => {});
+                        return Promise.resolve();
+                    }
+                    cards.forEach((card) => covered.add(card.args.gridstack_id));
+                    return this.loadCardsBatch(cards, batch.response);
+                });
+                const others = requested_cards.filter((card) => !covered.has(card.args.gridstack_id));
+
+                return [
+                    ...started,
+                    ...(others.length > 0 ? this.splitCardsInBatches(others).map((batch) => this.loadCardsBatch(batch)) : []),
+                ];
+            }
+
             // Multi ajax mode, spawn a request for each card
             const promises = [];
             requested_cards.forEach((requested_card) => {
@@ -1207,7 +1187,6 @@ class GLPIDashboard {
                 promises.push($.get(CFG_GLPI.root_doc+"/ajax/dashboard.php", data).then((html) => {
                     card.children('.grid-stack-item-content').html(html);
 
-                    this.fitNumbers(card);
                     this.animateNumbers(card);
                 }, () => {
                     card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle' aria-hidden='true'></i></div>");
@@ -1247,7 +1226,6 @@ class GLPIDashboard {
                             has_result = true;
                             card.children('.grid-stack-item-content').html(html);
 
-                            this.fitNumbers(card);
                             this.animateNumbers(card);
                         }
                     });
@@ -1262,6 +1240,116 @@ class GLPIDashboard {
                 });
             });
         }
+    }
+
+    /**
+     * Split the cards into the groups loaded by one request each, number widgets (cheap) first in every group
+     *
+     * @param {{card_el: jQuery, card_id: string, args: Object}[]} cards
+     * @return {Array[]}
+     */
+    splitCardsInBatches(cards) {
+        const is_number = (card) => ['bigNumber', 'summaryNumbers', 'multipleNumber'].includes(card.args.widgettype);
+        const sorted    = [...cards.filter(is_number), ...cards.filter((card) => !is_number(card))];
+        const batches   = Array.from({length: Math.min(Math.max(this.batches, 1), sorted.length)}, () => []);
+        sorted.forEach((card, i) => batches[i % batches.length].push(card));
+
+        return batches;
+    }
+
+    /**
+     * Load a group of cards with a single request, each card is displayed as soon as the server sends it
+     *
+     * @param {{card_el: jQuery, card_id: string, args: Object}[]} cards
+     * @param {Promise<Response>} [started] Request already sent for these cards
+     * @return {Promise<void>}
+     */
+    async loadCardsBatch(cards, started) {
+        const pending = new Map(cards.map((card) => [card.args.gridstack_id, card.card_el]));
+        // The cards are computed for this dashboard and its filters, which may change before the server sends them
+        const dashboard  = this.current_name;
+        const filters    = this._filters_version;
+        const is_current = () => this.current_name === dashboard && this._filters_version === filters;
+        // A later batch asking for the same card takes it over: this one no longer displays it nor requests it again
+        const batch    = Symbol('cards batch');
+        const is_owner = (card) => card.data('cards-batch') === batch;
+        cards.forEach((card) => card.card_el.data('cards-batch', batch));
+        const display = (line) => {
+            if (line.trim() === '') {
+                return;
+            }
+            try {
+                const result = JSON.parse(line);
+                const card   = pending.get(result.id);
+                if (card === undefined || typeof result.html !== 'string') {
+                    return;
+                }
+                if (!is_owner(card)) {
+                    pending.delete(result.id);
+                    return;
+                }
+                if (!is_current()) {
+                    return;
+                }
+                pending.delete(result.id);
+
+                card.children('.grid-stack-item-content').html(result.html);
+
+                this.animateNumbers(card);
+            } catch (e) {
+                // An unreadable line or a card failing to render must not stop the next ones
+                console.error(e);
+            }
+        };
+
+        try {
+            const response = await (started ?? fetch(`${CFG_GLPI.root_doc}/Dashboard/Cards`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify({
+                    dashboard: this.current_name,
+                    cards: cards.map((card) => ({
+                        gridstack_id: card.args.gridstack_id,
+                        card_id: card.card_id,
+                        args: card.args,
+                    })),
+                }),
+            }));
+            if (!response.ok) {
+                // The error page is not read: release the connection
+                response.body?.cancel();
+                throw new Error(`Unable to load the dashboard cards (HTTP ${response.status})`);
+            }
+
+            // One JSON object per line: a chunk may hold several lines or end in the middle of one
+            const reader  = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+            let ended  = false;
+            while (!ended) {
+                const {done, value} = await reader.read();
+                ended   = done;
+                buffer += decoder.decode(value, {stream: !done});
+                const lines = buffer.split('\n');
+                // The last piece is an unfinished line until the stream ends
+                buffer = ended ? '' : lines.pop();
+                lines.forEach(display);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+
+        if (this.current_name !== dashboard) {
+            // Another dashboard was selected meanwhile: these cards are gone
+            return;
+        }
+
+        // Cards not displayed (failed request, truncated response, card the server could not render, filters changed meanwhile) get their own request
+        const missing = [...pending].filter(([, card]) => is_owner(card)).map(([id]) => id);
+        await Promise.allSettled(missing.flatMap((id) => this.getCardsAjax(`[gs-id="${CSS.escape(id)}"]`, undefined, false)));
     }
 
     /**
@@ -1365,6 +1453,7 @@ class GLPIDashboard {
         }
 
         this._filters_cache[this.current_name] = sub_filters;
+        this._filters_version++;
 
         return $.ajax({
             method: 'POST',
