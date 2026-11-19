@@ -90,7 +90,7 @@
             }|merge(field_options)
          ) }}
 
-         <script type="text/javascript">
+         <script nonce="{{ csp_nonce() }}" type="text/javascript">
             // --- show/hide validation step field depending on validation type seleted
             $(
                 () => {

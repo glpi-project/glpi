@@ -269,7 +269,7 @@
         })
     ) }}
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
     $(function(ready){
         $('#{{ id_lock_use_lock_item }}').change(function(){
             var enabled = this.checked;

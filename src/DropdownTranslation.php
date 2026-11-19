@@ -355,7 +355,7 @@ class DropdownTranslation extends CommonDBChild
             // language=twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div id="viewtranslation{{ rand }}"></div>
-                <script>
+                <script nonce="{{ csp_nonce() }}">
                     function viewEditTranslation{{ rand }}(translations_id = -1) {
                         $('button[name="new_translation"]').toggleClass('d-none', translations_id <= 0);
                         $('#viewtranslation{{ rand }}').load(

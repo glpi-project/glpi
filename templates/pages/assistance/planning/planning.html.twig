@@ -36,7 +36,7 @@
     {% endif %}
     <div id="planning{{ options.rand }}" class="planning-view flex-fill"></div>
 </div>
-<script>
+<script nonce="{{ csp_nonce() }}">
     $(() => {
         GLPIPlanning.display({{ options|json_encode|raw }});
         GLPIPlanning.planningFilters();

@@ -126,7 +126,7 @@
     {% endif %}
 </div>
 {% if can_edit %}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         $(() => {
             const config_forms = $(`#tabsbody.display_preference_config`);
             // Select nothing by default because select2 has no problem defaulting the selection to the first item even if it is filtered out

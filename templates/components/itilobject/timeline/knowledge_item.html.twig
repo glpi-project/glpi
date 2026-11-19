@@ -52,7 +52,7 @@
     )
 }}
 
-<script>
+<script nonce="{{ csp_nonce() }}">
 $('button[name="{{ btn_name|e('js') }}"]').on('click', () => {
     window.glpi_ajax_dialog({
         id: 'modal_search_knowbaseitem',

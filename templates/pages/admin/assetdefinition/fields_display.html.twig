@@ -51,7 +51,7 @@
                             modal_title: __('New field'),
                         }), with_context = false) }}
                         <div id="sortable-fields-container" class="card-body d-flex flex-wrap p-0"></div>
-                        <script>
+                        <script nonce="{{ csp_nonce() }}">
                             window.Vue.createApp(window.Vue.components['CustomObject/FieldPreview/FieldDisplay'].component, {
                                 items_id: {{ item.getID() }},
                                 toolbar_el: '#sortable-fields-toolbar',

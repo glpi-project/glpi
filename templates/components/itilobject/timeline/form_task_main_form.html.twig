@@ -264,7 +264,7 @@
                     }
                 ) }}
 
-                <script type="text/javascript">
+                <script nonce="{{ csp_nonce() }}" type="text/javascript">
                     function showPlanUpdate{{ rand }}(applyDefaultState = false) {
                         $('#plan{{ rand }}').hide();
                         if (applyDefaultState) {
@@ -293,7 +293,7 @@
                 </script>
                 <div class="col-12">
                 {% if subitem.can(subitem.fields['id'], constant('UPDATE')) and subitem.fields['begin'] %}
-                    <script type="text/javascript">
+                    <script nonce="{{ csp_nonce() }}" type="text/javascript">
                         showPlanUpdate{{ rand }}();
                     </script>
                     <button id="unplan{{ rand }}" class="btn btn-outline-warning" type="submit" name="unplan"
@@ -402,7 +402,7 @@
         </form>
     {% endif %}
 
-    <script type="text/javascript">
+    <script nonce="{{ csp_nonce() }}" type="text/javascript">
         function itiltasktemplate_update{{ rand }}(value) {
             $.ajax({
                 url: `${CFG_GLPI.root_doc}/ajax/task.php`,

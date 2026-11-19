@@ -49,7 +49,7 @@
         <span class="form-check-label text-secondary small">{{ __('Specify a time') }}</span>
     </label>
 </div>
-<script>
+<script nonce="{{ csp_nonce() }}">
 $(function() {
     function buildFp(hasTime, defaultDate) {
         const el = document.getElementById('showdate{{ rand|e('js') }}');

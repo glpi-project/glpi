@@ -43,7 +43,7 @@
                 add_field_html: "<span id='visibility" ~ rand ~ "'></span>",
             }) }}
         </div>
-        <script defer>
+        <script nonce="{{ csp_nonce() }}" defer>
             $('#dropdown__type{{ rand }}').on('change', (e) => {
                 $('#visibility{{ rand }}').load(
                     `${CFG_GLPI.root_doc}/ajax/visibility.php`,

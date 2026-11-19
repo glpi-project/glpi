@@ -398,7 +398,7 @@
     </form>
 </div>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
     import("/js/modules/DynamicDropdownController.js")
         .then((module) => new module.DynamicDropdownController())
     ;

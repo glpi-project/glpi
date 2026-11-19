@@ -165,7 +165,7 @@
 </div>
 
 {% if not init %}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         import("/js/modules/Forms/QuestionActors.js").then((m) => {
             new m.GlpiFormQuestionTypeActors();
         });

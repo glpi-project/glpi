@@ -90,7 +90,7 @@
                                 title="{{ __('Email HTML body preview') }}"
                                 style="width: 100%; border: none; min-height: 200px;"
                                 sandbox="allow-same-origin"></iframe>
-                        <script>
+                        <script nonce="{{ csp_nonce() }}">
                             document.getElementById('notification_html_preview{{ rand }}').addEventListener('load', (e) => {
                                 const iframe = e.currentTarget;
                                 const body = iframe.contentDocument?.body;

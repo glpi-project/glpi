@@ -206,7 +206,7 @@
     ) }}
 
     {% if connect_opts['type'] != 'pop' %}
-        <script>
+        <script nonce="{{ csp_nonce() }}">
             $(function() {
                 // Track all fields used to establish the IMAP connection
                 const connectionFields = [

@@ -102,7 +102,7 @@
 </form>
 
 {# Start js controller #}
-<script defer type="module">
+<script nonce="{{ csp_nonce() }}" defer type="module">
     (async () => {
         const module = await import(
             "/js/modules/Helpdesk/HelpdeskConfigForEmptyEntityController.js"

@@ -56,7 +56,7 @@
 </div>
 {% endif %}
 
-<script>
+<script nonce="{{ csp_nonce() }}">
     function viewAddEditSubItem{{ rand }}(id) {
         const modal_el = $('#{{ (subitem_container_id ~ '_modal')|e('css')|e('js') }}');
         $('#{{ subitem_container_id }}').load('{{ path('/ajax/viewsubitem.php')|e('js') }}',{

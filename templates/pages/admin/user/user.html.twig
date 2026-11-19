@@ -282,7 +282,7 @@
                                             {{ modals.modal(__('Change password'), include('pages/admin/user/change_other_password.html.twig', {full_width: true}), {
                                                 id: 'modal_password_' ~ rand_field,
                                             }) }}
-                                            <script>
+                                            <script nonce="{{ csp_nonce() }}">
                                                 $('#modal_password_{{ rand_field }} input').on('keypress', function(e) {
                                                     // Prevent enter key in password fields in modal from submitting form
                                                     if (e.originalEvent.key === 'Enter') {
@@ -303,7 +303,7 @@
                                             <div class="text-warning d-none" data-password-change-pending>
                                                 {{ __('Password change pending') }}
                                             </div>
-                                            <script>
+                                            <script nonce="{{ csp_nonce() }}">
                                                 $('#modal_password_{{ rand_field }}').on('hide.bs.modal', () => {
                                                     $('[data-password-change-pending]').toggleClass('d-none', $('#modal_password_{{ rand_field }} input[name=password]').val() === '');
                                                 });
