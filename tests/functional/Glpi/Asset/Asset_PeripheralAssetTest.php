@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Asset;
 
 use Computer;
+use Dropdown;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasPeripheralAssetsCapacity;
@@ -46,6 +47,7 @@ use Peripheral;
 use Printer;
 use PrinterType;
 use ReflectionMethod;
+use Session;
 use Symfony\Component\DomCrawler\Crawler;
 use Toolbox;
 
@@ -140,7 +142,7 @@ class Asset_PeripheralAssetTest extends DbTestCase
         $this->assertFalse((new Asset_PeripheralAsset())->getFromDB($relation->getID()));
     }
 
-    public function testUnavailablePeripheralsForAsset(): void
+    public function testAvailablePeripheralsForAsset(): void
     {
         $this->login();
 
@@ -183,17 +185,27 @@ class Asset_PeripheralAssetTest extends DbTestCase
             ]);
         }
 
-        $unavailable = iterator_to_array($this->callPrivateMethod(
+        $condition = $this->callPrivateMethod(
             new Asset_PeripheralAsset(),
-            'getUnavailablePeripherals',
+            'getAvailablePeripheralsCondition',
             $computer_2,
             Peripheral::class
-        ));
-        $unavailable_ids = array_column($unavailable, 'id');
+        );
+        $params = [
+            'itemtype'        => Peripheral::class,
+            'entity_restrict' => $entity_id,
+            'condition'       => Dropdown::addNewCondition($condition),
+        ];
+        $params['_idor_token'] = Session::getNewIDORToken(Peripheral::class, [
+            'entity_restrict' => $params['entity_restrict'],
+            'condition'       => $params['condition'],
+        ]);
+        $result = Dropdown::getDropdownValue($params, false);
+        $available_ids = array_column(array_merge(...array_column($result['results'], 'children')), 'id');
 
-        $this->assertNotContains($global_on_other_computer->getID(), $unavailable_ids);
-        $this->assertContains($global_on_current_computer->getID(), $unavailable_ids);
-        $this->assertContains($non_global_on_other_computer->getID(), $unavailable_ids);
+        $this->assertContains($global_on_other_computer->getID(), $available_ids);
+        $this->assertNotContains($global_on_current_computer->getID(), $available_ids);
+        $this->assertNotContains($non_global_on_other_computer->getID(), $available_ids);
     }
 
     public function testShowForAsset(): void
