@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global tinymce, getUUID, setupAjaxDropdown, setupAdaptDropdown */
+/* global tinymce, getUUID, setupAjaxDropdown, setupAdaptDropdown, reExecuteTrustedScript */
 
 export class GlpiFormFieldDestinationAssociatedItem {
     /**
@@ -181,7 +181,7 @@ export class GlpiFormFieldDestinationAssociatedItem {
             script.text = script.text.replace(/rand:[0-9]+/g, `rand:'${id}'`);
 
             // Execute the script
-            $.globalEval(script.text);
+            reExecuteTrustedScript(script);
         });
     }
 }

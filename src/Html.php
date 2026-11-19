@@ -54,6 +54,7 @@ use Glpi\Inventory\Inventory;
 use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\ContentSecurityPolicy\CspState;
+use Glpi\Security\ContentSecurityPolicy\NonceContext;
 use Glpi\System\Log\LogViewer;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\URL;
@@ -3603,25 +3604,19 @@ JS;
 
         $pluginsjs = json_encode(array_values($plugins));
 
-        $language_RFC5646    = str_replace('_', '-', $_SESSION['glpilanguage']);      // convert to RFC5646 format (fr_FR -> fr-FR)
-        $language_regionless = preg_replace('/_.*$/', '', $_SESSION['glpilanguage']); // fallback to regionless locale (fr_FR -> fr)
-        $expected_languages  = [$language_RFC5646, $language_regionless];
-        if (array_key_exists($language_regionless, $CFG_GLPI['main_languages'])) {
-            $expected_languages[] = str_replace('_', '-', $CFG_GLPI['main_languages'][$language_regionless]); // fallback to main language (fr_CA -> fr_FR)
-        }
+        $language = self::getTinymceLanguage();
         $language_opts = '';
-        foreach ($expected_languages as $language) {
-            if (str_starts_with($language, 'en')) {
-                // No need to hit filesystem for english, this is the default language and there is no translation files
-                // for it.
-                continue;
-            }
-            if (file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs8/$language.js")) {
+        if ($language !== null) {
+            if (CspState::isEnabled()) {
+                // Note: "language_url" is not set here because tinymce doesn't have an option
+                // to supply the CSP nonce to be used for the script found at that url.
+                // This mean we must load the script ourselves in the "case tinymce" of self::requireJs().
+                $language_opts = json_encode(['language' => $language]);
+            } else {
                 $language_opts = json_encode([
                     'language' => $language,
                     'language_url' => $CFG_GLPI['root_doc'] . '/lib/tinymce-i18n/langs8/' . $language . '.js',
                 ]);
-                break;
             }
         }
 
@@ -3855,6 +3850,33 @@ JS;
         } else {
             return  Html::scriptBlock($js);
         }
+    }
+
+    /**
+     * Get the TinyMCE language matching the session language, or null if none is available.
+     */
+    private static function getTinymceLanguage(): ?string
+    {
+        global $CFG_GLPI;
+
+        $language_RFC5646    = str_replace('_', '-', $_SESSION['glpilanguage']);      // convert to RFC5646 format (fr_FR -> fr-FR)
+        $language_regionless = preg_replace('/_.*$/', '', $_SESSION['glpilanguage']); // fallback to regionless locale (fr_FR -> fr)
+        $expected_languages  = [$language_RFC5646, $language_regionless];
+        if (array_key_exists($language_regionless, $CFG_GLPI['main_languages'])) {
+            $expected_languages[] = str_replace('_', '-', $CFG_GLPI['main_languages'][$language_regionless]); // fallback to main language (fr_CA -> fr_FR)
+        }
+        foreach ($expected_languages as $language) {
+            if (str_starts_with($language, 'en')) {
+                // No need to hit filesystem for english, this is the default language and there is no translation files
+                // for it.
+                continue;
+            }
+            if (file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs8/$language.js")) {
+                return $language;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -5221,8 +5243,9 @@ HTML;
     public static function scriptBlock($script, ScriptType $type = ScriptType::Javascript)
     {
         return sprintf(
-            '<script type="%s">%s</script>',
+            '<script type="%s"%s>%s</script>',
             htmlescape($type->value),
+            self::getCspNonceAttribute(),
             $script,
         );
     }
@@ -5264,7 +5287,25 @@ HTML;
         // Convert filesystem path to URL path (fix issues with Windows directory separator)
         $url = str_replace(DIRECTORY_SEPARATOR, '/', $url);
 
-        return sprintf('<script type="%s" src="%s"></script>', htmlescape($type), htmlescape($url));
+        return sprintf(
+            '<script type="%s" src="%s"%s></script>',
+            htmlescape($type),
+            htmlescape($url),
+            self::getCspNonceAttribute(),
+        );
+    }
+
+    /**
+     * Get the CSP `nonce` attribute (with a leading space) to add to `<script>` tags,
+     * or an empty string if the CSP is not enabled.
+     */
+    private static function getCspNonceAttribute(): string
+    {
+        if (!CspState::isEnabled()) {
+            return '';
+        }
+
+        return sprintf(' nonce="%s"', htmlescape(NonceContext::getServiceInstance()->getNonce()));
     }
 
 
@@ -6081,6 +6122,12 @@ JS);
                 break;
             case 'tinymce':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/tinymce.js';
+                $tinymce_language = CspState::isEnabled() ? self::getTinymceLanguage() : null;
+                if ($tinymce_language !== null) {
+                    // When the CSP is enabled, the language file cannot be loaded by tinymce itself
+                    // (see `self::initEditorSystem()`).
+                    $_SESSION['glpi_js_toload'][$name][] = "lib/tinymce-i18n/langs8/$tinymce_language.js";
+                }
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/FormTags.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/UserMention.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/ContentTemplatesParameters.js';
