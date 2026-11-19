@@ -48,6 +48,7 @@ use function Safe\filemtime;
 use function Safe\glob;
 use function Safe\ini_get;
 use function Safe\pcntl_signal;
+use function Safe\pcntl_sigprocmask;
 use function Safe\preg_match;
 use function Safe\rmdir;
 use function Safe\scandir;
@@ -67,6 +68,7 @@ class CronTask extends CommonDBTM
     private float $timer           = 0.0;
     private int $startlog        = 0;
     private int $volume          = 0;
+    private bool $is_running     = false;
     public static string $rightname        = 'config';
 
     /** The automatic action is disabled */
@@ -231,6 +233,7 @@ class CronTask extends CommonDBTM
         if ($signo === SIGTERM) {
             pcntl_signal(SIGTERM, SIG_DFL);
             $this->handleAbnormalTermination();
+            exit(); // @phpstan-ignore glpi.forbidExit (CLI context)
         }
     }
 
@@ -242,7 +245,7 @@ class CronTask extends CommonDBTM
      */
     private function handleAbnormalTermination(): void
     {
-        if (!isset($_SESSION["glpicronuserrunning"])) {
+        if (!$this->is_running || !isset($_SESSION["glpicronuserrunning"])) {
             return;
         }
 
@@ -278,6 +281,12 @@ class CronTask extends CommonDBTM
         // Shutdown handler will be used to catch unexpected PHP script execution ending (unrecoverable errors, uncaught errors, unexpected exit, etc).
         register_shutdown_function($this->handleAbnormalTermination(...));
 
+        // Hold SIGTERM until the running flag matches the database state, so the handler can still abort the task.
+        $block_sigterm = isCommandLine() && function_exists('pcntl_sigprocmask');
+        if ($block_sigterm) {
+            pcntl_sigprocmask(SIG_BLOCK, [SIGTERM]);
+        }
+
         $DB->update(
             self::getTable(),
             [
@@ -293,7 +302,13 @@ class CronTask extends CommonDBTM
             ]
         );
 
-        if ($DB->getAffectedRows() > 0) {
+        $this->is_running = $DB->getAffectedRows() > 0;
+
+        if ($block_sigterm) {
+            pcntl_sigprocmask(SIG_UNBLOCK, [SIGTERM]);
+        }
+
+        if ($this->is_running) {
             $this->timer  = microtime(true);
             $this->volume = 0;
             $log = new CronTaskLog();
@@ -451,6 +466,9 @@ class CronTask extends CommonDBTM
                 'state'  => self::STATE_RUNNING,
             ]
         );
+
+        // Cleared only after the row left its running state, so a failure above can still be aborted on shutdown.
+        $this->is_running = false;
 
         if ($DB->getAffectedRows() > 0) {
             // No gettext for log but add gettext line to be parsed for pot generation
