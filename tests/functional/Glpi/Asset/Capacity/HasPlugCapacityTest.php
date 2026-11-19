@@ -181,7 +181,7 @@ class HasPlugCapacityTest extends DbTestCase
         $this->assertContains($classname_2, $CFG_GLPI['plug_types']);
     }
 
-    public function testCloneAsset()
+    public function testClonePlugClearsPhysicalConnection()
     {
         $definition = $this->initAssetDefinition(
             capacities: [new Capacity(name: HasPlugCapacity::class)]
@@ -215,9 +215,10 @@ class HasPlugCapacityTest extends DbTestCase
             ]
         );
 
-        $this->assertGreaterThan(0, $plug->clone());
+        $clone_id = $plug->clone();
+        $this->assertGreaterThan(0, $clone_id);
         $this->assertCount(
-            2,
+            1,
             getAllDataFromTable(Plug::getTable(), [
                 'itemtype_asset'     => Computer::class,
                 'items_id_asset'     => $computer->getID(),
@@ -225,6 +226,13 @@ class HasPlugCapacityTest extends DbTestCase
                 'items_id_main'     => $asset->getID(),
             ])
         );
+        $clone = Plug::getById($clone_id);
+        $this->assertInstanceOf(Plug::class, $clone);
+        $this->assertSame($class, $clone->fields['itemtype_main']);
+        $this->assertSame($asset->getID(), (int) $clone->fields['items_id_main']);
+        $this->assertSame('', $clone->fields['itemtype_asset']);
+        $this->assertSame(0, (int) $clone->fields['items_id_asset']);
+        $this->assertSame(0, (int) $clone->fields[Plug::POWER_SUPPLY_FIELD]);
     }
 
     public function testIsUsed(): void
