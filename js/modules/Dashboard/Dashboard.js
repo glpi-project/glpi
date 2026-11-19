@@ -1123,7 +1123,34 @@ class GLPIDashboard {
         if (this.ajax_cards) {
             if (specific_one.length === 0 && !this.embed && this.batches > 0) {
                 // Whole dashboard: a few parallel requests, each one streaming its cards as they are computed
-                return this.splitCardsInBatches(requested_cards).map((batch) => this.loadCardsBatch(batch));
+                const early = window.glpi_dashboard_early_cards?.[this.rand];
+                if (early === undefined) {
+                    return this.splitCardsInBatches(requested_cards).map((batch) => this.loadCardsBatch(batch));
+                }
+
+                // The page sent these requests while its scripts were loading: they are read once
+                delete window.glpi_dashboard_early_cards[this.rand];
+                const by_id   = new Map(requested_cards.map((card) => [card.args.gridstack_id, card]));
+                const covered = new Set();
+                const started = early.map((batch) => {
+                    // Another dashboard may hold items with the same ids: only the dashboard the page asked for can use them
+                    const cards = batch.dashboard === this.current_name
+                        ? batch.ids.map((id) => by_id.get(id)).filter((card) => card !== undefined)
+                        : [];
+                    if (cards.length === 0) {
+                        // Requests sent for a dashboard that is no longer the displayed one
+                        batch.response.then((response) => response.body?.cancel(), () => {});
+                        return Promise.resolve();
+                    }
+                    cards.forEach((card) => covered.add(card.args.gridstack_id));
+                    return this.loadCardsBatch(cards, batch.response);
+                });
+                const others = requested_cards.filter((card) => !covered.has(card.args.gridstack_id));
+
+                return [
+                    ...started,
+                    ...(others.length > 0 ? this.splitCardsInBatches(others).map((batch) => this.loadCardsBatch(batch)) : []),
+                ];
             }
 
             // Multi ajax mode, spawn a request for each card

@@ -1455,6 +1455,61 @@ describe('Dashboard', () => {
         expect(dashboard.loadCardsBatch).not.toHaveBeenCalled();
     });
 
+    test('getCardsAjax reads the requests the page sent early', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345', 'batches': 2});
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {};
+        });
+        dashboard.loadCardsBatch = vi.fn().mockImplementation(() => Promise.resolve());
+        $('.grid-stack-item').each((index, item) => {
+            $(item).data('card-options', {});
+        });
+
+        const first    = Promise.resolve(getCardsResponse([]));
+        const obsolete = getCardsResponse([]);
+        window.glpi_dashboard_early_cards = {
+            12345: [
+                {dashboard: 'current_dashboard', ids: ['1', '2'], response: first},
+                // Sent for grid items that are no longer there
+                {dashboard: 'current_dashboard', ids: ['8', '9'], response: Promise.resolve(obsolete)},
+            ],
+        };
+
+        expect(dashboard.getCardsAjax().length).toBe(3);
+        await new Promise(process.nextTick);
+
+        // The first request is read for its two cards, the card it does not cover gets a request
+        expect(dashboard.loadCardsBatch).toHaveBeenCalledTimes(2);
+        expect(dashboard.loadCardsBatch.mock.calls[0][0].map((card) => card.args.gridstack_id)).toEqual(['1', '2']);
+        expect(dashboard.loadCardsBatch.mock.calls[0][1]).toBe(first);
+        expect(dashboard.loadCardsBatch.mock.calls[1][0].map((card) => card.args.gridstack_id)).toEqual(['3']);
+        expect(dashboard.loadCardsBatch.mock.calls[1][1]).toBeUndefined();
+        expect(obsolete.body.cancel).toHaveBeenCalledTimes(1);
+
+        // They are read once
+        expect(window.glpi_dashboard_early_cards[12345]).toBeUndefined();
+        dashboard.loadCardsBatch.mockClear();
+        dashboard.getCardsAjax();
+        expect(dashboard.loadCardsBatch.mock.calls.length).toBe(2);
+        expect(dashboard.loadCardsBatch.mock.calls.every((call) => call[1] === undefined)).toBeTruthy();
+
+        // Requests sent for another dashboard are not used, even when its items have the same ids
+        const other = getCardsResponse([]);
+        window.glpi_dashboard_early_cards = {
+            12345: [
+                {dashboard: 'other_dashboard_1', ids: ['1', '2', '3'], response: Promise.resolve(other)},
+            ],
+        };
+        dashboard.loadCardsBatch.mockClear();
+        dashboard.getCardsAjax();
+        await new Promise(process.nextTick);
+        expect(other.body.cancel).toHaveBeenCalledTimes(1);
+        expect(dashboard.loadCardsBatch.mock.calls.flatMap((call) => call[0].map((card) => card.args.gridstack_id)).sort()).toEqual(['1', '2', '3']);
+        expect(dashboard.loadCardsBatch.mock.calls.every((call) => call[1] === undefined)).toBeTruthy();
+
+        delete window.glpi_dashboard_early_cards;
+    });
+
     test('splitCardsInBatches', () => {
         const dashboard = new GLPIDashboard({'rand': '12345', 'batches': 3});
         const cards = getRequestedCards(['bar', 'bigNumber', 'pie', 'summaryNumbers', 'line', 'multipleNumber', 'donut']);

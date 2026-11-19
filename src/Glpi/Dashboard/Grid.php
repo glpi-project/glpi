@@ -475,10 +475,55 @@ TWIG, $params);
             ? 0
             : self::CARDS_BATCHES;
 
+        // Requests the page sends for its cards as soon as the grid is parsed, before its scripts are loaded.
+        $early_cards_script = '';
+        if ($batches > 0) {
+            $early_cards_config = json_encode([
+                'rand'      => $rand,
+                'dashboard' => $this->current,
+                'filters'   => $saved_filters,
+                'batches'   => $batches,
+                'url'       => Html::getPrefixedUrl('/Dashboard/Cards'),
+            ], JSON_HEX_TAG | JSON_HEX_AMP);
+            $early_cards_script = Html::scriptBlock("(() => {\n    const config = {$early_cards_config};\n" . <<<'JAVASCRIPT'
+    const filters = config.filters === null || Array.isArray(config.filters) ? {} : config.filters;
+    const cards   = [...document.querySelectorAll('#grid-stack-' + config.rand + ' .grid-stack-item:not(.lock-bottom)')].map((item) => {
+        const args = JSON.parse(item.dataset.cardOptions || '{}');
+        args.gridstack_id  = item.getAttribute('gs-id');
+        args.apply_filters = filters;
+        return {gridstack_id: args.gridstack_id, card_id: args.card_id || args.gridstack_id, args: args};
+    });
+    if (cards.length === 0) {
+        return;
+    }
+
+    // Same groups as `GLPIDashboard.splitCardsInBatches()`: number widgets first, dealt in turn.
+    const is_number = (card) => ['bigNumber', 'summaryNumbers', 'multipleNumber'].includes(card.args.widgettype);
+    const sorted    = [...cards.filter(is_number), ...cards.filter((card) => !is_number(card))];
+    const batches   = Array.from({length: Math.min(config.batches, sorted.length)}, () => []);
+    sorted.forEach((card, i) => batches[i % batches.length].push(card));
+
+    // `GLPIDashboard.getCardsAjax()` reads the responses, once its module is loaded.
+    window.glpi_dashboard_early_cards ??= {};
+    window.glpi_dashboard_early_cards[config.rand] = batches.map((batch) => {
+        const response = fetch(config.url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
+            body: JSON.stringify({dashboard: config.dashboard, cards: batch}),
+        });
+        // A failure is handled by the reader of the response.
+        response.catch(() => {});
+        return {dashboard: config.dashboard, ids: batch.map((card) => card.gridstack_id), response: response};
+    });
+})();
+JAVASCRIPT);
+        }
+
         $ajax_cards = GLPI_AJAX_DASHBOARD;
         $cache_key  = sha1($_SESSION['glpiactiveentities_string'] ?? "");
 
         $twig_params = [
+            'early_cards_script' => $early_cards_script,
             'mini' => $mini,
             'embed_class' => $embed_class,
             'mini_class' => $mini_class,
@@ -531,6 +576,7 @@ TWIG, $params);
                     {{ gridstack_items|raw }}
                 </div>
             </div>
+            {{ early_cards_script|raw }}
             {% if mini %}
                     </div>
                 </div>
