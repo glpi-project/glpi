@@ -91,6 +91,7 @@ The present file will list all changes made to the project; according to the
   File uploads also work with the existing update (PATCH) endpoints.
 - New schema properties to enable the selective removal of files/pictures for fields that accept multiple files/pictures in the High-Level API v2.4.
 - Support for converting inline images in rich text fields to attachments in the High-Level API v2.4.
+- New schema/endpoints for managing profile authorizations in High-Level API v2.4. New GraphQL-only properties on User, Profile and Entity schemas to link each other via the created profile authorizations.
 
 ### Changed
 - Fixed searching values with multiple concurrent spaces.
