@@ -57,6 +57,11 @@ class TicketTypeFilter extends AbstractFilter
         return $DB->fieldExists($table, 'type');
     }
 
+    public static function validateValue(mixed $value): bool
+    {
+        return filter_var($value, FILTER_VALIDATE_INT) !== false && ((int) $value === Ticket::INCIDENT_TYPE || (int) $value === Ticket::DEMAND_TYPE);
+    }
+
     public static function getCriteria(string $table, $value): array
     {
         $criteria = [];

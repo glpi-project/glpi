@@ -294,7 +294,7 @@ HTML;
         }
 
         // prepare all available cards
-        $cards = $this->getAllDasboardCards();
+        $cards = self::getAllDasboardCards();
 
         // prepare all available widgets
         $all_widgets = Widget::getAllTypes();
@@ -966,7 +966,7 @@ HTML;
         $limit        = $cardopt['limit'] ?? 7;
         $color        = $cardopt['color'];
         $edit         = $params['action'] === "display_edit_widget";
-        $cards        = $this->getAllDasboardCards();
+        $cards        = self::getAllDasboardCards();
         $card         = $cards[$card_id] ?? [];
         // append card id to options
         if (!isset($cardopt['card_id'])) {
@@ -1142,6 +1142,54 @@ HTML;
         Html::closeForm(true);
     }
 
+    /**
+     * Return the data for the given card_id
+     *
+     * @param string $card_id identifier return by @see self::getAllDasboardCards
+     * @param array<string, mixed> $card_options contains these keys:
+     * - array 'args':
+     *    - string 'gridstack_id' unique identifier of the card in the grid, used to return html by cache
+     *    - bool 'force' if true, cache will be bypassed
+     *    - bool 'embed' is the dashboard emebeded or not
+     * @param bool|null $demo Whether to use fake data. If null, the "demo dashboards" configuration is followed.
+     *
+     * @return array<string, mixed> data of the card
+     */
+    public static function getCardData(string $card_id = '', array $card_options = [], ?bool $demo = null): array
+    {
+        $cards = self::getAllDasboardCards();
+        if (!isset($cards[$card_id])) {
+            throw new \RuntimeException("Card not found: " . $card_id);
+        }
+        $card = $cards[$card_id];
+
+        // call provider to retrieve data
+        if (isset($card['provider'])) {
+            $provider_args = ($card['args'] ?? []) + [
+                'params' => [
+                    'label' => $card['label'] ?? "",
+                ],
+            ];
+
+            global $CFG_GLPI;
+            $demo ??= (bool) ($CFG_GLPI['is_demo_dashboards'] ?? 0);
+            Profiler::getInstance()->start($card['provider'] . ' (Provider function)');
+            $provider_func = explode('::', $card['provider']);
+            if ($demo && $provider_func[0] === Provider::class) {
+                $fake_provider_func = FakeProvider::class . '::' . $provider_func[1];
+                $widget_args = call_user_func_array($fake_provider_func, array_values($provider_args));
+            } else {
+                if (isset($card_options['args']['apply_filters'])) {
+                    $provider_args['params']['apply_filters'] = $card_options['args']['apply_filters'];
+                }
+                $widget_args = call_user_func_array($card['provider'], array_values($provider_args));
+            }
+            Profiler::getInstance()->stop($card['provider'] . ' (Provider function)');
+        }
+
+        // same as before the refactor: card options args are merged even when there is no provider
+        return array_merge($widget_args ?? [], $card_options['args'] ?? []);
+    }
 
     /**
      * Return the html for the given card_id
@@ -1175,13 +1223,14 @@ HTML;
             . \htmlescape($card_id)
             . "</div>";
 
+        $card = self::getAllDasboardCards()[$card_id] ?? null;
+        if ($card === null) {
+            return $notfound_html;
+        }
+
         Profiler::getInstance()->start(__METHOD__ . ' get card data');
         try {
-            $cards = $this->getAllDasboardCards();
-            if (!isset($cards[$card_id])) {
-                return $notfound_html;
-            }
-            $card = $cards[$card_id];
+            $widget_args = self::getCardData($card_id, $card_options);
 
             $use_cache = !$force
                 && Environment::get()->shouldForceExtraBrowserCache()
@@ -1200,30 +1249,6 @@ HTML;
             }
 
             $html = "";
-
-            // call provider to retrieve data
-            if (isset($card['provider'])) {
-                $provider_args = ($card['args'] ?? []) + [
-                    'params' => [
-                        'label' => $card['label'] ?? "",
-                    ],
-                ];
-
-                global $CFG_GLPI;
-                Profiler::getInstance()->start($card['provider'] . ' (Provider function)');
-                $provider_func = explode('::', $card['provider']);
-                if (($CFG_GLPI['is_demo_dashboards'] ?? 0) && $provider_func[0] === Provider::class) {
-                    $fake_provider_func = FakeProvider::class . '::' . $provider_func[1];
-                    $widget_args = call_user_func_array($fake_provider_func, array_values($provider_args));
-                } else {
-                    if (isset($card_options['args']['apply_filters'])) {
-                        $provider_args['params']['apply_filters'] = $card_options['args']['apply_filters'];
-                    }
-                    $widget_args = call_user_func_array($card['provider'], array_values($provider_args));
-                }
-                Profiler::getInstance()->stop($card['provider'] . ' (Provider function)');
-            }
-            $widget_args = array_merge($widget_args ?? [], $card_options['args'] ?? []);
 
             // call widget function to construct html
             $all_widgets = Widget::getAllTypes();
@@ -1324,7 +1349,7 @@ HTML;
      *
      * @return array [itemtype1, itemtype2]
      */
-    protected function getMenuItemtypes(): array
+    protected static function getMenuItemtypes(): array
     {
         $menu_itemtypes = [];
         $exclude   = [
@@ -1383,7 +1408,7 @@ HTML;
      *
      * @return array
      */
-    public function getAllDasboardCards($force = false): array
+    public static function getAllDasboardCards($force = false): array
     {
         global $CFG_GLPI, $GLPI_CACHE;
 
@@ -1392,7 +1417,7 @@ HTML;
 
         if ($cards === null || $force) {
             $cards = [];
-            $menu_itemtypes = $this->getMenuItemtypes();
+            $menu_itemtypes = self::getMenuItemtypes();
 
             foreach ($menu_itemtypes as $firstlvl => $itemtypes) {
                 foreach ($itemtypes as $itemtype) {

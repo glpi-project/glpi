@@ -240,4 +240,15 @@ abstract class AbstractFilter
             ];
         }
     }
+
+    /**
+     * Validate a given value for the filter before it is saved.
+     * @param mixed $value
+     * @return bool
+     */
+    public static function validateValue(mixed $value): bool
+    {
+        //TODO make this function abstract and force all children to implement it. For now, we return true to avoid breaking existing plugin filters.
+        return true;
+    }
 }

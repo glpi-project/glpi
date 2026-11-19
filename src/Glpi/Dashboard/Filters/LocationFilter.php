@@ -57,6 +57,11 @@ class LocationFilter extends AbstractFilter
         return $DB->fieldExists($table, 'locations_id');
     }
 
+    public static function validateValue(mixed $value): bool
+    {
+        return filter_var($value, FILTER_VALIDATE_INT) !== false && (int) $value > 0;
+    }
+
     public static function getCriteria(string $table, $value): array
     {
         $criteria = [];
