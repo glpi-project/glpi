@@ -37,13 +37,15 @@
      data-itemtype="{{ item.getType() }}" data-items-id="{{ item.fields['id'] }}"
      data-testid="timeline-ITILContent">
    <div class="row">
-      <div class="col-auto d-flex flex-column ">
+      <div class="col-auto d-flex flex-column user-part">
     {% if users_id %}
          {{ include('components/user/picture.html.twig', {'users_id': users_id}, with_context = false) }}
     {% endif %}
       </div>
-      <div class="col-12 col-sm">
-         <div class="mt-2 timeline-content left card">
+      <div class="col-12 col-sm d-flex flex-column content-part">
+         {% import 'components/itilobject/timeline/timeline.html.twig' as timeline_macros %}
+         {{ timeline_macros.meta(users_id, null, anonym_user ?? false, item.fields['date'], get_class(item) ~ '_' ~ item.getID(), false) }}
+         <div class="timeline-content left card">
             <div class="card-body px-1 px-xxl-3">
                <div class="d-flex timeline-header">
                   <div class="d-flex creator">
@@ -54,6 +56,7 @@
                         'users_id_editor': item.fields['users_id_lastupdater'],
                         'anonym_user': anonym_user ?? false,
                         'anchor': get_class(item) ~ '_' ~ item.getID(),
+                        'show_creation': false,
                      }, with_context = false) }}
                   </div>
 

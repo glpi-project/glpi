@@ -13052,7 +13052,7 @@ HTML,
 
             $this->assertStringContainsString(
                 $author->getFriendlyName(),
-                $entry->filter('.timeline-header .creator')->text()
+                $entry->filter('.timeline-meta .timeline-author')->text()
             );
 
             // One info card for the picture of the author, another one for its name
