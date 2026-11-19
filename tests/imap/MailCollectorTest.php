@@ -966,6 +966,12 @@ class MailCollectorTest extends DbTestCase
                     '53 - Large HTML Email Test',
                     '54 - Invalid charset',
                     '55 - Invalid UTF-8 body',
+                    '56 - Split HTML body around inline attachment',
+                    '57 - HTML content before and after inline attachment',
+                    '58 - Empty HTML wrapper falls back to plain text',
+                    '59 - HTML file attachment excluded from body',
+                    '60 - Multipart alternative selects richest HTML',
+                    '61 - Multipart related selects root HTML body',
                     $long_subject_expected,
                 ],
             ],
@@ -1114,6 +1120,23 @@ HTML,
             '55 - Invalid UTF-8 body' => <<<HTML
 <p>This message declares the UTF-8 charset but contains invalid bytes: café and pièces jointes.</p>
 HTML,
+            '56 - Split HTML body around inline attachment' => <<<HTML
+<p>Hello, this is the text below the attachment.</p>
+HTML,
+            '57 - HTML content before and after inline attachment' => <<<HTML
+<p>Before attachment</p>
+<p>After attachment</p>
+HTML,
+            '58 - Empty HTML wrapper falls back to plain text' => 'Fallback plain text',
+            '59 - HTML file attachment excluded from body' => <<<HTML
+<p>Main message</p>
+HTML,
+            '60 - Multipart alternative selects richest HTML' => <<<HTML
+<p>Second richer HTML representation</p>
+HTML,
+            '61 - Multipart related selects root HTML body' => <<<HTML
+<p>Root message HTML</p>
+HTML,
         ];
 
         foreach ($actors_specs as $actor_specs) {
@@ -1170,6 +1193,9 @@ HTML,
             '1234567890_3' => 'text/plain',
             '37-red-dot.png' => 'image/png',
             '41-blue-dot.png' => 'image/png',
+            '56-inline-attachment.txt' => 'text/plain',
+            '57-inline-attachment.txt' => 'text/plain',
+            '59-report.html' => 'text/html',
         ];
 
         $iterator = $DB->request(
@@ -1892,4 +1918,5 @@ HTML,
 
         $this->assertSame($expected, trim($collector->getDecodedContent(new Message(['raw' => $raw]))));
     }
+
 }

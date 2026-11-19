@@ -1,0 +1,17 @@
+Date: Tue, 10 Nov 2026 10:02:00 +0100 (CET)
+From: Normal User <normal@glpi-project.org>
+To: GLPI debug <unittests@glpi-project.org>
+Message-ID: <58-empty-html-fallback@glpi-project.org>
+Subject: 58 - Empty HTML wrapper falls back to plain text
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="alt58"
+
+--alt58
+Content-Type: text/plain; charset=utf-8
+
+Fallback plain text
+--alt58
+Content-Type: text/html; charset=utf-8
+
+<html><head></head><body></body></html>
+--alt58--

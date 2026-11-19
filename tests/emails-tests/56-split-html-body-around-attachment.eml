@@ -1,0 +1,31 @@
+Date: Tue, 10 Nov 2026 10:00:00 +0100 (CET)
+From: Normal User <normal@glpi-project.org>
+To: GLPI debug <unittests@glpi-project.org>
+Message-ID: <56-split-html-body@glpi-project.org>
+Subject: 56 - Split HTML body around inline attachment
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="alt56"
+
+--alt56
+Content-Type: text/plain; charset=utf-8
+
+Hello, this is the text below the attachment.
+--alt56
+Content-Type: multipart/mixed; boundary="mix56"
+
+--mix56
+Content-Type: text/html; charset=us-ascii
+
+<html aria-label="message body"><head><meta http-equiv="content-type" content="text/html; charset=us-ascii"></head><body style="overflow-wrap: break-word;"></body></html>
+--mix56
+Content-Type: application/octet-stream; name="56-inline-attachment.txt"
+Content-Disposition: inline; filename="56-inline-attachment.txt"
+Content-Transfer-Encoding: base64
+
+dGVzdA==
+--mix56
+Content-Type: text/html; charset=utf-8
+
+<html><head></head><body><p>Hello, this is the text below the attachment.</p></body></html>
+--mix56--
+--alt56--
