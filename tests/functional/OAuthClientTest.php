@@ -84,6 +84,96 @@ class OAuthClientTest extends DbTestCase
         }
     }
 
+    public static function publicClientGrantsProvider(): array
+    {
+        return [
+            [true, ['password', 'client_credentials', 'authorization_code'], true],
+            [false, ['authorization_code'], true],
+            [false, [], true],
+            [false, ['password'], false],
+            [false, ['client_credentials', 'authorization_code'], false],
+        ];
+    }
+
+    /**
+     * @param string[] $grants
+     */
+    #[DataProvider('publicClientGrantsProvider')]
+    public function testPublicClientGrants(bool $is_confidential, array $grants, bool $is_valid): void
+    {
+        $client = new \OAuthClient();
+        $add_result = $client->prepareInputForAdd([
+            'is_confidential' => (int) $is_confidential,
+            'grants' => $grants,
+        ]);
+        if (!$is_valid) {
+            $this->assertFalse($add_result);
+            $this->hasSessionMessages(ERROR, ['Public clients may only use the authorization code grant']);
+        } else {
+            $this->assertIsArray($add_result);
+        }
+
+        // Switching an existing client to public must also validate its stored grants
+        $client = $this->createItem(\OAuthClient::class, [
+            'name' => __FUNCTION__,
+            'grants' => $grants,
+        ], ['grants']);
+        $update_result = $client->prepareInputForUpdate([
+            'is_confidential' => (int) $is_confidential,
+        ]);
+        if (!$is_valid) {
+            $this->assertFalse($update_result);
+            $this->hasSessionMessages(ERROR, ['Public clients may only use the authorization code grant']);
+        } else {
+            $this->assertIsArray($update_result);
+        }
+    }
+
+    public static function publicClientGrantsInputProvider(): array
+    {
+        return [
+            ['', true],
+            ['[]', true],
+            ['["authorization_code"]', true],
+            ['{not json', false],
+            ['"authorization_code"', false],
+            ['123', false],
+            ['{"a":"authorization_code"}', false],
+            ['["password"]', false],
+            [[['authorization_code']], false],
+            [42, false],
+        ];
+    }
+
+    #[DataProvider('publicClientGrantsInputProvider')]
+    public function testPublicClientGrantsInput(mixed $grants, bool $is_valid): void
+    {
+        $client = new \OAuthClient();
+        $add_result = $client->prepareInputForAdd([
+            'is_confidential' => 0,
+            'grants' => $grants,
+        ]);
+        if (!$is_valid) {
+            $this->assertFalse($add_result);
+            $this->hasSessionMessages(ERROR, ['Public clients may only use the authorization code grant']);
+        } else {
+            $this->assertIsArray($add_result);
+        }
+    }
+
+    public function testUpdateToPublicClientWithMalformedGrants(): void
+    {
+        $client = $this->createItem(\OAuthClient::class, [
+            'name' => __FUNCTION__,
+            'grants' => ['authorization_code'],
+        ], ['grants']);
+        $this->assertFalse($client->prepareInputForUpdate([
+            'is_confidential' => 0,
+            'grants' => '{not json',
+        ]));
+        $this->hasSessionMessages(ERROR, ['Public clients may only use the authorization code grant']);
+    }
+
     public function testPurgeDeletesAssociatedTokens(): void
     {
         global $DB;

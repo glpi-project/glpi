@@ -68,7 +68,10 @@
                             {% else %}
                                 {{ fields.nullField() }}
                             {% endif %}
-                            {% if not item.isNewItem() %}
+                            {{ fields.dropdownYesNo('is_confidential', item.fields['is_confidential'] ?? 1, __('Confidential'), {
+                                helper: __('Public clients (single-page or native applications) cannot keep a secret. They may only use the Authorization Code grant with PKCE (S256).'),
+                            }) }}
+                            {% if not item.isNewItem() and item.fields['is_confidential'] %}
                                 {{ fields.passwordField('secret', item.fields['secret']|decrypt, __('Client Secret'), {
                                     is_disclosable: true,
                                     readonly: true,

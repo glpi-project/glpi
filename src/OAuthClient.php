@@ -107,6 +107,22 @@ final class OAuthClient extends CommonDBTM
             'datatype' => 'itemlink',
         ];
 
+        $opts[] = [
+            'id' => '4',
+            'table' => self::getTable(),
+            'field' => 'is_active',
+            'name' => __('Active'),
+            'datatype' => 'bool',
+        ];
+
+        $opts[] = [
+            'id' => '5',
+            'table' => self::getTable(),
+            'field' => 'is_confidential',
+            'name' => __('Confidential'),
+            'datatype' => 'bool',
+        ];
+
         return $opts;
     }
 
@@ -124,6 +140,13 @@ final class OAuthClient extends CommonDBTM
         if (array_key_exists('allowed_ips', $input) && !$this->validateAllowedIPs($input['allowed_ips'])) {
             Session::addMessageAfterRedirect(
                 msg: __s('Invalid IP address or CIDR range'),
+                message_type: ERROR
+            );
+            return false;
+        }
+        if (!$this->validateGrantsForClientType((bool) ($input['is_confidential'] ?? 1), $input['grants'] ?? [])) {
+            Session::addMessageAfterRedirect(
+                msg: __s('Public clients may only use the authorization code grant'),
                 message_type: ERROR
             );
             return false;
@@ -152,6 +175,15 @@ final class OAuthClient extends CommonDBTM
             );
             return false;
         }
+        $is_confidential = (bool) ($input['is_confidential'] ?? $this->fields['is_confidential'] ?? 1);
+        $grants = $input['grants'] ?? $this->fields['grants'] ?? [];
+        if (!$this->validateGrantsForClientType($is_confidential, $grants)) {
+            Session::addMessageAfterRedirect(
+                msg: __s('Public clients may only use the authorization code grant'),
+                message_type: ERROR
+            );
+            return false;
+        }
         $key = new GLPIKey();
         if (isset($input['secret'])) {
             $input['secret'] = $key->encrypt($input['secret']);
@@ -165,6 +197,35 @@ final class OAuthClient extends CommonDBTM
         $input['redirect_uri'] = json_encode($input['redirect_uri'] ?? []);
 
         return $input;
+    }
+
+    /**
+     * Ensure public (non-confidential) clients only use grants that do not rely on a client secret.
+     * Public clients must use the authorization code grant with PKCE.
+     * Malformed grants input is considered invalid.
+     * @param bool $is_confidential
+     * @param mixed $grants Grants array or JSON-encoded grants array
+     * @return bool
+     */
+    private function validateGrantsForClientType(bool $is_confidential, mixed $grants): bool
+    {
+        if ($is_confidential) {
+            return true;
+        }
+        if ($grants === null || $grants === '') {
+            // An empty multiple select is submitted as an empty string
+            $grants = [];
+        } elseif (is_string($grants)) {
+            try {
+                $grants = json_decode($grants, true);
+            } catch (JsonException) {
+                return false;
+            }
+        }
+        if (!is_array($grants) || !array_is_list($grants) || array_filter($grants, static fn($grant) => !is_string($grant)) !== []) {
+            return false;
+        }
+        return array_diff($grants, ['authorization_code']) === [];
     }
 
     /**

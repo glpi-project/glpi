@@ -44,6 +44,11 @@ class Client implements ClientEntityInterface
     use ClientTrait;
     use EntityTrait;
 
+    /**
+     * @var string[] Grant types allowed for this client
+     */
+    private array $grants = [];
+
     public function __construct()
     {
         $this->setRedirectUri([]);
@@ -70,5 +75,24 @@ class Client implements ClientEntityInterface
             '/api.php/swagger-oauth-redirect', // Used for Swagger UI
         ];
         $this->redirectUri = array_merge($global_allowed_redirect_uri, $redirectUri);
+    }
+
+    public function setConfidential(bool $is_confidential): void
+    {
+        $this->isConfidential = $is_confidential;
+    }
+
+    /**
+     * @param string[] $grants
+     */
+    public function setGrants(array $grants): void
+    {
+        $this->grants = $grants;
+    }
+
+    public function supportsGrantType(string $grantType): bool
+    {
+        $global_grants = ['refresh_token'];
+        return in_array($grantType, array_merge($this->grants, $global_grants), true);
     }
 }
