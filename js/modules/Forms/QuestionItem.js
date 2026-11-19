@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global getUUID */
+/* global getUUID, reExecuteTrustedScript */
 
 export class GlpiFormQuestionTypeItem {
     /**
@@ -148,7 +148,7 @@ export class GlpiFormQuestionTypeItem {
             script.text = script.text.replace(/rand:[0-9]+/g, `rand:'${id}'`);
 
             // Execute the script
-            $.globalEval(script.text);
+            reExecuteTrustedScript(script);
         });
     }
 }
