@@ -488,6 +488,95 @@ class Tag_ItemTest extends DbTestCase
         $this->assertFalse(Tag_Item::hasTag($computer2, $tag2->getID()));
     }
 
+    #[AllowMockObjectsWithoutExpectations]
+    public function testMassiveActionOnItemOutsideActiveEntities(): void
+    {
+        $this->login();
+
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'Computer outside active entities',
+            'entities_id' => getItemByTypeName('Entity', '_test_child_2', true),
+        ]);
+        $tag1 = $this->createTag(['name' => 'Tag 1 for MA entities', 'entities_id' => $this->getTestRootEntity(true), 'is_recursive' => 1]);
+        $tag2 = $this->createTag(['name' => 'Tag 2 for MA entities', 'entities_id' => $this->getTestRootEntity(true), 'is_recursive' => 1]);
+        $this->assertTrue(Tag_Item::addTag($computer, $tag1->getID()));
+
+        // Restrict the active entities so that the computer is not reachable anymore
+        $this->setEntity('_test_child_1', true);
+
+        $this->processTagMassiveAction('add', $computer, [$computer->getID()], ['peer_tags_id' => $tag2->getID()], 0, 1);
+        $this->assertFalse(Tag_Item::hasTag($computer, $tag2->getID()));
+
+        $this->processTagMassiveAction('remove', $computer, [$computer->getID()], ['peer_tags_id' => $tag1->getID()], 0, 1);
+        $this->assertTrue(Tag_Item::hasTag($computer, $tag1->getID()));
+
+        $this->processTagMassiveAction('remove', $computer, [$computer->getID()], ['peer_tags_id' => 0], 0, 1);
+        $this->assertTrue(Tag_Item::hasTag($computer, $tag1->getID()));
+    }
+
+    public function testDirectLinkCreationIsValidated(): void
+    {
+        $this->login();
+
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'Computer for direct link',
+            'entities_id' => getItemByTypeName('Entity', '_test_child_2', true),
+        ]);
+        $rule = $this->createItem(\RuleTicket::class, ['name' => 'Rule for direct link', 'entities_id' => $this->getTestRootEntity(true)]);
+        $recursive_tag = $this->createTag(['name' => 'Recursive tag for direct link', 'entities_id' => $this->getTestRootEntity(true), 'is_recursive' => 1]);
+        $printer_tag = $this->createTag(['name' => 'Printer tag for direct link', '_itemtypes' => [Printer::class], 'entities_id' => $this->getTestRootEntity(true), 'is_recursive' => 1]);
+        $sibling_tag = $this->createTag(['name' => 'Sibling entity tag for direct link', 'entities_id' => getItemByTypeName('Entity', '_test_child_1', true)]);
+
+        $tag_item = new Tag_Item();
+        $input = ['tags_id' => $recursive_tag->getID(), 'itemtype' => Computer::class, 'items_id' => $computer->getID()];
+
+        // Item that is not taggable
+        $this->assertFalse($tag_item->add(['itemtype' => \RuleTicket::class, 'items_id' => $rule->getID()] + $input));
+
+        // Item that does not exist
+        $this->assertFalse($tag_item->add(['items_id' => 999999] + $input));
+
+        // Tag restricted to another itemtype
+        $this->assertFalse($tag_item->add(['tags_id' => $printer_tag->getID()] + $input));
+
+        // Tag of a sibling entity, not visible from the item's entity, even if visible from the session
+        $this->assertFalse($tag_item->add(['tags_id' => $sibling_tag->getID()] + $input));
+        $this->assertFalse(Tag_Item::addTag($computer, $sibling_tag->getID()));
+
+        // Valid link
+        $this->assertGreaterThan(0, $tag_item->add($input));
+        $this->assertTrue(Tag_Item::hasTag($computer, $recursive_tag->getID()));
+
+        // The link cannot be moved to an invalid tag
+        $this->assertFalse($tag_item->update(['id' => $tag_item->getID(), 'tags_id' => $printer_tag->getID()]));
+        $this->assertTrue(Tag_Item::hasTag($computer, $recursive_tag->getID()));
+    }
+
+    public function testUpdateKeepsTagsNotProposedInForm(): void
+    {
+        $this->login();
+
+        $computer = $this->createItem(Computer::class, ['name' => 'Computer for hidden tags', 'entities_id' => $this->getTestRootEntity(true)]);
+        $tag1 = $this->createTag(['name' => 'Active tag 1 for hidden tags', 'is_active' => 1, 'entities_id' => $this->getTestRootEntity(true)]);
+        $tag2 = $this->createTag(['name' => 'Active tag 2 for hidden tags', 'is_active' => 1, 'entities_id' => $this->getTestRootEntity(true)]);
+        $inactive_tag = $this->createTag(['name' => 'Inactive tag for hidden tags', 'entities_id' => $this->getTestRootEntity(true), 'is_active' => 0]);
+
+        foreach ([$tag1, $tag2, $inactive_tag] as $tag) {
+            $this->assertTrue(Tag_Item::addTag($computer, $tag->getID()));
+        }
+
+        // The inactive tag is not proposed in the form, so it is not submitted and must be kept
+        $this->assertTrue($computer->update(['id' => $computer->getID(), '_tags' => [$tag1->getID()]]));
+        $this->assertEqualsCanonicalizing(
+            [$tag1->getID(), $inactive_tag->getID()],
+            Tag_Item::getTagsForItem($computer)
+        );
+
+        // Same when every proposed tag is unselected
+        $this->assertTrue($computer->update(['id' => $computer->getID(), '_tags' => '']));
+        $this->assertSame([$inactive_tag->getID()], Tag_Item::getTagsForItem($computer));
+    }
+
     public function testTagFieldIsPresentOnTaggableItemsForm(): void
     {
         $this->login();

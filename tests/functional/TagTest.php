@@ -586,12 +586,18 @@ class TagTest extends DbTestCase
         // Create three tags
         $tag1 = $this->createTag([
             'name' => 'Tag1',
+            'is_active' => 1,
+            'is_recursive' => 1,
         ]);
         $tag2 = $this->createTag([
             'name' => 'Tag2',
+            'is_active' => 1,
+            'is_recursive' => 1,
         ]);
         $tag3 = $this->createTag([
             'name' => 'Tag3',
+            'is_active' => 1,
+            'is_recursive' => 1,
         ]);
 
         foreach (Tag_Itemtype::getTaggableItems() as $itemtype) {
@@ -822,5 +828,66 @@ class TagTest extends DbTestCase
                 "Tag search option field is incorrect for $itemtype"
             );
         }
+    }
+
+    public function testSearchColumnRendersTagsAsBadges(): void
+    {
+        $this->login();
+
+        $root_entity = $this->getTestRootEntity(true);
+        [$computer_with_tags, $computer_with_one_tag, $computer_without_tag] = $this->createItems(Computer::class, [
+            ['name' => 'Tag search computer 1', 'entities_id' => $root_entity, 'is_recursive' => 1],
+            ['name' => 'Tag search computer 2', 'entities_id' => $root_entity, 'is_recursive' => 1],
+            ['name' => 'Tag search computer 3', 'entities_id' => $root_entity, 'is_recursive' => 1],
+        ]);
+        $red_tag = $this->createTag(['name' => 'Red search tag', 'bg_color' => '#ff0000', 'color' => '#ffffff', 'entities_id' => $root_entity, 'is_recursive' => 1]);
+        $blue_tag = $this->createTag(['name' => 'Blue search tag', 'bg_color' => '#0000ff', 'color' => '#000000', 'entities_id' => $root_entity, 'is_recursive' => 1]);
+        $local_tag = $this->createTag(['name' => 'Local search tag', 'bg_color' => '#00ff00', 'color' => '#000000', 'entities_id' => $root_entity, 'is_recursive' => 0]);
+
+        $this->assertTrue(Tag_Item::addTag($computer_with_tags, $red_tag->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer_with_tags, $blue_tag->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer_with_tags, $local_tag->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer_with_one_tag, $red_tag->getID()));
+
+        $red_badge = '<span class="badge" style="background-color:#ff0000;color:#ffffff">Red search tag</span>';
+        $blue_badge = '<span class="badge" style="background-color:#0000ff;color:#000000">Blue search tag</span>';
+        $local_badge = '<span class="badge" style="background-color:#00ff00;color:#000000">Local search tag</span>';
+
+        $displayed = $this->searchComputersTagsColumn('Tag search computer');
+        $this->assertCount(3, $displayed);
+        $this->assertStringContainsString($red_badge, $displayed[$computer_with_tags->getID()]);
+        $this->assertStringContainsString($blue_badge, $displayed[$computer_with_tags->getID()]);
+        $this->assertStringContainsString($local_badge, $displayed[$computer_with_tags->getID()]);
+        $this->assertSame('<div class="d-flex flex-wrap gap-1">' . $red_badge . '</div>', $displayed[$computer_with_one_tag->getID()]);
+        $this->assertSame('', $displayed[$computer_without_tag->getID()]);
+
+        // From a child entity, the non recursive tag of the parent entity must not be displayed
+        $this->setEntity('_test_child_1', true);
+        $displayed = $this->searchComputersTagsColumn('Tag search computer');
+        $this->assertCount(3, $displayed);
+        $this->assertStringContainsString($red_badge, $displayed[$computer_with_tags->getID()]);
+        $this->assertStringContainsString($blue_badge, $displayed[$computer_with_tags->getID()]);
+        $this->assertStringNotContainsString('Local search tag', $displayed[$computer_with_tags->getID()]);
+    }
+
+    /**
+     * Search computers by name and return the rendered tags column, indexed by computer ID.
+     *
+     * @return array<int, string>
+     */
+    private function searchComputersTagsColumn(string $name): array
+    {
+        $params = \Search::manageParams(Computer::class, [
+            'reset'    => 'reset',
+            'criteria' => [['field' => 1, 'searchtype' => 'contains', 'value' => $name]],
+        ]);
+        $data = \Search::getDatas(Computer::class, $params, [490]);
+        \Search::resetSaveSearch();
+
+        $result = [];
+        foreach ($data['data']['rows'] as $row) {
+            $result[(int) $row['id']] = $row['Computer_490']['displayname'];
+        }
+        return $result;
     }
 }

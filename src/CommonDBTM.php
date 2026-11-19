@@ -6947,25 +6947,22 @@ class CommonDBTM extends CommonGLPI
             return;
         }
 
-        // If the `_tags` input is empty, remove all existing tag associations
-        if (empty($this->input['_tags'])) {
-            Tag_Item::cleanTag($this);
-            return;
-        }
-
-        // Convert the `_tags` input to an array and get the old tag associations
-        $tags_id_input = array_map('intval', $this->input['_tags']);
+        $tags_ids = array_map('intval', array_filter((array) $this->input['_tags']));
         $old_tags_ids = Tag_Item::getTagsForItem($this);
 
-        // Remove old tag associations
+        // Only the tags proposed in the form can be removed to keep inactive tags.
+        $available_tags = [];
+        foreach (Tag_Itemtype::getTagsByItemtype($this::class, Tag::getTagsEntityID($this)) as $tag) {
+            $available_tags[] = $tag->getID();
+        }
+
         foreach ($old_tags_ids as $tags_id) {
-            if (!in_array($tags_id, $tags_id_input, true)) {
+            if (in_array($tags_id, $available_tags, true) && !in_array($tags_id, $tags_ids, true)) {
                 Tag_Item::removeTag($this, $tags_id);
             }
         }
 
-        // Add new tag associations
-        foreach ($tags_id_input as $tags_id) {
+        foreach ($tags_ids as $tags_id) {
             if (!in_array($tags_id, $old_tags_ids, true)) {
                 Tag_Item::addTag($this, $tags_id);
             }

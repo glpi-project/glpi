@@ -56,27 +56,73 @@ class Tag_Item extends CommonDBRelation
             return false;
         }
 
-        $tag = new Tag();
-        if (!$tag->getFromDB($tag_id) || !$tag->checkEntity(true)) {
-            return false;
-        }
-
-        // Check if the tag is allowed to be attached to the given itemtype
-        $allowed_itemtypes = $tag->getItemtypes();
-        if ($allowed_itemtypes === []) {
-            $allowed_itemtypes = Tag_Itemtype::getTaggableItems();
-        }
-
-        // Check if the asset's itemtype is in the list of allowed itemtypes
-        if (!in_array($asset::class, $allowed_itemtypes, true)) {
-            return false;
-        }
-
         return (bool) (new self())->add([
             'tags_id'  => $tag_id,
             'itemtype' => $asset::class,
             'items_id' => $asset->getID(),
         ]);
+    }
+
+    /**
+     * @param array<string, mixed> $input
+     * @return false|array<string, mixed>
+     */
+    public function prepareInputForAdd($input)
+    {
+        $input = parent::prepareInputForAdd($input);
+
+        if (!is_array($input) || !self::checkTagCanBeAttached($input)) {
+            return false;
+        }
+
+        return $input;
+    }
+
+    /**
+     * @param array<string, mixed> $input
+     * @return false|array<string, mixed>
+     */
+    public function prepareInputForUpdate($input)
+    {
+        $input = parent::prepareInputForUpdate($input);
+
+        if (!is_array($input) || !self::checkTagCanBeAttached(array_merge($this->fields, $input))) {
+            return false;
+        }
+
+        return $input;
+    }
+
+    /**
+     * Check that the tag can be attached to the item. The item must be taggable,
+     * the tag must allow the item's itemtype and be visible from the item's entity.
+     *
+     * @param array<string, mixed> $input
+     */
+    private static function checkTagCanBeAttached(array $input): bool
+    {
+        $itemtype = $input['itemtype'] ?? null;
+        if (!is_string($itemtype) || !Tag_Itemtype::isTaggableItemtype($itemtype)) {
+            return false;
+        }
+
+        $item = getItemForItemtype($itemtype);
+        if (!$item instanceof CommonDBTM || !$item->getFromDB((int) ($input['items_id'] ?? 0))) {
+            return false;
+        }
+
+        $tag = new Tag();
+        if (!$tag->getFromDB((int) ($input['tags_id'] ?? 0)) || !$tag->checkEntity(true)) {
+            return false;
+        }
+
+        // The tag must be visible from the item's entity
+        $entities_id = Tag::getTagsEntityID($item);
+        if ($entities_id !== null && !$tag->isAccessibleFromEntities([$entities_id])) {
+            return false;
+        }
+
+        return in_array($itemtype, $tag->getItemtypes(), true);
     }
 
     /**
@@ -234,43 +280,37 @@ class Tag_Item extends CommonDBRelation
         $action = $ma->getAction();
         $input = $ma->getInput();
 
-        switch ($action) {
-            case 'add':
-                Session::checkRight($item::$rightname, UPDATE);
-                $tag_id = (int) ($input['peer_tags_id'] ?? 0);
-                foreach ($ids as $id) {
-                    if (!$item->getFromDB($id)) {
-                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
-                        continue;
-                    }
-                    if ($tag_id > 0 && self::addTag($item, $tag_id)) {
-                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
-                    } else {
-                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
-                    }
-                }
-                break;
-            case 'remove':
-                Session::checkRight($item::$rightname, UPDATE);
-                $tag_id = (int) ($input['peer_tags_id'] ?? 0);
-                foreach ($ids as $id) {
-                    if (!$item->getFromDB($id)) {
-                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
-                        continue;
-                    }
+        if (!in_array($action, ['add', 'remove'], true)) {
+            parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+            return;
+        }
+
+        $tag_id = (int) ($input['peer_tags_id'] ?? 0);
+        foreach ($ids as $id) {
+            if (!$item->getFromDB($id)) {
+                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                continue;
+            }
+            if (!$item->can($id, UPDATE)) {
+                $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                continue;
+            }
+
+            switch ($action) {
+                case 'add':
+                    $success = $tag_id > 0 && self::addTag($item, $tag_id);
+                    break;
+                case 'remove':
                     $success = $tag_id > 0
                         ? self::removeTag($item, $tag_id)
                         : self::cleanTag($item);
-                    if ($success) {
-                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
-                    } else {
-                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
-                    }
-                }
-                break;
-            default:
-                parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
-                break;
+                    break;
+                default:
+                    $success = false;
+                    break;
+            }
+            $ma->itemDone($item::class, $id, $success ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
         }
     }
 }

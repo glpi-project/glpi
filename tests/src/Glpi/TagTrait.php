@@ -134,6 +134,7 @@ trait TagTrait
                 return $this->createItem(\NetworkName::class, array_merge([
                     'itemtype' => \Computer::class,
                     'items_id' => $computer->getID(),
+                    'entities_id' => $entities_id,
                 ], $input));
 
             case \Item_DeviceSimcard::class:

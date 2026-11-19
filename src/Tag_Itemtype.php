@@ -90,10 +90,11 @@ class Tag_Itemtype extends CommonDBChild
      * Get tags allowed to be attached to items of the given itemtype.
      *
      * @param class-string<CommonGLPI> $itemtype
+     * @param int|null $entities_id Restrict to the tags visible from this entity instead of the active entities.
      *
      * @return iterable<Tag>
      */
-    public static function getTagsByItemtype(string $itemtype): iterable
+    public static function getTagsByItemtype(string $itemtype, ?int $entities_id = null): iterable
     {
         global $DB;
 
@@ -122,7 +123,7 @@ class Tag_Itemtype extends CommonDBChild
                         ['itemtype' => null],
                     ],
                 ],
-                getEntitiesRestrictCriteria($tag_table, '', '', true),
+                getEntitiesRestrictCriteria($tag_table, '', $entities_id ?? '', true),
             ],
         ]));
     }

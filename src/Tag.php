@@ -404,6 +404,7 @@ class Tag extends CommonDropdown
             'forcegroupby'       => true,
             'aggregate'          => true,
             'massiveaction'      => false,
+            'additionalfields'   => ['bg_color', 'color', 'entities_id', 'is_recursive'],
             'itemtype_for_tags'  => $itemtype !== AllAssets::class ? $itemtype : null,
             'joinparams'         => [
                 'beforejoin' => [
@@ -424,17 +425,26 @@ class Tag extends CommonDropdown
             $values = [$field => $values];
         }
 
-        // If the field is "name" and the values contain an array of tag IDs, render them as badges
+        // If the field is "name" and the values contain the tags data, render them as badges
         if ($field === 'name' && isset($values['values']) && is_array($values['values'])) {
-            $tags_ids = array_column($values['values'], 'id');
-
             $badges = [];
-            if ($tags_ids !== []) {
-                foreach ((new self())->find(['id' => $tags_ids]) as $tag_data) {
-                    $tag = new self();
-                    $tag->getFromResultSet($tag_data);
-                    $badges[] = $tag->getBadgeHtml();
+            foreach ($values['values'] as $tag_data) {
+                if (empty($tag_data['id'])) {
+                    continue;
                 }
+
+                $tag = new self();
+                $tag->getFromResultSet(array_map(
+                    static fn($value) => $value === Search::NULLVALUE ? null : $value,
+                    $tag_data
+                ));
+
+                // Do not expose tags that are not visible from the active entities
+                if (!$tag->checkEntity(true)) {
+                    continue;
+                }
+
+                $badges[] = $tag->getBadgeHtml();
             }
 
             if ($badges === []) {
@@ -481,14 +491,31 @@ class Tag extends CommonDropdown
     }
 
     /**
+     * Get the entity from which the tags attached to the given item must be visible.
+     *
+     * @param CommonDBTM $item
+     *
+     * @return int|null Null when the item is not assigned to an entity.
+     */
+    public static function getTagsEntityID(CommonDBTM $item): ?int
+    {
+        if (!$item->isEntityAssign() || $item->getEntityID() < 0) {
+            return null;
+        }
+
+        return (int) $item->getEntityID();
+    }
+
+    /**
      * Get the data needed to render a tags dropdown.
      *
      * @param class-string<CommonGLPI>|list<class-string<CommonGLPI>>|null $itemtype Restrict the tags to those allowed for the given itemtype(s).
      *                                    Use null to get no tag (e.g. for the "All assets" search).
+     * @param int|null $entities_id Restrict to the tags visible from this entity instead of the active entities.
      *
      * @return array{tag_names: array<int, string>, bg_colors: array<int, string>, text_colors: array<int, string>}
      */
-    public static function getTagsDropdownData(string|array|null $itemtype): array
+    public static function getTagsDropdownData(string|array|null $itemtype, ?int $entities_id = null): array
     {
         $tag_names = [];
         $bg_colors = [];
@@ -500,7 +527,7 @@ class Tag extends CommonDropdown
         } elseif (is_array($itemtype)) {
             $tags = Tag_Itemtype::getTagsByItemtypes($itemtype);
         } else {
-            $tags = Tag_Itemtype::getTagsByItemtype($itemtype);
+            $tags = Tag_Itemtype::getTagsByItemtype($itemtype, $entities_id);
         }
 
         foreach ($tags as $tag) {
@@ -532,16 +559,18 @@ class Tag extends CommonDropdown
 
         $item = $options['_item'];
         $itemtype = $options['_itemtype'];
+        $entities_id = null;
 
         if ($item instanceof CommonDBTM) {
             $itemtype = get_class($item);
+            $entities_id = self::getTagsEntityID($item);
             $options['multiple'] = true;
             $options['values'] = Tag_Item::getTagsForItem($item);
         } else {
             $options['display_emptychoice'] = true;
         }
 
-        $data = self::getTagsDropdownData($itemtype);
+        $data = self::getTagsDropdownData($itemtype, $entities_id);
 
         $add_option_attributes = [];
         foreach ($data['bg_colors'] as $tag_id => $bg_color) {
