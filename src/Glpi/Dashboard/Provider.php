@@ -1591,7 +1591,7 @@ class Provider
             $data[] = [
                 'number' => $result['nb_tickets'],
                 'label'  => $is_group
-                    ? ($result['first'] ?? '')
+                    ? ($result['name'] ?? '')
                     : formatUserName($result['actor_id'], $result['username'] ?? '', $result['second'] ?? '', $result['first'] ?? ''),
                 'url'    => Ticket::getSearchURL() . "?" . Toolbox::append_params($s_params),
             ];
