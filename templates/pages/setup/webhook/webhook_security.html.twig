@@ -141,7 +141,7 @@
             }
         }) }}
 
-        <script>
+        <script nonce="{{ csp_nonce() }}">
             $('input[name="use_cra_challenge"]').change(function () {
                 if ($('input[name="use_cra_challenge"]').is(":checked")) {
                     $('button[name="validate_challenge"]').parent().parent().parent().removeClass('d-none');

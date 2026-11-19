@@ -96,7 +96,7 @@
    }, with_context = false) }}
 </div>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
 $(function () {
    var timerid;
    $('#filter-dropdown').on('input',function() {

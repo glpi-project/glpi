@@ -86,7 +86,7 @@
                             </a>
                         </div>
                         {% if config('display_login_source') %}
-                            <script>
+                            <script nonce="{{ csp_nonce() }}">
                                 $(() => {
                                     if ($('select[name="auth"]').val() === 'local') {
                                         $('.forgot_password').removeClass('d-none');
@@ -131,7 +131,7 @@
 {% endblock %}
 
 {% block javascript_block %}
-    <script type="text/javascript">
+    <script nonce="{{ csp_nonce() }}" type="text/javascript">
         $(function () {
             $('#login_name').focus();
         });

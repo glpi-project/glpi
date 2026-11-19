@@ -91,7 +91,7 @@
         helper: __('When automatic computation is active, percentage is computed based on the average of all child project and task percent done.'),
         disabled: item.fields['auto_percent_done'] == 1
     })) }}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         document.querySelector('input[type=checkbox][name=auto_percent_done]')?.addEventListener('change', (e) => {
             document.querySelector('select[name=percent_done]').disabled = e.target.checked;
         });

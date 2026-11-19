@@ -88,7 +88,7 @@
             itemtype: '__VALUE__',
         }) }}
     </template>
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         $(() => {
             $('.display-prefs-list button.btn-itemtype-pref').on('click', (e) => {
                 const itemtype = $(e.currentTarget).attr('data-itemtype');

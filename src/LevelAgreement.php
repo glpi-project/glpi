@@ -284,7 +284,7 @@ abstract class LevelAgreement extends CommonDBChild
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div id="showLa{{ instID }}{{ rand }}"></div>
-                <script>
+                <script nonce="{{ csp_nonce() }}">
                     function viewAddEditLa{{ instID }}{{ rand }}(item_id = -1) {
                         $('#showLa{{ instID }}{{ rand }}').load("{{ config('root_doc') }}/ajax/viewsubitem.php", {
                             type: "{{ la.getType() }}",

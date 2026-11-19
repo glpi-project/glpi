@@ -141,7 +141,7 @@ final class QuestionTypeUserDevice extends AbstractQuestionType implements
             ) }}
 
             {% if not init %}
-                <script>
+                <script nonce="{{ csp_nonce() }}">
                     import("/js/modules/Forms/QuestionUserDevice.js").then((m) => {
                         new m.GlpiFormQuestionTypeUserDevice();
                     });

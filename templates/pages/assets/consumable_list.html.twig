@@ -171,7 +171,7 @@
 
 </style>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
     // Trigger search reload when infocom are updated
     $('div.modal[id^="infocomConsumable"]').on('hide.bs.modal', () => {
         // Try finding a fluid search instance

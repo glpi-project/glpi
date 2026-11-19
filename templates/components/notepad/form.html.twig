@@ -259,7 +259,7 @@
     {% endfor %}
 </div>
 
-<script type="module">
+<script nonce="{{ csp_nonce() }}" type="module">
     /**
      * Toggle all accordions in a notepad container with Bootstrap transitions
      */

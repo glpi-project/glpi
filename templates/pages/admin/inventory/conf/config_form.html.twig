@@ -283,7 +283,7 @@
 
     </div>{# end #bloc_enabled #}
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         (function () {
             function toggleAuthInputs() {
                 const value = $('[name="auth_required"]').val();

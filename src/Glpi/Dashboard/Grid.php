@@ -449,7 +449,7 @@ HTML;
                                         <i class="ti ti-presentation-off" aria-hidden="true"></i>
                                         <span>{{ messages['disable_demo_msg'] }}</span>
                                     </button>
-                                    <script>
+                                    <script nonce="{{ csp_nonce() }}">
                                         $('button.disable-dashboard-demo').on('click', function() {
                                             $.post(CFG_GLPI.root_doc + '/ajax/dashboard.php', {
                                                 action: 'disable_placeholders'
@@ -583,7 +583,7 @@ JAVASCRIPT);
                     </div>
                 </div>
             {% endif %}
-            <script type="module">
+            <script nonce="{{ csp_nonce() }}" type="module">
                 import('/js/modules/Dashboard/Dashboard.js').then((m) => {
                     new m.GLPIDashboard({{ js_params|json_encode|raw }});
                 });

@@ -40,7 +40,7 @@
 {% macro tfa_backup_code_toggle(update_card_title = false) %}
    <input type="text" name="backup_code" class="form-control d-none" disabled="disabled" placeholder="{{ __('Backup code') }}"/>
    <button type="button" class="btn btn-link px-1 js-tfa-switch-code-type">{{ __('Use a backup code') }}</button>
-   <script>
+   <script nonce="{{ csp_nonce() }}">
        $(document).ready(function() {
            $('.js-tfa-switch-code-type').on('click', function(e) {
                const btn = $(e.currentTarget);
@@ -93,7 +93,7 @@
                                    aria-label="{{ __('Copy') }}">
                               <i class="ti ti-clipboard-copy" aria-hidden="true"></i>
                            </button>
-                           <script>
+                           <script nonce="{{ csp_nonce() }}">
                               $(document).ready(function() {
                                   $('button[name="copy_secret"]').on('click', function() {
                                       navigator.clipboard.writeText($(this).data('clipboard-text'));
@@ -135,7 +135,7 @@
         <h3 class="mb-2 alert alert-warning">{{ __('Backup codes (This is the only time these will be shown)') }}</h3>
         <h4 class="mb-2">{{ __('These are one-time use codes in case your authenticator is inaccessible') }}</h4>
     </div>
-    <script type="module">
+    <script nonce="{{ csp_nonce() }}" type="module">
         $('#backup_codes').on('click', 'button[name="copy_backup_codes"]', function() {
             const codes = [];
             $('#backup_codes').find('td.backup-code').each(function () {
