@@ -1111,6 +1111,50 @@ PHP
             }
         }
 
+        /**
+         * A plugin present in several plugins directories must be booted only once, from the first directory
+         * where it is found.
+         */
+        #[RunInSeparateProcess]
+        public function testBootPluginsBootsPluginOnlyOnceWhenFoundInSeveralDirectories(): void
+        {
+            $directory = $this->getRandomPluginName();
+
+            vfsStream::setup('glpi', null, [
+                'marketplace' => [
+                    $directory => ['setup.php' => '<?php'],
+                ],
+                'plugins' => [
+                    $directory => ['setup.php' => '<?php'],
+                ],
+            ]);
+
+            $this->createItem(Plugin::class, [
+                'directory' => $directory,
+                'name'      => 'Test plugin',
+                'version'   => '1.0',
+                'state'     => Plugin::ACTIVATED,
+            ]);
+
+            $plugin = new class extends Plugin {
+                protected static function getPluginDirectories(): array
+                {
+                    return [
+                        vfsStream::url('glpi/marketplace'),
+                        vfsStream::url('glpi/plugins'),
+                        // keep real directories, to not deactivate the `tester` plugin
+                        ...GLPI_PLUGINS_DIRECTORIES,
+                    ];
+                }
+            };
+
+            $plugin->bootPlugins();
+
+            $activated_plugins = Plugin::getPlugins();
+            $this->assertCount(1, array_keys($activated_plugins, $directory, true));
+            $this->assertSame(array_values(array_unique($activated_plugins)), array_values($activated_plugins));
+        }
+
         private function getPluginMock(array $options = [])
         {
             $plugin = new class extends Plugin {
