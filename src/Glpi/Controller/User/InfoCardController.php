@@ -48,7 +48,7 @@ final class InfoCardController extends AbstractController
     public function __invoke(Request $request, int $users_id): Response
     {
         $user = new User();
-        if (!$user->can($users_id, READ)) {
+        if (!$user->can($users_id, READ, reauth_needed: $reauth_needed) && !$reauth_needed) {
             throw new AccessDeniedHttpException();
         }
 
