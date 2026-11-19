@@ -128,6 +128,26 @@ test.describe('Item form question type - default values', () => {
         api.refreshSession();
     });
 
+    test('Searching an entity highlights the first matching value', async ({ api }) => {
+        const entity_name = `Test entity ${randomUUID()}`;
+        await api.createItem('Entity', {
+            name: entity_name,
+            entities_id: getWorkerEntityId(),
+        });
+        api.refreshSession();
+        await form.page.reload();
+
+        const question = form.getLastQuestion();
+        await question.click({ position: { x: 0, y: 0 } });
+        await form.setItemTypeForItemQuestion(question, 'Entities');
+
+        const dropdown = form.getDropdownByLabel('Select an item', question)
+            .filter({ visible: true });
+        await form.doSearchAndSelectHighlightedDropdownValue(dropdown, entity_name);
+
+        await expect(dropdown).toContainText(entity_name);
+    });
+
     test('Defining a new ticket as default value', async ({ api }) => {
         const ticket_name = `Test ticket ${randomUUID()}`;
         await api.createItem('Ticket', {

@@ -1,0 +1,41 @@
+name: "Actions lockfile"
+
+# Fails when .github/workflows/actions.lock is out of sync with the workflows,
+# or when a locked commit no longer matches its upstream ref.
+# After changing a `uses:` line or adding a workflow, run `gh actions-lock`
+# (https://github.com/github/gh-actions-lock) and commit the updated lockfile.
+
+on:
+  push:
+    branches:
+      - main
+      - "*/bugfixes"
+    paths:
+      - ".github/workflows/**"
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+  workflow_dispatch:
+
+permissions:
+  contents: "read"
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: "Verify actions lockfile"
+    runs-on: "ubuntu-latest"
+    env:
+      GH_TOKEN: "${{ github.token }}"
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v7.0.1"
+        with:
+          persist-credentials: false
+      - name: "Install gh-actions-lock"
+        run: "gh extension install github/gh-actions-lock --pin v0.4.1"
+      - name: "Verify lockfile"
+        run: "gh actions-lock --verify"

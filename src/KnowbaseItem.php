@@ -50,6 +50,7 @@ use function Safe\preg_match;
 use function Safe\preg_match_all;
 use function Safe\preg_replace;
 use function Safe\preg_replace_callback;
+use function Safe\preg_split;
 
 /**
  * KnowbaseItem Class
@@ -626,6 +627,30 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             ? self::getVisibilityCriteriaFAQ()
             : self::getVisibilityCriteriaKB();
         return $criteria;
+    }
+
+    /**
+     * Get the WHERE clause restricting articles to their visibility period
+     * (`begin_date` < NOW() < `end_date`, a null bound being open).
+     *
+     * @return array<int, array<string, mixed>> WHERE clause
+     */
+    public static function getVisibilityDateCriteria(): array
+    {
+        return [
+            [
+                'OR'  => [
+                    ['glpi_knowbaseitems.begin_date' => null],
+                    ['glpi_knowbaseitems.begin_date' => ['<', QueryFunction::now()]],
+                ],
+            ],
+            [
+                'OR'  => [
+                    ['glpi_knowbaseitems.end_date' => null],
+                    ['glpi_knowbaseitems.end_date' => ['>', QueryFunction::now()]],
+                ],
+            ],
+        ];
     }
 
     /**
@@ -1337,19 +1362,7 @@ TWIG, $twig_params);
                     $search_where[] = ['OR' => $ors];
 
                     // Add visibility date
-                    $visibility_crit = [
-                        [
-                            'OR'  => [
-                                ['glpi_knowbaseitems.begin_date'  => null],
-                                ['glpi_knowbaseitems.begin_date'  => ['<', QueryFunction::now()]],
-                            ],
-                        ], [
-                            'OR'  => [
-                                ['glpi_knowbaseitems.end_date'    => null],
-                                ['glpi_knowbaseitems.end_date'    => ['>', QueryFunction::now()]],
-                            ],
-                        ],
-                    ];
+                    $visibility_crit = self::getVisibilityDateCriteria();
                     $search_where[] = $visibility_crit;
 
                     $criteria['ORDERBY'] = ['SCORE DESC'];
@@ -1395,19 +1408,7 @@ TWIG, $twig_params);
 
             case 'browse':
                 if (!Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
-                    // Add visibility date
-                    $criteria['WHERE'][] = [
-                        'OR'  => [
-                            ['glpi_knowbaseitems.begin_date' => null],
-                            ['glpi_knowbaseitems.begin_date' => ['<', QueryFunction::now()]],
-                        ],
-                    ];
-                    $criteria['WHERE'][] = [
-                        'OR'  => [
-                            ['glpi_knowbaseitems.end_date' => null],
-                            ['glpi_knowbaseitems.end_date' => ['>', QueryFunction::now()]],
-                        ],
-                    ];
+                    $criteria['WHERE'][] = self::getVisibilityDateCriteria();
                 }
 
                 $criteria['ORDERBY'] = ['glpi_knowbaseitems.name ASC'];
@@ -1432,6 +1433,28 @@ TWIG, $twig_params);
 
         // Remove any whitespace from begin/end
         $search = preg_replace('/^[\p{Z}\h\v\r\n]+|[\p{Z}\h\v\r\n]+$/u', '', $search);
+        // Replace any other whitespace by a simple space
+        $search = preg_replace('/[\p{Z}\h\v\r\n]+/u', ' ', $search);
+
+        // Replace by a space all symbols located between two word chars, as MySQL fulltext index handles them as words separators
+        // (e.g. `base-de` is indexed as `base` and `de`).
+        // Outside of a quoted phrase, the resulting words are wrapped in double quotes to only match them as a phrase
+        // (e.g. `base-de` becomes `"base de"`, instead of `base* de*` that would match any word starting with `de`).
+        $inner_symbols = "[^{$word_chars}()\"* ]+";
+        $parts = preg_split('/("[^"]*")/u', $search, -1, PREG_SPLIT_DELIM_CAPTURE);
+        foreach ($parts as $i => $part) {
+            if ($i % 2 === 1) {
+                // Quoted phrase
+                $parts[$i] = preg_replace("/(?<=[{$word_chars}]){$inner_symbols}(?=[{$word_chars}])/u", ' ', $part);
+            } else {
+                $parts[$i] = preg_replace_callback(
+                    "/[{$word_chars}]+(?:{$inner_symbols}[{$word_chars}]+)+\**/u",
+                    fn(array $matches) => '"' . preg_replace("/{$inner_symbols}/u", ' ', rtrim($matches[0], '*')) . '"',
+                    $part
+                );
+            }
+        }
+        $search = implode('', $parts);
 
         // Remove all symbols except word chars, ponderation chars, parenthesis, quotes, wildcards and spaces.
         // @distance is not included, since it's unlikely a human will be using it through UI form
@@ -1811,18 +1834,7 @@ TWIG, $twig_params);
         ];
 
         // Add visibility date
-        $criteria['WHERE'][] = [
-            'OR'  => [
-                ['glpi_knowbaseitems.begin_date' => null],
-                ['glpi_knowbaseitems.begin_date' => ['<', QueryFunction::now()]],
-            ],
-        ];
-        $criteria['WHERE'][] = [
-            'OR'  => [
-                ['glpi_knowbaseitems.end_date'   => null],
-                ['glpi_knowbaseitems.end_date'   => ['>', QueryFunction::now()]],
-            ],
-        ];
+        $criteria['WHERE'][] = self::getVisibilityDateCriteria();
 
         if ($faq) { // FAQ
             $criteria['WHERE']['glpi_knowbaseitems.is_faq'] = 1;

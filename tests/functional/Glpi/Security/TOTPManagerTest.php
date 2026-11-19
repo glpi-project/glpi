@@ -222,6 +222,26 @@ class TOTPManagerTest extends DbTestCase
         $this->assertEquals($tfa::ENFORCEMENT_MANDATORY, $tfa->get2FAEnforcement($users_id));
     }
 
+    public function testGet2FAEnforcementSkipsEntityResolutionWhenNoEntityEnforces(): void
+    {
+        global $CFG_GLPI, $DB, $GLPI_CACHE;
+
+        $tfa = new TOTPManager();
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+        $users_id = getItemByTypeName('User', TU_USER, true);
+        $cache_key = sprintf('entity_%d_config_2fa_enforcement_strategy', $entities_id);
+
+        $CFG_GLPI['2fa_enforced'] = 0;
+        $this->assertSame(0, countElementsInTable('glpi_entities', ['2fa_enforcement_strategy' => 1]));
+
+        $this->assertEquals($tfa::ENFORCEMENT_OPTIONAL, $tfa->get2FAEnforcement($users_id));
+        $this->assertNull($GLPI_CACHE->get($cache_key));
+
+        $DB->update('glpi_entities', ['2fa_enforcement_strategy' => 1], ['id' => $entities_id]);
+        $this->assertEquals($tfa::ENFORCEMENT_MANDATORY, $tfa->get2FAEnforcement($users_id));
+        $this->assertNotNull($GLPI_CACHE->get($cache_key));
+    }
+
     public function testGetGracePeriodDaysLeft()
     {
         global $CFG_GLPI;

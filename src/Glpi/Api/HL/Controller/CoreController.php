@@ -683,7 +683,13 @@ HTML;
             $user = new \Glpi\OAuth\User();
             $user->setIdentifier($user_id);
             $auth_request->setUser($user);
-            if (!$request->hasParameter('accept') && !$request->hasParameter('deny')) {
+            // Request parameters merge the query string and the body: only what the form posted counts,
+            // otherwise a URL carrying `accept` would turn a click on "Deny" into an approval.
+            $posted = array_diff_key($request->getParameters(), $request->getQueryParams());
+            $has_decision = array_key_exists('accept', $posted) || array_key_exists('deny', $posted);
+            // The consent decision is only accepted from the form POST. A decision passed in a GET
+            // query string would let any third-party page approve the client on behalf of the user.
+            if (!$has_decision || $request->getMethod() !== 'POST') {
                 // Display the authorization page
                 $glpi_user = new User();
                 $glpi_user->getFromDB($user_id);
@@ -696,7 +702,12 @@ HTML;
                 return new Response(200, ['Content-Type' => 'text/html'], $authorize_form);
             }
 
-            $auth_request->setAuthorizationApproved($request->hasParameter('accept'));
+            // API routes are stateless and skipped by the global CSRF check, so the token is validated here.
+            if (!Session::validateCSRF($posted)) {
+                return self::getAccessDeniedErrorResponse();
+            }
+
+            $auth_request->setAuthorizationApproved(array_key_exists('accept', $posted));
             /** @var Response $response */
             $response = Server::getAuthorizationServer()->completeAuthorizationRequest($auth_request, new Response());
             return $response;

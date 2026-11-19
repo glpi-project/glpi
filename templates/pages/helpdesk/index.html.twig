@@ -41,7 +41,7 @@
        container size for each sections of the page using container-xl/container-narrow classes#}
     <div class="d-flex flex-column helpdesk-home-container force-full-width">
         <div class="search-banner d-flex">
-            <div class="scene scene-left">
+            <div class="scene scene-left" data-testid="helpdesk-scene-left">
                 {{ render_scene(scene_left) }}
             </div>
             <div class="container-narrow search-banner-content">
@@ -75,7 +75,7 @@
                     <div class="search-bar-container-placeholder"></div>
                 {% endif %}
             </div>
-            <div class="scene scene-right">
+            <div class="scene scene-right" data-testid="helpdesk-scene-right">
                 {{ render_scene(scene_right) }}
             </div>
         </div>

@@ -78,7 +78,7 @@ class DirectAccessTest extends DbTestCase
 
         // Ensure the class exists and is valid
         $is_valid
-            = is_a($class, JsonFieldInterface::class)
+            = $class instanceof JsonFieldInterface
             && !(new \ReflectionClass($class))->isAbstract()
         ;
         $this->assertTrue($is_valid);

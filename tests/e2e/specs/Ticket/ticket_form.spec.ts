@@ -179,6 +179,38 @@ test('Search for Solution', async ({ profile, page, api }) => {
     await expect(followup_rich_text).not.toBeEmpty();
 });
 
+test('KB search result actions stay reachable with unbreakable preview content', async ({ profile, page, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const name = `KB unbreakable preview ${randomUUID()}`;
+    const ticket_id = await api.createItem('Ticket', {
+        name: name,
+        content: name,
+        entities_id: getWorkerEntityId(),
+    });
+    // Blockquote content is converted with non-breaking spaces in the text preview
+    const long_text = 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. '.repeat(3);
+    await api.createItem('KnowbaseItem', {
+        name: name,
+        answer: `<p>Intro</p><blockquote><p>${long_text}</p></blockquote><p>${'x'.repeat(400)}</p>`,
+    });
+
+    const ticket = new TicketPage(page);
+    await ticket.goto(ticket_id);
+    await ticket.getButton('Answer').click();
+    await ticket.getButton('Search in the knowledge base').click();
+
+    const kb_modal = page.getByRole('dialog', { name: 'Search in the knowledge base' });
+    const result = kb_modal.getByRole('listitem').filter({ hasText: name });
+    await expect(result).toBeVisible();
+    await expect(result.getByTitle('Use this entry')).toBeInViewport();
+    await expect(result.getByTitle('Preview')).toBeInViewport();
+
+    await result.getByTitle('Use this entry').click();
+    await expect(kb_modal).not.toBeAttached();
+    const followup_block = page.getByTestId('new-ITILFollowup-block');
+    await expect(ticket.getRichTextByLabel('Followup', followup_block)).toContainText('Intro');
+});
+
 test('Validation step template without validation step set', async ({ profile, page, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const rand = randomUUID();
@@ -495,6 +527,54 @@ test('Priority recalculates when urgency or impact changes', async ({ profile, p
 
     await ticket.doSetDropdownValue(ticket.getDropdownByLabel('Impact'), 'Very high');
     await expect(ticket.getDropdownByLabel('Priority')).toContainText('Very high');
+});
+
+test('Fields panel shows sections state and panel width toggle direction', async ({ profile, page, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const ticket_id = await api.createItem('Ticket', {
+        name: 'Test fields panel state',
+        content: 'Test fields panel state',
+        entities_id: getWorkerEntityId(),
+    });
+
+    const ticket = new TicketPage(page);
+    await ticket.goto(ticket_id);
+
+    const waitForLayoutSave = () => page.waitForResponse(
+        (response) => response.url().includes('/ajax/itillayout.php')
+    );
+
+    // Main section is expanded by default, with a chevron indicating its state
+    const main_section_button = page.getByRole('region', { name: 'Ticket', exact: true }).getByRole('button').first();
+    await expect(main_section_button).toHaveAttribute('aria-expanded', 'true');
+    // eslint-disable-next-line playwright/no-raw-locators -- decorative chevron, hidden from the accessibility tree
+    await expect(main_section_button.locator('.accordion-button-toggle')).toBeVisible();
+
+    // Collapsed state is reflected and kept after a reload
+    let layout_saved = waitForLayoutSave();
+    await main_section_button.click();
+    await layout_saved;
+    await expect(main_section_button).toHaveAttribute('aria-expanded', 'false');
+    await page.reload();
+    await expect(main_section_button).toHaveClass(/collapsed/);
+    await expect(main_section_button).toHaveAttribute('aria-expanded', 'false');
+
+    // Panel width toggle icon points to the direction of the next width change
+    const switch_button = page.getByRole('button', { name: 'Toggle panels width' });
+    // eslint-disable-next-line playwright/no-raw-locators -- decorative icon, hidden from the accessibility tree
+    const switch_icon = switch_button.locator('i');
+    await expect(switch_icon).toHaveClass(/ti-caret-left-filled/);
+    layout_saved = waitForLayoutSave();
+    await switch_button.click();
+    await layout_saved;
+    await expect(switch_icon).toHaveClass(/ti-caret-right-filled/);
+    await page.reload();
+    await expect(switch_icon).toHaveClass(/ti-caret-right-filled/);
+});
+
+test.afterEach(async ({ api }) => {
+    // The layout is stored in the worker user preferences, reset it even if a test failed
+    await api.updateItem('User', getWorkerUserId(), { itil_layout: null });
 });
 
 test('Open category dropdown is not orphaned when type change reloads it', async ({ profile, page, api }) => {

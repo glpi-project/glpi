@@ -1229,6 +1229,7 @@ $RELATION = [
     ],
 
     'glpi_snmpcredentials' => [
+        'glpi_assets_assets'     => 'snmpcredentials_id',
         'glpi_networkequipments' => 'snmpcredentials_id',
         'glpi_printers'          => 'snmpcredentials_id',
         'glpi_unmanageds'        => 'snmpcredentials_id',

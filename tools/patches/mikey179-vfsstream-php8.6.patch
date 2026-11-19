@@ -1,0 +1,13 @@
+diff --git a/src/main/php/org/bovigo/vfs/vfsStreamFile.php b/src/main/php/org/bovigo/vfs/vfsStreamFile.php
+index 406252a..64b42d9 100644
+--- a/src/main/php/org/bovigo/vfs/vfsStreamFile.php
++++ b/src/main/php/org/bovigo/vfs/vfsStreamFile.php
+@@ -371,7 +371,7 @@ public function getResourceId($resource) {
+             $resource = $data['wrapper_data'];
+         }
+ 
+-        return spl_object_hash($resource);
++        return (string) spl_object_id($resource);
+     }
+ 
+     /**

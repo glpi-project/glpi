@@ -54,7 +54,7 @@ if (isset($_POST["update"])) {
         4,
         "setup",
         //TRANS: %s is the user login
-        sprintf(__('%s updates an ola level'), $_SESSION["glpiname"])
+        sprintf(__('%s updates an OLA level'), $_SESSION["glpiname"])
     );
 
     Html::back();
@@ -85,7 +85,7 @@ if (isset($_POST["update"])) {
                 4,
                 "setup",
                 //TRANS: %s is the user login
-                sprintf(__('%s purges an ola level'), $_SESSION["glpiname"])
+                sprintf(__('%s purges an OLA level'), $_SESSION["glpiname"])
             );
         }
         $item->redirectToList();

@@ -430,6 +430,11 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
                 continue;
             }
 
+            // The value may be missing, e.g. for a strategy that doesn't use it
+            if (!is_string($config[$field_key]['value'] ?? null)) {
+                continue;
+            }
+
             $tags_manager = (new FormTagsManager());
             $config[$field_key]['value'] = $tags_manager->replaceIdsInTags(
                 $config[$field_key]['value'],

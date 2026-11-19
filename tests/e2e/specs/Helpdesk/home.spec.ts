@@ -32,12 +32,17 @@
 import { randomUUID } from 'crypto';
 import { expect, test } from '../../fixtures/glpi_fixture';
 import { Profiles } from '../../utils/Profiles';
+import { HelpdeskHomeConfigTag } from '../../pages/HelpdeskConfigTab';
 import {
     getWorkerEntityId,
     getWorkerUserId,
 } from '../../utils/WorkerEntities';
 
 test.describe('Helpdesk home page', () => {
+    test.afterEach(async({entity}) => {
+        await entity.resetToDefaultWorkerEntity();
+    });
+
     test('can search for forms and faq entries', async ({
         page,
         profile,
@@ -203,5 +208,74 @@ test.describe('Helpdesk home page', () => {
         // we can't mock it here.
         // Could be added if we don't mind relying on a real outside feeds for
         // ours tests or if we setup a dedicated container for this.
+    });
+
+    test('custom scenes are aligned to the bottom like default scenes', async ({
+        page,
+        profile,
+        entity,
+        api,
+    }) => {
+        // Dedicated entity so the custom scene doesn't leak into other tests
+        const entity_id = await api.createItem('Entity', {
+            name: `Entity ${randomUUID()}`,
+            entities_id: getWorkerEntityId(),
+        });
+        api.refreshSession();
+
+        // Configure a custom left scene with a wide image: once scaled to fit the
+        // scene width, it is much shorter than the scene, so it can't fill it.
+        await profile.set(Profiles.SuperAdmin);
+        const tab = new HelpdeskHomeConfigTag(page);
+        await tab.gotoForEntity(entity_id);
+        const left = tab.getRegion("Left side");
+        const left_side_dropdown = tab.getDropdownByLabel("Left side configuration");
+        await tab.doSetDropdownValue(left_side_dropdown, "Custom illustration");
+        await tab.doAddFileToUploadArea("uploads/wide.png", left);
+        await tab.doSaveIllustrationSettings();
+        await expect(left_side_dropdown).toHaveText("Custom illustration");
+
+        // Scenes are hidden on small screens
+        await page.setViewportSize({ width: 1920, height: 1080 });
+        await profile.set(Profiles.SelfService);
+        await entity.switchToWithRecursion(entity_id);
+        await page.goto('/Helpdesk');
+
+        const left_scene = page.getByTestId('helpdesk-scene-left');
+        const right_scene = page.getByTestId('helpdesk-scene-right');
+        const custom_img = left_scene.getByRole('img');
+        const default_svg = right_scene.getByRole('img');
+        await expect(custom_img).toBeVisible();
+        await expect(default_svg).toBeVisible();
+        await expect.poll(
+            () => custom_img.evaluate((img: HTMLImageElement) => img.complete && img.naturalHeight > 0)
+        ).toBe(true);
+
+        const bottom = async (locator: typeof left_scene) => {
+            const box = await locator.boundingBox();
+            expect(box).not.toBeNull();
+            return box!.y + box!.height;
+        };
+
+        // The <img> box may be larger than the picture it shows (object-fit),
+        // so compute the bottom of the rendered picture itself.
+        const custom_img_content_bottom = await custom_img.evaluate((img: HTMLImageElement) => {
+            const rect = img.getBoundingClientRect();
+            const style = getComputedStyle(img);
+            const scale = style.objectFit === 'contain'
+                ? Math.min(rect.width / img.naturalWidth, rect.height / img.naturalHeight)
+                : rect.height / img.naturalHeight;
+            const free_space = rect.height - img.naturalHeight * scale;
+            const position_y = style.objectPosition.split(' ')[1];
+            const offset = position_y.endsWith('%')
+                ? free_space * parseFloat(position_y) / 100
+                : parseFloat(position_y);
+            return rect.top + offset + img.naturalHeight * scale;
+        });
+
+        // Custom picture must touch the bottom of its scene, like the default SVG
+        expect(Math.abs(custom_img_content_bottom - await bottom(left_scene))).toBeLessThanOrEqual(1);
+        expect(Math.abs(await bottom(default_svg) - await bottom(right_scene))).toBeLessThanOrEqual(1);
+
     });
 });

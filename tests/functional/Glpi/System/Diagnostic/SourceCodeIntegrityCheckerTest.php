@@ -238,7 +238,7 @@ EOL,
         try {
             $checker->getSummary();
         } finally {
-            $this->hasPhpLogRecordThatContains('file_get_contents(vfs://root/version/' . $version . '): Failed to open stream', LogLevel::WARNING);
+            $this->hasPhpLogRecordThatContains('Failed to open stream', LogLevel::WARNING);
         }
     }
 

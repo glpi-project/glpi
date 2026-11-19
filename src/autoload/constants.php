@@ -40,7 +40,7 @@ use function Safe\sha1_file;
 define('GLPI_ROOT', dirname(__DIR__, 2));
 
 // Current version of GLPI
-define('GLPI_VERSION', '11.0.13-dev');
+define('GLPI_VERSION', '11.0.14-dev');
 
 $schema_file = sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT);
 define(
@@ -55,7 +55,7 @@ define(
 );
 
 define('GLPI_MIN_PHP', '8.2'); // Must also be changed in top of public/index.php
-define('GLPI_MAX_PHP', '8.5'); // Must also be changed in top of public/index.php
+define('GLPI_MAX_PHP', '8.6'); // Must also be changed in top of public/index.php
 define('GLPI_YEAR', '2026');
 
 // namespaces

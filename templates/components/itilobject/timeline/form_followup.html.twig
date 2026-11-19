@@ -226,7 +226,7 @@
                                     id="enable-pending-reasons-{{ rand }}"
                                     role="button"
                                     {{ (item.fields['status'] == constant('CommonITILObject::WAITING') or is_default_pending) and not add_reopen ? 'checked' : '' }}
-                                    data-bs-toggle="collapse" data-bs-target="#pending-reasons-setup-{{ rand }}"
+                                    aria-controls="pending-reasons-setup-{{ rand }}"
                                     data-testid="pending-checkbox" />
                            </label>
                         </span>
@@ -235,6 +235,7 @@
                            class="collapse ps-2 py-1 flex-fill {{ show_pending_reasons_actions ? 'show' : '' }}"
                            aria-expanded="{{ show_pending_reasons_actions ? 'true' : 'false' }}"
                            id="pending-reasons-setup-{{ rand }}"
+                           data-testid="pending-reasons"
                         >
                            {{ include('components/itilobject/timeline/pending_reasons.html.twig') }}
                         </div>

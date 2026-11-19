@@ -1657,8 +1657,7 @@ HTML,
         $png_sha1 = sha1_file($png_file);
 
         // Create blacklisted documents with matching SHA1
-        $doc = $this->createItem(
-            \Document::class,
+        $doc = $this->createDocumentWithFilename(
             [
                 'entities_id' => 0,
                 'name' => 'Blacklisted PNG Document',

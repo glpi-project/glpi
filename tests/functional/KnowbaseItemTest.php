@@ -35,6 +35,7 @@
 namespace test\units;
 
 use Glpi\DBAL\QueryExpression;
+use Glpi\Search\Provider\SQLProvider;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem_User;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -463,7 +464,7 @@ HTML,
         ];
         yield [
             'search'   => 'unicode😃unicode',
-            'expected' => 'unicodeunicode*', // * added when there is no boolean operators
+            'expected' => '"unicode unicode"', // symbols inside a term are words separators, resulting words are searched as a phrase
         ];
         yield [
             'search'   => '+underscore -_',
@@ -474,7 +475,8 @@ HTML,
             'expected' => 'Бесплатное* программное* обеспечение*', // * added when there is no boolean operators
         ];
 
-        // Ponderation chars are preserved only when they are located before a search term
+        // Ponderation chars are preserved only when they are located before a search term,
+        // they are handled as words separators when located inside a search term (resulting words are searched as a phrase)
         yield [
             'search'   => '+(>IMAP <auth) -test ~unit',
             'expected' => '+(>IMAP <auth) -test ~unit',
@@ -485,7 +487,7 @@ HTML,
         ];
         yield [
             'search'   => 'search wi+th ope-rators in~side t<ext>s',
-            'expected' => 'search* with* operators* inside* texts*', // * added when there is no boolean operators
+            'expected' => 'search "wi th" "ope rators" "in side" "t ext s"',
         ];
         yield [
             'search'   => '++search --with +~-surnumerous >><<+operators',
@@ -493,11 +495,29 @@ HTML,
         ];
         yield [
             'search'   => '+collector IMAP+OAuth',
-            'expected' => '+collector IMAPOAuth',
+            'expected' => '+collector "IMAP OAuth"',
         ];
         yield [
             'search'   => '+прогр~аммное Беспл>атное обесп<ечение',
-            'expected' => '+программное Бесплатное обеспечение',
+            'expected' => '+"прогр аммное" "Беспл атное" "обесп ечение"',
+        ];
+        yield [
+            'search'   => "+search\t-with\n~whitespaces\u{00A0}>before\r\n<operators",
+            'expected' => '+search -with ~whitespaces >before <operators',
+        ];
+
+        // Symbols located at the end of a search term are not handled as words separators
+        yield [
+            'search'   => 'test.**',
+            'expected' => 'test*',
+        ];
+        yield [
+            'search'   => '"test-"',
+            'expected' => '"test"',
+        ];
+        yield [
+            'search'   => '+base-de* -"foo-bar"',
+            'expected' => '+"base de" -"foo bar"',
         ];
 
         // Parenthesis are removed when inside texts, when odd or when empty
@@ -812,6 +832,28 @@ HTML,
                 'type' => 'search',
                 'count' => 2,
                 'sort' => ['_knowbaseitem01', '_knowbaseitem02'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => 'apple-macintosh',
+                    // Hyphen inside a term is handled as a words separator, resulting words are searched as a phrase
+                ],
+                'type' => 'search',
+                'count' => 1,
+                'sort' => ['_knowbaseitem02'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => 'macintosh.strudel',
+                    // Symbols inside a term are handled as words separators, resulting words are searched as a phrase
+                ],
+                'type' => 'search',
+                'count' => 1,
+                'sort' => ['_knowbaseitem02'],
             ],
         ];
     }
@@ -1932,6 +1974,97 @@ HTML,
         $this->assertTrue($fn_can_tech_see_kb());
     }
 
+    public static function visibilityDatesInSearchProvider(): iterable
+    {
+        // Technician and Self-Service do not have KNOWBASEADMIN: dates are enforced, except on their own articles
+        yield 'tech' => ['tech', 'tech', ['KB dates control', 'KB dates expired by tech']];
+        yield 'post-only' => ['post-only', 'postonly', ['KB dates control']];
+        // KB admins see every article, whatever its dates
+        yield 'glpi' => ['glpi', 'glpi', ['KB dates control', 'KB dates expired', 'KB dates expired by tech', 'KB dates scheduled']];
+    }
+
+    #[DataProvider('visibilityDatesInSearchProvider')]
+    public function testVisibilityDatesInSearch(string $login, string $password, array $expected): void
+    {
+        $this->login();
+
+        $past = date('Y-m-d H:i:s', strtotime('-1 day'));
+        $tech_id = getItemByTypeName(\User::class, 'tech', true);
+        $articles = [
+            'KB dates expired'         => ['begin_date' => null, 'end_date' => $past, 'users_id' => $_SESSION['glpiID']],
+            'KB dates expired by tech' => ['begin_date' => null, 'end_date' => $past, 'users_id' => $tech_id],
+            'KB dates scheduled'       => ['begin_date' => date('Y-m-d H:i:s', strtotime('+1 day')), 'end_date' => null, 'users_id' => $_SESSION['glpiID']],
+            'KB dates control'         => ['begin_date' => null, 'end_date' => null, 'users_id' => $_SESSION['glpiID']],
+        ];
+        foreach ($articles as $name => $fields) {
+            $kb_item = $this->createItem(\KnowbaseItem::class, [
+                'name'     => $name,
+                'answer'   => $name,
+                'is_faq'   => true,
+            ] + $fields, ['begin_date', 'end_date']);
+            $this->createItem(\Entity_KnowbaseItem::class, [
+                'knowbaseitems_id' => $kb_item->getID(),
+                'entities_id'      => 0,
+                'is_recursive'     => 1,
+            ]);
+        }
+
+        $this->login($login, $password);
+
+        $params = \Search::manageParams(\KnowbaseItem::class, [
+            'criteria' => [['field' => 1, 'searchtype' => 'contains', 'value' => 'KB dates']],
+        ], false);
+        $data = \Search::getDatas(\KnowbaseItem::class, $params);
+        $names = array_map(static fn($row) => $row['raw']['ITEM_KnowbaseItem_1'], $data['data']['rows']);
+        sort($names);
+
+        $this->assertSame($expected, $names);
+    }
+
+    public function testVisibilityDatesInPublicFaqSearch(): void
+    {
+        global $CFG_GLPI, $DB;
+
+        $this->login();
+
+        // users_id = 0 is what remains on articles once their author has been purged
+        $past = date('Y-m-d H:i:s', strtotime('-1 day'));
+        $articles = [
+            'Public FAQ expired orphan' => ['end_date' => $past, 'users_id' => 0],
+            'Public FAQ expired'        => ['end_date' => $past, 'users_id' => $_SESSION['glpiID']],
+            'Public FAQ control'        => ['end_date' => null, 'users_id' => $_SESSION['glpiID']],
+        ];
+        foreach ($articles as $name => $fields) {
+            $kb_item = $this->createItem(\KnowbaseItem::class, [
+                'name'   => $name,
+                'answer' => $name,
+                'is_faq' => true,
+            ] + $fields, ['end_date']);
+            $this->createItem(\Entity_KnowbaseItem::class, [
+                'knowbaseitems_id' => $kb_item->getID(),
+                'entities_id'      => 0,
+                'is_recursive'     => 1,
+            ]);
+        }
+
+        $this->logOut();
+        $CFG_GLPI['use_public_faq'] = true;
+
+        // Default search engine restrictions, as applied to the public FAQ "Browse" tab
+        $already_linked = [];
+        $criteria = SQLProvider::getDefaultJoinCriteria(\KnowbaseItem::class, \KnowbaseItem::getTable(), $already_linked);
+        $criteria['SELECT'] = ['glpi_knowbaseitems.name'];
+        $criteria['DISTINCT'] = true;
+        $criteria['FROM'] = \KnowbaseItem::getTable();
+        $criteria['WHERE'] = [
+            SQLProvider::getDefaultWhereCriteria(\KnowbaseItem::class),
+            'glpi_knowbaseitems.name' => ['LIKE', 'Public FAQ%'],
+        ];
+        $names = array_column(iterator_to_array($DB->request($criteria)), 'name');
+
+        $this->assertSame(['Public FAQ control'], $names);
+    }
+
     public function testRelinkEmbeddedDocumentsFromTicketSolution(): void
     {
         $this->login();
@@ -1941,7 +2074,7 @@ HTML,
             'content' => __FUNCTION__,
         ]);
 
-        $document = $this->createItem(\Document::class, [
+        $document = $this->createDocumentWithFilename([
             'name'     => __FUNCTION__,
             'filename' => 'test.txt',
         ]);
@@ -1990,7 +2123,7 @@ HTML,
             'content' => __FUNCTION__,
         ]);
 
-        $document = $this->createItem(\Document::class, [
+        $document = $this->createDocumentWithFilename([
             'name'     => __FUNCTION__,
             'filename' => 'test.txt',
         ]);

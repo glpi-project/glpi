@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use AuthLDAP;
+use Computer;
 use DateInterval;
 use DateTime;
 use DBmysql;
@@ -51,6 +52,8 @@ use User;
 use UserCategory;
 
 use function Safe\json_decode;
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
 use function Safe\strtotime;
 
 class UserTest extends DbTestCase
@@ -752,6 +755,76 @@ class UserTest extends DbTestCase
                 $this->assertEquals(true, \array_key_exists($key, $output));
             }
         }
+    }
+
+    public function testPrepareInputForUpdatePasswordForgetTokenTypeJuggling(): void
+    {
+        global $DB;
+
+        $target_user = \getItemByTypeName(User::class, 'glpi');
+        $token = \bin2hex(\random_bytes(16));
+        $this->assertTrue(
+            $DB->update(
+                User::getTable(),
+                [
+                    'password_forget_token'      => (new \GLPIKey())->encrypt($token),
+                    'password_forget_token_date' => date('Y-m-d H:i:s', strtotime('+1 day')),
+                ],
+                ['id' => $target_user->getID()]
+            )
+        );
+        $this->assertTrue($target_user->getFromDB($target_user->getID()));
+
+        $password_input = [
+            'id'        => $target_user->getID(),
+            'password'  => 'Takeover-2026!',
+            'password2' => 'Takeover-2026!',
+        ];
+
+        // A less privileged user must not be able to change the password with a non-matching token,
+        // whatever its type (JSON payloads of the API keep native types).
+        $this->login('tech', 'tech');
+        foreach ([true, 1, '', 'wrong-token', [$token]] as $forged_token) {
+            $output = $target_user->prepareInputForUpdate($password_input + ['password_forget_token' => $forged_token]);
+            $this->assertFalse($output, 'Token ' . var_export($forged_token, true) . ' must be refused');
+            $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+        }
+
+        // A non-numeric ID must not be considered as the ID of the logged-in user.
+        $output = $target_user->prepareInputForUpdate(['id' => true] + $password_input);
+        $this->assertFalse($output, 'ID `true` must not match the logged-in user');
+        $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+
+        // Without session (password reset form), only the exact token is accepted.
+        $this->logout();
+        $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s');
+        foreach ([true, 1, '', 'wrong-token'] as $forged_token) {
+            $output = $target_user->prepareInputForUpdate($password_input + ['password_forget_token' => $forged_token]);
+            $this->assertFalse($output, 'Token ' . var_export($forged_token, true) . ' must be refused');
+            $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+        }
+        $output = $target_user->prepareInputForUpdate($password_input + ['password_forget_token' => $token]);
+        $this->assertIsArray($output);
+        $this->assertTrue(\Auth::checkPassword('Takeover-2026!', $output['password']));
+    }
+
+    public function testPrepareInputForUpdateUnchangedProtectedFields(): void
+    {
+        $this->login('tech', 'tech');
+        $target_user = \getItemByTypeName(User::class, 'glpi');
+
+        // Empty or unchanged values of protected fields are silently ignored (`end_date` and `api_token` are NULL,
+        // `is_active` is 1)...
+        foreach (['end_date' => false, 'api_token' => 0, 'is_active' => true] as $key => $value) {
+            $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), $key => $value]);
+            $this->assertIsArray($output, "Unchanged `{$key}` must not block the update");
+            $this->assertArrayNotHasKey($key, $output);
+        }
+
+        // ... but an actual change is refused.
+        $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), 'is_active' => false]);
+        $this->assertFalse($output);
+        $this->hasSessionMessages(ERROR, ['You are not allowed to update the following fields: is_active']);
     }
 
     public function testPrepareInputForUpdate2fa(): void
@@ -3123,5 +3196,71 @@ class UserTest extends DbTestCase
             '_is_recursive' => 1,
         ]);
         $this->assertTrue(User::isValidUserForEntity($recursive_user->getID(), $child1_entity_id));
+    }
+
+    public function testShowItemsFilters(): void
+    {
+        $this->login();
+
+        $user = getItemByTypeName(User::class, TU_USER);
+        $other_user = $this->createItem(User::class, [
+            'name'      => $this->getUniqueString(),
+            'realname'  => 'OtherUserRealname',
+            '_profiles_id'  => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id'  => $this->getTestRootEntity(true),
+            '_is_recursive' => 1,
+        ]);
+        $this->createItem(Computer::class, [
+            'name'        => 'Computer used by test user',
+            'entities_id' => $this->getTestRootEntity(true),
+            'users_id'    => $user->getID(),
+        ]);
+
+        $render = function (array $get) use ($user): string {
+            $_GET = $get;
+            ob_start();
+            $user->showItems(false);
+            $output = ob_get_clean();
+            $_GET = [];
+            return $output;
+        };
+
+        // Filter row is closed by default
+        $output = $render([]);
+        $this->assertStringContainsString('Computer used by test user', $output);
+        $this->assertStringNotContainsString('filter_row', $output);
+
+        // Non array filters are ignored
+        $output = $render(['filters' => 'invalid']);
+        $this->assertStringContainsString('Computer used by test user', $output);
+        $this->assertStringNotContainsString('filter_row', $output);
+
+        // Users and groups filters are AJAX dropdowns, other users are not listed in the page
+        $output = $render(['filters' => ['active' => 1]]);
+        $this->assertStringContainsString('filter_row', $output);
+        $this->assertStringContainsString('name="filters[users][]"', $output);
+        $this->assertStringContainsString('getDropdownUsers.php', $output);
+        $this->assertStringContainsString('name="filters[group][]"', $output);
+        $this->assertStringNotContainsString('OtherUserRealname', $output);
+
+        // Users filter is applied
+        $output = $render(['filters' => ['active' => 1, 'users' => [$user->getID()]]]);
+        $this->assertStringContainsString('Computer used by test user', $output);
+
+        $output = $render(['filters' => ['active' => 1, 'users' => [$other_user->getID()]]]);
+        $this->assertStringNotContainsString('Computer used by test user', $output);
+        $this->assertStringContainsString('OtherUserRealname', $output);
+
+        // Users the viewer cannot see are ignored
+        $hidden_user = $this->createItem(User::class, [
+            'name'          => $this->getUniqueString(),
+            'realname'      => 'HiddenUserRealname',
+            '_profiles_id'  => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id'  => getItemByTypeName('Entity', '_test_child_2', true),
+            '_is_recursive' => 0,
+        ]);
+        $this->setEntity('_test_child_1', false);
+        $output = $render(['filters' => ['active' => 1, 'users' => [$hidden_user->getID()]]]);
+        $this->assertStringNotContainsString('HiddenUserRealname', $output);
     }
 }

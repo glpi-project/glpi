@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use AuthLDAP;
+use FieldUnicity;
 use Glpi\DBAL\QueryExpression;
 use Glpi\OAuth\Client;
 use Glpi\OAuth\UserRepository;
@@ -898,6 +899,186 @@ class AuthLdapTest extends DbTestCase
 
         $this->assertGreaterThan(0, (int) $user->fields['usertitles_id']);
         $this->assertGreaterThan(0, (int) $user->fields['usercategories_id']);
+    }
+
+    #[RequiresPhpExtension('ldap')]
+    public function testRefusedImportIsNotReportedAsImported(): void
+    {
+        $this->login();
+
+        // Make the import fail on a unicity check against an existing local user
+        $this->createItem(FieldUnicity::class, [
+            'name'          => 'User login uniqueness',
+            'itemtype'      => \User::class,
+            '_fields'       => ['name'],
+            'entities_id'   => 0,
+            'is_recursive'  => 1,
+            'is_active'     => 1,
+            'action_refuse' => 1,
+        ], ['_fields']);
+        $users_id = $this->createItem(\User::class, ['name' => 'ecuador0'])->getID();
+
+        // Same call as the CLI synchronization command (ldap:synchronize_users)
+        $import = AuthLDAP::ldapImportUserByServerId(
+            [
+                'method' => AuthLDAP::IDENTIFIER_LOGIN,
+                'value'  => 'ecuador0',
+            ],
+            AuthLDAP::ACTION_IMPORT,
+            $this->ldap->getID(),
+            false,
+            true
+        );
+        $this->assertFalse($import);
+        $this->hasSessionMessageThatContains('Impossible record for Login = ecuador0', ERROR);
+
+        // No user has been created, the existing one is untouched
+        $this->assertSame(1, countElementsInTable(\User::getTable(), ['name' => 'ecuador0']));
+        $user = new \User();
+        $this->assertTrue($user->getFromDB($users_id));
+        $this->assertEmpty($user->fields['user_dn']);
+    }
+
+    #[RequiresPhpExtension('ldap')]
+    public function testRefusedSynchronizationIsNotReportedAsSynchronized(): void
+    {
+        $this->login();
+
+        $import = AuthLDAP::ldapImportUserByServerId(
+            [
+                'method' => AuthLDAP::IDENTIFIER_LOGIN,
+                'value'  => 'ecuador0',
+            ],
+            AuthLDAP::ACTION_IMPORT,
+            $this->ldap->getID()
+        );
+        $this->assertSame(AuthLDAP::USER_IMPORTED, $import['action']);
+
+        // Make the synchronization fail on a unicity check against an existing local user
+        $this->createItem(FieldUnicity::class, [
+            'name'          => 'User phone uniqueness',
+            'itemtype'      => \User::class,
+            '_fields'       => ['phone'],
+            'entities_id'   => 0,
+            'is_recursive'  => 1,
+            'is_active'     => 1,
+            'action_refuse' => 1,
+        ], ['_fields']);
+        $this->createItem(\User::class, ['name' => 'ecuador0_local', 'phone' => '+33101010101']);
+
+        $this->assertTrue(
+            ldap_modify(
+                $this->ldap->connect(),
+                'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
+                ['telephoneNumber' => '+33101010101']
+            )
+        );
+
+        // Same call as the CLI synchronization command (ldap:synchronize_users)
+        $refused = false;
+        $synchro = AuthLDAP::ldapImportUserByServerId(
+            [
+                'method' => AuthLDAP::IDENTIFIER_LOGIN,
+                'value'  => 'ecuador0',
+            ],
+            AuthLDAP::ACTION_SYNCHRONIZE,
+            $this->ldap->getID(),
+            false,
+            true,
+            $refused
+        );
+
+        //reset entry before any test can fail
+        $this->assertTrue(
+            ldap_modify(
+                $this->ldap->connect(),
+                'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
+                ['telephoneNumber' => '034596780']
+            )
+        );
+
+        $this->assertFalse($synchro);
+        $this->assertTrue($refused);
+        $this->hasSessionMessageThatContains('Impossible record for Phone = +33101010101', ERROR);
+
+        // The user has not been updated
+        $user = new \User();
+        $this->assertTrue($user->getFromDB($import['id']));
+        $this->assertSame('034596780', $user->fields['phone']);
+    }
+
+    #[RequiresPhpExtension('ldap')]
+    public function testImportUserFromServersStopsOnRefusedImport(): void
+    {
+        $this->login();
+
+        $this->createItem(FieldUnicity::class, [
+            'name'          => 'User phone uniqueness',
+            'itemtype'      => \User::class,
+            '_fields'       => ['phone'],
+            'entities_id'   => 0,
+            'is_recursive'  => 1,
+            'is_active'     => 1,
+            'action_refuse' => 1,
+        ], ['_fields']);
+        $this->createItem(\User::class, ['name' => 'ecuador0_local', 'phone' => '034596780']);
+
+        // Second active directory, holding the same users as the first one
+        $this->createItem(AuthLDAP::class, [
+            'name'            => 'Copy of ' . $this->ldap->fields['name'],
+            'host'            => $this->ldap->fields['host'],
+            'port'            => $this->ldap->fields['port'],
+            'basedn'          => $this->ldap->fields['basedn'],
+            'rootdn'          => $this->ldap->fields['rootdn'],
+            'rootdn_passwd'   => (new GLPIKey())->decrypt($this->ldap->fields['rootdn_passwd']),
+            'condition'       => $this->ldap->fields['condition'],
+            'login_field'     => $this->ldap->fields['login_field'],
+            'email1_field'    => $this->ldap->fields['email1_field'],
+            'realname_field'  => $this->ldap->fields['realname_field'],
+            'firstname_field' => $this->ldap->fields['firstname_field'],
+            'phone_field'     => $this->ldap->fields['phone_field'],
+            'is_active'       => 1,
+            'is_default'      => 0,
+        ], ['rootdn_passwd']);
+
+        // Same call as the user form "Import from directories"
+        $this->assertFalse(AuthLDAP::importUserFromServers(['name' => 'ecuador0']));
+
+        // The import stops on the first refusal: the unicity error is displayed only once,
+        // without retrying on the second directory nor a misleading "User not found"
+        $this->assertCount(1, $_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR] ?? []);
+        $this->hasSessionMessageThatContains('Impossible record for Phone = 034596780', ERROR);
+        $this->hasNoSessionMessage(ERROR);
+        $this->assertSame(0, countElementsInTable(\User::getTable(), ['name' => 'ecuador0']));
+    }
+
+    #[RequiresPhpExtension('ldap')]
+    public function testGetOrImportByEmailDoesNotCreateUserOnRefusedImport(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $this->createItem(FieldUnicity::class, [
+            'name'          => 'User phone uniqueness',
+            'itemtype'      => \User::class,
+            '_fields'       => ['phone'],
+            'entities_id'   => 0,
+            'is_recursive'  => 1,
+            'is_active'     => 1,
+            'action_refuse' => 1,
+        ], ['_fields']);
+        $this->createItem(\User::class, ['name' => 'remi_local', 'phone' => '0234596798']);
+
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['is_users_auto_add'] = 1;
+        $users_id = \User::getOrImportByEmail('remi@mail.com', true);
+        $CFG_GLPI = $cfg_backup;
+
+        // The import has been refused, the user must not be created from its email either
+        $this->assertSame(0, $users_id);
+        $this->hasSessionMessageThatContains('Impossible record for Phone = 0234596798', ERROR);
+        $this->assertSame(0, countElementsInTable(\User::getTable(), ['name' => ['remi', 'remi@mail.com']]));
     }
 
     /**

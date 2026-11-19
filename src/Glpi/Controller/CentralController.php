@@ -47,8 +47,7 @@ use Toolbox;
 
 class CentralController extends AbstractController
 {
-    #[Route('/front/central.php', name: 'front_central_legacy')]
-    #[Route('/Central', name: 'front_central')]
+    #[Route('/front/central.php', name: 'front_central')]
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)] // No automatic check, to allow embed dashboards
     public function __invoke(Request $request): Response
     {

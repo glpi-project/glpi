@@ -483,6 +483,13 @@
                                   __('%1$s (%2$s)')|format(_n('Memory', 'Memories', 1), __('Mio')),
                                   specific_field_options
                               ) }}
+                          {% elseif field is same as 'last_pages_counter' %}
+                              {{ fields.numberField(
+                                  'last_pages_counter',
+                                  item.fields['last_pages_counter'],
+                                  __('Current counter of pages'),
+                                  specific_field_options
+                              ) }}
                           {% elseif field is same as 'alarm_threshold' %}
                               {% set dd_alarm_treshold %}
                                   {% do call('Dropdown::showNumber', ['alarm_threshold', {

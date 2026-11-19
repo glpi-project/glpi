@@ -52,17 +52,32 @@ services:
 ### Files ownership
 
 The default uid/gid used by the docker container is `1000`. If your host user uses different uid/gid, you may encounter
-file permissions issues. To prevent this, you can customize them using the corresponding build args in
-the `docker-compose.override.yaml` file.
+file permissions issues. To prevent this, define the `HOST_USER_ID` and `HOST_GROUP_ID` environment variables
+on your host, for instance in your shell profile.
 
-```yaml
-services:
-  app:
-    build:
-      args:
-        HOST_GROUP_ID: "${HOST_GROUP_ID:-1000}"
-        HOST_USER_ID: "${HOST_USER_ID:-1000}"
+With the `bash` or `zsh` shells (`~/.bashrc` or `~/.zshrc`):
+
+```bash
+export HOST_USER_ID="$(id -u)"
+export HOST_GROUP_ID="$(id -g)"
 ```
+
+With the `fish` shell (`~/.config/fish/config.fish`):
+
+```fish
+set -gx HOST_USER_ID (id -u)
+set -gx HOST_GROUP_ID (id -g)
+```
+
+Alternatively, you can define them in a `.env` file in the GLPI root directory:
+
+```dotenv
+HOST_USER_ID=1001
+HOST_GROUP_ID=1001
+```
+
+These values are used when the image is built, so you have to rebuild the `app` container after changing them:
+`docker compose up -d --build app`.
 
 ### Services ports
 

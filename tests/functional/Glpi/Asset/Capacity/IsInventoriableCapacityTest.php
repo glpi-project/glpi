@@ -45,6 +45,7 @@ use Glpi\Inventory\MainAsset\GenericNetworkAsset;
 use Glpi\Inventory\MainAsset\GenericPrinterAsset;
 use Glpi\Inventory\MainAsset\NetworkEquipment;
 use Glpi\Tests\DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class IsInventoriableCapacityTest extends DbTestCase
 {
@@ -311,5 +312,46 @@ class IsInventoriableCapacityTest extends DbTestCase
         //computer specific rule should no longer be present
         $iterator = $DB->request($criteria);
         $this->assertCount(0, $iterator);
+    }
+
+    /**
+     * @return iterable<array{string, list<int>}>
+     */
+    public static function searchOptionsProvider(): iterable
+    {
+        yield [GenericAsset::class, [42, 10]];
+        yield [GenericNetworkAsset::class, [42, 15, 73]];
+        yield [GenericPrinterAsset::class, [42, 15, 73, 33]];
+    }
+
+    /**
+     * @param list<int> $expected_ids
+     */
+    #[DataProvider('searchOptionsProvider')]
+    public function testSearchOptionsSeparator(string $inventory_mainasset, array $expected_ids): void
+    {
+        $definition = $this->initAssetDefinition(
+            capacities: [
+                new Capacity(
+                    name: IsInventoriableCapacity::class,
+                    config: new CapacityConfig(['inventory_mainasset' => $inventory_mainasset])
+                ),
+            ]
+        );
+
+        $options = (new IsInventoriableCapacity())->getSearchOptions($definition->getAssetClassName());
+
+        // Inventory fields must be grouped under their own separator, not under the agent one
+        $separator = null;
+        $grouped = [];
+        foreach ($options as $option) {
+            if (!isset($option['table'])) {
+                $separator = $option['id'];
+                continue;
+            }
+            $grouped[$separator][] = $option['id'];
+        }
+        $this->assertSame($expected_ids, $grouped['inventory']);
+        $this->assertSame([], array_intersect($expected_ids, $grouped['agent']));
     }
 }

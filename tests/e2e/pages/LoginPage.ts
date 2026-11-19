@@ -100,7 +100,17 @@ export class LoginPage extends GlpiPage
     public async doGetAuthorizationCode(): Promise<string>
     {
         const current_url = this.page.url();
-        const response = await this.page.request.fetch(`${current_url}&accept=1`, {
+        // Submit the consent form as the browser would: the decision is only accepted by POST with a CSRF token
+        const csrf_token = await this.page.evaluate(
+            () => document
+                .querySelector<HTMLInputElement>('input[name="_glpi_csrf_token"]')
+                ?.value ?? ''
+        );
+        const response = await this.page.request.post(current_url, {
+            form: {
+                accept: '',
+                _glpi_csrf_token: csrf_token,
+            },
             maxRedirects: 0,
         });
         const location = response.headers()['location'] ?? '';
