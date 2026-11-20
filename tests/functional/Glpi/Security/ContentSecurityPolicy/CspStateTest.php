@@ -96,6 +96,45 @@ class CspStateTest extends GLPITestCase
         );
     }
 
+    public function testGetPluginsThatWouldDisableCsp(): void
+    {
+        // CSP is enabled: only incompatible plugins are returned
+        $this->setActivePlugins(['tester']);
+        $this->assertSame([], CspState::getPluginsThatWouldDisableCsp([]));
+        $this->assertSame([], CspState::getPluginsThatWouldDisableCsp(['cspcompliant']));
+        $this->assertSame(
+            ['cspnotcompliant', 'cspnotstrictlycompliant'],
+            CspState::getPluginsThatWouldDisableCsp(['cspnotcompliant', 'cspcompliant', 'cspnotstrictlycompliant'])
+        );
+
+        // CSP is already disabled: activating another incompatible plugin does not change its state
+        $this->setActivePlugins(['tester', 'cspexplicitlynotcompliant']);
+        $this->assertSame([], CspState::getPluginsThatWouldDisableCsp(['cspnotcompliant']));
+    }
+
+    public function testGetActivationConfirmationMessage(): void
+    {
+        $this->setActivePlugins(['tester']);
+
+        $this->assertNull(CspState::getActivationConfirmationMessage([]));
+        $this->assertNull(CspState::getActivationConfirmationMessage(['cspcompliant']));
+
+        $this->assertSame(
+            'cspnotcompliant is not compatible with the Content Security Policy (CSP), which protects GLPI against cross-site scripting (XSS) attacks. Enabling it will disable the CSP. Do you want to continue?',
+            CspState::getActivationConfirmationMessage(['cspnotcompliant', 'cspcompliant'])
+        );
+
+        // Plugin names are stripped from their HTML tags
+        $this->assertSame(
+            'The following plugins are not compatible with the Content Security Policy (CSP), which protects GLPI against cross-site scripting (XSS) attacks: cspnotcompliant, cspexplicitlynotcompliant. Enabling them will disable the CSP. Do you want to continue?',
+            CspState::getActivationConfirmationMessage(['cspnotcompliant', 'cspexplicitlynotcompliant'])
+        );
+
+        // No confirmation when the CSP is already disabled
+        $this->setActivePlugins(['tester', 'cspnotstrictlycompliant']);
+        $this->assertNull(CspState::getActivationConfirmationMessage(['cspnotcompliant']));
+    }
+
     public function testStateIsUpdatedWhenActivePluginsChange(): void
     {
         $this->setActivePlugins(['cspcompliant']);

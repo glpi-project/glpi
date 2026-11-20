@@ -35,6 +35,7 @@
 namespace Glpi\Security\ContentSecurityPolicy;
 
 use Plugin;
+use Toolbox;
 
 /**
  * Indicates whether the Content-Security-Policy is enforced.
@@ -76,7 +77,82 @@ final class CspState
     {
         return \array_values(\array_filter(
             Plugin::getPlugins(),
-            static fn(string $plugin_key): bool => Plugin::getInfo($plugin_key, 'csp_compliant') !== true
+            static fn(string $plugin_key): bool => !self::isPluginCompatible($plugin_key)
         ));
+    }
+
+    /**
+     * Get the keys of the given plugins whose activation would disable the CSP,
+     * i.e. the plugins that are not compatible with it, if the CSP is currently enabled.
+     *
+     * @param array<string> $plugin_keys
+     *
+     * @return array<string>
+     */
+    public static function getPluginsThatWouldDisableCsp(array $plugin_keys): array
+    {
+        if (!self::isEnabled()) {
+            return [];
+        }
+
+        return \array_values(\array_filter(
+            $plugin_keys,
+            static fn(string $plugin_key): bool => !self::isPluginCompatible($plugin_key)
+        ));
+    }
+
+    /**
+     * Get the message used to ask for a confirmation before activating the given plugins,
+     * or null if their activation would not disable the CSP.
+     * The returned message is plain text, it must be escaped before being used in HTML.
+     *
+     * @param array<string> $plugin_keys
+     */
+    public static function getActivationConfirmationMessage(array $plugin_keys): ?string
+    {
+        $plugins = self::getPluginsThatWouldDisableCsp($plugin_keys);
+        if ($plugins === []) {
+            return null;
+        }
+
+        return \sprintf(
+            _n(
+                '%s is not compatible with the Content Security Policy (CSP), which protects GLPI against cross-site scripting (XSS) attacks. Enabling it will disable the CSP. Do you want to continue?',
+                'The following plugins are not compatible with the Content Security Policy (CSP), which protects GLPI against cross-site scripting (XSS) attacks: %s. Enabling them will disable the CSP. Do you want to continue?',
+                \count($plugins)
+            ),
+            \implode(', ', \array_map(self::getPluginName(...), $plugins))
+        );
+    }
+
+    private static function isPluginCompatible(string $plugin_key): bool
+    {
+        return (self::getPluginInformation($plugin_key)['csp_compliant'] ?? null) === true;
+    }
+
+    /**
+     * Get the plugin name, without HTML tags.
+     */
+    private static function getPluginName(string $plugin_key): string
+    {
+        $name = self::getPluginInformation($plugin_key)['name'] ?? null;
+
+        return (\is_string($name) ? Toolbox::stripTags($name) : '') ?: $plugin_key;
+    }
+
+    /**
+     * Get the plugin information, loading its setup file if the plugin is not loaded yet.
+     *
+     * @return array<string, mixed>
+     */
+    private static function getPluginInformation(string $plugin_key): array
+    {
+        if (\function_exists('plugin_version_' . \strtolower($plugin_key))) {
+            $information = Plugin::getInfo($plugin_key);
+        } else {
+            $information = (new Plugin())->getInformationsFromDirectory($plugin_key, false);
+        }
+
+        return \is_array($information) ? $information : [];
     }
 }
