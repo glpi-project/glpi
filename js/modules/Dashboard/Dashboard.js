@@ -87,8 +87,8 @@ window.GLPI.Dashboard = {
         if (series.length > 0 && series[0].type === 'pie') {
             rows.push([headers.name, headers.value]);
             to_array(series[0].data)
-                // the half pie has an unnamed item to hide its lower half
-                .filter((item) => item.name !== '')
+                // the half pie has a filler item to hide its lower half
+                .filter((item) => !item.is_filler)
                 .forEach((item) => rows.push([item.name, get_value(item)]));
         } else if (series.length > 0 && series[0].type === 'sunburst') {
             rows.push([headers.name, headers.value]);
@@ -104,9 +104,10 @@ window.GLPI.Dashboard = {
             const category_axis = [...to_array(option.xAxis), ...to_array(option.yAxis)]
                 .find((axis) => axis.type === 'category');
             const categories = to_array(category_axis?.data).map(get_value);
+            const series_data = series.map((serie) => to_array(serie.data));
             rows.push([headers.name, ...series.map((serie) => serie.name || headers.value)]);
             rows = rows.concat(categories.map(
-                (category, index) => [category, ...series.map((serie) => get_value(to_array(serie.data)[index] ?? ''))]
+                (category, index) => [category, ...series_data.map((data) => get_value(data[index] ?? ''))]
             ));
         }
 
@@ -127,7 +128,7 @@ window.GLPI.Dashboard = {
 
         const link = document.createElement('a');
         link.href = URL.createObjectURL(new Blob([`\ufeff${csv}`], {type: 'text/csv;charset=utf-8'}));
-        link.download = `${(label || 'chart').replace(/[\\/:*?"<>|]/g, '_')}.csv`;
+        link.download = `${(label || 'chart').replace(/[\\/:*?\x22<>|]/g, '_')}.csv`;
         link.click();
         setTimeout(() => URL.revokeObjectURL(link.href));
     }

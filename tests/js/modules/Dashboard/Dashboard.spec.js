@@ -1950,13 +1950,14 @@ describe('Dashboard', () => {
                 data: [
                     {name: 'New', value: 3, url: '/front/ticket.php'},
                     {name: 'Say "hello"', value: 1.5},
+                    {name: '', value: 2},
                     // filler of a half pie
-                    {name: '', value: 4.5},
+                    {name: '', value: 6.5, is_filler: true},
                 ],
             }],
         }, ';', {name: 'Name', value: 'Value'});
 
-        expect(csv).toBe('"Name";"Value"\r\n"New";3\r\n"Say ""hello""";1.5');
+        expect(csv).toBe('"Name";"Value"\r\n"New";3\r\n"Say ""hello""";1.5\r\n"";2');
     });
 
     test('getChartCsv for a sunburst', () => {

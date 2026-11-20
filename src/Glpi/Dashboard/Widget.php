@@ -931,8 +931,10 @@ HTML;
         if ($p['half']) {
             $options['series'][0]['center'] = ['50%', '100%'];
             $options['series'][0]['data'][] = [
-                'name'  => '',
-                'value' => $total,
+                'name'      => '',
+                'value'     => $total,
+                // excluded from the CSV export
+                'is_filler' => true,
             ];
         }
 
