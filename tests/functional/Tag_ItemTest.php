@@ -168,13 +168,24 @@ class Tag_ItemTest extends DbTestCase
         // Attach the old tag to the computer
         $this->assertTrue(Tag_Item::addTag($computer, $old_tag->getID()));
 
-        // Try to replace a tag that is not allowed for the computer's itemtype
+        // Try to replace a tag that is not allowed for the computer's itemtype: the old tag must be kept
         $this->assertFalse(Tag_Item::replaceTag($computer, $old_tag->getID(), $printer_tag->getID()));
-        $this->assertFalse(Tag_Item::hasTag($computer, $old_tag->getID()));
+        $this->assertTrue(Tag_Item::hasTag($computer, $old_tag->getID()));
         $this->assertFalse(Tag_Item::hasTag($computer, $printer_tag->getID()));
 
-        // Re-attach the old tag to test the successful replacement path
+        // Try to replace a tag with a tag that does not exist: the old tag must be kept
+        $this->assertFalse(Tag_Item::replaceTag($computer, $old_tag->getID(), 999999));
+        $this->assertTrue(Tag_Item::hasTag($computer, $old_tag->getID()));
+
+        // Replace a tag by a tag that is already attached: only the old tag is detached
+        $this->assertTrue(Tag_Item::replaceTag($computer, $old_tag->getID(), $tag->getID()));
+        $this->assertFalse(Tag_Item::hasTag($computer, $old_tag->getID()));
+        $this->assertTrue(Tag_Item::hasTag($computer, $tag->getID()));
         $this->assertTrue(Tag_Item::addTag($computer, $old_tag->getID()));
+
+        // Replacing a tag by itself is a no-op
+        $this->assertTrue(Tag_Item::replaceTag($computer, $old_tag->getID(), $old_tag->getID()));
+        $this->assertTrue(Tag_Item::hasTag($computer, $old_tag->getID()));
 
         // Replace the old tag with the new tag
         $this->assertTrue(Tag_Item::replaceTag($computer, $old_tag->getID(), $new_tag->getID()));

@@ -157,7 +157,24 @@ class Tag_Item extends CommonDBRelation
      */
     public static function replaceTag(CommonDBTM $asset, int $old_tag_id, int $new_tag_id): bool
     {
-        return self::removeTag($asset, $old_tag_id) && self::addTag($asset, $new_tag_id);
+        if (!self::hasTag($asset, $old_tag_id)) {
+            return false;
+        }
+
+        if ($old_tag_id === $new_tag_id) {
+            return true;
+        }
+
+        if (self::hasTag($asset, $new_tag_id)) {
+            return self::removeTag($asset, $old_tag_id);
+        }
+
+        // Attach the new tag first, so a failed replacement keeps the original tag.
+        if (!self::addTag($asset, $new_tag_id)) {
+            return false;
+        }
+
+        return self::removeTag($asset, $old_tag_id);
     }
 
     /**

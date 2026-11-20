@@ -1068,7 +1068,11 @@ const templateTagSelection = function(selection, container) {
         observer.observe(node, { childList: true });
     }
 
-    return _.escape(selection.text);
+    // Return an element so Select2 does not escape the text a second time
+    const _elt = document.createElement('span');
+    _elt.textContent = selection.text;
+
+    return _elt;
 };
 
 var templateValidation = function(option) {
