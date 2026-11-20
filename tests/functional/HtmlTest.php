@@ -37,15 +37,14 @@ namespace tests\units;
 use Glpi\Application\View\ScriptType;
 use Glpi\Security\ContentSecurityPolicy\CspState;
 use Glpi\Security\ContentSecurityPolicy\NonceContext;
+use Glpi\Tests\CspTesterTrait;
 use Glpi\Tests\DbTestCase;
 use Glpi\Toolbox\FrontEnd;
 use GlpiPlugin\Tester\MyPsr4Class;
 use Html;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Plugin;
 use Psr\Log\LogLevel;
-use ReflectionProperty;
 use Toolbox;
 
 use function Safe\file_put_contents;
@@ -59,6 +58,8 @@ use function Safe\unlink;
 
 class HtmlTest extends DbTestCase
 {
+    use CspTesterTrait;
+
     public function testConvDate()
     {
         $this->assertNull(Html::convDate(null));
@@ -796,19 +797,19 @@ class HtmlTest extends DbTestCase
         $this->assertTrue(CspState::isEnabled());
         $this->assertSame('', @Html::addConfirmationOnAction('Are U\' OK?'));
 
-        $this->runWithCspDisabled(function () {
-            $string = 'Are U\' OK?';
-            $expected = 'onclick="if (window.confirm(&quot;Are U&amp;#039; OK?&quot;)){ ;return true;} else { return false;}"';
-            $this->assertSame($expected, @Html::addConfirmationOnAction($string));
+        $this->disableCsp();
 
-            $strings = ['Are you', 'OK?'];
-            $expected = 'onclick="if (window.confirm(&quot;Are you\nOK?&quot;)){ ;return true;} else { return false;}"';
-            $this->assertSame($expected, @Html::addConfirmationOnAction($strings));
+        $string = 'Are U\' OK?';
+        $expected = 'onclick="if (window.confirm(&quot;Are U&amp;#039; OK?&quot;)){ ;return true;} else { return false;}"';
+        $this->assertSame($expected, @Html::addConfirmationOnAction($string));
 
-            $actions = '$("#mydiv").focus();';
-            $expected = 'onclick="if (window.confirm(&quot;Are U&amp;#039; OK?&quot;)){ $(&quot;#mydiv&quot;).focus();return true;} else { return false;}"';
-            $this->assertSame($expected, @Html::addConfirmationOnAction($string, $actions));
-        });
+        $strings = ['Are you', 'OK?'];
+        $expected = 'onclick="if (window.confirm(&quot;Are you\nOK?&quot;)){ ;return true;} else { return false;}"';
+        $this->assertSame($expected, @Html::addConfirmationOnAction($strings));
+
+        $actions = '$("#mydiv").focus();';
+        $expected = 'onclick="if (window.confirm(&quot;Are U&amp;#039; OK?&quot;)){ $(&quot;#mydiv&quot;).focus();return true;} else { return false;}"';
+        $this->assertSame($expected, @Html::addConfirmationOnAction($string, $actions));
     }
 
     public function testCleanId()
@@ -849,23 +850,23 @@ class HtmlTest extends DbTestCase
         $this->assertTrue(CspState::isEnabled());
         $this->assertSame('', @Html::link('My link', 'mylink.php'));
 
-        $this->runWithCspDisabled(function () {
-            $text = 'My link';
-            $url = 'mylink.php';
+        $this->disableCsp();
 
-            $expected = '<a href="mylink.php" >My link</a>';
-            $this->assertSame($expected, @Html::link($text, $url));
+        $text = 'My link';
+        $url = 'mylink.php';
 
-            $options = [
-                'confirm'   => 'U sure?',
-            ];
-            $expected = '<a href="mylink.php" onclick="if (window.confirm(&quot;U sure?&quot;)){ ;return true;} else { return false;}">My link</a>';
-            $this->assertSame($expected, @Html::link($text, $url, $options));
+        $expected = '<a href="mylink.php" >My link</a>';
+        $this->assertSame($expected, @Html::link($text, $url));
 
-            $options['confirmaction'] = 'window.close();';
-            $expected = '<a href="mylink.php" onclick="if (window.confirm(&quot;U sure?&quot;)){ window.close();return true;} else { return false;}">My link</a>';
-            $this->assertSame($expected, @Html::link($text, $url, $options));
-        });
+        $options = [
+            'confirm'   => 'U sure?',
+        ];
+        $expected = '<a href="mylink.php" onclick="if (window.confirm(&quot;U sure?&quot;)){ ;return true;} else { return false;}">My link</a>';
+        $this->assertSame($expected, @Html::link($text, $url, $options));
+
+        $options['confirmaction'] = 'window.close();';
+        $expected = '<a href="mylink.php" onclick="if (window.confirm(&quot;U sure?&quot;)){ window.close();return true;} else { return false;}">My link</a>';
+        $this->assertSame($expected, @Html::link($text, $url, $options));
     }
 
     public function testHidden()
@@ -1701,26 +1702,6 @@ SCSS,
         $this->login();
         foreach ($get_footers() as $output) {
             $this->assertStringContainsString('GLPINotificationsAjax', $output);
-        }
-    }
-
-    /**
-     * Run the given callable with the CSP disabled, by temporarily activating a plugin
-     * that is not CSP compliant.
-     */
-    private function runWithCspDisabled(callable $callable): void
-    {
-        require_once FIXTURE_DIR . '/csp_plugins.php';
-
-        $property = new ReflectionProperty(Plugin::class, 'activated_plugins');
-        $initial_plugins = $property->getValue();
-        $property->setValue(null, [...$initial_plugins, 'cspnotcompliant']);
-
-        try {
-            $this->assertFalse(CspState::isEnabled());
-            $callable();
-        } finally {
-            $property->setValue(null, $initial_plugins);
         }
     }
 }
