@@ -575,7 +575,7 @@ TWIG, $twig_params);
 TWIG, ['msg' => _x('button', 'Test')]);
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <script type="module">
+                <script nonce="{{ csp_nonce() }}" type="module">
                     $('button[name="test_ldap_replicate"]').on('click', (e) => {
                         const replicate_id = $(e.target).closest('tr').data('id');
                         $(e.target).prepend(`<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>`);

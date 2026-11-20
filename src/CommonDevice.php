@@ -473,10 +473,11 @@ abstract class CommonDevice extends CommonDropdown
 
         if ($options['canedit']) {
             $field_name  = 'quantity_' . static::class . '_' . $this->getID();
-            $content .= "&nbsp;<span class='ti ti-plus cursor-pointer' title='" . __s('Add') . "'
-                      onClick=\"$('#" . htmlescape(jsescape($field_name)) . "').show();\"
-                      ><span class='visually-hidden'>" . __s('Add') . "</span></span>";
-            $content .= "<span id='" . htmlescape($field_name) . "' style='display:none'><br>";
+            $content .= "&nbsp;<button type='button' class='btn-as-link ti ti-plus collapse-trigger-once' title='" . __s('Add') . "'
+                      data-bs-toggle='collapse' data-bs-target='#" . htmlescape($field_name) . "'
+                      aria-expanded='false' aria-controls='" . htmlescape($field_name) . "'
+                      ><span class='visually-hidden'>" . __s('Add') . "</span></button>";
+            $content .= "<div id='" . htmlescape($field_name) . "' class='collapse'>";
             $content .= __s('Add') . "&nbsp;";
 
             $content  = [$content,
@@ -487,7 +488,7 @@ abstract class CommonDevice extends CommonDropdown
                     ],
                     ],
                 ],
-                "</span>",
+                "</div>",
             ];
         }
 

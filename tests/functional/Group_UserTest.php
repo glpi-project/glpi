@@ -310,10 +310,7 @@ class Group_UserTest extends DbTestCase
         ob_start();
         \Group_User::showForGroup($parent);
         $output = ob_get_clean();
-        $this->assertMatchesRegularExpression(
-            '/reloadTab\(&quot;start=0&amp;tree=&quot;\+this\.value\+&quot;&quot;\)/',
-            $output
-        );
+        $this->assertStringContainsString('data-glpi-reload-tab-on-change="start=0&amp;tree=%value%"', $output);
 
         // An active "Manager" filter must be carried over into the toggle's
         // reload string, otherwise switching the toggle would silently reset it.

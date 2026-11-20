@@ -105,7 +105,7 @@
                                     'full_width': true,
                                     'icon_label': true,
                                     'additional_attributes': {
-                                        'onchange': 'toggleTimelinePrivate(this.checked, this)',
+                                        'data-glpi-timeline-private-toggle': '',
                                     }
                                 }
                             ) }}
@@ -138,7 +138,7 @@
                 </div>
             </form>
         </div>
-        <script type="module">
+        <script nonce="{{ csp_nonce() }}" type="module">
             import('/js/modules/ITIL/Timeline/DocumentForm.js');
         </script>
     {% endif %}

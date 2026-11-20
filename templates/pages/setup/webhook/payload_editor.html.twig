@@ -57,7 +57,7 @@
       }) }}
    </div>
 </div>
-<script type="module">
+<script nonce="{{ csp_nonce() }}" type="module">
     {% set payload = item.fields['payload']|default(default_payload) %}
     window.GLPI.Monaco.createEditor('payload', 'twig', {{ payload|json_encode|raw }}, {{ response_schema|json_encode|raw }}).then((monaco) => {
         $("#webhook-payload-editor-container button[name='editor_find']").on('click', function() {

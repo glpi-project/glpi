@@ -309,7 +309,7 @@
         </div>
     </form>
 
-    <script>(async () => {
+    <script nonce="{{ csp_nonce() }}">(async () => {
         const mod = await import("/js/modules/Forms/RendererController.js");
         new mod.GlpiFormRendererController(
             '#forms_form_answers',

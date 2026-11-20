@@ -63,7 +63,7 @@ test('Can open the knowledge base modal after adding a followup', async ({
         name: 'Save and add to the knowledge base',
         exact: true,
     }).check();
-    await ticket.getButton('Add').click();
+    await followup_block.getByRole('button', { name: 'Add', exact: true }).click();
 
     // Assert: the knowledge base form is displayed in an iframe modal.
     const modal = page.getByRole('dialog').filter({

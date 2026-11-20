@@ -32,7 +32,7 @@
 
 <div id="debug-toolbar-applet"></div>
 
-<script type="module">
+<script nonce="{{ csp_nonce() }}" type="module">
     const debug_toolbar_applet = window.Vue.createApp(window.Vue.components['Debug/Toolbar'].component, {
         initial_request: {{ debug_info|json_encode|raw }}
     });

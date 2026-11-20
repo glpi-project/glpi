@@ -67,7 +67,7 @@
     </div>
 </div>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
     // Display search results
     $('button[name=search]').on('click', function(e) {
         $("#criteria_filter_preview").removeClass("d-none");

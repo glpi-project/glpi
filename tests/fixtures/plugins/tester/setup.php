@@ -63,6 +63,7 @@ function plugin_version_tester()
                 'min' => '9.5.0',
             ],
         ],
+        'csp_compliant'  => true,
     ];
 }
 

@@ -464,6 +464,10 @@
       }
    }
 
+   .resa-search-toggle.collapsing {
+      transition: none;
+   }
+
    /* ################--------------- Knowledge FAQ  ---------------#################### */
 
    #kbanswer {
@@ -864,7 +868,7 @@
 
    /* Prop open the FullCalendar scroller (the gray box) so the empty message doesn't overflow */
    .planning_on_central .fc-view-container .fc-scroller {
-      min-height: 2em; 
+      min-height: 2em;
    }
 
    /* Apply the height safely to the empty wrappers and text */

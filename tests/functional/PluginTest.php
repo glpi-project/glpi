@@ -37,6 +37,7 @@ namespace tests\units {
     use AppendIterator;
     use DirectoryIterator;
     use Error;
+    use Glpi\Tests\CspTesterTrait;
     use Glpi\Tests\DbTestCase;
     use Glpi\Toolbox\VersionParser;
     use org\bovigo\vfs\vfsStream;
@@ -47,6 +48,8 @@ namespace tests\units {
 
     class PluginTest extends DbTestCase
     {
+        use CspTesterTrait;
+
         private $test_plugin_directory = 'test';
         public static bool $plugin_test_check_config = true;
         public static bool $plugin_test_check_prerequisites = true;
@@ -1195,6 +1198,24 @@ PHP
             $plugin->_mock_options = $options;
 
             return $plugin;
+        }
+
+        public function testGetCspConfirmationAttribute(): void
+        {
+            $this->setActivePlugins(['tester']);
+
+            // No attribute when the activation would not disable the CSP
+            $this->assertSame('', $this->callPrivateMethod(new Plugin(), 'getCspConfirmationAttribute', ['cspcompliant']));
+
+            // Attribute containing the escaped confirmation message
+            $this->assertSame(
+                'data-glpi-csp-confirm="cspnotcompliant is not compatible with the Content Security Policy (CSP), which protects GLPI against cross-site scripting (XSS) attacks. Enabling it will disable the CSP. Do you want to continue?"',
+                $this->callPrivateMethod(new Plugin(), 'getCspConfirmationAttribute', ['cspnotcompliant'])
+            );
+
+            // No attribute when the CSP is already disabled
+            $this->setActivePlugins(['tester', 'cspnotcompliant']);
+            $this->assertSame('', $this->callPrivateMethod(new Plugin(), 'getCspConfirmationAttribute', ['cspexplicitlynotcompliant']));
         }
     }
 }

@@ -34,10 +34,10 @@
    {% if can_edit %}
       {{ my_items_dropdown|raw }}
       {{ all_items_dropdown|raw }}
-      <a href="javascript:itemAction{{ rand }}('add');" class="btn btn-sm btn-outline-secondary">
+      <button type="button" id="itemAddButton{{ rand }}" class="btn btn-sm btn-outline-secondary">
          <i class="ti ti-plus" aria-hidden="true"></i>
          <span>{{ _x('button', 'Add') }}</span>
-      </a>
+      </button>
    {% endif %}
 
    {% for item_to_add in items_to_add %}
@@ -54,7 +54,7 @@
    {% if params.id > 0 and usedcount > 5 %}
       <i><a href="{{ itil_class|itemtype_form_path(params.id) }}&amp;forcetab={{ item_class }}$1">{{ __('Display all items') ~ '(' ~ usedcount ~ ')' }}</a></i>
    {% endif %}
-   <script>
+   <script nonce="{{ csp_nonce() }}">
       function refreshItemCounter{{ rand }}() {
          const item_form = $("#itemAddForm{{ rand }}");
          let item_count = item_form.find('input[type="hidden"][name^="items_id["]').length;
@@ -102,6 +102,13 @@
             }
          });
       }
+      document.getElementById('itemAddButton{{ rand }}')?.addEventListener('click', () => itemAction{{ rand }}('add'));
+      document.getElementById('itemAddForm{{ rand }}').addEventListener('click', (e) => {
+         const button = e.target.closest('[data-glpi-itil-item-remove]');
+         if (button !== null) {
+            itemAction{{ rand }}('delete', button.dataset.itemtype, button.dataset.itemsId);
+         }
+      });
       refreshItemCounter{{ rand }}();
    </script>
 </div>

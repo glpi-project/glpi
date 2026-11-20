@@ -148,7 +148,7 @@
                 __('Way of sending emails'),
                 field_options|merge(extra_options)
             ) }}
-            <script type="text/javascript">
+            <script nonce="{{ csp_nonce() }}" type="text/javascript">
                 $(function() {
                     $('[name=smtp_mode]').on('change', function() {
                         const value = $(this).find('option:selected').val();
@@ -270,7 +270,7 @@
                     <div class="w-100"></div>
                 {% endfor %}
             {% endfor %}
-            <script type='text/javascript'>
+            <script nonce="{{ csp_nonce() }}" type='text/javascript'>
                 $(function() {
                     $('[name=smtp_oauth_provider]').on('change', function() {
                         const value = $(this).find('option:selected').val();
@@ -377,7 +377,7 @@
                 </div>
             </div>
 
-            <script>
+            <script nonce="{{ csp_nonce() }}">
                 $('#test-email-btn').on('click', function () {
                     const $modal = $('#mailTestLogModal');
 

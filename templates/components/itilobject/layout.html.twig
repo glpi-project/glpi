@@ -116,7 +116,7 @@
    <div id="massive_container_{{ rand }}"></div>
 </form>
 
-<script type="text/javascript">
+<script nonce="{{ csp_nonce() }}" type="text/javascript">
 $(function() {
    $(document).on("click", ".switch-panel-width", function() {
        if ($('#itil-object-container').hasClass('right-collapsed')) {

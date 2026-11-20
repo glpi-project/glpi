@@ -21,6 +21,18 @@ The present file will list all changes made to the project; according to the
 #### Changes
 
 #### Deprecated
+- `Html::printCleanArray()`. Use Symfony `dump()` or `dd()` functions instead.
+- `showHideDiv()` JavaScript function.
+- `toogle()` JavaScript function.
+- Support of `javascript:` values for the `add_link` parameter of `components/tab/addlink_block.html.twig`.
+- `Html::addConfirmationOnAction()`. Use the `data-glpi-confirm="<message>"` attribute instead.
+- `Html::getConfirmationOnActionScript()`. Use the `data-glpi-confirm="<message>"` attribute instead.
+- `confirmaction` option of `Html::submit()`. Confirmation is now handled through the `data-glpi-confirm` attribute, so no additional action can be run on confirmation.
+- `onclick` key of the `addbuttons` option of `CommonDBTM::showFormButtons()`.
+- `onclick` option of `Html::getCheckbox()`, `Html::showCheckbox()`, `Html::getMassiveActionCheckBox()` and `Html::showMassiveActionCheckBox()`.
+- `on_change` option of `Dropdown::showFromArray()` and of the methods relying on it.
+- `$onchange` parameter of `Dropdown::showListLimit()`.
+- `cache` key of dashboard cards definitions. It has no effect when the Content-Security-Policy is enabled.
 
 #### Removed
 

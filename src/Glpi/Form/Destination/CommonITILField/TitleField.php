@@ -100,7 +100,7 @@ final class TitleField extends AbstractConfigField implements DestinationFieldCo
                 })
             ) }}
 
-            <script>
+            <script nonce="{{ csp_nonce() }}">
                 tinymce.on('AddEditor', (e) => {
                     if (e.editor.id === '{{ input_name ~ '_' ~ options.rand }}') {
                         e.editor.on('keydown', (e) => {

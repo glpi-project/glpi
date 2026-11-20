@@ -44,6 +44,7 @@ use FriendsOfTwig\Twigcs\Rule\TrailingSpace;
 use FriendsOfTwig\Twigcs\Rule\UnusedMacro;
 use FriendsOfTwig\Twigcs\Ruleset\Official;
 use FriendsOfTwig\Twigcs\Validator\Violation;
+use Glpi\Tools\CspNonce\TwigcsRule as CspNonceRule;
 
 class GlpiTwigRuleset extends Official
 {
@@ -61,6 +62,7 @@ class GlpiTwigRuleset extends Official
             new RegEngineRule(Violation::SEVERITY_ERROR, $this->getRegEngineRuleset()),
             new TrailingSpace(Violation::SEVERITY_ERROR),
             new UnusedMacro(Violation::SEVERITY_WARNING),
+            new CspNonceRule(Violation::SEVERITY_ERROR),
             // new UnusedVariable(Violation::SEVERITY_WARNING), // Cannot be enable since we do not explicitely pass variables to includes
         ];
     }

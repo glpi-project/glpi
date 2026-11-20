@@ -114,7 +114,7 @@
                            type="submit"
                            name="purge"
                            value="1"
-                           onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');"
+                           data-glpi-confirm="{{ __('Confirm the final deletion?') }}"
                            aria-label="{{ _x('button', 'Delete permanently') }}"
                         >
                            <i class="ti ti-trash" aria-hidden="true"></i>
@@ -139,7 +139,7 @@
                            class="btn btn-outline-danger me-2"
                            type="submit"
                            name="purge"
-                           onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');"
+                           data-glpi-confirm="{{ __('Confirm the final deletion?') }}"
                            value="1"
                            aria-label="{{ _x('button', 'Delete permanently') }}"
                         >
@@ -178,7 +178,14 @@
                 {% else %}
                     {% set extra_attribs = '' %}
                 {% endif %}
-               <button class="btn {{ val.btn_class ?? 'btn-outline-secondary' }} me-2 {{ val.add_class ?? '' }}" type="{{ val.type ?? 'submit' }}" name="{{ key }}" value="1" title="{{ val.title ?? '' }}" onclick="{{ val.onclick ?? '' }}" {{ extra_attribs|raw }}>
+                {% set onclick_attrib = '' %}
+                {% if val is iterable and val.onclick is defined %}
+                    {% do call('Toolbox::deprecated', ['The `onclick` key of the `addbuttons` option is deprecated.']) %}
+                    {% if not call('Glpi\\Security\\ContentSecurityPolicy\\CspState::isEnabled') %}
+                        {% set onclick_attrib = 'onclick="' ~ val.onclick|e ~ '"' %}
+                    {% endif %}
+                {% endif %}
+               <button class="btn {{ val.btn_class ?? 'btn-outline-secondary' }} me-2 {{ val.add_class ?? '' }}" type="{{ val.type ?? 'submit' }}" name="{{ key }}" value="1" title="{{ val.title ?? '' }}" {{ onclick_attrib|raw }} {{ extra_attribs|raw }}>
                   {% if val is iterable %}
                      {% if val.icon is defined %}
                         <i class="{{ val.icon }}" aria-hidden="true"></i>

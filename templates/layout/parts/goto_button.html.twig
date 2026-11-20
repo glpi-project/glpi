@@ -48,7 +48,7 @@
       </span>
    </button>
    <div id="fuzzy-search-modal"></div>
-   <script type="module">
+   <script nonce="{{ csp_nonce() }}" type="module">
        if (document.querySelector('#fuzzy-search-modal').__vue_app__ === undefined) {
            window.Vue.createApp(window.Vue.components['FuzzySearch/Modal'].component).mount('#fuzzy-search-modal');
        }
