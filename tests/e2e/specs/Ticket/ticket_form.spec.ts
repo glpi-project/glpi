@@ -572,9 +572,20 @@ test('Fields panel shows sections state and panel width toggle direction', async
     await expect(switch_icon).toHaveClass(/ti-caret-right-filled/);
 });
 
-test.afterEach(async ({ api }) => {
-    // The layout is stored in the worker user preferences, reset it even if a test failed
-    await api.updateItem('User', getWorkerUserId(), { itil_layout: null });
+test.afterEach(async ({ request, csrf }) => {
+    // The layout is stored in the session shared by all the tests of this worker.
+    // Reset it so that the page is predictale for the next tests.
+    const response = await request.post('/ajax/itillayout.php', {
+        form: {
+            'itil_layout[collapsed]': 'false',
+            'itil_layout[expanded]': 'false',
+        },
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-Glpi-Csrf-Token': await csrf.get(),
+        },
+    });
+    expect(response.ok()).toBe(true);
 });
 
 test('Open category dropdown is not orphaned when type change reloads it', async ({ profile, page, api }) => {
