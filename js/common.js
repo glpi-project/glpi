@@ -1650,6 +1650,62 @@ document.addEventListener('click', (e) => {
 }, true);
 
 /**
+ * Ask for a confirmation before an action that would disable the Content Security Policy
+ * (e.g. the activation of an incompatible plugin).
+ * The `data-glpi-csp-confirm` attribute contains the plain text confirmation message.
+ */
+document.addEventListener('click', (e) => {
+    const element = e.target.closest('[data-glpi-csp-confirm]');
+    if (!element) {
+        return;
+    }
+
+    if (element.dataset.glpiCspConfirmed === 'true') {
+        // Action has been confirmed, let the event be handled normally.
+        delete element.dataset.glpiCspConfirmed;
+        return;
+    }
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const help_url = `${CFG_GLPI.root_doc}/CSP/Plugins`;
+    glpi_html_dialog({
+        title: __('Warning'),
+        body: `
+            <p>${_.escape(element.dataset.glpiCspConfirm)}</p>
+            <p>
+                <a href="${_.escape(help_url)}" target="_blank">
+                    ${_.escape(__('How to make a plugin compatible with the CSP'))}
+                </a>
+            </p>
+        `,
+        buttons: [
+            {
+                label: _.escape(_x('button', 'Cancel')),
+                class: 'btn-ghost-secondary',
+            },
+            {
+                label: _.escape(_x('button', 'Enable')),
+                class: 'btn-primary',
+                click: () => {
+                    // Opening the dialog closes and removes any other modal (see `glpi_close_all_dialogs()`).
+                    // If the element was in a modal (e.g. a massive action form), its form must be put back into
+                    // the document, or the browser will refuse to submit it.
+                    if (!element.isConnected && element.form instanceof HTMLFormElement) {
+                        element.form.hidden = true;
+                        document.body.append(element.form);
+                    }
+
+                    element.dataset.glpiCspConfirmed = 'true';
+                    element.click();
+                },
+            },
+        ],
+    });
+}, true);
+
+/**
  * Strip html tags from a string
  *
  * @param {String} html_string
