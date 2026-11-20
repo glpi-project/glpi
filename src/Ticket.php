@@ -1216,39 +1216,70 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     /**
      * Manage OLA level escalation
      *
-     * - add level in todo table OlaLevel_Ticket
-     * - replayForTicket (if $replay is true)
+     * - (re)schedule the level to do in table OlaLevel_Ticket (dates may have changed)
+     * - replayForTicket
      *
-     * Method requires levels to be cleared before - @see OLA::delete(All)LevelsToDo($ticket)
-     * @param int $olas_id
+     * Levels are suspended while the ticket is in the trash or its status is in getReopenableStatusArray():
+     * the pending level is kept, then rescheduled and replayed when the ticket is resumed (@see OlaLevel_Ticket::doLevelForTicket()).
+     *
+     * @param int  $olas_id
+     * @param bool $first_level Start from the first level (OLA newly associated to the ticket),
+     *                          otherwise only reschedule the pending level, previous levels have already been executed.
      *
      * @return void
      *
      * @since 9.1
      */
-    public function manageOlaLevel($olas_id)
+    public function manageOlaLevel($olas_id, bool $first_level = false)
     {
-        // Add first level in working table
-        $olalevels_id = OlaLevel::getFirstOlaLevel($olas_id);
-
         $ola = new OLA();
         $in_db = $ola->getFromDB($olas_id);
         if (!$in_db) {
             return;
         }
 
-        if ($olalevels_id && !in_array($this->fields['status'], static::getReopenableStatusArray())) {
-            $calendars_id = Entity::getUsedConfig(
-                'calendars_strategy',
-                $this->fields['entities_id'],
-                'calendars_id',
-                0
-            );
-            $ola->setTicketCalendar($calendars_id);
-            $ola->addLevelToDo($this, $olalevels_id, $olas_id);
+        // Suspended levels: keep the pending level as is, but schedule the first level of a newly associated OLA
+        // (not for a closed ticket: its pending level is removed, as its OLA may no longer be recomputed)
+        $suspended = !$this->isClosed()
+            && ($this->isDeleted() || in_array($this->fields['status'], static::getReopenableStatusArray()));
+        if ($first_level || !$suspended) {
+            $level_ticket = new OlaLevel_Ticket();
+            $ola_levels_todo = $this->getOlaLevelsToDoCriteria((int) $olas_id);
+            $olalevels_id = $first_level
+                ? OlaLevel::getFirstOlaLevel($olas_id)
+                : (current($level_ticket->find($ola_levels_todo, [], 1))['olalevels_id'] ?? 0);
+            $level_ticket->deleteByCriteria($ola_levels_todo);
+            if ($olalevels_id) {
+                $calendars_id = Entity::getUsedConfig(
+                    'calendars_strategy',
+                    $this->fields['entities_id'],
+                    'calendars_id',
+                    0
+                );
+                $ola->setTicketCalendar($calendars_id);
+                $ola->addLevelToDo($this, $olalevels_id, $olas_id);
+            }
         }
 
-        OlaLevel_Ticket::replayForTicket($this->getID(), $ola->fields['type']);
+        // also run for suspended levels: doLevelForTicket() removes the levels of a closed ticket
+        OlaLevel_Ticket::replayForTicket($this->getID(), $ola->fields['type'], (int) $olas_id);
+    }
+
+    /**
+     * Criteria of the OLA levels to do of this ticket for an OLA
+     *
+     * @return array<string, mixed>
+     */
+    private function getOlaLevelsToDoCriteria(int $olas_id): array
+    {
+        return [
+            'tickets_id'   => $this->getID(),
+            'olalevels_id' => new QuerySubQuery([
+                'SELECT' => 'id',
+                'FROM'   => OlaLevel::getTable(),
+                'WHERE'  => ['olas_id' => $olas_id],
+            ]),
+        ];
     }
 
     public function pre_updateInDB()
@@ -6514,6 +6545,7 @@ JAVASCRIPT;
             if (!$items_ola->delete(['id' => $items_ola->getID()])) {
                 throw new Exception("Failed to dissociate OLA #$olas_id from ticket #{$this->getID()}");
             }
+            (new OlaLevel_Ticket())->deleteByCriteria($this->getOlaLevelsToDoCriteria((int) $olas_id));
         }
 
         // add new olas
@@ -6539,12 +6571,8 @@ JAVASCRIPT;
             ) {
                 throw new Exception("Failed to associate OLA #$olas_id to ticket #{$this->getID()}");
             }
-        }
-
-        OLA::deleteLevelsToDo($this);
-        $current_olas_ids = array_column($this->getOlasData(), 'olas_id');
-        foreach ($current_olas_ids as $olas_id) {
-            $this->manageOlaLevel($olas_id);
+            // levels of the other OLAs are rescheduled by Ticket::recomputeOlas(), once their dates are updated
+            $this->manageOlaLevel($olas_id, true);
         }
     }
 
@@ -6556,8 +6584,7 @@ JAVASCRIPT;
      */
     private function recomputeOlas(array $new_assigned_groups = [], array $new_assigned_users = []): void
     {
-        // recompute all OLA for this ticket
-        OLA::deleteLevelsToDo($this); // todo levels are rebuild in Item_Ola::compute()
+        // recompute all OLA for this ticket, todo levels are rescheduled in Item_Ola::compute()
         $olas = $this->getOlasData();
         foreach ($olas as $ola) {
             if (isset($ola['items_olas_id'])) {

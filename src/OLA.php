@@ -216,13 +216,13 @@ class OLA extends LevelAgreement
     /**
      * Can Ola level can be added in levels todo ?
      *
-     * True if ticket can be modified and ola is not completed
+     * True if ticket is not closed and ola is not completed
+     * (levels of a ticket in the trash or solved are kept, suspended until the ticket is resumed)
      */
     private function levelCanBeAddedInLevelsTodo(Ticket $ticket, Item_Ola $items_ola): bool
     {
         return !(
-            $ticket->isDeleted()
-            || $ticket->isSolved(true)
+            $ticket->isClosed()
             || !is_null($items_ola->fields['end_time'])
         );
     }
