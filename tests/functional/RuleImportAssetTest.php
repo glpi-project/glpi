@@ -1258,6 +1258,62 @@ class RuleImportAssetTest extends DbTestCase
         $this->assertSame('Computer', $this->itemtype);
     }
 
+    public function testUpdateComputerByDomainIgnoresRemovedDomain()
+    {
+        $this->addAssetRule(
+            "Computer update (by domain)",
+            [
+                [
+                    'condition' => 0,
+                    'criteria'  => 'itemtype',
+                    'pattern'   => 'Computer',
+                ],
+                [
+                    'condition' => \RuleImportAsset::PATTERN_FIND,
+                    'criteria'  => 'domains_id',
+                    'pattern'   => '1',
+                ],
+                [
+                    'condition' => \RuleImportAsset::PATTERN_EXISTS,
+                    'criteria'  => 'domains_id',
+                    'pattern'   => '1',
+                ],
+            ],
+            [
+                'action_type' => 'assign',
+                'field'       => '_inventory',
+                'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
+            ]
+        );
+
+        $computer = $this->createItem(\Computer::class, [
+            'entities_id' => 0,
+            'name'        => 'pc-11',
+        ]);
+        $domain = $this->createItem(\Domain::class, [
+            'entities_id' => 0,
+            'name'        => 'test.local',
+        ]);
+        $domain_item = $this->createItem(\Domain_Item::class, [
+            'domains_id' => $domain->getID(),
+            'itemtype'   => 'Computer',
+            'items_id'   => $computer->getID(),
+        ]);
+        $this->updateItem(\Domain_Item::class, $domain_item->getID(), ['is_deleted' => 1]);
+
+        $input = [
+            'itemtype'    => 'Computer',
+            'name'        => 'pc-12',
+            'domains_id'  => 'test.local',
+            'entities_id' => 0,
+        ];
+        $ruleCollection = new \RuleImportAssetCollection();
+
+        $ruleCollection->processAllRules($input, [], ['class' => $this]);
+
+        $this->assertNotSame($computer->getID(), $this->items_id);
+    }
+
     public function testReconciliateWithAssetTemplate()
     {
 

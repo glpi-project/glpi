@@ -904,7 +904,10 @@ class RuleImportAsset extends Rule
                         'ON'  => [
                             $itemtable           => 'id',
                             'glpi_domains_items' => 'items_id', [
-                                'AND' => ['glpi_domains_items.itemtype' => $itemtype],
+                                'AND' => [
+                                    'glpi_domains_items.itemtype'   => $itemtype,
+                                    'glpi_domains_items.is_deleted' => 0,
+                                ],
                             ],
                         ],
                     ];
