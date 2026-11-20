@@ -142,12 +142,13 @@ final class HtmlParser implements ParserInterface
             if ($child_name === 'colgroup') {
                 // Browsers close a column group at its first child that is not a column (e.g. a row when `</colgroup>`
                 // is omitted) and process it and the following content in the table: move them after the column group.
+                // Scripts and styles are dropped by the sanitizer, so they must not close the column group.
                 $moved = $child->firstChild;
                 while (
                     $moved !== null
                     && ($moved instanceof DOMElement
-                        ? in_array(strtolower($moved->nodeName), ['col', 'template'], true)
-                        : !$moved instanceof DOMText || trim($moved->data) === '')
+                        ? in_array(strtolower($moved->nodeName), ['col', 'template', 'script', 'style'], true)
+                        : !$moved instanceof DOMText || trim($moved->data, " \t\n\f\r") === '')
                 ) {
                     $moved = $moved->nextSibling;
                 }

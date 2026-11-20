@@ -134,6 +134,13 @@ HTML,
                 . '<table><colgroup><col /></colgroup><tr><td>c</td></tr></table>',
         ];
 
+        // Scripts, styles and form feeds between columns do not close the column group
+        yield [
+            'content'                => "<table><colgroup><col><script>x()</script><col>\f<col></colgroup><tr><td>a</td></tr></table>",
+            'encode_output_entities' => false,
+            'expected_result'        => "<table><colgroup><col /><col />\f<col /></colgroup><tr><td>a</td></tr></table>",
+        ];
+
         // Scripts and styles between cells outside a row do not split the implicit row
         yield [
             'content'                => '<table><td>a</td><script>x()</script><td>b</td></table>',
