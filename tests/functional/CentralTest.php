@@ -38,6 +38,7 @@ use Central;
 use Computer;
 use CronTask;
 use Glpi\System\HousekeepingCron;
+use Glpi\Tests\CspTesterTrait;
 use Glpi\Tests\DbTestCase;
 use Item_Process;
 use Log;
@@ -50,6 +51,8 @@ use function Safe\ob_start;
 
 class CentralTest extends DbTestCase
 {
+    use CspTesterTrait;
+
     public function testUnavailableCentralTabsAreHidden(): void
     {
         $this->login();
@@ -214,5 +217,42 @@ class CentralTest extends DbTestCase
         // automatic action is enabled, it will handle the cleanup
         $this->updateItem(CronTask::class, $task->getID(), ['state' => CronTask::STATE_WAITING]);
         $this->assertFalse($has_warning());
+    }
+
+    public function testCspIncompatiblePluginsWarning(): void
+    {
+        $this->login();
+
+        $get_csp_warnings = function (): array {
+            $warnings = $this->callPrivateMethod(new Central(), 'getMessages')['warnings'] ?? [];
+            return \array_values(\array_filter(
+                $warnings,
+                static fn(string $message): bool => str_contains($message, 'The Content Security Policy (CSP)')
+            ));
+        };
+
+        // All plugins are compatible, no warning
+        $this->setActivePlugins(['tester', 'cspcompliant']);
+        $this->assertSame([], $get_csp_warnings());
+
+        // One incompatible plugin
+        $this->setActivePlugins(['tester', 'cspnotcompliant']);
+        $warnings = $get_csp_warnings();
+        $this->assertCount(1, $warnings);
+        $this->assertStringContainsString('the following plugin is not compatible with it: cspnotcompliant.', $warnings[0]);
+        $this->assertStringContainsString('/CSP/Plugins', $warnings[0]);
+
+        // Several incompatible plugins
+        $this->setActivePlugins(['cspnotcompliant', 'cspexplicitlynotcompliant']);
+        $warnings = $get_csp_warnings();
+        $this->assertCount(1, $warnings);
+        $this->assertStringContainsString(
+            'the following plugins are not compatible with it: cspnotcompliant, cspexplicitlynotcompliant.',
+            $warnings[0]
+        );
+
+        // The warning is only displayed to users that can update the configuration
+        $_SESSION['glpiactiveprofile']['config'] = READ;
+        $this->assertSame([], $get_csp_warnings());
     }
 }

@@ -60,7 +60,7 @@ final class CspState
         $plugins_key = \implode(',', $plugins);
 
         if (self::$cached_plugins_key !== $plugins_key) {
-            self::$cached_state = self::computeState($plugins);
+            self::$cached_state = self::getIncompatiblePlugins() === [];
             self::$cached_plugins_key = $plugins_key;
         }
 
@@ -68,16 +68,15 @@ final class CspState
     }
 
     /**
-     * @param array<string> $plugins Active plugins keys
+     * Get the keys of the active plugins that are not compatible with the CSP.
+     *
+     * @return array<string>
      */
-    private static function computeState(array $plugins): bool
+    public static function getIncompatiblePlugins(): array
     {
-        foreach ($plugins as $plugin_key) {
-            if (Plugin::getInfo($plugin_key, 'csp_compliant') !== true) {
-                return false;
-            }
-        }
-
-        return true;
+        return \array_values(\array_filter(
+            Plugin::getPlugins(),
+            static fn(string $plugin_key): bool => Plugin::getInfo($plugin_key, 'csp_compliant') !== true
+        ));
     }
 }

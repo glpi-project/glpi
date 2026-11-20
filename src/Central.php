@@ -43,6 +43,7 @@ use Glpi\Marketplace\Controller;
 use Glpi\Migration\GenericobjectPluginMigration;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\TOTPManager;
+use Glpi\Security\ContentSecurityPolicy\CspState;
 use Glpi\System\HousekeepingCron;
 use Glpi\System\Requirement\PhpSupportedVersion;
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
@@ -751,6 +752,30 @@ class Central extends CommonGLPI
                     _n('You have %d plugin to update', 'You have %d plugins to update', $count),
                     $count
                 ) . ' <a href="' . htmlescape($CFG_GLPI['root_doc']) . '/front/marketplace.php">' . __s('View plugins') . '</a>';
+            }
+
+            // Warn if the CSP is disabled because of incompatible plugins
+            $csp_incompatible_plugins = CspState::getIncompatiblePlugins();
+            if ($csp_incompatible_plugins !== []) {
+                $plugins_names = \array_map(
+                    static function (string $plugin_key): string {
+                        $name = Plugin::getInfo($plugin_key, 'name');
+                        return htmlescape((\is_string($name) ? Toolbox::stripTags($name) : '') ?: $plugin_key);
+                    },
+                    $csp_incompatible_plugins
+                );
+                $messages['warnings'][] = sprintf(
+                    _sn(
+                        'The Content Security Policy (CSP), which protects GLPI against cross-site scripting (XSS) attacks, is disabled because the following plugin is not compatible with it: %s.',
+                        'The Content Security Policy (CSP), which protects GLPI against cross-site scripting (XSS) attacks, is disabled because the following plugins are not compatible with it: %s.',
+                        count($csp_incompatible_plugins)
+                    ),
+                    implode(', ', $plugins_names)
+                ) . ' ' . sprintf(
+                    '<a href="%s">%s</a>',
+                    htmlescape($CFG_GLPI['root_doc'] . '/CSP/Plugins'),
+                    __s('How to make a plugin compatible with the CSP')
+                );
             }
         }
 
