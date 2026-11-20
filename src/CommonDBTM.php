@@ -386,7 +386,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param DBmysqlIterator $iter Iterator instance
      *
-     * @return iterable<CommonDBTM>
+     * @return iterable<static>
      */
     public static function getFromIter(DBmysqlIterator $iter)
     {
@@ -1408,6 +1408,7 @@ class CommonDBTM extends CommonGLPI
                     }
 
                     $this->post_addItem();
+                    $this->handleTags();
                     if ($this instanceof CacheableListInterface) {
                         $this->invalidateListCache();
                     }
@@ -1831,6 +1832,7 @@ class CommonDBTM extends CommonGLPI
                 }
 
                 $this->post_updateItem($history);
+                $this->handleTags();
                 if ($this instanceof CacheableListInterface) {
                     $this->invalidateListCache();
                 }
@@ -2201,6 +2203,7 @@ class CommonDBTM extends CommonGLPI
                 if ($force) {
                     $this->addMessageOnPurgeAction();
                     $this->post_purgeItem();
+                    Tag_Item::cleanTag($this);
                     if ($this instanceof CacheableListInterface) {
                         $this->invalidateListCache();
                     }
@@ -6930,5 +6933,47 @@ class CommonDBTM extends CommonGLPI
             $item->post_getFromDB();
             yield $item;
         }
+    }
+
+    /**
+     * Synchronize tag associations from the `_tags` input (list of tag IDs) for taggable itemtypes.
+     *
+     * @return void
+     */
+    private function handleTags(): void
+    {
+        // Check if the itemtype is taggable and if the `_tags` input is set
+        if (!isset($this->input['_tags']) || !$this->isTaggable()) {
+            return;
+        }
+
+        $tags_ids = array_map('intval', array_filter((array) $this->input['_tags']));
+        $old_tags_ids = Tag_Item::getTagsForItem($this);
+
+        // Only the tags proposed in the form can be removed to keep inactive tags.
+        $available_tags = [];
+        foreach (Tag_Itemtype::getTagsByItemtype($this::class, Tag::getTagsEntityID($this)) as $tag) {
+            $available_tags[] = $tag->getID();
+        }
+
+        foreach ($old_tags_ids as $tags_id) {
+            if (in_array($tags_id, $available_tags, true) && !in_array($tags_id, $tags_ids, true)) {
+                Tag_Item::removeTag($this, $tags_id);
+            }
+        }
+
+        foreach ($tags_ids as $tags_id) {
+            if (!in_array($tags_id, $old_tags_ids, true)) {
+                Tag_Item::addTag($this, $tags_id);
+            }
+        }
+    }
+
+    /**
+     * Check if the current itemtype is taggable.
+     */
+    public function isTaggable(): bool
+    {
+        return Tag_Itemtype::isTaggableItemtype($this::class);
     }
 }

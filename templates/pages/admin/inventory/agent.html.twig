@@ -64,6 +64,8 @@
                         field_options
                     ) }}
 
+                    {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number()), field_options) }}
+
                     {{ fields.htmlField(
                         'agenttypes_id',
                         get_item_name('AgentType', item.fields['agenttypes_id'])|e,
