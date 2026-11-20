@@ -246,7 +246,7 @@ class Item_Ola extends CommonDBRelation
             throw new Exception('Failed to update item_ola');
         }
 
-        // since dates may be changed, rebuild the levels todo
+        // since dates may be changed, reschedule the pending level
         $ticket->manageOlaLevel($item_ola->fields['olas_id']);
     }
 
@@ -451,7 +451,7 @@ class Item_Ola extends CommonDBRelation
      * Ola Cron Tasks
      *
      * - recompute ola data is_late field
-     * - refresh ola levels_todo
+     * - reschedule the pending ola levels (levels todo)
      * - closes ticket (via compute()->doLevelForTicket())
      *
      * update items_ola which has no end_time of tickets
@@ -463,8 +463,6 @@ class Item_Ola extends CommonDBRelation
     {
         $items_olas = new static();
         $ios = $items_olas->find(['end_time' => null, 'itemtype' => Ticket::class]);
-
-        OLA::deleteAllLevelsToDo(); // todo levels are rebuild in Item_Ola::compute()
 
         $processed = 0;
         foreach ($ios as $item_ola) {
