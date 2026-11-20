@@ -35,33 +35,13 @@
 namespace tests\units\Glpi\Security\ContentSecurityPolicy;
 
 use Glpi\Security\ContentSecurityPolicy\CspState;
+use Glpi\Tests\CspTesterTrait;
 use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Plugin;
-use ReflectionProperty;
 
 class CspStateTest extends GLPITestCase
 {
-    /**
-     * @var array<string>
-     */
-    private array $initial_plugins;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        require_once FIXTURE_DIR . '/csp_plugins.php';
-
-        $this->initial_plugins = Plugin::getPlugins();
-    }
-
-    public function tearDown(): void
-    {
-        $this->setActivePlugins($this->initial_plugins);
-
-        parent::tearDown();
-    }
+    use CspTesterTrait;
 
     public static function pluginsProvider(): iterable
     {
@@ -98,6 +78,24 @@ class CspStateTest extends GLPITestCase
         $this->assertSame($expected, CspState::isEnabled());
     }
 
+    public function testGetIncompatiblePlugins(): void
+    {
+        $this->setActivePlugins(['tester', 'cspcompliant']);
+        $this->assertSame([], CspState::getIncompatiblePlugins());
+
+        $this->setActivePlugins([
+            'cspnotcompliant',
+            'tester',
+            'cspexplicitlynotcompliant',
+            'cspcompliant',
+            'cspnotstrictlycompliant',
+        ]);
+        $this->assertSame(
+            ['cspnotcompliant', 'cspexplicitlynotcompliant', 'cspnotstrictlycompliant'],
+            CspState::getIncompatiblePlugins()
+        );
+    }
+
     public function testStateIsUpdatedWhenActivePluginsChange(): void
     {
         $this->setActivePlugins(['cspcompliant']);
@@ -114,14 +112,5 @@ class CspStateTest extends GLPITestCase
     {
         // The tester plugin is compliant, so the test suite runs with the CSP enabled.
         $this->assertTrue(CspState::isEnabled());
-    }
-
-    /**
-     * @param array<string> $plugins
-     */
-    private function setActivePlugins(array $plugins): void
-    {
-        $property = new ReflectionProperty(Plugin::class, 'activated_plugins');
-        $property->setValue(null, $plugins);
     }
 }

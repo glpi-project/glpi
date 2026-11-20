@@ -50,14 +50,17 @@ function plugin_version_cspnotcompliant()
     return [
         'name'          => 'cspnotcompliant',
         'version'       => '1.0.0',
+        'author'        => '<a href="https://example.org">CSP tester</a>',
+        'homepage'      => 'https://example.org/cspnotcompliant',
     ];
 }
 
 function plugin_version_cspexplicitlynotcompliant()
 {
     return [
-        'name'          => 'cspexplicitlynotcompliant',
-        'version'       => '1.0.0',
+        'name'          => '<b>cspexplicitlynotcompliant</b>',
+        'version'       => '2.0.0',
+        'homepage'      => 'javascript:alert(1)',
         'csp_compliant' => false,
     ];
 }

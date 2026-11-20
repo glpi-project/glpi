@@ -90,6 +90,11 @@ class GLPITestCase extends TestCase
     private array $superglobals_copy = [];
 
     /**
+     * @var array<string>
+     */
+    private array $active_plugins_copy = [];
+
+    /**
      * @var TestHandler
      */
     private $log_handler;
@@ -505,6 +510,9 @@ class GLPITestCase extends TestCase
         if ($this->config_copy === null) {
             $this->config_copy = $CFG_GLPI;
         }
+
+        // Active plugins
+        $this->active_plugins_copy = Plugin::getPlugins();
     }
 
     /**
@@ -537,6 +545,7 @@ class GLPITestCase extends TestCase
 
         // Statics values
         Log::$use_queue = false;
+        (new ReflectionProperty(Plugin::class, 'activated_plugins'))->setValue(null, $this->active_plugins_copy);
         CommonDBTM::clearSearchOptionCache();
         SearchOption::clearSearchOptionCache();
         Dropdown::resetItemtypesStaticCache();
