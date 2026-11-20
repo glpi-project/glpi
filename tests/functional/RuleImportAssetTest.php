@@ -1314,6 +1314,65 @@ class RuleImportAssetTest extends DbTestCase
         $this->assertNotSame($computer->getID(), $this->items_id);
     }
 
+    public function testUpdateComputerWithEmptyDomain()
+    {
+        $this->addAssetRule(
+            "Computer update (empty domain)",
+            [
+                [
+                    'condition' => 0,
+                    'criteria'  => 'itemtype',
+                    'pattern'   => 'Computer',
+                ],
+                [
+                    'condition' => \RuleImportAsset::PATTERN_FIND,
+                    'criteria'  => 'name',
+                    'pattern'   => '1',
+                ],
+                [
+                    'condition' => \RuleImportAsset::PATTERN_IS_EMPTY,
+                    'criteria'  => 'domains_id',
+                    'pattern'   => '1',
+                ],
+            ],
+            [
+                'action_type' => 'assign',
+                'field'       => '_inventory',
+                'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
+            ]
+        );
+
+        $with_domain = $this->createItem(\Computer::class, [
+            'entities_id' => 0,
+            'name'        => 'pc-11',
+        ]);
+        $without_domain = $this->createItem(\Computer::class, [
+            'entities_id' => 0,
+            'name'        => 'pc-11',
+        ]);
+        $domain = $this->createItem(\Domain::class, [
+            'entities_id' => 0,
+            'name'        => 'test.local',
+        ]);
+        $this->createItem(\Domain_Item::class, [
+            'domains_id' => $domain->getID(),
+            'itemtype'   => 'Computer',
+            'items_id'   => $with_domain->getID(),
+        ]);
+
+        $input = [
+            'itemtype'    => 'Computer',
+            'name'        => 'pc-11',
+            'domains_id'  => 'test.local',
+            'entities_id' => 0,
+        ];
+        $ruleCollection = new \RuleImportAssetCollection();
+
+        $ruleCollection->processAllRules($input, [], ['class' => $this]);
+
+        $this->assertSame($without_domain->getID(), $this->items_id);
+    }
+
     public function testReconciliateWithAssetTemplate()
     {
 

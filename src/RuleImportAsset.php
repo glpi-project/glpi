@@ -917,9 +917,13 @@ class RuleImportAsset extends Rule
                             'glpi_domains'       => 'id',
                         ],
                     ];
-                    $it_criteria['WHERE'][] = [
-                        'glpi_domains.name'  => $input['domains_id'],
-                    ];
+                    if ($criterion->fields['condition'] == self::PATTERN_IS_EMPTY) {
+                        $it_criteria['WHERE'][] = ['glpi_domains_items.id' => null];
+                    } else {
+                        $it_criteria['WHERE'][] = [
+                            'glpi_domains.name'  => $input['domains_id'],
+                        ];
+                    }
                     break;
 
                 case 'linked_item':
