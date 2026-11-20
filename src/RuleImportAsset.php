@@ -520,7 +520,7 @@ class RuleImportAsset extends Rule
 
             // do not reconcile if it's a template
             if ($item->maybeTemplate()) {
-                $it_criteria['WHERE'][] = ['is_template' =>  0];
+                $it_criteria['WHERE'][] = ["$itemtable.is_template" =>  0];
             }
 
             if ($this->link_criteria_port) {
@@ -899,16 +899,31 @@ class RuleImportAsset extends Rule
                     ];
                     break;
 
-                case 'domain':
-                    $it_criteria['LEFT JOIN']['glpi_domains'] = [
+                case 'domains_id':
+                    $it_criteria['LEFT JOIN']['glpi_domains_items'] = [
                         'ON'  => [
-                            'glpi_domains' => 'id',
-                            $itemtable     => 'domains_id',
+                            $itemtable           => 'id',
+                            'glpi_domains_items' => 'items_id', [
+                                'AND' => [
+                                    'glpi_domains_items.itemtype'   => $itemtype,
+                                    'glpi_domains_items.is_deleted' => 0,
+                                ],
+                            ],
                         ],
                     ];
-                    $it_criteria['WHERE'][] = [
-                        'glpi_domains.name'  => $input['domains_id'],
+                    $it_criteria['LEFT JOIN']['glpi_domains'] = [
+                        'ON'  => [
+                            'glpi_domains_items' => 'domains_id',
+                            'glpi_domains'       => 'id',
+                        ],
                     ];
+                    if ($criterion->fields['condition'] == self::PATTERN_IS_EMPTY) {
+                        $it_criteria['WHERE'][] = ['glpi_domains_items.id' => null];
+                    } else {
+                        $it_criteria['WHERE'][] = [
+                            'glpi_domains.name'  => $input['domains_id'],
+                        ];
+                    }
                     break;
 
                 case 'linked_item':
