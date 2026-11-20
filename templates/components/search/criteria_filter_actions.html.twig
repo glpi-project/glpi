@@ -51,7 +51,7 @@
     </button>
 </div>
 
-<script type="module">
+<script nonce="{{ csp_nonce() }}" type="module">
     function showLoading(btn) {
         btn.find('i').addClass('d-none');
         btn.find('.spinner-border').removeClass('d-none');

@@ -111,7 +111,7 @@
     </div>
 </div>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
     $(function() {
         // Translation rows are loaded on demand to avoid rendering every language of the form at once
         $('#form-translation-modal-{{ form_translation.fields['language']|e('js') }}').one('show.bs.modal', (event) => {

@@ -53,8 +53,12 @@
 
    {{ fields.dropdownArrayField('init_all', 0, logs_interval_options, __('Change all'), {
       label_class: 'col-xxl-5 fst-italic',
-      on_change: '$(this).closest(`form`).find(`.purgelog_interval select`).val(this.value).trigger("change");'
    }) }}
+   <script nonce="{{ csp_nonce() }}">
+      $('select[name=init_all]').on('change', function() {
+         $(this).closest('form').find('.purgelog_interval select').val(this.value).trigger('change');
+      });
+   </script>
 
    {{ fields.smallTitle(__('General')) }}
    {{ _self.log_interval_dropdown('purge_addrelation', __('Add/update relation between items'), config, logs_interval_options) }}

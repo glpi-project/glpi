@@ -86,15 +86,13 @@
     {% set more_html %}
         {% if options.is_disclosable %}
             <button type="button" class="btn btn-outline-secondary"
-                 onmousedown="showDisclosablePasswordField('{{ options.id|e('js') }}')"
-                 onmouseup="hideDisclosablePasswordField('{{ options.id|e('js') }}')"
-                 onmouseout="hideDisclosablePasswordField('{{ options.id|e('js') }}')">
+                 data-glpi-disclose-password="{{ options.id }}">
                 <i class="ti ti-eye disclose"></i>
             </button>
         {% endif %}
 
         {% if options.is_copyable %}
-            <button type="button" class="btn btn-outline-secondary" onclick="copyDisclosablePasswordFieldToClipboard('{{ options.id|e('js') }}')">
+            <button type="button" class="btn btn-outline-secondary" data-glpi-copy-password="{{ options.id }}">
                 <i class="ti ti-clipboard-copy disclose"></i>
             </button>
         {% endif %}
@@ -175,7 +173,7 @@
         'type': 'text',
         'input_addclass': 'rounded-0',
     })) }}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         $(function () {
             $("#{{ options.id|e('css')|e('js') }}").spectrum({
                 showInput: true,
@@ -314,7 +312,7 @@
             {# No time and no date, doesn't make sense so fallback to full format #}
             {% set date_format = 'Y-m-d H:i:S' %}
         {% endif %}
-        <script>
+        <script nonce="{{ csp_nonce() }}">
             $(function() {
                 $("#{{ options.id|e('css')|e('js') }}").flatpickr({
                     wrap: true,
@@ -425,7 +423,7 @@
         ]) %}
    {% endif %}
    {% if options.enable_form_tags %}
-        <script>
+        <script nonce="{{ csp_nonce() }}">
             $(function() {
                 const form_tags = new GLPI.RichText.FormTags(
                     tinymce.get('{{ options.id|e('js') }}'),
@@ -437,7 +435,7 @@
     {% endif %}
 
     {% if options.mention_options.enabled|default(false) and config('use_notifications') %}
-        <script>
+        <script nonce="{{ csp_nonce() }}">
             $(function() {
                 const user_mention = new GLPI.RichText.UserMention(
                     tinymce.get('{{ options.id|e('js') }}'),

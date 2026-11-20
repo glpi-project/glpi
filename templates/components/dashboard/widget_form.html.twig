@@ -112,7 +112,7 @@
             {% endfor %}
             </select>
 
-            <script>
+            <script nonce="{{ csp_nonce() }}">
                 $(function() {
                     const palettes = {{ palettes|json_encode|raw }};
                     const palette_template = function(option) {

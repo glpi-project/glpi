@@ -75,13 +75,9 @@
                     multiple: false,
                 }) }}
                 {% if item.fields['picture'] is not empty %}
-                    {{ fields.checkboxField('_blank_picture', 0, __('Clear'), {
-                        additional_attributes: {
-                            onclick: '$(this).closest(".modal").find("[data-current-avatar], [data-default-avatar], .fileupload").toggleClass("d-none");'
-                        }
-                    }) }}
+                    {{ fields.checkboxField('_blank_picture', 0, __('Clear')) }}
                 {% endif %}
-                <script type="module">
+                <script nonce="{{ csp_nonce() }}" type="module">
                     function updateAvatarVisibilities() {
                         // Cannot rely on 'fileuploadprocessstop' event or files property as they flat out don't work. fileupload_info content is not updated fast enough to be seen from change event.
                         const has_pending_file = $('#modal_picture_{{ rand_field }} [data-preview-avatar] img').attr('src') !== '';
@@ -90,6 +86,7 @@
                         $('[data-preview-avatar]').toggleClass('d-none', !has_pending_file || will_clear);
                         $('[data-current-avatar]').toggleClass('d-none', has_pending_file || will_clear);
                         $('[data-default-avatar]').toggleClass('d-none', !will_clear);
+                        document.querySelector('#modal_picture_{{ rand_field }} .fileupload').classList.toggle('d-none', will_clear);
                     }
 
                     $('#modal_picture_{{ rand_field }}').on('mouseup', '.remove_file_upload', (e) => {

@@ -118,7 +118,7 @@
         ) }}
     </section>
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
 
         (async function() {
             const module = await import("/js/modules/Forms/ServiceCatalogController.js");

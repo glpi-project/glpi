@@ -121,7 +121,7 @@
     </div>
 </div>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
     // Toggle disabled state
     $("[data-glpi-toggle-control]").on("change", function() {
         $(this).closest("section[data-glpi-access-control-form]")

@@ -894,7 +894,7 @@ JAVASCRIPT;
                     rand: rand
                 }) }}
                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
-                <script>
+                <script nonce="{{ csp_nonce() }}">
                     $(() => {
                         $('#dropdown_planning_type{{ rand }}').on('change', function() {
                             const planning_type = $(this).val();
@@ -1273,7 +1273,7 @@ TWIG, $twig_params);
                 display_emptychoice: true,
                 rand: rand
             }) }}
-            <script>
+            <script nonce="{{ csp_nonce() }}">
                 $(() => {
                     $('#dropdown_itemtype{{ rand }}').on('change', function() {
                         const current_itemtype = $(this).val();

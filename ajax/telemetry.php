@@ -57,7 +57,7 @@ $twig_params = [
 echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
     <p>{{ description }}</p>
     <div id='telemetry-preview' style="height: 400px"></div>
-    <script type="module">
+    <script nonce="{{ csp_nonce() }}" type="module">
         import('/js/modules/Monaco/MonacoEditor.js').then(() => {
             window.GLPI.Monaco.createEditor('telemetry-preview', 'javascript', `{{ info|escape('js') }}`, [], {
                 readOnly: true,

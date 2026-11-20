@@ -137,8 +137,7 @@
                 {% endif %}
             </div>
 
-            {% set submit_search_form = "this.closest('[data-glpi-search-container]').querySelector('[data-glpi-search-form]').submit()" %}
-            <div class="secondary-controls">
+            <div class="secondary-controls" id="search-secondary-controls{{ rand }}">
                 {% if may_be_located %}
                     <div class="btn-group me-1 me-xl-2 shadow-none" role="group">
                         {% set table_class = (data['search']['as_map'] == 0 ? "btn-ghost-info" : "") %}
@@ -149,7 +148,7 @@
                             value="1"
                             autocomplete="off"
                             id="show_as_table"
-                            onclick="toogle('as_map','','',''); {{ submit_search_form }};"
+                            data-glpi-search-toggle="as_map"
                             {{ data['search']['as_map'] == 0 ? 'checked' : '' }}
                         >
                             <label class="btn btn-icon btn-sm btn-pill px-2 py-1 {{ table_class }}" title="{{ __('Show as table') }}"
@@ -166,7 +165,7 @@
                             value="1"
                             autocomplete="off"
                             id="show_as_map"
-                            onclick="toogle('as_map','','',''); {{ submit_search_form }};"
+                            data-glpi-search-toggle="as_map"
                             {{ data['search']['as_map'] == 1 ? 'checked' : '' }}
                         >
                         <label class="btn btn-icon btn-sm btn-pill px-2 py-1 {{ located_class }}" title="{{ __('Show as map') }}"
@@ -184,7 +183,7 @@
                         title="{{ __('Toggle browse') }}"
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
-                        onclick="toogle('browse','','',''); {{ submit_search_form }};"
+                        data-glpi-search-toggle="browse"
                     >
                         <i class="ti {{ data['search']['browse']|default(false) == 1 ? "ti-checkbox" : "ti-square" }}"></i>
                         <span class="d-flex align-bottom">
@@ -200,7 +199,7 @@
                         title="{{ __('Show the trashbin') }}"
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
-                        onclick="toogle('is_deleted','','',''); {{ submit_search_form }};"
+                        data-glpi-search-toggle="is_deleted"
                     >
                         <i class="ti {{ data['search']['is_deleted'] == 1 ? "ti-checkbox" : "ti-square" }}"></i>
                         <span class="d-flex align-bottom">
@@ -217,7 +216,7 @@
                         title="{{ __('Show unpublished') }}"
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
-                        onclick="toogle('unpublished','','',''); {{ submit_search_form }};"
+                        data-glpi-search-toggle="unpublished"
                     >
                         <i
                             class="ti {{ show_unpublished ? "ti-checkbox" : "ti-square" }}"
@@ -318,7 +317,7 @@
                         </a>
                         {% endif %}
                     </div>
-                    <script>
+                    <script nonce="{{ csp_nonce() }}">
                         // Ugly trick to fix z-index context issue by placing our dropdown at the end of the body
                         $("#dropdown-export-{{ rand }}").on("show.bs.dropdown", function() {
                             $(document.body).append($("ul[aria-labelledby=dropdown-export-{{ rand }}]").detach());
@@ -330,7 +329,7 @@
     {% endif %}
 </div>
 
-<script type="text/javascript">
+<script nonce="{{ csp_nonce() }}" type="text/javascript">
 $(document).ready(function() {
    const refreshSearchResults = function() {
       const search_display = $('.ajax-container.search-display-data');
@@ -344,6 +343,16 @@ $(document).ready(function() {
          window.location.reload();
       }
    };
+
+   document.getElementById('search-secondary-controls{{ rand }}')?.addEventListener('click', (e) => {
+      const toggle = e.target.closest('[data-glpi-search-toggle]');
+      if (toggle === null) {
+         return;
+      }
+      const input = document.getElementById(toggle.dataset.glpiSearchToggle);
+      input.value = input.value === '0' ? '1' : '0';
+      toggle.closest('[data-glpi-search-container]').querySelector('[data-glpi-search-form]').submit();
+   });
 
    $('.show_displaypreference_modal').click(function(e) {
       e.preventDefault();

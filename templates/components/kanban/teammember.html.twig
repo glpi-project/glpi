@@ -52,7 +52,7 @@
 <div class="form-group" id="members_list_{{ rand }}">
 <div>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
     $(document).ready(function() {
         {% for type in members_types %}
             $('#dropdown_{{ type }}list__{{ rand }}').change(function() {

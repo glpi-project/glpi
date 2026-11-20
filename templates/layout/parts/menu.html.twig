@@ -105,7 +105,7 @@
 </ul>
 
 {% if is_vertical %}
-<script type="text/javascript">
+<script nonce="{{ csp_nonce() }}" type="text/javascript">
 $(function() {
    // below, some modifications of dropdowns menu behavior
    document.querySelectorAll('#menu_{{ rand }} > .dropdown').forEach(function(menuDropdown) {

@@ -312,7 +312,7 @@
 
                     {% if subitem.can(subitem.fields['id'], constant('PURGE')) %}
                         <button class="btn btn-outline-danger me-2" type="submit" name="purge"
-                                onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');">
+                                data-glpi-confirm="{{ __('Confirm the final deletion?') }}">
                             <i class="ti ti-trash"></i>
                             <span>{{ _x('button', 'Delete permanently') }}</span>
                         </button>
@@ -324,12 +324,12 @@
         </form>
 
       {% if scroll ?? false %}
-         <script type="text/javascript">
+         <script nonce="{{ csp_nonce() }}" type="text/javascript">
             window.scrollTo(0,document.body.scrollHeight);
          </script>
       {% endif %}
 
-      <script type="text/javascript">
+      <script nonce="{{ csp_nonce() }}" type="text/javascript">
          // --- fill form with template data
          function itilvalidationtemplate_update{{ rand }}(value) {
             $.ajax({

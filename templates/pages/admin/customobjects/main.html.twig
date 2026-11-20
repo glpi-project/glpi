@@ -106,7 +106,7 @@
                 </div>
             </div>
         </div>
-        <script defer>
+        <script nonce="{{ csp_nonce() }}" defer>
             $('#mainformtable button[name="purge"]').on('click', { is_from_modal: false }, (event, data) => {
                 data = data || event.data;
 
@@ -127,7 +127,7 @@
             });
         </script>
     {% endif %}
-    <script type="module">
+    <script nonce="{{ csp_nonce() }}" type="module">
         $('#mainformtable input[name="system_name"]').on('change', () => {
             if ($('input[name="system_name"]').val() === '') {
                 $('input[name="system_name"]').data('manually_changed', false);

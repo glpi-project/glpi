@@ -147,6 +147,7 @@
                   type="submit"
                   name="add"
                   form="itil-form"
+                  data-testid="itil-add-button"
                   title="{{ _x('button', 'Add') }}"
                   aria-label="{{ _x('button', 'Add') }}"
                >
@@ -191,7 +192,7 @@
 
                         <button class="btn btn-outline-danger btn-square" type="submit" name="purge" form="itil-form"
                               title="{{ _x('button', 'Delete permanently') }}"
-                              onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');">
+                              data-glpi-confirm="{{ __('Confirm the final deletion?') }}">
                            <i class="ti ti-trash"></i>
                            <span class="d-none d-lg-block">{{ _x('button', 'Delete permanently') }}</span>
                         </button>
@@ -215,7 +216,7 @@
 {% set openfollowup = (_get['_openfollowup'] ?? false) %}
 {% set is_timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
 
-<script type="text/javascript">
+<script nonce="{{ csp_nonce() }}" type="text/javascript">
 
 (function(){
     {#
