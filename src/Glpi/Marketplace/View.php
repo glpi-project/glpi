@@ -40,6 +40,7 @@ use Config;
 use Document;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Marketplace\Api\Plugins as PluginsApi;
+use Glpi\Security\ContentSecurityPolicy\CspState;
 use GLPINetwork;
 use Html;
 use Plugin;
@@ -793,8 +794,13 @@ JS;
                             <i class='ti ti-toggle-right-filled'></i>
                         </button>";
                 } else {
+                    $csp_confirmation = CspState::getActivationConfirmationMessage([$plugin_key]);
+                    $csp_confirmation_attr = $csp_confirmation !== null
+                        ? \sprintf('data-glpi-csp-confirm="%s"', \htmlescape($csp_confirmation))
+                        : '';
                     $buttons .= "<button class='modify_plugin'
                                          data-action='enable_plugin'
+                                         {$csp_confirmation_attr}
                                          title='" . __s("Enable") . "'>
                             <i class='ti ti-toggle-left-filled'></i>
                         </button>";
