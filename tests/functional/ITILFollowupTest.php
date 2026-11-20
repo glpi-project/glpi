@@ -925,4 +925,31 @@ HTML,
         $this->assertCount(1, $crawler->filter('textarea[name="content"]'));
         $this->assertCount(1, $crawler->filter('button[name="add"]'));
     }
+
+    public function testParentLastUpdaterIsUpdatedOnAdd(): void
+    {
+        $this->login('tech', 'tech');
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Ticket',
+            'content'     => 'Ticket',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $this->createItem(CoreITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => 'First followup',
+        ]);
+
+        $this->login('glpi', 'glpi');
+
+        $followup = $this->createItem(CoreITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => 'Followup',
+        ]);
+
+        // The parent item is the one given to the notification
+        $this->assertEquals(getItemByTypeName(User::class, 'glpi', true), $followup->input['_job']->fields['users_id_lastupdater']);
+    }
 }
