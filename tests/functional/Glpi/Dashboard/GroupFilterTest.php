@@ -48,6 +48,9 @@ class GroupFilterTest extends DbTestCase
         /** @var \DBmysql */
         global $DB;
 
+        // actors are only set with a session that has the right to set them
+        $this->login();
+
         $groups_id_1 = getItemByTypeName(Group::class, '_test_group_1', true);
         $groups_id_2 = getItemByTypeName(Group::class, '_test_group_2', true);
         $ticket = $this->createItem(Ticket::class, [

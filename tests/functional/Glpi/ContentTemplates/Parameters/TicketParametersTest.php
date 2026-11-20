@@ -97,6 +97,7 @@ class TicketParametersTest extends AbstractParametersTest
         $observer_users_id2  = getItemByTypeName('User', 'post-only', true);
         $assigned_groups_id  = getItemByTypeName('Group', '_test_group_2', true);
         $suppliers_id        = getItemByTypeName('Supplier', '_suplier01_name', true);
+        $this->updateItem(\Supplier::class, $suppliers_id, ['is_recursive' => 1]);
 
         $now = date('Y-m-d H:i:s');
         $created_ticket = $this->createItem('Ticket', [

@@ -3163,6 +3163,7 @@ final class Transfer extends CommonDBTM
                         $input                = $this->transferHelpdeskAdditionalInformations($data);
                         $input['id']          = $data['id'];
                         $input['entities_id'] = $this->to;
+                        $input['_transfer']   = 1;
 
                         $job->update($input);
 

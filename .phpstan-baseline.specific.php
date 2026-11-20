@@ -83,7 +83,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type string\\|null\\.$#',
 	'identifier' => 'array.invalidKey',
-	'count' => 2,
+	'count' => 3,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
