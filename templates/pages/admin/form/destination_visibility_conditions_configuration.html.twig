@@ -67,6 +67,7 @@
                 name: '{{ question_data.getName()|escape('js') }}',
                 type: '{{ get_class(question_data.getType())|escape('js') }}',
                 extra_data: {{ question_data.getExtraData()|json_encode|raw }},
+                forms_sections_uuid: {{ question_data.getSectionUuid()|json_encode|raw }},
             });
         {% endfor %}
 
@@ -76,6 +77,7 @@
             comments.push({
                 uuid: '{{ comment_data.getUuid()|escape('js') }}',
                 name: '{{ comment_data.getName()|escape('js') }}',
+                forms_sections_uuid: {{ comment_data.getSectionUuid()|json_encode|raw }},
             });
         {% endfor %}
 
