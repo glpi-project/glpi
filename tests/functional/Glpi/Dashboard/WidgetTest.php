@@ -452,9 +452,7 @@ class WidgetTest extends DbTestCase
         // The full title is available in a tooltip, as it is clamped to 2 lines
         $this->assertStringContainsString('<span class="main-label" title="Tickets by status">', $html);
 
-        preg_match('/myChart\.setOption\((\{.*\})\);$/m', $html, $matches);
-        $chart_options = json_decode($matches[1] ?? '', true);
-        $this->assertIsArray($chart_options);
+        $chart_options = $this->extractChartOptions($html);
 
         // A single line legend, paginated when it overflows
         $this->assertSame('scroll', $chart_options['legend']['type']);
@@ -493,6 +491,34 @@ class WidgetTest extends DbTestCase
         foreach ($chart_options['series'] as $serie) {
             $this->assertSame(26, $serie['barMaxWidth']);
         }
+    }
+
+    public static function csvExportProvider(): iterable
+    {
+        $params = [
+            'label' => 'Tickets',
+            'data'  => [['number' => 3, 'label' => 'New', 'url' => '']],
+        ];
+        yield 'pie' => ['pie', $params];
+        yield 'bars' => ['simpleBar', $params];
+        yield 'lines' => ['simpleLine', $params];
+        yield 'sunburst' => ['sunburst', $params];
+    }
+
+    #[DataProvider('csvExportProvider')]
+    public function testCsvExport(string $widget, array $params): void
+    {
+        $_SESSION['glpicsv_delimiter'] = ',';
+        $html = Widget::$widget($params);
+
+        $csv_export = $this->extractChartOptions($html)['toolbox']['feature']['myExportCsv'];
+        $this->assertSame('Export to CSV', $csv_export['title']);
+        $this->assertSame(',', $csv_export['delimiter']);
+        $this->assertSame(['name' => 'Name', 'value' => 'Value'], $csv_export['headers']);
+        $this->assertStringContainsString('GLPI.Dashboard.exportChartToCsv(', $html);
+
+        // Without the option, the toolbox has no CSV export button
+        $this->assertArrayNotHasKey('myExportCsv', Widget::getEChartsToolboxOptions('#000', '#fff')['feature']);
     }
 
     public function testSunburst(): void

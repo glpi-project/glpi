@@ -56,6 +56,81 @@ window.GLPI.Dashboard = {
         });
 
         return this.dashboards[current_dashboard_index];
+    },
+
+    /**
+     * Build the CSV content of a chart: one line per item (pie, sunburst) or per category (bars, lines)
+     * one column per series
+     *
+     * @param {Object} option ECharts options of the chart
+     * @param {string} delimiter
+     * @param {{name: string, value: string}} headers
+     * @return {string}
+     */
+    getChartCsv: function (option, delimiter, headers) {
+        const to_array = (value) => [].concat(value ?? []);
+        const get_value = (item) => (item !== null && typeof item === 'object') ? (item.value ?? '') : (item ?? '');
+        const escape = (field) => {
+            if (typeof field === 'number') {
+                return String(field);
+            }
+            let text = String(field);
+            // Avoid formulas execution when the file is opened in a spreadsheet
+            if (/^[=+\-@\t\r]/.test(text)) {
+                text = `'${text}`;
+            }
+            return `"${text.replaceAll('"', '""')}"`;
+        };
+
+        const series = to_array(option.series);
+        let rows = [];
+        if (series.length > 0 && series[0].type === 'pie') {
+            rows.push([headers.name, headers.value]);
+            to_array(series[0].data)
+                // the half pie has a filler item to hide its lower half
+                .filter((item) => !item.is_filler)
+                .forEach((item) => rows.push([item.name, get_value(item)]));
+        } else if (series.length > 0 && series[0].type === 'sunburst') {
+            rows.push([headers.name, headers.value]);
+            const add_nodes = (nodes, path) => {
+                to_array(nodes).forEach((node) => {
+                    const node_path = [...path, node.name];
+                    rows.push([node_path.join(' > '), get_value(node)]);
+                    add_nodes(node.children, node_path);
+                });
+            };
+            add_nodes(series[0].data, []);
+        } else {
+            const category_axis = [...to_array(option.xAxis), ...to_array(option.yAxis)]
+                .find((axis) => axis.type === 'category');
+            const categories = to_array(category_axis?.data).map(get_value);
+            const series_data = series.map((serie) => to_array(serie.data));
+            rows.push([headers.name, ...series.map((serie) => serie.name || headers.value)]);
+            rows = rows.concat(categories.map(
+                (category, index) => [category, ...series_data.map((data) => get_value(data[index] ?? ''))]
+            ));
+        }
+
+        return rows.map((row) => row.map(escape).join(delimiter)).join('\r\n');
+    },
+
+    /**
+     * Download the data of a chart as a CSV file named after its card
+     *
+     * @param {Object} chart ECharts instance
+     */
+    exportChartToCsv: function (chart) {
+        const option = chart.getOption();
+        // getOption() returns the components as arrays
+        const csv_options = option.toolbox[0].feature.myExportCsv;
+        const csv = this.getChartCsv(option, csv_options.delimiter, csv_options.headers);
+        const label = $(chart.getDom()).closest('.g-chart').find('.main-label').text().trim();
+
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(new Blob([`\ufeff${csv}`], {type: 'text/csv;charset=utf-8'}));
+        link.download = `${(label || 'chart').replace(/[\\/:*?\x22<>|]/g, '_')}.csv`;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(link.href));
     }
 };
 
