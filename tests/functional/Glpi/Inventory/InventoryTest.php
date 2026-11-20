@@ -9632,12 +9632,37 @@ JSON;
         $collection = new \RuleImportAssetCollection();
         $this->assertTrue($collection->moveRule($rules_id, 0, $collection::MOVE_BEFORE));
 
-        $json = json_decode('{"action": "inventory", "deviceid": "pc-without-domain", "itemtype": "Computer", "content": {"versionclient": "GLPI-Agent_v1.12", "hardware": {"name": "pc-without-domain"}}}');
-        $inventory = $this->doInventory($json);
+        $json_str = <<<JSON
+{
+   "action": "inventory",
+   "content": {
+      "hardware": {
+         "name": "pc-without-domain"
+      },
+      "versionclient": "GLPI-Agent_v1.12"
+   },
+   "deviceid": "pc-without-domain",
+   "itemtype": "Computer"
+}
+JSON;
+        $inventory = $this->doInventory(json_decode($json_str));
         $this->assertTrue($inventory->getItem()->isNewItem());
 
-        $json = json_decode('{"action": "inventory", "deviceid": "pc-with-domain", "itemtype": "Computer", "content": {"versionclient": "GLPI-Agent_v1.12", "hardware": {"name": "pc-with-domain", "workgroup": "test.local"}}}');
-        $inventory = $this->doInventory($json);
+        $json_str = <<<JSON
+{
+   "action": "inventory",
+   "content": {
+      "hardware": {
+         "name": "pc-with-domain",
+         "workgroup": "test.local"
+      },
+      "versionclient": "GLPI-Agent_v1.12"
+   },
+   "deviceid": "pc-with-domain",
+   "itemtype": "Computer"
+}
+JSON;
+        $inventory = $this->doInventory(json_decode($json_str));
         $this->assertFalse($inventory->getItem()->isNewItem());
         $this->assertSame('pc-with-domain', $inventory->getItem()->fields['name']);
     }
