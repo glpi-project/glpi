@@ -9606,6 +9606,42 @@ JSON;
         ]));
     }
 
+    public function testRuleImportAssetDomainCriterion(): void
+    {
+        $rules_id = $this->addRule(
+            RuleImportAsset::class,
+            'Refuse computers without domain',
+            [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => \Rule::PATTERN_IS,
+                    'pattern'   => \Computer::class,
+                ],
+                [
+                    'criteria'  => 'domains_id',
+                    'condition' => \Rule::PATTERN_DOES_NOT_EXISTS,
+                    'pattern'   => '1',
+                ],
+            ],
+            [
+                'action_type' => 'assign',
+                'field'       => '_ignore_import',
+                'value'       => 1,
+            ]
+        );
+        $collection = new \RuleImportAssetCollection();
+        $this->assertTrue($collection->moveRule($rules_id, 0, $collection::MOVE_BEFORE));
+
+        $json = json_decode('{"action": "inventory", "deviceid": "pc-without-domain", "itemtype": "Computer", "content": {"versionclient": "GLPI-Agent_v1.12", "hardware": {"name": "pc-without-domain"}}}');
+        $inventory = $this->doInventory($json);
+        $this->assertTrue($inventory->getItem()->isNewItem());
+
+        $json = json_decode('{"action": "inventory", "deviceid": "pc-with-domain", "itemtype": "Computer", "content": {"versionclient": "GLPI-Agent_v1.12", "hardware": {"name": "pc-with-domain", "workgroup": "test.local"}}}');
+        $inventory = $this->doInventory($json);
+        $this->assertFalse($inventory->getItem()->isNewItem());
+        $this->assertSame('pc-with-domain', $inventory->getItem()->fields['name']);
+    }
+
     public function testRuleLocationSingleEquipment(): void
     {
         $this->login();

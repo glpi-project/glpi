@@ -520,7 +520,7 @@ class RuleImportAsset extends Rule
 
             // do not reconcile if it's a template
             if ($item->maybeTemplate()) {
-                $it_criteria['WHERE'][] = ['is_template' =>  0];
+                $it_criteria['WHERE'][] = ["$itemtable.is_template" =>  0];
             }
 
             if ($this->link_criteria_port) {
@@ -899,11 +899,19 @@ class RuleImportAsset extends Rule
                     ];
                     break;
 
-                case 'domain':
+                case 'domains_id':
+                    $it_criteria['LEFT JOIN']['glpi_domains_items'] = [
+                        'ON'  => [
+                            $itemtable           => 'id',
+                            'glpi_domains_items' => 'items_id', [
+                                'AND' => ['glpi_domains_items.itemtype' => $itemtype],
+                            ],
+                        ],
+                    ];
                     $it_criteria['LEFT JOIN']['glpi_domains'] = [
                         'ON'  => [
-                            'glpi_domains' => 'id',
-                            $itemtable     => 'domains_id',
+                            'glpi_domains_items' => 'domains_id',
+                            'glpi_domains'       => 'id',
                         ],
                     ];
                     $it_criteria['WHERE'][] = [
