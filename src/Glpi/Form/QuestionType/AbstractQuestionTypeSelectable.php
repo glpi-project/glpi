@@ -274,6 +274,9 @@ TWIG;
     public function convertExtraData(array $rawData): array
     {
         $values = json_decode($rawData['values'] ?? '[]', true) ?? [];
+        if (!is_array($values)) {
+            $values = [$rawData['values']];
+        }
 
         // Formcreator may include some empty values, remove them
         $values = array_filter($values, fn($v) => $v !== "");
