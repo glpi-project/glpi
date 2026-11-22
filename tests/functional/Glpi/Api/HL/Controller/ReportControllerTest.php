@@ -101,12 +101,13 @@ class ReportControllerTest extends HLAPITestCase
                     ->status(fn($status) => $status === 400)
                     ->jsonContent(fn($content) => $this->assertEquals([
                         'status' => 'ERROR_INVALID_PARAMETER',
-                        'title' => 'One or more parameters are invalid',
-                        'detail' => null,
-                        'additional_messages' => [
-                            [
-                                'priority' => 'error',
-                                'message' => 'Missing parameter: field',
+                        'title' => 'Invalid input parameters',
+                        'detail' => [
+                            'field' => [
+                                [
+                                    'error' => 'required',
+                                    'message' => 'This field is required',
+                                ],
                             ],
                         ],
                     ], $content));
@@ -144,12 +145,13 @@ class ReportControllerTest extends HLAPITestCase
                     ->status(fn($status) => $status === 400)
                     ->jsonContent(fn($content) => $this->assertEquals([
                         'status' => 'ERROR_INVALID_PARAMETER',
-                        'title' => 'One or more parameters are invalid',
-                        'detail' => null,
-                        'additional_messages' => [
-                            [
-                                'priority' => 'error',
-                                'message' => 'Missing parameter: field',
+                        'title' => 'Invalid input parameters',
+                        'detail' => [
+                            'field' => [
+                                [
+                                    'error' => 'required',
+                                    'message' => 'This field is required',
+                                ],
                             ],
                         ],
                     ], $content));

@@ -79,6 +79,23 @@ class ResourceAccessorTest extends DbTestCase
         $this->assertEquals($expected, ResourceAccessor::getInputParamsBySchema($schema, $request_params));
     }
 
+    public function testGetInputParamsBySchemaDecodesJsonInput(): void
+    {
+        $schema = [
+            'type' => 'object',
+            'properties' => [
+                'options' => ['type' => 'string', 'x-json-input' => true],
+                'empty' => ['type' => 'string', 'x-json-input' => true],
+                'raw' => ['type' => 'string'],
+            ],
+        ];
+
+        $this->assertSame(
+            ['options' => ['a' => 1, 'b' => [true]], 'empty' => '', 'raw' => '{"a":1}'],
+            ResourceAccessor::getInputParamsBySchema($schema, ['options' => '{"a":1,"b":[true]}', 'empty' => '', 'raw' => '{"a":1}'])
+        );
+    }
+
     public function testCreateWithInvalidProperties()
     {
         $schema_with_validation = [
@@ -369,5 +386,189 @@ class ResourceAccessorTest extends DbTestCase
             'itemtype' => Ticket::class,
             'timeline_position' => CommonITILObject::NO_TIMELINE,
         ]));
+    }
+
+    /**
+     * Call the private input validation.
+     * @param array<string, mixed> $properties
+     * @param array<string, mixed> $input
+     * @return array<string, array<int, array<string, mixed>>>
+     */
+    private function validateInputParams(array $properties, array $input, bool $is_create): array
+    {
+        $rm = new ReflectionMethod(ResourceAccessor::class, 'validateInputParamsBySchema');
+        return $rm->invokeArgs(null, [['type' => 'object', 'properties' => $properties], &$input, $is_create]);
+    }
+
+    public function testValidateInputPatternError(): void
+    {
+        $props = ['code' => ['type' => 'string', 'pattern' => '^[A-Z]{3}$']];
+
+        $this->assertSame([], $this->validateInputParams($props, ['code' => 'ABC'], true));
+        $this->assertSame([
+            'code' => [
+                [
+                    'error' => 'pattern',
+                    'message' => 'This field must match the pattern ^[A-Z]{3}$',
+                    'pattern' => '^[A-Z]{3}$',
+                ],
+            ],
+        ], $this->validateInputParams($props, ['code' => 'abc'], true));
+    }
+
+    public function testValidateInputRequiredOnlyCheckedOnCreate(): void
+    {
+        $props = [
+            'name' => ['type' => 'string', 'required' => true],
+            'comment' => ['type' => 'string'],
+        ];
+
+        $this->assertSame([
+            'name' => [['error' => 'required', 'message' => 'This field is required']],
+        ], $this->validateInputParams($props, ['comment' => 'abc'], true));
+        $this->assertSame([], $this->validateInputParams($props, ['comment' => 'abc'], false));
+        $this->assertSame([], $this->validateInputParams($props, ['name' => 'abc'], true));
+    }
+
+    public function testValidateInputRequiredNestedPropertyUsesDottedKey(): void
+    {
+        $props = [
+            'status' => [
+                'type' => 'object',
+                'properties' => [
+                    'name' => ['type' => 'string', 'required' => true],
+                ],
+            ],
+        ];
+
+        $this->assertSame([
+            'status.name' => [['error' => 'required', 'message' => 'This field is required']],
+        ], $this->validateInputParams($props, ['status' => ['id' => 1]], true));
+        $this->assertSame([], $this->validateInputParams($props, ['status' => ['name' => 'abc']], true));
+    }
+
+    public function testValidateInputNestedConstraints(): void
+    {
+        $props = [
+            'status' => [
+                'type' => 'object',
+                'properties' => [
+                    'name' => ['type' => 'string', 'maxLength' => 3],
+                ],
+            ],
+        ];
+
+        $this->assertSame([], $this->validateInputParams($props, ['status' => ['name' => 'abc']], true));
+        $this->assertSame([
+            'status.name' => [
+                [
+                    'error' => 'maxLength',
+                    'message' => 'This field must be at most 3 characters long',
+                    'maxLength' => 3,
+                ],
+            ],
+        ], $this->validateInputParams($props, ['status' => ['name' => 'too long']], true));
+    }
+
+    public function testValidateInputUnknownKeysAreIgnored(): void
+    {
+        $props = ['name' => ['type' => 'string', 'maxLength' => 3]];
+
+        $this->assertSame([], $this->validateInputParams($props, ['extra' => str_repeat('a', 50)], true));
+    }
+
+    public function testValidateInputBoundaryValuesAreValid(): void
+    {
+        $props = [
+            'age' => ['type' => 'integer', 'minimum' => 0, 'maximum' => 120],
+            'name' => ['type' => 'string', 'maxLength' => 3],
+            'weight' => ['type' => 'number', 'multipleOf' => 0.5],
+        ];
+
+        $this->assertSame([], $this->validateInputParams($props, ['age' => 0, 'name' => 'abc', 'weight' => 1.5], true));
+        $this->assertSame([], $this->validateInputParams($props, ['age' => 120], true));
+    }
+
+    public function testValidateInputNumericStringsAreCheckedAsNumbers(): void
+    {
+        $props = ['age' => ['type' => 'integer', 'minimum' => 0, 'maximum' => 120]];
+
+        $this->assertSame([], $this->validateInputParams($props, ['age' => '50'], true));
+        $this->assertSame([
+            'age' => [
+                [
+                    'error' => 'range',
+                    'message' => 'This field must be between 0 and 120',
+                    'minimum' => 0,
+                    'maximum' => 120,
+                ],
+            ],
+        ], $this->validateInputParams($props, ['age' => '500'], true));
+    }
+
+    public function testValidateInputChecksTypeFormatAndEnum(): void
+    {
+        $props = [
+            'age' => ['type' => 'integer'],
+            'active' => ['type' => 'boolean'],
+            'when' => ['type' => 'string', 'format' => 'date-time'],
+            'day' => ['type' => 'string', 'format' => 'date'],
+            'level' => ['type' => 'string', 'enum' => ['low', 'high']],
+        ];
+
+        $errors = $this->validateInputParams($props, [
+            'age' => 'abc',
+            'active' => 'maybe',
+            'when' => 'not a date',
+            'day' => 'not a date',
+            'level' => 'not-in-enum',
+        ], true);
+
+        $this->assertSame(['age', 'active', 'when', 'day', 'level'], array_keys($errors));
+        $this->assertSame(['type'], array_column($errors['age'], 'error'));
+        $this->assertSame(['type'], array_column($errors['active'], 'error'));
+        $this->assertSame(['format'], array_column($errors['when'], 'error'));
+        $this->assertSame(['format'], array_column($errors['day'], 'error'));
+        $this->assertSame(['enum'], array_column($errors['level'], 'error'));
+    }
+
+    public function testValidateInputCoercesValues(): void
+    {
+        $props = [
+            'age' => ['type' => 'integer'],
+            'weight' => ['type' => 'number'],
+            'active' => ['type' => 'boolean'],
+            'name' => ['type' => 'string'],
+            'serial' => ['type' => 'string'],
+            'when' => ['type' => 'string', 'format' => 'date-time'],
+        ];
+        $input = ['age' => '5', 'weight' => '1.234', 'active' => 'yes', 'name' => 'abc', 'serial' => 354235, 'when' => '2024-01-31 10:00:00 UTC'];
+
+        $rm = new ReflectionMethod(ResourceAccessor::class, 'validateInputParamsBySchema');
+        $this->assertSame([], $rm->invokeArgs(null, [['type' => 'object', 'properties' => $props], &$input, true]));
+        $this->assertSame([
+            'age' => 5,
+            'weight' => 1.234,
+            'active' => true,
+            'name' => 'abc',
+            'serial' => '354235',
+            'when' => '2024-01-31T10:00:00+00:00',
+        ], $input);
+    }
+
+    public function testValidateInputMultipleErrorsAreAggregated(): void
+    {
+        $props = [
+            'name' => ['type' => 'string', 'maxLength' => 3, 'pattern' => '^[0-9]+$', 'required' => true],
+            'age' => ['type' => 'integer', 'minimum' => 0],
+            'code' => ['type' => 'string', 'required' => true],
+        ];
+
+        $errors = $this->validateInputParams($props, ['name' => 'abcdef', 'age' => -1], true);
+
+        $this->assertEqualsCanonicalizing(['code', 'name', 'age'], array_keys($errors));
+        $this->assertSame([['error' => 'required', 'message' => 'This field is required']], $errors['code']);
+        $this->assertSame(['maxLength', 'pattern'], array_column($errors['name'], 'error'));
+        $this->assertSame(['minimum'], array_column($errors['age'], 'error'));
     }
 }

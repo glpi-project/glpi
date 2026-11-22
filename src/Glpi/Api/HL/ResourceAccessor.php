@@ -56,6 +56,7 @@ use Safe\DateTime;
 use Session;
 use Throwable;
 
+use function Safe\json_decode;
 use function Safe\preg_match;
 
 /**
@@ -228,7 +229,15 @@ final class ResourceAccessor
             }
 
             if (ArrayPathAccessor::hasElementByArrayPath($request_params, $prop_name)) {
-                $params[$internal_name] = ArrayPathAccessor::getElementByArrayPath($request_params, $prop_name);
+                $value = ArrayPathAccessor::getElementByArrayPath($request_params, $prop_name);
+                if (($prop['x-json-input'] ?? false) && !empty($value) && is_string($value)) {
+                    try {
+                        $value = json_decode($value, true);
+                    } catch (Throwable) {
+                        // Invalid JSON. Keep the raw value so it is handled when trying to add or update the item.
+                    }
+                }
+                $params[$internal_name] = $value;
             }
         }
 
@@ -237,83 +246,17 @@ final class ResourceAccessor
 
     /**
      * @param array<string, mixed> $schema
-     * @param array<string, mixed> $input
+     * @param array<mixed> $input The input. Values are replaced by their coerced value (like "yes" to true for a boolean property).
      * @param bool $is_create_input Whether the input is for a create or update action.
      * @return array<string, array{error: string, message: string}[]>
      */
-    private static function validateInputParamsBySchema(array $schema, array $input, bool $is_create_input): array
+    private static function validateInputParamsBySchema(array $schema, array &$input, bool $is_create_input): array
     {
         global $CFG_GLPI;
 
         $max_file_size_bytes = $CFG_GLPI['document_max_size'] * 1024 * 1024;
-        $errors = [];
-        $flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
+        $errors = Doc\SchemaValidator::validate($schema, $input, ['check_required' => $is_create_input]);
         $uploaded_files = Router::getInstance()->getFinalRequest()?->getUploadedFiles() ?? [];
-
-        if ($is_create_input) {
-            // Check required properties
-            foreach ($flattened_properties as $prop_name => $prop) {
-                if (($prop['required'] ?? false) && !ArrayPathAccessor::hasElementByArrayPath($input, $prop_name)) {
-                    $errors[$prop_name][] = [
-                        'error' => 'required',
-                        'message' => 'This field is required',
-                    ];
-                }
-            }
-        }
-
-        foreach ($input as $key => $value) {
-            if (!isset($flattened_properties[$key])) {
-                continue;
-            }
-            $prop = $flattened_properties[$key];
-
-            if (isset($prop['maxLength']) && is_string($value) && strlen($value) > $prop['maxLength']) {
-                $errors[$key][] = [
-                    'error' => 'maxLength',
-                    'message' => "This field must be at most {$prop['maxLength']} characters long",
-                    'maxLength' => $prop['maxLength'],
-                ];
-            }
-
-            $min = $prop['minimum'] ?? null;
-            $max = $prop['maximum'] ?? null;
-            $multiple_of = $prop['multipleOf'] ?? null;
-            if ($min !== null && $max !== null && is_numeric($value) && ($value < $min || $value > $max)) {
-                $errors[$key][] = [
-                    'error' => 'range',
-                    'message' => "This field must be between $min and $max",
-                    'minimum' => $min,
-                    'maximum' => $max,
-                ];
-            } elseif ($min !== null && is_numeric($value) && $value < $min) {
-                $errors[$key][] = [
-                    'error' => 'minimum',
-                    'message' => "This field must be at least $min",
-                    'minimum' => $min,
-                ];
-            } elseif ($max !== null && is_numeric($value) && $value > $max) {
-                $errors[$key][] = [
-                    'error' => 'maximum',
-                    'message' => "This field must be at most $max",
-                    'maximum' => $max,
-                ];
-            }
-            if ($multiple_of !== null && is_numeric($value) && fmod((float) $value, (float) $multiple_of) !== 0.0) {
-                $errors[$key][] = [
-                    'error' => 'multipleOf',
-                    'message' => "This field must be a multiple of $multiple_of",
-                    'multipleOf' => $multiple_of,
-                ];
-            }
-            if (isset($prop['pattern']) && is_string($value) && !preg_match('/' . $prop['pattern'] . '/', $value)) {
-                $errors[$key][] = [
-                    'error' => 'pattern',
-                    'message' => "This field must match the pattern {$prop['pattern']}",
-                    'pattern' => $prop['pattern'],
-                ];
-            }
-        }
 
         // File uploads must be read from the raw schema properties. See self::getFileUploadSpecification().
         foreach ($schema['properties'] as $key => $prop) {
@@ -810,10 +753,7 @@ final class ResourceAccessor
         }
         $errors = self::validateInputParamsBySchema($schema, $request_params, false);
         if ($errors !== []) {
-            return new JSONResponse(
-                AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, 'Invalid input parameters', $errors),
-                400
-            );
+            return AbstractController::getInvalidInputErrorResponse($errors);
         }
         $item = self::getItemFromSchema($schema);
         if (!$item->getFromDB($items_id)) {
@@ -901,10 +841,7 @@ final class ResourceAccessor
         }
         $errors = self::validateInputParamsBySchema($schema, $request_params, true);
         if ($errors !== []) {
-            return new JSONResponse(
-                AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, 'Invalid input parameters', $errors),
-                400
-            );
+            return AbstractController::getInvalidInputErrorResponse($errors);
         }
 
         $input = self::getInputParamsBySchema($schema, $request_params);

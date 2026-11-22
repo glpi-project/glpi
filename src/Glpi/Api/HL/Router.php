@@ -72,6 +72,7 @@ use Glpi\Api\HL\Middleware\IPRestrictionRequestMiddleware;
 use Glpi\Api\HL\Middleware\MiddlewareInput;
 use Glpi\Api\HL\Middleware\MultipartFormDataRequestMiddleware;
 use Glpi\Api\HL\Middleware\OAuthRequestMiddleware;
+use Glpi\Api\HL\Middleware\ParameterValidationRequestMiddleware;
 use Glpi\Api\HL\Middleware\RequestMiddlewareInterface;
 use Glpi\Api\HL\Middleware\ResponseMiddlewareInterface;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
@@ -302,6 +303,8 @@ EOT;
             self::$instance->registerRequestMiddleware(new CRUDRequestMiddleware(), 0, static fn(RoutePath $route_path) => Toolbox::hasTrait($route_path->getControllerInstance(), CRUDControllerTrait::class));
             self::$instance->registerRequestMiddleware(new DebugRequestMiddleware());
             self::$instance->registerRequestMiddleware(new RSQLRequestMiddleware());
+            // Validate the route parameters once all the other middlewares are done (the lowest priority runs last)
+            self::$instance->registerRequestMiddleware(new ParameterValidationRequestMiddleware(), PHP_INT_MIN);
 
             // Always run the security middleware (no condition set)
             self::$instance->registerResponseMiddleware(new SecurityResponseMiddleware());
@@ -754,35 +757,18 @@ EOT;
             }
 
             if ($response === null) {
+                // Set before the request middlewares so the route is known even if one of them (like the parameter validation) returns a response
+                $this->last_invoked_route = $matched_route;
                 $middleware_input = new MiddlewareInput($request, $matched_route, null);
                 $this->doRequestMiddleware($middleware_input);
                 $response = $middleware_input->response;
                 $request = $middleware_input->request;
                 $this->final_request = clone $request;
                 if ($response === null) {
-                    $this->last_invoked_route = $matched_route;
-
-                    // Make sure all required parameters are present
-                    $params = $matched_route->getRouteDoc($request->getMethod())?->getParameters() ?? [];
-                    $missing_params = [];
-                    foreach ($params as $param) {
-                        if (($param['required'] ?? false) && !$request->hasParameter($param->getName())) {
-                            $missing_params[] = $param->getName();
-                        }
-                    }
-                    if (count($missing_params)) {
-                        $errors = [
-                            'missing' => $missing_params,
-                        ];
-                        $response = AbstractController::getInvalidParametersErrorResponse($errors);
-                    }
-
-                    if ($response === null) {
-                        $response = $matched_route->invoke($request);
-                        $middleware_input = new MiddlewareInput($request, $matched_route, $response);
-                        $this->doResponseMiddleware($middleware_input);
-                        $response = $middleware_input->response;
-                    }
+                    $response = $matched_route->invoke($request);
+                    $middleware_input = new MiddlewareInput($request, $matched_route, $response);
+                    $this->doResponseMiddleware($middleware_input);
+                    $response = $middleware_input->response;
                 }
             }
         }

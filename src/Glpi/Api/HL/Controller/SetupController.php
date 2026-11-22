@@ -76,8 +76,6 @@ use User;
 use Webhook;
 use WebhookCategory;
 
-use function Safe\json_decode;
-
 #[Route(path: '/Setup', tags: ['Setup'])]
 final class SetupController extends AbstractController
 {
@@ -1015,6 +1013,7 @@ EOT,
                     'capacities' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'JSON encoded array of capacities. Each capacity is an object with "name" and "config" properties.',
+                        'x-json-input' => true,
                     ],
                     'profiles' => [
                         'type' => Doc\Schema::TYPE_STRING,
@@ -1024,6 +1023,7 @@ EOT,
                     'translations' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'JSON encoded object of translations for the asset type label where the keys are the language and the values are objects with properties for "one", "many" and "other".',
+                        'x-json-input' => true,
                     ],
                     'custom_fields' => self::getChildrenTypeSchema(
                         parent_class: AssetDefinition::class,
@@ -1060,6 +1060,7 @@ EOT,
                     'field_options' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'JSON encoded object of field options. The available options depend on the field type.',
+                        'x-json-input' => true,
                     ],
                     'itemtype' => [
                         'type' => Doc\Schema::TYPE_STRING,
@@ -1069,10 +1070,12 @@ EOT,
                     'default_value' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'The default value for the field which is always JSON encoded. The format of the default value depends on the field type.',
+                        'x-json-input' => true,
                     ],
                     'translations' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'JSON encoded object of translations for the field label where the keys are the language and the values are the translated label.',
+                        'x-json-input' => true,
                     ],
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -1632,19 +1635,6 @@ EOT,
     #[Doc\CreateRoute(schema_name: 'AssetDefinition')]
     public function createAssetDefinition(Request $request): Response
     {
-        $array_params = ['capacities', 'translations'];
-        foreach ($array_params as $param) {
-            if ($request->hasParameter($param)) {
-                $value = $request->getParameter($param);
-                if (!empty($value) && is_string($value)) {
-                    try {
-                        $request->setParameter($param, json_decode($value, true));
-                    } catch (Throwable) {
-                        // Will be handled when trying to create the AssetDefinition
-                    }
-                }
-            }
-        }
         return ResourceAccessor::createBySchema(
             schema: $this->getKnownSchema('AssetDefinition', $this->getAPIVersion($request)),
             request_params: $request->getParameters(),
@@ -1673,19 +1663,6 @@ EOT,
     #[Doc\UpdateRoute(schema_name: 'AssetDefinition')]
     public function updateAssetDefinition(Request $request): Response
     {
-        $array_params = ['capacities', 'translations'];
-        foreach ($array_params as $param) {
-            if ($request->hasParameter($param)) {
-                $value = $request->getParameter($param);
-                if (!empty($value) && is_string($value)) {
-                    try {
-                        $request->setParameter($param, json_decode($value, true));
-                    } catch (Throwable) {
-                        // Will be handled when trying to update the AssetDefinition
-                    }
-                }
-            }
-        }
         return ResourceAccessor::updateBySchema(
             schema: $this->getKnownSchema('AssetDefinition', $this->getAPIVersion($request)),
             request_attrs: $request->getAttributes(),
@@ -1730,19 +1707,6 @@ EOT,
     #[Doc\CreateRoute(schema_name: 'AssetDefinitionCustomField')]
     public function createAssetDefinitionCustomField(Request $request): Response
     {
-        $json_params = ['translations', 'field_options', 'default_value'];
-        foreach ($json_params as $param) {
-            if ($request->hasParameter($param)) {
-                $value = $request->getParameter($param);
-                if (!empty($value) && is_string($value)) {
-                    try {
-                        $request->setParameter($param, json_decode($value, true));
-                    } catch (Throwable) {
-                        // Will be handled when trying to create the AssetDefinitionCustomField
-                    }
-                }
-            }
-        }
         $request->setParameter('asset_definition', $request->getAttribute('assetdefinition_id'));
         return ResourceAccessor::createBySchema(
             schema: $this->getKnownSchema('AssetDefinitionCustomField', $this->getAPIVersion($request)),
@@ -1773,19 +1737,6 @@ EOT,
     #[Doc\UpdateRoute(schema_name: 'AssetDefinitionCustomField')]
     public function updateAssetDefinitionCustomField(Request $request): Response
     {
-        $json_params = ['translations', 'field_options', 'default_value'];
-        foreach ($json_params as $param) {
-            if ($request->hasParameter($param)) {
-                $value = $request->getParameter($param);
-                if (!empty($value) && is_string($value)) {
-                    try {
-                        $request->setParameter($param, json_decode($value, true));
-                    } catch (Throwable) {
-                        // Will be handled when trying to update the AssetDefinitionCustomField
-                    }
-                }
-            }
-        }
         return ResourceAccessor::updateBySchema(
             schema: $this->getKnownSchema('AssetDefinitionCustomField', $this->getAPIVersion($request)),
             request_attrs: $request->getAttributes(),

@@ -463,6 +463,19 @@ abstract class AbstractController
     }
 
     /**
+     * Get the error response for input that failed validation. All the problems are returned at once, grouped by property.
+     * @param array<string, array<int, array{error: string, message: string}>> $errors The errors from {@link \Glpi\Api\HL\Doc\SchemaValidator::validate()}
+     * @return Response
+     */
+    public static function getInvalidInputErrorResponse(array $errors): Response
+    {
+        return new JSONResponse(
+            self::getErrorResponseBody(self::ERROR_INVALID_PARAMETER, 'Invalid input parameters', $errors),
+            400
+        );
+    }
+
+    /**
      * @param array|string|null $detail
      * @return Response
      */
