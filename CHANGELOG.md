@@ -15,6 +15,7 @@ The present file will list all changes made to the project; according to the
 - Webhooks on ITIL tasks now match the entity of their parent item. A non-recursive task webhook defined in the root entity is no longer triggered by tasks of sub-entities: enable "Sub-entities" on the webhook to keep the previous behavior.
 
 ### Deprecated
+- `connection_filter` property of the `LDAPDirectory` schema in High-Level API v2.4. `user_filter` is the replacement name for this property to better reflect its purpose. It is scheduled for removal in High-Level API v4.0.
 
 ### Removed
 

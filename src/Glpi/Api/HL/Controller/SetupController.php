@@ -149,6 +149,9 @@ EOT,
             ],
         ];
 
+        $ldap_field_mapping_description = 'An attribute name or an expression. For example, for a location: "%{city} > %{roomnumber}"';
+
+
         return [
             'LDAPDirectory' => [
                 'x-version-introduced' => '2.0',
@@ -175,6 +178,8 @@ EOT,
                         'type' => Doc\Schema::TYPE_STRING,
                         'x-field' => 'condition',
                         'description' => 'LDAP filter to restrict the search for users',
+                        'x-version-deprecated' => '2.4.0',
+                        'x-version-removed' => '4.0.0',
                     ],
                     'basedn' => [
                         'type' => Doc\Schema::TYPE_STRING,
@@ -200,6 +205,259 @@ EOT,
                     'sync_field' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'The attribute to use to uniquely identify a user (usually objectguid or employeeuid)',
+                    ],
+                    'user_filter' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'condition',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'example' => '(&(objectClass=user)(objectCategory=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))',
+                        'description' => 'The filter to apply when searching for users in the directory',
+                    ],
+                    'use_starttls' => [
+                        // Not named use_tls because it would confuse the user into trying to use a worse security option
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'use_tls',
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => <<<EOT
+                            Whether to use explicit TLS (also known as StartTLS) to secure the connection to the directory.
+                            This is typically done over the same LDAP port (389) and is different from using LDAPS (port 636).
+                            It is widely recommended to use LDAPS instead of StartTLS, as it is more secure and less prone to misconfiguration.
+                            If you want to use LDAPS, you should specify "ldaps://' in the host field and use the LDAPS port (usually 636).
+EOT,
+                    ],
+                    'timezone_offset' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'time_offset',
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'description' => 'The LDAP GMT timezone offset in seconds. Typically this should be in steps of 3600 seconds (1 hour) but it is not required. For example, French Polynesia is GMT-09:30. This is used to convert LDAP timestamps to the server timezone.',
+                        'minimum' => -43200, // -12 hours
+                        'maximum' => 50400, // +14 hours
+                        'multipleOf' => 900, // 15 minutes
+                    ],
+                    //NOTE: can_support_pagesize intentionally excluded as it is a legacy option that only existed to support PHP versions older than 5.4. It is no longer relevant and should not be used.
+                    'search_results_page_size' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'pagesize',
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'description' => 'The number of results to return per page when searching the directory. This is used to avoid timeouts when searching large directories.',
+                        'example' => 1000,
+                    ],
+                    'search_max_results' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'maxresults',
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'description' => 'The maximum number of results to return when searching the directory. 0 means no limit.',
+                    ],
+                    'alias_resolution_method' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'deref_option',
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'enum' => [LDAP_DEREF_NEVER, LDAP_DEREF_SEARCHING, LDAP_DEREF_FINDING, LDAP_DEREF_ALWAYS],
+                        'description' => <<<EOT
+                            The method to use when resolving aliases in the directory.
+                            It is best to keep this option at its default value of 0 (Never dereference aliases) unless you have a specific reason to change it.
+                            - 0: Never dereference aliases
+                            - 1: Dereference aliases when searching
+                            - 2: Dereference aliases when finding the base object
+                            - 3: Always dereference aliases
+                            EOT,
+                    ],
+                    'domain_name' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'inventory_domain',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The domain name of the directory. This is used by automatic inventory to link users to assets when the user info retrieved from the asset inventory information includes a domain.',
+                    ],
+                    'tls_certfile' => [
+                        'x-version-introduced' => '2.4.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The path to the TLS certificate file to use when connecting to the directory. This is used to verify the identity of the directory server when using StartTLS or LDAPS. The web server must have read access to this file.',
+                    ],
+                    'tls_keyfile' => [
+                        'x-version-introduced' => '2.4.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The path to the TLS key file to use when connecting to the directory. This is used to authenticate the client to the directory server when using StartTLS or LDAPS. The web server must have read access to this file.',
+                    ],
+                    'tls_version' => [
+                        'x-version-introduced' => '2.4.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'enum' => ['1.2', '1.3'],
+                        'description' => 'The TLS version to use when connecting to the directory.',
+                    ],
+                    'network_timeout' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'timeout',
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'description' => 'The network timeout in seconds to use when connecting to the directory. 0 means no timeout.',
+                        'minimum' => 0,
+                    ],
+                    // User Attribute Mapping Properties
+                    'realname_mapping' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'realname_field',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'example' => 'sn',
+                        'description' => $ldap_field_mapping_description,
+                    ],
+                    'firstname_mapping' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'firstname_field',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'example' => 'givenName',
+                        'description' => $ldap_field_mapping_description,
+                    ],
+                    'comment_mapping' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'comment_field',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'example' => 'info',
+                        'description' => $ldap_field_mapping_description,
+                    ],
+                    'registration_number_mapping' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'registration_number_field',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'example' => 'employeeNumber',
+                        'description' => $ldap_field_mapping_description,
+                    ],
+                    'email1_mapping' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'email1_field',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'example' => 'mail',
+                        'description' => $ldap_field_mapping_description,
+                    ],
+                    'email2_mapping' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'email2_field',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'example' => 'proxyAddresses',
+                        'description' => $ldap_field_mapping_description,
+                    ],
+                    'email3_mapping' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'email3_field',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => $ldap_field_mapping_description,
+                    ],
+                    'email4_mapping' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'email4_field',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => $ldap_field_mapping_description,
+                    ],
+                    'phone_mapping' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'phone_field',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'example' => 'telephoneNumber',
+                        'description' => $ldap_field_mapping_description,
+                    ],
+                    'phone2_mapping' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'phone2_field',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'example' => 'otherTelephone',
+                        'description' => $ldap_field_mapping_description,
+                    ],
+                    'mobile_mapping' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'mobile_field',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'example' => 'mobile',
+                        'description' => $ldap_field_mapping_description,
+                    ],
+                    'title_mapping' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'title_field',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'example' => 'title',
+                        'description' => $ldap_field_mapping_description,
+                    ],
+                    'category_mapping' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'category_field',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'example' => 'employeeType',
+                        'description' => $ldap_field_mapping_description,
+                    ],
+                    'language_mapping' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'language_field',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'example' => 'preferredLanguage',
+                        'description' => $ldap_field_mapping_description,
+                    ],
+                    'picture_mapping' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'picture_field',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'example' => 'thumbnailPhoto',
+                        'description' => $ldap_field_mapping_description,
+                    ],
+                    'location_mapping' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'location_field',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'example' => '%{city} > %{roomnumber}',
+                        'description' => $ldap_field_mapping_description,
+                    ],
+                    'begin_date_mapping' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'begin_date_field',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'example' => 'whenCreated',
+                        'description' => $ldap_field_mapping_description,
+                    ],
+                    'end_date_mapping' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'end_date_field',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'example' => 'accountExpires',
+                        'description' => $ldap_field_mapping_description,
+                    ],
+                    'supervisor_mapping' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'responsible_field',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'example' => 'manager',
+                        'description' => $ldap_field_mapping_description,
+                    ],
+                    // Group/Membership Search Properties
+                    'group_filter' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'group_condition',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The filter to apply when searching for groups in the directory',
+                    ],
+                    'group_search_type' => [
+                        'x-version-introduced' => '2.4.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'enum' => [AuthLDAP::GROUP_SEARCH_USER, AuthLDAP::GROUP_SEARCH_GROUP, AuthLDAP::GROUP_SEARCH_BOTH],
+                        'description' => <<<EOT
+                            - 0: User
+                            - 1: Group
+                            - 2: Both
+                            EOT,
+                    ],
+                    'group_attribute' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'group_field',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'example' => 'memberOf',
+                    ],
+                    'group_member_attribute' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'group_member_field',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The attribute of the group object that contains the members of the group',
+                        'example' => 'member',
+                    ],
+                    'group_search_use_dn' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-field' => 'use_dn',
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Whether to use the full DN of the user when checking group membership. If false, the value of the sync_field will be used instead.',
                     ],
                 ],
             ],

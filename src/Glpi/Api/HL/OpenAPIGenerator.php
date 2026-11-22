@@ -1052,7 +1052,7 @@ EOT;
             foreach (array_keys($component_schema['properties'] ?? []) as $property_name) {
                 $property_schema = &$component_schema['properties'][$property_name];
 
-                unset($property_schema['description']);
+                unset($property_schema['description'], $property_schema['example'], $property_schema['examples']);
 
                 // Enums should be simple lists
                 if (isset($property_schema['enum']) && is_array($property_schema['enum'])) {
