@@ -81,6 +81,7 @@ use LineOperator;
 use LineType;
 use Location;
 use Manufacturer;
+use NetworkPort;
 use SoftwareLicense;
 use SoftwareLicenseType;
 use State;
@@ -338,6 +339,13 @@ final class ManagementController extends AbstractController
                     ],
                     'autoupdatesystem' => self::getDropdownTypeSchema(class: AutoUpdateSystem::class, full_schema: 'AutoUpdateSystem'),
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'network_ports' => self::getChildrenTypeSchema(
+                        parent_class: Cluster::class,
+                        class: NetworkPort::class,
+                        full_schema: 'NetworkPort',
+                        graphql_only: true,
+                        params: ['x-version-introduced' => '2.4.0']
+                    ),
                 ],
             ],
             'Contact' => [
