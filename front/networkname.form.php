@@ -115,10 +115,8 @@ if (isset($_POST["add"])) {
         //TRANS: %s is the user login
         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
-    if ($node = getItemForItemtype($nn->fields["itemtype"])) {
-        if ($node->can($nn->fields["items_id"], READ)) {
-            Html::redirect($node->getLinkURL());
-        }
+    if (isset($_POST['id']) && $nn->getFromDB((int) $_POST['id'])) {
+            Html::redirect($nn->getLinkURL());
     }
     $nn->redirectToList();
 } elseif (isset($_POST['assign_address'])) { // From NetworkPort or NetworkEquipement
