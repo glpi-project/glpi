@@ -1111,4 +1111,128 @@ class AssetControllerTest extends HLAPITestCase
             'items_id' => $domain->getID(),
         ]));
     }
+
+    private function getBlueprintPathFromUrl(string $blueprint_url): string
+    {
+        $this->assertStringContainsString('_pictures%2F', $blueprint_url);
+        $reference = substr($blueprint_url, strpos($blueprint_url, '_pictures%2F') + strlen('_pictures%2F'));
+        return GLPI_PICTURE_DIR . '/' . urldecode($reference);
+    }
+
+    public function testCRUDDCRoomWithBlueprint(): void
+    {
+        $bar_file_path = GLPI_ROOT . '/tests/fixtures/uploads/bar.png';
+        $bar_file_content = file_get_contents($bar_file_path);
+
+        $this->login();
+
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="name"
+
+{$this->getUniqueString()}
+-----boundary
+Content-Disposition: form-data; name="rows"
+
+10
+-----boundary
+Content-Disposition: form-data; name="cols"
+
+10
+-----boundary
+Content-Disposition: form-data; name="blueprint_upload"; filename="bar.png"
+
+$bar_file_content
+-----boundary--
+EOT;
+
+        $new_location = null;
+        $this->api->call(new Request('POST', '/Assets/DCRoom', [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body), function ($call) use (&$new_location) {
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use (&$new_location) {
+                    $new_location = $headers['Location'];
+                });
+        });
+        $this->assertNotNull($new_location);
+
+        $blueprint_path = null;
+        $this->api->call(new Request('GET', $new_location), function ($call) use (&$blueprint_path) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$blueprint_path) {
+                    $this->assertNotEmpty($content['blueprint']);
+                    $this->assertArrayNotHasKey('blueprint_upload', $content);
+                    $blueprint_path = $this->getBlueprintPathFromUrl($content['blueprint']);
+                });
+        });
+        $this->assertFileExists($blueprint_path);
+        $this->assertFileEquals($bar_file_path, $blueprint_path);
+
+        // Replace the blueprint, the previous file should be deleted
+        $foo_file_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="blueprint_upload"; filename="foo.png"
+
+$foo_file_content
+-----boundary--
+EOT;
+        $this->api->call(new Request('PATCH', $new_location, [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body), function ($call) {
+            $call->response->isOK();
+        });
+
+        $updated_blueprint_path = null;
+        $this->api->call(new Request('GET', $new_location), function ($call) use (&$updated_blueprint_path) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$updated_blueprint_path) {
+                    $updated_blueprint_path = $this->getBlueprintPathFromUrl($content['blueprint']);
+                });
+        });
+        $this->assertNotSame($blueprint_path, $updated_blueprint_path);
+        $this->assertFileDoesNotExist($blueprint_path);
+        $this->assertFileExists($updated_blueprint_path);
+
+        // Remove the blueprint with an empty value
+        $this->api->call(new Request('PATCH', $new_location, [
+            'Content-Type' => 'application/json',
+        ], json_encode(['blueprint_upload' => ''])), function ($call) {
+            $call->response->isOK();
+        });
+        $this->api->call(new Request('GET', $new_location), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEmpty($content['blueprint']);
+                });
+        });
+        $this->assertFileDoesNotExist($updated_blueprint_path);
+
+        // Delete the room
+        $this->api->call(new Request('DELETE', $new_location), function ($call) {
+            $call->response->isOK();
+        });
+        $this->api->call(new Request('GET', $new_location), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals(1, $content['is_deleted']);
+                });
+        });
+
+        // Purge and confirm
+        $request = new Request('DELETE', $new_location);
+        $request->setParameter('force', 1);
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
+        });
+        $this->api->call(new Request('GET', $new_location), function ($call) {
+            $call->response->isNotFoundError();
+        });
+    }
 }

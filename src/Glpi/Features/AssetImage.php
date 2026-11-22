@@ -182,7 +182,7 @@ trait AssetImage
         foreach ($to_remove as $remove) {
             $index = array_search($remove, $all_pictures, true);
             if ($index !== false) {
-                FileManager::deletePicture((string) $all_pictures[$index]);
+                FileManager::deletePictureDeferrable((string) $all_pictures[$index]);
                 unset($all_pictures[$index]);
             }
         }

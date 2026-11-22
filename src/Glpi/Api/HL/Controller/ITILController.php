@@ -569,6 +569,55 @@ final class ITILController extends AbstractController
             );
         }
 
+        $schemas['Change']['properties']['impact_content'] = [
+            'type' => Doc\Schema::TYPE_STRING,
+            'format' => Doc\Schema::FORMAT_STRING_HTML,
+            'x-field' => 'impactcontent',
+            'x-version-introduced' => '2.4.0',
+        ];
+        $schemas['Change']['properties']['control_list_content'] = [
+            'type' => Doc\Schema::TYPE_STRING,
+            'format' => Doc\Schema::FORMAT_STRING_HTML,
+            'x-field' => 'controlistcontent',
+            'x-version-introduced' => '2.4.0',
+        ];
+        $schemas['Change']['properties']['rollout_plan_content'] = [
+            'type' => Doc\Schema::TYPE_STRING,
+            'format' => Doc\Schema::FORMAT_STRING_HTML,
+            'x-field' => 'rolloutplancontent',
+            'x-version-introduced' => '2.4.0',
+        ];
+        $schemas['Change']['properties']['backout_plan_content'] = [
+            'type' => Doc\Schema::TYPE_STRING,
+            'format' => Doc\Schema::FORMAT_STRING_HTML,
+            'x-field' => 'backoutplancontent',
+            'x-version-introduced' => '2.4.0',
+        ];
+        $schemas['Change']['properties']['checklist_content'] = [
+            'type' => Doc\Schema::TYPE_STRING,
+            'format' => Doc\Schema::FORMAT_STRING_HTML,
+            'x-field' => 'checklistcontent',
+            'x-version-introduced' => '2.4.0',
+        ];
+        $schemas['Problem']['properties']['impact_content'] = [
+            'type' => Doc\Schema::TYPE_STRING,
+            'format' => Doc\Schema::FORMAT_STRING_HTML,
+            'x-field' => 'impactcontent',
+            'x-version-introduced' => '2.4.0',
+        ];
+        $schemas['Problem']['properties']['cause_content'] = [
+            'type' => Doc\Schema::TYPE_STRING,
+            'format' => Doc\Schema::FORMAT_STRING_HTML,
+            'x-field' => 'causecontent',
+            'x-version-introduced' => '2.4.0',
+        ];
+        $schemas['Problem']['properties']['symptom_content'] = [
+            'type' => Doc\Schema::TYPE_STRING,
+            'format' => Doc\Schema::FORMAT_STRING_HTML,
+            'x-field' => 'symptomcontent',
+            'x-version-introduced' => '2.4.0',
+        ];
+
         $timeline_position_enum = [
             CommonITILObject::NO_TIMELINE,
             CommonITILObject::TIMELINE_NOTSET,

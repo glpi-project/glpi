@@ -65,6 +65,11 @@ final class FileManager
     public const UPLOAD_AS_PICTURE = 'picture';
 
     /**
+     * @var array<int, string[]> Stack of deferral scopes, each holding the picture paths whose deletion is deferred.
+     */
+    private static array $deferred_picture_deletions_stack = [];
+
+    /**
      * @var array<string, string> Mapping of image mime types to their corresponding file extensions.
      * This is used for handling inline images in HTML content and for saving pictures.
      */
@@ -275,6 +280,44 @@ final class FileManager
             return true;
         }
         return Toolbox::deletePicture($path);
+    }
+
+    /**
+     * Start collecting picture deletions instead of performing them immediately.
+     * Must be paired with {@link self::endDeferredPictureDeletions()}. Scopes can be nested.
+     * @return void
+     */
+    public static function beginDeferredPictureDeletions(): void
+    {
+        self::$deferred_picture_deletions_stack[] = [];
+    }
+
+    /**
+     * End the innermost deferral scope and return the pictures whose deletion was deferred during it.
+     * @return string[] The picture paths. Empty if no scope was active.
+     */
+    public static function endDeferredPictureDeletions(): array
+    {
+        return array_pop(self::$deferred_picture_deletions_stack) ?? [];
+    }
+
+    /**
+     * Delete a picture, or defer its deletion to the caller if a deferral scope is active.
+     * The same path restrictions as {@link self::deletePicture()} apply.
+     * @param string $picture_path
+     * @return bool True if the picture was deleted or its deletion was deferred.
+     */
+    public static function deletePictureDeferrable(string $picture_path): bool
+    {
+        if (self::$deferred_picture_deletions_stack === []) {
+            return self::deletePicture($picture_path);
+        }
+        $path = self::normalizePictureClientValue($picture_path);
+        if ($path === null) {
+            return false;
+        }
+        self::$deferred_picture_deletions_stack[array_key_last(self::$deferred_picture_deletions_stack)][] = $path;
+        return true;
     }
 
     /**
