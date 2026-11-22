@@ -61,6 +61,7 @@ use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Api\HL\Search;
+use Glpi\Api\HL\Search\TemplateFieldMapper;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -74,6 +75,8 @@ use ITILFollowup;
 use ITILFollowupTemplate;
 use ITILReminder;
 use ITILSolution;
+use ITILTemplate;
+use ITILTemplateField;
 use Location;
 use OLA;
 use OlaLevel;
@@ -166,6 +169,56 @@ final class ITILController extends AbstractController
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => $common_itiltemplate_properties,
         ];
+
+        $itil_types = [Ticket::class, Change::class, Problem::class];
+
+        // Template hidden/mandatory/readonly/predefined fields. These are stored using search option numbers,
+        // which are exposed as the "field" name (see TemplateFieldMapper) and as the read-only "num".
+        foreach ($itil_types as $template_itil_type) {
+            $template_class = TemplateFieldMapper::getTemplateClass($template_itil_type);
+            foreach (TemplateFieldMapper::KINDS as $template_field_kind) {
+                $template_field_class = TemplateFieldMapper::getFieldClass($template_itil_type, $template_field_kind);
+                if ($template_class === null || $template_field_class === null) {
+                    continue;
+                }
+                $template_field_properties = [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'template' => self::getDropdownTypeSchema(
+                        class: $template_class,
+                        field: $template_field_class::$items_id,
+                        full_schema: $template_itil_type . 'Template'
+                    ),
+                    'num' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'readOnly' => true,
+                        'description' => 'The internal search option number. Only provided for reference. Use "field" to set the field.',
+                    ],
+                    'field' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The name of the field. This is null for fields that can no longer be used in this type of template.',
+                        'x-mapped-from' => 'num',
+                        'x-mapper' => static fn($v) => TemplateFieldMapper::getNameForNum($template_itil_type, $template_field_kind, (int) $v),
+                        //TODO Input mapper for writes (Needs code from https://github.com/glpi-project/glpi/pull/25917)
+                    ],
+                ];
+                if ($template_field_kind === 'Predefined') {
+                    $template_field_properties['value'] = [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The raw value of the field as it would be provided when creating the Ticket, Change or Problem.',
+                    ];
+                }
+                $schemas[$template_field_class] = [
+                    'x-version-introduced' => '2.4',
+                    'x-itemtype' => $template_field_class,
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'properties' => $template_field_properties,
+                ];
+            }
+        }
 
         // U/I/P Values Description
         $uip_description = <<<EOT
@@ -279,8 +332,6 @@ final class ITILController extends AbstractController
                 'role' => ['type' => Doc\Schema::TYPE_STRING],
             ],
         ];
-
-        $itil_types = [Ticket::class, Change::class, Problem::class];
 
         foreach ($itil_types as $itil_type) {
             $schemas[$itil_type] = $base_schema;
@@ -2773,5 +2824,295 @@ EOT,
         $schema = $this->getKnownSchema('PendingReason_Item', $this->getAPIVersion($request));
         $this->restrictSearch($request, 'itemtype==' . $itemtype);
         return ResourceAccessor::getOneBySchema($schema, ['items_id' => $request->getAttribute('id')], $request->getParameters(), 'items_id');
+    }
+
+    /**
+     * Load the ITIL template targeted by a template field route.
+     * @param Request $request
+     * @return ITILTemplate|Response The template or a not found response
+     */
+    private function loadTemplateForFieldRoute(Request $request): ITILTemplate|Response
+    {
+        $template_class = TemplateFieldMapper::getTemplateClass((string) $request->getAttribute('itemtype'));
+        $template = $template_class !== null ? getItemForItemtype($template_class) : false;
+        if (!($template instanceof ITILTemplate) || !$template->getFromDB((int) $request->getAttribute('template_id'))) {
+            return self::getNotFoundErrorResponse();
+        }
+        return $template;
+    }
+
+    /**
+     * Restrict a template field search request to the fields of the template that is part of the route.
+     * @param Request $request
+     * @param ITILTemplate $template
+     * @param class-string<ITILTemplateField> $field_class
+     * @return bool False if the template has no fields so there is nothing to search
+     */
+    private function restrictRequestToTemplate(Request $request, ITILTemplate $template, string $field_class): bool
+    {
+        global $DB;
+
+        $ids = [];
+        $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM' => $field_class::getTable(),
+            'WHERE' => [$field_class::$items_id => $template->getID()],
+        ]);
+        foreach ($iterator as $row) {
+            $ids[] = (int) $row['id'];
+        }
+        if ($ids === []) {
+            return false;
+        }
+
+        $filter = 'id=in=(' . implode(',', $ids) . ')';
+        $existing_filter = $request->hasParameter('filter') ? $request->getParameter('filter') : null;
+        if (is_string($existing_filter) && $existing_filter !== '') {
+            $filter = '(' . $existing_filter . ');' . $filter;
+        }
+        $request->setParameter('filter', $filter);
+        return true;
+    }
+
+    #[Route(path: '/{itemtype}/Template/{template_id}/Field/{kind}', methods: ['GET'], requirements: [
+        'template_id' => '\d+',
+        'kind' => 'Hidden|Mandatory|Readonly|Predefined',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\SearchRoute(
+        schema_name: '{itemtype}Template{kind}Field',
+        description: 'List the hidden, mandatory, readonly or predefined fields of a Ticket, Change or Problem template'
+    )]
+    public function searchTemplateFields(Request $request): Response
+    {
+        $template = $this->loadTemplateForFieldRoute($request);
+        if ($template instanceof Response) {
+            return $template;
+        }
+        if (!$template->can($template->getID(), READ)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+        // The schema names of the template fields are the names of their classes
+        $schema_name = TemplateFieldMapper::getFieldClass($request->getAttribute('itemtype'), $request->getAttribute('kind'));
+        if ($schema_name === null) {
+            return self::getNotFoundErrorResponse();
+        }
+        if (!$this->restrictRequestToTemplate($request, $template, $schema_name)) {
+            return new JSONResponse([]);
+        }
+        return ResourceAccessor::searchBySchema($this->getKnownSchema($schema_name, $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/Template/{template_id}/Field/{kind}/{field_id}', methods: ['GET'], requirements: [
+        'template_id' => '\d+',
+        'kind' => 'Hidden|Mandatory|Readonly|Predefined',
+        'field_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\GetRoute(
+        schema_name: '{itemtype}Template{kind}Field',
+        description: 'Get a hidden, mandatory, readonly or predefined field of a Ticket, Change or Problem template'
+    )]
+    public function getTemplateField(Request $request): Response
+    {
+        $template = $this->loadTemplateForFieldRoute($request);
+        if ($template instanceof Response) {
+            return $template;
+        }
+        if (!$template->can($template->getID(), READ)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+        $schema_name = TemplateFieldMapper::getFieldClass($request->getAttribute('itemtype'), $request->getAttribute('kind'));
+        if ($schema_name === null) {
+            return self::getNotFoundErrorResponse();
+        }
+        // The field must belong to the template in the path
+        $field_item = getItemForItemtype($schema_name);
+        if (
+            !($field_item instanceof ITILTemplateField)
+            || !$field_item->getFromDB((int) $request->getAttribute('field_id'))
+            || (int) $field_item->fields[$schema_name::$items_id] !== $template->getID()
+        ) {
+            return self::getNotFoundErrorResponse();
+        }
+        return ResourceAccessor::getOneBySchema(
+            $this->getKnownSchema($schema_name, $this->getAPIVersion($request)),
+            ['id' => $request->getAttribute('field_id')],
+            $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/{itemtype}/Template/{template_id}/Field/{kind}', methods: ['POST'], requirements: [
+        'template_id' => '\d+',
+        'kind' => 'Hidden|Mandatory|Readonly|Predefined',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\CreateRoute(
+        schema_name: '{itemtype}Template{kind}Field',
+        description: 'Add a hidden, mandatory, readonly or predefined field to a Ticket, Change or Problem template'
+    )]
+    public function createTemplateField(Request $request): Response
+    {
+        $template = $this->loadTemplateForFieldRoute($request);
+        if ($template instanceof Response) {
+            return $template;
+        }
+        if (!$template->can($template->getID(), UPDATE)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+
+        $itemtype = $request->getAttribute('itemtype');
+        $kind = $request->getAttribute('kind');
+        $field_class = TemplateFieldMapper::getFieldClass($itemtype, $kind);
+        if ($field_class === null) {
+            return self::getNotFoundErrorResponse();
+        }
+        $params = $request->getParameters();
+
+        $field_name = $params['field'] ?? null;
+        if (!is_string($field_name) || $field_name === '') {
+            return self::getInvalidParametersErrorResponse(['missing' => ['field']]);
+        }
+        $num = TemplateFieldMapper::getNumForName($itemtype, $kind, $field_name);
+        if ($num === null) {
+            return self::getInvalidParametersErrorResponse(['invalid' => [[
+                'name' => 'field',
+                'reason' => 'Unknown field or the field cannot be used here. Allowed fields: '
+                    . implode(', ', TemplateFieldMapper::getAllowedFields($itemtype, $kind)),
+            ]]]);
+        }
+
+        $input = [
+            $field_class::$items_id => $template->getID(),
+            'num' => $num,
+        ];
+        if ($kind === 'Predefined') {
+            if (!array_key_exists('value', $params)) {
+                return self::getInvalidParametersErrorResponse(['missing' => ['value']]);
+            }
+            if (!is_scalar($params['value']) && $params['value'] !== null) {
+                return self::getInvalidParametersErrorResponse(['invalid' => [[
+                    'name' => 'value',
+                    'reason' => 'The value must be a scalar',
+                ]]]);
+            }
+            $input['value'] = (string) $params['value'];
+        }
+
+        $field_item = getItemForItemtype($field_class);
+        if (!($field_item instanceof ITILTemplateField) || !$field_item->can(-1, CREATE, $input)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+        $new_id = $field_item->add($input);
+        return self::getCRUDCreateResponse($new_id, self::getAPIPathForRouteFunction(self::class, 'getTemplateField', [
+            'itemtype' => $itemtype,
+            'template_id' => $template->getID(),
+            'kind' => $kind,
+            'field_id' => $new_id,
+        ]));
+    }
+
+    #[Route(path: '/{itemtype}/Template/{template_id}/Field/Predefined/{field_id}', methods: ['PATCH'], requirements: [
+        'template_id' => '\d+',
+        'field_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\Route(
+        description: 'Update the value of a predefined field of a Ticket, Change or Problem template',
+        parameters: [
+            new Doc\Parameter(
+                name: 'value',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING),
+                description: 'The new raw value of the predefined field',
+                location: Doc\Parameter::LOCATION_BODY
+            ),
+        ],
+        responses: [
+            new Doc\Response(schema: new Doc\SchemaReference('{itemtype}TemplatePredefinedField')),
+        ]
+    )]
+    public function updateTemplatePredefinedField(Request $request): Response
+    {
+        $template = $this->loadTemplateForFieldRoute($request);
+        if ($template instanceof Response) {
+            return $template;
+        }
+        $itemtype = $request->getAttribute('itemtype');
+        $field_class = TemplateFieldMapper::getFieldClass($itemtype, 'Predefined');
+        if ($field_class === null) {
+            return self::getNotFoundErrorResponse();
+        }
+        $field_id = (int) $request->getAttribute('field_id');
+        $field_item = getItemForItemtype($field_class);
+        if (
+            !($field_item instanceof ITILTemplateField)
+            || !$field_item->getFromDB($field_id)
+            || (int) $field_item->fields[$field_class::$items_id] !== $template->getID()
+        ) {
+            return self::getNotFoundErrorResponse();
+        }
+
+        $params = $request->getParameters();
+        if (!array_key_exists('value', $params)) {
+            return self::getInvalidParametersErrorResponse(['missing' => ['value']]);
+        }
+        if (!is_scalar($params['value']) && $params['value'] !== null) {
+            return self::getInvalidParametersErrorResponse(['invalid' => [[
+                'name' => 'value',
+                'reason' => 'The value must be a scalar',
+            ]]]);
+        }
+        $input = ['id' => $field_id, 'value' => (string) $params['value']];
+        if (!$field_item->can($field_id, UPDATE, $input)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+        if (!$field_item->update($input)) {
+            return self::getCRUDErrorResponse(self::CRUD_ACTION_UPDATE);
+        }
+        return self::getItemLinkResponse($field_id, self::getAPIPathForRouteFunction(self::class, 'getTemplateField', [
+            'itemtype' => $itemtype,
+            'template_id' => $template->getID(),
+            'kind' => 'Predefined',
+            'field_id' => $field_id,
+        ]));
+    }
+
+    #[Route(path: '/{itemtype}/Template/{template_id}/Field/{kind}/{field_id}', methods: ['DELETE'], requirements: [
+        'template_id' => '\d+',
+        'kind' => 'Hidden|Mandatory|Readonly|Predefined',
+        'field_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\Route(
+        description: 'Remove a hidden, mandatory, readonly or predefined field from a Ticket, Change or Problem template'
+    )]
+    public function deleteTemplateField(Request $request): Response
+    {
+        $template = $this->loadTemplateForFieldRoute($request);
+        if ($template instanceof Response) {
+            return $template;
+        }
+        $itemtype = $request->getAttribute('itemtype');
+        $kind = $request->getAttribute('kind');
+        $field_class = TemplateFieldMapper::getFieldClass($itemtype, $kind);
+        if ($field_class === null) {
+            return self::getNotFoundErrorResponse();
+        }
+        $field_item = getItemForItemtype($field_class);
+        $field_id = (int) $request->getAttribute('field_id');
+        if (
+            !($field_item instanceof ITILTemplateField)
+            || !$field_item->getFromDB($field_id)
+            || (int) $field_item->fields[$field_class::$items_id] !== $template->getID()
+        ) {
+            return self::getNotFoundErrorResponse();
+        }
+        if (!$field_item->can($field_id, PURGE)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+        if (!$field_item->delete(['id' => $field_id], true)) {
+            return self::getCRUDErrorResponse(self::CRUD_ACTION_DELETE);
+        }
+        return new JSONResponse(null, 204);
     }
 }
