@@ -4609,13 +4609,11 @@
                     "readOnly": true
                 },
                 "itemtype": {
-                    "type": "string",
-                    "readOnly": true
+                    "type": "string"
                 },
                 "items_id": {
                     "type": "integer",
-                    "format": "int64",
-                    "readOnly": true
+                    "format": "int64"
                 },
                 "documents_id": {
                     "type": "integer",

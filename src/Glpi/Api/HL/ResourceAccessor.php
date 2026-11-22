@@ -508,6 +508,10 @@ final class ResourceAccessor
             if (str_ends_with($field, '[]')) {
                 $field = substr($field, 0, -2);
             }
+            if ($item instanceof Document_Item) {
+                // Already handled before the item was added. See self::createBySchema().
+                continue;
+            }
             $file_prop = $schema['properties'][$field] ?? null;
             $file_upload_spec = $file_prop !== null ? self::getFileUploadSpecification($file_prop) : null;
             if ($file_upload_spec === null) {
@@ -802,6 +806,10 @@ final class ResourceAccessor
     public static function updateBySchema(array $schema, array $request_attrs, array $request_params, string $field = 'id'): Response
     {
         $schema = self::applyFieldReadRestrictions($schema);
+        if (($schema['x-itemtype'] ?? null) === Document_Item::class) {
+            // The file upload is only used to create the linked document. Ignore it (no validation or handling) for updates.
+            unset($schema['properties']['file']);
+        }
         $items_id = $field === 'id' ? $request_attrs['id'] : self::getIDForOtherUniqueFieldBySchema($schema, $field, $request_attrs[$field]);
         // Ignore entity updates. This needs to be done through the Transfer process
         // TODO This should probably be handled in a more generic way (support other fields that can be used during creation but not updates)
@@ -909,12 +917,41 @@ final class ResourceAccessor
 
         $input = self::getInputParamsBySchema($schema, $request_params);
         $item = self::getItemFromSchema($schema);
+        // A Document_Item created from an uploaded file has no document yet. The upload is handled before the item is added
+        // and the full permission check is done once the document exists.
+        $document_file = $item instanceof Document_Item && empty($input['documents_id'])
+            ? (Router::getInstance()->getFinalRequest()?->getUploadedFiles()['file'][0] ?? null)
+            : null;
+        $uploads_document = $document_file !== null;
+
         // Check permissions now that we have the main input parameters. Inline images in HTML content are handled later but should not affect permissions.
-        if (!$item->can($item->getID(), CREATE, $input)) {
+        if ($uploads_document) {
+            if (!Document::canCreate()) {
+                return AbstractController::getAccessDeniedErrorResponse();
+            }
+        } elseif (!$item->can($item->getID(), CREATE, $input)) {
             return AbstractController::getAccessDeniedErrorResponse();
         }
 
-        $transaction_result = self::runCreateOrUpdateTransaction(static function (array &$rollback_journal) use ($schema, $item, $request_params, $input): int|Response {
+        $transaction_result = self::runCreateOrUpdateTransaction(static function (array &$rollback_journal) use ($schema, $item, $request_params, $input, $document_file): int|Response {
+            if ($document_file !== null) {
+                $parent = getItemForItemtype((string) ($input['itemtype'] ?? ''));
+                if (!$parent instanceof CommonDBTM || !$parent->getFromDB((int) ($input['items_id'] ?? 0))) {
+                    return AbstractController::getNotFoundErrorResponse();
+                }
+                if (!FileManager::isDocumentUploadAllowed($document_file->getClientMediaType(), pathinfo($document_file->getClientFilename(), PATHINFO_EXTENSION))) {
+                    throw new FileUploadException('file', 'File upload failed: Document could not be created', UPLOAD_ERR_CANT_WRITE);
+                }
+                $document = FileManager::uploadAsDocument($document_file, max(0, $parent->getEntityID()), $parent->isRecursive(), $rollback_journal);
+                if (is_int($document)) {
+                    throw new FileUploadException('file', 'File upload failed with error code ' . $document, $document);
+                }
+                $input['documents_id'] = $document->getID();
+                if (!$item->can(-1, CREATE, $input)) {
+                    return AbstractController::getAccessDeniedErrorResponse();
+                }
+            }
+
             /** @var Document[] $created_documents */
             $created_documents = [];
             $input = self::handleRichTextInputs($schema, $input, $created_documents, $rollback_journal);

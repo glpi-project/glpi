@@ -847,12 +847,10 @@ EOT,
                 ],
                 'itemtype' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'readOnly' => true,
                 ],
                 'items_id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'readOnly' => true,
                 ],
                 'documents_id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -860,6 +858,15 @@ EOT,
                     'readOnly' => true,
                 ],
                 'document' => self::getDropdownTypeSchema(class: Document::class, full_schema: 'Document', params: ['x-version-introduced' => '2.3.0']),
+                'file' => [
+                    'x-version-introduced' => '2.4.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_BINARY,
+                    'writeOnly' => true,
+                    'x-input-field' => 'documents_id',
+                    'x-file-upload-options' => self::getDefaultFileUploadOptions(FileManager::UPLOAD_AS_DOCUMENT),
+                    'description' => 'Only used to create a new document and immediately link it to the item. For updates, this field is ignored.',
+                ],
                 'filepath' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'x-mapped-from' => 'documents_id',

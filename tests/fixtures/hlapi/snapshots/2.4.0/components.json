@@ -6448,13 +6448,11 @@
                     "readOnly": true
                 },
                 "itemtype": {
-                    "type": "string",
-                    "readOnly": true
+                    "type": "string"
                 },
                 "items_id": {
                     "type": "integer",
-                    "format": "int64",
-                    "readOnly": true
+                    "format": "int64"
                 },
                 "documents_id": {
                     "type": "integer",
@@ -6475,6 +6473,11 @@
                         }
                     },
                     "x-full-schema": "Document"
+                },
+                "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
                 },
                 "filepath": {
                     "type": "string",
