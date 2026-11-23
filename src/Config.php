@@ -218,7 +218,11 @@ class Config extends CommonDBTM
         if (
             isset($input['cas_certificate_filepath'])
             && $input['cas_certificate_filepath'] !== ''
-            && (!Filesystem::isFilepathSafe($input['cas_certificate_filepath']) || !file_exists($input['cas_certificate_filepath']))
+            && (
+                !Filesystem::isFilepathSafe($input['cas_certificate_filepath'])
+                || !is_file($input['cas_certificate_filepath'])
+                || !is_readable($input['cas_certificate_filepath'])
+            )
         ) {
             Session::addMessageAfterRedirect(
                 __s('The CAS certificate file path is not valid.'),

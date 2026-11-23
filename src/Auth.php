@@ -572,7 +572,8 @@ class Auth extends CommonGLPI
                     // Block the authentication if the certificate file cannot be used.
                     if (
                         !Filesystem::isFilepathSafe($CFG_GLPI['cas_certificate_filepath'])
-                        || !file_exists($CFG_GLPI['cas_certificate_filepath'])
+                        || !is_file($CFG_GLPI['cas_certificate_filepath'])
+                        || !is_readable($CFG_GLPI['cas_certificate_filepath'])
                     ) {
                         trigger_error('The CAS certificate file path is not valid.', E_USER_WARNING);
                         return false;
