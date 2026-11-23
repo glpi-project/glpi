@@ -102,9 +102,10 @@ const StencilEditor = function (container, rand, zones_definition) {
         });
 
         window.addEventListener('resize', () => {
-            if (typeof _this.updateZonesPosition === 'function') {
-                _this.updateZonesPosition();
+            if (!_this.isEditorActive()) {
+                croppers.forEach((cropper) => cropper.getCropperImage().$center('contain'));
             }
+            _this.updateZonesPosition();
         });
 
         // global events
