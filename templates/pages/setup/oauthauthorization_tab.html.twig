@@ -30,6 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
+{% if item.canUpdateItem() %}
 <div class="mb-3">
     <form method="post" action="{{ config('root_doc') }}/ajax/oauthauthorization_action.php">
         <input type="hidden" name="id" value="{{ item.getID() }}">
@@ -39,6 +40,7 @@
         </button>
     </form>
 </div>
+{% endif %}
 
 {{ include('components/datatable.html.twig', {
     is_tab: true,
