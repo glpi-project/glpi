@@ -33,6 +33,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Exception\Database\StatementException;
 use Glpi\Mail\OauthProvider\ProviderInterface;
 use League\OAuth2\Client\Token\AccessToken;
 use Safe\Exceptions\JsonException;
@@ -381,30 +382,44 @@ class OAuthAuthorization extends CommonDBChild
             'email'                 => $email,
         ];
 
-        $exists = $this->getFromDBByCrit([
-            'oauthapplications_id' => $oauthapplications_id,
-            'email'                 => $email,
-            'type'                  => $type,
-        ]);
-
-        if ($exists) {
-            // Providers do not always send back a refresh token on a new
-            // consent: keep the stored one in that case, as refreshToken() does,
-            // so the authorization can still be renewed.
-            if (!empty($refresh_token)) {
-                $input['refresh_token'] = $refresh_token;
-            }
-            return $this->update(['id' => $this->fields['id']] + $input);
-        }
-
-        // A missing refresh token is stored as NULL rather than an empty
-        // string: the key rotation (GLPIKey::migrateFieldsInDb()) re-encrypts
-        // every non-NULL value, which would turn an empty string into a
-        // nonempty ciphertext and make the authorization look renewable.
+        // Providers do not always send back a refresh token on a new consent:
+        // the stored one is then kept on update, as refreshToken() does, so the
+        // authorization can still be renewed. On creation, a missing refresh
+        // token is stored as NULL rather than an empty string: the key rotation
+        // (GLPIKey::migrateFieldsInDb()) re-encrypts every non-NULL value, which
+        // would turn an empty string into a nonempty ciphertext and make the
+        // authorization look renewable.
         if (!empty($refresh_token)) {
             $input['refresh_token'] = $refresh_token;
         }
-        return (bool) $this->add($input);
+
+        $criteria = [
+            'oauthapplications_id' => $oauthapplications_id,
+            'email'                 => $email,
+            'type'                  => $type,
+        ];
+
+        if ($this->getFromDBByCrit($criteria)) {
+            return $this->update(['id' => $this->fields['id']] + $input);
+        }
+
+        try {
+            return (bool) $this->add($input);
+        } catch (StatementException $e) {
+            if ($e->getCode() !== 1062) {
+                throw $e;
+            }
+
+            // A concurrent callback for the same mailbox inserted its row
+            // between the lookup above and this insert. The token obtained
+            // here is just as valid: store it on that row, the authorization
+            // code being already redeemed.
+            if (!$this->getFromDBByCrit($criteria)) {
+                $this->error = __('Unable to save authorization');
+                return false;
+            }
+            return $this->update(['id' => $this->fields['id']] + $input);
+        }
     }
 
     /**
@@ -443,9 +458,34 @@ class OAuthAuthorization extends CommonDBChild
             return self::buildTokenStatus(self::TOKEN_VALID, $expiration);
         }
 
-        return !empty($this->fields['refresh_token'])
+        return $this->getRefreshToken() !== null
             ? self::buildTokenStatus(self::TOKEN_RENEWABLE, $expiration)
             : self::buildTokenStatus(self::TOKEN_EXPIRED, $expiration);
+    }
+
+    /**
+     * Returns the stored refresh token in clear text, or null when there is
+     * none or when it cannot be used.
+     *
+     * GLPIKey::decrypt() returns the encrypted value as is when the key cannot
+     * be read, and an empty string when the decryption fails: neither must be
+     * reported as renewable, nor sent to the provider as a credential.
+     */
+    private function getRefreshToken(): ?string
+    {
+        if (empty($this->fields['refresh_token'])) {
+            return null;
+        }
+
+        $glpikey = new GLPIKey();
+        $key = $glpikey->get();
+        if ($key === null) {
+            return null;
+        }
+
+        $refresh_token = $glpikey->decrypt($this->fields['refresh_token'], $key);
+
+        return is_string($refresh_token) && $refresh_token !== '' ? $refresh_token : null;
     }
 
     /**
@@ -540,13 +580,20 @@ class OAuthAuthorization extends CommonDBChild
             return false;
         }
 
+        $refresh_token = $this->getRefreshToken();
+        if ($refresh_token === null) {
+            $this->error = __('The stored refresh token cannot be decrypted: request a new authorization');
+            return false;
+        }
+
         $application = new OAuthApplication();
         if (!$application->getFromDB($this->fields['oauthapplications_id'])) {
             $this->error = __('Invalid OAuth application');
             return false;
         }
 
-        $refresh_token = (new GLPIKey())->decrypt($this->fields['refresh_token']);
+        // Credentials the refresh is based on, to detect a concurrent update.
+        $used_credentials = [$this->fields['token'], $this->fields['refresh_token']];
 
         try {
             $provider = $this->resolveProvider($application, $this->fields['type']);
@@ -569,6 +616,20 @@ class OAuthAuthorization extends CommonDBChild
         $new_refresh_token = $token->getRefreshToken();
         if (!empty($new_refresh_token) && $new_refresh_token !== $refresh_token) {
             $input['refresh_token'] = $new_refresh_token;
+        }
+
+        // The provider round trip can be long: another session may have
+        // re-authorized (or refreshed) this mailbox meanwhile. Its credentials
+        // are newer than the ones derived from the refresh token used here, so
+        // they are kept rather than overwritten.
+        $current = new self();
+        if (!$current->getFromDB($this->getID())) {
+            $this->error = __('The authorization was deleted during the token refresh');
+            return false;
+        }
+        if ([$current->fields['token'], $current->fields['refresh_token']] !== $used_credentials) {
+            $this->fields = $current->fields;
+            return true;
         }
 
         return $this->update($input);

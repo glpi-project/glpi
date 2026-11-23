@@ -55,21 +55,34 @@ final class OauthCallbackController extends AbstractController
         private readonly ?OAuthAuthorization $authorization = null,
     ) {}
 
+    /**
+     * Redirect URI registered on the provider.
+     *
+     * The session cookie might not be sent back on the OAuth provider's
+     * redirect if `session.cookie_samesite` is `strict`: no session can be
+     * checked here. Bouncing through a same-site navigation forces the cookie
+     * to be attached to the next (real) request, which is handled by
+     * `complete()` behind the firewall.
+     */
     #[Route("/oauth/callback", name: "glpi_oauth_callback", methods: ["GET"])]
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(Request $request): Response
     {
-        if (!$request->query->has('cookie_refresh')) {
-            // Session cookie might not be sent back on the OAuth provider's
-            // redirect if `session.cookie_samesite` is `strict`. Bouncing
-            // through a same-site navigation forces the cookie to be
-            // attached to the next (real) request.
-            $url = $request->getUri() . (str_contains($request->getUri(), '?') ? '&' : '?') . 'cookie_refresh';
-            return new Response(
-                '<html><head><meta http-equiv="refresh" content="0;URL=\'' . htmlspecialchars($url) . '\'"/></head><body></body></html>'
-            );
+        $url = $request->getUriForPath('/oauth/callback/complete');
+        $query = $request->getQueryString();
+        if ($query !== null) {
+            $url .= '?' . $query;
         }
 
+        return new Response(
+            '<html><head><meta http-equiv="refresh" content="0;URL=\'' . htmlspecialchars($url) . '\'"/></head><body></body></html>'
+        );
+    }
+
+    #[Route("/oauth/callback/complete", name: "glpi_oauth_callback_complete", methods: ["GET"])]
+    #[SecurityStrategy(Firewall::STRATEGY_CENTRAL_ACCESS)]
+    public function complete(Request $request): Response
+    {
         $application_id = $_SESSION['oauth2_provider_id'] ?? null;
         $type           = $_SESSION['oauth2_type'] ?? null;
         $state          = $_SESSION['oauth2_state'] ?? null;
@@ -99,9 +112,9 @@ final class OauthCallbackController extends AbstractController
                 ERROR
             );
         } elseif (!Session::haveRight(OAuthApplication::$rightname, UPDATE)) {
-            // The route cannot rely on the firewall (see the cookie bounce
-            // above), and the rights may have changed since the consent was
-            // requested (profile switch), so they are checked again here.
+            // The firewall only checks the central access: the right to
+            // update the application may have been lost since the consent was
+            // requested (profile switch), so it is checked again here.
             Session::addMessageAfterRedirect(__s('You do not have permission to authorize this application'), false, ERROR);
         } elseif (!$request->query->has('code')) {
             Session::addMessageAfterRedirect(__s('Unable to get authorization code'), false, ERROR);

@@ -44,6 +44,7 @@ use League\OAuth2\Client\Token\AccessTokenInterface;
 use OAuthApplication;
 use OAuthAuthorization;
 use PHPUnit\Framework\Attributes\Group;
+use Psr\Log\LogLevel;
 use RuntimeException;
 
 class OAuthAuthorizationTest extends DbTestCase
@@ -355,6 +356,36 @@ class OAuthAuthorizationTest extends DbTestCase
         );
     }
 
+    public function testCreateFromCodeRecoversFromAConcurrentInsert(): void
+    {
+        $this->login();
+
+        $app = $this->createApplication();
+
+        // Row inserted by a concurrent callback for the same mailbox.
+        $concurrent = $this->createItem(OAuthAuthorization::class, [
+            'oauthapplications_id' => $app->getID(),
+            'type'                  => OAuthAuthorization::TYPE_IMAP,
+            'email'                 => 'user@example.com',
+            'token'                 => json_encode((new AccessToken(['access_token' => 'concurrent']))->jsonSerialize()),
+        ], ['token']);
+
+        $provider = new FakeOauthProviderForTests();
+        $provider->access_token_result = new AccessToken(['access_token' => 'mine', 'expires_in' => 3600]);
+        $owner = new OwnerDetails();
+        $owner->email = 'user@example.com';
+        $provider->owner_details = $owner;
+
+        $authorization = TestableOAuthAuthorization::withProvider($provider);
+        // The lookup runs before the concurrent insert is committed.
+        $authorization->miss_next_lookup = true;
+
+        $this->assertTrue($authorization->createFromCode($app->getID(), OAuthAuthorization::TYPE_IMAP, 'a-code'));
+        $this->assertSame($concurrent->getID(), $authorization->getID());
+        $this->assertSame('mine', $authorization->getAccessToken()?->getToken());
+        $this->assertSame(1, countElementsInTable(OAuthAuthorization::getTable(), ['oauthapplications_id' => $app->getID()]));
+    }
+
     public function testCreateFromCodeStoresNoRefreshTokenWhenTheProviderIssuesNone(): void
     {
         $this->login();
@@ -565,6 +596,84 @@ class OAuthAuthorizationTest extends DbTestCase
         $key = new GLPIKey();
         $this->assertSame('new-refresh', $key->decrypt($testable->fields['refresh_token']));
         $this->assertSame('new-access', (new AccessToken(json_decode($key->decrypt($testable->fields['token']), true)))->getToken());
+    }
+
+    public function testUndecryptableRefreshTokenIsNeitherRenewableNorSent(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $expired_token = new AccessToken(['access_token' => 'old', 'expires' => time() - 100]);
+        $authorization = $this->createAuthorizationWithFields([
+            'token'         => json_encode($expired_token->jsonSerialize()),
+            'refresh_token' => 'refresh-value',
+        ]);
+
+        // Ciphertext that was not produced with the current key.
+        $DB->update(
+            OAuthAuthorization::getTable(),
+            ['refresh_token' => base64_encode(random_bytes(48))],
+            ['id' => $authorization->getID()]
+        );
+
+        $provider = new FakeOauthProviderForTests();
+        $testable = TestableOAuthAuthorization::withProvider($provider);
+        $testable->getFromDB($authorization->getID());
+
+        $this->assertSame(OAuthAuthorization::TOKEN_EXPIRED, $testable->getTokenStatus()['code']);
+        $this->assertFalse($testable->refreshToken());
+        $this->assertSame(
+            'The stored refresh token cannot be decrypted: request a new authorization',
+            $testable->getLastError()
+        );
+        $this->assertNull($provider->last_grant);
+        // One warning for the status, one for the refresh attempt.
+        for ($i = 0; $i < 2; $i++) {
+            $this->hasPhpLogRecordThatContains(
+                'Unable to decrypt string. It may have been crypted with another key.',
+                LogLevel::WARNING
+            );
+        }
+    }
+
+    public function testRefreshTokenKeepsCredentialsSavedDuringTheRefresh(): void
+    {
+        $this->login();
+
+        $app = $this->createApplication();
+
+        /** @var OAuthAuthorization $authorization */
+        $authorization = $this->createItem(OAuthAuthorization::class, [
+            'oauthapplications_id' => $app->getID(),
+            'type'                  => OAuthAuthorization::TYPE_IMAP,
+            'email'                 => 'user@example.com',
+            'refresh_token'         => 'old-refresh',
+        ], ['refresh_token']);
+
+        $provider = new FakeOauthProviderForTests();
+        $provider->access_token_result = new AccessToken([
+            'access_token'  => 'refreshed-access',
+            'refresh_token' => 'refreshed-refresh',
+            'expires_in'    => 3600,
+        ]);
+        // Another session re-authorizes the mailbox while the provider answers.
+        $provider->on_get_access_token = fn() => $this->updateItem(OAuthAuthorization::class, $authorization->getID(), [
+            'token'         => json_encode((new AccessToken(['access_token' => 'reauthorized-access']))->jsonSerialize()),
+            'refresh_token' => 'reauthorized-refresh',
+        ], ['token', 'refresh_token']);
+
+        $testable = TestableOAuthAuthorization::withProvider($provider);
+        $testable->getFromDB($authorization->getID());
+
+        $this->assertTrue($testable->refreshToken());
+
+        $key = new GLPIKey();
+        $stored = new OAuthAuthorization();
+        $this->assertTrue($stored->getFromDB($authorization->getID()));
+        $this->assertSame('reauthorized-refresh', $key->decrypt($stored->fields['refresh_token']));
+        // The instance is reloaded with the newer credentials.
+        $this->assertSame('reauthorized-access', $testable->getAccessToken()?->getToken());
     }
 
     public function testRefreshTokenKeepsRefreshTokenWhenProviderDoesNotRotateIt(): void
@@ -881,10 +990,17 @@ final class FakeOauthProviderForTests implements ProviderInterface
         return 'https://example.com/authorize';
     }
 
+    /** Called during the token request, to simulate a concurrent change. */
+    public ?\Closure $on_get_access_token = null;
+
     public function getAccessToken($grant, array $options = [])
     {
         $this->last_grant = $grant;
         $this->last_options = $options;
+
+        if ($this->on_get_access_token !== null) {
+            ($this->on_get_access_token)();
+        }
 
         if ($this->access_token_result instanceof \Throwable) {
             throw $this->access_token_result;
@@ -929,6 +1045,19 @@ final class TestableOAuthAuthorization extends OAuthAuthorization
 
     /** Access token received by the last IMAP probe, null if it was not reached. */
     public ?string $probed_token = null;
+
+    /** Makes the next lookup miss its row, as when a concurrent insert is not committed yet. */
+    public bool $miss_next_lookup = false;
+
+    public function getFromDBByCrit(array $criteria)
+    {
+        if ($this->miss_next_lookup) {
+            $this->miss_next_lookup = false;
+            return false;
+        }
+
+        return parent::getFromDBByCrit($criteria);
+    }
 
     /**
      * The table name is derived from the class name, so this subclass would

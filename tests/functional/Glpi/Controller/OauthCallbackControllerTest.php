@@ -36,8 +36,10 @@ namespace tests\units\Glpi\Controller;
 
 use Glpi\Controller\OauthCallbackController;
 use Glpi\Exception\RedirectException;
+use Glpi\Http\Firewall;
 use Glpi\Http\RedirectResponse;
 use Glpi\Mail\OauthProvider\ProviderInterface;
+use Glpi\Security\Attribute\SecurityStrategy;
 use Glpi\Tests\DbTestCase;
 use GLPIKey;
 use GuzzleHttp\Client;
@@ -199,16 +201,31 @@ class OauthCallbackControllerTest extends DbTestCase
         parent::tearDown();
     }
 
-    public function testFirstHitBouncesThroughCookieRefresh(): void
+    public function testFirstHitBouncesToTheCompletionRoute(): void
     {
-        $this->login();
-
-        $request = Request::create('/oauth/callback?state=abc&code=xyz', 'GET');
+        $request = Request::create('http://glpi.example.com/oauth/callback?state=abc&code=xyz', 'GET');
 
         $response = (new OauthCallbackController())($request);
 
-        $this->assertStringContainsString('cookie_refresh', $response->getContent());
         $this->assertStringContainsString('meta http-equiv="refresh"', $response->getContent());
+        $this->assertStringContainsString(
+            htmlspecialchars('http://glpi.example.com/oauth/callback/complete?code=xyz&state=abc'),
+            $response->getContent()
+        );
+    }
+
+    public function testOnlyTheBounceSkipsTheFirewall(): void
+    {
+        $getStrategy = static function (string $method): string {
+            $attributes = (new \ReflectionMethod(OauthCallbackController::class, $method))
+                ->getAttributes(SecurityStrategy::class);
+            return $attributes[0]->newInstance()->strategy;
+        };
+
+        // The bounce has no session to check (see `__invoke()`), and does nothing else...
+        $this->assertSame(Firewall::STRATEGY_NO_CHECK, $getStrategy('__invoke'));
+        // ... while the route that saves the authorization is behind the firewall.
+        $this->assertSame(Firewall::STRATEGY_CENTRAL_ACCESS, $getStrategy('complete'));
     }
 
     public function testProviderErrorIsReportedAndSessionIsCleared(): void
@@ -221,11 +238,11 @@ class OauthCallbackControllerTest extends DbTestCase
         $_SESSION['oauth2_state']       = 'expected-state';
 
         $request = Request::create(
-            '/oauth/callback?cookie_refresh&state=expected-state&error=access_denied&error_description=User+denied+access',
+            '/oauth/callback/complete?state=expected-state&error=access_denied&error_description=User+denied+access',
             'GET'
         );
 
-        $response = (new OauthCallbackController())($request);
+        $response = (new OauthCallbackController())->complete($request);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->hasSessionMessages(ERROR, ['Authorization failed with error: User denied access']);
@@ -243,9 +260,9 @@ class OauthCallbackControllerTest extends DbTestCase
         $_SESSION['oauth2_type']        = 'IMAP';
         $_SESSION['oauth2_state']       = 'expected-state';
 
-        $request = Request::create('/oauth/callback?cookie_refresh&state=wrong-state&code=xyz', 'GET');
+        $request = Request::create('/oauth/callback/complete?state=wrong-state&code=xyz', 'GET');
 
-        $response = (new OauthCallbackController())($request);
+        $response = (new OauthCallbackController())->complete($request);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->hasSessionMessages(ERROR, ['Unable to verify authorization code']);
@@ -266,9 +283,9 @@ class OauthCallbackControllerTest extends DbTestCase
 
         $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] = READ;
 
-        $request = Request::create('/oauth/callback?cookie_refresh&state=expected-state&code=xyz', 'GET');
+        $request = Request::create('/oauth/callback/complete?state=expected-state&code=xyz', 'GET');
 
-        $response = (new OauthCallbackController())($request);
+        $response = (new OauthCallbackController())->complete($request);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->hasSessionMessages(ERROR, ['You do not have permission to authorize this application']);
@@ -283,9 +300,9 @@ class OauthCallbackControllerTest extends DbTestCase
         $this->login();
 
         // No oauth2_* session values seeded at all.
-        $request = Request::create('/oauth/callback?cookie_refresh&state=abc&code=xyz', 'GET');
+        $request = Request::create('/oauth/callback/complete?state=abc&code=xyz', 'GET');
 
-        $response = (new OauthCallbackController())($request);
+        $response = (new OauthCallbackController())->complete($request);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->hasSessionMessages(ERROR, ['Unable to verify authorization code']);
@@ -300,9 +317,9 @@ class OauthCallbackControllerTest extends DbTestCase
         $_SESSION['oauth2_type']        = 'IMAP';
         $_SESSION['oauth2_state']       = 'expected-state';
 
-        $request = Request::create('/oauth/callback?cookie_refresh&state=expected-state', 'GET');
+        $request = Request::create('/oauth/callback/complete?state=expected-state', 'GET');
 
-        $response = (new OauthCallbackController())($request);
+        $response = (new OauthCallbackController())->complete($request);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->hasSessionMessages(ERROR, ['Unable to get authorization code']);
@@ -378,12 +395,11 @@ class OauthCallbackControllerTest extends DbTestCase
             $this->getJsonResponse($jwks),
         ], $history);
 
-        $request = Request::create('/oauth/callback?' . http_build_query([
-            'cookie_refresh' => '',
+        $request = Request::create('/oauth/callback/complete?' . http_build_query([
             'state'          => $auth_params['state'],
             'code'           => 'the-auth-code',
         ]), 'GET');
-        $response = (new OauthCallbackController(HttpMockedOAuthAuthorization::withHttpClient($http_client)))($request);
+        $response = (new OauthCallbackController(HttpMockedOAuthAuthorization::withHttpClient($http_client)))->complete($request);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame($app->getLinkURL(), $response->getTargetUrl());
@@ -471,12 +487,11 @@ class OauthCallbackControllerTest extends DbTestCase
             ]),
         ], $history);
 
-        $request = Request::create('/oauth/callback?' . http_build_query([
-            'cookie_refresh' => '',
+        $request = Request::create('/oauth/callback/complete?' . http_build_query([
             'state'          => $auth_params['state'],
             'code'           => 'the-auth-code',
         ]), 'GET');
-        $response = (new OauthCallbackController(HttpMockedOAuthAuthorization::withHttpClient($http_client)))($request);
+        $response = (new OauthCallbackController(HttpMockedOAuthAuthorization::withHttpClient($http_client)))->complete($request);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame($app->getLinkURL(), $response->getTargetUrl());
@@ -526,8 +541,8 @@ class OauthCallbackControllerTest extends DbTestCase
             ], 400),
         ], $history);
 
-        $request = Request::create('/oauth/callback?cookie_refresh&state=expected-state&code=expired-code', 'GET');
-        $response = (new OauthCallbackController(HttpMockedOAuthAuthorization::withHttpClient($http_client)))($request);
+        $request = Request::create('/oauth/callback/complete?state=expected-state&code=expired-code', 'GET');
+        $response = (new OauthCallbackController(HttpMockedOAuthAuthorization::withHttpClient($http_client)))->complete($request);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame($app->getLinkURL(), $response->getTargetUrl());
