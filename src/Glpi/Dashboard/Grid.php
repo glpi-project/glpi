@@ -1269,7 +1269,9 @@ HTML;
             $use_cache = !CspState::isEnabled()
                 && !$force
                 && Environment::get()->shouldForceExtraBrowserCache()
-                && (!isset($card['cache']) || $card['cache'] == true);
+                && (!isset($card['cache']) || $card['cache'] == true)
+                // the ticket counter cards may contain user-specific data and must not be cached
+                && !($card['args']['params']['validation_check_user'] ?? false);
             $cache_age = 40;
 
             if ($use_cache) {
