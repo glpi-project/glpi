@@ -226,6 +226,10 @@ class OAuthAuthorization extends CommonDBChild
 
     private function getRowActionsHtml(self $authorization): string
     {
+        if (!$authorization->canUpdateItem()) {
+            return '';
+        }
+
         $id = (int) $authorization->fields['id'];
 
         $btn = static fn(string $action, string $label, string $class) => sprintf(
