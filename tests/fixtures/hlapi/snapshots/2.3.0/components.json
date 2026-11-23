@@ -25500,6 +25500,11 @@
                     "format": "password",
                     "writeOnly": true
                 },
+                "current_password": {
+                    "type": "string",
+                    "format": "password",
+                    "writeOnly": true
+                },
                 "picture": {
                     "type": "string",
                     "readOnly": true
