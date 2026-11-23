@@ -91,12 +91,9 @@ const StencilEditor = function (container, rand, zones_definition) {
                     });
                     cr_image.$center('contain');
 
-                    const observer = new MutationObserver(() => {
-                        if (typeof _this.updateZonesPosition === 'function') {
-                            _this.updateZonesPosition();
-                        }
-                    });
-                    observer.observe(cr_image, { attributes: true, attributeFilter: ['style'] });
+                    new MutationObserver(() => _this.updateZonesPosition())
+                        .observe(cr_image, { attributes: true, attributeFilter: ['style'] });
+                    _this.updateZonesPosition();
                 });
             });
         });
