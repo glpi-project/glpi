@@ -285,6 +285,29 @@ final class OAuthApplication extends CommonDBTM
         return true;
     }
 
+    public function post_updateItem($history = true)
+    {
+        // Tokens are bound to the provider and the client that issued them:
+        // once these change, they can no longer be refreshed, and using them
+        // would send them to another provider's servers.
+        if (array_intersect(['provider', 'client_id', 'tenant_id'], $this->updates) !== []) {
+            $authorization = new OAuthAuthorization();
+            $count = countElementsInTable(OAuthAuthorization::getTable(), [
+                'oauthapplications_id' => $this->getID(),
+            ]);
+            if ($count > 0) {
+                $authorization->deleteByCriteria(['oauthapplications_id' => $this->getID()], true);
+                Session::addMessageAfterRedirect(
+                    __s('The provider settings changed: the existing authorizations were deleted and must be requested again.'),
+                    false,
+                    WARNING
+                );
+            }
+        }
+
+        parent::post_updateItem($history);
+    }
+
     public function cleanDBonPurge()
     {
         // Authorizations hold the (encrypted) mailbox tokens obtained through

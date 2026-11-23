@@ -169,6 +169,51 @@ class OAuthApplicationTest extends DbTestCase
         $this->assertTrue((new OAuthAuthorization())->getFromDB($kept->getID()));
     }
 
+    public function testChangingTheProviderSettingsDeletesTheAuthorizations(): void
+    {
+        $this->login();
+
+        /** @var OAuthApplication $app */
+        $app = $this->createItem(OAuthApplication::class, [
+            'name'          => 'Provider settings',
+            'provider'      => OAuthApplication::AZURE,
+            'client_id'     => 'cid',
+            'client_secret' => 'secret',
+            'tenant_id'     => 'tenant',
+        ], ['client_secret']);
+
+        $createAuthorization = fn() => $this->createItem(OAuthAuthorization::class, [
+            'oauthapplications_id' => $app->getID(),
+            'type'                 => OAuthAuthorization::TYPE_IMAP,
+            'email'                => uniqid('imap', true) . '@example.com',
+            'token'                => 'token-json',
+        ], ['token']);
+
+        // An edit that leaves the provider binding unchanged keeps the authorizations.
+        $authorization = $createAuthorization();
+        $this->updateItem(OAuthApplication::class, $app->getID(), ['name' => 'Renamed']);
+        $this->assertTrue((new OAuthAuthorization())->getFromDB($authorization->getID()));
+
+        // Changing the provider, the client or the tenant invalidates the issued tokens.
+        foreach (
+            [
+                ['client_id' => 'other-cid'],
+                ['tenant_id' => 'other-tenant'],
+                ['provider' => OAuthApplication::GOOGLE, 'tenant_id' => ''],
+            ] as $input
+        ) {
+            $authorization = $createAuthorization();
+            $this->updateItem(OAuthApplication::class, $app->getID(), $input);
+            $this->assertFalse(
+                (new OAuthAuthorization())->getFromDB($authorization->getID()),
+                'Authorization kept after changing ' . implode(', ', array_keys($input))
+            );
+            $this->hasSessionMessages(WARNING, [
+                'The provider settings changed: the existing authorizations were deleted and must be requested again.',
+            ]);
+        }
+    }
+
     // -------------------------------------------------------------------------
     // Validation
     // -------------------------------------------------------------------------

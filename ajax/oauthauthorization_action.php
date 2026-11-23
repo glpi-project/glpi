@@ -76,7 +76,9 @@ if (isset($_POST['id']) && isset($_POST['type']) && isset($_POST['request_author
     $authorization = new OAuthAuthorization();
     $authorization->check((int) ($_POST['id'] ?? 0), DELETE);
 
-    $authorization->revokeAuthorization();
+    if (!$authorization->revokeAuthorization()) {
+        Session::addMessageAfterRedirect(__s('The authorization could not be deleted.'), false, ERROR);
+    }
     Html::back();
 } else {
     throw new BadRequestHttpException();

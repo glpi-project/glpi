@@ -373,9 +373,9 @@ class OAuthAuthorizationTest extends DbTestCase
         $stored = new OAuthAuthorization();
         $this->assertTrue($stored->getFromDB($authorization->getID()));
 
-        // Nothing to encrypt, so the field is stored as an empty string: that is
-        // the value getTokenStatus() and refreshToken() test for.
-        $this->assertSame('', $stored->fields['refresh_token']);
+        // Stored as NULL, so that a key rotation leaves it empty (it only
+        // re-encrypts non-NULL values) and the token is not seen as renewable.
+        $this->assertNull($stored->fields['refresh_token']);
 
         $key = new GLPIKey();
         $stored_token = new AccessToken(json_decode($key->decrypt($stored->fields['token']), true));
@@ -675,6 +675,8 @@ class OAuthAuthorizationTest extends DbTestCase
 
         $this->assertTrue($result['success']);
         $this->assertSame('refresh_token', $provider->last_grant);
+        // The probe must use the refreshed token, not the expired one.
+        $this->assertSame('fresh', $testable->probed_token);
     }
 
     public function testTestConnectionFailsWhenTokenIsExpiredAndNoRefreshTokenIsStored(): void
@@ -761,6 +763,7 @@ class OAuthAuthorizationTest extends DbTestCase
         $result = $testable->testConnection();
 
         $this->assertNull($result['success']);
+        $this->assertNull($testable->probed_token, 'The IMAP probe must not be used for an SMTP authorization');
     }
 
     // -------------------------------------------------------------------------
@@ -924,6 +927,9 @@ final class TestableOAuthAuthorization extends OAuthAuthorization
 {
     public ?bool $probe_result = null;
 
+    /** Access token received by the last IMAP probe, null if it was not reached. */
+    public ?string $probed_token = null;
+
     /**
      * The table name is derived from the class name, so this subclass would
      * otherwise resolve to a table of its own that does not exist.
@@ -949,6 +955,8 @@ final class TestableOAuthAuthorization extends OAuthAuthorization
 
     protected function probeImapConnection(string $host, int $port, string $ssl, string $email, string $token): array
     {
+        $this->probed_token = $token;
+
         return $this->fakeProbeResult();
     }
 

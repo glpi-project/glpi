@@ -136,11 +136,11 @@
 </div>
 
 {% if not item.isNewItem() %}
-    <div class="modal fade" id="oauth_diagnostic_{{ rand }}" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="oauth_diagnostic_{{ rand }}" tabindex="-1" aria-hidden="true" aria-labelledby="oauth_diagnostic_title_{{ rand }}">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">
+                    <h5 class="modal-title" id="oauth_diagnostic_title_{{ rand }}">
                         <i class="ti ti-stethoscope me-1" aria-hidden="true"></i>
                         {{ __('Connection diagnostic') }}
                     </h5>
@@ -262,7 +262,21 @@
                     method: 'POST',
                     body: body,
                     credentials: 'same-origin',
+                    headers: {
+                        // Flags the request as AJAX: when the re-authentication
+                        // ("sudo mode") has expired, the server then answers 403
+                        // instead of redirecting to the HTML prompt.
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                    },
                 });
+                if (response.status === 403) {
+                    // The steps a read-only user cannot run are not listed, so a
+                    // 403 means the re-authentication expired: reloading the page
+                    // displays the prompt and comes back here afterwards.
+                    window.location.reload();
+                    throw new Error('HTTP 403');
+                }
                 if (!response.ok) {
                     throw new Error('HTTP ' + response.status);
                 }

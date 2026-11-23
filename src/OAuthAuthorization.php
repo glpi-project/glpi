@@ -226,11 +226,14 @@ class OAuthAuthorization extends CommonDBChild
 
     private function getRowActionsHtml(self $authorization): string
     {
-        if (!$authorization->canUpdateItem()) {
+        $id = (int) $authorization->fields['id'];
+
+        // Same checks as the action endpoint, so no button leads to an access denied page.
+        $can_update = $authorization->can($id, UPDATE);
+        $can_delete = $authorization->can($id, DELETE);
+        if (!$can_update && !$can_delete) {
             return '';
         }
-
-        $id = (int) $authorization->fields['id'];
 
         $btn = static fn(string $action, string $label, string $class) => sprintf(
             '<form method="post" action="%1$s/ajax/oauthauthorization_action.php" class="d-inline">'
@@ -244,9 +247,16 @@ class OAuthAuthorization extends CommonDBChild
             htmlescape($label)
         );
 
-        return $btn('refresh', __('Refresh'), 'btn-outline-secondary')
-            . ' ' . $btn('test', __('Troubleshoot'), 'btn-outline-secondary')
-            . ' ' . $btn('delete', __('Delete'), 'btn-outline-danger');
+        $buttons = [];
+        if ($can_update) {
+            $buttons[] = $btn('refresh', __('Refresh'), 'btn-outline-secondary');
+            $buttons[] = $btn('test', __('Troubleshoot'), 'btn-outline-secondary');
+        }
+        if ($can_delete) {
+            $buttons[] = $btn('delete', __('Delete'), 'btn-outline-danger');
+        }
+
+        return implode(' ', $buttons);
     }
 
     public function prepareInputForAdd($input)
@@ -257,6 +267,9 @@ class OAuthAuthorization extends CommonDBChild
     public function prepareInputForUpdate($input)
     {
         $input = $this->prepareInput($input);
+        if ($input === false) {
+            return false;
+        }
 
         // Avoid spurious history entries: encryption is non-deterministic,
         // so only keep a field in the update payload if its decrypted value
@@ -276,13 +289,20 @@ class OAuthAuthorization extends CommonDBChild
 
     /**
      * @param array<string, mixed> $input
-     * @return array<string, mixed>
+     * @return array<string, mixed>|false false when a credential cannot be encrypted
      */
-    private function prepareInput(array $input): array
+    private function prepareInput(array $input): array|false
     {
         foreach (['code', 'token', 'refresh_token'] as $field) {
             if (!empty($input[$field])) {
-                $input[$field] = (new GLPIKey())->encrypt($input[$field]);
+                $encrypted = (new GLPIKey())->encrypt($input[$field]);
+                if ($encrypted === '') {
+                    // GLPIKey::encrypt() returns an empty string when the key
+                    // cannot be read: saving it would erase the credentials.
+                    $this->error = __('Unable to encrypt the credentials: the GLPI encryption key cannot be read.');
+                    return false;
+                }
+                $input[$field] = $encrypted;
             }
         }
 
@@ -377,7 +397,13 @@ class OAuthAuthorization extends CommonDBChild
             return $this->update(['id' => $this->fields['id']] + $input);
         }
 
-        $input['refresh_token'] = $refresh_token ?? '';
+        // A missing refresh token is stored as NULL rather than an empty
+        // string: the key rotation (GLPIKey::migrateFieldsInDb()) re-encrypts
+        // every non-NULL value, which would turn an empty string into a
+        // nonempty ciphertext and make the authorization look renewable.
+        if (!empty($refresh_token)) {
+            $input['refresh_token'] = $refresh_token;
+        }
         return (bool) $this->add($input);
     }
 
@@ -670,11 +696,23 @@ class OAuthAuthorization extends CommonDBChild
             // describing the error and waits for an empty client response
             // before sending its final tagged answer. Untagged `*` lines may
             // also be interleaved, so read until the tagged line shows up.
+            // The socket timeout only bounds each read: a server sending a line
+            // just before each timeout would keep the loop running forever.
+            $deadline = time() + self::PROBE_TIMEOUT;
             $challenge = null;
-            while (($line = fgets($socket)) !== false) {
+            while (time() < $deadline && ($line = fgets($socket)) !== false) {
                 $line = trim($line);
                 if ($line === '') {
                     continue;
+                }
+
+                $matches = [];
+                preg_match('/^\*\s+BYE\b\s*(.*)$/i', $line, $matches);
+                if ($matches !== []) {
+                    return [
+                        'success' => false,
+                        'message' => sprintf(__('%1$s closed the connection: %2$s'), $host, trim($matches[1])),
+                    ];
                 }
 
                 if (str_starts_with($line, '+')) {

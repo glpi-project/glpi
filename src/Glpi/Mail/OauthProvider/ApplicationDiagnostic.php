@@ -217,7 +217,17 @@ class ApplicationDiagnostic
      */
     private function checkSecret(): array
     {
-        $decrypted = (new GLPIKey())->decrypt($this->application->fields['client_secret']);
+        $glpikey = new GLPIKey();
+        $key = $glpikey->get();
+        if ($key === null) {
+            // Without a key, GLPIKey::decrypt() returns the encrypted value as is.
+            return [
+                'status'  => self::STATUS_FAILED,
+                'message' => __('The GLPI encryption key cannot be read: check the key file.'),
+            ];
+        }
+
+        $decrypted = $glpikey->decrypt($this->application->fields['client_secret'], $key);
 
         if (empty($decrypted)) {
             return [

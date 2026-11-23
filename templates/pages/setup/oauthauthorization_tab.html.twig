@@ -30,7 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
-{% if item.canUpdateItem() %}
+{% if item.can(item.getID(), constant('UPDATE')) %}
 <div class="mb-3">
     <form method="post" action="{{ config('root_doc') }}/ajax/oauthauthorization_action.php">
         <input type="hidden" name="id" value="{{ item.getID() }}">

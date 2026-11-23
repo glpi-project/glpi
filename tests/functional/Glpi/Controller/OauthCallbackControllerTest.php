@@ -221,7 +221,7 @@ class OauthCallbackControllerTest extends DbTestCase
         $_SESSION['oauth2_state']       = 'expected-state';
 
         $request = Request::create(
-            '/oauth/callback?cookie_refresh&error=access_denied&error_description=User+denied+access',
+            '/oauth/callback?cookie_refresh&state=expected-state&error=access_denied&error_description=User+denied+access',
             'GET'
         );
 
@@ -249,6 +249,33 @@ class OauthCallbackControllerTest extends DbTestCase
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->hasSessionMessages(ERROR, ['Unable to verify authorization code']);
+        // A stale callback must not consume the pending authorization.
+        $this->assertSame($app->getID(), $_SESSION['oauth2_provider_id']);
+        $this->assertSame('IMAP', $_SESSION['oauth2_type']);
+        $this->assertSame('expected-state', $_SESSION['oauth2_state']);
+    }
+
+    public function testCallbackIsRejectedWithoutUpdateRight(): void
+    {
+        $this->login();
+
+        $app = $this->createApplication();
+        $_SESSION['oauth2_provider_id'] = $app->getID();
+        $_SESSION['oauth2_type']        = 'IMAP';
+        $_SESSION['oauth2_state']       = 'expected-state';
+
+        $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] = READ;
+
+        $request = Request::create('/oauth/callback?cookie_refresh&state=expected-state&code=xyz', 'GET');
+
+        $response = (new OauthCallbackController())($request);
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->hasSessionMessages(ERROR, ['You do not have permission to authorize this application']);
+        $this->assertSame(
+            0,
+            countElementsInTable(OAuthAuthorization::getTable(), ['oauthapplications_id' => $app->getID()])
+        );
     }
 
     public function testMissingSessionStateIsRejected(): void

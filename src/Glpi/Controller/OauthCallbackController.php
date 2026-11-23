@@ -74,27 +74,35 @@ final class OauthCallbackController extends AbstractController
         $type           = $_SESSION['oauth2_type'] ?? null;
         $state          = $_SESSION['oauth2_state'] ?? null;
 
-        unset($_SESSION['oauth2_provider_id'], $_SESSION['oauth2_type'], $_SESSION['oauth2_state']);
+        // Only consume the pending authorization the callback belongs to: a
+        // stale callback (from an older attempt, or replayed) must not wipe
+        // out a newer attempt still in progress.
+        $is_state_valid = $application_id !== null
+            && $type !== null
+            && $state !== null
+            && $request->query->get('state') === $state;
+        if ($is_state_valid) {
+            unset($_SESSION['oauth2_provider_id'], $_SESSION['oauth2_type'], $_SESSION['oauth2_state']);
+        }
 
         $application = new OAuthApplication();
 
         $error = $request->query->get('error');
         $error_description = $request->query->get('error_description');
 
-        if (!empty($error) || !empty($error_description)) {
+        if (!$is_state_valid) {
+            Session::addMessageAfterRedirect(__s('Unable to verify authorization code'), false, ERROR);
+        } elseif (!empty($error) || !empty($error_description)) {
             Session::addMessageAfterRedirect(
                 htmlspecialchars(sprintf(__('Authorization failed with error: %s'), $error_description ?? $error)),
                 false,
                 ERROR
             );
-        } elseif (
-            $application_id === null
-            || $type === null
-            || !$request->query->has('state')
-            || $state === null
-            || $request->query->get('state') !== $state
-        ) {
-            Session::addMessageAfterRedirect(__s('Unable to verify authorization code'), false, ERROR);
+        } elseif (!Session::haveRight(OAuthApplication::$rightname, UPDATE)) {
+            // The route cannot rely on the firewall (see the cookie bounce
+            // above), and the rights may have changed since the consent was
+            // requested (profile switch), so they are checked again here.
+            Session::addMessageAfterRedirect(__s('You do not have permission to authorize this application'), false, ERROR);
         } elseif (!$request->query->has('code')) {
             Session::addMessageAfterRedirect(__s('Unable to get authorization code'), false, ERROR);
         } else {
