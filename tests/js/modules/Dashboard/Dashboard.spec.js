@@ -1942,4 +1942,118 @@ describe('Dashboard', () => {
         $('#dashboard-12345 .markdown_content').trigger('input');
         expect(dashboard.saveMarkdown).toHaveBeenCalled();
     });
+
+    test('getChartCsv for a pie', () => {
+        const csv = GLPI.Dashboard.getChartCsv({
+            series: [{
+                type: 'pie',
+                data: [
+                    {name: 'New', value: 3, url: '/front/ticket.php'},
+                    {name: 'Say "hello"', value: 1.5},
+                    {name: '', value: 2},
+                    // filler of a half pie
+                    {name: '', value: 6.5, is_filler: true},
+                ],
+            }],
+        }, ';', {name: 'Name', value: 'Value'});
+
+        expect(csv).toBe('"Name";"Value"\r\n"New";3\r\n"Say ""hello""";1.5\r\n"";2');
+    });
+
+    test('getChartCsv for a sunburst', () => {
+        const csv = GLPI.Dashboard.getChartCsv({
+            series: [{
+                type: 'sunburst',
+                data: [
+                    {name: 'Hardware', value: 5, children: [
+                        {name: 'Printer', value: 2},
+                        {name: 'Screen', value: 3},
+                    ]},
+                    {name: 'Software', value: 1},
+                ],
+            }],
+        }, ',', {name: 'Name', value: 'Value'});
+
+        expect(csv).toBe([
+            '"Name","Value"',
+            '"Hardware",5',
+            '"Hardware > Printer",2',
+            '"Hardware > Screen",3',
+            '"Software",1',
+        ].join('\r\n'));
+    });
+
+    test('getChartCsv for bars and lines', () => {
+        const series = [
+            {type: 'bar', name: 'Opened', data: [{value: 4, url: '/a'}, {value: 0}]},
+            {type: 'bar', name: 'Solved', data: [2, null]},
+        ];
+        const expected = [
+            '"Name";"Opened";"Solved"',
+            '"2026-10";4;2',
+            '"2026-11";0;""',
+        ].join('\r\n');
+
+        // vertical bars or lines, as returned by getOption()
+        expect(GLPI.Dashboard.getChartCsv({
+            xAxis: [{type: 'category', data: ['2026-10', '2026-11']}],
+            yAxis: [{type: 'value'}],
+            series: series,
+        }, ';', {name: 'Name', value: 'Value'})).toBe(expected);
+
+        // horizontal bars
+        expect(GLPI.Dashboard.getChartCsv({
+            xAxis: {type: 'value'},
+            yAxis: {type: 'category', data: ['2026-10', '2026-11']},
+            series: series,
+        }, ';', {name: 'Name', value: 'Value'})).toBe(expected);
+
+        // a single unnamed serie
+        expect(GLPI.Dashboard.getChartCsv({
+            xAxis: {type: 'category', data: ['A']},
+            series: [{type: 'bar', name: '', data: [7]}],
+        }, ';', {name: 'Name', value: 'Value'})).toBe('"Name";"Value"\r\n"A";7');
+    });
+
+    test('getChartCsv neutralizes formulas', () => {
+        const csv = GLPI.Dashboard.getChartCsv({
+            series: [{type: 'pie', data: [{name: '=1+1', value: 1}, {name: '@SUM(A1)', value: -2}]}],
+        }, ';', {name: 'Name', value: 'Value'});
+
+        expect(csv).toBe(`"Name";"Value"\r\n"'=1+1";1\r\n"'@SUM(A1)";-2`);
+    });
+
+    test('exportChartToCsv downloads a file named after the card', () => {
+        $('body').append(`
+            <div class="card g-chart">
+                <div class="chart"></div>
+                <span class="main-label">Tickets: by status</span>
+            </div>
+        `);
+        const chart = {
+            getDom: () => $('.g-chart .chart')[0],
+            getOption: () => ({
+                toolbox: [{feature: {myExportCsv: {delimiter: ';', headers: {name: 'Name', value: 'Value'}}}}],
+                series: [{type: 'pie', data: [{name: 'New', value: 3}]}],
+            }),
+        };
+        const default_create = URL.createObjectURL;
+        const default_revoke = URL.revokeObjectURL;
+        URL.createObjectURL = vi.fn().mockReturnValue('blob:csv');
+        URL.revokeObjectURL = vi.fn();
+        const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function () {
+            expect(this.download).toBe('Tickets_ by status.csv');
+            expect(this.href).toBe('blob:csv');
+        });
+
+        try {
+            GLPI.Dashboard.exportChartToCsv(chart);
+            expect(click).toHaveBeenCalledTimes(1);
+            expect(URL.createObjectURL.mock.calls[0][0].type).toBe('text/csv;charset=utf-8');
+        } finally {
+            click.mockRestore();
+            URL.createObjectURL = default_create;
+            URL.revokeObjectURL = default_revoke;
+        }
+    });
 });
