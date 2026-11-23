@@ -655,6 +655,7 @@ class GLPIDashboard {
         // get the html of the new card and save dashboard
         $.get({
             url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+            cache: false, // always fetch a fresh card, bypassing the browser cache
             data: {
                 action:    'get_card',
                 dashboard: this.current_name,
@@ -1198,7 +1199,12 @@ class GLPIDashboard {
                     data.users_id     = this.users_id;
                 }
 
-                promises.push($.get(CFG_GLPI.root_doc+"/ajax/dashboard.php", data).then((html) => {
+                promises.push($.get({
+                    url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+                    data: data,
+                    // targeted refreshes must bypass the browser cache
+                    cache: specific_one.length === 0,
+                }).then((html) => {
                     card.children('.grid-stack-item-content').html(html);
 
                     this.fitNumbers(card);
