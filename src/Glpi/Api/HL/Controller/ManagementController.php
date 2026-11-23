@@ -401,7 +401,7 @@ final class ManagementController extends AbstractController
                         'readOnly' => true,
                         'computation' => new QueryExpression(self::getBudgetTotalSpentSQL()),
                     ],
-                    'amount_remaining' => [
+                    'total_remaining' => [
                         'x-version-introduced' => '2.4.0',
                         'type' => Doc\Schema::TYPE_NUMBER,
                         'readOnly' => true,

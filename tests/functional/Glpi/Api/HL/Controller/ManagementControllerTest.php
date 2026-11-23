@@ -177,15 +177,15 @@ class ManagementControllerTest extends HLAPITestCase
                 ->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertEquals(160, $content['total_spent']);
-                    $this->assertEquals(840, $content['amount_remaining']);
+                    $this->assertEquals(840, $content['total_remaining']);
                 });
         });
 
         $filters = [
             ['name==' . __FUNCTION__, 'total_spent==160', 1],
             ['name==' . __FUNCTION__, 'total_spent=gt=160', 0],
-            ['name==' . __FUNCTION__, 'amount_remaining==840', 1],
-            ['name==' . __FUNCTION__, 'amount_remaining=lt=500', 0],
+            ['name==' . __FUNCTION__, 'total_remaining==840', 1],
+            ['name==' . __FUNCTION__, 'total_remaining=lt=500', 0],
         ];
         foreach ($filters as [$name_filter, $computed_filter, $expected_count]) {
             $request = new Request('GET', '/Management/Budget');
@@ -201,7 +201,7 @@ class ManagementControllerTest extends HLAPITestCase
 
         $request = new Request('GET', '/Management/Budget');
         $request->setParameter('filter', ['name==' . __FUNCTION__]);
-        $request->setParameter('sort', 'amount_remaining:desc');
+        $request->setParameter('sort', 'total_remaining:desc');
         $this->api->call($request, function ($call) {
             $call->response->isOK();
         });
@@ -272,7 +272,7 @@ class ManagementControllerTest extends HLAPITestCase
                 ->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertEquals(150, $content['total_spent']);
-                    $this->assertEquals(850, $content['amount_remaining']);
+                    $this->assertEquals(850, $content['total_remaining']);
                 });
         });
     }
