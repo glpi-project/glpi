@@ -151,6 +151,7 @@ final class StatusControllerTest extends GLPITestCase
     {
         global $DB;
 
+        // Prime the DB status cache: the check reconnects $DB, which would drop the transaction
         StatusChecker::getDBStatus();
         $DB->beginTransaction();
 
