@@ -610,7 +610,7 @@ class Central extends CommonGLPI
                     );
             }
 
-            if ($CFG_GLPI['cas_host'] !== '' && ($CFG_GLPI['cas_certificate_filepath'] ?? '')) {
+            if ($CFG_GLPI['cas_host'] !== '' && ($CFG_GLPI['cas_certificate_filepath'] ?? '') === '') {
                 $messages['warnings'][] = __s('No certificate has been configured in the CAS authentication settings. As a result, the authentication flow is not protected against man-in-the-middle attacks, which could allow a malicious actor to bypass authentication with the CAS server.')
                     . ' '
                     . sprintf(
