@@ -559,7 +559,7 @@ class Budget extends CommonDropdown
             }
 
             $item = getItemForItemtype($itemtype);
-            if (!$item instanceof CommonDBTM || !$item::canView()) {
+            if (!$item instanceof CommonDBTM) {
                 continue;
             }
 
