@@ -40,10 +40,13 @@ use AutoUpdateSystem;
 use Budget;
 use BudgetType;
 use BusinessCriticity;
+use CartridgeItem;
+use Change;
 use Cluster;
 use ClusterType;
 use CommonDBTM;
 use CommonITILObject;
+use ConsumableItem;
 use Contact;
 use ContactType;
 use Contract;
@@ -71,21 +74,29 @@ use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Group_Item;
+use Infocom;
 use Item_Line;
 use Line;
 use LineOperator;
 use LineType;
 use Location;
 use Manufacturer;
+use Problem;
+use Project;
+use Software;
 use SoftwareLicense;
 use SoftwareLicenseType;
 use State;
 use Supplier;
 use SupplierType;
+use Ticket;
 use User;
 
 #[Route(path: '/Management', tags: ['Management'])]
@@ -197,6 +208,97 @@ final class ManagementController extends AbstractController
         ];
     }
 
+    /**
+     * Get the SQL expression (as a parenthesized string) used to compute the total amount spent for a budget.
+     * Expects the budget table to be aliased as `_`.
+     * Intentionally does not consider read permissions of related itemtypes, as it could make the computation inconsistent with the budget's value, even if the web UI currently does show incorrect values in such cases.
+     * Similarly, entity restrictions on the related items are not considered either; only the budget's entity restriction is considered, as it is the only one that matters for the budget's value.
+     * @return string
+     */
+    private static function getBudgetTotalSpentSQL(): string
+    {
+        global $CFG_GLPI, $DB;
+
+        $excluded_infocom_types = [ConsumableItem::class, CartridgeItem::class, Software::class];
+        $cost_itemtypes = [Contract::class, Ticket::class, Problem::class, Change::class, Project::class];
+        $budget_id = new QueryExpression($DB::quoteName('_.id'));
+        $zero = new QueryExpression('0');
+
+        $terms = [];
+
+        // The eligible itemtypes come from the static configuration rather so the expression doesn't depend on
+        // data that could change between requests/queries and is identical for every property using it.
+        /** @var class-string[] $infocom_itemtypes */
+        $infocom_itemtypes = array_diff($CFG_GLPI['infocom_types'], $excluded_infocom_types, $cost_itemtypes);
+        foreach ($infocom_itemtypes as $itemtype) {
+            if (!is_a($itemtype, CommonDBTM::class, true)) {
+                continue;
+            }
+            $item = getItemForItemtype($itemtype);
+            if (!$item) {
+                continue;
+            }
+            $item_table = $itemtype::getTable();
+            $criteria = [
+                'SELECT' => [QueryFunction::coalesce([QueryFunction::sum('glpi_infocoms.value'), $zero])],
+                'FROM' => Infocom::getTable(),
+                'INNER JOIN' => [
+                    $item_table => [
+                        'ON' => [
+                            $item_table => 'id',
+                            Infocom::getTable() => 'items_id',
+                        ],
+                    ],
+                ],
+                'WHERE' => [
+                    'glpi_infocoms.budgets_id' => $budget_id,
+                    'glpi_infocoms.itemtype' => $itemtype,
+                ],
+            ];
+            if ($item->maybeTemplate()) {
+                $criteria['WHERE'][$item_table . '.is_template'] = 0;
+            }
+            $terms[] = new QuerySubQuery($criteria);
+        }
+
+        // Costs: only count those linked to an existing, non-template item
+        foreach ($cost_itemtypes as $itemtype) {
+            /** @var class-string<CommonDBTM> $itemtype */
+            $cost_class = $itemtype . 'Cost';
+            $cost_table = $cost_class::getTable();
+            $item_table = $itemtype::getTable();
+            $sum = match ($itemtype) {
+                Ticket::class, Problem::class, Change::class => new QueryExpression(
+                    '(`' . $cost_table . '`.`actiontime` * `' . $cost_table . '`.`cost_time` / ' . HOUR_TIMESTAMP
+                    . ' + `' . $cost_table . '`.`cost_fixed` + `' . $cost_table . '`.`cost_material`)'
+                ),
+                default => $cost_table . '.cost',
+            };
+            $criteria = [
+                'SELECT' => [QueryFunction::coalesce([QueryFunction::sum($sum), $zero])],
+                'FROM' => $cost_table,
+                'INNER JOIN' => [
+                    $item_table => [
+                        'ON' => [
+                            $item_table => 'id',
+                            $cost_table => $itemtype::getForeignKeyField(),
+                        ],
+                    ],
+                ],
+                'WHERE' => [
+                    $cost_table . '.budgets_id' => $budget_id,
+                ],
+            ];
+            $item = getItemForItemtype($itemtype);
+            if ($item->maybeTemplate()) {
+                $criteria['WHERE'][$item_table . '.is_template'] = 0;
+            }
+            $terms[] = new QuerySubQuery($criteria);
+        }
+
+        return '(' . implode(' + ', $terms) . ')';
+    }
+
     protected static function getRawKnownSchemas(): array
     {
         global $CFG_GLPI;
@@ -292,6 +394,18 @@ final class ManagementController extends AbstractController
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                     'value' => [
                         'type' => Doc\Schema::TYPE_NUMBER,
+                    ],
+                    'total_spent' => [
+                        'x-version-introduced' => '2.4.0',
+                        'type' => Doc\Schema::TYPE_NUMBER,
+                        'readOnly' => true,
+                        'computation' => new QueryExpression(self::getBudgetTotalSpentSQL()),
+                    ],
+                    'total_remaining' => [
+                        'x-version-introduced' => '2.4.0',
+                        'type' => Doc\Schema::TYPE_NUMBER,
+                        'readOnly' => true,
+                        'computation' => new QueryExpression('(`_`.`value` - ' . self::getBudgetTotalSpentSQL() . ')'),
                     ],
                     'date_begin' => [
                         'type' => Doc\Schema::TYPE_STRING,
