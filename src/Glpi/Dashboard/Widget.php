@@ -107,7 +107,7 @@ class Widget
             $options['feature']['myExportCsv'] = [
                 'show'      => true,
                 'title'     => __('Export to CSV'),
-                'icon'      => 'path://M11.5,2v56H51V14.8L38.4,2H11.5z M38.4,2.2v12.7H51 M17.5,26h28 M17.5,36h28 M17.5,46h28 M31.5,26v20',
+                'icon'      => 'path://M14,3v4a1,1,0,0,0,1,1h4 M17,21h-10a2,2,0,0,1,-2,-2v-14a2,2,0,0,1,2,-2h7l5,5v11a2,2,0,0,1,-2,2z M12,17v-6 M9.5,14.5l2.5,2.5l2.5,-2.5',
                 'emphasis'  => [
                     'iconStyle' => [
                         'color' => $fg_color,
