@@ -142,7 +142,8 @@ final class OpenAPIGenerator
                     $value['readOnly'] = true;
                 }
             }
-            if (is_array($value)) {
+            $is_value_payload = !$is_properties_map && in_array($key, ['default', 'example'], true);
+            if (is_array($value) && !$is_value_payload) {
                 // Clean the value
                 /** @phpstan-var T $value */
                 $schema[$key] = $this->cleanVendorExtensions($value, $key, $schema, $in_request_body || $key === 'requestBody', $key === 'properties' && !$is_properties_map);
