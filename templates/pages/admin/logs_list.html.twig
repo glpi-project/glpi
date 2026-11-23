@@ -30,8 +30,6 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/form/fields_macros.html.twig' as fields %}
-
 <div class="container px-4">
     <div class="row mb-2">
         <div class="col-12 col-xxl-6">
@@ -85,8 +83,8 @@
                                class="btn {{ active_order ? "btn-outline-secondary" : "btn-ghost-secondary" }} btn-sm me-1"
                                title="{{ sort_control['label'] }}"
                                data-bs-toggle="tooltip" data-bs-placement="bottom">
-                                <i class="ti ti-sort-{{ curr_sort == 'asc' ? "ascending" : "descending" }}"></i>
-                                <i class="{{ sort_control['icon'] }}"></i>
+                                <i class="ti ti-sort-{{ curr_sort == 'asc' ? "ascending" : "descending" }}" aria-hidden="true"></i>
+                                <i class="{{ sort_control['icon'] }}" aria-hidden="true"></i>
                             </a>
                         {% endfor %}
                     </div>
@@ -112,7 +110,6 @@
                                 {% if can_clear or can_delete %}
                                     <form action="{{ path('/front/logviewer.php') }}" method="post" class="d-inline">
                                         <input type="hidden" name="filepath" value="{{ log['filepath'] }}">
-                                        {{ fields.csrfField() }}
                                         <div>
                                             <button class="btn btn-sm ms-1 btn-ghost-secondary"
                                             data-bs-toggle="dropdown"

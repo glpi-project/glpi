@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Safe\DateTime;
 
@@ -49,12 +50,12 @@ use function Safe\strtotime;
 class Infocom extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype        = 'itemtype';
-    public static $items_id        = 'items_id';
-    public $dohistory              = true;
-    public $auto_message_on_action = false; // Link in message can't work'
-    public static $logs_for_parent = false;
-    public static $rightname              = 'infocom';
+    public static string $itemtype        = 'itemtype';
+    public static string $items_id        = 'items_id';
+    public bool $dohistory              = true;
+    public bool $auto_message_on_action = false; // Link in message can't work'
+    public static bool $logs_for_parent = false;
+    public static string $rightname              = 'infocom';
 
     //Option to automatically fill dates
     public const ON_STATUS_CHANGE   = 'STATUS';
@@ -86,7 +87,7 @@ class Infocom extends CommonDBChild
 
         // We also allow direct items to check
         if ($item instanceof CommonGLPI) {
-            $item = $item->getType();
+            $item = $item::class;
         }
 
         if (in_array($item, $CFG_GLPI['infocom_types'])) {
@@ -152,24 +153,24 @@ class Infocom extends CommonDBChild
             && ($item instanceof CommonDBTM)
         ) {
             $nb = 0;
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case 'Supplier':
                     /** @var Supplier $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForSupplier($item);
                     }
-                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
+                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::class);
 
                 default:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             'glpi_infocoms',
-                            ['itemtype' => $item->getType(),
+                            ['itemtype' => $item::class,
                                 'items_id' => $item->getID(),
                             ]
                         );
                     }
-                    return self::createTabEntry(__('Management'), $nb, $item::getType());
+                    return self::createTabEntry(__('Management'), $nb, $item::class);
             }
         }
         return '';
@@ -204,7 +205,7 @@ class Infocom extends CommonDBChild
         return countElementsInTable(
             'glpi_infocoms',
             [
-                'suppliers_id' => $item->getField('id'),
+                'suppliers_id' => $item->getID(),
                 'NOT' => ['itemtype' => ['ConsumableItem', 'CartridgeItem', 'Software']],
             ] + getEntitiesRestrictCriteria('glpi_infocoms', '', '')
         );
@@ -386,12 +387,7 @@ class Infocom extends CommonDBChild
 
         switch ($itemtype) {
             case 'SoftwareLicense':
-                $criteria['INNER JOIN']['glpi_softwares'] = [
-                    'ON'  => [
-                        'glpi_softwarelicenses' => 'softwares_id',
-                        'glpi_softwares'        => 'id',
-                    ],
-                ];
+                // Do not join the software, a license may not be linked to any
                 $criteria['WHERE'][] =  getEntitiesRestrictCriteria("glpi_softwarelicenses");
                 break;
             default:
@@ -592,7 +588,7 @@ class Infocom extends CommonDBChild
               && ($this->oldvalues['warranty_duration'] < $this->fields['warranty_duration']))
         ) {
             $alert = new Alert();
-            $alert->clear($this->getType(), $this->fields['id'], Alert::END);
+            $alert->clear(static::class, $this->fields['id'], Alert::END);
         }
         // Check budgets link validity
         if (
@@ -626,7 +622,7 @@ class Infocom extends CommonDBChild
     {
 
         $class = new Alert();
-        $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+        $class->cleanDBonItemDelete(static::class, $this->fields['id']);
     }
 
 
@@ -671,7 +667,7 @@ class Infocom extends CommonDBChild
                             'glpi_alerts'  => 'items_id',
                             $table         => 'id', [
                                 'AND' => [
-                                    'glpi_alerts.itemtype'  => self::getType(),
+                                    'glpi_alerts.itemtype'  => static::class,
                                     'glpi_alerts.type'      => Alert::END,
                                 ],
                             ],
@@ -687,7 +683,7 @@ class Infocom extends CommonDBChild
                     'NOT'                      => ["$table.warranty_date" => null],
                     new QueryExpression(QueryFunction::dateDiff(
                         expression1: QueryFunction::dateAdd(
-                            date: 'glpi_infocoms.warranty_date',
+                            date: new QueryIdentifier('glpi_infocoms.warranty_date'),
                             interval: new QueryExpression($DB::quoteName('glpi_infocoms.warranty_duration')),
                             interval_unit: 'MONTH'
                         ),
@@ -1390,18 +1386,18 @@ HTML;
             return;
         }
 
-        $dev_ID   = $item->getField('id');
+        $dev_ID   = $item->getID();
         $ic       = new self();
 
-        if (in_array($item->getType(), self::getExcludedTypes())) {
+        if (in_array($item::class, self::getExcludedTypes())) {
             echo "<div class='firstbloc center'>"
                 . __s('For this type of item, the financial and administrative information are only a model for the items which you should add.')
                 . "</div>";
         }
 
-        $ic->getFromDBforDevice($item->getType(), $dev_ID);
+        $ic->getFromDBforDevice($item::class, $dev_ID);
         $can_input = [
-            'itemtype'    => $item->getType(),
+            'itemtype'    => $item::class,
             'items_id'    => $dev_ID,
             'entities_id' => $item->getEntityID(),
         ];
@@ -2152,7 +2148,7 @@ HTML;
             Infocom::canApplyOn($itemtype)
             && static::canCreate()
         ) {
-            $actions[$action_name] = "<i class='" . htmlescape(self::getIcon()) . "'></i>"
+            $actions[$action_name] = "<i class='" . htmlescape(self::getIcon()) . "' aria-hidden='true'></i>"
                                   . __s('Enable the financial and administrative information');
         }
     }
@@ -2168,7 +2164,7 @@ HTML;
             case 'activate':
                 $ic = new self();
                 if ($ic->canCreate()) {
-                    $itemtype = $item->getType();
+                    $itemtype = $item::class;
                     foreach ($ids as $key) {
                         if (!$ic->getFromDBforDevice($itemtype, $key)) {
                             $input = ['itemtype' => $itemtype,
@@ -2176,18 +2172,18 @@ HTML;
                             ];
                             if ($ic->can(-1, CREATE, $input)) {
                                 if ($ic->add($input)) {
-                                    $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                                    $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                                 } else {
-                                    $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                    $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                     $ma->addMessage($ic->getErrorMessage(ERROR_ON_ACTION));
                                 }
                             } else {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
                                 $ma->addMessage($ic->getErrorMessage(ERROR_RIGHT));
                             }
                         } else {
                             // Infocom already exists for this item, nothing to do.
-                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                         }
                     }
                 }

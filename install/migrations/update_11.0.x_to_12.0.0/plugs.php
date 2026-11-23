@@ -1,0 +1,208 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+/**
+ * @var Migration $migration
+ * @var DBmysql $DB
+ */
+$default_charset = DBConnection::getDefaultCharset();
+$default_collation = DBConnection::getDefaultCollation();
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
+if (!$DB->tableExists('glpi_plugtypes')) {
+    $query = <<<SQL
+        CREATE TABLE `glpi_plugtypes` (
+            `id` int unsigned NOT NULL AUTO_INCREMENT,
+            `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+            `is_recursive` tinyint NOT NULL DEFAULT '0',
+            `name` varchar(255) DEFAULT NULL,
+            `comment` text,
+            `date_creation` timestamp NULL DEFAULT NULL,
+            `date_mod` timestamp NULL DEFAULT NULL,
+            PRIMARY KEY (`id`),
+            KEY `entities_id` (`entities_id`),
+            KEY `is_recursive` (`is_recursive`),
+            KEY `name` (`name`),
+            KEY `date_creation` (`date_creation`),
+            KEY `date_mod` (`date_mod`)
+            ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
+SQL;
+    $DB->doQuery($query);
+}
+
+$migration->addField(
+    'glpi_plugs',
+    'custom_name',
+    'string'
+);
+
+$migration->addField(
+    'glpi_plugs',
+    'number',
+    "int NOT NULL DEFAULT '0'",
+    ['after' => 'custom_name']
+);
+
+$migration->addField(
+    'glpi_plugs',
+    'plugtypes_id',
+    'fkey',
+    ['after' => 'number']
+);
+
+$migration->addField(
+    'glpi_plugs',
+    'itemtype_main',
+    'string'
+);
+
+$migration->addField(
+    'glpi_plugs',
+    'items_id_main',
+    'fkey'
+);
+
+$migration->addField(
+    'glpi_plugs',
+    'itemtype_asset',
+    'string',
+    ['value' => '']
+);
+
+$migration->addField(
+    'glpi_plugs',
+    'items_id_asset',
+    'fkey'
+);
+
+$migration->addField(
+    'glpi_plugs',
+    'autoupdatesystems_id',
+    "int {$default_key_sign} NOT NULL DEFAULT '0'",
+    ['after' => 'itemtype_asset']
+);
+
+$migration->addField(
+    'glpi_plugs',
+    'is_dynamic',
+    'bool',
+    ['after' => 'autoupdatesystems_id']
+);
+
+
+$migration->addField(
+    'glpi_plugs',
+    'entities_id',
+    'fkey'
+);
+
+$migration->addField(
+    'glpi_plugs',
+    'is_recursive',
+    'bool'
+);
+
+$migration->addField(
+    'glpi_plugs',
+    'is_deleted',
+    'bool'
+);
+
+$migration->addKey('glpi_plugs', ['itemtype_asset', 'items_id_asset'], 'asset_item');
+$migration->addKey('glpi_plugs', ['itemtype_main', 'items_id_main'], 'main_item');
+$migration->addKey('glpi_plugs', 'autoupdatesystems_id');
+$migration->addKey('glpi_plugs', 'is_dynamic');
+$migration->addKey('glpi_plugs', 'plugtypes_id');
+$migration->addKey('glpi_plugs', 'entities_id');
+$migration->addKey('glpi_plugs', 'is_deleted');
+$migration->addKey('glpi_plugs', 'is_recursive');
+
+$migration->migrationOneTable('glpi_plugs');
+
+// migrate existing plugs linked by glpi_items_plugs to new structure
+if ($DB->tableExists('glpi_items_plugs')) {
+    $criteria = [
+        'FROM' => 'glpi_items_plugs',
+    ];
+    $iterator = $DB->request($criteria);
+
+    foreach ($iterator as $plug_item_data) {
+        // try to load plug from DB
+        $plug_data = $DB->request([
+            'SELECT' => ["id", "name", "comment"],
+            'FROM'   => 'glpi_plugs',
+            'WHERE'  => ['id' => $plug_item_data['plugs_id']],
+        ])->current();
+
+        // fetch entity context from the parent item (glpi_items_plugs has no entity columns)
+        $item_table = getTableForItemType($plug_item_data['itemtype']);
+        $entities_id = 0;
+        $is_recursive = 0;
+        if ($DB->tableExists($item_table)) {
+            $item_entity = $DB->request([
+                'SELECT' => ['entities_id', 'is_recursive'],
+                'FROM'   => $item_table,
+                'WHERE'  => ['id' => $plug_item_data['items_id']],
+            ])->current();
+            $entities_id  = $item_entity['entities_id'] ?? 0;
+            $is_recursive = $item_entity['is_recursive'] ?? 0;
+        }
+
+        // handle plug migration if exist
+        if ($plug_data !== null) {
+            for ($i = 1; $i <= $plug_item_data['number_plugs']; $i++) {
+
+                $plug_name = !empty($plug_data['name']) ? $plug_data['name'] . ' - ' . $i : _n('Plug', 'Plugs', 0) . ' ' . $i;
+                // create dedicated plug
+                $migration->addPostQuery(
+                    $DB->buildInsert('glpi_plugs', [
+                        'name'              => $plug_name,
+                        'number'            => $i,
+                        'itemtype_main'     => $plug_item_data['itemtype'],
+                        'items_id_main'     => $plug_item_data['items_id'],
+                        'entities_id'       => $entities_id,
+                        'is_recursive'      => $is_recursive,
+                        'comment'           => $plug_data['comment'] ?? '',
+                    ])
+                );
+            }
+
+            // remove old plug
+            $migration->addPostQuery(
+                $DB->buildDelete("glpi_plugs", ['id' => $plug_item_data['plugs_id']])
+            );
+        }
+    }
+    $migration->dropTable('glpi_items_plugs');
+}

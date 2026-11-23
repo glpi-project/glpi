@@ -34,6 +34,7 @@
 
 namespace Glpi\Tools\Command;
 
+use Override;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -103,7 +104,6 @@ abstract class AbstractCommand extends Command
 
     /**
      * Declare whether the command supports --plugin.
-     * @return bool
      */
     protected function isPluginOptionAvailable(): bool
     {
@@ -112,7 +112,6 @@ abstract class AbstractCommand extends Command
 
     /**
      * Declare the command supporting plugin and require it to be set.
-     * @return bool
      */
     protected function isRequiringPluginOption(): bool
     {

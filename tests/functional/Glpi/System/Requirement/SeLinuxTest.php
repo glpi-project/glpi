@@ -36,9 +36,11 @@ namespace tests\units\Glpi\System\Requirement;
 
 use Glpi\System\Requirement\SeLinux;
 use Glpi\Tests\GLPITestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 class SeLinuxTest extends GLPITestCase
 {
+    #[AllowMockObjectsWithoutExpectations]
     public function testCheckOutOfContext()
     {
         $instance = $this->getMockBuilder(SeLinux::class)
@@ -58,6 +60,7 @@ class SeLinuxTest extends GLPITestCase
         $this->assertTrue($instance->isOutOfContext());
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testCheckWithEnforcesAndActiveBooleans()
     {
         $instance = $this->getMockBuilder(SeLinux::class)
@@ -86,6 +89,7 @@ class SeLinuxTest extends GLPITestCase
         );
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testCheckWithEnforcesAndInactiveNetworkConnect()
     {
         $instance = $this->getMockBuilder(SeLinux::class)
@@ -118,6 +122,7 @@ class SeLinuxTest extends GLPITestCase
         );
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testCheckWithEnforcesAndInactiveNetworkConnectDB()
     {
         $instance = $this->getMockBuilder(SeLinux::class)
@@ -150,6 +155,7 @@ class SeLinuxTest extends GLPITestCase
         );
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testCheckWithEnforcesAndInactiveSendmail()
     {
         $instance = $this->getMockBuilder(SeLinux::class)
@@ -182,6 +188,7 @@ class SeLinuxTest extends GLPITestCase
         );
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testCheckWithEnforcesAndInactiveBooleans()
     {
         $instance = $this->getMockBuilder(SeLinux::class)
@@ -214,6 +221,7 @@ class SeLinuxTest extends GLPITestCase
         );
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testCheckWithPermissiveSeLinux()
     {
         $instance = $this->getMockBuilder(SeLinux::class)
@@ -242,6 +250,7 @@ class SeLinuxTest extends GLPITestCase
         );
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testCheckWithDisabledSeLinux()
     {
         $instance = $this->getMockBuilder(SeLinux::class)

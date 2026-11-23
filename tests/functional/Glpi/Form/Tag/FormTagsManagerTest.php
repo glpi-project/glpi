@@ -34,8 +34,12 @@
 
 namespace tests\units\Glpi\Form\Tag;
 
+use Computer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Form;
+use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeItem;
+use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\CommentDescriptionTagProvider;
@@ -43,12 +47,18 @@ use Glpi\Form\Tag\CommentTitleTagProvider;
 use Glpi\Form\Tag\FormTagProvider;
 use Glpi\Form\Tag\FormTagsManager;
 use Glpi\Form\Tag\FullFormTagProvider;
+use Glpi\Form\Tag\ItemPropertyTagProvider;
 use Glpi\Form\Tag\QuestionTagProvider;
 use Glpi\Form\Tag\SectionTagProvider;
 use Glpi\Form\Tag\Tag;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Glpi\Toolbox\MapperInterface;
+use LogicException;
+
+use function Safe\json_encode;
+use function Safe\preg_match;
 
 final class FormTagsManagerTest extends DbTestCase
 {
@@ -289,6 +299,63 @@ final class FormTagsManagerTest extends DbTestCase
         // Assert: the tag label was updated
         $this->assertStringNotContainsString("My form name", $new_html);
         $this->assertStringContainsString("My new form name", $new_html);
+    }
+
+    public function testReplaceIdsInTagsRemapsCompositeTagValue(): void
+    {
+        // Arrange: a form with an item question, and the tag referencing one
+        // of its properties.
+        $form = $this->createForm(
+            (new FormBuilder())->addQuestion(
+                name: 'Asset',
+                type: QuestionTypeItem::class,
+                extra_data: json_encode(
+                    (new QuestionTypeItemExtraDataConfig(itemtype: Computer::class))->jsonSerialize()
+                ),
+            )
+        );
+        $question_id = $this->getQuestionId($form, 'Asset');
+
+        $tags = (new ItemPropertyTagProvider())->getTags($form);
+        $this->assertNotEmpty($tags);
+        $tag = $tags[0];
+
+        [$original_question_id, $option_id] = explode(ItemPropertyTagProvider::SEPARATOR, $this->extractTagValue($tag->html), 2);
+        $this->assertEquals($question_id, (int) $original_question_id);
+
+        // Act: replace ids using a mapper that maps the question to a new id.
+        $new_question_id = $question_id + 1000;
+        $mapper = new class ($question_id, $new_question_id) implements MapperInterface {
+            public function __construct(
+                private int $old_id,
+                private int $new_id,
+            ) {}
+
+            public function addMappedItem(string $itemtype, string|int $key, int $id): void
+            {
+                // Not needed for this test.
+            }
+
+            public function getItemId(string $itemtype, string|int $key): int
+            {
+                if ($itemtype === Question::class && (int) $key === $this->old_id) {
+                    return $this->new_id;
+                }
+                throw new LogicException("Unexpected mapper lookup: $itemtype::$key");
+            }
+        };
+        $new_html = (new FormTagsManager())->replaceIdsInTags($tag->html, $mapper);
+
+        // Assert: the question id was remapped, the option id was preserved.
+        [$new_value_question_id, $new_value_option_id] = explode(':', $this->extractTagValue($new_html), 2);
+        $this->assertEquals($new_question_id, (int) $new_value_question_id);
+        $this->assertEquals($option_id, $new_value_option_id);
+    }
+
+    private function extractTagValue(string $html): string
+    {
+        preg_match('/data-form-tag-value="([^"]+)"/', $html, $matches);
+        return $matches[1] ?? '';
     }
 
     private function createAndGetFormWithFirstAndLastNameQuestions(): Form

@@ -40,6 +40,7 @@ use Glpi\Form\Question;
 use Glpi\Form\Section;
 use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\Helpdesk\Tile\GlpiPageTile;
+use Glpi\Inventory\Conf;
 use Glpi\Socket;
 
 function loadDataset()
@@ -49,7 +50,7 @@ function loadDataset()
     // Unit test data definition
     $data = [
         // bump this version to force reload of the full dataset, when content change
-        '_version' => '4.14',
+        '_version' => '4.15',
 
         // Type => array of entries
         'Entity' => [
@@ -101,6 +102,12 @@ function loadDataset()
                 'name'        => '_test_pc_with_encoded_comment',
                 'entities_id' => '_test_root_entity',
                 'comment'     => '&#60;&#62;', // "&#60;" => "<", "&#62;" => ">"
+            ],
+        ], 'PDU' => [
+            [
+                'name'        => '_test_pdu01',
+                'entities_id' => '_test_root_entity',
+                'comment'     => 'Comment for pdu _test_pc01',
             ],
         ], 'ComputerModel' => [
             [
@@ -960,6 +967,8 @@ function loadDataset()
         Search::$search = [];
         Config::setConfigurationValues('phpunit', ['dataset' => $data['_version']]);
     }
+
+    Config::setConfigurationValues('inventory', ['auth_required' => Conf::NO_AUTH]);
     $DB->commit();
 
     $_SESSION = $session_bak; // Unset force session variables

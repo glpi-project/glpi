@@ -36,14 +36,18 @@ namespace tests\units\Glpi\Cache;
 
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\SimpleCache;
+use Glpi\Kernel\Kernel;
 use Glpi\Tests\GLPITestCase;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use Psr\SimpleCache\CacheInterface;
+use ReflectionObject;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
+
+use function Safe\touch;
 
 class CacheManagerTest extends GLPITestCase
 {
@@ -527,5 +531,31 @@ class CacheManagerTest extends GLPITestCase
 
         $this->assertTrue(file_exists($config_file));
         $this->assertEquals($expected_config, include($config_file));
+    }
+
+    public function testResetAllCachesDoesNotWarmupSymfonyContainer(): void
+    {
+        /** @var Kernel $kernel */
+        global $kernel;
+
+        $container_reflection = new ReflectionObject($kernel->getContainer());
+
+        // The container loader file is located at the root of the build dir, it is named after the container class.
+        $container_loader_file = $kernel->getBuildDir() . '/' . $container_reflection->getShortName() . '.php';
+        $this->assertFileExists($container_loader_file);
+
+        // Ensure the container class file is older than the request, to not match the Symfony "fresh cache" case.
+        $container_class_file = $container_reflection->getFileName();
+        $this->assertIsString($container_class_file);
+        touch($container_class_file, $_SERVER['REQUEST_TIME'] - 1);
+
+        $this->assertTrue((new CacheManager())->resetAllCaches());
+
+        // The Symfony `cache:clear` command dispatches console events that are traced by the debug event dispatcher.
+        $this->hasPhpLogRecordThatContains('Notified event "{event}" to listener "{listener}".', LogLevel::DEBUG);
+
+        // The container must not be compiled in the current process, as plugins autoloaders may be registered.
+        // It will be compiled during the next kernel boot.
+        $this->assertFileDoesNotExist($container_loader_file);
     }
 }

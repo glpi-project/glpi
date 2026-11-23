@@ -40,9 +40,9 @@ use function Safe\preg_match;
 
 class Printer_CartridgeInfo extends CommonDBChild
 {
-    public static $itemtype = Printer::class;
-    public static $items_id        = 'printers_id';
-    public $dohistory              = true;
+    public static string $itemtype = Printer::class;
+    public static string $items_id        = 'printers_id';
+    public bool $dohistory              = true;
 
     public static function getTypeName($nb = 0)
     {
@@ -153,7 +153,6 @@ HTML;
                 ],
                 'entries' => $entries,
                 'total_number' => count($entries),
-                'filtered_number' => count($entries),
                 'showmassiveactions' => false,
             ]);
         }
@@ -167,7 +166,7 @@ HTML;
         $tab = [];
 
         $tab[] = [
-            'id' => strtolower(self::getType()),
+            'id' => strtolower(static::class),
             'name' => self::getTypeName(1),
         ];
 

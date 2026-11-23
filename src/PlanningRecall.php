@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 use function Safe\strtotime;
 
@@ -44,8 +45,8 @@ use function Safe\strtotime;
 class PlanningRecall extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype        = 'itemtype';
-    public static $items_id        = 'items_id';
+    public static string $itemtype        = 'itemtype';
+    public static string $items_id        = 'items_id';
 
     public static function getTypeName($nb = 0)
     {
@@ -59,7 +60,42 @@ class PlanningRecall extends CommonDBChild
 
     public function canCreateItem(): bool
     {
+        if ($this->fields['itemtype'] === ProjectTask::class) {
+            return in_array((int) $this->fields['users_id'], ProjectTaskTeam::getUserInTeamFor($this->fields['items_id']));
+        }
         return (int) $this->fields['users_id'] === Session::getLoginUserID();
+    }
+
+    public function canUpdateItem(): bool
+    {
+        if ($this->fields['itemtype'] === ProjectTask::class) {
+            if ((int) $this->fields['users_id'] === Session::getLoginUserID()) {
+                // The owner can update their own recall only while still in the task team.
+                return in_array((int) $this->fields['users_id'], ProjectTaskTeam::getUserInTeamFor($this->fields['items_id']));
+            }
+            // Non-owners need project-level update rights or be in the task team
+            return Session::haveRight(Project::$rightname, UPDATE)
+                && in_array(Session::getLoginUserID(), ProjectTaskTeam::getUserInTeamFor($this->fields['items_id']));
+        }
+        return parent::canUpdateItem();
+    }
+
+    public function canPurgeItem(): bool
+    {
+        if ($this->fields['itemtype'] === ProjectTask::class) {
+            $task = new ProjectTask();
+            if (!$task->getFromDB((int) $this->fields['items_id'])) {
+                return false;
+            }
+            // The owner can always purge their own recall (even after leaving the team, for cleanup).
+            if ((int) $this->fields['users_id'] === Session::getLoginUserID()) {
+                return true;
+            }
+            // Non-owners need project-level update rights or be in the task team
+            return Session::haveRight(Project::$rightname, UPDATE)
+                && in_array(Session::getLoginUserID(), ProjectTaskTeam::getUserInTeamFor($this->fields['items_id']));
+        }
+        return parent::canPurgeItem();
     }
 
     public function cleanDBonPurge()
@@ -88,7 +124,7 @@ class PlanningRecall extends CommonDBChild
                 if ($task->isDisabled() !== 1) {
                     if (
                         Session::haveRightsOr(
-                            "planning",
+                            Planning::$rightname,
                             [Planning::READMY, Planning::READGROUP, Planning::READALL]
                         )
                     ) {
@@ -141,7 +177,7 @@ class PlanningRecall extends CommonDBChild
             !isset($data['itemtype'])
             || !isset($data['items_id'])
             || !isset($data['users_id'])
-            || !isset($data['before_time'])
+            || !array_key_exists('before_time', $data)
             || !isset($data['field'])
         ) {
             return false;
@@ -168,7 +204,7 @@ class PlanningRecall extends CommonDBChild
                             "Y-m-d H:i:s",
                             strtotime($item->fields[$data['field']]) - $data['before_time']
                         );
-                        if ($data['before_time'] >= 0) {
+                        if ($data['before_time'] !== null && $data['before_time'] >= 0) {
                             if ($pr->can($pr->fields['id'], UPDATE)) {
                                 $pr->update(['id'          => $pr->fields['id'],
                                     'before_time' => $data['before_time'],
@@ -190,6 +226,7 @@ class PlanningRecall extends CommonDBChild
                     $item->getFromDB($data['items_id']);
                     if (
                         $item->getFromDB($data['items_id'])
+                        && $item->can($data['items_id'], READ)
                         && !empty($item->fields[$data['field']])
                     ) {
                         $data['when'] = date(
@@ -197,7 +234,7 @@ class PlanningRecall extends CommonDBChild
                             strtotime($item->fields[$data['field']])
                             - $data['before_time']
                         );
-                        if ($data['before_time'] >= 0) {
+                        if ($data['before_time'] !== null && $data['before_time'] >= 0) {
                             $pr->add($data);
                         }
                     }
@@ -228,7 +265,7 @@ class PlanningRecall extends CommonDBChild
             [
                 'when'   => QueryFunction::dateSub(
                     date: new QueryExpression($DB::quoteValue($begin)),
-                    interval: new QueryExpression($DB::quoteName('before_time')),
+                    interval: new QueryIdentifier('before_time'),
                     interval_unit: 'SECOND'
                 ),
             ],
@@ -263,14 +300,14 @@ class PlanningRecall extends CommonDBChild
      *
      * Mandatory options : itemtype, items_id
      *
-     * @param array{itemtype?: string, items_id?: int, users_id?: int, value?: mixed, field?: string, rand?: int} $options array of possible options:
+     * @param array{itemtype?: string, items_id?: int, users_id?: int, value?: mixed, field?: string, rand?: int, display?: bool} $options array of possible options:
      *    - itemtype : string itemtype
      *    - items_id : integer id of the item
      *    - users_id : integer id of the user (if not set used login user)
      *    - value    : integer preselected value for before_time
      *    - field    : string  field used as time mark (default begin)
      *
-     * @return void|false print out an HTML select box or return false if mandatory fields are not ok
+     * @return string|false|null print out an HTML select box, return the HTML string if display is false, or return false if mandatory fields are not ok
      **/
     public static function dropdown($options = [])
     {
@@ -281,6 +318,7 @@ class PlanningRecall extends CommonDBChild
         $p['value']    = Entity::CONFIG_NEVER;
         $p['field']    = 'begin';
         $p['rand']     = mt_rand();
+        $p['display']  = true;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -323,17 +361,24 @@ class PlanningRecall extends CommonDBChild
 
         ksort($possible_values);
 
-        Dropdown::showFromArray('_planningrecall[before_time]', $possible_values, [
-            'value' => $p['value'],
-            'rand'  => $p['rand'],
+        $output = Dropdown::showFromArray('_planningrecall[before_time]', $possible_values, [
+            'value'   => $p['value'],
+            'rand'    => $p['rand'],
+            'display' => false,
         ]);
         // language=Twig
-        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+        $output .= TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             <input type="hidden" name="_planningrecall[itemtype]" value="{{ itemtype }}">
             <input type="hidden" name="_planningrecall[items_id]" value="{{ items_id }}">
             <input type="hidden" name="_planningrecall[users_id]" value="{{ users_id }}">
             <input type="hidden" name="_planningrecall[field]" value="{{ field }}">
 TWIG, $p);
+
+        if ($p['display']) {
+            echo $output;
+            return null;
+        }
+        return $output;
     }
 
     /**

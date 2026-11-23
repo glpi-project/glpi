@@ -34,10 +34,14 @@
 
 namespace tests\units;
 
+use Glpi\DBAL\Parts\Select;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Debug\Profile;
+use Glpi\Exception\Database\StatementException;
 use Glpi\Tests\GLPITestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 
@@ -78,6 +82,43 @@ class DBTest extends GLPITestCase
             'Table fakeTable does not exist',
             LogLevel::WARNING
         );
+    }
+
+    public function testWarningsRaisedWhileReadingStatementResult(): void
+    {
+        global $DB;
+
+        // Comparing a numeric column to an empty string produces a warning while the rows are read
+        iterator_to_array($DB->request([
+            'FROM'  => 'glpi_crontasks',
+            'WHERE' => ['frequency' => ''],
+        ]));
+        $this->hasPhpLogRecordThatContains(
+            'Truncated incorrect', // value type differs between MySQL and MariaDB
+            LogLevel::WARNING
+        );
+    }
+
+    public function testWarningsRaisedWhileReadingStatementResultInDebugProfile(): void
+    {
+        global $DB;
+
+        $use_mode = $_SESSION['glpi_use_mode'];
+        $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
+        try {
+            iterator_to_array($DB->request([
+                'FROM'  => 'glpi_crontasks',
+                'WHERE' => ['frequency' => ''],
+            ]));
+        } finally {
+            $_SESSION['glpi_use_mode'] = $use_mode;
+        }
+        $this->hasPhpLogRecordThatContains('Truncated incorrect', LogLevel::WARNING);
+
+        $queries = Profile::getCurrent()->getDebugInfo()['sql']['queries'];
+        $query = end($queries);
+        $this->assertStringContainsString('`glpi_crontasks`', $query['raw_query']);
+        $this->assertStringContainsString('Truncated incorrect', $query['warnings']);
     }
 
     public static function nameProvider()
@@ -139,6 +180,75 @@ class DBTest extends GLPITestCase
         $this->assertSame($expected, \DBmysql::quoteValue($raw));
     }
 
+    public static function dataInterpolateParams(): iterable
+    {
+        yield ['SELECT * FROM `glpi_computers`', null, 'SELECT * FROM `glpi_computers`'];
+        yield ['SELECT * FROM `glpi_computers`', [], 'SELECT * FROM `glpi_computers`'];
+
+        // nominal case, several placeholders
+        yield [
+            'SELECT * FROM `glpi_computers` WHERE `name` = ? AND `id` = ?',
+            ['foo', 42],
+            'SELECT * FROM `glpi_computers` WHERE `name` = \'foo\' AND `id` = \'42\'',
+        ];
+
+        // special values
+        yield ['SELECT * FROM `t` WHERE `a` = ?', [null], 'SELECT * FROM `t` WHERE `a` = NULL'];
+        yield ['SELECT * FROM `t` WHERE `a` = ?', [true], 'SELECT * FROM `t` WHERE `a` = 1'];
+        yield ['SELECT * FROM `t` WHERE `a` = ?', [false], 'SELECT * FROM `t` WHERE `a` = 0'];
+
+        // a value used to be handled as a regex replacement string: `$1` was expanded as a
+        // (non existing) capturing group, and silently dropped from the displayed query
+        yield [
+            'SELECT * FROM `t` WHERE `a` = ?',
+            ['$1 and ${2}'],
+            'SELECT * FROM `t` WHERE `a` = \'$1 and ${2}\'',
+        ];
+
+        // a `?` contained in a value used to be picked as the next placeholder, shifting
+        // every remaining parameter
+        yield [
+            'SELECT * FROM `t` WHERE `a` = ? AND `b` = ?',
+            ['what?', 'z'],
+            'SELECT * FROM `t` WHERE `a` = \'what?\' AND `b` = \'z\'',
+        ];
+
+        // quoting is left untouched
+        yield [
+            'SELECT * FROM `t` WHERE `a` = ?',
+            ["O'Brien"],
+            'SELECT * FROM `t` WHERE `a` = \'O\\\'Brien\'',
+        ];
+        yield [
+            'SELECT * FROM `t` WHERE `a` = ?',
+            ['back\\slash'],
+            'SELECT * FROM `t` WHERE `a` = \'back\\\\slash\'',
+        ];
+
+        // keys are ignored, just like when binding
+        yield [
+            'SELECT * FROM `t` WHERE `a` = ? AND `b` = ?',
+            ['a' => 'foo', 'b' => 'bar'],
+            'SELECT * FROM `t` WHERE `a` = \'foo\' AND `b` = \'bar\'',
+        ];
+
+        // more parameters than placeholders
+        yield ['SELECT * FROM `t` WHERE `a` = ?', ['foo', 'bar'], 'SELECT * FROM `t` WHERE `a` = \'foo\''];
+        // more placeholders than parameters
+        yield [
+            'SELECT * FROM `t` WHERE `a` = ? AND `b` = ?',
+            ['foo'],
+            'SELECT * FROM `t` WHERE `a` = \'foo\' AND `b` = ?',
+        ];
+    }
+
+    #[DataProvider('dataInterpolateParams')]
+    public function testInterpolateParams(string $query, ?array $params, string $expected)
+    {
+        $instance = new \DB();
+        $this->assertSame($expected, $instance->interpolateParams($query, $params));
+    }
+
 
     public static function dataInsert()
     {
@@ -148,19 +258,22 @@ class DBTest extends GLPITestCase
                     'field'  => 'value',
                     'other'  => 'doe',
                 ],
-                'INSERT INTO `table` (`field`, `other`) VALUES (\'value\', \'doe\')',
+                'INSERT INTO `table` (`field`, `other`) VALUES (?, ?)',
+                ['value', 'doe'],
             ], [
                 '`table`', [
                     '`field`'  => 'value',
                     '`other`'  => 'doe',
                 ],
-                'INSERT INTO `table` (`field`, `other`) VALUES (\'value\', \'doe\')',
+                'INSERT INTO `table` (`field`, `other`) VALUES (?, ?)',
+                ['value', 'doe'],
             ], [
                 'table', [
                     'field'  => new QueryParam(),
                     'other'  => new QueryParam(),
                 ],
                 'INSERT INTO `table` (`field`, `other`) VALUES (?, ?)',
+                [],
             ], [
                 'table', new QuerySubQuery([
                     'SELECT' => ['id', 'name'],
@@ -168,15 +281,18 @@ class DBTest extends GLPITestCase
                     'WHERE' => ['NOT' => ['name' => null]],
                 ]),
                 'INSERT INTO `table` (SELECT `id`, `name` FROM `other` WHERE NOT (`name` IS NULL))',
+                [],
             ],
         ];
     }
 
     #[DataProvider('dataInsert')]
-    public function testBuildInsert($table, $values, $expected)
+    public function testBuildInsert(string $table, array|QuerySubQuery $values, string $expected_sql, array $expected_values)
     {
         $instance = new \DB();
-        $this->assertSame($expected, $this->cleanSQL($instance->buildInsert($table, $values)));
+        $insert = $instance->buildInsert($table, $values);
+        $this->assertSame($expected_sql, $this->cleanSQL($insert->getQuery()));
+        $this->assertSame($expected_values, $insert->getParams());
     }
 
     public static function dataUpdate()
@@ -190,7 +306,8 @@ class DBTest extends GLPITestCase
                     'id'  => 1,
                 ],
                 [],
-                'UPDATE `table` SET `field` = \'value\', `other` = \'doe\' WHERE `id` = \'1\'',
+                'UPDATE `table` SET `field` = ?, `other` = ? WHERE `id` = ?',
+                ['value', 'doe', 1],
             ], [
                 'table', [
                     'field'  => 'value',
@@ -198,7 +315,8 @@ class DBTest extends GLPITestCase
                     'id'  => [1, 2],
                 ],
                 [],
-                'UPDATE `table` SET `field` = \'value\' WHERE `id` IN (\'1\', \'2\')',
+                'UPDATE `table` SET `field` = ? WHERE `id` IN (?, ?)',
+                ['value', 1, 2],
             ], [
                 'table', [
                     'field'  => 'value',
@@ -206,7 +324,8 @@ class DBTest extends GLPITestCase
                     'NOT'  => ['id' => [1, 2]],
                 ],
                 [],
-                'UPDATE `table` SET `field` = \'value\' WHERE  NOT (`id` IN (\'1\', \'2\'))',
+                'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?, ?))',
+                ['value', 1, 2],
             ], [
                 'table', [
                     'field'  => new QueryParam(),
@@ -215,6 +334,7 @@ class DBTest extends GLPITestCase
                 ],
                 [],
                 'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?, ?))',
+                [],
             ], [
                 'table', [
                     'field'  => new QueryExpression(\DBmysql::quoteName('field') . ' + 1'),
@@ -222,7 +342,8 @@ class DBTest extends GLPITestCase
                     'id'  => [1, 2],
                 ],
                 [],
-                'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')',
+                'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (?, ?)',
+                [1, 2],
             ], [
                 'table', [
                     'field'  => new QueryExpression(\DBmysql::quoteName('field') . ' + 1'),
@@ -230,7 +351,8 @@ class DBTest extends GLPITestCase
                     'id'  => [1, 2],
                 ],
                 [],
-                'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')',
+                'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (?, ?)',
+                [1, 2],
             ], [
                 'table', [
                     'field'  => 'value',
@@ -256,16 +378,45 @@ class DBTest extends GLPITestCase
                 'UPDATE `table`'
                 . ' LEFT JOIN `another_table` ON (`table`.`foreign_id` = `another_table`.`id`)'
                 . ' LEFT JOIN `table_3` ON (`another_table`.`some_id` = `table_3`.`id`)'
-                . ' SET `field` = \'value\' WHERE `id` IN (\'1\', \'2\')',
+                . ' SET `field` = ? WHERE `id` IN (?, ?)',
+                ['value', 1, 2],
+            ], [
+                // JOIN with a placeholder in its ON clause: values must be ordered
+                // as they appear in the query (JOIN, then SET, then WHERE).
+                'glpi_rulecriterias', [
+                    'criteria' => 'name',
+                ], [
+                    'criteria' => 'servicepack_name',
+                ],
+                [
+                    'INNER JOIN' => [
+                        'glpi_rules' => [
+                            'FKEY' => [
+                                'glpi_rulecriterias' => 'rules_id',
+                                'glpi_rules'         => 'id',
+                                [
+                                    'AND' => ['glpi_rules.sub_type' => 'RuleDictionnaryOperatingSystemServicePack'],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                'UPDATE `glpi_rulecriterias`'
+                . ' INNER JOIN `glpi_rules` ON (`glpi_rulecriterias`.`rules_id` = `glpi_rules`.`id`'
+                . ' AND `glpi_rules`.`sub_type` = ?)'
+                . ' SET `criteria` = ? WHERE `criteria` = ?',
+                ['RuleDictionnaryOperatingSystemServicePack', 'name', 'servicepack_name'],
             ],
         ];
     }
 
     #[DataProvider('dataUpdate')]
-    public function testBuildUpdate($table, $values, $where, array $joins, $expected)
+    public function testBuildUpdate(string $table, array $values, array $where, array $joins, string $expected_sql, array $expected_values)
     {
         $instance = new \DB();
-        $this->assertSame($expected, $instance->buildUpdate($table, $values, $where, $joins));
+        $update = $instance->buildUpdate($table, $values, $where, $joins);
+        $this->assertSame($expected_sql, $update->getQuery());
+        $this->assertSame($expected_values, $update->getParams());
     }
 
     public function testBuildUpdateWException()
@@ -283,25 +434,29 @@ class DBTest extends GLPITestCase
                     'id'  => 1,
                 ],
                 [],
-                'DELETE `table` FROM `table` WHERE `id` = \'1\'',
+                'DELETE `table` FROM `table` WHERE `id` = ?',
+                [1],
             ], [
                 'table', [
                     'id'  => [1, 2],
                 ],
                 [],
-                'DELETE `table` FROM `table` WHERE `id` IN (\'1\', \'2\')',
+                'DELETE `table` FROM `table` WHERE `id` IN (?, ?)',
+                [1, 2],
             ], [
                 'table', [
                     'NOT'  => ['id' => [1, 2]],
                 ],
                 [],
-                'DELETE `table` FROM `table` WHERE  NOT (`id` IN (\'1\', \'2\'))',
+                'DELETE `table` FROM `table` WHERE  NOT (`id` IN (?, ?))',
+                [1, 2],
             ], [
                 'table', [
                     'NOT'  => ['id' => [new QueryParam(), new QueryParam()]],
                 ],
                 [],
                 'DELETE `table` FROM `table` WHERE  NOT (`id` IN (?, ?))',
+                [],
             ], [
                 'table', [
                     'id'  => 1,
@@ -325,16 +480,19 @@ class DBTest extends GLPITestCase
                 'DELETE `table` FROM `table`'
                 . ' LEFT JOIN `another_table` ON (`table`.`foreign_id` = `another_table`.`id`)'
                 . ' LEFT JOIN `table_3` ON (`another_table`.`some_id` = `table_3`.`id`)'
-                . ' WHERE `id` = \'1\'',
+                . ' WHERE `id` = ?',
+                [1],
             ],
         ];
     }
 
     #[DataProvider('dataDelete')]
-    public function testBuildDelete($table, $where, array $joins, $expected)
+    public function testBuildDelete(string $table, array $where, array $joins, string $expected_sql, array $expected_values)
     {
         $instance = new \DB();
-        $this->assertSame($expected, $instance->buildDelete($table, $where, $joins));
+        $delete = $instance->buildDelete($table, $where, $joins);
+        $this->assertSame($expected_sql, $delete->getQuery());
+        $this->assertSame($expected_values, $delete->getParams());
     }
 
     public function testBuildDeleteWException()
@@ -342,6 +500,72 @@ class DBTest extends GLPITestCase
         $instance = new \DB();
         $this->expectExceptionMessage('Cannot run an DELETE query without WHERE clause!');
         $instance->buildDelete('table', []);
+    }
+
+    /**
+     * doQuery() must accept a BasePart instance (as returned by buildInsert(),
+     * buildUpdate() and buildDelete()) and run it as a prepared statement, with
+     * its parameters bound, instead of sending the raw query - which still holds
+     * `?` placeholders - to the server.
+     */
+    public function testDoQueryWithBasePart()
+    {
+        $db = new \DB();
+        $db->log_deprecation_warnings = false; // Prevent deprecation warning from MySQL server
+
+        $table = sprintf('glpitests_%s', uniqid());
+        $db->doQuery(
+            sprintf(
+                'CREATE TABLE `%s` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `name` VARCHAR(255) NULL) ENGINE=InnoDB',
+                $table
+            )
+        );
+
+        try {
+            // INSERT - a value that requires escaping makes sure parameters are
+            // actually bound and not concatenated into the query.
+            $insert = $db->buildInsert($table, ['name' => "O'Brien"]);
+            $this->assertTrue($db->doQuery($insert));
+            $this->assertSame(1, $db->getAffectedRows());
+            $id = $db->insertId();
+
+            $rows = iterator_to_array($db->request(['FROM' => $table]));
+            $this->assertCount(1, $rows);
+            $this->assertSame("O'Brien", reset($rows)['name']);
+
+            // UPDATE
+            $update = $db->buildUpdate($table, ['name' => 'updated'], ['id' => $id]);
+            $this->assertTrue($db->doQuery($update));
+            $this->assertSame(1, $db->getAffectedRows());
+
+            $row = $db->request(['FROM' => $table, 'WHERE' => ['id' => $id]])->current();
+            $this->assertSame('updated', $row['name']);
+
+            // DELETE
+            $delete = $db->buildDelete($table, ['id' => $id]);
+            $this->assertTrue($db->doQuery($delete));
+            $this->assertSame(1, $db->getAffectedRows());
+            $this->assertCount(0, iterator_to_array($db->request(['FROM' => $table])));
+        } finally {
+            $db->doQuery(sprintf('DROP TABLE `%s`', $table));
+        }
+    }
+
+    /**
+     * A BasePart that produces a result set (a SELECT) must make doQuery()
+     * return the corresponding mysqli_result, with its parameters bound.
+     */
+    public function testDoQueryWithBasePartReturningResult()
+    {
+        $db = new \DB();
+
+        $select = (new Select())
+            ->setQuery('SELECT ? AS `value`')
+            ->setParams([42]);
+
+        $result = $db->doQuery($select);
+        $this->assertInstanceOf(\mysqli_result::class, $result);
+        $this->assertSame('42', $result->fetch_assoc()['value']);
     }
 
     public function testListTables()
@@ -353,6 +577,66 @@ class DBTest extends GLPITestCase
         $tables = $instance->listTables('glpi_configs');
         $this->assertInstanceOf(\DBmysqlIterator::class, $tables);
         $this->assertCount(1, $tables);
+    }
+
+    public function testSchemaChecksOnNonCompliantTables(): void
+    {
+        $db = new \DB();
+        $db->log_deprecation_warnings = false; // Prevent deprecation warning from MySQL server
+        // Prevent GLPI warnings about the non-compliant definitions below.
+        $db->use_utf8mb4 = true;
+        $db->allow_datetime = true;
+        $db->allow_signed_keys = true;
+
+        $core_table   = sprintf('glpi_testschemachecks_%s', uniqid());
+        $plugin_table = sprintf('glpi_plugin_testschemachecks_%s', uniqid());
+        foreach ([$core_table, $plugin_table] as $table) {
+            $db->doQuery(
+                sprintf(
+                    'CREATE TABLE `%s` (
+                        `id` int NOT NULL AUTO_INCREMENT,
+                        `users_id` int NOT NULL DEFAULT 0,
+                        `items_id` int unsigned NOT NULL DEFAULT 0,
+                        `date` datetime NULL,
+                        `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NULL,
+                        PRIMARY KEY (`id`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci',
+                    $table
+                )
+            );
+        }
+
+        try {
+            foreach ([false, true] as $exclude_plugins) {
+                $expected_tables = $exclude_plugins ? [$core_table] : [$core_table, $plugin_table];
+                $found_tables = static fn(iterable $rows): array => array_values(array_intersect(
+                    [$core_table, $plugin_table],
+                    array_column(iterator_to_array($rows, false), 'TABLE_NAME')
+                ));
+
+                $this->assertSame($expected_tables, $found_tables($db->getTzIncompatibleTables($exclude_plugins)));
+                $this->assertSame($expected_tables, $found_tables($db->getNonUtf8mb4Tables($exclude_plugins)));
+
+                $signed_keys = [];
+                foreach ($db->getSignedKeysColumns($exclude_plugins) as $row) {
+                    if (in_array($row['TABLE_NAME'], [$core_table, $plugin_table], true)) {
+                        $signed_keys[] = $row['TABLE_NAME'] . '.' . $row['COLUMN_NAME'];
+                    }
+                }
+                sort($signed_keys);
+                $expected_signed_keys = [];
+                foreach ($expected_tables as $table) {
+                    $expected_signed_keys[] = $table . '.id';
+                    $expected_signed_keys[] = $table . '.users_id';
+                }
+                sort($expected_signed_keys);
+                $this->assertSame($expected_signed_keys, $signed_keys);
+            }
+        } finally {
+            foreach ([$core_table, $plugin_table] as $table) {
+                $db->doQuery(sprintf('DROP TABLE `%s`', $table));
+            }
+        }
     }
 
     public function testTablesHasItemtype()
@@ -368,6 +652,7 @@ class DBTest extends GLPITestCase
             'glpi_assets_assets', 'glpi_assets_assetmodels', 'glpi_assets_assettypes',
             'glpi_appliancerelations', 'glpi_dropdowns_dropdowns', 'glpi_oauth_access_tokens', 'glpi_oauth_auth_codes',
             'glpi_oauth_refresh_tokens', 'glpi_stencils', 'glpi_itemtranslations_itemtranslations', 'glpi_itils_validationsteps',
+            'glpi_usertokens', 'glpi_users_sessions', 'glpi_users_sessionhistories',
         ];
 
         //check if each table has a corresponding itemtype
@@ -885,6 +1170,7 @@ SQL,
         }
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('fetchResultProvider')]
     public function testDecodeFetchResult(string $method, mixed $row, mixed $expected)
     {
@@ -945,5 +1231,15 @@ SQL,
         $instance = new \DB();
         $this->expectExceptionMessage('Unknown type to drop: UNKNOWN');
         $this->assertSame('', $instance->buildDrop('aname', 'UNKNOWN'));
+    }
+
+    public function testExecuteStatementValueMismatch()
+    {
+        $instance = new \DB();
+        $stmt = $instance->prepare("SELECT ? AS `a`, 'x?y' AS `b`");
+
+        $this->expectException(StatementException::class);
+        $this->expectExceptionMessage('Number of placeholders (1) in SQL statement does not match number of values (2).');
+        $instance->executeStatement($stmt, [1, 2]);
     }
 }

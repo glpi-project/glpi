@@ -44,6 +44,9 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Twig\Error\Error;
+use Twig\TwigFunction;
+
+use function Safe\realpath;
 
 final class CheckTwigTemplatesSyntaxCommand extends Command
 {
@@ -58,13 +61,24 @@ final class CheckTwigTemplatesSyntaxCommand extends Command
     {
         parent::configure();
 
-        $this->setName('tools:check_twig_templates_syntax');
+        $this->setName('tools:check_twig_templates_syntax')
+             ->setDescription('Check twig templates syntax is valid');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $environment = TemplateRenderer::getInstance()->getEnvironment();
+
+        $environment->registerUndefinedFunctionCallback(
+            static function (string $name): TwigFunction|false {
+                if ($name !== 'component') {
+                    return false;
+                }
+
+                return new TwigFunction('component', static fn(): string => '');
+            }
+        );
 
         $error_messages = [];
 

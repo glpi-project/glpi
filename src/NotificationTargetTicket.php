@@ -69,7 +69,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             if (empty($perso_tag)) {
                 $perso_tag = 'GLPI';
             }
-            return sprintf("[$perso_tag #%07d] ", $this->obj->getField('id'));
+            return sprintf("[$perso_tag #%07d] ", $this->obj->getID());
         }
         return parent::getSubjectPrefix();
     }
@@ -151,7 +151,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     }
 
     #[Override]
-    public function getDataForObject(CommonDBTM $item, array $options, $simple = false)
+    public function getDataForObject(CommonITILObject $item, array $options, $simple = false)
     {
         // Common ITIL data
         $data = parent::getDataForObject($item, $options, $simple);
@@ -167,15 +167,15 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         $data['##ticket.urlvalidation##']
                         = $this->formatURL(
                             $options['additionnaloption']['usertype'],
-                            "ticket_" . $item->getField("id") . '_Ticket$main',
+                            "ticket_" . $item->getID() . '_Ticket$main',
                             $anchor
                         );
         $data['##ticket.globalvalidation##']
-                        = TicketValidation::getStatus($item->getField('global_validation'));
+                        = TicketValidation::getStatus($item->fields['global_validation']);
         $data['##ticket.type##']
-                        = Ticket::getTicketTypeName($item->getField('type'));
+                        = Ticket::getTicketTypeName($item->fields['type']);
         $data['##ticket.requesttype##'] = '';
-        if ($requesttype_id = $item->getField('requesttypes_id')) {
+        if ($requesttype_id = $item->fields['requesttypes_id']) {
             $data['##ticket.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes', $requesttype_id);
         }
 
@@ -203,81 +203,110 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         }
 
         $data['##ticket.sla_tto##'] = '';
-        if ($item->getField('slas_id_tto')) {
+        if ($item->fields['slas_id_tto']) {
             $data['##ticket.sla_tto##'] = Dropdown::getDropdownName(
                 'glpi_slas',
-                $item->getField('slas_id_tto')
+                $item->fields['slas_id_tto']
             );
         }
         $data['##ticket.sla_ttr##'] = '';
-        if ($item->getField('slas_id_ttr')) {
+        if ($item->fields['slas_id_ttr']) {
             $data['##ticket.sla_ttr##'] = Dropdown::getDropdownName(
                 'glpi_slas',
-                $item->getField('slas_id_ttr')
+                $item->fields['slas_id_ttr']
             );
         }
         $data['##ticket.sla##'] = $data['##ticket.sla_ttr##'];
 
+        // OLA data
+        $data['ola_tto'] = [];
+        $olas_tto = $item->getOlasTTOData();
+
+        $data['ola_ttr'] = [];
+        $olas_ttr = $item->getOlasTTRData();
+
+        // backward compatibility ola_tto/ttr
+        // ticket.ola_tto & ticket.ola_ttr field are replaced by an array of OLA data, see below
         $data['##ticket.ola_tto##'] = '';
-        if ($item->getField('olas_id_tto')) {
+        if (isset($item->fields['olas_id_tto']) && is_numeric($item->fields['olas_id_tto'])) {
             $data['##ticket.ola_tto##'] = Dropdown::getDropdownName(
                 'glpi_olas',
-                $item->getField('olas_id_tto')
+                $item->fields['olas_id_tto']
             );
         }
         $data['##ticket.ola_ttr##'] = '';
-        if ($item->getField('olas_id_ttr')) {
+        if (isset($item->fields['olas_id_ttr']) && is_numeric($item->fields['olas_id_ttr'])) {
             $data['##ticket.ola_ttr##'] = Dropdown::getDropdownName(
                 'glpi_olas',
-                $item->getField('olas_id_ttr')
+                $item->fields['olas_id_ttr']
             );
         }
+        $_separator = ' / ';
+        $_fn_remove_last_separator = static function ($ola_names) use ($_separator) {
+            if (str_ends_with($ola_names, $_separator)) {
+                return substr($ola_names, 0, -strlen($_separator));
+            }
+            return $ola_names;
+        };
+
+        // OLA TTO/TTR data - new version (multiple OLA per ticket)
+        foreach ($olas_tto as $ola_tto) {
+            $tmp['##ticket.ola_tto.name##'] = $ola_tto['name'];
+            $tmp['##ticket.ola_tto.comment##'] = $ola_tto['comment'];
+            $tmp['##ticket.ola_tto.group##'] = $ola_tto['group_name'];
+            $tmp['##ticket.ola_tto.start_time##'] = $ola_tto['start_time'];
+            $tmp['##ticket.ola_tto.due_time##'] = $ola_tto['due_time'];
+            $tmp['##ticket.ola_tto.end_time##'] = $ola_tto['end_time'];
+            $tmp['##ticket.ola_tto.waiting_time##'] = $ola_tto['waiting_time'];
+
+            // backward compatibility
+            $data['##ticket.ola_tto##'] .= $ola_tto['name'] . $_separator;
+            // new format
+            $data['ola_tto'][] = $tmp;
+
+        }
+        $data['##ticket.ola_tto##'] = $_fn_remove_last_separator($data['##ticket.ola_tto##']);
+
+        foreach ($olas_ttr as $ola_ttr) {
+            $tmp['##ticket.ola_ttr.name##'] = $ola_ttr['name'];
+            $tmp['##ticket.ola_ttr.comment##'] = $ola_ttr['comment'];
+            $tmp['##ticket.ola_ttr.group##'] = $ola_ttr['group_name'];
+            $tmp['##ticket.ola_ttr.start_time##'] = $ola_ttr['start_time'];
+            $tmp['##ticket.ola_ttr.due_time##'] = $ola_ttr['due_time'];
+            $tmp['##ticket.ola_ttr.end_time##'] = $ola_ttr['end_time'];
+            $tmp['##ticket.ola_ttr.waiting_time##'] = $ola_ttr['waiting_time'];
+
+            // backward compatibility
+            $data['##ticket.ola_ttr##'] .= $ola_ttr['name'] . $_separator;
+
+            $data['ola_ttr'][] = $tmp;
+        }
+        $data['##ticket.ola_ttr##'] = $_fn_remove_last_separator($data['##ticket.ola_ttr##']);
 
         $data['##ticket.location##'] = '';
-        if ($item->getField('locations_id')) {
+        if ($item->fields['locations_id']) {
             $data['##ticket.location##'] = Dropdown::getDropdownName(
                 'glpi_locations',
-                $item->getField('locations_id')
+                $item->fields['locations_id']
             );
             $locations = new Location();
-            $locations->getFromDB($item->getField('locations_id'));
-            if ($locations->getField('comment')) {
+            if ($locations->getFromDB($item->fields['locations_id'])) {
                 $data['##ticket.location.comment##'] = $locations->getField('comment');
-            }
-            if ($locations->getField('room')) {
                 $data['##ticket.location.room##'] = $locations->getField('room');
-            }
-            if ($locations->getField('building')) {
                 $data['##ticket.location.building##'] = $locations->getField('building');
-            }
-            if ($locations->getField('latitude')) {
                 $data['##ticket.location.latitude##'] = $locations->getField('latitude');
-            }
-            if ($locations->getField('longitude')) {
                 $data['##ticket.location.longitude##'] = $locations->getField('longitude');
-            }
-            if ($locations->getField('altitude')) {
                 $data['##ticket.location.altitude##'] = $locations->getField('altitude');
-            }
-            if ($locations->getField('address')) {
                 $data['##ticket.location.address##'] = $locations->getField('address');
-            }
-            if ($locations->getField('postcode')) {
                 $data['##ticket.location.postcode##'] = $locations->getField('postcode');
-            }
-            if ($locations->getField('town')) {
                 $data['##ticket.location.town##'] = $locations->getField('town');
-            }
-            if ($locations->getField('state')) {
                 $data['##ticket.location.state##'] = $locations->getField('state');
-            }
-            if ($locations->getField('country')) {
                 $data['##ticket.location.country##'] = $locations->getField('country');
             }
         }
 
         // is ticket deleted
-        $data['##ticket.isdeleted##'] = Dropdown::getYesNo($item->getField('is_deleted'));
+        $data['##ticket.isdeleted##'] = Dropdown::getYesNo($item->isDeleted());
 
         //Tags associated with the object linked to the ticket
         $data['##ticket.itemtype##']                 = '';
@@ -303,7 +332,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         $data['##ticket.item.model##']               = '';
 
         $item_ticket = new Item_Ticket();
-        $items = $item_ticket->find(['tickets_id' => $item->getField('id')]);
+        $items = $item_ticket->find(['tickets_id' => $item->getID()]);
         $data['items'] = [];
         if (count($items)) {
             foreach ($items as $val) {
@@ -344,42 +373,21 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                     //Object location
                     if ($hardware->isField('locations_id')) {
                         $tmp['##ticket.item.location##'] = '';
-                        if ($h_locations_id = $hardware->getField('locations_id')) {
+                        if ($h_locations_id = $hardware->fields['locations_id']) {
                             $tmp['##ticket.item.location##'] = Dropdown::getDropdownName('glpi_locations', $h_locations_id);
                         }
                         $locations = new Location();
-                        $locations->getFromDB($h_locations_id);
-                        if ($hardware->getField('comment')) {
+                        if ($locations->getFromDB($h_locations_id)) {
                             $data['##ticket.item.locationcomment##'] = $locations->getField('comment');
-                        }
-                        if ($hardware->getField('room')) {
                             $data['##ticket.item.locationroom##'] = $locations->getField('room');
-                        }
-                        if ($hardware->getField('building')) {
                             $data['##ticket.item.locationbuilding##'] = $locations->getField('building');
-                        }
-                        if ($hardware->getField('latitude')) {
                             $data['##ticket.item.locationlatitude##'] = $locations->getField('latitude');
-                        }
-                        if ($hardware->getField('longitude')) {
                             $data['##ticket.item.locationlongitude##'] = $locations->getField('longitude');
-                        }
-                        if ($hardware->getField('altitude')) {
                             $data['##ticket.item.locationaltitude##'] = $locations->getField('altitude');
-                        }
-                        if ($hardware->getField('address')) {
                             $data['##ticket.item.locationaddress##'] = $locations->getField('address');
-                        }
-                        if ($hardware->getField('postcode')) {
                             $data['##ticket.item.locationpostcode##'] = $locations->getField('postcode');
-                        }
-                        if ($hardware->getField('town')) {
                             $data['##ticket.item.locationtown##'] = $locations->getField('town');
-                        }
-                        if ($hardware->getField('state')) {
                             $data['##ticket.item.locationstate##'] = $locations->getField('state');
-                        }
-                        if ($hardware->getField('country')) {
                             $data['##ticket.item.locationcountry##'] = $locations->getField('country');
                         }
                     }
@@ -388,7 +396,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                     if ($hardware->isField('users_id')) {
                         $tmp['##ticket.item.user##'] = '';
                         $user_tmp = new User();
-                        if ($user_tmp->getFromDB($hardware->getField('users_id'))) {
+                        if ($user_tmp->getFromDB($hardware->fields['users_id'])) {
                             $tmp['##ticket.item.user##'] = $user_tmp->getName();
                         }
                     }
@@ -396,7 +404,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                     //Object group
                     if ($hardware->isField('groups_id')) {
                         $tmp['##ticket.item.group##'] = '';
-                        if ($h_group_id = $hardware->getField('groups_id')) {
+                        if ($h_group_id = $hardware->fields['groups_id']) {
                             $tmp['##ticket.item.group##'] = Dropdown::getDropdownName('glpi_groups', $h_group_id);
                         }
                     }
@@ -406,7 +414,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
 
                     if ($hardware->isField($modelfield)) {
                         $tmp['##ticket.item.model##'] = '';
-                        if ($h_model_id = $hardware->getField($modelfield)) {
+                        if ($h_model_id = $hardware->fields[$modelfield]) {
                             $tmp['##ticket.item.model##'] = Dropdown::getDropdownName($modeltable, $h_model_id);
                         }
                     }
@@ -420,7 +428,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
 
         // Get followups, log, validation
         if (!$simple) {
-            $restrict          = ['tickets_id' => $item->getField('id')];
+            $restrict          = ['tickets_id' => $item->getID()];
             $problems          = getAllDataFromTable('glpi_problems_tickets', $restrict);
             $data['problems'] = [];
             if (count($problems)) {
@@ -432,7 +440,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                         $tmp['##problem.id##']
                                  = $row['problems_id'];
                         $tmp['##problem.date##']
-                                 = $problem->getField('date');
+                                 = Html::convDateTime($problem->fields['date']);
                         $tmp['##problem.title##']
                                  = $problem->getField('name');
                         $tmp['##problem.url##']
@@ -461,7 +469,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                         $tmp['##change.id##']
                                  = $row['changes_id'];
                         $tmp['##change.date##']
-                                 = $change->getField('date');
+                                 = Html::convDateTime($change->fields['date']);
                         $tmp['##change.title##']
                                  = $change->getField('name');
                         $tmp['##change.url##']
@@ -482,7 +490,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             // Approbation of solution
             $solution_restrict = [
                 'itemtype' => Ticket::class,
-                'items_id' => $item->getField('id'),
+                'items_id' => $item->getID(),
             ];
             $replysolved = getAllDataFromTable(
                 'glpi_itilfollowups',
@@ -497,7 +505,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             $data['##ticket.solution.approval.author##']      = $current ? getUserName($current['users_id']) : '';
 
             //Validation infos
-            $restrict = ['tickets_id' => $item->getField('id')];
+            $restrict = ['tickets_id' => $item->getID()];
 
             if (isset($options['validation_id']) && $options['validation_id']) {
                 $restrict['glpi_ticketvalidations.id'] = $options['validation_id'];
@@ -591,16 +599,23 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                 __('SLA'),
                 __('Time to resolve')
             ),
-            'ticket.ola_tto'               => sprintf(
-                __('%1$s / %2$s'),
-                __('OLA'),
-                __('Internal time to own')
-            ),
-            'ticket.ola_ttr'               => sprintf(
-                __('%1$s / %2$s'),
-                __('OLA'),
-                __('Internal time to resolve')
-            ),
+
+            'ticket.ola_tto.name'                  => __('OLA name'),
+            'ticket.ola_tto.comment'               => __('OLA comment'),
+            'ticket.ola_tto.group'                 => __('Group assigned to OLA'),
+            'ticket.ola_tto.start_time'            => __('OLA start time'),
+            'ticket.ola_tto.due_time'              => __('OLA due time'),
+            'ticket.ola_tto.end_time'              => __('OLA end time'),
+            'ticket.ola_tto.waiting_time'          => __('OLA waiting duration'),
+
+            'ticket.ola_ttr.name'                  => __('OLA name'),
+            'ticket.ola_ttr.comment'               => __('OLA comment'),
+            'ticket.ola_ttr.group'                 => __('Group assigned to OLA'),
+            'ticket.ola_ttr.start_time'            => __('OLA start time'),
+            'ticket.ola_ttr.due_time'              => __('OLA due time'),
+            'ticket.ola_ttr.end_time'              => __('OLA end time'),
+            'ticket.ola_ttr.waiting_time'          => __('OLA waiting duration'),
+
             'ticket.externalid'            => __('External ID'),
             'ticket.requesttype'           => RequestType::getTypeName(1),
             'ticket.itemtype'              => __('Item type'),

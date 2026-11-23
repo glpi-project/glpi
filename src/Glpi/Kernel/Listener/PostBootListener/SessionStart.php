@@ -123,7 +123,7 @@ class SessionStart implements EventSubscriberInterface
         // Copy the "preference" defaults to the session, if they are not already set.
         // They are set during the authentication but may be accessed in a sessionless context (cron, anonymous pages, ...).
         foreach ($CFG_GLPI['user_pref_field'] as $field) {
-            if (!\array_key_exists("glpi$field", $_SESSION) && \array_key_exists($field, $CFG_GLPI)) {
+            if (!\array_key_exists("glpi$field", $_SESSION) && isset($CFG_GLPI[$field])) {
                 $_SESSION["glpi$field"] = $CFG_GLPI[$field];
             }
         }

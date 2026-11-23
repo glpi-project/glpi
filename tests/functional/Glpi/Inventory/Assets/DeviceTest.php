@@ -147,6 +147,8 @@ class DeviceTest extends AbstractInventoryAsset
     {
         global $DB;
         $item_drv = new \Item_DeviceHardDrive();
+        $item_firmware = new \Item_DeviceFirmware();
+        $firmware = new \DeviceFirmware();
         $info_com = new \Infocom();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -206,6 +208,39 @@ class DeviceTest extends AbstractInventoryAsset
         $drives = $item_drv->find(['itemtype' => \Computer::class, 'items_id' => $computers_id, 'is_dynamic' => 1]);
 
         $this->assertCount(2, $drives);
+        $firmware_by_serial = [];
+        foreach ($drives as $drive) {
+            $firmware_links = $item_firmware->find([
+                'itemtype'   => \Item_DeviceHardDrive::class,
+                'items_id'   => $drive['id'],
+                'is_dynamic' => 1,
+            ]);
+            $this->assertCount(1, $firmware_links);
+            $firmware_link = reset($firmware_links);
+            $this->assertTrue($firmware->getFromDB($firmware_link['devicefirmwares_id']));
+            $firmware_by_serial[$drive['serial']] = [
+                'relation_id' => $firmware_link['id'],
+                'version'     => $firmware->fields['version'],
+            ];
+        }
+        $this->assertSame('BXV77D0Q', $firmware_by_serial['S29NNXAH146764']['version']);
+        $this->assertSame('GHBOA900', $firmware_by_serial['131005TF0401Y11K4NNN']['version']);
+        $initial_firmware_links = $firmware_by_serial;
+
+        $first_drive = reset($drives);
+        $static_firmware_id = $firmware->add([
+            'designation' => 'Manually managed firmware',
+            'version'     => 'STATIC-1.0',
+            'entities_id' => $computer->getEntityID(),
+        ]);
+        $this->assertGreaterThan(0, $static_firmware_id);
+        $static_firmware_link_id = $item_firmware->add([
+            'itemtype'           => \Item_DeviceHardDrive::class,
+            'items_id'           => $first_drive['id'],
+            'devicefirmwares_id' => $static_firmware_id,
+            'is_dynamic'         => 0,
+        ]);
+        $this->assertGreaterThan(0, $static_firmware_link_id);
 
         $data_to_check = [];
 
@@ -227,14 +262,43 @@ class DeviceTest extends AbstractInventoryAsset
             $data_to_check[] = $input;
         }
 
-        //redo an inventory
-        $this->doInventory($xml_source, true);
+        //redo an inventory with an updated firmware
+        $updated_xml_source = str_replace(
+            '<FIRMWARE>BXV77D0Q</FIRMWARE>',
+            '<FIRMWARE>BXV77D0R</FIRMWARE>',
+            $xml_source
+        );
+        $this->doInventory($updated_xml_source, true);
 
         //drives present in the inventory source are still dynamic
         $drives = $item_drv->find(['itemtype' =>  \Computer::class, 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(2, $drives);
+        $firmware_by_serial = [];
+        foreach ($drives as $drive) {
+            $firmware_links = $item_firmware->find([
+                'itemtype'   => \Item_DeviceHardDrive::class,
+                'items_id'   => $drive['id'],
+                'is_dynamic' => 1,
+            ]);
+            $this->assertCount(1, $firmware_links);
+            $firmware_link = reset($firmware_links);
+            $this->assertTrue($firmware->getFromDB($firmware_link['devicefirmwares_id']));
+            $firmware_by_serial[$drive['serial']] = [
+                'relation_id' => $firmware_link['id'],
+                'version'     => $firmware->fields['version'],
+            ];
+        }
+        $this->assertSame('BXV77D0R', $firmware_by_serial['S29NNXAH146764']['version']);
+        $this->assertSame(
+            $initial_firmware_links['S29NNXAH146764']['relation_id'],
+            $firmware_by_serial['S29NNXAH146764']['relation_id']
+        );
 
-        //check item_device_memory is the same from first step
+        $this->assertTrue($item_firmware->getFromDB($static_firmware_link_id));
+        $this->assertSame(0, $item_firmware->fields['is_dynamic']);
+        $this->assertSame($static_firmware_id, $item_firmware->fields['devicefirmwares_id']);
+
+        //check item_device_drive is the same from first step
         foreach ($data_to_check as $data_value) {
             $drives = $item_drv->find(['id' => $data_value['items_id'], "itemtype" => \Computer::class, 'is_dynamic' => 1]);
             $this->assertCount(1, $drives);

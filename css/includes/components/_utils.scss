@@ -57,12 +57,20 @@
     border-style: dashed !important;
 }
 
+.border-radius-0 {
+    border-radius: 0 !important;
+}
+
 // Alternative to d-flex, does not includes "!important".
 // This is needed when dealing with libraries that will attempt to hide an item
 // by changing its style to "display: none" (like html5sortable), which will fail
 // if the current property is marked as "!important".
 .d-flex-soft {
     display: flex;
+}
+
+.fs-08x {
+    font-size: 0.8em !important;
 }
 
 .fs-2x {
@@ -75,6 +83,10 @@
 
 .fs-5x {
     font-size: 5em !important;
+}
+
+.flex-grow-30 {
+    flex-grow: 30;
 }
 
 .opacity-100-hover:hover {
@@ -109,8 +121,36 @@
     min-width: 200px;
 }
 
+.auto-resize {
+    // Note: this is not yet supported by firefox
+    // See: https://bugzilla.mozilla.org/show_bug.cgi?id=1832409
+    // A backlog entry has been added to review this and implement a fallback
+    // if it is still unsuported when we are ready to release the 12.0 version.
+    field-sizing: content;
+}
+
 .max-width-unset {
     max-width: unset !important;
+}
+
+@media (hover: hover) {
+    .opacity-0-hoverable {
+        opacity: 0 !important;
+    }
+
+    .opacity-100-hoverable {
+        opacity: 100 !important;
+    }
+}
+
+.text-hover-link {
+    &:hover {
+        color: color-mix(
+            in srgb,
+            transparent,
+            var(--tblr-link-hover-color) var(--tblr-link-opacity, 100%)
+        ) !important;
+    }
 }
 
 .cursor-wait {

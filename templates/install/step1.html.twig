@@ -30,14 +30,12 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/form/fields_macros.html.twig' as fields %}
-
 {% if config_write_denied %}
     <h3>{{ __("Checking write access to configuration files") }}</h3>
     <div class="alert alert-danger" role="alert">
         <div class="d-flex">
             <div>
-                <i class="ti ti-alert-circle me-2"></i>
+                <i class="ti ti-alert-circle me-2" aria-hidden="true"></i>
             </div>
             <div>
                 <h4 class="alert-title">{{ __('Write access denied for configuration files') }}</h4>
@@ -57,14 +55,13 @@
 {% set common_hiddens %}
    <input type="hidden" name="language" value="{{ session('glpilanguage') }}">
    <input type="hidden" name="update" value="{{ update }}">
-   {{ fields.csrfField() }}
 {% endset %}
 
 {% set continue_form %}
    <form action="install.php" method="post" class="d-inline" data-submit-once>
       <button type="submit" name="submit" class="btn btn-primary">
          {{ __("Continue") }}
-         <i class="ti ti-chevron-right ms-1"></i>
+         <i class="ti ti-chevron-right ms-1" aria-hidden="true"></i>
       </button>
 
       <input type="hidden" name="install" value="Etape_1">
@@ -76,7 +73,7 @@
    <form action="install.php" method="post" class="d-inline" data-submit-once>
       <button type="submit" name="submit" class="btn btn-warning">
          {{ __("Try again") }}
-         <i class="ti ti-reload ms-1"></i>
+         <i class="ti ti-reload ms-1" aria-hidden="true"></i>
       </button>
 
       <input type="hidden" name="install" value="Etape_0">

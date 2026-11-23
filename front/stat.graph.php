@@ -49,7 +49,7 @@ global $DB;
 
 Html::header(__('Statistics'), '', "helpdesk", "stat");
 
-Session::checkRight("statistic", READ);
+Session::checkRight(Stat::$rightname, READ);
 
 /** @var CommonITILObject $item */
 if (!$item = getItemForItemtype($_GET['itemtype'])) {

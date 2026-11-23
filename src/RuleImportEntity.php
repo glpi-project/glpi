@@ -39,7 +39,7 @@ use Glpi\Plugin\Hooks;
 class RuleImportEntity extends Rule
 {
     // From Rule
-    public static $rightname = 'rule_import';
+    public static string $rightname = 'rule_import';
 
     public function getTitle()
     {

@@ -47,9 +47,9 @@ class State extends CommonTreeDropdown
     /** @use Clonable<static> */
     use Clonable;
 
-    public $can_be_translated       = true;
+    public bool $can_be_translated       = true;
 
-    public static $rightname               = 'state';
+    public static string $rightname               = 'state';
 
     public static function getTypeName($nb = 0)
     {
@@ -268,7 +268,6 @@ class State extends CommonTreeDropdown
             'footers' => [$footer],
             'footer_class' => 'fw-bold',
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => false,
         ]);
     }

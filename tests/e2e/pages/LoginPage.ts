@@ -100,7 +100,11 @@ export class LoginPage extends GlpiPage
     public async doGetAuthorizationCode(): Promise<string>
     {
         const current_url = this.page.url();
-        const response = await this.page.request.fetch(`${current_url}&accept=1`, {
+        // Submit the consent form as the browser would: the decision is only accepted by POST
+        const response = await this.page.request.post(current_url, {
+            form: {
+                accept: '',
+            },
             maxRedirects: 0,
         });
         const location = response.headers()['location'] ?? '';
@@ -134,8 +138,8 @@ export class LoginPage extends GlpiPage
 
     public async doFillTotpCode(token: string): Promise<void>
     {
-        for (let i = 0; i < 6; i++) {
-            await this.page.getByRole('textbox', { name: `2FA code digit ${i + 1} of 6` }).fill(token[i]);
+        for (let i = 0; i < token.length; i++) {
+            await this.page.getByRole('textbox', { name: `Digit ${i + 1} of ${token.length}` }).fill(token[i]);
         }
         await this.page.getByRole('button', { name: 'Verify' }).click();
     }

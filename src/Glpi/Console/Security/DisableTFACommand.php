@@ -54,7 +54,7 @@ class DisableTFACommand extends AbstractCommand
         $this->addArgument('login', InputArgument::REQUIRED, __('Username'));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $username = $input->getArgument('login');
         $user = new User();

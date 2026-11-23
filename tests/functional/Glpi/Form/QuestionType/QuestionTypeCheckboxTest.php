@@ -34,15 +34,21 @@
 
 namespace tests\units\Glpi\Form\QuestionType;
 
+use Glpi\Form\Question;
+use Glpi\Form\QuestionType\AbstractQuestionTypeSelectable;
 use Glpi\Form\QuestionType\QuestionTypeCheckbox;
 use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
-use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Form\QuestionType\AbstractQuestionTypeSelectableTest;
 use Glpi\Tests\FormBuilder;
-use Glpi\Tests\FormTesterTrait;
+use Override;
 
-final class QuestionTypeCheckboxTest extends DbTestCase
+final class QuestionTypeCheckboxTest extends AbstractQuestionTypeSelectableTest
 {
-    use FormTesterTrait;
+    #[Override]
+    protected function getQuestionType(): AbstractQuestionTypeSelectable
+    {
+        return new QuestionTypeCheckbox();
+    }
 
     public function testCheckboxAnswerIsDisplayedInTicketDescription(): void
     {
@@ -65,8 +71,53 @@ final class QuestionTypeCheckboxTest extends DbTestCase
         ]);
 
         $this->assertStringContainsString(
-            "1) Shopping list: Bread, Milk, Cheese",
-            strip_tags($ticket->fields['content']),
+            "<ul><li>Bread</li> <li>Milk</li> <li>Cheese</li></ul>",
+            $ticket->fields['content'],
         );
+    }
+
+    public function testCheckboxAnswerLabelsAreEscapedInTicketDescription(): void
+    {
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "Shopping list",
+            type: QuestionTypeCheckbox::class,
+            extra_data: json_encode(new QuestionTypeSelectableExtraDataConfig([
+                'bread' => '<script>alert(1)</script>',
+                'milk'  => 'Milk & honey',
+            ]))
+        );
+        $form = $this->createForm($builder);
+
+        $ticket = $this->sendFormAndGetCreatedTicket($form, [
+            "Shopping list" => ['bread', 'milk'],
+        ]);
+
+        $this->assertStringNotContainsString("<script>", $ticket->fields['content']);
+        $this->assertStringContainsString("<li>Milk &amp; honey</li>", $ticket->fields['content']);
+    }
+
+    public function testMultiplePredefinedValuesAreApplied(): void
+    {
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "Shopping list",
+            type: QuestionTypeCheckbox::class,
+            default_value: 'bread',
+            extra_data: json_encode(new QuestionTypeSelectableExtraDataConfig([
+                'bread'  => 'Bread',
+                'milk'   => 'Milk',
+                'cheese' => 'Cheese',
+            ]))
+        );
+        $form = $this->createForm($builder);
+        $question = Question::getById($this->getQuestionId($form, "Shopping list"));
+
+        $question->setDefaultValueFromParameters([
+            $question->fields['uuid'] => 'milk,cheese',
+        ]);
+
+        // A checkbox question holds several values, the parameter is valid
+        $this->assertEquals('milk,cheese', $question->fields['default_value']);
     }
 }

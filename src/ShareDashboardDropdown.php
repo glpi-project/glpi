@@ -45,10 +45,10 @@ class ShareDashboardDropdown extends AbstractRightsDropdown
     protected static function getTypes(array $options = []): array
     {
         return [
-            User::getType(),
-            Entity::getType(),
-            Profile::getType(),
-            Group::getType(),
+            User::class,
+            Entity::class,
+            Profile::class,
+            Group::class,
         ];
     }
 }

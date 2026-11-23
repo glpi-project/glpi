@@ -40,7 +40,7 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class AuthLdapReplicate extends CommonDBTM
 {
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     public static function canCreate(): bool
     {

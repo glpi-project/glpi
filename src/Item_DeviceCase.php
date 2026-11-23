@@ -38,10 +38,10 @@
  **/
 class Item_DeviceCase extends Item_Devices
 {
-    public static $itemtype_2 = DeviceCase::class;
-    public static $items_id_2 = 'devicecases_id';
+    public static ?string $itemtype_2 = DeviceCase::class;
+    public static ?string $items_id_2 = 'devicecases_id';
 
-    protected static $notable = false;
+    protected static bool $notable = false;
 
 
     public static function getSpecificities($specif = '')

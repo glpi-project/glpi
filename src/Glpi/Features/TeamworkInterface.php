@@ -55,7 +55,7 @@ interface TeamworkInterface
 
     /**
      * Get all types of team members that are supported by this item type
-     * @return array
+     * @return class-string<CommonDBTM>[]
      */
     public static function getTeamItemtypes(): array;
 

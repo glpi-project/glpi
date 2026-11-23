@@ -41,11 +41,6 @@ namespace Glpi\Plugin;
  */
 class Hooks
 {
-    /**
-     * @deprecated 11.0.0
-     */
-    public const CSRF_COMPLIANT = 'csrf_compliant';
-
     // File hooks
     /**
      * Add CSS file in the head of all non-anonymous pages.
@@ -485,6 +480,16 @@ class Hooks
     public const PRE_ITEM_UPDATE           = 'pre_item_update';
 
     /**
+     * Register a function to handle the 'post_prepareupdate' lifecycle event for an item.
+     * The function is called with the item as a parameter.
+     * The function is expected to return nothing.
+     * This hook is called after the input has been modified, but before the item is added to the database.
+     * The input can be found in the `input` property of the item. Setting the `input` property to false will cancel the update process.
+     * @see CommonDBTM::prepareInputForAdd()
+     */
+    public const POST_PREPAREUPDATE           = 'post_prepareupdate';
+
+    /**
      * Register a function to handle the 'item_update' lifecycle event for an item.
      * The function is called with the item as a parameter.
      * The function is expected to return nothing.
@@ -569,6 +574,20 @@ class Hooks
      * The function is expected to return nothing, but the information may be output directly.
      */
     public const SHOW_ITEM_STATS           = 'show_item_stats';
+
+    /**
+     * Register a function to display new variables in reply messages.
+     * The function is called with the name of actual item.
+     * The function is expected to return an array with parmeter.
+     */
+    public const GET_CONTENT_TEMPLATE_PARAMETER      = 'get_content_template_parameter';
+
+    /**
+     * Register a function to display new variables in reply messages.
+     * The function is called with type and id of the actuel item.
+     * The function is expected to return an array with parameters values.
+     */
+    public const GET_CONTENT_TEMPLATE_VALUE       = 'get_content_template_value';
 
     /**
      * Register a function to add additional permission restrictions for the item.
@@ -726,11 +745,6 @@ class Hooks
     public const TIMELINE_ANSWER_ACTIONS = 'timeline_answer_actions';
 
     /**
-     * @deprecated 11.0.0 Use `TIMELINE_ITEMS` instead. The usage of both hooks is the same.
-     */
-    public const SHOW_IN_TIMELINE        = 'show_in_timeline';
-
-    /**
      * Register a function to add new items to the timeline of a Ticket, Change or Problem.
      * The function is called with the following parameters:
      * - 'item' => The item for which the actions are shown.
@@ -838,6 +852,33 @@ class Hooks
      * The function is expected to modify the given array as needed and return it.
      */
     public const INVENTORY_GET_PARAMS = 'inventory_get_params';
+
+    /**
+     * Register a function to provide an agent with additional requested configuration parameters.
+     * Like a deployement plugin need to provide its endpoint for continuing the dialog.
+     *
+     * The function is called with the following parameters:
+     * - 'machineid': The ID of the machine for which configuration is requested;
+     * - 'task': "Taskname[version]", the task name request.
+     *
+     * The hooks must return an array that will be sent as a json answer to the request.
+     * This array should have a "response" key to be considered valid.
+     * If any 'errors' key is provided, we will return an HTTP answer with a 400 error code.
+     *
+     * An example from the deploy plugin:
+     * [
+     *   "response" => [
+     *     "configValidityPeriod" => 600,
+     *     "schedule" => [
+     *       {
+     *         "task": "Deploy",
+     *         "remote": "https:\/\/server\/plugins\/deploy\/"
+     *      }
+     *    ]
+     *   ]
+     * ]
+     */
+    public const INVENTORY_GET_CONFIGURATION = 'inventory_get_configuration';
 
     /**
      * Register a function to be called before the inventory submission is handled.
@@ -1435,7 +1476,10 @@ class Hooks
             self::POST_SHOW_ITEM,
             self::POST_SHOW_TAB,
             self::POST_PREPAREADD,
+            self::POST_PREPAREUPDATE,
             self::SHOW_ITEM_STATS,
+            self::GET_CONTENT_TEMPLATE_PARAMETER,
+            self::GET_CONTENT_TEMPLATE_VALUE,
             self::TIMELINE_ACTIONS,
         ];
     }

@@ -59,13 +59,12 @@ class ConfigureCommand extends AbstractCommand implements ConfigurationCommandIn
      */
     public const ERROR_UNABLE_TO_WRITE_CONFIG = 1;
 
-    protected $requires_db = false;
+    protected bool $requires_db = false;
 
     /**
      * Cache manager.
-     * @var CacheManager
      */
-    private $cache_manager;
+    private CacheManager $cache_manager;
 
     public function __construct()
     {
@@ -129,7 +128,7 @@ class ConfigureCommand extends AbstractCommand implements ConfigurationCommandIn
         $this->setHelp(implode("\n", $help_lines));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $use_default = $input->getOption('use-default');

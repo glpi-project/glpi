@@ -38,11 +38,11 @@ use Glpi\Application\View\TemplateRenderer;
 class Problem_Ticket extends CommonITILObject_CommonITILObject
 {
     // From CommonDBRelation
-    public static $itemtype_1 = Problem::class;
-    public static $items_id_1   = 'problems_id';
+    public static ?string $itemtype_1 = Problem::class;
+    public static ?string $items_id_1   = 'problems_id';
 
-    public static $itemtype_2 = Ticket::class;
-    public static $items_id_2   = 'tickets_id';
+    public static ?string $itemtype_2 = Ticket::class;
+    public static ?string $items_id_2   = 'tickets_id';
 
     public static function getTypeName($nb = 0)
     {
@@ -132,17 +132,17 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
                         ];
                         if ($task->can(-1, CREATE, $input2)) {
                             if ($task->add($input2)) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
@@ -158,12 +158,21 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
                     if ($item->can($id, READ)) {
                         if ($item->canSolve()) {
                             $solution = new ITILSolution();
-                            $added = $solution->add([
+
+                            $add_input = [
                                 'itemtype'         => $item::class,
                                 'items_id'         => $item->getID(),
                                 'solutiontypes_id' => $input['solutiontypes_id'],
                                 'content'          => $input['content'],
-                            ]);
+                            ];
+
+                            if (!$solution->can(-1, CREATE, $add_input)) {
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                                $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                                continue;
+                            }
+
+                            $added = $solution->add($add_input);
 
                             if ($added) {
                                 $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
@@ -193,7 +202,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
      **/
     public static function showForProblem(Problem $problem)
     {
-        $ID = $problem->getField('id');
+        $ID = $problem->getID();
 
         if (!static::canView() || !$problem->can($ID, READ)) {
             return;
@@ -246,7 +255,6 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
             'formatters' => $formatters,
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -275,7 +283,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
     public static function showForTicket(Ticket $ticket)
     {
 
-        $ID = $ticket->getField('id');
+        $ID = $ticket->getID();
 
         if (!static::canView() || !$ticket->can($ID, READ)) {
             return;
@@ -329,7 +337,6 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
             'formatters' => $formatters,
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -356,6 +363,10 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
      */
     private static function getTicketProblemsData($tickets_id): array
     {
+        if (!Problem::canView()) {
+            return [];
+        }
+
         $ticket = new Ticket();
         $ticket->fields['id'] = $tickets_id;
         $iterator = self::getListForItem($ticket);
@@ -390,7 +401,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
         foreach ($iterator as $data) {
             $ticket = new Ticket();
             $ticket->getFromDB($data['id']);
-            if ($ticket->canViewItem()) {
+            if ($ticket->can($ticket->getID(), READ)) {
                 $tickets[$data['id']] = $data;
             }
         }

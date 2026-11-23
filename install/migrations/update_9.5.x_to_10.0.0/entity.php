@@ -104,7 +104,7 @@ foreach ($fkey_config_fields as $fkey_config_field) {
                         sprintf('GREATEST(%s, 0)', $DB->quoteName($fkey_config_field))
                     ),
                 ],
-                ['1'] // Update all entities
+                [new QueryExpression('true')] // Update all entities
             );
         }
     }

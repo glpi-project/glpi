@@ -135,7 +135,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $iterator = $this->db->request([
+        $iterator = $this->getDb()->request([
             'SELECT' => ['id', 'name', 'helpdesk_item_type'],
             'FROM'   => Profile::getTable(),
             'ORDER'  => 'id ASC',
@@ -198,7 +198,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
                 OutputInterface::VERBOSITY_NORMAL
             );
 
-            $iterator = $this->db->request([
+            $iterator = $this->getDb()->request([
                 'FROM'  => $relation_itemtype::getTable(),
                 'WHERE' => ['itemtype' => 'PluginDatabasesDatabase'],
                 'ORDER' => 'id ASC',
@@ -284,7 +284,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $iterator = $this->db->request([
+        $iterator = $this->getDb()->request([
             'FROM'  => 'glpi_plugin_databases_databasecategories',
             'ORDER' => 'id ASC',
         ]);
@@ -342,7 +342,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
             '<comment>' . sprintf(__('Importing %s...'), Database::getTypeName(Session::getPluralNumber())) . '</comment>',
             OutputInterface::VERBOSITY_NORMAL
         );
-        $iterator = $this->db->request([
+        $iterator = $this->getDb()->request([
             'FROM'  => 'glpi_plugin_databases_instances', // Database in GLPI core corresponds to PluginDatabasesInstance
             'ORDER' => 'id ASC',
         ]);
@@ -436,7 +436,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
             '<comment>' . sprintf(__('Importing %s...'), DatabaseInstance::getTypeName(Session::getPluralNumber())) . '</comment>',
             OutputInterface::VERBOSITY_NORMAL
         );
-        $iterator = $this->db->request([
+        $iterator = $this->getDb()->request([
             'FROM'  => 'glpi_plugin_databases_databases', // Database in GLPI core corresponds to PluginDatabasesDatabase
             'ORDER' => 'id ASC',
         ]);
@@ -507,7 +507,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
             ];
 
             //try to load related item from 'glpi_plugin_databases_databases_items'
-            $related_item_iterator = $this->db->request([
+            $related_item_iterator = $this->getDb()->request([
                 'FROM'  => 'glpi_plugin_databases_databases_items',
                 'WHERE' => [
                     'plugin_databases_databases_id' => $instance_data['id'],
@@ -566,7 +566,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $iterator = $this->db->request([
+        $iterator = $this->getDb()->request([
             'FROM'  => 'glpi_plugin_databases_databasetypes',
             'ORDER' => 'id ASC',
         ]);

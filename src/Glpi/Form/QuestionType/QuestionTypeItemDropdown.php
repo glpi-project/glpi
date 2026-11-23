@@ -94,8 +94,8 @@ class QuestionTypeItemDropdown extends QuestionTypeItem
         });
 
         $dropdown_itemtypes[SLM::getTypeName(Session::getPluralNumber())] = [
-            SLA::getType() => SLA::getType(),
-            OLA::getType() => OLA::getType(),
+            SLA::class => SLA::class,
+            OLA::class => OLA::class,
         ];
 
         return $dropdown_itemtypes;
@@ -202,7 +202,7 @@ class QuestionTypeItemDropdown extends QuestionTypeItem
         }
 
         /** @var ?QuestionTypeItemDropdownExtraDataConfig $config */
-        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'] ?? '', true) ?? []);
         if ($config === null) {
             return null;
         }

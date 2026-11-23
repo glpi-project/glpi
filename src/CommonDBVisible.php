@@ -43,30 +43,26 @@ abstract class CommonDBVisible extends CommonDBTM
     /**
      * Entities on which item is visible.
      * Keys are ID, values are DB fields values.
-     * @var array
      */
-    protected $entities = [];
+    protected array $entities = [];
 
     /**
      * Groups for whom item is visible.
      * Keys are ID, values are DB fields values.
-     * @var array
      */
-    protected $groups = [];
+    protected array $groups = [];
 
     /**
      * Profiles for whom item is visible.
      * Keys are ID, values are DB fields values.
-     * @var array
      */
-    protected $profiles = [];
+    protected array $profiles = [];
 
     /**
      * Users for whom item is visible.
      * Keys are ID, values are DB fields values.
-     * @var array
      */
-    protected $users = [];
+    protected array $users = [];
 
     /**
      * Is the login user have access to item based on visibility configuration
@@ -92,9 +88,11 @@ abstract class CommonDBVisible extends CommonDBTM
             count($this->groups)
             && isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])
         ) {
+            // A user member of a sub-group must also see items made visible to a parent group
+            $user_groups = Group::getGroupsAncestorsIds($_SESSION["glpigroups"]);
             foreach ($this->groups as $data) {
                 foreach ($data as $group) {
-                    if (in_array($group['groups_id'], $_SESSION["glpigroups"])) {
+                    if (in_array($group['groups_id'], $user_groups)) {
                         // All the group
                         if ($group['no_entity_restriction']) {
                             return true;
@@ -319,7 +317,6 @@ abstract class CommonDBVisible extends CommonDBTM
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => $massiveactionparams,
         ]);
@@ -336,7 +333,7 @@ abstract class CommonDBVisible extends CommonDBTM
     {
         $params = [
             'type'          => '__VALUE__',
-            'right'         => strtolower($this::getType()) . '_public',
+            'right'         => strtolower(static::class) . '_public',
         ];
         if (isset($this->fields['entities_id'])) {
             $params['entity'] = $this->fields['entities_id'];

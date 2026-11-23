@@ -3,9 +3,10 @@
         "skipLibCheck": true,
         "strict": true,
         "target": "ES2022",
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "esModuleInterop": true
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "esModuleInterop": true,
+        "types": ["node"]
     },
     "include": ["tests/e2e/**/*.ts"],
 }

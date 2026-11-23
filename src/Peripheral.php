@@ -58,14 +58,14 @@ class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadc
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    protected static $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
+    protected static array $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
         'Item_OperatingSystem', 'Item_SoftwareVersion',
     ];
 
-    public static $rightname                   = 'peripheral';
-    protected $usenotepad               = true;
+    public static string $rightname                   = 'peripheral';
+    protected bool $usenotepad               = true;
 
     public function getCloneRelations(): array
     {
@@ -179,7 +179,7 @@ class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadc
             ],
             'FROM'   => Asset_PeripheralAsset::getTable(),
             'WHERE'  => [
-                'itemtype_peripheral' => $this->getType(),
+                'itemtype_peripheral' => static::class,
                 'items_id_peripheral' => $this->fields['id'],
             ],
         ]);
@@ -198,7 +198,7 @@ class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadc
             Asset_PeripheralAsset::getMassiveActionsForItemtype($actions, self::class, false, $checkitem);
             $actions += [
                 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
-               => "<i class='ti ti-key'></i>"
+               => "<i class='ti ti-key' aria-hidden='true'></i>"
                   . _sx('button', 'Add a license'),
             ];
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, self::class, false, $checkitem);

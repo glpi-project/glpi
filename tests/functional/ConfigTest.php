@@ -39,6 +39,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\Plugin\Hooks;
 use Glpi\Tests\DbTestCase;
 use Log;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
 use Session;
@@ -122,9 +123,7 @@ class ConfigTest extends DbTestCase
             'Config$3'      => "Assets",
             'Config$4'      => "Assistance",
             'Config$12'     => "Management",
-            'Config$9'      => "Logs purge",
             'Config$5'      => "System",
-            'Config$10'     => "Security",
             'Config$7'      => "Performance",
             'Config$8'      => "API",
             'Config$11'      => "Impact analysis",
@@ -396,6 +395,22 @@ class ConfigTest extends DbTestCase
             ], [
                 'raw'       => '10.6.7-MariaDB-1:10.6.7-2ubuntu1.1',
                 'version'   => '10.6.7',
+                'compat'    => false,
+            ], [
+                'raw'       => '10.11.18-MariaDB',
+                'version'   => '10.11.18',
+                'compat'    => true,
+            ], [
+                'raw'       => '11.4.12-MariaDB',
+                'version'   => '11.4.12',
+                'compat'    => true,
+            ], [
+                'raw'       => '11.8.8-MariaDB',
+                'version'   => '11.8.8',
+                'compat'    => true,
+            ], [
+                'raw'       => '12.3.2-MariaDB',
+                'version'   => '12.3.2',
                 'compat'    => true,
             ], [
                 'raw'       => '5.6.38-log',
@@ -409,10 +424,19 @@ class ConfigTest extends DbTestCase
                 'raw'       => '8.0.23-standard',
                 'version'   => '8.0.23',
                 'compat'    => true,
+            ], [
+                'raw'       => '8.4.10',
+                'version'   => '8.4.10',
+                'compat'    => true,
+            ], [
+                'raw'       => '9.7.1',
+                'version'   => '9.7.1',
+                'compat'    => true,
             ],
         ];
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('dbEngineProvider')]
     public function testCheckDbEngine($raw, $version, $compat)
     {
@@ -939,21 +963,6 @@ class ConfigTest extends DbTestCase
             'pdffont' => 'freesans',
         ]);
         $this->assertEquals('freesans', $CFG_GLPI['pdffont']);
-    }
-
-    public function testShowFormSecurity(): void
-    {
-        // Arrange: login
-        $this->login();
-
-        // Act: display the security from
-        $config = new Config();
-        ob_start();
-        $config->showFormSecurity();
-        $html = ob_get_clean();
-
-        // Assert: make sure we reached this point without errors
-        $this->assertNotEmpty($html);
     }
 
     public function testPrepareInputForUpdateSsoLogoutUrl(): void

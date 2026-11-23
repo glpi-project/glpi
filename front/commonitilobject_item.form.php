@@ -51,7 +51,13 @@ $obj_fkey = $obj->getForeignKeyField();
 
 if (isset($_POST["add"])) {
     if (isset($_POST['my_items']) && !empty($_POST['my_items'])) {
-        [$_POST['itemtype'], $_POST['items_id']] = explode('_', $_POST['my_items']);
+        // Split on last underscore to handle multi-underscore itemtype names
+        $last_underscore = strrpos($_POST['my_items'], '_');
+        if ($last_underscore === false) {
+            throw new BadRequestHttpException('Bad request');
+        }
+        $_POST['itemtype'] = substr($_POST['my_items'], 0, $last_underscore);
+        $_POST['items_id'] = substr($_POST['my_items'], $last_underscore + 1);
     }
 
     if (isset($_POST['add_items_id'])) {
@@ -72,7 +78,7 @@ if (isset($_POST["add"])) {
     if ($item_obj->add($_POST)) {
         Event::log(
             $_POST[$obj_fkey],
-            strtolower($obj->getType()),
+            strtolower($obj::class),
             4,
             "tracking",
             //TRANS: %s is the user login
@@ -81,11 +87,17 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } elseif (isset($_POST["delete"])) {
-    $item_obj->deleteByCriteria([
-        $obj_fkey  => $_POST[$obj_fkey],
-        'items_id' => $_POST['items_id'],
-        'itemtype' => $_POST['itemtype'],
-    ]);
+    if (
+        !$item_obj->getFromDBByCrit([
+            $obj_fkey  => $_POST[$obj_fkey],
+            'items_id' => $_POST['items_id'],
+            'itemtype' => $_POST['itemtype'],
+        ])
+    ) {
+        Html::back();
+    }
+    $item_obj->check($item_obj->getID(), PURGE);
+    $item_obj->delete(['id' => $item_obj->getID()], true);
     Html::back();
 }
 

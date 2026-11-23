@@ -51,14 +51,14 @@ if (isset($_POST['transfer'])) {
         $transfer->moveItems($_SESSION['glpitransfer_list'], $_POST['to_entity'], $_POST);
         unset($_SESSION['glpitransfer_list']);
         echo "<div class='fw-bold text-center'>" . __s('Operation successful') . "<br>";
-        echo "<a href='central.php' role='button' class='btn btn-primary'>" . __s('Back') . "</a></div>";
+        echo "<a href='central.php' role='button' class='btn btn-primary'>" . __s('Home') . "</a></div>";
         Html::footer();
         return;
     }
 } elseif (isset($_POST['clear'])) {
     unset($_SESSION['glpitransfer_list']);
     echo "<div class='fw-bold text-center'>" . __s('Operation successful') . "<br>";
-    echo "<a href='central.php' role='button' class='btn btn-primary'>" . __s('Back') . "</a></div>";
+    echo "<a href='central.php' role='button' class='btn btn-primary'>" . __s('Home') . "</a></div>";
     echo "</div>";
     Html::footer();
     return;

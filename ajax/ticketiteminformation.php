@@ -39,11 +39,12 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 if (isset($_POST["my_items"]) && !empty($_POST["my_items"])) {
-    $splitter = explode("_", $_POST["my_items"]);
-    if (count($splitter) == 2) {
-        $_POST["itemtype"] = $splitter[0];
-        $_POST["items_id"] = $splitter[1];
+    $last_underscore = strrpos($_POST["my_items"], "_");
+    if ($last_underscore === false) {
+        throw new AccessDeniedHttpException();
     }
+    $_POST["itemtype"] = substr($_POST["my_items"], 0, $last_underscore);
+    $_POST["items_id"] = substr($_POST["my_items"], $last_underscore + 1);
 }
 
 if (

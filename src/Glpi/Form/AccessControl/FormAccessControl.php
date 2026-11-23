@@ -54,8 +54,8 @@ use function Safe\json_encode;
 
 final class FormAccessControl extends CommonDBChild
 {
-    public static $itemtype = Form::class;
-    public static $items_id = 'forms_forms_id';
+    public static string $itemtype = Form::class;
+    public static string $items_id = 'forms_forms_id';
 
     #[Override]
     public static function getTypeName($nb = 0)

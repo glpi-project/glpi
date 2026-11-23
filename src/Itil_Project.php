@@ -44,10 +44,10 @@ use Glpi\DBAL\QueryUnion;
  **/
 class Itil_Project extends CommonDBRelation
 {
-    public static $itemtype_1 = 'itemtype';
-    public static $items_id_1 = 'items_id';
-    public static $itemtype_2 = Project::class;
-    public static $items_id_2 = 'projects_id';
+    public static ?string $itemtype_1 = 'itemtype';
+    public static ?string $items_id_1 = 'items_id';
+    public static ?string $itemtype_2 = Project::class;
+    public static ?string $items_id_2 = 'projects_id';
 
     public static function getTypeName($nb = 0)
     {
@@ -76,12 +76,12 @@ class Itil_Project extends CommonDBRelation
                         $nb = countElementsInTable(
                             self::getTable(),
                             [
-                                'itemtype' => $item->getType(),
+                                'itemtype' => $item::class,
                                 'items_id' => $item->getID(),
                             ]
                         );
                     }
-                    $label = self::createTabEntry(Project::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                    $label = self::createTabEntry(Project::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                     break;
 
                 case Project::class:
@@ -92,7 +92,7 @@ class Itil_Project extends CommonDBRelation
                     $label = self::createTabEntry(
                         _n('Itil item', 'Itil items', Session::getPluralNumber()),
                         $nb,
-                        $item::getType(),
+                        $item::class,
                         Ticket::getIcon()
                     );
                     break;
@@ -127,7 +127,7 @@ class Itil_Project extends CommonDBRelation
     {
         global $DB, $CFG_GLPI;
 
-        $ID = $project->getField('id');
+        $ID = $project->getID();
         if (!$project->can($ID, READ)) {
             return false;
         }
@@ -191,7 +191,6 @@ class Itil_Project extends CommonDBRelation
                     <div class="mb-3">
                         <form method="post" action="{{ 'Itil_Project'|itemtype_form_path }}">
                             <input type="hidden" name="projects_id" value="{{ ID }}"/>
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
                             <div class="d-flex">
                                 {{ fields.dropdownItemsFromItemtypes('items_id', null, {
                                     add_field_class: 'd-inline',
@@ -201,7 +200,7 @@ class Itil_Project extends CommonDBRelation
                                     entity_restrict: entity_restrict
                                 }) }}
                                 <div>
-                                    <button class="btn btn-primary ms-3" type="submit" name="add" value=""><i class="ti ti-link"></i><span>{{ btn_msg }}</span></button>
+                                    <button class="btn btn-primary ms-3" type="submit" name="add" value=""><i class="ti ti-link" aria-hidden="true"></i><span>{{ btn_msg }}</span></button>
                                 </div>
                             </div>
                         </form>
@@ -233,7 +232,6 @@ TWIG, $twig_params);
             'formatters' => $cols['formatters'],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -293,7 +291,7 @@ TWIG, $twig_params);
                 ],
             ],
             'WHERE'           => [
-                "{$selfTable}.itemtype" => $itil->getType(),
+                "{$selfTable}.itemtype" => $itil::class,
                 "{$selfTable}.items_id" => $ID,
                 'NOT'                   => ["{$projectTable}.id" => null],
             ],
@@ -331,7 +329,6 @@ TWIG, $twig_params);
                             <div class="d-flex">
                                 <input type="hidden" name="itemtype" value="{{ itemtype }}"/>
                                 <input type="hidden" name="items_id" value="{{ items_id }}"/>
-                                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
                                 <div class="col-auto">
                                     {{ fields.dropdownField('Project', 'projects_id', '', null, {
                                         add_field_class: 'd-inline',
@@ -343,7 +340,7 @@ TWIG, $twig_params);
                                 </div>
                                 <div class="col-auto">
                                     <button class="btn btn-primary ms-1" type="submit" name="add" value="">
-                                        <i class="ti ti-link"></i>
+                                        <i class="ti ti-link" aria-hidden="true"></i>
                                         {{ btn_msg }}
                                     </button>
                                 </div>
@@ -373,7 +370,6 @@ TWIG, $twig_params);
             'formatters' => $cols['formatters'],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

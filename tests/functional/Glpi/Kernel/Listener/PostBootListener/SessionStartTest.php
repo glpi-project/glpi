@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Kernel\Listener\PostBootListener;
 use Glpi\Http\SessionManager;
 use Glpi\Kernel\Listener\PostBootListener\SessionStart;
 use Glpi\Tests\GLPITestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
 
@@ -75,6 +76,7 @@ class SessionStartTest extends GLPITestCase
         }
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('bootContextProvider')]
     public function testOnPostBootInitSessionVar(string $php_sapi, bool $is_stateless, int $use_cookies): void
     {

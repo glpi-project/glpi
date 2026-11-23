@@ -34,8 +34,9 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
+use Glpi\Config\ConfigContainer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Error\ErrorHandler;
 use Glpi\Plugin\Hooks;
 
@@ -45,10 +46,10 @@ use Glpi\Plugin\Hooks;
 class SavedSearch_Alert extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype = SavedSearch::class;
-    public static $items_id = 'savedsearches_id';
-    public $dohistory       = true;
-    protected $displaylist  = false;
+    public static string $itemtype = SavedSearch::class;
+    public static string $items_id = 'savedsearches_id';
+    public bool $dohistory       = true;
+    protected bool $displaylist  = false;
 
     public const OP_LESS     = 0;
     public const OP_LESSEQ   = 1;
@@ -81,7 +82,7 @@ class SavedSearch_Alert extends CommonDBChild
                     ['savedsearches_id' => $item->getID()]
                 );
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -171,8 +172,8 @@ class SavedSearch_Alert extends CommonDBChild
         $notifications = $DB->request([
             'FROM'   => Notification::getTable(),
             'WHERE'  => [
-                'itemtype'  => self::getType(),
-                'event'     => 'alert' . ($search->getField('is_private') ? '' : '_' . $search->getID()),
+                'itemtype'  => static::class,
+                'event'     => 'alert' . ($search->isPrivate() ? '' : ('_' . $search->getID())),
             ],
         ]);
 
@@ -224,7 +225,6 @@ class SavedSearch_Alert extends CommonDBChild
             ],
             'entries' => $entries,
             'total_number' => $total_count,
-            'filtered_number' => $total_count,
             'showmassiveactions' => false,
         ]);
     }
@@ -268,14 +268,15 @@ class SavedSearch_Alert extends CommonDBChild
      *
      * Save $_SESSION and $CFG_GLPI into the returned array
      *
-     * @return array[] which contains a copy of $_SESSION and $CFG_GLPI
+     * @return array{'$_SESSION': array<string, mixed>, '$CFG_GLPI': ConfigContainer} which contains a copy of $_SESSION and $CFG_GLPI
      */
     private static function saveContext(): array
     {
+        /** @var ConfigContainer $CFG_GLPI */
         global $CFG_GLPI;
         $context = [];
         $context['$_SESSION'] = $_SESSION;
-        $context['$CFG_GLPI'] = $CFG_GLPI;
+        $context['$CFG_GLPI'] = clone $CFG_GLPI;
         return $context;
     }
 
@@ -335,7 +336,7 @@ class SavedSearch_Alert extends CommonDBChild
                         'glpi_alerts.date' => ['<',
                             QueryFunction::dateSub(
                                 date: QueryFunction::now(),
-                                interval: new QueryExpression($DB::quoteName('glpi_savedsearches_alerts.frequency')),
+                                interval: new QueryIdentifier('glpi_savedsearches_alerts.frequency'),
                                 interval_unit: 'SECOND'
                             ),
                         ],
@@ -426,7 +427,8 @@ class SavedSearch_Alert extends CommonDBChild
                     self::restoreContext($context);
 
                     if ($notify) {
-                        $event = 'alert' . ($savedsearch->getField('is_private') ? '' : '_' . $savedsearch->getID());
+                        // 'alert' = private saved search, 'alert_ID' = public saved search
+                        $event = 'alert' . ($savedsearch->isPrivate() ? '' : ('_' . $savedsearch->getID()));
                         $savedsearch_alert = new self();
                         $savedsearch_alert->getFromDB($row['id']);
                         $data['savedsearch'] = $savedsearch;

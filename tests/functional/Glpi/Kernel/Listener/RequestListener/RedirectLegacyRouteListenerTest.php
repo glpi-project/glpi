@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Kernel\Listener\RequestListener;
 
 use Glpi\Http\RedirectResponse;
 use Glpi\Kernel\Listener\RequestListener\RedirectLegacyRouteListener;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -62,6 +63,7 @@ final class RedirectLegacyRouteListenerTest extends TestCase
         }
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('provideLegacyUrl')]
     public function testRedirection(string $root_doc, string $path, ?string $expected): void
     {

@@ -55,7 +55,6 @@ class TicketTest extends FrontBaseClass
                 'add'  => true,
                 'name' => 'A \'test\' > "ticket" & name thetestuuidtoremove',
                 'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-                '_glpi_csrf_token' => $crawler->filter('input[name=_glpi_csrf_token]')->attr('value'),
             ]
         );
 
@@ -83,9 +82,6 @@ class TicketTest extends FrontBaseClass
         foreach ($utf8_emails as $index => $email) {
             $ticket_name = 'Test ticket with UTF-8 email requester ' . $index;
 
-            $crawler = $this->http_client->request('GET', $this->base_uri . 'front/ticket.form.php');
-            $csrf_token = $crawler->filter('input[name=_glpi_csrf_token]')->attr('value');
-
             $crawler = $this->http_client->request(
                 'POST',
                 $this->base_uri . 'front/ticket.form.php',
@@ -93,7 +89,6 @@ class TicketTest extends FrontBaseClass
                     'add' => true,
                     'name' => $ticket_name,
                     'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-                    '_glpi_csrf_token' => $csrf_token,
                     '_actors' => json_encode([
                         'requester' => [
                             [

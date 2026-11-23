@@ -41,37 +41,41 @@
          <h4 class="card-title {{ icon|length ? 'ms-5' : '' }}">
             {% if icon|length %}
                <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
-                  <i class="fs-2x {{ icon }}"></i>
+                  <i class="fs-2x {{ icon }}" aria-hidden="true"></i>
                </div>
             {% endif %}
             {{ label }}
             {% if helper is not empty %}
-               <span class="form-help" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"
-                     data-bs-title="{{ helper }}">?</span>
+               <span class="form-help" tabindex="0" aria-label="{{ helper }}"
+                     data-bs-toggle="tooltip" data-bs-trigger="hover focus" data-bs-placement="top"
+                     data-bs-html="true" data-bs-title="{{ helper }}">?</span>
             {% endif %}
          </h4>
       </div>
    </div>
 {% endmacro %}
 
-{% macro smallTitle(label, icon = '', helper = '', id = '') %}
+{% macro smallTitle(label, icon = '', helper = '', id = '', level = 4) %}
    {% set margins = 'mt-2 mb-2' %}
    {% set id = id != '' ? id : 'formsection' ~ random() %}
+   {% set level = level in [1, 2, 3, 4, 5, 6] ? level : 4 %}
 
    <div class="card border-0 shadow-none p-0 m-0 {{ margins }}">
       <div id="{{ id }}" class="card-header mb-1 p-0 ps-3 py-1">
-         <h4 class="card-subtitle {{ icon|length ? 'ms-4' : '' }}">
+         {# fs-4 keeps the visual size constant regardless of the heading level #}
+         <h{{ level }} class="card-subtitle fs-4 {{ icon|length ? 'ms-4' : '' }}">
             {% if icon|length %}
                <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
-                  <i class="fs-2x {{ icon }}"></i>
+                  <i class="fs-2x {{ icon }}" aria-hidden="true"></i>
                </div>
             {% endif %}
              <span class="ms-2">{{ label }}</span>
             {% if helper is not empty %}
-               <span class="form-help" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"
-                     data-bs-title="{{ helper }}">?</span>
+               <span class="form-help" tabindex="0" aria-label="{{ helper }}"
+                     data-bs-toggle="tooltip" data-bs-trigger="hover focus" data-bs-placement="top"
+                     data-bs-html="true" data-bs-title="{{ helper }}">?</span>
             {% endif %}
-         </h4>
+         </h{{ level }}>
       </div>
    </div>
 {% endmacro %}
@@ -84,7 +88,7 @@
        }) %}
    {% endif %}
    {% if item.fields[name] is defined and item.fields[name] is not null %}
-      {% set value = call('autoName', [item.fields[name], name, (withtemplate == 2), item.getType(), item.fields['entities_id'] ?? null]) %}
+      {% set value = call('autoName', [item.fields[name], name, (withtemplate == 2), item.getType(), item.fields['entities_id'] ?? -1]) %}
    {% else %}
       {% set value = null %}
    {% endif %}
@@ -281,7 +285,7 @@
 {% macro dateField(name, value, label = '', options = {}) %}
    {% set field %}
         {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
-        {{ _inputs.date(name, value, options) }}
+        {{ _inputs.date(name, value, options|merge({'field_label': label})) }}
    {% endset %}
 
    {{ _self.field(name, field, label, options) }}
@@ -291,7 +295,7 @@
 {% macro datetimeField(name, value, label = '', options = {}) %}
    {% set field %}
         {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
-        {{ _inputs.datetime(name, value, options) }}
+        {{ _inputs.datetime(name, value, options|merge({'field_label': label})) }}
    {% endset %}
 
    {{ _self.field(name, field, label, options) }}
@@ -392,7 +396,7 @@
              {%- endset -%}
             <button type="button" class="btn p-2 position-absolute top-0 start-0" title="{{ __('Delete') }}"
                     onclick="{{ clear_js }}">
-               <i class="ti ti-x"></i>
+               <i class="ti ti-x" aria-hidden="true"></i>
             </button>
          {% endif %}
       </div>
@@ -445,7 +449,7 @@
             If `options` is not iterable, it means that this macro was used
             with its previous signature (name, value, label, options = {}).
             We get the `options` value from the extra positional arguments (available in `varargs`).
-            @TODO Add a deprecation in GLPI 11.1.
+            @TODO Add a deprecation.
          #}
         {% set options = varargs[0]|default({}) %}
     {% endif %}
@@ -454,7 +458,7 @@
 {% endmacro %}
 
 {% macro csrfField() %}
-    {{ _self.hiddenField('_glpi_csrf_token', csrf_token()) }}
+   {% do call('Toolbox::deprecated', ['Csrf protection is now handled without tokens.']) %}
 {% endmacro %}
 
 {% macro dropdownNumberField(name, value, label = '', options = {}) %}
@@ -1049,86 +1053,17 @@
     {% set options = {
         extra_css_classes: "",
         backdrop: true,
+        allow_empty: false,
     }|merge(options) %}
-    {% set custom_icon_prefix = constant(
-        'Glpi\\UI\\IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX'
-    ) %}
     {% set field %}
-        {% set container_id = "container-" ~ random() %}
-
-        <div id="{{ container_id }}">
-            <input
-                name="{{ name }}"
-                type="hidden"
-                value="{{ value }}"
-                data-glpi-icon-picker-value
-            >
-
-            {# Display the illustration, trigger the modal on click #}
-            {% set modal_id = "illustration-modal-" ~ random() %}
-            <div
-                class="illustration-selector d-flex align-items-center card border-1 {{ options.extra_css_classes }}"
-                role="button"
-                aria-label="{{ __("Select an illustration") }}"
-                data-bs-toggle="modal"
-                data-bs-target="#{{ modal_id }}"
-                data-glpi-icon-picker-value-preview
-            >
-                <div class="card-body aspect-ratio-1">
-                    {% set is_custom_file = value starts with custom_icon_prefix %}
-                    <div
-                        {% if is_custom_file %}
-                            data-glpi-icon-picker-value-preview-custom
-                            data-testid="illustration-custom-preview"
-                        {% else %}
-                            data-glpi-icon-picker-value-preview-native
-                        {% endif %}
-                    >
-                        {{ render_illustration(value, 100) }}
-                    </div>
-
-                    {# Keep the other format (native/custom) that wasn't used
-                    in a dedicated div that we can show later if the format
-                    is changed #}
-                    {% if is_custom_file %}
-                        <div
-                            class="d-none"
-                            data-glpi-icon-picker-value-preview-native
-                        >
-                           {{ render_illustration('', 100) }}
-                        </div>
-                    {% else %}
-                        <div
-                            class="d-none"
-                            data-glpi-icon-picker-value-preview-custom
-                            data-testid="illustration-custom-preview"
-                        >
-                           {{ render_illustration(custom_icon_prefix, 100) }}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            {# Render the modal content #}
-            {{ include('components/illustration/icon_picker_modal.html.twig', {
-                'id': modal_id,
-                'backdrop': options.backdrop,
-            }, with_context: false) }}
-
-            {# Start js controller #}
-            <script defer type="module">
-                (async () => {
-                    const module = await import(
-                        "/js/modules/IllustrationPicker/Controller.js"
-                    );
-                    new module.GlpiIllustrationPickerController(
-                        document.getElementById('{{ container_id|e('js') }}'),
-                        document.getElementById('{{ modal_id|e('js') }}'),
-                        "{{ custom_icon_prefix|e('js') }}",
-                    );
-                })();
-            </script>
-        </div>
+        {{ include('components/illustration/icon_picker.html.twig', {
+            'name': name,
+            'value': value,
+            'size': 100,
+            'preview_css_classes': "illustration-selector d-flex align-items-center card border-1 " ~ options.extra_css_classes,
+            'backdrop': options.backdrop,
+            'allow_empty': options.allow_empty,
+        }, with_context: false) }}
     {% endset %}
 
     {% set options = {

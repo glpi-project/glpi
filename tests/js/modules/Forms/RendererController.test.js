@@ -32,7 +32,6 @@
 
 import { GlpiFormRendererController } from '/js/modules/Forms/RendererController.js';
 import { GlpiFormConditionEngine } from '/js/modules/Forms/Condition/Engine.js';
-import { jest } from '@jest/globals';
 
 const emptyVisibilityResults = (form_visibility) => ({
     form_visibility: form_visibility,
@@ -54,11 +53,11 @@ const appendFixture = (withAltcha = true) => {
 // Trigger the recompute flow (debounced by 400ms) and wait for the mocked
 // async condition engine call to resolve.
 const triggerRecompute = async () => {
-    jest.useFakeTimers({ doNotFake: ['nextTick'] });
+    vi.useFakeTimers({ doNotFake: ['nextTick'] });
     $('input[name="test_input"]').trigger('input');
-    jest.advanceTimersByTime(400);
+    vi.advanceTimersByTime(400);
     await new Promise(process.nextTick);
-    jest.useRealTimers();
+    vi.useRealTimers();
 };
 
 describe('GlpiFormRendererController', () => {
@@ -66,12 +65,12 @@ describe('GlpiFormRendererController', () => {
 
     beforeEach(() => {
         $('body').empty();
-        compute_visibility_spy = jest.spyOn(GlpiFormConditionEngine.prototype, 'computeVisiblity');
+        compute_visibility_spy = vi.spyOn(GlpiFormConditionEngine.prototype, 'computeVisiblity');
     });
 
     afterEach(() => {
-        jest.clearAllMocks();
-        jest.useRealTimers();
+        vi.clearAllMocks();
+        vi.useRealTimers();
     });
 
     test('Altcha widget follows the submit button visibility', async () => {
@@ -84,14 +83,14 @@ describe('GlpiFormRendererController', () => {
         compute_visibility_spy.mockResolvedValue(emptyVisibilityResults(false));
         await triggerRecompute();
 
-        expect(submit_button.hasAttribute('data-glpi-form-renderer-hidden-by-condition')).toBeTrue();
-        expect(altcha.hasAttribute('data-glpi-form-renderer-hidden-by-condition')).toBeTrue();
+        expect(submit_button.hasAttribute('data-glpi-form-renderer-hidden-by-condition')).toBeTruthy();
+        expect(altcha.hasAttribute('data-glpi-form-renderer-hidden-by-condition')).toBeTruthy();
 
         compute_visibility_spy.mockResolvedValue(emptyVisibilityResults(true));
         await triggerRecompute();
 
-        expect(submit_button.hasAttribute('data-glpi-form-renderer-hidden-by-condition')).toBeFalse();
-        expect(altcha.hasAttribute('data-glpi-form-renderer-hidden-by-condition')).toBeFalse();
+        expect(submit_button.hasAttribute('data-glpi-form-renderer-hidden-by-condition')).toBeFalsy();
+        expect(altcha.hasAttribute('data-glpi-form-renderer-hidden-by-condition')).toBeFalsy();
     });
 
     test('Missing altcha widget is ignored without error', async () => {
@@ -104,6 +103,6 @@ describe('GlpiFormRendererController', () => {
         await expect(triggerRecompute()).resolves.not.toThrow();
 
         const submit_button = document.querySelector('[data-glpi-form-renderer-action="submit"]');
-        expect(submit_button.hasAttribute('data-glpi-form-renderer-hidden-by-condition')).toBeTrue();
+        expect(submit_button.hasAttribute('data-glpi-form-renderer-hidden-by-condition')).toBeTruthy();
     });
 });

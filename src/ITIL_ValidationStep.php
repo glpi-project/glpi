@@ -36,10 +36,10 @@ use Glpi\Application\View\TemplateRenderer;
 
 abstract class ITIL_ValidationStep extends CommonDBChild
 {
-    public $dohistory              = false;
+    public bool $dohistory              = false;
 
-    public static $itemtype = 'itemtype';
-    public static $items_id = 'items_id';
+    public static string $itemtype = 'itemtype';
+    public static string $items_id = 'items_id';
 
     /**
      * Related validation class name.
@@ -123,6 +123,48 @@ abstract class ITIL_ValidationStep extends CommonDBChild
             }
         }
         parent::post_updateItem($history);
+    }
+
+    /**
+     * Retrieve an item from the database
+     *
+     * @param int|null $id ID of the item to get
+     *
+     * @return self|false
+     */
+    public static function getById(?int $id)
+    {
+        global $DB;
+
+        if ($id === null) {
+            return false;
+        }
+
+        $row = $DB->request([
+            'FROM'   => static::getTable(),
+            'WHERE'  => [
+                static::getTable() . '.' . static::getIndexName() => $id,
+            ],
+            'LIMIT'  => 1,
+        ])->current();
+
+        $itemtype = $row['itemtype'] ?? null;
+
+        if ($itemtype === null || !is_a($itemtype, CommonITILObject::class, true)) {
+            return false;
+        }
+
+        $instance = $itemtype::getValidationStepInstance();
+
+        if ($instance === null) {
+            return false;
+        }
+
+        if (!$instance->getFromDB($id)) {
+            return false;
+        }
+
+        return $instance;
     }
 
     /**

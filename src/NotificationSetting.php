@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Config\ConfigContainer;
+
 /**
  * Abstract notifications settings class
  */
@@ -43,12 +45,9 @@ abstract class NotificationSetting extends CommonDBTM
     public const ATTACH_ALL_DOCUMENTS     = 1;    // All documents
     public const ATTACH_FROM_TRIGGER_ONLY = 2;    // Only documents related to the item that triggers the event
 
-    /**
-     * @var string
-     */
-    public $table           = 'glpi_configs';
-    protected $displaylist  = false;
-    public static $rightname       = 'config';
+    public string $table           = 'glpi_configs';
+    protected bool $displaylist  = false;
+    public static string $rightname       = 'config';
 
     #[Override]
     public static function getTypeName($nb = 0)
@@ -99,7 +98,7 @@ abstract class NotificationSetting extends CommonDBTM
     #[Override]
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        switch ($item->getType()) {
+        switch ($item::class) {
             case static::class:
                 $tabs[1] = self::createTabEntry(__('Setup'));
                 return $tabs;
@@ -127,10 +126,11 @@ abstract class NotificationSetting extends CommonDBTM
      */
     public static function disableAll()
     {
+        /** @var ConfigContainer $CFG_GLPI */
         global $CFG_GLPI;
 
         $CFG_GLPI['use_notifications'] = 0;
-        foreach (array_keys($CFG_GLPI) as $key) {
+        foreach (array_keys($CFG_GLPI->getArrayCopy()) as $key) {
             if (str_starts_with($key, 'notifications_')) {
                 $CFG_GLPI[$key] = 0;
             }

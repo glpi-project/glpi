@@ -30,8 +30,6 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/form/fields_macros.html.twig' as fields %}
-
 {% macro log_entry(log) %}
     {% apply spaceless %}
         <div class="log_entry d-flex border-bottom" id="{{ log['id'] }}" data-testid="log-entry">
@@ -118,7 +116,6 @@
                 {% endif %}
 
                 <input type="hidden" name="filepath" value="{{ filepath }}">
-                {{ fields.csrfField() }}
             </div>
         </form>
 

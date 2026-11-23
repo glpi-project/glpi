@@ -48,7 +48,7 @@ class DeleteCommand extends AbstractUserCommand
         $this->setDescription(__('Delete a GLPI user'));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): ?int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $username = $input->getArgument('username');
         $user = new User();

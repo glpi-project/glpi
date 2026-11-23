@@ -38,7 +38,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
 
-Session::checkRight('itiltemplate', UPDATE);
+Session::checkRight(ITILTemplate::$rightname, UPDATE);
 
 /**
  * @var string|null $itiltype

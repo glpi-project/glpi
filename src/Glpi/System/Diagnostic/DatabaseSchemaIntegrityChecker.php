@@ -37,6 +37,7 @@ namespace Glpi\System\Diagnostic;
 
 use DBmysql;
 use Exception;
+use Glpi\Exception\Database\QueryException;
 use Glpi\Toolbox\DatabaseSchema;
 use Glpi\Toolbox\VersionParser;
 use Plugin;
@@ -77,72 +78,62 @@ class DatabaseSchemaIntegrityChecker
     /**
      * DB instance.
      *
-     * @var DBmysql
      */
-    protected $db;
+    protected DBmysql $db;
 
     /**
      * Do not check tokens related to "DYNAMIC" row format migration.
      *
-     * @var bool
      */
-    protected $ignore_dynamic_row_format_migration;
+    protected bool $ignore_dynamic_row_format_migration;
 
     /**
      * Do not check tokens related to migration from "MyISAM" to "InnoDB".
      *
-     * @var bool
      */
-    protected $ignore_innodb_migration;
+    protected bool $ignore_innodb_migration;
 
     /**
      * Do not check tokens related to migration from "datetime" to "timestamp".
      *
-     * @var bool
      */
-    protected $ignore_timestamps_migration;
+    protected bool $ignore_timestamps_migration;
 
     /**
      * Do not check tokens related to migration from signed to unsigned integers in primary/foreign keys.
      *
-     * @var bool
      */
-    protected $ignore_unsigned_keys_migration;
+    protected bool $ignore_unsigned_keys_migration;
 
     /**
      * Do not check tokens related to migration from "utf8" to "utf8mb4".
      *
-     * @var bool
      */
-    protected $ignore_utf8mb4_migration;
+    protected bool $ignore_utf8mb4_migration;
 
     /**
      * Ignore differences that has no effect on application (columns and keys order for instance).
      *
-     * @var bool
      */
-    protected $strict;
+    protected bool $strict;
 
     /**
      * Local cache for normalized SQL.
      *
-     * @var array
      */
-    private $normalized = [];
+    private array $normalized = [];
 
     /**
      * Differ instance.
      *
-     * @var Differ
      */
-    private $differ;
+    private Differ $differ;
 
     /**
      * GLPI database version.
      *
-     * @var string
      */
-    private $db_version;
+    private ?string $db_version = null;
 
     /**
      * @param DBmysql $db                                 DB instance.
@@ -365,11 +356,13 @@ class DatabaseSchemaIntegrityChecker
      */
     protected function getEffectiveCreateTableSql(string $table_name): string
     {
-        if (($create_table_res = $this->db->doQuery('SHOW CREATE TABLE ' . $this->db->quoteName($table_name))) === false) {
+        try {
+            $create_table_res = $this->db->doQuery('SHOW CREATE TABLE ' . $this->db->quoteName($table_name));
+        } catch (QueryException $e) {
             if ($this->db->errno() == 1146) {
                 return ''; // Table does not exist, effective create table is empty (will output full proper query as diff).
             }
-            throw new Exception(sprintf('Unable to get table "%s" structure', $table_name));
+            throw new Exception(sprintf('Unable to get table "%s" structure', $table_name), $e->getCode(), $e);
         }
         return $create_table_res->fetch_assoc()['Create Table'];
     }
@@ -545,6 +538,8 @@ class DatabaseSchemaIntegrityChecker
             // for example, the create query might return "UNIQUE KEY `unicity` USING HASH (`users_id`)" one side
             // and "UNIQUE KEY `unicity` (`users_id`)" on the other side, despite being the same index.
             '/(UNIQUE KEY|FULLTEXT KEY|KEY) (.*) USING (\w+)/i' => '$1 $2',
+            // Ignore ASC order in indexes fields
+            '/(`\w+`)\s* ASC/' => '$1',
         ];
         $indexes = preg_replace(array_keys($indexes_replacements), array_values($indexes_replacements), $indexes);
         if (!$this->strict) {
@@ -666,7 +661,7 @@ class DatabaseSchemaIntegrityChecker
                         $sql = substr($sql, 0, $i) . ' ' . substr($sql, $i);
                         $i++;
                     } elseif ($is_protected && preg_match('/\s/', $sql[$i + 1]) !== 1) {
-                        // Closing backtick, ensure there is a space before
+                        // Closing backtick, ensure there is a space after
                         $sql = substr($sql, 0, $i + 1) . ' ' . substr($sql, $i + 1);
                         $i++;
                     }
@@ -697,6 +692,22 @@ class DatabaseSchemaIntegrityChecker
                 $sql[$i] = ' ';
             }
 
+            // Remove duplicated whitespaces
+            if ($sql[$i] === ' ') {
+                $extraspaces = 0;
+                for ($j = $i + 1; $j < strlen($sql); $j++) {
+                    if ($sql[$j] === ' ') {
+                        $extraspaces++;
+                    } else {
+                        break;
+                    }
+                }
+                if ($extraspaces > 0) {
+                    $sql = substr($sql, 0, $i) . substr($sql, $i + $extraspaces);
+                    $i--;
+                }
+            }
+
             // Ensure there is a new line:
             // - after columns/indexes definition opening parenthesis
             // - before columns/indexes definition opening parenthesis
@@ -712,21 +723,22 @@ class DatabaseSchemaIntegrityChecker
                 $i++;
             }
 
-            if (preg_match('/\s/', $sql[$i])) {
-                if ($parenthesis_level === 2) {
-                    // Remove whitespaces between tokens in index fields list, datatype length, ...
+            if ($parenthesis_level === 2) {
+                // Normalize whitespaces between tokens in index fields list, datatype length, ...
+
+                // Remove extra whitespaces
+                if (
+                    preg_match('/\s/', $sql[$i])
+                    && (
+                        $sql[$i - 1] === ',' // whitespace after coma
+                        || $sql[$i - 1] === '(' // whitespace after parenthesis opening
+                        || $sql[$i + 1] === ')' // whitespace before parenthesis closing
+                        || $sql[$i + 1] === ',' // whitespace before coma
+                        || $sql[$i + 1] === ' ' // duplicated whitespace
+                    )
+                ) {
                     $sql = substr($sql, 0, $i) . substr($sql, $i + 1);
                     $i--;
-                } else {
-                    // Remove following whitespace chars if current char is a whitespace
-                    $extraspaces = 0;
-                    $max         = strlen($sql) - $i - 1;
-                    while ($extraspaces < $max && preg_match('/\s/', $sql[$i + 1 + $extraspaces])) {
-                        $extraspaces++;
-                    }
-                    if ($extraspaces > 0) {
-                        $sql = substr($sql, 0, $i + 1) . substr($sql, $i + 1 + $extraspaces);
-                    }
                 }
             }
         }

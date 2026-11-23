@@ -57,6 +57,9 @@ use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\ITILFollowupField;
+use Glpi\Form\Destination\CommonITILField\ITILFollowupFieldConfig;
+use Glpi\Form\Destination\CommonITILField\ITILFollowupFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsField;
 use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsFieldConfig;
 use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsFieldStrategy;
@@ -437,7 +440,7 @@ final class FormSerializerTest extends DbTestCase
             '123456789' => 'Option 1',
             '987654321' => 'Option 2',
         ], true);
-        $item_default_value_config = new QuestionTypeItemDefaultValueConfig($location->getID());
+        $item_default_value_config = new QuestionTypeItemDefaultValueConfig([$location->getID()]);
         $item_dropdown_extra_data_config = new QuestionTypeItemDropdownExtraDataConfig(Location::class);
         $actors_default_value_config = new QuestionTypeActorsDefaultValueConfig(
             users_ids: [$user->getID()],
@@ -466,7 +469,7 @@ final class FormSerializerTest extends DbTestCase
             ->addQuestion(
                 "My item dropdown question",
                 QuestionTypeItemDropdown::class,
-                $location->getID(),
+                [$location->getID()],
                 json_encode($item_dropdown_extra_data_config),
                 'My item dropdown question description',
                 true
@@ -1040,7 +1043,7 @@ final class FormSerializerTest extends DbTestCase
         $form = $this->createForm((new FormBuilder())->addQuestion(
             "My ITIL Category question",
             QuestionTypeItemDropdown::class,
-            json_encode((new QuestionTypeItemDefaultValueConfig($itil_category->getID()))),
+            json_encode((new QuestionTypeItemDefaultValueConfig([$itil_category->getID()]))),
             json_encode((new QuestionTypeItemDropdownExtraDataConfig(ITILCategory::class))),
         )->addDestination(FormDestinationTicket::class, 'My ticket destination'));
 
@@ -1563,7 +1566,7 @@ final class FormSerializerTest extends DbTestCase
         $question = current($questions);
         $this->assertInstanceOf(Question::class, $question);
         $this->assertInstanceOf(QuestionTypeItem::class, $question->getQuestionType());
-        $this->assertEquals(-1, (new QuestionTypeItem())->getDefaultValueItemId($question));
+        $this->assertEquals([-1], (new QuestionTypeItem())->getDefaultValuesItemIds($question));
 
         // Act: export and import the form
         $form_copy = $this->exportAndImportForm($form);
@@ -1574,7 +1577,7 @@ final class FormSerializerTest extends DbTestCase
         $question = current($questions);
         $this->assertInstanceOf(Question::class, $question);
         $this->assertInstanceOf(QuestionTypeItem::class, $question->getQuestionType());
-        $this->assertEquals(0, (new QuestionTypeItem())->getDefaultValueItemId($question));
+        $this->assertEquals([0], (new QuestionTypeItem())->getDefaultValuesItemIds($question));
     }
 
     public function testExportAndImportWithCustomIcon(): void
@@ -1658,6 +1661,11 @@ final class FormSerializerTest extends DbTestCase
                 . $description_tag_provider->getTags($form)[0]->html
                 . $description_tag_provider->getTags($form)[1]->html
             ))->jsonSerialize(),
+            // Use answer data in the followup content
+            ITILFollowupField::getKey() => (new ITILFollowupFieldConfig(
+                strategy: ITILFollowupFieldStrategy::SPECIFIC_CONTENT,
+                specific_content: $answers_tag_provider->getTags($form)[0]->html,
+            ))->jsonSerialize(),
         ];
         $this->updateItem(
             $destination::class,
@@ -1718,6 +1726,40 @@ final class FormSerializerTest extends DbTestCase
             "data-form-tag-value=\"{$imported_comment_2->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\CommentDescriptionTagProvider\"",
             $imported_destination->getConfig()[ContentField::getKey()]['value'],
         );
+        $this->assertStringContainsString(
+            "data-form-tag-value=\"{$imported_question->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\AnswerTagProvider\"",
+            $imported_destination->getConfig()[ITILFollowupField::getKey()][ITILFollowupFieldConfig::SPECIFIC_CONTENT],
+        );
+    }
+
+    public function testFollowupConfigWithoutContentIsImportedAsIs(): void
+    {
+        // Arrange: create a form with a followup config that has no content,
+        // like configs saved before the "specific content" strategy existed
+        // or saved with another strategy (the hidden editor is not submitted)
+        $form = $this->createForm(new FormBuilder("My form"));
+        $destinations = $form->getDestinations();
+        $destination = array_pop($destinations);
+        $legacy_config = [
+            ITILFollowupFieldConfig::STRATEGY => ITILFollowupFieldStrategy::NO_FOLLOWUP->value,
+        ];
+        $this->updateItem(
+            $destination::class,
+            $destination->getId(),
+            ['config' => [ITILFollowupField::getKey() => $legacy_config]],
+            ["config"],
+        );
+
+        // Act: export then import the form
+        $imported_form = $this->exportAndImportForm($form);
+        $imported_destinations = $imported_form->getDestinations();
+        $imported_destination = array_pop($imported_destinations);
+
+        // Assert: the followup config is unchanged
+        $this->assertEquals(
+            $legacy_config,
+            $imported_destination->getConfig()[ITILFollowupField::getKey()],
+        );
     }
 
     public function testItemsIdsInSubmitConditionAreHandledByExport(): void
@@ -1744,8 +1786,8 @@ final class FormSerializerTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => [
-                        'itemtype' => Computer::class,
-                        'items_id' => $computer->getId(),
+                        'itemtype'  => Computer::class,
+                        'items_ids' => [$computer->getId()],
                     ],
                 ],
             ],
@@ -1763,8 +1805,8 @@ final class FormSerializerTest extends DbTestCase
             'name' => 'My computer',
         ], $data['forms'][0]['data_requirements'][0]);
         $this->assertEquals([
-            'itemtype' => Computer::class,
-            'items_id' => 'My computer',
+            'itemtype'  => Computer::class,
+            'items_ids' => ['My computer'],
         ], $data['forms'][0]['submit_button_conditions'][0]['value']);
     }
 
@@ -1795,8 +1837,8 @@ final class FormSerializerTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => [
-                        'itemtype' => Computer::class,
-                        'items_id' => $computer->getId(),
+                        'itemtype'  => Computer::class,
+                        'items_ids' => [$computer->getId()],
                     ],
                 ],
             ],
@@ -1814,8 +1856,8 @@ final class FormSerializerTest extends DbTestCase
             'name' => 'My computer',
         ], $data['forms'][0]['data_requirements'][1]);
         $this->assertEquals([
-            'itemtype' => Computer::class,
-            'items_id' => 'My computer',
+            'itemtype'  => Computer::class,
+            'items_ids' => ['My computer'],
         ], $data['forms'][0]['sections'][1]['conditions'][0]['value']);
     }
 
@@ -1845,8 +1887,8 @@ final class FormSerializerTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => [
-                        'itemtype' => Computer::class,
-                        'items_id' => $computer->getId(),
+                        'itemtype'  => Computer::class,
+                        'items_ids' => [$computer->getId()],
                     ],
                 ],
             ],
@@ -1864,8 +1906,8 @@ final class FormSerializerTest extends DbTestCase
             'name' => 'My computer',
         ], $data['forms'][0]['data_requirements'][1]);
         $this->assertEquals([
-            'itemtype' => Computer::class,
-            'items_id' => 'My computer',
+            'itemtype'  => Computer::class,
+            'items_ids' => ['My computer'],
         ], $data['forms'][0]['questions'][1]['conditions'][0]['value']);
     }
 
@@ -1895,8 +1937,8 @@ final class FormSerializerTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => [
-                        'itemtype' => Computer::class,
-                        'items_id' => $computer->getId(),
+                        'itemtype'  => Computer::class,
+                        'items_ids' => [$computer->getId()],
                     ],
                 ],
             ],
@@ -1914,8 +1956,8 @@ final class FormSerializerTest extends DbTestCase
             'name' => 'My computer',
         ], $data['forms'][0]['data_requirements'][1]);
         $this->assertEquals([
-            'itemtype' => Computer::class,
-            'items_id' => 'My computer',
+            'itemtype'  => Computer::class,
+            'items_ids' => ['My computer'],
         ], $data['forms'][0]['comments'][0]['conditions'][0]['value']);
     }
 
@@ -1945,8 +1987,8 @@ final class FormSerializerTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => [
-                        'itemtype' => Computer::class,
-                        'items_id' => $computer->getId(),
+                        'itemtype'  => Computer::class,
+                        'items_ids' => [$computer->getId()],
                     ],
                 ],
             ],
@@ -1964,8 +2006,8 @@ final class FormSerializerTest extends DbTestCase
             'name' => 'My computer',
         ], $data['forms'][0]['data_requirements'][1]);
         $this->assertEquals([
-            'itemtype' => Computer::class,
-            'items_id' => 'My computer',
+            'itemtype'  => Computer::class,
+            'items_ids' => ['My computer'],
         ], $data['forms'][0]['destinations'][0]['conditions'][0]['value']);
     }
 
@@ -1994,8 +2036,8 @@ final class FormSerializerTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => [
-                        'itemtype' => Computer::class,
-                        'items_id' => 0,
+                        'itemtype'  => Computer::class,
+                        'items_ids' => [0],
                     ],
                 ],
             ],
@@ -2011,8 +2053,8 @@ final class FormSerializerTest extends DbTestCase
         $question = current($questions);
         $condition_value = $question->getConfiguredConditionsData()[0]->getValue();
         $this->assertEquals([
-            'itemtype' => Computer::class,
-            'items_id' => 0,
+            'itemtype'  => Computer::class,
+            'items_ids' => [0],
         ], $condition_value);
     }
 
@@ -2257,6 +2299,92 @@ final class FormSerializerTest extends DbTestCase
         $this->assertEquals('user_to_keep', $actors[\User::class][0]);
     }
 
+    public static function userWithRealNameProvider(): iterable
+    {
+        yield 'Real name before first name' => [\User::REALNAME_BEFORE, 'Realname', 'Firstname'];
+        yield 'First name before real name' => [\User::FIRSTNAME_BEFORE, 'Realname', 'Firstname'];
+        yield 'Real name only' => [\User::REALNAME_BEFORE, 'Realname', ''];
+        yield 'Compound names, real name first' => [\User::REALNAME_BEFORE, 'De La Fontaine', 'Jean Pierre'];
+        yield 'Compound names, first name first' => [\User::FIRSTNAME_BEFORE, 'De La Fontaine', 'Jean Pierre'];
+    }
+
+    #[DataProvider('userWithRealNameProvider')]
+    public function testActorUserWithRealNameIsFoundOnImport(
+        int $names_format,
+        string $realname,
+        string $firstname,
+    ): void {
+        $this->login();
+        $_SESSION['glpinames_format'] = $names_format;
+
+        // Arrange: create a form with a destination whose requester is a user
+        // with a real name, which is used instead of the login in the export
+        $user = $this->createItem(\User::class, [
+            'name'      => 'user_with_real_name',
+            'realname'  => $realname,
+            'firstname' => $firstname,
+        ]);
+        $form = $this->createForm(new FormBuilder());
+        $this->setDestinationFieldConfig(
+            $form,
+            RequesterField::getKey(),
+            new RequesterFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
+                specific_itilactors_ids: [
+                    \User::getForeignKeyField() . '-' . $user->getID(),
+                ],
+            )
+        );
+
+        // Act: export and import the form
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Assert: the requester is still the same user
+        $destinations = $form_copy->getDestinations();
+        $config = current($destinations)->getConfig()[RequesterField::getKey()];
+        $this->assertEquals(
+            [\User::class => [$user->getID()]],
+            $config[ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS],
+        );
+    }
+
+    public function testActorUserLoginIsPreferredOverFriendlyNameOnImport(): void
+    {
+        $this->login();
+
+        // Arrange: create a form with a destination whose requester is a user
+        // without real name, and another user whose real name is its login
+        $user = $this->createItem(\User::class, [
+            'name' => 'login_only_user',
+        ]);
+        $this->createItem(\User::class, [
+            'name'     => 'other_user',
+            'realname' => 'login_only_user',
+        ]);
+        $form = $this->createForm(new FormBuilder());
+        $this->setDestinationFieldConfig(
+            $form,
+            RequesterField::getKey(),
+            new RequesterFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
+                specific_itilactors_ids: [
+                    \User::getForeignKeyField() . '-' . $user->getID(),
+                ],
+            )
+        );
+
+        // Act: export and import the form
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Assert: the requester is the user found by its login
+        $destinations = $form_copy->getDestinations();
+        $config = current($destinations)->getConfig()[RequesterField::getKey()];
+        $this->assertEquals(
+            [\User::class => [$user->getID()]],
+            $config[ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS],
+        );
+    }
+
     public function testDeletedAssociatedItemInDestinationIsRemovedFromExport(): void
     {
         $this->login();
@@ -2368,7 +2496,7 @@ final class FormSerializerTest extends DbTestCase
         $condition_value = $form->getConfiguredConditionsData()[0]->getValue();
         $this->assertEquals([
             "itemtype" => Computer::class,
-            "items_id" => $computer->getID(),
+            "items_ids" => [$computer->getID()],
         ], $condition_value);
     }
 
@@ -2394,8 +2522,8 @@ final class FormSerializerTest extends DbTestCase
         $section = current($sections);
         $condition_value = $section->getConfiguredConditionsData()[0]->getValue();
         $this->assertEquals([
-            "itemtype" => Computer::class,
-            "items_id" => $computer->getID(),
+            "itemtype"  => Computer::class,
+            "items_ids" => [$computer->getID()],
         ], $condition_value);
     }
 
@@ -2421,8 +2549,8 @@ final class FormSerializerTest extends DbTestCase
         $question = current($questions);
         $condition_value = $question->getConfiguredConditionsData()[0]->getValue();
         $this->assertEquals([
-            "itemtype" => Computer::class,
-            "items_id" => $computer->getID(),
+            "itemtype"  => Computer::class,
+            "items_ids" => [$computer->getID()],
         ], $condition_value);
     }
 
@@ -2447,8 +2575,8 @@ final class FormSerializerTest extends DbTestCase
         $comment = current($comments);
         $condition_value = $comment->getConfiguredConditionsData()[0]->getValue();
         $this->assertEquals([
-            "itemtype" => Computer::class,
-            "items_id" => $computer->getID(),
+            "itemtype"  => Computer::class,
+            "items_ids" => [$computer->getID()],
         ], $condition_value);
     }
 
@@ -2473,8 +2601,8 @@ final class FormSerializerTest extends DbTestCase
         $destination = current($destinations);
         $condition_value = $destination->getConfiguredConditionsData()[0]->getValue();
         $this->assertEquals([
-            "itemtype" => Computer::class,
-            "items_id" => $computer->getID(),
+            "itemtype"  => Computer::class,
+            "items_ids" => [$computer->getID()],
         ], $condition_value);
     }
 
@@ -2827,6 +2955,53 @@ final class FormSerializerTest extends DbTestCase
         // Assert: the import should succeed
         $this->assertEmpty($results->getFailedFormImports());
         $this->assertCount(1, $results->getImportedForms());
+    }
+
+    public function testExportAndImportItemQuestionTypeWithMultipleItemsAsDefaultValue(): void
+    {
+        // Arrange: create a form with an item question type that has multiple items as default value
+        $computer1 = $this->createItem(Computer::class, [
+            'name' => 'Computer 1',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $computer2 = $this->createItem(Computer::class, [
+            'name' => 'Computer 2',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        $extra_data = new QuestionTypeItemExtraDataConfig(
+            itemtype: Computer::class,
+            is_multiple_items: true,
+        );
+
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "Select computers",
+            type: QuestionTypeItem::class,
+            default_value: [
+                'items_ids' => [$computer1->getID(), $computer2->getID()],
+            ],
+            extra_data: json_encode($extra_data)
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export and import the form
+        $imported_form = $this->exportAndImportForm($form);
+
+        // Assert: the default value should be correctly imported
+        $questions = $imported_form->getQuestions();
+        $question = current($questions);
+
+        $defaultValueData = json_decode($question->fields['default_value'], true);
+        $questionTypeItem = new QuestionTypeItem();
+        /** @var QuestionTypeItemDefaultValueConfig $imported_default_value */
+        $imported_default_value = $questionTypeItem->getDefaultValueConfig($defaultValueData);
+
+        $expectedItemIds = [$computer1->getID(), $computer2->getID()];
+        $this->assertEquals(
+            $expectedItemIds,
+            $imported_default_value->getItemsIds()
+        );
     }
 
     private function compareValuesForRelations(

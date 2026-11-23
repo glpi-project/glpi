@@ -44,15 +44,21 @@ use function Safe\json_encode;
 
 final class OAuthClient extends CommonDBTM
 {
-    public static $rightname = 'oauth_client';
+    public static string $rightname = 'oauth_client';
 
-    public static $undisclosedFields = [
+    public static array $undisclosedFields = [
         'secret',
     ];
 
     public static function getTypeName($nb = 0)
     {
         return _n('OAuth client', 'OAuth clients', $nb);
+    }
+
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
     }
 
     public static function getSectorizedDetails(): array

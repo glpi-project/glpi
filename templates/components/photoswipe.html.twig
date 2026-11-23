@@ -50,7 +50,7 @@
             <figure itemprop="associatedMedia" itemscope itemtype="https://schema.org/ImageObject" class="d-flex flex-column me-2">
                   {% if img['_video'] ?? false %}
                      <span class="bg-black pswp-trigger pointer d-flex justify-content-center align-items-center">
-                        <i class="ti ti-video-filled"></i>
+                        <i class="ti ti-video-filled" aria-hidden="true"></i>
                      </span>
                   {% else %}
                      <a href="{{ img['src']|escape }}" itemprop="contentUrl" data-index="0">
@@ -127,7 +127,7 @@
                this.ui.registerElement({
                   name: 'download',
                   isButton: true,
-                  html: '<a class="text-white" target="_blank" download=""><i class="fa-solid fa-download"></i></a>',
+                  html: '<a class="text-white" target="_blank" download="" aria-label=' + JSON.stringify(__('Download')) + '><i class="fa-solid fa-download" aria-hidden="true"></i></a>',
                   order: 8,
                   onInit: (el, pswp) => {
                      pswp.on('change', () => {

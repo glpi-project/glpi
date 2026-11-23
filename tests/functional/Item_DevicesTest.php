@@ -157,4 +157,59 @@ class Item_DevicesTest extends DbTestCase
             );
         }
     }
+
+    public static function firmwareDeviceProvider(): iterable
+    {
+        yield 'hard drive' => ['Item_DeviceHardDrive'];
+        yield 'network card' => ['Item_DeviceNetworkCard'];
+        yield 'power supply' => ['Item_DevicePowerSupply'];
+        yield 'graphic card' => ['Item_DeviceGraphicCard'];
+    }
+
+    #[DataProvider('firmwareDeviceProvider')]
+    public function testFirmwareAffinity(string $itemtype): void
+    {
+        $this->assertSame(
+            [\Item_DeviceFirmware::class],
+            Item_Devices::getItemAffinities($itemtype)
+        );
+        $this->assertContains($itemtype, \Item_DeviceFirmware::getConcernedItems());
+        $this->assertNotContains(
+            \Item_DeviceGeneric::class,
+            Item_Devices::getItemAffinities($itemtype)
+        );
+    }
+
+    public function testNestedFirmwareRelation(): void
+    {
+        $this->login();
+
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => 0,
+        ]);
+        $hard_drive = $this->createItem(\DeviceHardDrive::class, [
+            'designation' => 'Test drive',
+        ]);
+        $item_hard_drive = $this->createItem(\Item_DeviceHardDrive::class, [
+            'deviceharddrives_id' => $hard_drive->getID(),
+            'itemtype'            => \Computer::class,
+            'items_id'            => $computer->getID(),
+        ]);
+        $firmware = $this->createItem(\DeviceFirmware::class, [
+            'designation' => 'Test drive',
+            'version'     => '1.2.3',
+        ]);
+        $item_firmware = $this->createItem(\Item_DeviceFirmware::class, [
+            'devicefirmwares_id' => $firmware->getID(),
+            'itemtype'           => \Item_DeviceHardDrive::class,
+            'items_id'           => $item_hard_drive->getID(),
+        ]);
+        $item_firmware_id = $item_firmware->getID();
+
+        $this->assertArrayHasKey('Item_Devices$1', $item_hard_drive->defineAllTabs());
+        $this->assertTrue($item_hard_drive->delete(['id' => $item_hard_drive->getID()], true));
+
+        $this->assertFalse($item_firmware->getFromDB($item_firmware_id));
+    }
 }

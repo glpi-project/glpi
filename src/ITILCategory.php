@@ -44,10 +44,10 @@ class ITILCategory extends CommonTreeDropdown
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory          = true;
-    public $can_be_translated  = true;
+    public bool $dohistory          = true;
+    public bool $can_be_translated  = true;
 
-    public static $rightname          = 'itilcategory';
+    public static string $rightname          = 'itilcategory';
 
     public function getAdditionalFields()
     {
@@ -73,8 +73,8 @@ class ITILCategory extends CommonTreeDropdown
                 'list'      => true,
             ],
             [
-                'name'      => 'knowbaseitemcategories_id',
-                'label'     => KnowbaseItemCategory::getTypeName(1),
+                'name'      => 'knowbaseitems_id',
+                'label'     => KnowbaseItem::getTypeName(1),
                 'type'      => 'dropdownValue',
                 'list'      => true,
             ],
@@ -104,7 +104,7 @@ class ITILCategory extends CommonTreeDropdown
             ],
         ];
 
-        $show_for_problem = Session::haveRightsOr('problem', [CREATE, UPDATE, DELETE, Problem::READALL, Problem::READMY]);
+        $show_for_problem = Session::haveRightsOr(Problem::$rightname, [CREATE, UPDATE, DELETE, Problem::READALL, Problem::READMY]);
 
         if ($show_for_problem) {
             $tab[] = [
@@ -294,8 +294,9 @@ class ITILCategory extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '79',
-            'table'              => 'glpi_knowbaseitemcategories',
-            'field'              => 'completename',
+            'table'              => 'glpi_knowbaseitems',
+            'field'              => 'name',
+            'linkfield'          => 'knowbaseitems_id',
             'name'               => __('Knowledge base'),
             'datatype'           => 'dropdown',
         ];
@@ -476,7 +477,7 @@ class ITILCategory extends CommonTreeDropdown
 
         echo "<table class='tab_cadre_fixe'>";
         echo "<tr><th colspan='5'>";
-        $itilcategory_type = $itilcategory->getType();
+        $itilcategory_type = $itilcategory::class;
         echo "<a href='" . htmlescape($itilcategory_type::getSearchURL()) . "'>";
         echo htmlescape(self::getTypeName(count($iterator)));
         echo "</a>";

@@ -226,10 +226,10 @@
    <div class="modal-footer">
       <button type="submit" class="btn btn-primary {{ edit ? 'edit-widget' : 'add-widget' }}">
          {% if edit %}
-            <i class="ti ti-device-floppy"></i>
+            <i class="ti ti-device-floppy" aria-hidden="true"></i>
             <span>{{ _x('button', 'Update') }}</span>
          {% else %}
-            <i class="ti ti-plus"></i>
+            <i class="ti ti-plus" aria-hidden="true"></i>
             <span>{{ _x('button', 'Add') }}</span>
          {% endif %}
       </button>

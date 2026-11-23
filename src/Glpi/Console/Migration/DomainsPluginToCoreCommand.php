@@ -115,7 +115,7 @@ class DomainsPluginToCoreCommand extends AbstractPluginToCoreCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $types_iterator = $this->db->request([
+        $types_iterator = $this->getDb()->request([
             'FROM'   => 'glpi_plugin_domains_domaintypes',
             'ORDER'  => 'id ASC',
         ]);
@@ -176,7 +176,7 @@ class DomainsPluginToCoreCommand extends AbstractPluginToCoreCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $domains_iterator = $this->db->request([
+        $domains_iterator = $this->getDb()->request([
             'FROM'   => 'glpi_plugin_domains_domains',
             'ORDER'  => 'id ASC',
         ]);
@@ -262,7 +262,7 @@ class DomainsPluginToCoreCommand extends AbstractPluginToCoreCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $items_iterator = $this->db->request([
+        $items_iterator = $this->getDb()->request([
             'FROM'   => 'glpi_plugin_domains_domains_items',
             'ORDER'  => 'id ASC',
         ]);

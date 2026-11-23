@@ -96,8 +96,11 @@ class CommonITILRecurrentCron extends CommonDBTM
                 $related_items = $item->getRelatedElements();
 
                 if ($item->fields['ticket_per_item'] ?? false) {
+                    // createItem() moves the next creation date, all tickets must use the current one
+                    $next_creation_date = $item->fields['next_creation_date'];
                     foreach ($related_items as $related_itemtype => $related_items_ids) {
                         foreach ($related_items_ids as $related_item_id) {
+                            $item->fields['next_creation_date'] = $next_creation_date;
                             if ($item->createItem([$related_itemtype => [$related_item_id]])) {
                                 $total++;
                             } else {

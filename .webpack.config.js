@@ -133,9 +133,32 @@ const config = {
         mainFields: [
             'main',
         ],
+        // Aliases for @tiptap/pm submodules - v3 has files at dist/{module}/index.cjs
+        alias: {
+            '@tiptap/pm/commands': path.resolve(__dirname, 'node_modules/@tiptap/pm/dist/commands/index.cjs'),
+            '@tiptap/pm/dropcursor': path.resolve(__dirname, 'node_modules/@tiptap/pm/dist/dropcursor/index.cjs'),
+            '@tiptap/pm/gapcursor': path.resolve(__dirname, 'node_modules/@tiptap/pm/dist/gapcursor/index.cjs'),
+            '@tiptap/pm/history': path.resolve(__dirname, 'node_modules/@tiptap/pm/dist/history/index.cjs'),
+            '@tiptap/pm/keymap': path.resolve(__dirname, 'node_modules/@tiptap/pm/dist/keymap/index.cjs'),
+            '@tiptap/pm/model': path.resolve(__dirname, 'node_modules/@tiptap/pm/dist/model/index.cjs'),
+            '@tiptap/pm/schema-list': path.resolve(__dirname, 'node_modules/@tiptap/pm/dist/schema-list/index.cjs'),
+            '@tiptap/pm/state': path.resolve(__dirname, 'node_modules/@tiptap/pm/dist/state/index.cjs'),
+            '@tiptap/pm/tables': path.resolve(__dirname, 'node_modules/@tiptap/pm/dist/tables/index.cjs'),
+            '@tiptap/pm/transform': path.resolve(__dirname, 'node_modules/@tiptap/pm/dist/transform/index.cjs'),
+            '@tiptap/pm/view': path.resolve(__dirname, 'node_modules/@tiptap/pm/dist/view/index.cjs'),
+        },
     },
     mode: 'none', // Force 'none' mode, as optimizations will be done on release process
     devtool: 'source-map', // Add sourcemap to files
+    cache: {
+        type: 'filesystem', // Persist build cache in `node_modules/.cache/webpack`
+        buildDependencies: {
+            // Invalidate cache when this config or npm patches change (patched packages keep their version)
+            config: [__filename, path.resolve(__dirname, 'tools/patches/npm') + '/'],
+        },
+        maxAge: 1000 * 60 * 60 * 24 * 7, // Drop cache entries unused for 7 days, to limit the cache size
+        compression: 'brotli',
+    },
     stats: {
         // Limit verbosity to only usefull information
         all: false,
@@ -176,7 +199,7 @@ const filesToCopy = [
     },
     {
         package: 'tinymce-i18n',
-        from: 'langs7/*.js',
+        from: 'langs8/*.js',
     },
     // SCSS files
     {
@@ -186,7 +209,7 @@ const filesToCopy = [
     },
     {
         package: 'select2',
-        from: 'src/scss/**/*.scss',
+        from: 'dist/css/select2.css',
         to: scssOutputPath,
     },
     {
@@ -196,7 +219,7 @@ const filesToCopy = [
     },
     {
         package: 'swagger-ui-dist',
-        from: 'oauth2-redirect.html'
+        from: 'oauth2-redirect.js'
     },
     // SVG files
     {

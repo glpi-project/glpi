@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 /**
  * CommonITILCost Class
@@ -44,7 +45,7 @@ use Glpi\DBAL\QueryFunction;
  **/
 abstract class CommonITILCost extends CommonDBChild
 {
-    public $dohistory        = true;
+    public bool $dohistory        = true;
 
 
     public static function getTypeName($nb = 0)
@@ -80,7 +81,7 @@ abstract class CommonITILCost extends CommonDBChild
                     [$item::getForeignKeyField() => $item->getID()]
                 );
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -226,8 +227,8 @@ abstract class CommonITILCost extends CommonDBChild
                 '(' . QueryFunction::sum(
                     expression: new QueryExpression($DB::quoteName('TABLE.actiontime') . ' * ' . $DB::quoteName('TABLE.cost_time') . ' / '
                         . HOUR_TIMESTAMP . ' + ' . $DB::quoteName('TABLE.cost_fixed') . ' + ' . $DB::quoteName('TABLE.cost_material'))
-                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * '
-                    . QueryFunction::count(expression: 'TABLE.id', distinct: true)
+                ) . ' / ' . QueryFunction::count(new QueryIdentifier('TABLE.id')) . ') * '
+                    . QueryFunction::count(expression: new QueryIdentifier('TABLE.id'), distinct: true)
             ),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
@@ -248,8 +249,8 @@ abstract class CommonITILCost extends CommonDBChild
                 '(' . QueryFunction::sum(
                     expression: new QueryExpression($DB::quoteName('TABLE.actiontime') . ' * ' . $DB::quoteName('TABLE.cost_time') . ' / '
                         . HOUR_TIMESTAMP)
-                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * '
-                    . QueryFunction::count(expression: 'TABLE.id', distinct: true)
+                ) . ' / ' . QueryFunction::count(new QueryIdentifier('TABLE.id')) . ') * '
+                    . QueryFunction::count(expression: new QueryIdentifier('TABLE.id'), distinct: true)
             ),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
@@ -282,9 +283,9 @@ abstract class CommonITILCost extends CommonDBChild
             ],
             'computation'        => new QueryExpression(
                 '(' . QueryFunction::sum(
-                    expression: 'TABLE.cost_fixed'
-                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * '
-                    . QueryFunction::count(expression: 'TABLE.id', distinct: true)
+                    expression: new QueryIdentifier('TABLE.cost_fixed')
+                ) . ' / ' . QueryFunction::count(new QueryIdentifier('TABLE.id')) . ') * '
+                    . QueryFunction::count(expression: new QueryIdentifier('TABLE.id'), distinct: true)
             ),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
@@ -303,9 +304,9 @@ abstract class CommonITILCost extends CommonDBChild
             ],
             'computation'        => new QueryExpression(
                 '(' . QueryFunction::sum(
-                    expression: 'TABLE.cost_material'
-                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * '
-                    . QueryFunction::count(expression: 'TABLE.id', distinct: true)
+                    expression: new QueryIdentifier('TABLE.cost_material')
+                ) . ' / ' . QueryFunction::count(new QueryIdentifier('TABLE.id')) . ') * '
+                    . QueryFunction::count(expression: new QueryIdentifier('TABLE.id'), distinct: true)
             ),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
@@ -437,7 +438,7 @@ abstract class CommonITILCost extends CommonDBChild
             'items_id_field' => static::$items_id,
             'parent_id' => $item->getID(),
             'params' => [
-                'canedit' => $this->canUpdateItem(),
+                'canedit' => $this->can($this->getID(), UPDATE),
             ],
         ]);
 
@@ -462,7 +463,7 @@ abstract class CommonITILCost extends CommonDBChild
 
         if (
             !$item->getFromDB($ID)
-            || !$item->canViewItem()
+            || !$item->can($item->getID(), READ)
             || !static::canView()
         ) {
             return false;
@@ -481,6 +482,7 @@ abstract class CommonITILCost extends CommonDBChild
             'SELECT' => [
                 static::$items_id, 'id', 'name', 'begin_date', 'end_date', 'actiontime',
                 'budgets_id', 'cost_time', 'cost_fixed', 'cost_material', 'comment',
+                'date_creation', 'date_mod', 'users_id', 'users_id_lastupdater',
             ],
             'FROM'   => static::getTable(),
             'WHERE'  => [
@@ -502,7 +504,7 @@ abstract class CommonITILCost extends CommonDBChild
             $twig_params = [
                 'id'        => $ID,
                 'rand'      => $rand,
-                'type'      => static::getType(),
+                'type'      => static::class,
                 'parenttype' => static::$itemtype,
                 'items_id'  => static::$items_id,
             ];
@@ -552,6 +554,7 @@ TWIG, $twig_params);
         $budget = new Budget();
         $ticket_links = [];
         $budget_links = [];
+        $user_links = [];
         foreach ($iterator as $data) {
             $name = (empty($data['name']) ? sprintf(__('%1$s (%2$s)'), $data['name'], $data['id']) : $data['name']);
 
@@ -570,8 +573,18 @@ TWIG, $twig_params);
                 $budget->getFromDB($data['budgets_id']);
                 $budget_links[$data['budgets_id']] = $budget->getLink();
             }
+            if (!array_key_exists($data['users_id'], $user_links)) {
+                $user = new User();
+                $user->getFromDB($data['users_id']);
+                $user_links[$data['users_id']] = $user->getLink();
+            }
+            if (!array_key_exists($data['users_id_lastupdater'], $user_links)) {
+                $user = new User();
+                $user->getFromDB($data['users_id_lastupdater']);
+                $user_links[$data['users_id_lastupdater']] = $user->getLink();
+            }
             $entry = [
-                'itemtype' => static::getType(),
+                'itemtype' => static::class,
                 'id'       => $data['id'],
                 'name'     => sprintf(__s('%1$s %2$s'), htmlescape($name), Html::showToolTip(htmlescape($data['comment']), ['display' => false])),
                 'begin_date' => $data['begin_date'],
@@ -582,6 +595,10 @@ TWIG, $twig_params);
                 'cost_fixed' => $data['cost_fixed'],
                 'cost_material' => $data['cost_material'],
                 'totalcost' => $cost,
+                'date_creation' => $data['date_creation'],
+                'date_mod' => $data['date_mod'],
+                'users_id' => $user_links[$data['users_id']],
+                'users_id_lastupdater' => $user_links[$data['users_id_lastupdater']],
             ];
             if ($forproject) {
                 if (!array_key_exists($data[static::$items_id], $ticket_links)) {
@@ -595,6 +612,10 @@ TWIG, $twig_params);
 
         $columns = [
             'name' => __('Name'),
+            'date_creation' => __('Creation date'),
+            'users_id' => User::getTypeName(1),
+            'date_mod' => __('Modification date'),
+            'users_id_lastupdater' => User::getTypeName(1) . ' (' . __('Last updater') . ')',
             'begin_date' => __('Begin date'),
             'end_date' => __('End date'),
             'budget' => Budget::getTypeName(1),
@@ -606,6 +627,10 @@ TWIG, $twig_params);
         ];
         $footer = [
             'name' => '',
+            'date_creation' => '',
+            'users_id' => '',
+            'date_mod' => '',
+            'users_id_lastupdater' => '',
             'begin_date' => '',
             'end_date' => '',
             'budget' => '',
@@ -632,6 +657,10 @@ TWIG, $twig_params);
             'formatters' => [
                 'ticket' => 'raw_html',
                 'name' => 'raw_html',
+                'date_creation' => 'datetime',
+                'users_id' => 'raw_html',
+                'date_mod' => 'datetime',
+                'users_id_lastupdater' => 'raw_html',
                 'begin_date' => 'date',
                 'end_date' => 'date',
                 'budget' => 'raw_html',
@@ -644,7 +673,6 @@ TWIG, $twig_params);
             'entries' => $entries,
             'row_class' => $canedit ? 'cursor-pointer' : '',
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => false,
         ]);
         if ($canedit) {
@@ -742,5 +770,35 @@ TWIG, $twig_params);
     {
         $cost = ($actiontime * $cost_time / HOUR_TIMESTAMP) + $cost_fixed + $cost_material;
         return Html::formatNumber($cost, $edit);
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        $input = parent::prepareInputForAdd($input);
+
+        if ($input === false) {
+            return false;
+        }
+
+        if (Session::getLoginUserID()) {
+            $input['users_id'] = Session::getLoginUserID();
+        }
+
+        return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $input = parent::prepareInputForUpdate($input);
+
+        if ($input === false) {
+            return false;
+        }
+
+        if (Session::getLoginUserID()) {
+            $input['users_id_lastupdater'] = Session::getLoginUserID();
+        }
+
+        return $input;
     }
 }

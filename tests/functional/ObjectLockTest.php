@@ -37,6 +37,7 @@ namespace tests\units;
 use Computer;
 use Entity;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
 use Notification;
 use NotificationEvent;
@@ -44,6 +45,7 @@ use ObjectLock;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile_User;
 use QueuedNotification;
+use Search;
 use User;
 use UserEmail;
 
@@ -261,5 +263,56 @@ class ObjectLockTest extends DbTestCase
         } else {
             $this->assertCount(0, $results, 'Expected no unlock notification to be queued for the locking user');
         }
+    }
+
+    public function testLockStatusSearchOptionWithUnlockedItem(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $CFG_GLPI['lock_use_lock_item'] = 1;
+        $CFG_GLPI['lock_item_list'] = [Computer::class];
+        SearchOption::clearSearchOptionCache(Computer::class);
+
+        $locked = $this->createItem(Computer::class, [
+            'name'        => __FUNCTION__ . ' locked',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->createItem(Computer::class, [
+            'name'        => __FUNCTION__ . ' free',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->createItem(ObjectLock::class, [
+            'itemtype' => Computer::class,
+            'items_id' => $locked->getID(),
+            'users_id' => getItemByTypeName(User::class, TU_USER, true),
+            'date'     => '2026-10-08 10:00:00',
+        ]);
+
+        $params = Search::manageParams(Computer::class, [
+            'reset'    => 'reset',
+            'criteria' => [
+                [
+                    'field'      => 1,
+                    'searchtype' => 'contains',
+                    'value'      => __FUNCTION__,
+                ],
+            ],
+            'sort'     => [1],
+            'order'    => ['ASC'],
+        ]);
+        $data = Search::getDatas(Computer::class, $params, [209]);
+        Search::resetSaveSearch();
+
+        $this->assertSame(2, $data['data']['totalcount']);
+
+        // Rows sorted by name: "... free" then "... locked"
+        $free_display   = $data['data']['rows'][0]['Computer_209']['displayname'];
+        $locked_display = $data['data']['rows'][1]['Computer_209']['displayname'];
+
+        $this->assertStringContainsString('ti-lock-open', $free_display);
+        $this->assertStringContainsString('ti-lock"', $locked_display);
+        $this->assertStringContainsString(TU_USER, $locked_display);
     }
 }

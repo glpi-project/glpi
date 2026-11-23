@@ -53,7 +53,6 @@
       }) }}
       <div id="transfer_form">
          <form action="{{ config('root_doc') ~ '/front/transfer.action.php' }}" method="post">
-            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
             {{ inputs.button('clear', __('Clear the list of elements to be transferred'), 'submit', 'clear') }}
          </form>
       </div>

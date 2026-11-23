@@ -35,6 +35,7 @@ import { Page } from "@playwright/test";
 import { Profiles } from "../../utils/Profiles";
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
 import { FormPage } from "../../pages/FormPage";
+import { FormPreviewPage } from "../../pages/FormRenderPage";
 import { GlpiPage } from "../../pages/GlpiPage";
 
 async function expectMandatoryQuestion(page: Page, name: string): Promise<void> {
@@ -109,6 +110,21 @@ test.describe('Form rendering', () => {
         await page.getByRole('button', { name: 'Submit' }).click();
         await expect(page.getByRole('heading', { name: 'Second section' })).toHaveCount(0);
         await expect(page.getByText('Form submitted')).toBeVisible();
+    });
+
+    test('Does not report a created item when no destination condition matched', async ({ page, profile, formImporter }) => {
+        await profile.set(Profiles.SuperAdmin);
+
+        // The only destination is created if "Name" equals "GLPI"
+        const info = await formImporter.importForm('unmatched-conditional-destination.json');
+        const form = new FormPreviewPage(page);
+        await form.goto(info.getId());
+        await form.getTextbox('Name').fill('John');
+        await form.doSubmitForm();
+
+        await expect(page.getByText('Form submitted')).toBeVisible();
+        await expect(form.success_message).toBeVisible();
+        await expect(page.getByText('Item successfully created')).toHaveCount(0);
     });
 
     test('Mandatory question alert is correctly removed when navigating back', async ({ page, profile, formImporter }) => {
@@ -191,7 +207,8 @@ test.describe('Form rendering', () => {
             glpi.getDropdownByLabel('Visible question'), 'Very high', false
         );
         await page.getByRole('button', { name: 'Submit' }).click();
-        await page.getByRole('link', { name: 'Form with hidden items' }).click();
+        // Check that the user is redirected to the created ticket
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
 
         await expect(page.getByTestId('form-field-urgency')).toContainText('Very high');
         await expect(page.getByText('Visible section')).toBeVisible();
@@ -247,6 +264,7 @@ test.describe('Form rendering', () => {
                 subtree_depth: 0,
                 selectable_tree_root: false,
                 itemtype: "Entity",
+                is_multiple_items: false,
             }),
         });
 
@@ -266,6 +284,7 @@ test.describe('Form rendering', () => {
                 subtree_depth: "1",
                 selectable_tree_root: "1",
                 itemtype: "Entity",
+                is_multiple_items: false,
             }),
         });
         await page.reload();
@@ -319,6 +338,7 @@ test.describe('Form rendering', () => {
                 subtree_depth: "0",
                 selectable_tree_root: "0",
                 itemtype: "Location",
+                is_multiple_items: false,
             }),
         });
 
@@ -338,6 +358,7 @@ test.describe('Form rendering', () => {
                 subtree_depth: "1",
                 selectable_tree_root: "1",
                 itemtype: "Location",
+                is_multiple_items: false,
             }),
         });
         await page.reload();

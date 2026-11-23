@@ -33,11 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\Parts\BasePart;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Message\MessageType;
 use Glpi\Progress\AbstractProgressIndicator;
-use Symfony\Component\Console\Output\OutputInterface;
 
 use function Safe\preg_replace;
 
@@ -62,15 +63,13 @@ class Migration
 
     /**
      * List (name => value) of configuration options to add, if they're missing
-     * @var array
      */
-    private $configs = [];
+    private array $configs = [];
 
     /**
      * Configuration context
-     * @var string
      */
-    private $context = 'core';
+    private string $context = 'core';
 
     public const PRE_QUERY = 'pre';
     public const POST_QUERY = 'post';
@@ -102,22 +101,6 @@ class Migration
     public function setVersion($ver)
     {
         $this->version = (string) $ver;
-    }
-
-    /**
-     * Add new message
-     *
-     * @since 0.84
-     *
-     * @param string $id Area ID
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public function addNewMessageArea($id)
-    {
-        Toolbox::deprecated();
     }
 
     /**
@@ -180,57 +163,6 @@ class Migration
         ) {
             $this->log_errors++;
         }
-    }
-
-    /**
-     * Display a title
-     *
-     * @param string $title Title to display
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public function displayTitle($title): void
-    {
-        Toolbox::deprecated();
-
-        $this->flushLogDisplayMessage();
-
-        $this->progress_indicator?->setProgressBarMessage($title);
-    }
-
-    /**
-     * Display a Warning
-     *
-     * @param string  $msg Message to display
-     * @param bool $red Displays with red class (false by default)
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public function displayWarning($msg, $red = false): void
-    {
-        Toolbox::deprecated();
-
-        $this->addMessage($red ? MessageType::Warning : MessageType::Notice, (string) $msg);
-    }
-
-    /**
-     * Display an error
-     *
-     * @param string  $message Message to display
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public function displayError(string $message): void
-    {
-        Toolbox::deprecated();
-
-        $this->addMessage(MessageType::Error, $message);
     }
 
     /**
@@ -833,7 +765,12 @@ class Migration
     public function executeMigration()
     {
         foreach ($this->queries[self::PRE_QUERY] as $query) {
-            $this->db->doQuery($query['query']);
+            if ($query['query'] instanceof BasePart) {
+                $stmt = $this->db->prepare($query['query']->getQuery());
+                $this->db->executeStatement($stmt, $query['query']->getParams());
+            } else {
+                $this->db->doQuery($query['query']);
+            }
         }
         $this->queries[self::PRE_QUERY] = [];
 
@@ -847,7 +784,12 @@ class Migration
         }
 
         foreach ($this->queries[self::POST_QUERY] as $query) {
-            $this->db->doQuery($query['query']);
+            if ($query['query'] instanceof BasePart) {
+                $stmt = $this->db->prepare($query['query']->getQuery());
+                $this->db->executeStatement($stmt, $query['query']->getParams());
+            } else {
+                $this->db->doQuery($query['query']);
+            }
         }
         $this->queries[self::POST_QUERY] = [];
 
@@ -879,7 +821,7 @@ class Migration
         $rule['description'] = '';
 
         // Compute ranking
-        if (!is_a($rule['sub_type'], Rule::class)) {
+        if (!is_a($rule['sub_type'], Rule::class, true)) {
             return 0;
         }
         $ruleinst = new $rule['sub_type']();
@@ -951,7 +893,7 @@ class Migration
                 foreach ($iterator as $data) {
                     $max_rank = $this->db->request([
                         'SELECT' => [
-                            QueryFunction::max('rank', 'max_rank'),
+                            QueryFunction::max(new QueryIdentifier('rank'), 'max_rank'),
                         ],
                         'FROM'   => 'glpi_displaypreferences',
                         'WHERE'  => [
@@ -1164,8 +1106,8 @@ class Migration
                             'glpi_configs',
                             [
                                 'context' => $context,
-                                'name'    => $name,
-                                'value'   => $value,
+                                'name' => $name,
+                                'value' => $value,
                             ]
                         );
                     }
@@ -1515,16 +1457,6 @@ class Migration
     }
 
     /**
-     * @deprecated 11.0.0
-     *
-     * @param ?OutputInterface $output_handler
-     */
-    public function setOutputHandler($output_handler): void
-    {
-        Toolbox::deprecated();
-    }
-
-    /**
      * Rename an itemtype an update database structure and data to use the new itemtype name.
      * Changes done by this method:
      *  - renaming of itemtype table;
@@ -1739,7 +1671,7 @@ class Migration
                                     'old' => 'itemtype',
                                     [
                                         'AND' => [
-                                            'new.users_id' => new QueryExpression($this->db::quoteName('old.users_id')),
+                                            'new.users_id' => new QueryIdentifier('old.users_id'),
                                             'new.itemtype' => $itemtype,
                                             'new.num' => $new_search_opt,
                                             'old.num' => $old_search_opt,
@@ -1810,7 +1742,43 @@ class Migration
 
                     if ($data['itemtype'] === $itemtype) {
                         // Fix sort
-                        if (isset($query['sort']) && (int) $query['sort'] === $old_search_opt) {
+                        if (isset($query['sort']) && is_array($query['sort'])) {
+                            // Multiple columns sort, each `sort` entry is paired with the `order` entry of the same key
+                            $orders = $query['order'] ?? [];
+                            if (!is_array($orders)) {
+                                // Legacy scalar order, applied to the first sort entry (see `SearchEngine`)
+                                $orders = [$orders];
+                            }
+                            $sort_changed = false;
+                            $new_sorts = [];
+                            $new_orders = [];
+                            foreach ($query['sort'] as $sort_key => $sort_opt) {
+                                if ((int) $sort_opt === $old_search_opt) {
+                                    $sort_changed = true;
+                                    if ($new_search_opt === null) {
+                                        continue;
+                                    }
+                                    $sort_opt = $new_search_opt;
+                                }
+                                if (in_array((int) $sort_opt, array_map('intval', $new_sorts), true)) {
+                                    // Already sorted on this option, the first occurrence takes precedence
+                                    continue;
+                                }
+                                if (array_key_exists($sort_key, $orders)) {
+                                    $new_orders[count($new_sorts)] = $orders[$sort_key];
+                                }
+                                $new_sorts[] = $sort_opt;
+                            }
+                            if ($sort_changed) {
+                                $query['sort'] = $new_sorts;
+                                if ($new_orders !== []) {
+                                    $query['order'] = $new_orders;
+                                } else {
+                                    unset($query['order']);
+                                }
+                                $is_changed = true;
+                            }
+                        } elseif (isset($query['sort']) && (int) $query['sort'] === $old_search_opt) {
                             if ($new_search_opt === null) {
                                 unset($query['sort']);
                             } else {

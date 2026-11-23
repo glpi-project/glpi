@@ -36,7 +36,7 @@
 namespace Glpi\Api\HL\Doc;
 
 use ArrayAccess;
-use Glpi\Api\HL\OpenAPIGenerator;
+use Glpi\Api\HL\Schemas;
 
 /**
  * @implements ArrayAccess<'ref', string>
@@ -62,7 +62,7 @@ final class SchemaReference implements ArrayAccess
      */
     public static function resolveRef($ref, string $controller, array $attributes, string $api_version): ?array
     {
-        $known_schemas = OpenAPIGenerator::getComponentSchemas($api_version);
+        $known_schemas = Schemas::getInstance($api_version)->getAllSchemas();
         if (!is_string($ref) && $ref !== null) {
             $ref = $ref['ref'];
         }

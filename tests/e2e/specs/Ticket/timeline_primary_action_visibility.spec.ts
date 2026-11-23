@@ -82,7 +82,7 @@ for (const { form, block, open } of form_cases) {
         const ticket = new TicketPage(page);
         await ticket.goto(ticket_id);
 
-        const right_actions = page.getByRole('button', { name: 'Save', exact: true });
+        const right_actions = page.getByTestId('right-actions').getByRole('button', { name: 'Save', exact: true });
         await expect(right_actions).toBeVisible();
 
         await open(ticket, page);

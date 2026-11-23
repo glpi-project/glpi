@@ -36,23 +36,41 @@ namespace tests\units\Glpi\System\Requirement;
 
 use Glpi\System\Requirement\LogsWriteAccess;
 use Glpi\Tests\GLPITestCase;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
 use org\bovigo\vfs\vfsStream;
 
 class LogsWriteAccessTest extends GLPITestCase
 {
     public function testCheckOnExistingWritableDir()
     {
-        vfsStream::setup('root', 0o777, []);
+        vfsStream::setup('root', 0o777, ['php-errors.log' => '']);
 
-        $logger = new Logger('test_log');
-        $logger->pushHandler(new StreamHandler(vfsStream::url('root/test.log')));
-
-        $instance = new LogsWriteAccess($logger);
+        $instance = new LogsWriteAccess(vfsStream::url('root'));
         $this->assertTrue($instance->isValidated());
         $this->assertEquals(
-            ['The log file has been created successfully.'],
+            ['Write access to log files has been validated.'],
+            $instance->getValidationMessages()
+        );
+    }
+
+    public function testCheckOnMissingDirCreatesIt()
+    {
+        vfsStream::setup('root', 0o777, []);
+
+        $dir = vfsStream::url('root/logs');
+        $instance = new LogsWriteAccess($dir);
+        $this->assertTrue($instance->isValidated());
+        $this->assertTrue(is_dir($dir));
+    }
+
+    public function testCheckOnNonCreatableDir()
+    {
+        vfsStream::setup('root', 0o555, []);
+
+        $dir = vfsStream::url('root/logs');
+        $instance = new LogsWriteAccess($dir);
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            ['The log directory ' . $dir . ' could not be created.'],
             $instance->getValidationMessages()
         );
     }
@@ -61,13 +79,110 @@ class LogsWriteAccessTest extends GLPITestCase
     {
         vfsStream::setup('root', 0o555, []);
 
-        $logger = new Logger('test_log');
-        $logger->pushHandler(new StreamHandler(vfsStream::url('root/test.log')));
-
-        $instance = new LogsWriteAccess($logger);
+        $instance = new LogsWriteAccess(vfsStream::url('root'));
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
-            ['The log file could not be created in ' . GLPI_LOG_DIR . '.'],
+            ['The log directory ' . vfsStream::url('root') . ' is not writable.'],
+            $instance->getValidationMessages()
+        );
+    }
+
+    public function testCheckOnExistingNonWritableLogFile()
+    {
+        $structure = vfsStream::setup('root', 0o777, ['php-errors.log' => '']);
+        $structure->getChild('php-errors.log')->chmod(0o444);
+
+        $instance = new LogsWriteAccess(vfsStream::url('root'));
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            ['The log file ' . vfsStream::url('root/php-errors.log') . ' is not writable.'],
+            $instance->getValidationMessages()
+        );
+    }
+
+    public function testCheckOnMissingLogFileInWritableDir()
+    {
+        vfsStream::setup('root', 0o777, []);
+
+        $instance = new LogsWriteAccess(vfsStream::url('root'));
+        $this->assertTrue($instance->isValidated());
+        $this->assertEquals(
+            ['Write access to log files has been validated.'],
+            $instance->getValidationMessages()
+        );
+    }
+
+    public function testCheckAllLogFilesWritable()
+    {
+        vfsStream::setup('root', 0o777, [
+            'php-errors.log'    => '',
+            'access-errors.log' => '',
+            'api.log'           => '',
+            'cron.log'          => '',
+            'event.log'         => '',
+            'mail.log'          => '',
+            'mail-error.log'    => '',
+            'mailgate.log'      => '',
+            'notification.log'  => '',
+            'webhook.log'       => '',
+        ]);
+
+        $instance = new LogsWriteAccess(vfsStream::url('root'));
+        $this->assertTrue($instance->isValidated());
+        $this->assertEquals(
+            ['Write access to log files has been validated.'],
+            $instance->getValidationMessages()
+        );
+    }
+
+    public function testCheckWithOneUnwritableFile()
+    {
+        $structure = vfsStream::setup('root', 0o777, [
+            'php-errors.log'    => '',
+            'access-errors.log' => '',
+            'api.log'           => '',
+            'cron.log'          => '',
+            'event.log'         => '',
+            'mail.log'          => '',
+            'mail-error.log'    => '',
+            'mailgate.log'      => '',
+            'notification.log'  => '',
+            'webhook.log'       => '',
+        ]);
+        $structure->getChild('mailgate.log')->chmod(0o444);
+
+        $instance = new LogsWriteAccess(vfsStream::url('root'));
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            ['The log file ' . vfsStream::url('root/mailgate.log') . ' is not writable.'],
+            $instance->getValidationMessages()
+        );
+    }
+
+    public function testCheckWithMultipleUnwritableFiles()
+    {
+        $structure = vfsStream::setup('root', 0o777, [
+            'php-errors.log'    => '',
+            'access-errors.log' => '',
+            'api.log'           => '',
+            'cron.log'          => '',
+            'event.log'         => '',
+            'mail.log'          => '',
+            'mail-error.log'    => '',
+            'mailgate.log'      => '',
+            'notification.log'  => '',
+            'webhook.log'       => '',
+        ]);
+        $structure->getChild('cron.log')->chmod(0o444);
+        $structure->getChild('webhook.log')->chmod(0o444);
+
+        $instance = new LogsWriteAccess(vfsStream::url('root'));
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            [
+                'The log file ' . vfsStream::url('root/cron.log') . ' is not writable.',
+                'The log file ' . vfsStream::url('root/webhook.log') . ' is not writable.',
+            ],
             $instance->getValidationMessages()
         );
     }

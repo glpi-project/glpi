@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global sortable, glpi_toast_info, glpi_toast_error, getAjaxCsrfToken, bootstrap */
+/* global sortable, glpi_toast_info, glpi_toast_error, bootstrap */
 
 export class GlpiHelpdeskConfigController
 {
@@ -173,7 +173,6 @@ export class GlpiHelpdeskConfigController
                 body: form_data,
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
                 }
             });
 
@@ -256,7 +255,6 @@ export class GlpiHelpdeskConfigController
                 body: form_data,
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
                 }
             });
 
@@ -343,7 +341,6 @@ export class GlpiHelpdeskConfigController
                 body: form_data,
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
                 }
             });
 
@@ -423,7 +420,6 @@ export class GlpiHelpdeskConfigController
                 body: form_data,
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
                 }
             });
 

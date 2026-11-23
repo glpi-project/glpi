@@ -153,7 +153,8 @@ test.describe('Associated items configuration', () => {
         );
 
         await form_page.getButton('Submit').click();
-        await page.getByRole('link', { name: 'My test form' }).click();
+        // Check that the user is redirected to the created ticket
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
 
         const items_region = form_page.getRegion('Items');
         await expect(items_region.getByRole('link', { name: `My Assigned monitor - ${unique}` })).toBeVisible();

@@ -53,52 +53,44 @@ class RuleCollection extends CommonDBTM
     /**
      * Rule type
      *
-     * @var string
      */
-    public $sub_type;
+    public string $sub_type;
     /**
      * Process collection stop on first matched rule
      *
-     * @var bool
      */
-    public $stop_on_first_match                   = false;
+    public bool $stop_on_first_match                   = false;
     /**
      * Processing several rules : use result of the previous one to computer the current one
      *
-     * @var bool
      */
-    public $use_output_rule_process_as_next_input = false;
+    public bool $use_output_rule_process_as_next_input = false;
     /**
      * Rule collection can be replay (for dictionary)
      *
-     * @var bool
      */
-    public $can_replay_rules                      = false;
-    /** @var SingletonRuleList $RuleList */
-    public $RuleList                              = null;
+    public bool $can_replay_rules                      = false;
+    public ?SingletonRuleList $RuleList = null;
     /**
      * Menu type
      *
-     * @var string
      */
-    public $menu_type                             = "rule";
+    public string $menu_type                             = "rule";
     /**
      * Menu option
      *
-     * @var string
      */
-    public $menu_option                           = "";
+    public string $menu_option                           = "";
 
-    /** @var int */
-    public $entity                                = 0;
+    public int $entity                                = 0;
 
-    public static $rightname                             = 'config';
+    public static string $rightname                             = 'config';
 
     /**
      * @var string Tab orientation : horizontal or vertical
      * @phpstan-var 'horizontal'|'vertical'
      */
-    public $taborientation = 'horizontal';
+    public string $taborientation = 'horizontal';
 
     public static function getTable($classname = null)
     {
@@ -312,7 +304,7 @@ class RuleCollection extends CommonDBTM
 
             if (count($iterator)) {
                 $this->RuleList->list = [];
-                $active_tab = Session::getActiveTab($this->getType());
+                $active_tab = Session::getActiveTab(static::class);
 
                 foreach ($iterator as $rule) {
                     //For each rule, get a Rule object with all the criterias and actions
@@ -621,7 +613,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => $nb,
-            'filtered_number' => $nb,
             'showmassiveactions' => true,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -694,7 +685,7 @@ HTML;
                         'content': reset_warning
                     }) }}
                 {% endif %}
-                <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#allruletest">{{ test_label }}</button>
+                <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#allruletest"><i class="ti ti-stethoscope" aria-hidden="true"></i> <span>{{ test_label }}</span></button>
                 {% do call('Ajax::createIframeModalWindow', ['allruletest', test_url, {title: test_label}]) %}
                 {% if can_replay %}
                     <a class="btn btn-primary mx-1" role="button" href="{{ rule_class|itemtype_search_path }}?replay_rule=replay_rule">{{ replay_label }}</a>
@@ -1145,7 +1136,7 @@ TWIG, $twig_params);
      * @since 0.85
      *
      * @param array   $available_criteria available criteria for this rule
-     * @param int $condition          the rulecriteria condition
+     * @param int|string $condition   the rulecriteria condition
      * @param string  $criterion          the criterion
      *
      * @return bool true if a criterion is a dropdown, false otherwise
@@ -1153,7 +1144,8 @@ TWIG, $twig_params);
     public static function isCriteraADropdown($available_criteria, $condition, $criterion)
     {
         $type = $available_criteria[$criterion]['type'] ?? false;
-        return (in_array($condition, [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT, Rule::PATTERN_UNDER], true)
+        return (is_numeric($condition)
+              && in_array((int) $condition, [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT, Rule::PATTERN_UNDER], true)
               && ($type === 'dropdown'));
     }
 
@@ -1264,7 +1256,7 @@ TWIG, $twig_params);
                             $refused_rule['reasons']['criteria'][] = [
                                 'id' => $k_crit,
                                 'name' => $tmprule->getCriteriaName($criteria["criteria"]),
-                                'label' => RuleCriteria::getConditionByID($criteria["condition"], $item::class, $criteria["criteria"]),
+                                'label' => RuleCriteria::getConditionByID($criteria["condition"], $tmprule::class, $criteria["criteria"]),
                                 'pattern' => $criteria["pattern"],
                             ];
                         } else {
@@ -1530,7 +1522,7 @@ TWIG, $twig_params);
         //Store rule type being processed (for plugins)
         $params['rule_itemtype']    = static::getRuleClassName();
 
-        if (count($this->RuleList->list)) {
+        if ($this->RuleList !== null && count($this->RuleList->list)) {
             foreach ($this->RuleList->list as $rule) {
                 if ($p['condition'] && !($rule->fields['condition'] & $p['condition'])) {
                     // Rule is loaded in the cache but is not relevant for the current condition
@@ -1628,7 +1620,7 @@ TWIG, $twig_params);
 
         $output["_no_rule_matches"] = true;
 
-        if (count($this->RuleList->list)) {
+        if ($this->RuleList !== null && count($this->RuleList->list)) {
             foreach ($this->RuleList->list as $rule) {
                 // If the rule is active, process it
                 if ($rule->fields["is_active"]) {
@@ -2107,7 +2099,7 @@ TWIG, $twig_params);
         }
 
         if (
-            Session::haveRight("transfer", READ)
+            Session::haveRight(Transfer::$rightname, READ)
             && Session::isMultiEntitiesMode()
         ) {
             $rules[] = [
@@ -2118,7 +2110,7 @@ TWIG, $twig_params);
             ];
         }
 
-        if (Session::haveRight("config", READ)) {
+        if (Session::haveRight(Blacklist::$rightname, READ)) {
             $rules[] = [
                 'label'     => _n('Blacklist', 'Blacklists', Session::getPluralNumber()),
                 'link'      => Blacklist::getSearchURL(),
@@ -2141,7 +2133,7 @@ TWIG, $twig_params);
 
         $entries = [];
 
-        if (Session::haveRight("rule_dictionnary_software", READ)) {
+        if (Session::haveRight(RuleDictionnarySoftware::$rightname, READ)) {
             $entries[] = [
                 'label'  => Software::getTypeName(Session::getPluralNumber()),
                 'link'   => 'ruledictionnarysoftware.php',
@@ -2149,7 +2141,7 @@ TWIG, $twig_params);
             ];
         }
 
-        if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
+        if (Session::haveRight(RuleDictionnaryDropdown::$rightname, READ)) {
             $entries[] = [
                 'label'  => Manufacturer::getTypeName(Session::getPluralNumber()),
                 'link'   => 'ruledictionnarymanufacturer.php',
@@ -2157,7 +2149,7 @@ TWIG, $twig_params);
             ];
         }
 
-        if (Session::haveRight("rule_dictionnary_printer", READ)) {
+        if (Session::haveRight(RuleDictionnaryPrinter::$rightname, READ)) {
             $entries[] = [
                 'label'  => Printer::getTypeName(Session::getPluralNumber()),
                 'link'   => 'ruledictionnaryprinter.php',
@@ -2174,7 +2166,7 @@ TWIG, $twig_params);
 
         $custom_assets = AssetDefinitionManager::getInstance()->getDefinitions(true);
 
-        if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
+        if (Session::haveRight(RuleDictionnaryDropdown::$rightname, READ)) {
             $model_dictionaries = [
                 'type'      => _n('Model', 'Models', Session::getPluralNumber()),
                 'entries'   => [
@@ -2218,7 +2210,7 @@ TWIG, $twig_params);
             $dictionnaries[] = $model_dictionaries;
         }
 
-        if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
+        if (Session::haveRight(RuleDictionnaryDropdown::$rightname, READ)) {
             $type_dictionaries = [
                 'type'      => _n('Type', 'Types', Session::getPluralNumber()),
                 'entries'   => [
@@ -2262,7 +2254,7 @@ TWIG, $twig_params);
             $dictionnaries[] = $type_dictionaries;
         }
 
-        if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
+        if (Session::haveRight(RuleDictionnaryDropdown::$rightname, READ)) {
             $dictionnaries[] = [
                 'type'      => OperatingSystem::getTypeName(Session::getPluralNumber()),
                 'entries'   => [

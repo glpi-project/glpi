@@ -120,41 +120,48 @@
                 }, with_context = false) }}
 
                 {# Duplicate question #}
-                <i
-                    role="button"
-                    class="ti ti-copy ms-3 cursor-pointer"
+                <button
+                    type="button"
+                    class="btn btn-sm btn-icon btn-ghost-secondary ms-1"
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
                     title="{{ __("Duplicate question") }}"
                     data-glpi-form-editor-on-click="duplicate-question"
                     data-glpi-form-editor-question-extra-details
                     data-glpi-form-editor-state-action
-                ></i>
+                >
+                    <i class="ti ti-copy" aria-hidden="true"></i>
+                    <span class="visually-hidden">{{ __("Duplicate question") }}</span>
+                </button>
 
                 {# Delete question #}
-                <i
-                    role="button"
-                    class="ti ti-trash ms-3 cursor-pointer"
+                <button
+                    type="button"
+                    class="btn btn-sm btn-icon btn-ghost-secondary ms-1"
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
                     title="{{ __("Delete") }}"
-                    aria-label="{{ __("Delete") }}"
                     data-glpi-form-editor-on-click="delete-question"
                     data-glpi-form-editor-question-extra-details
                     data-glpi-form-editor-state-action
-                ></i>
+                >
+                    <i class="ti ti-trash" aria-hidden="true"></i>
+                    <span class="visually-hidden">{{ __("Delete") }}</span>
+                </button>
 
                 {# Extra actions #}
-                <div class="dropdown ms-3 cursor-pointer d-flex align-items-center">
-                    <i
-                        class="ti ti-dots-vertical show"
+                <div class="dropdown ms-1 d-flex align-items-center">
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-icon btn-ghost-secondary"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
-                        role="button"
                         title="{{ __('More actions') }}"
-                        aria-label="{{ __('More actions') }}"
                         data-glpi-form-editor-state-action
-                    ></i>
+                    >
+                        <i class="ti ti-dots-vertical" aria-hidden="true"></i>
+                        <span class="visually-hidden">{{ __('More actions') }}</span>
+                    </button>
                     <ul class="dropdown-menu" data-bs-popper="none">
                         <li>
                             <button
@@ -163,7 +170,7 @@
                                 class="dropdown-item"
                                 data-glpi-form-editor-on-click="show-visibility-dropdown"
                             >
-                                <i class="ti ti-eye-cog me-2"></i>
+                                <i class="ti ti-eye-cog me-2" aria-hidden="true"></i>
                                 <span>{{ __("Configure visibility") }}</span>
                             </button>
                         </li>
@@ -174,7 +181,7 @@
                                 class="dropdown-item"
                                 data-glpi-form-editor-on-click="show-validation-dropdown"
                             >
-                                <i class="ti ti-checks me-2"></i>
+                                <i class="ti ti-checks me-2" aria-hidden="true"></i>
                                 <span>{{ __("Configure validation") }}</span>
                             </button>
                         </li>
@@ -184,7 +191,7 @@
                                 class="dropdown-item"
                                 data-glpi-form-editor-on-click="copy-uuid"
                             >
-                                <i class="ti ti-id-badge me-2"></i>
+                                <i class="ti ti-id-badge me-2" aria-hidden="true"></i>
                                 <span>{{ __("Copy uuid") }}</span>
                             </button>
                         </li>

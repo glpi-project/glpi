@@ -91,7 +91,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
      */
     public const ERROR_DB_CONFIG_FILE_NOT_SAVED = 4;
 
-    protected $requires_db_up_to_date = false;
+    protected bool $requires_db_up_to_date = false;
 
     protected function configure()
     {
@@ -369,7 +369,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
             // Instanciate DB to be able to compute boolean properties flags.
             $db = new class ($db_hostport, $db_user, $db_pass, $db_name, $db_ssl, $db_ssl_key, $db_ssl_cert, $db_ssl_ca, $db_ssl_capath, $db_ssl_cipher) extends DBmysql {
                 /**
-                 * @param string $dbhost
+                 * @param string|string[] $dbhost
                  * @param string $dbuser
                  * @param string $dbpassword
                  * @param string $dbdefault
@@ -380,7 +380,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
                  * @param string|null $dbsslcapath
                  * @param string|null $dbsslcacipher
                  */
-                public function __construct($dbhost, $dbuser, $dbpassword, $dbdefault, $dbssl, $dbsslkey, $dbsslcert, $dbsslca, $dbsslcapath, $dbsslcacipher)
+                public function __construct(array|string $dbhost, string $dbuser, string $dbpassword, string $dbdefault, bool $dbssl, ?string $dbsslkey, ?string $dbsslcert, ?string $dbsslca, ?string $dbsslcapath, ?string $dbsslcacipher)
                 {
                     $this->dbhost     = $dbhost;
                     $this->dbuser     = $dbuser;
@@ -461,7 +461,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
             $db_ssl_cipher
         ) extends DBmysql {
             /**
-             * @param string $dbhost
+             * @param string|string[] $dbhost
              * @param string $dbuser
              * @param string $dbpassword
              * @param string $dbdefault
@@ -478,21 +478,21 @@ abstract class AbstractConfigureCommand extends AbstractCommand
              * @param string|null $dbsslcacipher
              */
             public function __construct(
-                $dbhost,
-                $dbuser,
-                $dbpassword,
-                $dbdefault,
-                $use_timezones,
-                $log_deprecation_warnings,
-                $use_utf8mb4,
-                $allow_datetime,
-                $allow_signed_keys,
-                $dbssl,
-                $dbsslkey,
-                $dbsslcert,
-                $dbsslca,
-                $dbsslcapath,
-                $dbsslcacipher
+                string|array $dbhost,
+                string $dbuser,
+                string $dbpassword,
+                string $dbdefault,
+                bool $use_timezones,
+                bool $log_deprecation_warnings,
+                bool $use_utf8mb4,
+                bool $allow_datetime,
+                bool $allow_signed_keys,
+                bool $dbssl,
+                ?string $dbsslkey,
+                ?string $dbsslcert,
+                ?string $dbsslca,
+                ?string $dbsslcapath,
+                ?string $dbsslcacipher
             ) {
                 $this->dbhost     = $dbhost;
                 $this->dbuser     = $dbuser;

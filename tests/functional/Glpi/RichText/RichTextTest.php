@@ -34,16 +34,31 @@
 
 namespace tests\units\Glpi\RichText;
 
+use Document;
+use Document_Item;
 use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\Tag;
 use Glpi\RichText\RichText;
-use Glpi\Tests\GLPITestCase;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Rule;
+use Ticket;
 
-class RichTextTest extends GLPITestCase
+class RichTextTest extends DbTestCase
 {
     public static function getSafeHtmlProvider(): iterable
     {
+        // Native PHP parser is used in PHP 8.4+, and results slightly differ
+        if (\PHP_VERSION_ID < 80400) {
+            $pre_content_separator = "\n";
+            $tbody_opening_tag = "";
+            $tbody_closing_tag = "";
+        } else {
+            $pre_content_separator = "";
+            $tbody_opening_tag = "<tbody>";
+            $tbody_closing_tag = "</tbody>";
+        }
+
         // Empty content would not be altered
         yield [
             'content'                => null,
@@ -328,8 +343,7 @@ HTML,
       bla bla
     </p>
   </blockquote>
-  <pre>
-  public function () {
+  <pre>$pre_content_separator  public function () {
     alert(&#039;Hello world!&#039;);
   }
   </pre>
@@ -347,13 +361,26 @@ HTML,
             'encode_output_entities' => false,
             'expected_result'        => '<p>Some content</p>',
         ];
+        yield 'TinyMCE ephox blocker containing a non-breaking space entity should be removed' => [
+            'content'                => <<<HTML
+<p>Some content</p>
+<div class="ephox-dragster-blocker" style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%;" role="presentation">&nbsp;</div>
+HTML,
+            'encode_output_entities' => false,
+            'expected_result'        => '<p>Some content</p>',
+        ];
+        yield 'TinyMCE ephox blocker containing a non-breaking space should be removed' => [
+            'content'                => "<p>Some content</p>\n<div class=\"ephox-dragster-blocker\" role=\"presentation\">\u{00A0}</div>",
+            'encode_output_entities' => false,
+            'expected_result'        => '<p>Some content</p>',
+        ];
 
         // Deprecated html attributes should not be transformed into styles
         // see #11580
         yield [
             'content'                => '<table height=100 width=0 align="left" cellspacing=10 style="width: 100%;"><tr><td>Test</td></tr></table>',
             'encode_output_entities' => false,
-            'expected_result'        => '<table height="100" width="0" align="left" cellspacing="10" style="width: 100%;"><tr><td>Test</td></tr></table>',
+            'expected_result'        => '<table height="100" width="0" align="left" cellspacing="10" style="width: 100%;">' . $tbody_opening_tag . '<tr><td>Test</td></tr>' . $tbody_closing_tag . '</table>',
         ];
 
         yield 'User mention tag must be preserved' => [
@@ -398,19 +425,19 @@ HTML,
         yield '`border` attribute on table should be preserved' => [
             'content'                => '<table border="1"><tr><td>Cell content</td></tr></table>',
             'encode_output_entities' => false,
-            'expected_result'        => '<table border="1"><tr><td>Cell content</td></tr></table>',
+            'expected_result'        => '<table border="1">' . $tbody_opening_tag . '<tr><td>Cell content</td></tr>' . $tbody_closing_tag . '</table>',
         ];
 
         yield '`bgcolor` attribute on table elements should be preserved' => [
             'content'                => '<table bgcolor="#f0f0f0"><tr bgcolor="#ffffff"><th bgcolor="#cccccc">Header</th><td bgcolor="#eeeeee">Data</td></tr></table>',
             'encode_output_entities' => false,
-            'expected_result'        => '<table bgcolor="#f0f0f0"><tr bgcolor="#ffffff"><th bgcolor="#cccccc">Header</th><td bgcolor="#eeeeee">Data</td></tr></table>',
+            'expected_result'        => '<table bgcolor="#f0f0f0">' . $tbody_opening_tag . '<tr bgcolor="#ffffff"><th bgcolor="#cccccc">Header</th><td bgcolor="#eeeeee">Data</td></tr>' . $tbody_closing_tag . '</table>',
         ];
 
         yield 'table with both `border` and `bgcolor` attributes' => [
             'content'                => '<table border="1" bgcolor="#ffffff"><tr><td>Test</td></tr></table>',
             'encode_output_entities' => false,
-            'expected_result'        => '<table border="1" bgcolor="#ffffff"><tr><td>Test</td></tr></table>',
+            'expected_result'        => '<table border="1" bgcolor="#ffffff">' . $tbody_opening_tag . '<tr><td>Test</td></tr>' . $tbody_closing_tag . '</table>',
         ];
 
         yield '`border` attribute should be removed from non-table elements' => [
@@ -442,6 +469,20 @@ HTML,
             'content'                => '<a class="user-mention" href="' . $CFG_GLPI['root_doc'] . '/front/user.form.php?id=5">@normal</a>',
             'encode_output_entities' => false,
             'expected_result'        => '<a class="user-mention" href="' . $CFG_GLPI['root_doc'] . '/front/user.form.php?id&#61;5">&#64;normal</a>',
+        ];
+
+        // Video embed placeholder attributes are inert and preserved in every context.
+        // getSafeHtml never materializes them into an iframe — that is done downstream
+        // by VideoEmbedRenderer — so keeping them everywhere is safe.
+        yield 'data-video-* placeholder attributes are preserved' => [
+            'content'                => '<p>Watch this:</p><div class="video-embed" data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<p>Watch this:</p><div class="video-embed" data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
+        ];
+        yield 'data-video-src placeholder attribute is preserved' => [
+            'content'                => '<p>Watch this:</p><div class="video-embed" data-video-provider="video" data-video-src="https://cdn.example.com/clip.mp4"></div>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<p>Watch this:</p><div class="video-embed" data-video-provider="video" data-video-src="https://cdn.example.com/clip.mp4"></div>',
         ];
     }
 
@@ -643,6 +684,17 @@ Text in a paragraph
  [an image] Should I yell for the important words? 
 PLAINTEXT,
         ];
+
+        // Video embed placeholders are replaced by their watch URL in plaintext
+        yield 'Video embed placeholder substituted in plaintext output' => [
+            'content'                => '<p>Watch:</p><div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
+            'keep_presentation'      => false,
+            'compact'                => false,
+            'encode_output_entities' => false,
+            'preserve_case'          => true,
+            'preserve_line_breaks'   => false,
+            'expected_result'        => 'Watch:[YouTube: https://www.youtube.com/watch?v=dQw4w9WgXcQ]',
+        ];
     }
 
     #[DataProvider('getTextFromHtmlProvider')]
@@ -761,24 +813,242 @@ HTML,
             'content'                => '<span contenteditable="false" data-user-mention="true" data-user-id="5">@normal</span>',
             'expected_result'        => '<a class="user-mention" href="' . $CFG_GLPI['root_doc'] . '/front/user.form.php?id=5">@normal</a>',
         ];
+
+        // Video embed placeholders are materialized unconditionally (a placeholder with
+        // no rendering would leave the user with no access to the video). The inert
+        // form is asserted in the getSafeHtml provider instead.
+        yield 'Video placeholder is materialized as a sandboxed iframe' => [
+            'content'                => '<p>Watch this:</p><div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
+            'expected_result'        => '<p>Watch this:</p><div class="video-embed-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" title="YouTube video player" loading="lazy" allowfullscreen sandbox="allow-scripts allow-same-origin allow-presentation"></iframe></div>',
+        ];
+
+        yield 'Direct video placeholder is materialized as a <video>' => [
+            'content'                => '<p>Watch this:</p><div data-video-provider="video" data-video-src="https://cdn.example.com/clip.mp4"></div>',
+            'expected_result'        => '<p>Watch this:</p><div class="video-embed-wrapper"><video src="https://cdn.example.com/clip.mp4" title="Embedded video" controls preload="metadata"></video></div>',
+        ];
+
+        yield 'Direct video with disallowed scheme is dropped' => [
+            'content'                => '<p>Before</p><div data-video-provider="video" data-video-src="javascript:alert(1)//x.mp4"></div><p>After</p>',
+            'expected_result'        => '<p>Before</p><p>After</p>',
+        ];
+
+        yield 'Unknown provider is dropped' => [
+            'content'                => '<p>Before</p><div data-video-provider="malicious" data-video-id="exploit"></div><p>After</p>',
+            'expected_result'        => '<p>Before</p><p>After</p>',
+        ];
+
+        // XSS payloads: assert the exact neutralized output rather than a set of
+        // "does not contain" checks — the sanitized result inherently proves no
+        // script / handler / disallowed scheme survived.
+        yield 'XSS: inline script tag is stripped' => [
+            'content'                => '<p>Hello</p><script>alert("xss")</script>',
+            'expected_result'        => '<p>Hello</p>',
+        ];
+        yield 'XSS: img onerror handler is stripped' => [
+            'content'                => '<img src="x" onerror="alert(1)">',
+            'expected_result'        => '<img src="x" loading="lazy">',
+        ];
+        yield 'XSS: svg onload handler is stripped' => [
+            'content'                => '<svg onload="alert(1)"></svg>',
+            'expected_result'        => '<p>&lt;svg onload&#61;&#34;alert(1)&#34;&gt;&lt;/svg&gt;</p>',
+        ];
+        yield 'XSS: javascript: scheme in href is stripped' => [
+            'content'                => '<a href="javascript:alert(1)">click</a>',
+            'expected_result'        => '<a>click</a>',
+        ];
+        yield 'XSS: data: scheme iframe is stripped' => [
+            'content'                => '<iframe src="data:text/html,<script>alert(1)</script>"></iframe>',
+            'expected_result'        => '<p>&lt;iframe src&#61;&#34;data:text/html,&lt;script&gt;alert(1)&lt;/script&gt;&#34;&gt;&lt;/iframe&gt;</p>',
+        ];
+        yield 'XSS: attribute breakout on video placeholder provider is dropped' => [
+            'content'                => '<div data-video-provider="youtube&quot; onclick=&quot;alert(1)" data-video-id="dQw4w9WgXcQ"></div>',
+            'expected_result'        => '',
+        ];
+        yield 'XSS: attribute breakout on video placeholder id is dropped' => [
+            'content'                => '<div data-video-provider="youtube" data-video-id="x&quot;><script>alert(1)</script>"></div>',
+            'expected_result'        => '',
+        ];
+        yield 'XSS: unknown provider with script payload in body is dropped' => [
+            'content'                => '<div data-video-provider="evil" data-video-id="x"><script>alert(1)</script></div>',
+            'expected_result'        => '',
+        ];
+        yield 'XSS: script in placeholder body is stripped, then the empty placeholder is materialized' => [
+            'content'                => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"><script>alert(1)</script></div>',
+            'expected_result'        => '<div class="video-embed-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" title="YouTube video player" loading="lazy" allowfullscreen sandbox="allow-scripts allow-same-origin allow-presentation"></iframe></div>',
+        ];
+        // A non-empty placeholder (here a leftover nested <div> after the script is
+        // stripped) is NOT materialized: renderAll only rewrites empty placeholders,
+        // so no iframe is produced and the inert markup is left as-is.
+        yield 'XSS: nested div in placeholder body is not materialized' => [
+            'content'                => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"><div></div><script>alert(1)</script></div>',
+            'expected_result'        => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"><div></div></div>',
+        ];
     }
 
     #[DataProvider('getEnhancedHtmlProvider')]
-    public function testGetEnhancedHtml(string $content, string $expected_result)
+    public function testGetEnhancedHtml(string $content, string $expected_result, array $extra_params = [])
     {
         $richtext = new RichText();
 
         $save_pcre_backtrack_limit = ini_get('pcre.backtrack_limit');
         ini_set('pcre.backtrack_limit', 100); // Lower limit to ensure the effectiveness of regex
-        $this->assertEquals(100, ini_get('pcre.backtrack_limit'));
+        try {
+            $this->assertEquals(100, ini_get('pcre.backtrack_limit'));
 
-        $result = $richtext->getEnhancedHtml($content, ['text_maxsize' => 0]);
-
-        ini_set('pcre.backtrack_limit', $save_pcre_backtrack_limit);
+            $result = $richtext->getEnhancedHtml($content, ['text_maxsize' => 0] + $extra_params);
+        } finally {
+            // Restore the limit even if an error occurs, to not affect other tests
+            ini_set('pcre.backtrack_limit', $save_pcre_backtrack_limit);
+        }
 
         $this->assertEquals(
             $expected_result,
             $result,
         );
     }
+
+    public function testGetEnhancedHtmlReplacesImagesByGallery(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $document = $this->createImageDocument();
+        $src = $CFG_GLPI['root_doc'] . '/front/document.send.php?docid=' . $document->getID() . '&amp;itemtype=Ticket&amp;items_id=1';
+        $content = <<<HTML
+<p>Screenshot: <a href="{$src}" target="_blank"><img alt="screenshot" width="40" src="{$src}" /></a></p>
+HTML;
+
+        $result = RichText::getEnhancedHtml($content, ['images_gallery' => true]);
+
+        // The link to the image is replaced by a gallery item, and its URLs are not encoded twice
+        $this->assertStringNotContainsString('<img alt="screenshot"', $result);
+        $this->assertStringContainsString("<a href='{$src}' itemprop='contentUrl' data-index='0'>", $result);
+        $this->assertStringContainsString("<img src='{$src}' itemprop='thumbnail' loading='lazy'", $result);
+    }
+
+    public static function galleryThumbnailSizeProvider(): iterable
+    {
+        yield 'no size in the content' => [
+            'size_attributes'     => '',
+            'expected_attributes' => "width='67' height='71' style='aspect-ratio: 67 / 71'",
+        ];
+        yield 'width only' => [
+            'size_attributes'     => 'width="40"',
+            'expected_attributes' => "width='40' height='42' style='aspect-ratio: 40 / 42'",
+        ];
+        yield 'height only' => [
+            'size_attributes'     => 'height="35"',
+            'expected_attributes' => "width='33' height='35' style='aspect-ratio: 33 / 35'",
+        ];
+        yield 'width and height' => [
+            'size_attributes'     => 'width="40" height="20"',
+            'expected_attributes' => "width='40' height='20' style='aspect-ratio: 40 / 20'",
+        ];
+    }
+
+    #[DataProvider('galleryThumbnailSizeProvider')]
+    public function testGalleryThumbnailHasBothDimensions(string $size_attributes, string $expected_attributes): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $document = $this->createImageDocument();
+        $src = $CFG_GLPI['root_doc'] . '/front/document.send.php?docid=' . $document->getID();
+        $content = <<<HTML
+<p><a href="{$src}" target="_blank"><img alt="screenshot" {$size_attributes} src="{$src}" /></a></p>
+HTML;
+
+        $result = RichText::getEnhancedHtml($content, ['images_gallery' => true]);
+
+        // Without its two dimensions, the image has no reserved box and moves the content when it is loaded.
+        // Without an explicit ratio, it takes the ratio of the file once loaded, whatever its attributes are.
+        $this->assertStringContainsString(
+            "<img src='{$src}' itemprop='thumbnail' loading='lazy' {$expected_attributes}>",
+            $result
+        );
+    }
+
+    public function testGalleryFollowsTheRightToViewTheImage(): void
+    {
+        global $CFG_GLPI;
+
+        // The document belongs to another user, and the reader has no right on the documents
+        $this->login();
+        $document = $this->createImageDocument();
+
+        $this->login('post-only', 'postonly');
+        $this->assertFalse($document->canViewFile());
+        $ticket = new Ticket();
+        $tickets_id = $ticket->add(['name' => 'Ticket with an image', 'content' => 'Ticket with an image']);
+        $this->assertGreaterThan(0, $tickets_id);
+
+        $this->login();
+        $this->createItem(Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'itemtype'     => Ticket::class,
+            'items_id'     => $tickets_id,
+        ]);
+
+        $this->login('post-only', 'postonly');
+        $src = $CFG_GLPI['root_doc'] . '/front/document.send.php?docid=' . $document->getID();
+        $render = static fn(string $src): string => RichText::getEnhancedHtml(
+            '<p><a href="' . $src . '" target="_blank"><img alt="screenshot" src="' . $src . '" /></a></p>',
+            ['images_gallery' => true]
+        );
+
+        // Without its ticket, the image cannot be downloaded: it is left as it is, as its size would already tell
+        // something about the file
+        $result = $render($src);
+        $this->assertStringContainsString('<img alt="screenshot"', $result);
+        $this->assertStringNotContainsString("itemprop='thumbnail'", $result);
+        $this->assertStringNotContainsString('"w":67', $result);
+
+        // From its ticket, it can be: same check as the one of `front/document.send.php`
+        $result = $render($src . '&amp;itemtype=Ticket&amp;items_id=' . $tickets_id);
+        $this->assertStringContainsString("itemprop='thumbnail' loading='lazy' width='67' height='71'", $result);
+    }
+
+    public function testGalleryDataCannotBreakItsScript(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $document = $this->createImageDocument();
+        $src = $CFG_GLPI['root_doc'] . '/front/document.send.php?docid=' . $document->getID() . '&amp;x=&lt;!--&lt;script&gt;';
+        $content = <<<HTML
+<p><a href="{$src}" target="_blank"><img alt="screenshot" src="{$src}" /></a></p>
+HTML;
+
+        $result = RichText::getEnhancedHtml($content, ['images_gallery' => true]);
+
+        // The URL of the image is written in a script block, where `<!--<script>` would keep the block open and
+        // swallow the rest of the page
+        $this->assertStringContainsString("itemprop='thumbnail'", $result);
+        $this->assertStringNotContainsString('<!--<script>', $result);
+
+        // It is still the same URL once the data is read
+        $this->assertSame(1, preg_match('/dataSource: (\[.*\]),/', $result, $matches));
+        $this->assertSame(html_entity_decode($src), json_decode($matches[1], true)[0]['src']);
+    }
+
+    /**
+     * Creates a document from the 67 x 71 image of the fixtures.
+     */
+    private function createImageDocument(): Document
+    {
+        $filename = 'foo.png';
+        copy(FIXTURE_DIR . '/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
+
+        $document = new Document();
+        $document->add([
+            'filename'         => $filename,
+            '_filename'        => [$filename],
+            '_tag_filename'    => [Rule::getUuid()],
+            '_prefix_filename' => ['5e5e92ffd9bd91.11111111'],
+        ]);
+        $this->assertFalse($document->isNewItem());
+
+        return $document;
+    }
+
 }

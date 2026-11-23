@@ -48,6 +48,9 @@ final class GenericListController extends AbstractController
 
         $this->checkIsValidClass($class);
 
+        /** @var class-string<CommonGLPI> $class */
+        $class::checkReAuthenticationOrRedirect();
+
         return $this->render('pages/generic_list.html.twig', [
             'class' => $class,
         ]);

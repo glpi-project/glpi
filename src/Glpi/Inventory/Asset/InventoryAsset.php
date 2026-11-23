@@ -42,6 +42,7 @@ use CommonDBTM;
 use CommonDropdown;
 use Computer;
 use Dropdown;
+use Glpi\Asset\Asset;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\MainAsset\MainAsset;
@@ -57,28 +58,19 @@ use function Safe\preg_replace;
 abstract class InventoryAsset
 {
     /** @var array<int,object> */
-    protected $data = [];
-    /** @var CommonDBTM */
+    protected array $data = [];
     protected CommonDBTM $item;
-    /** @var ?string */
-    protected $itemtype;
+    /** @var ?class-string<CommonDBTM> */
+    protected ?string $itemtype = null;
     /** @var array<string,?object> */
-    protected $extra_data = [];
-    /** @var Agent */
+    protected array $extra_data = [];
     protected Agent $agent;
-    /** @var int */
-    protected $entities_id = 0;
-    /** @var int */
-    protected $is_recursive = 0;
-    /** @var bool */
-    protected $links_handled = false;
-    /** @var bool */
-    protected $with_history = true;
-    /** @var ?MainAsset */
-    protected $main_asset;
-    /** @var ?string */
-    protected $request_query;
-    /** @var bool */
+    protected int $entities_id = 0;
+    protected int $is_recursive = 0;
+    protected bool $links_handled = false;
+    protected bool $with_history = true;
+    protected ?MainAsset $main_asset = null;
+    protected ?string $request_query = null;
     private bool $is_new = false;
     /** @var array<string, int> */
     protected array $known_links = [];
@@ -87,7 +79,7 @@ abstract class InventoryAsset
     /** @var array<string, mixed> */
     protected array $metadata = [];
     /** @var array<string, ?array<string, string>> */
-    protected $ignored = [];
+    protected array $ignored = [];
 
 
     /**
@@ -289,10 +281,15 @@ abstract class InventoryAsset
                         }
                         $this->known_links[$known_key] = $new_id;
                     } elseif (preg_match('/^.+models_id/', $key)) {
+                        // Resolve concrete Model class for generic assets
+                        $model_itemtype = $key === 'assets_assetmodels_id' && $this->item instanceof Asset
+                            ? $this->item->getDefinition()->getAssetModelClassName()
+                            : getItemtypeForForeignKeyField($key);
+
                         // models that need manufacturer relation for dictionary import
                         // see CommonDCModelDropdown::$additional_fields_for_dictionnary
                         $new_id = Dropdown::importExternal(
-                            getItemtypeForForeignKeyField($key),
+                            $model_itemtype,
                             $value->$key ?? '',
                             $entities_id,
                             ['manufacturer' => $manufacturer_name]
@@ -308,6 +305,11 @@ abstract class InventoryAsset
                         }
                         $this->known_links[$known_key] = $new_id;
                     } elseif ($key !== 'entities_id' && $key !== 'states_id' && isForeignKeyField($key) && is_a($itemtype = getItemtypeForForeignKeyField($key), CommonDropdown::class, true)) {
+                        if ($key === 'assets_assettypes_id' && $this->item instanceof Asset) {
+                            // Resolve concrete Type class for generic assets
+                            $itemtype = $this->item->getDefinition()->getAssetTypeClassName();
+                        }
+
                         $foreignkey_itemtype[$key] = $itemtype;
 
                         $new_id = Dropdown::importExternal(
@@ -439,7 +441,7 @@ abstract class InventoryAsset
     protected function setItem(CommonDBTM $item): self
     {
         $this->item = $item;
-        $this->itemtype = $item->getType();
+        $this->itemtype = $item::class;
         return $this;
     }
 
@@ -485,7 +487,7 @@ abstract class InventoryAsset
             $relation = new Asset_PeripheralAsset();
             $relation->deleteByCriteria(
                 [
-                    'itemtype_asset' => Computer::getType(),
+                    'itemtype_asset' => Computer::class,
                     'itemtype_peripheral' => $input['itemtype_peripheral'],
                     'items_id_peripheral' => $input['items_id_peripheral'],
                 ],
@@ -524,7 +526,7 @@ abstract class InventoryAsset
 
         if ($item !== null) {
             $lockeds = new Lockedfield();
-            $locks = $lockeds->getLockedNames($item->getType(), $item->isNewItem() ? 0 : $item->fields['id']);
+            $locks = $lockeds->getLockedNames($item::class, $item->isNewItem() ? 0 : $item->fields['id']);
         }
 
         foreach ($value as $key => $val) { // @phpstan-ignore foreach.nonIterable

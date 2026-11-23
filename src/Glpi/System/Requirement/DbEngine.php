@@ -48,9 +48,8 @@ class DbEngine extends AbstractRequirement
     /**
      * DB instance.
      *
-     * @var DBmysql
      */
-    private $db;
+    private DBmysql $db;
 
     public function __construct(DBmysql $db)
     {
@@ -70,7 +69,7 @@ class DbEngine extends AbstractRequirement
 
         switch ($server) {
             case 'MariaDB':
-                $min_version = '10.6';
+                $min_version = '10.11';
                 break;
             case 'MySQL':
             default:

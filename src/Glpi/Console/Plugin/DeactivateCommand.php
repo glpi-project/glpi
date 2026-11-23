@@ -57,7 +57,7 @@ class DeactivateCommand extends AbstractPluginCommand
         $this->setAliases(['plugin:disable']);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $this->normalizeInput($input);
@@ -164,7 +164,7 @@ class DeactivateCommand extends AbstractPluginCommand
     {
 
         $choices = [];
-        $plugin_iterator = $this->db->request(
+        $plugin_iterator = $this->getDb()->request(
             [
                 'FROM'  => Plugin::getTable(),
                 'WHERE' => [

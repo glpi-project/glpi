@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -80,6 +81,7 @@ class PlanningTest extends DbTestCase
 
     public function testGetExternalCalendarEvents()
     {
+        global $CFG_GLPI;
 
         $this->login();
 
@@ -92,28 +94,28 @@ class PlanningTest extends DbTestCase
             'recurring_evt_1' => [
                 'title'   => 'Recur event',
                 'tooltip' => "Recur event<br>Monday, 11 am to 12 am starting on 1st of July",
-                'color'   => '#ff0000',
+                'backgroundColor'   => '#ff0000',
                 'rrule'   => "DTSTART:20190701T090000\nRRULE:FREQ=WEEKLY;BYDAY=MO\n",
             ],
             'simple_evt_1'    => [
                 'title'   => 'Base event with no desc',
                 'tooltip' => 'Base event with no desc',
-                'color'   => '#ff0000',
+                'backgroundColor'   => '#ff0000',
             ],
             'simple_evt_2'    => [
                 'title'   => 'An event in 2020/01/05',
                 'tooltip' => "An event in 2020/01/05<br>Description of &quot;&lt;my event&gt;&quot;",
-                'color'   => '#ff0000',
+                'backgroundColor'   => '#ff0000',
             ],
             'task_1'          => [
                 'title'   => 'Test task',
                 'tooltip' => "Test task<br>Description of the task.",
-                'color'   => '#ff0000',
+                'backgroundColor'   => '#ff0000',
             ],
             'another_evt_1'   => [
                 'title'   => 'Another event',
                 'tooltip' => "Another event<br>Another event description",
-                'color'   => '#a500b3',
+                'backgroundColor'   => '#a500b3',
             ],
         ];
 
@@ -126,18 +128,18 @@ class PlanningTest extends DbTestCase
         // Add calendars
         $_SESSION['glpi_plannings']['plannings'] = [
             'external_1' => [
-                'color'   => '#ff0000',
+                'backgroundColor'   => '#ff0000',
                 'display' => true,
                 'type'    => 'external',
                 'name'    => 'External calendar 1',
-                'url'     => 'file://' . realpath(GLPI_ROOT . '/tests/fixtures/ical/sample_1.ics'),
+                'url'     => $CFG_GLPI['url_base'] . '/test/planning-fixtures/sample_1.ics',
             ],
             'external_2' => [
-                'color'   => '#a500b3',
+                'backgroundColor'   => '#a500b3',
                 'display' => true,
                 'type'    => 'external',
                 'name'    => 'External calendar 2',
-                'url'     => 'file://' . realpath(GLPI_ROOT . '/tests/fixtures/ical/sample_2.ics'),
+                'url'     => $CFG_GLPI['url_base'] . '/test/planning-fixtures/sample_2.ics',
             ],
         ];
 
@@ -175,7 +177,7 @@ class PlanningTest extends DbTestCase
                 $this->assertArrayHasKey($index, $events_list);
                 $this->assertEquals($event_data['title'], $events_list[$index]['title']);
                 $this->assertEquals($event_data['tooltip'], $events_list[$index]['tooltip']);
-                $this->assertEquals($event_data['color'], $events_list[$index]['color']);
+                $this->assertEquals($event_data['backgroundColor'], $events_list[$index]['backgroundColor']);
                 if (array_key_exists('rrule', $event_data)) {
                     $this->assertEquals($event_data['rrule'], $events_list[$index]['rrule']);
                 }
@@ -324,6 +326,114 @@ class PlanningTest extends DbTestCase
         $this->assertTrue($events[1]['allDay'] ?? false);
         $this->assertEquals(__FUNCTION__ . '_not_allday', $events[2]['title']);
         $this->assertFalse($events[2]['allDay'] ?? false);
+    }
+
+    public function testConstructEventsArrayIgnoresGenical()
+    {
+        $this->login('tech', 'tech');
+        \Planning::initSessionForCurrentUser();
+
+        $rights = $_SESSION['glpiactiveprofile'];
+
+        // `genical` comes from the request on `ajax/planning.php?action=get_events`
+        \Planning::constructEventsArray([
+            'start'     => date('Y-m-d 00:00:00'),
+            'end'       => date('Y-m-d 00:00:00', time() + WEEK_TIMESTAMP),
+            'view_name' => 'timeGridWeek',
+            'genical'   => 1,
+        ]);
+
+        $this->assertSame($rights, $_SESSION['glpiactiveprofile']);
+    }
+
+    public function testEditEventForm()
+    {
+        $this->login();
+
+        $event = $this->createItem(\PlanningExternalEvent::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'plan'        => [
+                'begin'     => date('Y-m-d H:i:s'),
+                '_duration' => HOUR_TIMESTAMP,
+            ],
+        ], ['plan']);
+
+        ob_start();
+        \Planning::editEventForm([
+            'itemtype' => \PlanningExternalEvent::class,
+            'id'       => $event->getID(),
+            'start'    => date('Y-m-d'),
+        ]);
+        $this->assertStringContainsString('edit_event_form', ob_get_clean());
+    }
+
+    public function testEditEventFormRefusesNonPlanningItemtype()
+    {
+        $this->login();
+
+        $this->expectException(AccessDeniedHttpException::class);
+        \Planning::editEventForm([
+            'itemtype' => \Computer::class,
+            'id'       => getItemByTypeName(\Computer::class, '_test_pc01', true),
+            'start'    => date('Y-m-d'),
+        ]);
+    }
+
+    public function testEditEventFormRefusesUnreadableItem()
+    {
+        $this->login();
+
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $task = $this->createItem(\TicketTask::class, [
+            'tickets_id' => $ticket->getID(),
+            'content'    => __FUNCTION__,
+            'is_private' => 1,
+        ]);
+
+        $this->login('post-only', 'postonly');
+
+        $this->expectException(AccessDeniedHttpException::class);
+        \Planning::editEventForm([
+            'itemtype'       => \TicketTask::class,
+            'id'             => $task->getID(),
+            'parentitemtype' => \Ticket::class,
+            'parentid'       => $ticket->getID(),
+            'start'          => date('Y-m-d'),
+        ]);
+    }
+
+    public function testEditEventFormRefusesForeignParent()
+    {
+        $this->login();
+
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $other_ticket = $this->createItem(\Ticket::class, [
+            'name'        => __FUNCTION__ . ' other',
+            'content'     => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $task = $this->createItem(\TicketTask::class, [
+            'tickets_id' => $ticket->getID(),
+            'content'    => __FUNCTION__,
+        ]);
+
+        $this->expectException(AccessDeniedHttpException::class);
+        \Planning::editEventForm([
+            'itemtype'       => \TicketTask::class,
+            'id'             => $task->getID(),
+            'parentitemtype' => \Ticket::class,
+            'parentid'       => $other_ticket->getID(),
+            'start'          => date('Y-m-d'),
+        ]);
     }
 
     public function testRRuleEncoding()

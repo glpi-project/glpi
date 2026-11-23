@@ -43,7 +43,6 @@ use SLA;
 use SLM;
 use Ticket;
 
-use function Safe\date;
 use function Safe\preg_match;
 use function Safe\strtotime;
 
@@ -58,6 +57,10 @@ class SlaProgressBarTest extends DbTestCase
     public function testProgressBarUsesEntityCalendarWhenSlaUsesTicketCalendar()
     {
         $this->login();
+
+        // Freeze "now" so the scenario is deterministic whatever day the suite runs on.
+        // 2026-08-17 is a Monday; the ticket below opens exactly 7 days earlier (also a Monday).
+        $this->setCurrentTime('2026-08-17 10:00:00');
 
         $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
@@ -103,9 +106,9 @@ class SlaProgressBarTest extends DbTestCase
             'definition_time' => 'hour',
         ], SLM::TTR, $slm)['sla'];
 
-        // Exactly 7 days ago: always one of each weekday, so elapsed time is deterministic
-        // (50 business hours calendar-aware vs 168h naive), whatever day the test runs on.
-        $ticket_date = date('Y-m-d H:i:s', strtotime('-7 days'));
+        // Exactly 7 days before the frozen "now": one of each weekday, so elapsed time is
+        // deterministic (50 business hours calendar-aware vs 168h naive).
+        $ticket_date = '2026-08-10 10:00:00';
 
         $ticket = $this->createItem(Ticket::class, [
             'name'        => 'SlaProgressBarTest ticket',
@@ -128,7 +131,7 @@ class SlaProgressBarTest extends DbTestCase
 
         $displayed_percentage = $this->getDisplayedTimeToResolveProgress($ticket);
 
-        // Delta absorbs the few seconds between this "now" and the one used by the search.
+        // Small delta to absorb rounding; the frozen clock makes both sides use the same "now".
         $this->assertEqualsWithDelta($expected_percentage, $displayed_percentage, 2);
     }
 
@@ -138,7 +141,7 @@ class SlaProgressBarTest extends DbTestCase
         $this->assertTrue($sla->getFromDB($ticket->fields['slas_id_ttr']));
         $sla->setTicketCalendar($calendar->getID());
 
-        $currenttime = $sla->getActiveTimeBetween($ticket->fields['date'], date('Y-m-d H:i:s'));
+        $currenttime = $sla->getActiveTimeBetween($ticket->fields['date'], $_SESSION['glpi_currenttime']);
         $totaltime   = $sla->getActiveTimeBetween($ticket->fields['date'], $ticket->fields['time_to_resolve']);
         $waitingtime = $ticket->fields['sla_waiting_duration'];
 
@@ -147,7 +150,7 @@ class SlaProgressBarTest extends DbTestCase
 
     private function computeNaive24_7Progress(Ticket $ticket): float
     {
-        $currenttime = strtotime(date('Y-m-d H:i:s')) - strtotime($ticket->fields['date']);
+        $currenttime = strtotime($_SESSION['glpi_currenttime']) - strtotime($ticket->fields['date']);
         $totaltime   = strtotime($ticket->fields['time_to_resolve']) - strtotime($ticket->fields['date']);
         $waitingtime = $ticket->fields['sla_waiting_duration'];
 

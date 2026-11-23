@@ -70,12 +70,7 @@ final class ItemsController extends AbstractController
     public function __invoke(Request $request): Response
     {
         // Read category
-        $category_id = $request->query->get('category', 0);
-
-        if (!is_numeric($category_id)) {
-            // Invalid input
-            throw new NotFoundHttpException();
-        }
+        $category_id = $request->query->getInt('category');
 
         if ($category_id > 0) {
             if (Category::getById($category_id) === false) {

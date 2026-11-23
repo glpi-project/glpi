@@ -39,10 +39,10 @@
 class TicketValidation extends CommonITILValidation
 {
     // From CommonDBChild
-    public static $itemtype = Ticket::class;
-    public static $items_id           = 'tickets_id';
+    public static string $itemtype = Ticket::class;
+    public static string $items_id           = 'tickets_id';
 
-    public static $rightname                 = 'ticketvalidation';
+    public static string $rightname                 = 'ticketvalidation';
 
     public const CREATEREQUEST               = 1024;
     public const CREATEINCIDENT              = 2048;
@@ -74,8 +74,9 @@ class TicketValidation extends CommonITILValidation
     {
 
         if ($this->canChildItem('canViewItem', 'canView')) {
-            $ticket = new Ticket();
-            if ($ticket->getFromDB($this->fields['tickets_id'])) {
+            $parent_loaded = $this->isParentAlreadyLoaded();
+            $ticket = $parent_loaded ? $this->item : new Ticket();
+            if ($parent_loaded || $ticket->getFromDB($this->fields['tickets_id'])) {
                 // No validation for closed tickets
                 if (in_array($ticket->fields['status'], $ticket->getClosedStatusArray())) {
                     return false;

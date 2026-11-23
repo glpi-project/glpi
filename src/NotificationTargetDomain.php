@@ -64,19 +64,11 @@ class NotificationTargetDomain extends NotificationTarget
     {
         $domain = $this->obj;
 
-        if (!isset($options['domains'])) {
-            $options['domains'] = [];
-            if (!$domain->isNewItem()) {
-                $options['domains'][] = $domain->fields;// Compatibility with old behaviour
-            }
-        } else {
-            Toolbox::deprecated('Using "domains" option in NotificationTargetDomain is deprecated.');
+        $options['domains'] = [];
+        if (!$domain->isNewItem()) {
+            $options['domains'][] = $domain->fields;// Compatibility with old behaviour
         }
-        if (!isset($options['entities_id'])) {
-            $options['entities_id'] = $domain->fields['entities_id'];
-        } else {
-            Toolbox::deprecated('Using "entities_id" option in NotificationTargetDomain is deprecated.');
-        }
+        $options['entities_id'] = $domain->fields['entities_id'];
 
         $this->data['##domain.entity##']      = Dropdown::getDropdownName('glpi_entities', $options['entities_id']);
         $this->data['##lang.domain.entity##'] = Entity::getTypeName(1);

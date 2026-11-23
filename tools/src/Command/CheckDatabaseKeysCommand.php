@@ -86,7 +86,7 @@ final class CheckDatabaseKeysCommand extends AbstractCommand
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $checker = new DatabaseKeysChecker($this->db);

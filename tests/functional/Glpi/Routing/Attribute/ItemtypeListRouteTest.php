@@ -69,6 +69,6 @@ class ItemtypeListRouteTest extends GLPITestCase
     {
         $attribute = new ItemtypeListRoute($itemtype);
 
-        $this->assertEquals($expected_path, $attribute->getPath());
+        $this->assertEquals($expected_path, $attribute->path);
     }
 }

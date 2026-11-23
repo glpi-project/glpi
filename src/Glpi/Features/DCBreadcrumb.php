@@ -72,7 +72,7 @@ trait DCBreadcrumb
                     && $rack->getFromDB($pdu_rack->fields['racks_id'])
                 ) {
                     $location = Location::getFromItem($rack) ?: null;
-                    $breadcrumb[Rack::getType()] = [
+                    $breadcrumb[Rack::class] = [
                         'link'     => $rack->getLink(
                             [
                                 'class' => $rack->isDeleted() ? 'target-deleted' : '',
@@ -93,7 +93,7 @@ trait DCBreadcrumb
             unset($enclosure_types[array_search('Enclosure', $enclosure_types)]);
             if (in_array($item->getType(), $enclosure_types) && $enclosure = $item->getParentEnclosure()) {
                 $location = Location::getFromItem($enclosure) ?: null;
-                $breadcrumb[Enclosure::getType()] = [
+                $breadcrumb[Enclosure::class] = [
                     'link'     => $enclosure->getLink(
                         [
                             'class' => $enclosure->isDeleted() ? 'target-deleted' : '',
@@ -110,7 +110,7 @@ trait DCBreadcrumb
             // Add Rack part of breadcrumb
             if (in_array($item->getType(), $types) && $rack = $item->getParentRack()) {
                 $location = Location::getFromItem($rack) ?: null;
-                $breadcrumb[Rack::getType()] = [
+                $breadcrumb[Rack::class] = [
                     'link'     => $rack->getLink(
                         [
                             'class' => $rack->isDeleted() ? 'target-deleted' : '',
@@ -127,12 +127,12 @@ trait DCBreadcrumb
             // Add DCRoom part of breadcrumb
             $dcroom = new DCRoom();
             if (
-                $item->getType() == Rack::getType()
+                $item instanceof Rack
                 && $item->fields['dcrooms_id'] > 0
                 && $dcroom->getFromDB($item->fields['dcrooms_id'])
             ) {
                 $location = Location::getFromItem($dcroom) ?: null;
-                $breadcrumb[DCRoom::getType()] = [
+                $breadcrumb[DCRoom::class] = [
                     'link'     => $dcroom->getLink(
                         [
                             'class' => $dcroom->isDeleted() ? 'target-deleted' : '',
@@ -148,12 +148,12 @@ trait DCBreadcrumb
             // Add Datacenter part of breadcrumb
             $datacenter = new Datacenter();
             if (
-                $item->getType() == DCRoom::getType()
+                $item instanceof DCRoom
                 && $item->fields['datacenters_id'] > 0
                 && $datacenter->getFromDB($item->fields['datacenters_id'])
             ) {
                 $location = Location::getFromItem($datacenter) ?: null;
-                $breadcrumb[Datacenter::getType()] = [
+                $breadcrumb[Datacenter::class] = [
                     'link'     => $datacenter->getLink(
                         [
                             'class' => $datacenter->isDeleted() ? 'target-deleted' : '',
@@ -181,7 +181,7 @@ trait DCBreadcrumb
         $ien = new Item_Enclosure();
         if (
             !($this instanceof CommonDBTM)
-            || !$ien->getFromDBByCrit(['itemtype' => $this->getType(), 'items_id' => $this->getID()])
+            || !$ien->getFromDBByCrit(['itemtype' => static::class, 'items_id' => $this->getID()])
         ) {
             return null;
         }
@@ -196,7 +196,7 @@ trait DCBreadcrumb
         $ien = new Item_Enclosure();
         if (
             !($this instanceof CommonDBTM)
-            || !$ien->getFromDBByCrit(['itemtype' => $this->getType(), 'items_id' => $this->getID()])
+            || !$ien->getFromDBByCrit(['itemtype' => static::class, 'items_id' => $this->getID()])
         ) {
             return null;
         }
@@ -210,11 +210,7 @@ trait DCBreadcrumb
         $ira = new Item_Rack();
         if (
             !($this instanceof CommonDBTM)
-            || !$ira->getFromDBByCrit([
-                'itemtype' => $this->getType(),
-                'items_id' => $this->getID(),
-                'is_reserved' => 0,
-            ])
+            || !$ira->getFromDBByCrit(['itemtype' => static::class, 'items_id' => $this->getID(), 'is_reserved' => 0])
         ) {
             return null;
         }
@@ -229,11 +225,7 @@ trait DCBreadcrumb
         $ira = new Item_Rack();
         if (
             !($this instanceof CommonDBTM)
-            || !$ira->getFromDBByCrit([
-                'itemtype' => $this->getType(),
-                'items_id' => $this->getID(),
-                'is_reserved' => 0,
-            ])
+            || !$ira->getFromDBByCrit(['itemtype' => static::class, 'items_id' => $this->getID(), 'is_reserved' => 0])
         ) {
             return null;
         }

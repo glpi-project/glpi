@@ -53,31 +53,30 @@ class GLPIKey
     /**
      * Key file path.
      *
-     * @var string
      */
-    private $keyfile;
+    private string $keyfile;
 
     /**
      * Legacy key file path.
      *
-     * @var string
      */
-    private $legacykeyfile;
+    private string $legacykeyfile;
 
     /**
      * List of crypted DB fields.
      *
-     * @var array
      */
-    protected $fields = [
+    protected array $fields = [
         'glpi_apiclients.app_token',
         'glpi_authldaps.rootdn_passwd',
         'glpi_mailcollectors.passwd',
         'glpi_oauthclients.secret',
+        'glpi_queuednotifications.body_text',
+        'glpi_queuednotifications.body_html',
+        'glpi_sharetokens.token',
         'glpi_snmpcredentials.auth_passphrase',
         'glpi_snmpcredentials.priv_passphrase',
         'glpi_users.api_token',
-        'glpi_users.cookie_token',
         'glpi_users.password_forget_token',
         'glpi_users.personal_token',
     ];
@@ -86,9 +85,8 @@ class GLPIKey
      * List of crypted configuration values.
      * Each key corresponds to a configuration context, and contains list of configs names.
      *
-     * @var array
      */
-    protected $configs = [
+    protected array $configs = [
         'core'   => [
             'glpinetwork_registration_key',
             'proxy_passwd',
@@ -348,11 +346,20 @@ class GLPIKey
         foreach ($this->getFields() as $field) {
             [$table, $column] = explode('.', $field);
 
-            $iterator = $DB->request([
+            $query = [
                 'SELECT' => ['id', $column],
                 'FROM'   => $table,
-                ['NOT' => [$column => null]],
-            ]);
+                'WHERE'  => [
+                    ['NOT' => [$column => null]],
+                ],
+            ];
+
+            if ($table === 'glpi_queuednotifications' && in_array($column, ['body_text', 'body_html'], true)) {
+                // Queued notifications are encrypted only when `is_body_encrypted` is `true`.
+                $query['WHERE'][] = ['is_body_encrypted' => true];
+            }
+
+            $iterator = $DB->request($query);
 
             foreach ($iterator as $row) {
                 $value = (string) $row[$column];

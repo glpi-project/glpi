@@ -75,13 +75,12 @@ final class Transfer extends CommonDBTM
 
     /**
      * Destination entity id
-     * @var int
      */
     public int $to                    = -1;
 
     private ?array $to_entity_ancestors = null;
 
-    public static $rightname = 'transfer';
+    public static string $rightname = 'transfer';
 
     public static function getTypeName($nb = 0)
     {
@@ -380,28 +379,7 @@ final class Transfer extends CommonDBTM
         foreach (Asset_PeripheralAsset::getPeripheralHostItemtypes() as $asset_itemtype) {
             if ($this->haveItemsToTransfer($asset_itemtype)) {
                 foreach ($DC_CONNECT as $peripheral_itemtype) {
-                    $peripheral_itemtable = getTableForItemType($peripheral_itemtype);
                     $relation_table = Asset_PeripheralAsset::getTable();
-
-                    // Clean DB / Search unexisting links and force disconnect
-                    $DB->delete(
-                        $relation_table,
-                        [
-                            $peripheral_itemtable . '.id' => null,
-                            $relation_table . '.itemtype_asset'      => $asset_itemtype,
-                            $relation_table . '.itemtype_peripheral' => $peripheral_itemtype,
-                        ],
-                        [
-                            'LEFT JOIN' => [
-                                $peripheral_itemtable => [
-                                    'ON' => [
-                                        $relation_table       => 'items_id_peripheral',
-                                        $peripheral_itemtable => 'id',
-                                    ],
-                                ],
-                            ],
-                        ]
-                    );
 
                     if (!($peripheral = getItemForItemtype($peripheral_itemtype))) {
                         continue;
@@ -436,46 +414,7 @@ final class Transfer extends CommonDBTM
         if (!$this->options['keep_software']) {
             return;
         }
-        // Clean DB
-        $DB->delete('glpi_items_softwareversions', ['glpi_softwareversions.id'  => null], [
-            'LEFT JOIN' => [
-                'glpi_softwareversions'  => [
-                    'ON' => [
-                        'glpi_items_softwareversions' => 'softwareversions_id',
-                        'glpi_softwareversions'       => 'id',
-                    ],
-                ],
-            ],
-        ]);
-
-        // Clean DB
-        $DB->delete('glpi_softwareversions', ['glpi_softwares.id'  => null], [
-            'LEFT JOIN' => [
-                'glpi_softwares'  => [
-                    'ON' => [
-                        'glpi_softwareversions' => 'softwares_id',
-                        'glpi_softwares'        => 'id',
-                    ],
-                ],
-            ],
-        ]);
         foreach ($CFG_GLPI['software_types'] as $itemtype) {
-            $itemtable = getTableForItemType($itemtype);
-            // Clean DB
-            $DB->delete('glpi_items_softwareversions', [
-                "{$itemtable}.id"  => null,
-                'glpi_items_softwareversions.itemtype' => $itemtype,
-            ], [
-                'LEFT JOIN' => [
-                    $itemtable  => [
-                        'ON' => [
-                            'glpi_items_softwareversions' => 'items_id',
-                            $itemtable                    => 'id',
-                        ],
-                    ],
-                ],
-            ]);
-
             if ($this->haveItemsToTransfer($itemtype)) {
                 $iterator = $DB->request([
                     'SELECT'       => [
@@ -1794,7 +1733,7 @@ final class Transfer extends CommonDBTM
                         ],
                         ['s', 'i', 'i']
                     );
-                    $result = $stmt->get_result();
+                    $result = $DB->getStatementResult($stmt);
                     $row = $result->fetch_assoc();
 
                     if ($row['cpt'] > 0) {
@@ -1853,14 +1792,14 @@ final class Transfer extends CommonDBTM
         $license                  = new SoftwareLicense();
 
         if ($item_softwarelicense->getFromDB($ID)) {
-            if ($license->getFromDB($item_softwarelicense->getField('softwarelicenses_id'))) {
+            if ($license->getFromDB($item_softwarelicense->fields['softwarelicenses_id'])) {
                 //// Update current : decrement number by 1 if valid
-                if ($license->getField('number') > 1) {
+                if ($license->fields['number'] > 1) {
                     $license->update([
                         'id'     => $license->getID(),
-                        'number' => ($license->getField('number') - 1),
+                        'number' => ($license->fields['number'] - 1),
                     ]);
-                } elseif ($license->getField('number') == 1) {
+                } elseif ($license->fields['number'] == 1) {
                     // Drop license
                     $license->delete(['id' => $license->getID()]);
                 }
@@ -3011,7 +2950,7 @@ final class Transfer extends CommonDBTM
                                     'WHERE'  => [
                                         'is_global'    => 1,
                                         'entities_id'  => $this->to,
-                                        'name'         => $link_item->getField('name'),
+                                        'name'         => $link_item->fields['name'],
                                     ],
                                 ]);
 
@@ -4191,14 +4130,14 @@ final class Transfer extends CommonDBTM
 
         $options = [
             'target' => URL::sanitizeURL($options['target']),
-            'canedit' => Session::haveRight("transfer", READ),
+            'canedit' => Session::haveRight(Transfer::$rightname, READ),
         ];
 
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/admin/transfer.html.twig', [
             'item' => $this,
             'edit_mode' => $edit_form,
-            'can_change_options' => Session::haveRightsOr("transfer", [CREATE, UPDATE, PURGE]),
+            'can_change_options' => Session::haveRightsOr(Transfer::$rightname, [CREATE, UPDATE, PURGE]),
             'params' => $options,
         ]);
         return true;

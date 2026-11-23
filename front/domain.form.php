@@ -35,7 +35,7 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-Session::checkRight("domain", READ);
+Session::checkRight(Domain::$rightname, READ);
 
 if (empty($_GET["id"])) {
     $_GET["id"] = '';

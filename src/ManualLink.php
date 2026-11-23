@@ -34,19 +34,19 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryIdentifier;
 
 /**
  * @since 10.0.0
  */
 class ManualLink extends CommonDBChild
 {
-    public $dohistory              = false;
-    public $auto_message_on_action = false; // Link in message can't work'
-    protected $displaylist         = false;
-    public static $logs_for_parent = true;
-    public static $itemtype        = 'itemtype';
-    public static $items_id        = 'items_id';
+    public bool $dohistory              = false;
+    public bool $auto_message_on_action = false; // Link in message can't work'
+    protected bool $displaylist         = false;
+    public static bool $logs_for_parent = true;
+    public static string $itemtype        = 'itemtype';
+    public static string $items_id        = 'items_id';
 
     public static function getTypeName($nb = 0)
     {
@@ -70,7 +70,7 @@ class ManualLink extends CommonDBChild
             $count += countElementsInTable(
                 'glpi_manuallinks',
                 [
-                    'itemtype'  => $item->getType(),
+                    'itemtype'  => $item::class,
                     'items_id'  => $item->fields[$item->getIndexName()],
                 ]
             );
@@ -78,13 +78,13 @@ class ManualLink extends CommonDBChild
                 $count += countElementsInTable(
                     ['glpi_links_itemtypes', 'glpi_links'],
                     [
-                        'glpi_links_itemtypes.links_id'  => new QueryExpression(DBmysql::quoteName('glpi_links.id')),
-                        'glpi_links_itemtypes.itemtype'  => $item->getType(),
+                        'glpi_links_itemtypes.links_id'  => new QueryIdentifier('glpi_links.id'),
+                        'glpi_links_itemtypes.itemtype'  => $item::class,
                     ] + getEntitiesRestrictCriteria('glpi_links', '', '', false)
                 );
             }
         }
-        return self::createTabEntry(_n('Link', 'Links', Session::getPluralNumber()), $count, $item::getType());
+        return self::createTabEntry(_n('Link', 'Links', Session::getPluralNumber()), $count, $item::class);
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
@@ -159,7 +159,7 @@ class ManualLink extends CommonDBChild
         $iterator = $DB->request([
             'FROM'         => 'glpi_manuallinks',
             'WHERE'        => [
-                'itemtype'  => $item->getType(),
+                'itemtype'  => $item::class,
                 'items_id'  => $item->fields[$item->getIndexName()],
             ],
             'ORDERBY'      => 'name',
@@ -235,9 +235,9 @@ class ManualLink extends CommonDBChild
         if (str_starts_with($fields['icon'] ?? '', 'fa-')) {
             // Forces font family values to fallback on ".fab" family font if char is not available in ".fas" family.
             $html .= '<i class="fs-2 fa ' . htmlescape($fields['icon']) . '"'
-            . ' style="font-family:\'Font Awesome 6 Free\', \'Font Awesome 6 Brands\';"></i>&nbsp;';
+            . ' style="font-family:\'Font Awesome 6 Free\', \'Font Awesome 6 Brands\';" aria-hidden="true"></i>&nbsp;';
         } elseif (str_starts_with($fields['icon'] ?? '', 'ti-')) {
-            $html .= '<i class="fs-2 ti ' . htmlescape($fields['icon']) . '"></i>&nbsp;';
+            $html .= '<i class="fs-2 ti ' . htmlescape($fields['icon']) . '" aria-hidden="true"></i>&nbsp;';
         }
         $html .= htmlescape(!empty($fields['name']) ? $fields['name'] : $fields['url']);
         $html .= '</a>';

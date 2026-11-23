@@ -36,6 +36,7 @@
 namespace Glpi\Application\View\Extension;
 
 use CommonDBTM;
+use Dropdown;
 use Glpi\Form\FormTranslation;
 use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
@@ -57,6 +58,7 @@ class I18nExtension extends AbstractExtension
             new TwigFunction('_x', '_x'),
             new TwigFunction('_nx', '_nx'),
             new TwigFunction('get_current_locale', [$this, 'getCurrentLocale']),
+            new TwigFunction('get_language_name', [Dropdown::class, 'getLanguageName']),
             new TwigFunction('get_plural_number', [Session::class, 'getPluralNumber']),
             new TwigFunction('translate_form_item_key', $this->translateFormItemKey(...)),
             new TwigFunction('translate_helpdesk_item_key', $this->translateHelpdeskItemKey(...)),

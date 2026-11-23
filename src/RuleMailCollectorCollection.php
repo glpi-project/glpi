@@ -39,9 +39,9 @@ use function Safe\preg_match;
 class RuleMailCollectorCollection extends RuleCollection
 {
     // From RuleCollection
-    public $stop_on_first_match = true;
-    public static $rightname           = 'rule_mailcollector';
-    public $menu_option         = 'mailcollector';
+    public bool $stop_on_first_match = true;
+    public static string $rightname           = 'rule_mailcollector';
+    public string $menu_option         = 'mailcollector';
 
 
     public function getTitle()
@@ -78,6 +78,12 @@ class RuleMailCollectorCollection extends RuleCollection
                 if (in_array($key, $fields, true) && !isset($input[$key])) {
                     $input[$key] = $value;
                 }
+            }
+            // Match "to" against every recipient individually (not the flattened,
+            // comma-joined string), so "is"/"is not"/regex conditions still work
+            // correctly when the email has more than one recipient.
+            if (in_array('to', $fields, true) && !empty($params['headers']['tos'])) {
+                $input['to'] = $params['headers']['tos'];
             }
             $input['_headers'] = implode(
                 "\n",

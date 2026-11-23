@@ -35,15 +35,15 @@ import { existsSync } from 'fs';
 import { resolve } from 'path';
 import { Config } from '../utils/Config';
 import { JSDOM } from 'jsdom';
-import { CsrfExtractor } from '../utils/CsrfExtractor';
-import { Constants } from '../utils/Constants';
+import { getWorkerLogin } from '../utils/WorkerEntities';
 import { ProfileSwitcher } from '../utils/ProfileSwitcher';
-import { CsrfFetcher } from '../utils/CsrfFetcher';
 import { WorkerSessionCache } from '../utils/WorkerSessionCache';
 import { Api } from '../utils/Api';
 import { EntitySwitcher } from '../utils/EntitySwitcher';
 import { FormImporter } from '../utils/FormImporter';
 import { DebugModeSwitcher } from '../utils/DebugModeSwitcher';
+import { ReAuthenticator } from '../utils/ReAuthenticator';
+import { GeneralConfig } from '../utils/GeneralConfig';
 
 export * from '@playwright/test';
 export const test = baseTest.extend<{
@@ -51,10 +51,12 @@ export const test = baseTest.extend<{
     anonymousPage: Page,
     profile: ProfileSwitcher,
     entity: EntitySwitcher,
-    csrf: CsrfFetcher,
     formImporter: FormImporter,
     api: Api,
     debug: DebugModeSwitcher,
+    reauth: ReAuthenticator,
+    ensureReauthenticated: void,
+    general_config: GeneralConfig,
     retryTimeout: void,
 }, {
     // Worker scoped fixtures, these objects will be created once per thread.
@@ -84,15 +86,26 @@ export const test = baseTest.extend<{
         // unsetting storage state.
         const context = await request.newContext({ storageState: undefined });
 
-        // Render the login page in order to extract the CSRF token and find the
+        // Render the login page in order to find the
         // login and password fields names
-        const response = await context.get(Config.getBaseUrl());
-        const body = await response.text();
-        const document = new JSDOM(body).window.document;
+        let response = await context.get(Config.getBaseUrl());
+        let body = await response.text();
 
-        // Extract CSRF token
-        const csrf_extractor = new CsrfExtractor();
-        const token = csrf_extractor.extractToken(body);
+        if (body.includes('MAINTENANCE MODE')) {
+            // An isolated test that enables the maintenance mode is supposed to
+            // disable it again, even when it fails (see
+            // `playwright.isolated.config.ts`). If it did not, no session could
+            // be created anymore and the whole suite would fail with a
+            // confusing error.
+            // GLPI's own backdoor puts a flag in the session that lets this
+            // request go through, see `CheckMaintenanceListener`.
+            response = await context.get(
+                `${Config.getBaseUrl()}/index.php?skipMaintenance=1`
+            );
+            body = await response.text();
+        }
+
+        const document = new JSDOM(body).window.document;
 
         // Extract login field name
         const login_field = document.getElementById('login_name');
@@ -115,22 +128,35 @@ export const test = baseTest.extend<{
         }
 
         // Map id to expected playwright worker login
-        const worker_prefix = Constants.E2E_WORKER_PREFIX;
-        const worker_index = id + 1;
-        const worker_index_string = worker_index > 10
-            ? worker_index.toString()
-            : `0${worker_index.toString()}` // Pad numbers < 10
-        ;
-        const worker_login = worker_prefix + worker_index_string;
+        const worker_login = getWorkerLogin();
 
         // Send login request
         await context.post(`${Config.getBaseUrl()}/front/login.php`, {
             form: {
                 [login_field_name]     : `${worker_login}`,
                 [password_field_name]  : `${worker_login}`,
-                '_glpi_csrf_token': token,
             }
         });
+
+        // Make sure the login succeeded: an anonymous session would otherwise
+        // be stored and every test of this worker would fail later with an
+        // unrelated HTTP 401.
+        // An authenticated session renders the central page, an anonymous one
+        // is redirected to the login page.
+        response = await context.get(`${Config.getBaseUrl()}/front/central.php`, {
+            maxRedirects: 0,
+        });
+        if (response.status() !== 200) {
+            await context.dispose();
+            throw new Error(
+                `Unable to log in as "${worker_login}" (worker ${id + 1}, `
+                + `HTTP ${response.status()} on the central page). `
+                + `The e2e database only contains 16 worker `
+                + `accounts (see \`PLAYWRIGHT_MAX_WORKERS\` in \`install/empty_data.php\`): `
+                + `run the tests with fewer workers, or increase this constant and `
+                + `reinstall the e2e database with \`make e2e-db-install\`.`
+            );
+        }
 
         // Store session
         await context.storageState({ path: file_name });
@@ -138,21 +164,16 @@ export const test = baseTest.extend<{
         await use(file_name);
     }, { scope: 'worker' }],
 
-    // Service used to fetch a CSRF token.
-    csrf: [async ({ request, workerSessionCache }, use) => {
-        await use(new CsrfFetcher(request, workerSessionCache));
-    }, { scope: 'test' }],
-
     // Service used to switch profiles as needed.
-    profile: [async ({ request, csrf, workerSessionCache }, use) => {
-        await use(new ProfileSwitcher(request, csrf, workerSessionCache));
+    profile: [async ({ request, workerSessionCache }, use) => {
+        await use(new ProfileSwitcher(request, workerSessionCache));
     }, { scope: 'test' }],
 
     // Service used to switch entites.
     // Unlike the profile service, this shouldn't be needed on most tests, it is
     // only required when testing very specific entity related actions
-    entity:  [async ({ request, csrf }, use) => {
-        await use(new EntitySwitcher(request, csrf));
+    entity:  [async ({ request }, use) => {
+        await use(new EntitySwitcher(request));
     }, { scope: 'test' }],
 
     // Service used to send API request to GLPI.
@@ -160,18 +181,29 @@ export const test = baseTest.extend<{
         await use(new Api(workerSessionCache));
     }, { scope: 'test' }],
 
-    formImporter: [async ({ request, csrf }, use) => {
-        await use(new FormImporter(request, csrf));
+    formImporter: [async ({ request }, use) => {
+        await use(new FormImporter(request));
     }, { scope: 'test' }],
 
     // Service used to switch debug mode on/off.
-    debug: [async ({ request, csrf }, use) => {
-        await use(new DebugModeSwitcher(request, csrf));
+    debug: [async ({ request }, use) => {
+        await use(new DebugModeSwitcher(request));
+    }, { scope: 'test' }],
+
+    // Service used to grant/revoke reauth (sudo mode) on the current session.
+    reauth: [async ({ request }, use) => {
+        await use(new ReAuthenticator(request));
+    }, { scope: 'test' }],
+
+    // Service used to update GLPI's general configuration.
+    // This configuration is global to the whole application, thus only the
+    // isolated tests (`*.spec.isolated.ts`) may use it.
+    general_config: [async ({ request }, use) => {
+        await use(new GeneralConfig(request));
     }, { scope: 'test' }],
 
     // Store the state of the current session.
-    // This avoid fetching CSRF token multiple times or trying to set a profile
-    // that is already the one being used.
+    // This avoid trying to set a profile that is already the one being used.
     // Worker scoped so we will get one object per thread (= per session since
     // each of our thread has a unique account).
     workerSessionCache: [async ({}, use) => {
@@ -190,6 +222,16 @@ export const test = baseTest.extend<{
         await use(await context.newPage());
         await context.close();
     },
+
+    // Grant reauth (sudo mode) before each test so pages requiring reauth do
+    // not redirect to the prompt. The worker only logs in once, and reauth
+    // expires after ReAuthManager::REAUTH_DELAY_SECONDS, so it is re-granted
+    // per test rather than once per worker. Tests covering the reauth flow can
+    // opt out by calling `await reauth.revoke()` at the start of the test.
+    ensureReauthenticated: [async ({ reauth }, use) => {
+        await reauth.grant();
+        await use();
+    }, { auto: true, scope: 'test' }],
 
     // Increase the timeout when retrying a test.
     // This is needed because the first retry on the CI enable trace mode to

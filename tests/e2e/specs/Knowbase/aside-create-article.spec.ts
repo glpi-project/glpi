@@ -1,0 +1,328 @@
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+import { randomUUID } from 'crypto';
+import { expect, test } from '../../fixtures/glpi_fixture';
+import { KnowbaseItemPage } from '../../pages/KnowbaseItemPage';
+import { LoginPage } from '../../pages/LoginPage';
+import { Profiles } from '../../utils/Profiles';
+import { getWorkerEntityId } from '../../utils/WorkerEntities';
+
+test('the aside "+" opens an inline input under a parent article; an empty submit creates nothing', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const parent_name = `E2E Aside Parent ${unique}`;
+
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Parent content',
+        entities_id: getWorkerEntityId(),
+    });
+    await api.createItem('KnowbaseItem', {
+        name: `Seed ${unique}`,
+        answer: 'Seed content',
+        entities_id: getWorkerEntityId(),
+        _parents: [parent_id],
+    });
+
+    await kb.goto(parent_id);
+
+    // The "+" is handled by AsideController (a dynamically imported module).
+    // Wait for the controller to finish initializing before clicking it,
+    // otherwise the click can race the module load and do nothing.
+    await kb.waitForAsideReady();
+
+    const add_button = kb.getAsideCategoryAddButton(parent_name);
+    await kb.doRevealAsideCategoryAddButton(parent_name);
+    await add_button.click();
+
+    // No navigation: the "+" now opens an inline input instead of a full page.
+    await expect(page).not.toHaveURL(/knowbaseitems_id_parent=/);
+    const inline_input = kb.getAsideCategoryCreateInput(parent_name);
+    await expect(inline_input).toBeFocused();
+
+    // Escape cancels: the input disappears, nothing is created.
+    await inline_input.press('Escape');
+    await expect(inline_input).toBeHidden();
+
+    // Re-open and blur while empty: same result. Removing the input reflows
+    // the row, so the "+" has to be revealed again before it can be clicked.
+    await kb.doRevealAsideCategoryAddButton(parent_name);
+    await add_button.click();
+    await expect(kb.getAsideCategoryCreateInput(parent_name)).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(kb.getAsideCategoryCreateInput(parent_name)).toBeHidden();
+});
+
+test('hovering a child article does not reveal its parent\'s add-article button', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const parent_name = `E2E Hover Parent ${unique}`;
+    const child_name = `E2E Hover Child ${unique}`;
+
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Parent content',
+        entities_id: getWorkerEntityId(),
+    });
+    const child_id = await api.createItem('KnowbaseItem', {
+        name: child_name,
+        answer: 'Child content',
+        entities_id: getWorkerEntityId(),
+        _parents: [parent_id],
+    });
+
+    await kb.goto(child_id);
+
+    // The tree is still being built until AsideController signals readiness;
+    // hovering before that reveals nothing, and the rows shifting under the
+    // pointer cancels the hover.
+    await kb.waitForAsideReady();
+
+    const parent_add = kb.getAsideCategoryAddButton(parent_name);
+    const child_add = kb.getAsideCategoryAddButton(child_name);
+
+    await kb.doRevealAsideCategoryAddButton(child_name);
+
+    // visibility:hidden removes the parent button from the a11y tree, so the
+    // role-based locator resolves to nothing — assert visibility, not CSS.
+    await expect(child_add).toBeVisible();
+    await expect(parent_add).toBeHidden();
+});
+
+test('typing a title and pressing Enter creates the child article and navigates to it', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const parent_name = `E2E Inline Create Parent ${unique}`;
+    const article_title = `E2E Inline Create Article ${unique}`;
+
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Parent content',
+        entities_id: getWorkerEntityId(),
+    });
+
+    await kb.goto(parent_id);
+
+    // The "+" is handled by AsideController (a dynamically imported module).
+    // Wait for the controller to finish initializing before clicking it,
+    // otherwise the click can race the module load and do nothing.
+    await kb.waitForAsideReady();
+
+    const add_button = kb.getAsideCategoryAddButton(parent_name);
+    await kb.doRevealAsideCategoryAddButton(parent_name);
+    await add_button.click();
+
+    const inline_input = kb.getAsideCategoryCreateInput(parent_name);
+    await expect(inline_input).toBeFocused();
+
+    await inline_input.fill(article_title);
+    await inline_input.press('Enter');
+
+    // Lands on the new article after a full page load.
+    await expect(page).toHaveURL(/knowbaseitem\.form\.php\?id=\d+/);
+    await expect(page.getByTestId('subject')).toHaveText(article_title);
+
+    // The new article is visible under the parent in the aside, and marked
+    // current. (Its <li> has `role="group"` since article creation is
+    // allowed here, overriding the implicit "listitem" role — locate it by
+    // id instead.)
+    const new_id = Number(new URL(page.url()).searchParams.get('id'));
+    const article_row = kb.getAsideTreeArticleRow(new_id);
+    await expect(article_row).toBeVisible();
+    await expect(article_row).toHaveAttribute('aria-current', 'page');
+});
+
+test('the "+" on a folded article expands it, so the inline input is usable', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const parent_name = `E2E Folded Parent ${unique}`;
+    const child_name = `E2E Folded Child ${unique}`;
+    const article_title = `E2E Folded New ${unique}`;
+
+    // A parent with a child, so the parent gets a fold toggle.
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Parent content',
+        entities_id: getWorkerEntityId(),
+    });
+    await api.createItem('KnowbaseItem', {
+        name: child_name,
+        answer: 'Child content',
+        entities_id: getWorkerEntityId(),
+        _parents: [parent_id],
+    });
+
+    await kb.goto(parent_id);
+    await kb.waitForAsideReady();
+
+    const parent_toggle = kb.getAsideCategoryToggle(parent_name);
+    const child_link = kb.getAsideCategoryArticle(parent_name, child_name);
+
+    // Fold the parent: its child list is now `display: none`.
+    await kb.doToggleAsideCategoryAndWaitForPersist(parent_name);
+    await expect(parent_toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(child_link).toBeHidden();
+
+    // The "+" must expand the node before inserting the inline input, else the
+    // input lands in a hidden subtree: invisible, and impossible to focus.
+    const add_button = kb.getAsideCategoryAddButton(parent_name);
+    await kb.doRevealAsideCategoryAddButton(parent_name);
+    await add_button.click();
+
+    await expect(parent_toggle).toHaveAttribute('aria-expanded', 'true');
+    const inline_input = kb.getAsideCategoryCreateInput(parent_name);
+    await expect(inline_input).toBeVisible();
+    await expect(inline_input).toBeFocused();
+
+    await inline_input.fill(article_title);
+    await inline_input.press('Enter');
+
+    // Creating navigates to the new article. The expanded state must have been
+    // persisted along the way, otherwise the parent renders folded again on
+    // this load and hides the article that was just created.
+    await expect(page).toHaveURL(/knowbaseitem\.form\.php\?id=\d+/);
+    await expect(page.getByTestId('subject')).toHaveText(article_title);
+
+    const new_id = Number(new URL(page.url()).searchParams.get('id'));
+    await expect(kb.getAsideTreeArticleRow(new_id)).toBeVisible();
+    await expect(parent_toggle).toHaveAttribute('aria-expanded', 'true');
+});
+
+// Regression test that make sure we can create a child into a folded article.
+test('the inline input survives the lazy load of a folded article\'s children', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const read_name = `E2E Lazy Read ${unique}`;
+    const parent_name = `E2E Lazy Parent ${unique}`;
+    const child_name = `E2E Lazy Child ${unique}`;
+    const article_title = `E2E Lazy New ${unique}`;
+
+    // The article being read is unrelated to the parent below, so that parent
+    // renders folded: its children are then not in the DOM at all, and
+    // unfolding it has to fetch them.
+    const read_id = await api.createItem('KnowbaseItem', {
+        name: read_name,
+        answer: 'Read content',
+        entities_id: getWorkerEntityId(),
+    });
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Parent content',
+        entities_id: getWorkerEntityId(),
+    });
+    await api.createItem('KnowbaseItem', {
+        name: child_name,
+        answer: 'Child content',
+        entities_id: getWorkerEntityId(),
+        _parents: [parent_id],
+    });
+
+    // Slow the children endpoint down, to widen the window in which its
+    // response can land on top of the inline input.
+    await page.route('**/Knowbase/Aside/Article/*/Children*', async (route) => {
+        const response = await route.fetch();
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await route.fulfill({ response });
+    });
+
+    await kb.goto(read_id);
+    await kb.waitForAsideReady();
+
+    const parent_toggle = kb.getAsideCategoryToggle(parent_name);
+    await expect(parent_toggle).toHaveAttribute('aria-expanded', 'false');
+
+    const add_button = kb.getAsideCategoryAddButton(parent_name);
+    await kb.doRevealAsideCategoryAddButton(parent_name);
+    await add_button.click();
+
+    const inline_input = kb.getAsideCategoryCreateInput(parent_name);
+    await inline_input.fill(article_title);
+
+    // The fetched children fill the very list the input was inserted into.
+    // Once they are here, the input and what was typed into it must have
+    // survived.
+    await expect(kb.getAsideCategoryArticle(parent_name, child_name)).toBeVisible();
+    await expect(inline_input).toHaveValue(article_title);
+    await expect(inline_input).toBeFocused();
+
+    // And it still creates.
+    await inline_input.press('Enter');
+    await expect(page).toHaveURL(/knowbaseitem\.form\.php\?id=\d+/);
+    await expect(page.getByTestId('subject')).toHaveText(article_title);
+});
+
+test('without the update right, the "+" is only offered on the root article', async ({ anonymousPage, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+
+    const unique = randomUUID().slice(0, 8);
+    const login = `e2e_kb_creator_${unique}`;
+
+    const profile_id = await api.createItem('Profile', {
+        name: `E2E KB creator ${unique}`,
+        interface: 'central',
+        knowbase: 1 | 4,
+    });
+    await api.createItem('User', {
+        name: login,
+        password: login,
+        password2: login,
+        _profiles_id: profile_id,
+        _entities_id: getWorkerEntityId(),
+        _is_recursive: 1,
+    });
+
+    const parent_id = await api.knowbase.createArticle({ name: `E2E Not Editable Parent ${unique}` });
+    await api.knowbase.addEntityVisibility(parent_id, getWorkerEntityId(), true);
+
+    const login_page = new LoginPage(anonymousPage);
+    await login_page.goto();
+    await login_page.doLogin(login, login);
+
+    const kb = new KnowbaseItemPage(anonymousPage);
+    await kb.goto(parent_id);
+    await kb.waitForAsideReady();
+
+    await kb.doRevealAsideCategoryAddButton('Home');
+    await expect(kb.getAsideTreeArticleRow(parent_id)).toBeVisible();
+    await expect(kb.getAsideArticleAddChildTrigger(parent_id)).toHaveCount(0);
+});

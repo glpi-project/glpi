@@ -3173,6 +3173,60 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
     }
 
     /**
+     * Add approvals to the supervisor of the requesters (User::users_id_supervisor), not their group manager
+     *
+     * Tested action : 'add_validation' with 'responsible_id_validate' field
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testApprovalRequestToRequesterSupervisor(int $condition): void
+    {
+        // no validation for problems
+        if ($this->getITILObjectClass() === \Problem::class) {
+            return;
+        }
+
+        // --- arrange : 2 requesters sharing the same supervisor + 1 requester without supervisor
+        $this->login();
+        $supervisor = $this->createItem(User::class, ['name' => __FUNCTION__ . '_supervisor']);
+        $requesters_ids = [
+            $this->createItem(User::class, ['name' => __FUNCTION__ . '_1', 'users_id_supervisor' => $supervisor->getID()])->getID(),
+            $this->createItem(User::class, ['name' => __FUNCTION__ . '_2', 'users_id_supervisor' => $supervisor->getID()])->getID(),
+            $this->createItem(User::class, ['name' => __FUNCTION__ . '_3'])->getID(),
+        ];
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('urgency', Rule::PATTERN_IS, 5)
+            ->addAction('add_validation', 'responsible_id_validate', 1);
+        $this->createRule($rule_builder);
+
+        // --- act : add an itil object with the requesters, or update one to match the rule
+        $requesters = array_map(fn($id) => ['itemtype' => User::class, 'items_id' => $id], $requesters_ids);
+        $itil = $this->createItem(
+            $this->getITILObjectClass(),
+            $this->getMinimalCreationInput($this->getITILObjectClass()) + [
+                'urgency' => $condition === RuleCommonITILObject::ONADD ? 5 : 3,
+                '_actors' => ['requester' => $requesters],
+            ],
+            ['_actors']
+        );
+        if ($condition === RuleCommonITILObject::ONUPDATE) {
+            $this->updateItem($this->getITILObjectClass(), $itil->getID(), ['urgency' => 5]);
+        }
+
+        // --- assert : a single approval request, for the supervisor
+        $validations = $this->getITILObjectInstance()->getValidationClassInstance()->find(
+            [$this->getITILObjectClass()::getForeignKeyField() => $itil->getID()]
+        );
+        $this->assertCount(1, $validations, 'A single approval should be created for the shared supervisor');
+        $validation = current($validations);
+        $this->assertSame(User::class, $validation['itemtype_target']);
+        $this->assertSame($supervisor->getID(), $validation['items_id_target']);
+    }
+
+    /**
      * Ensure a rule using the "global_validation" criteria work as expected on updates.
      *
      * @return void
@@ -3244,6 +3298,78 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
     }
 
     /**
+     * Ensure a rule combining "global_validation" and a category "under" criteria
+     * still triggers when the update is caused by a validation acceptance, which
+     * only carries the validation status in its input, not the category.
+     *
+     * @return void
+     */
+    public function testGlobalValidationCriteriaWithCategoryUnderOnValidationAcceptance(): void
+    {
+        // no validation for problems
+        if ($this->getITILObjectClass() === \Problem::class) {
+            return;
+        }
+
+        $this->login(TU_USER, TU_PASS);
+
+        $entity = getItemByTypeName(Entity::class, '_test_root_entity', true);
+        $urgency_if_rule_triggered = 5;
+
+        $parent_category = $this->createItem(ITILCategory::class, [
+            'name'         => 'Business software',
+            'entities_id'  => $entity,
+            'is_recursive' => true,
+        ]);
+        $child_category = $this->createItem(ITILCategory::class, [
+            'name'               => 'ERP',
+            'itilcategories_id'  => $parent_category->getID(),
+            'entities_id'        => $entity,
+            'is_recursive'       => true,
+        ]);
+
+        $builder = new RuleBuilder('Test global_validation + category under criteria', $this->getTestedClass());
+        $builder
+            ->addCriteria('global_validation', Rule::PATTERN_IS, CommonITILValidation::ACCEPTED)
+            ->addCriteria('itilcategories_id', Rule::PATTERN_UNDER, $parent_category->getID())
+            ->addAction('assign', 'urgency', $urgency_if_rule_triggered);
+        $this->createRule($builder);
+
+        // Create ITIL object under the child category, with a pending validation
+        $itil_object = $this->createItem($this->getITILObjectClass(), [
+            'name'                => 'Test ITIL object',
+            'entities_id'         => $entity,
+            'content'             => 'Test ITIL object content',
+            'itilcategories_id'   => $child_category->getID(),
+            'validatortype'       => 'user',
+            '_validation_targets' => [
+                [
+                    'itemtype_target' => User::class,
+                    'items_id_target' => $_SESSION['glpiID'],
+                ],
+            ],
+            '_add_validation'     => false,
+        ], ['validatortype']);
+        $this->assertNotEquals($urgency_if_rule_triggered, $itil_object->fields['urgency']);
+
+        // Accept the validation: this update only carries 'global_validation',
+        // the rule must still see the ticket's actual (unchanged) category.
+        $validation_instance = $this->getITILObjectInstance()->getValidationClassInstance();
+        $validations = $validation_instance->find([
+            $this->getITILObjectInstance()::getForeignKeyField() => $itil_object->getID(),
+        ]);
+        $this->assertCount(1, $validations);
+        $validation = array_pop($validations);
+
+        $this->updateItem($validation_instance::class, $validation['id'], [
+            'status' => CommonITILValidation::ACCEPTED,
+        ]);
+
+        $itil_object->getFromDB($itil_object->getID());
+        $this->assertEquals($urgency_if_rule_triggered, $itil_object->fields['urgency']);
+    }
+
+    /**
      * Test that the "Code representing the ticket category" criterion works correctly
      * even when the category has been modified just before.
      *
@@ -3294,6 +3420,63 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $this->assertEquals($location->getID(), $itil_object->fields['locations_id']);
     }
 
+    public function testCategoryCodeNotReusedAfterCategoryClearedByRule(): void
+    {
+        $this->login();
+        $entity = getItemByTypeName(Entity::class, '_test_root_entity', true);
+        $new_priority = 4;
+
+        $category = $this->createItem(ITILCategory::class, [
+            'name' => 'Test category',
+            'code' => 'test_category_cleared',
+            'entities_id' => $entity,
+        ]);
+
+        $location = $this->createItem(Location::class, [
+            'name' => 'Test location for cleared category',
+            'entities_id' => $entity,
+        ]);
+
+        // Rule 1: assign the category when priority changes
+        $builder = new RuleBuilder('Assign category on priority change', $this->getTestedClass());
+        $builder
+            ->addCriteria('priority', Rule::PATTERN_IS, $new_priority)
+            ->addAction('assign', 'itilcategories_id', $category->getID())
+            ->setRanking(1);
+        $this->createRule($builder);
+
+        // Rule 2: clear the category right after, still on priority change
+        $builder = new RuleBuilder('Clear category on priority change', $this->getTestedClass());
+        $builder
+            ->addCriteria('priority', Rule::PATTERN_IS, $new_priority)
+            ->addAction('assign', 'itilcategories_id', 0)
+            ->setRanking(2);
+        $this->createRule($builder);
+
+        // Rule 3: chained on rule 2's output, must not see the stale code
+        $builder = new RuleBuilder('Assign location from stale category code', $this->getTestedClass());
+        $builder
+            ->addCriteria('itilcategories_id_code', Rule::PATTERN_IS, $category->fields['code'])
+            ->addAction('assign', 'locations_id', $location->getID())
+            ->setRanking(3);
+        $this->createRule($builder);
+
+        $itil_object = $this->createItem($this->getITILObjectClass(), [
+            'name' => 'Test ITIL',
+            'content' => 'Test ITIL content',
+            'entities_id' => $entity,
+            'itilcategories_id' => 0,
+        ]);
+
+        $itil_object = $this->updateItem(
+            $itil_object::class,
+            $itil_object->getID(),
+            ['priority' => $new_priority]
+        );
+
+        $this->assertEquals(0, $itil_object->fields['itilcategories_id']);
+        $this->assertEquals(0, $itil_object->fields['locations_id']);
+    }
 
     /**
      * Test that the "Default profile" criterion works correctly
@@ -3544,4 +3727,338 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
     }
 
 
+    public function testGetUniqueItemByNameReturnsMatchingItem(): void
+    {
+        $this->login();
+
+        $entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => 'affectbyname-test-create',
+            'entities_id' => $entity_id,
+        ]);
+
+        //add a second computer
+        $this->createItem(\Computer::class, [
+            'name'        => 'server-2',
+            'entities_id' => $entity_id,
+        ]);
+
+        //add another ticket type item that is set after Computer in the list of ticket types
+        $this->createItem(\Monitor::class, [
+            'name'        => 'affectbyname-test-create',
+            'entities_id' => $entity_id,
+        ]);
+
+        $result = RuleCommonITILObject::getUniqueItemByName('affectbyname-test-create', $entity_id);
+
+        //only the computer should be returned (first item found)
+        $this->assertEquals($computer->getID(), $result['id']);
+        $this->assertEquals(\Computer::class, $result['itemtype']);
+    }
+
+    public function testGetUniqueItemByNameReturnsEmptyWhenNotFound(): void
+    {
+        $this->login();
+
+        $entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        $result = RuleCommonITILObject::getUniqueItemByName('nonexistent-asset-xyz-' . mt_rand(), $entity_id);
+
+        $this->assertSame([], $result);
+
+        //create a non ticket type item with the same name, it should not be returned
+        $this->createItem(Entity::class, [
+            'name'        => 'test-entity',
+            'entities_id' => $entity_id,
+        ]);
+
+        $result = RuleCommonITILObject::getUniqueItemByName('test-entity', $entity_id);
+        $this->assertSame([], $result);
+    }
+
+    public function testGetUniqueItemByNameExcludesNonValidItems(): void
+    {
+        $this->login();
+
+        $entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        //Test with a deleted item
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => 'deleted-server-findme',
+            'entities_id' => $entity_id,
+        ]);
+        $this->assertTrue((new \Computer())->delete(['id' => $computer->getID()]));
+
+        $result = RuleCommonITILObject::getUniqueItemByName('deleted-server-findme', $entity_id);
+
+        $this->assertSame([], $result);
+
+        //Test with a template
+
+        $this->createItem(\Computer::class, [
+            'name'        => 'template-server-findme',
+            'entities_id' => $entity_id,
+            'is_template' => 1,
+        ]);
+
+        $result = RuleCommonITILObject::getUniqueItemByName('template-server-findme', $entity_id);
+
+        $this->assertSame([], $result);
+    }
+
+    public function testGetUniqueItemByNameRestrictsToEntity(): void
+    {
+        $this->login();
+
+        $root_entity   = getItemByTypeName(Entity::class, '_test_root_entity', true);
+        $child_entity  = getItemByTypeName(Entity::class, '_test_child_1', true);
+
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => 'entity-restricted-server',
+            'entities_id' => $child_entity,
+        ]);
+
+        $result = RuleCommonITILObject::getUniqueItemByName('entity-restricted-server', $root_entity);
+
+        $this->assertSame([], $result);
+
+        $result = RuleCommonITILObject::getUniqueItemByName('entity-restricted-server', $child_entity);
+
+        $this->assertSame($computer->getID(), $result['id']);
+    }
+
+    public function testAffectEquipmentByNameOnCreate(): void
+    {
+        $this->login();
+
+        $entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_item_class = $this->getITILLinkClass('Item');
+        $itil_item_table =  $itil_item_class::getTable();
+
+        $rule_action_name = 'affectbyname-test-create';
+        $rule_criteria_name = 'affectbyname-trigger';
+
+        //add a computer who's name doesn't match the rule action
+        $this->createItem(\Computer::class, [
+            'name'        => 'server-2',
+            'entities_id' => $entity_id,
+        ]);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion(RuleCommonITILObject::ONADD)
+            ->setEntity($entity_id)
+            ->addCriteria('name', Rule::PATTERN_CONTAIN, $rule_criteria_name)
+            ->addAction('affectbyname', 'affectobject', $rule_action_name);
+        $this->createRule($rule_builder);
+
+        //test before creating an item with the name used in the rule action.
+        $itil = $this->createItem($itil_class, [
+            'name'        => $rule_criteria_name,
+            'content'     => 'test',
+            'entities_id' => $entity_id,
+        ]);
+
+        //No item should be linked
+        $this->assertEquals(
+            0,
+            countElementsInTable(
+                $itil_item_table,
+                [
+                    $itil_fk   => $itil->getID(),
+                ]
+            ),
+        );
+
+        //Now add 2 items who's names matche the rule action
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => $rule_action_name,
+            'entities_id' => $entity_id,
+        ]);
+
+        $this->createItem(\Monitor::class, [
+            'name'        => $rule_action_name,
+            'entities_id' => $entity_id,
+        ]);
+
+        //create the ITIL item again to trigger the rule
+        $itil = $this->createItem($itil_class, [
+            'name'        => $rule_criteria_name,
+            'content'     => 'test',
+            'entities_id' => $entity_id,
+        ]);
+
+        $linked_items = iterator_to_array(
+            $itil_item_class::getSeveralFromDBByCrit([
+                $itil_fk => $itil->getID(),
+            ])
+        );
+        $this->assertCount(1, $linked_items);
+
+        //Only the computer is linked (first item)
+        $item_link = array_pop($linked_items);
+        $this->assertEquals(\Computer::class, $item_link->fields['itemtype']);
+        $this->assertEquals($computer->getID(), $item_link->fields['items_id']);
+    }
+
+    public function testAffectEquipmentByNameOnUpdate(): void
+    {
+        $this->login();
+
+        $entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_item_class = $this->getITILLinkClass('Item');
+        $itil_item_table = $itil_item_class::getTable();
+
+        $rule_action_name = 'affectbyname-test-update';
+        $rule_criteria_name = 'affectbyname-trigger';
+
+        //add an item who's name doesn't match the rule action
+        $this->createItem(\Computer::class, [
+            'name'        => 'server-2',
+            'entities_id' => $entity_id,
+        ]);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion(RuleCommonITILObject::ONUPDATE)
+            ->setEntity($entity_id)
+            ->addCriteria('name', Rule::PATTERN_CONTAIN, $rule_criteria_name)
+            ->addAction('affectbyname', 'affectobject', $rule_action_name);
+        $this->createRule($rule_builder);
+
+        $itil = $this->createItem($itil_class, [
+            'name'        => $rule_criteria_name . ' (before update)',
+            'content'     => 'test',
+            'entities_id' => $entity_id,
+        ]);
+
+        // No link before update
+        $this->assertEquals(
+            0,
+            countElementsInTable(
+                $itil_item_table,
+                [
+                    $itil_fk => $itil->getID(),
+                ]
+            )
+        );
+
+        //test update before creating an item with the name used in the rule action.
+        $this->updateItem($itil_class, $itil->getID(), ['name' => $rule_criteria_name . ' (after update)']);
+
+        //no link should be created since no item matches the rule action name
+        $this->assertEquals(
+            0,
+            countElementsInTable(
+                $itil_item_table,
+                [
+                    $itil_fk   => $itil->getID(),
+                ]
+            ),
+        );
+
+        //create 2 items who's name matches the rule action
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => $rule_action_name,
+            'entities_id' => $entity_id,
+        ]);
+
+        $this->createItem(\Monitor::class, [
+            'name'        => $rule_action_name,
+            'entities_id' => $entity_id,
+        ]);
+
+        $this->updateItem($itil_class, $itil->getID(), ['name' => $rule_criteria_name . ' (after update 2)']);
+
+        $linked_items = iterator_to_array(
+            $itil_item_class::getSeveralFromDBByCrit([
+                $itil_fk => $itil->getID(),
+            ])
+        );
+        $this->assertCount(1, $linked_items);
+
+        //Only the computer is linked (first item)
+        $item_link = array_pop($linked_items);
+        $this->assertEquals(\Computer::class, $item_link->fields['itemtype']);
+        $this->assertEquals($computer->getID(), $item_link->fields['items_id']);
+    }
+
+    public function testAffectEquipmentByNameWithRegex(): void
+    {
+        $this->login();
+
+        $entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_item_class = $this->getITILLinkClass('Item');
+        $itil_item_table = $itil_item_class::getTable();
+
+        $rule_action_name = 'regex-test-target';
+
+        //create an item with a name that matches the regex
+        $this->createItem(\Computer::class, [
+            'name'        => 'server-2',
+            'entities_id' => $entity_id,
+        ]);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion(RuleCommonITILObject::ONADD)
+            ->setEntity($entity_id)
+            ->addCriteria('content', Rule::REGEX_MATCH, '/(' . $rule_action_name . ')/')
+            ->addAction('affectbyname', 'affectobject', '#0');
+        $this->createRule($rule_builder);
+
+        $itil = $this->createItem($itil_class, [
+            'name'        => 'ticket with regex equipment assignment',
+            'content'     => 'please assign ' . $rule_action_name . ' to this ticket',
+            'entities_id' => $entity_id,
+        ]);
+
+        //No item should be linked since no item matches the rule action name
+        $this->assertEquals(
+            0,
+            countElementsInTable(
+                $itil_item_table,
+                [
+                    $itil_fk   => $itil->getID(),
+                ]
+            ),
+        );
+
+        //create 2 items who's name matches the rule action
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => $rule_action_name,
+            'entities_id' => $entity_id,
+        ]);
+
+        $this->createItem(\Monitor::class, [
+            'name'        => $rule_action_name,
+            'entities_id' => $entity_id,
+        ]);
+
+        // create the ITIL item again to trigger the rule
+        $itil = $this->createItem($itil_class, [
+            'name'        => 'ticket with regex equipment assignment',
+            'content'     => 'please assign ' . $rule_action_name . ' to this ticket',
+            'entities_id' => $entity_id,
+        ]);
+
+        $linked_items = iterator_to_array(
+            $itil_item_class::getSeveralFromDBByCrit([
+                $itil_fk => $itil->getID(),
+            ])
+        );
+        $this->assertCount(1, $linked_items);
+
+        //Only the computer is linked (first item)
+        $item_link = array_pop($linked_items);
+        $this->assertEquals(\Computer::class, $item_link->fields['itemtype']);
+        $this->assertEquals($computer->getID(), $item_link->fields['items_id']);
+    }
 }

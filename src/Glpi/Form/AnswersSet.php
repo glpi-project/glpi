@@ -50,8 +50,8 @@ use function Safe\json_decode;
  */
 final class AnswersSet extends CommonDBChild
 {
-    public static $itemtype = Form::class;
-    public static $items_id = 'forms_forms_id';
+    public static string $itemtype = Form::class;
+    public static string $items_id = 'forms_forms_id';
 
     public array $files = [];
 
@@ -245,13 +245,15 @@ final class AnswersSet extends CommonDBChild
     /**
      * Get links to created items that are visible for the current user.
      *
+     * @param CommonDBTM[]|null $created_items Items already loaded with getCreatedItems()
+     *
      * @return string[]
      */
-    public function getLinksToCreatedItems(): array
+    public function getLinksToCreatedItems(?array $created_items = null): array
     {
         $links = [];
-        foreach ($this->getCreatedItems() as $item) {
-            if ($item->canViewItem()) {
+        foreach ($created_items ?? $this->getCreatedItems() as $item) {
+            if ($item->can($item->getID(), READ)) {
                 $links[] = $item->getLink();
             }
         }

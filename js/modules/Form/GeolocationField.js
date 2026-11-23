@@ -36,7 +36,7 @@
 /**
  * Shows a Leaflet map based on some other form input fields that are present on the page.
  *
- * @since 10.1.0
+ * @since 11.0.0
  */
 class GeolocationField {
     constructor(element_id) {

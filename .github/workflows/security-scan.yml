@@ -16,28 +16,31 @@ concurrency:
 
 jobs:
   security-scan:
+    # Let tier repositories opt out of running the scan on a push event
+    # (e.g. a private mirror branch)
+    if: github.repository == 'glpi-project/glpi' || github.event_name != 'push' || vars.CI_SKIP_PUSH != 'true'
     name: "Security scan"
-    runs-on: "ubuntu-latest"
+    runs-on: "${{ vars.CI_RUNNER_LABEL || 'ubuntu-latest' }}"
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
-      PHP_IMAGE: "githubactions-php-apache:8.5"
+      PHP_IMAGE: "githubactions-php-apache:8.6"
       UPDATE_FILES_ACL: true
     steps:
       - name: "Set env"
         run: |
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
-        uses: "actions/checkout@v7"
+        uses: "actions/checkout@v7.0.1"
       - name: "Restore dependencies cache"
-        uses: actions/cache@v6
+        uses: actions/cache@v6.1.0
         with:
           path: |
             ${{ env.APP_CONTAINER_HOME }}/.cache/composer/
             ${{ env.APP_CONTAINER_HOME }}/.npm/_cacache/
-          key: "app_home_deps-${{ matrix.php-version }}-${{ hashFiles('composer.lock', 'package-lock.json') }}"
+          key: "app_home_deps-8.5-${{ hashFiles('composer.lock', 'package-lock.json') }}"
           restore-keys: |
-            app_home_deps-${{ matrix.php-version }}-
+            app_home_deps-8.5-
             app_home_deps-
       - name: "Initialize containers"
         run: |

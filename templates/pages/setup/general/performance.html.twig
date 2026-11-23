@@ -34,8 +34,8 @@
 
 {% macro icon_msg(message, icon) %}
    <td class="icons_block">
-      <i class="{{ icon }}" title="{{ message }}" data-bs-toggle="tooltip"></i>
-      <span class="sr-only">{{ message }}</span>
+      <i class="{{ icon }}" title="{{ message }}" data-bs-toggle="tooltip" aria-hidden="true"></i>
+      <span class="visually-hidden">{{ message }}</span>
    </td>
 {% endmacro %}
 
@@ -114,7 +114,6 @@
                <td></td>
                <td>
                   <form method="post" action="{{ path('/front/config.form.php') }}">
-                     {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                      {{ inputs.submit('reset_opcache', __('Reset'), 1, {'icon': 'ti ti-trash'}) }}
                   </form>
                </td>
@@ -150,7 +149,6 @@
             <td></td>
             <td>
                <form method="post" action="{{ path('/front/config.form.php') }}">
-                  {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                   {{ inputs.submit('reset_core_cache', __('Reset'), 1, {'icon': 'ti ti-trash'}) }}
                </form>
             </td>
@@ -175,7 +173,6 @@
             <td></td>
             <td>
                <form method="post" action="{{ path('/front/config.form.php') }}">
-                  {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                   {{ inputs.submit('reset_translation_cache', __('Reset'), 1, {'icon': 'ti ti-trash'}) }}
                </form>
             </td>

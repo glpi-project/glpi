@@ -1,0 +1,104 @@
+diff --git a/NoPrivateNetworkHttpClient.php b/NoPrivateNetworkHttpClient.php
+--- a/NoPrivateNetworkHttpClient.php
++++ b/NoPrivateNetworkHttpClient.php
+@@ -36,14 +36,19 @@
+     private array $defaultOptions = self::OPTIONS_DEFAULTS;
+     private HttpClientInterface $client;
+     private ?array $subnets;
++    private array $allowList;
+     private int $ipFlags;
+     private \ArrayObject $dnsCache;
+ 
+     /**
+-     * @param string|array|null $subnets String or array of subnets using CIDR notation that should be considered private.
+-     *                                   If null is passed, the standard private subnets will be used.
++     * @param string|array|null $subnets   String or array of subnets using CIDR notation that should be considered private.
++     *                                     If null is passed, the standard private subnets will be used.
++     * @param string|array      $allowList String or array of IPs/subnets using CIDR notation that should be allowed
++     *                                     even when they would otherwise match the private subnets. Useful e.g. to allow
++     *                                     reaching a local proxy or a known internal host while still blocking the rest
++     *                                     of the private network.
+      */
+-    public function __construct(HttpClientInterface $client, string|array|null $subnets = null)
++    public function __construct(HttpClientInterface $client, string|array|null $subnets = null, string|array $allowList = [])
+     {
+         if (!class_exists(IpUtils::class)) {
+             throw new \LogicException(\sprintf('You cannot use "%s" if the HttpFoundation component is not installed. Try running "composer require symfony/http-foundation".', __CLASS__));
+@@ -58,12 +63,17 @@
+             }
+         }
+ 
++        foreach ((array) $allowList as $allowed) {
++            $ipFlags |= str_contains($allowed, ':') ? \FILTER_FLAG_IPV6 : \FILTER_FLAG_IPV4;
++        }
++
+         if (!\defined('STREAM_PF_INET6')) {
+             $ipFlags &= ~\FILTER_FLAG_IPV6;
+         }
+ 
+         $this->client = $client;
+         $this->subnets = null !== $subnets ? (array) $subnets : null;
++        $this->allowList = (array) $allowList;
+         $this->ipFlags = $ipFlags;
+         $this->dnsCache = new \ArrayObject();
+     }
+@@ -79,17 +89,18 @@
+         $dnsCache = $this->dnsCache;
+ 
+         $ip = self::dnsResolve($dnsCache, $host, $this->ipFlags, $options);
+-        self::ipCheck($ip, $this->subnets, $this->ipFlags, $host, $url);
++        self::ipCheck($ip, $this->subnets, $this->allowList, $this->ipFlags, $host, $url);
+ 
+         $onProgress = $options['on_progress'] ?? null;
+         $subnets = $this->subnets;
++        $allowList = $this->allowList;
+         $ipFlags = $this->ipFlags;
+ 
+-        $options['on_progress'] = static function (int $dlNow, int $dlSize, array $info) use ($onProgress, $subnets, $ipFlags): void {
++        $options['on_progress'] = static function (int $dlNow, int $dlSize, array $info) use ($onProgress, $subnets, $allowList, $ipFlags): void {
+             static $lastPrimaryIp = '';
+ 
+             if (!\in_array($info['primary_ip'] ?? '', ['', $lastPrimaryIp], true)) {
+-                self::ipCheck($info['primary_ip'], $subnets, $ipFlags, null, $info['url']);
++                self::ipCheck($info['primary_ip'], $subnets, $allowList, $ipFlags, null, $info['url']);
+                 $lastPrimaryIp = $info['primary_ip'];
+             }
+ 
+@@ -107,7 +118,7 @@
+             $redirectHeaders['no_auth'] = array_filter($redirectHeaders['no_auth'], static fn ($h) => 0 !== stripos($h, 'Host:') && 0 !== stripos($h, 'Authorization:') && 0 !== stripos($h, 'Cookie:'));
+         }
+ 
+-        return new AsyncResponse($this->client, $method, $url, $options, static function (ChunkInterface $chunk, AsyncContext $context) use (&$method, &$options, $maxRedirects, &$redirectHeaders, $subnets, $ipFlags, $dnsCache): \Generator {
++        return new AsyncResponse($this->client, $method, $url, $options, static function (ChunkInterface $chunk, AsyncContext $context) use (&$method, &$options, $maxRedirects, &$redirectHeaders, $subnets, $allowList, $ipFlags, $dnsCache): \Generator {
+             if (null !== $chunk->getError() || $chunk->isTimeout() || !$chunk->isFirst()) {
+                 yield $chunk;
+ 
+@@ -126,7 +137,7 @@
+ 
+             $host = parse_url($url, \PHP_URL_HOST);
+             $ip = self::dnsResolve($dnsCache, $host, $ipFlags, $options);
+-            self::ipCheck($ip, $subnets, $ipFlags, $host, $url);
++            self::ipCheck($ip, $subnets, $allowList, $ipFlags, $host, $url);
+ 
+             // Do like curl and browsers: turn POST to GET on 301, 302 and 303
+             if (303 === $statusCode || 'POST' === $method && \in_array($statusCode, [301, 302], true)) {
+@@ -221,7 +232,7 @@
+         return $options['resolve'][$host] = $dnsCache[$host] = $ip;
+     }
+ 
+-    private static function ipCheck(string $ip, ?array $subnets, int $ipFlags, ?string $host, string $url): void
++    private static function ipCheck(string $ip, ?array $subnets, array $allowList, int $ipFlags, ?string $host, string $url): void
+     {
+         if (null === $subnets) {
+             // Quick check, but not reliable enough, see https://github.com/php/php-src/issues/16944
+@@ -232,6 +243,10 @@
+             return;
+         }
+ 
++        if ($allowList && false !== filter_var($ip, \FILTER_VALIDATE_IP) && IpUtils::checkIp($ip, $allowList)) {
++            return;
++        }
++
+         if (null !== $host) {
+             $type = 'Host';
+         } else {

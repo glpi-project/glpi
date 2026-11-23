@@ -61,7 +61,7 @@ final class LDAPController extends AbstractController
         }
         $authldap = new AuthLDAP();
         $replicate = new AuthLdapReplicate();
-        if (!$authldap->getFromDB($request->get('authldaps_id')) || !$replicate->getFromDB($request->get('authldapreplicates_id'))) {
+        if (!$authldap->getFromDB($request->request->getInt('authldaps_id')) || !$replicate->getFromDB($request->request->getInt('authldapreplicates_id'))) {
             throw new NotFoundHttpException();
         }
 

@@ -79,15 +79,13 @@ abstract class CommonDBConnexity extends CommonDBTM
     public const HAVE_VIEW_RIGHT_ON_ITEM = 2; // canXXXChild = true if parent::canView == true
     public const HAVE_SAME_RIGHT_ON_ITEM = 3; // canXXXChild = true if parent::canXXX == true
 
-    /** @var bool */
-    public static $canDeleteOnItemClean          = true;
+    public static bool $canDeleteOnItemClean          = true;
 
     /**
      * Disable auto forwarding information about entities?
      *
-     * @var bool
      */
-    public static $disableAutoEntityForwarding   = false;
+    public static bool $disableAutoEntityForwarding   = false;
 
 
     public function getCloneRelations(): array
@@ -534,8 +532,8 @@ abstract class CommonDBConnexity extends CommonDBTM
                 'unaffect' => ['unaffect'],
             ],
             'action_name'   => [
-                'affect'   => "<i class='ti ti-link'></i>" . _sx('button', 'Associate'),
-                'unaffect' => "<i class='ti ti-link-off'></i>" . _sx('button', 'Dissociate'),
+                'affect'   => "<i class='ti ti-link' aria-hidden='true'></i>" . _sx('button', 'Associate'),
+                'unaffect' => "<i class='ti ti-link-off' aria-hidden='true'></i>" . _sx('button', 'Dissociate'),
             ],
         ];
     }
@@ -750,7 +748,7 @@ abstract class CommonDBConnexity extends CommonDBTM
             return;
         }
 
-        $itemtype      = $item->getType();
+        $itemtype      = $item::class;
         $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
 
         $action        = $ma->getAction();
@@ -772,27 +770,27 @@ abstract class CommonDBConnexity extends CommonDBTM
                 foreach ($ids as $key) {
                     if ($item->can($key, UPDATE)) {
                         if ($item instanceof CommonDBRelation) {
-                            if (isset($input['peer'][$item->getType()])) {
-                                if ($item->affectRelation($key, $input['peer'][$item->getType()])) {
-                                    $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                            if (isset($input['peer'][$item::class])) {
+                                if ($item->affectRelation($key, $input['peer'][$item::class])) {
+                                    $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                                 } else {
-                                    $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                    $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                                 }
                             } else {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } elseif ($item instanceof CommonDBChild) {
                             if ($item->affectChild($key)) {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
@@ -800,7 +798,7 @@ abstract class CommonDBConnexity extends CommonDBTM
 
             case 'affect':
                 if (!$specificities['reaffect']) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                     return;
                 }
@@ -825,21 +823,29 @@ abstract class CommonDBConnexity extends CommonDBTM
                 $input2[$peers_id] = $input['peers_id'];
                 if (preg_match('/^itemtype/', $peertype)) {
                     if (!in_array($input['peertype'], $specificities['itemtypes'])) {
-                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                         return;
                     }
                     $input2[$peertype] = $input['peertype'];
+                    $peer_itemtype = $input['peertype'];
                 } else {
                     if ($peertype != $input['peertype']) {
-                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                         return;
                     }
+                    $peer_itemtype = $peertype;
+                }
+                $peer = getItemForItemtype($peer_itemtype);
+                if (!$peer || !$peer->getFromDB($input2[$peers_id])) {
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
+                    $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+                    return;
                 }
                 foreach ($ids as $key) {
                     if (!$item->getFromDB($key)) {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                         continue;
                     }
@@ -848,13 +854,13 @@ abstract class CommonDBConnexity extends CommonDBTM
                             ($input2[$peertype] == $item->fields[$peertype])
                             && ($input2[$peers_id] == $item->fields[$peers_id])
                         ) {
-                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ALREADY_DEFINED));
                             continue;
                         }
                     } else {
                         if ($input2[$peers_id] == $item->fields[$peers_id]) {
-                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ALREADY_DEFINED));
                             continue;
                         }
@@ -862,13 +868,13 @@ abstract class CommonDBConnexity extends CommonDBTM
                     $input2[$item->getIndexName()] = $item->getID();
                     if ($item->can($item->getID(), UPDATE, $input2)) {
                         if ($item->update($input2)) {
-                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }

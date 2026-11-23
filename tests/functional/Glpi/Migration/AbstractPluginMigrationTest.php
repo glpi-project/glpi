@@ -53,11 +53,13 @@ use Glpi\Migration\PluginMigrationResult;
 use Glpi\Tests\DbTestCase;
 use Infocom;
 use Monitor;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use ReflectionClass;
 use TaskCategory;
 
 class AbstractPluginMigrationTest extends DbTestCase
 {
+    #[AllowMockObjectsWithoutExpectations]
     public function testExecuteWithUnvalidatedPrerequisites(): void
     {
         // Arrange
@@ -106,6 +108,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $this->assertEquals($expected_messages, $result->getMessages());
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testExecuteWithValidatePrerequisitesException(): void
     {
         // Arrange
@@ -344,6 +347,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $this->assertEquals($expected_messages, $result->getMessages());
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testCheckDbFieldsExists(): void
     {
         // Arrange
@@ -423,6 +427,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $this->assertEquals([], $messages_2);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testImportItem(): void
     {
         // Arrange
@@ -559,6 +564,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $this->assertEquals([Computer::class => [$computer_id_1, $computer_id_2, $computer_id_3]], $result->getReusedItemsIds());
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testImportItemWithErrorAndSessionMessage(): void
     {
         // Arrange
@@ -629,6 +635,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $this->assertEquals([], $result->getReusedItemsIds());
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testCopyItems(): void
     {
         // Arrange
@@ -772,218 +779,6 @@ class AbstractPluginMigrationTest extends DbTestCase
                 ],
             ],
             \array_values($copied_translations)
-        );
-    }
-
-    public function testCopyPolymorphicConnexityItems(): void
-    {
-        global $DB;
-
-        // Arrange
-        $definition = $this->initAssetDefinition(
-            'MyCustomAsset',
-            capacities: [
-                new Capacity(name: HasInfocomCapacity::class),
-            ]
-        );
-
-        $computer_1_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
-        $computer_2_id = \getItemByTypeName(Computer::class, '_test_pc02', true);
-
-        $this->createItems(
-            Infocom::class,
-            [
-                [
-                    'itemtype'          => Computer::class,
-                    'items_id'          => $computer_1_id,
-                    'warranty_date'     => '2024-12-04',
-                    'warranty_duration' => 3,
-                ],
-                [
-                    'itemtype'          => Computer::class,
-                    'items_id'          => $computer_2_id,
-                    'warranty_date'     => '2025-01-17',
-                    'warranty_duration' => 12,
-                ],
-            ]
-        );
-        $contract_1 = $this->createItem(
-            Contract::class,
-            [
-                'name'          => 'Contract 1',
-                'entities_id'   => 0,
-            ],
-        );
-        $contract_2 = $this->createItem(
-            Contract::class,
-            [
-                'name'          => 'Contract 2',
-                'entities_id'   => 0,
-            ],
-        );
-        $contract_3 = $this->createItem(
-            Contract::class,
-            [
-                'name'          => 'Contract 3',
-                'entities_id'   => 0,
-            ],
-        );
-        $this->createItems(
-            Contract_Item::class,
-            [
-                [
-                    'itemtype'     => Computer::class,
-                    'items_id'     => $computer_1_id,
-                    'contracts_id' => $contract_1->getID(),
-                ],
-                [
-                    'itemtype'     => Computer::class,
-                    'items_id'     => $computer_1_id,
-                    'contracts_id' => $contract_2->getID(),
-                ],
-                [
-                    'itemtype'     => Computer::class,
-                    'items_id'     => $computer_1_id,
-                    'contracts_id' => 999999999, // orphaned relation, should not be imported
-                ],
-                [
-                    'itemtype'     => Computer::class,
-                    'items_id'     => $computer_2_id,
-                    'contracts_id' => $contract_3->getID(),
-                ],
-            ]
-        );
-
-        $instance = new class ($DB) extends AbstractPluginMigration {
-            protected function validatePrerequisites(): bool
-            {
-                return true;
-            }
-
-            protected function processMigration(): bool
-            {
-                $definition = \getItemByTypeName(AssetDefinition::class, 'MyCustomAsset');
-
-                $my_asset_1 = $this->importItem(
-                    $definition->getAssetClassName(),
-                    [
-                        'name'        => 'Test asset 1',
-                        'entities_id' => 0,
-                    ]
-                );
-                $computer_1_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
-                $this->copyPolymorphicConnexityItems(Computer::class, $computer_1_id, $my_asset_1::class, $my_asset_1->getID());
-
-                $my_asset_2 = $this->importItem(
-                    $definition->getAssetClassName(),
-                    [
-                        'name'        => 'Test asset 2',
-                        'entities_id' => 0,
-                    ]
-                );
-                $computer_2_id = \getItemByTypeName(Computer::class, '_test_pc02', true);
-                $this->copyPolymorphicConnexityItems(Computer::class, $computer_2_id, $my_asset_2::class, $my_asset_2->getID());
-
-                return true;
-            }
-
-            protected function getHasBeenExecutedConfigurationKey(): string
-            {
-                return 'config';
-            }
-
-            protected function getMainPluginTables(): array
-            {
-                return ['table'];
-            }
-        };
-
-        // Act
-        global $PHPLOGGER;
-        $instance->setLogger($PHPLOGGER);
-        $result = $instance->execute();
-
-        // Assert
-        $my_asset_1 = \getItemByTypeName($definition->getAssetClassName(), 'Test asset 1');
-        $my_asset_2 = \getItemByTypeName($definition->getAssetClassName(), 'Test asset 2');
-
-        $expected_messages = [
-            [
-                'type' => MessageType::Debug,
-                'message' => sprintf('MyCustomAsset "Test asset 1" (%d) has been created.', $my_asset_1->getID()),
-            ],
-            [
-                'type' => MessageType::Debug,
-                'message' => sprintf('MyCustomAsset "Test asset 2" (%d) has been created.', $my_asset_2->getID()),
-            ],
-        ];
-        $this->assertEquals($expected_messages, $result->getMessages());
-        $this->assertTrue($result->isFullyProcessed());
-        $this->assertFalse($result->hasErrors());
-
-        $copied_infocom = \array_map(
-            static function (array $entry): array {
-                return [
-                    'itemtype'          => $entry['itemtype'],
-                    'items_id'          => $entry['items_id'],
-                    'warranty_date'     => $entry['warranty_date'],
-                    'warranty_duration' => $entry['warranty_duration'],
-                ];
-            },
-            \getAllDataFromTable(
-                Infocom::getTable(),
-                ['itemtype' => $definition->getAssetClassName()]
-            )
-        );
-
-        $this->assertEquals(
-            [
-                [
-                    'items_id'          => $my_asset_1->getID(),
-                    'itemtype'          => $my_asset_1::class,
-                    'warranty_date'     => '2024-12-04',
-                    'warranty_duration' => 3,
-                ],
-                [
-                    'items_id'          => $my_asset_2->getID(),
-                    'itemtype'          => $my_asset_2::class,
-                    'warranty_date'     => '2025-01-17',
-                    'warranty_duration' => 12,
-                ],
-            ],
-            \array_values($copied_infocom)
-        );
-
-        $copied_contract_relations = \array_map(
-            static function (array $entry): array {
-                unset($entry['id']);
-                return $entry;
-            },
-            \getAllDataFromTable(
-                Contract_Item::getTable(),
-                ['itemtype' => $definition->getAssetClassName()]
-            )
-        );
-
-        $this->assertEquals(
-            [
-                [
-                    'itemtype'     => $my_asset_1::class,
-                    'items_id'     => $my_asset_1->getID(),
-                    'contracts_id' => $contract_1->getID(),
-                ],
-                [
-                    'itemtype'     => $my_asset_1::class,
-                    'items_id'     => $my_asset_1->getID(),
-                    'contracts_id' => $contract_2->getID(),
-                ],
-                [
-                    'itemtype'     => $my_asset_2::class,
-                    'items_id'     => $my_asset_2->getID(),
-                    'contracts_id' => $contract_3->getID(),
-                ],
-            ],
-            \array_values($copied_contract_relations)
         );
     }
 
@@ -1249,8 +1044,13 @@ class AbstractPluginMigrationTest extends DbTestCase
             \getAllDataFromTable(Contract_Item::getTable())
         );
 
-        $this->assertEqualsCanonicalizing(
+        $this->assertEquals(
             [
+                [
+                    'itemtype'     => Computer::class,
+                    'items_id'     => $computer_3_id,
+                    'contracts_id' => $contract_1->getID(),
+                ],
                 [
                     'itemtype'     => $my_asset_1::class,
                     'items_id'     => $my_asset_1->getID(),
@@ -1266,16 +1066,12 @@ class AbstractPluginMigrationTest extends DbTestCase
                     'items_id'     => $my_asset_2->getID(),
                     'contracts_id' => $contract_3->getID(),
                 ],
-                [
-                    'itemtype'     => Computer::class,
-                    'items_id'     => $computer_3_id,
-                    'contracts_id' => $contract_1->getID(),
-                ],
             ],
             \array_values($contract_relations)
         );
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testMapItem(): void
     {
         // Arrange
@@ -1308,6 +1104,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         );
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testCountRecords(): void
     {
         // Arrange

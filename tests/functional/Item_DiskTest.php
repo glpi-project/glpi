@@ -34,11 +34,14 @@
 
 namespace tests\units;
 
+use Computer;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasVolumesCapacity;
 use Glpi\Features\Clonable;
 use Glpi\Tests\DbTestCase;
 use Item_Disk;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\DomCrawler\Crawler;
 use Toolbox;
 
 class Item_DiskTest extends DbTestCase
@@ -157,5 +160,59 @@ class Item_DiskTest extends DbTestCase
         );
         $this->assertTrue($obj->getFromDB($id)); //it's always in DB but with is_deleted = 1
         $this->assertSame(1, $obj->fields['is_deleted']);
+    }
+
+    public static function encryptionStatusProvider(): iterable
+    {
+        yield 'not encrypted' => [
+            'status'           => Item_Disk::ENCRYPTION_STATUS_NO,
+            'expected_partial' => null,
+        ];
+        yield 'partially encrypted' => [
+            'status'           => Item_Disk::ENCRYPTION_STATUS_PARTIALLY,
+            'expected_partial' => 'Yes',
+        ];
+        yield 'fully encrypted' => [
+            'status'           => Item_Disk::ENCRYPTION_STATUS_YES,
+            'expected_partial' => 'No',
+        ];
+    }
+
+    #[DataProvider('encryptionStatusProvider')]
+    public function testShowForItemEncryptionLabel(int $status, ?string $expected_partial): void
+    {
+        $this->login();
+
+        $computer = $this->createItem(Computer::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->createItem(Item_Disk::class, [
+            'itemtype'             => Computer::class,
+            'items_id'             => $computer->getID(),
+            'mountpoint'           => '/',
+            'encryption_status'    => $status,
+            'encryption_tool'      => 'LUKS',
+            'encryption_algorithm' => 'aes-xts-plain64',
+            'encryption_type'      => 'Full disk',
+        ]);
+
+        ob_start();
+        Item_Disk::showForItem($computer);
+        $out = ob_get_clean();
+
+        $tooltips = (new Crawler($out))->filter('.tooltip-invisible');
+
+        if ($expected_partial === null) {
+            $this->assertCount(0, $tooltips);
+            return;
+        }
+
+        $this->assertCount(1, $tooltips);
+        $tooltip_text = preg_replace('/\s+/', ' ', $tooltips->text());
+        $this->assertStringContainsString('Partial encryption : ' . $expected_partial, $tooltip_text);
+        $this->assertStringContainsString('Encryption tool : LUKS', $tooltip_text);
+        $this->assertStringContainsString('Encryption algorithm : aes-xts-plain64', $tooltip_text);
+        $this->assertStringContainsString('Encryption type : Full disk', $tooltip_text);
     }
 }

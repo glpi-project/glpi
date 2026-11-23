@@ -40,7 +40,6 @@
             {% set field_options = {
                 field_class: 'col-4',
             } %}
-            {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
             {% if source_itemtype is not defined or source_itemtype == 'User' %}
                 {{ inputs.hidden('users_id', item.fields['users_id']) }}
                 {{ fields.dropdownField('Group', 'groups_id', item.fields['groups_id']|default(0), 'Group'|itemtype_name, {

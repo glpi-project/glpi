@@ -152,7 +152,7 @@ foreach (['glpi_changesatisfactions', 'glpi_ticketsatisfactions'] as $table) {
         $migration->addPostQuery(
             $DB->buildUpdate($table, [
                 'satisfaction_scaled_to_5' => new QueryExpression($DB->quoteName('satisfaction')),
-            ], [1])
+            ], [new QueryExpression('true')])
         );
     }
 }

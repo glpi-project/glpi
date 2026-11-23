@@ -1,0 +1,78 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace Glpi\Knowbase\Aside;
+
+final class Article
+{
+    /** @var Article[] */
+    private array $children = [];
+
+    /**
+     * @param bool $has_children    Whether the article has children to show,
+     *                              whether or not they are loaded.
+     * @param bool $children_loaded Whether `getChildren()` holds them. A folded
+     *                              article renders without its children, which
+     *                              the aside fetches when the reader unfolds it.
+     * @param bool $is_root         Whether this is the root article, which the
+     *                              aside renders as the label of its children.
+     */
+    public function __construct(
+        public readonly int $id,
+        public readonly string $title,
+        public readonly string $illustration,
+        public readonly string $link,
+        public readonly bool $is_current = false,
+        public readonly bool $collapsed = false,
+        public readonly bool $has_children = false,
+        public readonly bool $children_loaded = true,
+        public readonly bool $is_root = false,
+    ) {}
+
+    public function addChild(self $child): void
+    {
+        $this->children[] = $child;
+    }
+
+    /** @return Article[] */
+    public function getChildren(): array
+    {
+        return $this->children;
+    }
+
+    public function hasChildren(): bool
+    {
+        return $this->has_children || $this->children !== [];
+    }
+}

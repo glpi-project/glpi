@@ -36,12 +36,33 @@ import { GlpiPage } from "./GlpiPage";
 export class TicketPage extends GlpiPage
 {
     public notes_area: Locator;
+    public readonly followup_pending_switch: Locator;
+    public readonly followup_pending_reasons: Locator;
 
     public constructor(page: Page)
     {
         super(page);
 
         this.notes_area = this.getRegion('Notes');
+
+        const followup_block = page.getByTestId('new-ITILFollowup-block');
+        this.followup_pending_switch = followup_block.getByTestId('pending-checkbox');
+        this.followup_pending_reasons = followup_block.getByTestId('pending-reasons');
+    }
+
+    public async doOpenFollowupForm(): Promise<void>
+    {
+        await this.getButton('Answer').click();
+    }
+
+    public async doClickFollowupPendingSwitch(): Promise<void>
+    {
+        await this.followup_pending_switch.click();
+    }
+
+    public async doDoubleClickFollowupPendingSwitch(): Promise<void>
+    {
+        await this.followup_pending_switch.dblclick();
     }
 
     public async gotoCreationPage(): Promise<void>
@@ -57,6 +78,15 @@ export class TicketPage extends GlpiPage
         }
         url += `&forcetab=${tab}`;
         await this.page.goto(url);
+    }
+
+    /**
+     * Get the answer of a form question, as displayed in the description of a
+     * ticket created from a form.
+     */
+    public getFormAnswer(answer: string): Locator
+    {
+        return this.page.getByText(`: ${answer}`).first();
     }
 
     public async doSetEntityDropdown(value: string): Promise<void>

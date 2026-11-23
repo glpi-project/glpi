@@ -39,12 +39,14 @@ enum ITILFollowupFieldStrategy: string
 {
     case NO_FOLLOWUP       = 'no_followup';
     case SPECIFIC_VALUES   = 'specific_values';
+    case SPECIFIC_CONTENT  = 'specific_content';
 
     public function getLabel(): string
     {
         return match ($this) {
             self::NO_FOLLOWUP       => __("No Followup"),
             self::SPECIFIC_VALUES   => __("Specific Followup templates"),
+            self::SPECIFIC_CONTENT  => __("Specific Followup content"),
         };
     }
 
@@ -54,6 +56,17 @@ enum ITILFollowupFieldStrategy: string
         return match ($this) {
             self::NO_FOLLOWUP      => null,
             self::SPECIFIC_VALUES  => $config->getSpecificITILFollowupTemplatesIds(),
+            self::SPECIFIC_CONTENT => null,
+        };
+    }
+
+    public function getITILFollowupContent(
+        ITILFollowupFieldConfig $config
+    ): ?string {
+        return match ($this) {
+            self::NO_FOLLOWUP      => null,
+            self::SPECIFIC_VALUES  => null,
+            self::SPECIFIC_CONTENT => $config->getSpecificContent(),
         };
     }
 }

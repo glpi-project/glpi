@@ -40,83 +40,38 @@ use Glpi\Tests\DbTestCase;
 
 class ReminderTest extends DbTestCase
 {
-    public function testAddVisibilityRestrict()
+    public function testChildGroupInheritsParentGroupVisibilityInListCriteria(): void
     {
-        $e2e_root        = getItemByTypeName('Entity', 'E2ETestEntity', true);
-        $e2e_test_child1 = getItemByTypeName('Entity', 'E2ETestSubEntity1', true);
-        $e2e_test_child2 = getItemByTypeName('Entity', 'E2ETestSubEntity2', true);
-        $test_root       = getItemByTypeName('Entity', '_test_root_entity', true);
-        $test_child_1    = getItemByTypeName('Entity', '_test_child_1', true);
-        $test_child_2    = getItemByTypeName('Entity', '_test_child_2', true);
-        $test_child_3    = getItemByTypeName('Entity', '_test_child_3', true);
+        global $DB;
 
-        $all_entities = "'0', '$test_root', '$e2e_root', '$e2e_test_child1', '$e2e_test_child2', '$test_child_1', '$test_child_2', '$test_child_3'";
-
-        //first, as a super-admin
         $this->login();
-        $users_id = \Session::getLoginUserID();
-        $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '$users_id'
-               OR `glpi_reminders_users`.`users_id` = '$users_id'
-               OR (`glpi_profiles_reminders`.`profiles_id` = '4'
-                    AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
-                         OR ((`glpi_profiles_reminders`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2', '$test_child_3')
-                                   OR (`glpi_profiles_reminders`.`is_recursive` = '1'
-                                        AND `glpi_profiles_reminders`.`entities_id` IN ('0'))))))
-               OR ((`glpi_entities_reminders`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2', '$test_child_3')
-                         OR (`glpi_entities_reminders`.`is_recursive` = '1'
-                              AND `glpi_entities_reminders`.`entities_id` IN ('0')))))");
-        $this->assertSame(
-            $expected,
-            \Reminder::addVisibilityRestrict()
-        );
+        $parent_group = $this->createItem("Group", ['name' => 'Reminder parent group']);
+        $child_group = $this->createItem("Group", [
+            'name' => 'Reminder child group',
+            'groups_id' => $parent_group->getID(),
+        ]);
 
-        $this->login('normal', 'normal');
-        // 'normal' user has access to all entities in the test DB, so glpishowallentities=1
-        // and getEntitiesRestrictCriteria returns 'true' (no restriction needed) for the
-        // profiles block. glpi_entities_reminders uses $complete_request=true so it still
-        // returns the explicit IN list.
-        $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '5'
-               OR `glpi_reminders_users`.`users_id` = '5'
-               OR (`glpi_profiles_reminders`.`profiles_id` = '2'
-                    AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
-                         OR (true)))
-               OR (`glpi_entities_reminders`.`entities_id` IN ($all_entities)))");
-        $this->assertSame(
-            $expected,
-            trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict()))
-        );
+        $tech_user = getItemByTypeName("User", "tech", true);
+        $this->createItem("Group_User", ['users_id' => $tech_user, 'groups_id' => $child_group->getID()]);
 
-        // Both 'tech' and 'normal' users have access to all entities in the test DB,
-        // so glpishowallentities=1 and the profiles/groups entity blocks get 'true'.
+        $reminder = $this->createItem("Reminder", [
+            'name'     => 'Reminder visible to parent group',
+            'text'     => 'Reminder visible to parent group',
+            'users_id' => \Session::getLoginUserID(),
+        ]);
+        $this->createItem("Group_Reminder", [
+            'reminders_id'          => $reminder->getID(),
+            'groups_id'             => $parent_group->getID(),
+            'no_entity_restriction' => 1,
+        ]);
+
         $this->login('tech', 'tech');
-        $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '4'
-               OR `glpi_reminders_users`.`users_id` = '4'
-               OR (`glpi_profiles_reminders`.`profiles_id` = '6'
-                    AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
-                         OR (true)))
-               OR (`glpi_entities_reminders`.`entities_id` IN ($all_entities)))");
-        $this->assertSame(
-            $expected,
-            trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict()))
-        );
-
-        $bkp_groups = $_SESSION['glpigroups'];
-        $_SESSION['glpigroups'] = [42, 1337];
-        $str = \Reminder::addVisibilityRestrict();
-        $_SESSION['glpigroups'] = $bkp_groups;
-        $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '4'
-               OR `glpi_reminders_users`.`users_id` = '4'
-               OR (`glpi_groups_reminders`.`groups_id` IN ('42', '1337')
-                    AND (`glpi_groups_reminders`.`no_entity_restriction` = '1'
-                         OR (true)))
-               OR (`glpi_profiles_reminders`.`profiles_id` = '6'
-                    AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
-                         OR (true)))
-               OR (`glpi_entities_reminders`.`entities_id` IN ($all_entities)))");
-        $this->assertSame(
-            $expected,
-            trim(preg_replace('/\s+/', ' ', $str))
-        );
+        $criteria = array_merge(\Reminder::getVisibilityCriteria(), [
+            'SELECT' => 'name',
+            'FROM'   => \Reminder::getTable(),
+        ]);
+        $names = array_column(iterator_to_array($DB->request($criteria)), 'name');
+        $this->assertContains('Reminder visible to parent group', $names);
     }
 
     public function testGetListCriteriaIsValid(): void

@@ -30,7 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-import { CsrfFetcher } from './CsrfFetcher';
 import { APIRequestContext } from 'playwright/test';
 import { WorkerSessionCache } from './WorkerSessionCache';
 import { Profiles } from './Profiles';
@@ -44,15 +43,11 @@ export class ProfileSwitcher
 
     private cache: WorkerSessionCache;
 
-    private crsf: CsrfFetcher;
-
     public constructor(
         request: APIRequestContext,
-        crsf: CsrfFetcher,
         cache: WorkerSessionCache,
     ) {
         this.request = request;
-        this.crsf = crsf;
         this.cache = cache;
     }
 
@@ -86,7 +81,6 @@ export class ProfileSwitcher
                 },
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-Glpi-Csrf-Token': await this.crsf.get(),
                 }
             }
         );

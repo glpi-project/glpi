@@ -40,7 +40,7 @@ use Glpi\Event;
 use Glpi\Http\RedirectResponse;
 use Glpi\Mail\SMTP\OauthConfig;
 
-Session::checkRight("config", UPDATE);
+Session::checkRight(Config::$rightname, UPDATE);
 
 if (isset($_POST["update"])) {
     $config = new Config();

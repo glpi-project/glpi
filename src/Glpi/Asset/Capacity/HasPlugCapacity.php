@@ -36,7 +36,6 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use Glpi\Asset\CapacityConfig;
-use Item_Plug;
 use Override;
 use Plug;
 use Session;
@@ -62,22 +61,43 @@ class HasPlugCapacity extends AbstractCapacity
     public function getCloneRelations(): array
     {
         return [
-            Item_Plug::class,
+            Plug::class,
         ];
     }
 
     public function isUsed(string $classname): bool
     {
         return parent::isUsed($classname)
-            && $this->countAssetsLinkedToPeerItem($classname, Item_Plug::class) > 0;
+            && $this->countAssetsHostingPlugs($classname, Plug::class) > 0;
+    }
+
+    private function countAssetsHostingPlugs(string $asset_classname, string $relation_classname): int
+    {
+        return countDistinctElementsInTable(
+            $relation_classname::getTable(),
+            'items_id_main',
+            [
+                'itemtype_main' => $asset_classname,
+            ]
+        );
     }
 
     public function getCapacityUsageDescription(string $classname): string
     {
         return sprintf(
-            __('%1$s plugs attached to %2$s assets'),
-            $this->countPeerItemsUsage($classname, Item_Plug::class),
-            $this->countAssetsLinkedToPeerItem($classname, Item_Plug::class)
+            __('%1$s plugs declared on %2$s assets'),
+            $this->countHostedPlugs($classname, Plug::class),
+            $this->countAssetsHostingPlugs($classname, Plug::class)
+        );
+    }
+
+    private function countHostedPlugs(string $asset_classname, string $relation_classname): int
+    {
+        return countElementsInTable(
+            $relation_classname::getTable(),
+            [
+                'itemtype_main'      => $asset_classname,
+            ]
         );
     }
 
@@ -85,7 +105,7 @@ class HasPlugCapacity extends AbstractCapacity
     {
         $this->registerToTypeConfig('plug_types', $classname);
 
-        CommonGLPI::registerStandardTab($classname, Item_Plug::class, 55);
+        CommonGLPI::registerStandardTab($classname, Plug::class, 55);
     }
 
     public function onCapacityDisabled(string $classname, CapacityConfig $config): void
@@ -93,11 +113,11 @@ class HasPlugCapacity extends AbstractCapacity
         // Unregister from types
         $this->unregisterFromTypeConfig('plug_types', $classname);
 
-        //Delete related items
-        $item_plug = new Item_Plug();
-        $item_plug->deleteByCriteria(['itemtype' => $classname], force: true, history: false);
+        // Delete plugs hosted by the current type
+        $plug = new Plug();
+        $plug->deleteByCriteria(['itemtype_main' => $classname], force: true, history: false);
 
-        // Clean history related items
-        $this->deleteRelationLogs($classname, Item_Plug::class);
+        // Clean history related to plugs
+        $this->deleteRelationLogs($classname, Plug::class);
     }
 }

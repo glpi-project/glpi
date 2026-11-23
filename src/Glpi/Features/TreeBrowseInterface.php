@@ -48,7 +48,7 @@ interface TreeBrowseInterface
     public static function showBrowseView(string $itemtype, array $params, $update = false);
 
     /**
-     * Get list of document categories in fancytree format.
+     * Get list of document categories in Wunderbaum (fancytree) format.
      *
      * @param class-string<CommonDBTM> $itemtype
      * @param array $params

@@ -92,8 +92,9 @@
             class="btn btn-icon btn-ghost-secondary open-timeline-filter-popover me-2"
             data-bs-toggle="collapse"
             data-bs-target="#filter-timeline-popover"
-            data-bs-trigger="click">
-         <i class="ti ti-filter"></i>
+            data-bs-trigger="click"
+            aria-label="{{ __('Timeline filter') }}">
+         <i class="ti ti-filter" aria-hidden="true"></i>
       </button>
    </div>
 
@@ -109,7 +110,7 @@
                            {{ filter_button['checked'] ? 'checked' : '' }}
                            data-itemtype="{{ filter_button['itemtype'] }}" />
                      <label class="form-check-label" for="timeline-filter-{{ filter_key }}" role="button">
-                        <i class="{{ filter_button['icon'] }} ms-2"></i>
+                        <i class="{{ filter_button['icon'] }} ms-2" aria-hidden="true"></i>
                         {{ filter_button['title'] }}
                      </label>
                   </div>
@@ -125,7 +126,7 @@
                class="btn btn-icon btn-ghost-secondary view-timeline-todo-list me-1"
                aria-label="{{ __('View TODO list') }}"
                data-testid="view-todo-list">
-            <i class="ti ti-list-check"></i>
+            <i class="ti ti-list-check" aria-hidden="true"></i>
          </button>
       </div>
    {% endif %}

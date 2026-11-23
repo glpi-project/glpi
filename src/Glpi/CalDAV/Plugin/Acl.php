@@ -63,6 +63,9 @@ class Acl extends Plugin
 
     public $allowUnauthenticatedAccess = false;
 
+    // Do not disclose the URI (i.e. the UID) of nodes the user cannot read
+    public $hideNodesFromListings = true;
+
     public function getAcl($node)
     {
         if (is_string($node)) {

@@ -96,9 +96,11 @@ class SQLProviderTest extends DbTestCase
             ],
         ];
 
-        $sql = SQLProvider::constructCriteriaSQL($criteria, ['itemtype' => 'Ticket'], []);
+        $data = ['itemtype' => 'Ticket'];
 
-        $this->assertSame('', $sql);
+        $where = SQLProvider::constructCriteriaSQL($criteria, $data, []);
+
+        $this->assertSame('', $where->getQuery());
     }
 
     /**

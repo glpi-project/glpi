@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Converter;
 use Glpi\Tests\AbstractInventoryAsset;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use SoftwareVersion;
 
@@ -957,6 +958,108 @@ class SoftwareTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
     }
 
+    public function testDuplicatedSoftPrefersActiveOverDeleted()
+    {
+        $this->login();
+
+        $soft    = new \Software();
+        $version = new SoftwareVersion();
+
+        // First inventory: let GLPI create the software (and its manufacturer)
+        // exactly as production does, so it is guaranteed to be matched again by
+        // the inventory lookup later. This is the legitimate "active" entry and,
+        // being created first, it gets the lower id.
+        $xml_first = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SOFTWARES>
+      <NAME>Duplicate Test Software</NAME>
+      <PUBLISHER>Duplicate Test Corp</PUBLISHER>
+      <VERSION>1.0.0</VERSION>
+    </SOFTWARES>
+    <HARDWARE>
+      <NAME>pc-dup-active</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>dupactive01</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc-dup-active</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_first, true);
+
+        $softs = $soft->find(['name' => 'Duplicate Test Software']);
+        $this->assertCount(1, $softs, 'the first inventory must create exactly one software');
+        $active = array_pop($softs);
+        $active_softwares_id = (int) $active['id'];
+
+        // Duplicate created SECOND (higher id) with the very same identifying
+        // fields, then trashed (soft-deleted, not purged). Copying the fields
+        // from the inventory-created row guarantees it is a true competing match
+        // for the inventory lookup.
+        $deleted_softwares_id = $soft->add([
+            'name'             => $active['name'],
+            'manufacturers_id' => $active['manufacturers_id'],
+            'entities_id'      => $active['entities_id'],
+            'is_recursive'     => $active['is_recursive'],
+        ]);
+        $this->assertGreaterThan($active_softwares_id, $deleted_softwares_id);
+        $this->assertTrue((bool) $soft->delete(['id' => $deleted_softwares_id]));
+        $this->assertTrue($soft->getFromDB($deleted_softwares_id));
+        $this->assertEquals(1, $soft->fields['is_deleted']);
+
+        // Second inventory brings a NEW version. It must attach to the active
+        // software, not to the trashed duplicate.
+        $xml_second = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SOFTWARES>
+      <NAME>Duplicate Test Software</NAME>
+      <PUBLISHER>Duplicate Test Corp</PUBLISHER>
+      <VERSION>2.0.0</VERSION>
+    </SOFTWARES>
+    <HARDWARE>
+      <NAME>pc-dup-active</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>dupactive01</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc-dup-active</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_second, true);
+
+        $on_active = $version->find([
+            'name'         => '2.0.0',
+            'softwares_id' => $active_softwares_id,
+        ]);
+        $this->assertCount(
+            1,
+            $on_active,
+            'the new version/installation must attach to the active software, not the deleted duplicate'
+        );
+
+        // The installation row (Item_SoftwareVersion) is what drives the asset
+        // sheet, so verify it too points at the active software's version, not
+        // only that the version record exists.
+        $installs = (new \Item_SoftwareVersion())->find([
+            'softwareversions_id' => (int) current($on_active)['id'],
+        ]);
+        $this->assertCount(1, $installs, 'the installation must be linked to the active software version');
+
+        $on_deleted = $version->find([
+            'name'         => '2.0.0',
+            'softwares_id' => $deleted_softwares_id,
+        ]);
+        $this->assertCount(0, $on_deleted, 'the trashed duplicate must not receive the new version/installation');
+    }
+
     public function testSameSoft()
     {
         global $DB;
@@ -1808,6 +1911,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $this->assertCount(1, $softs);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testSoftLockedOSChange()
     {
         $json = <<<JSON
@@ -2045,4 +2149,71 @@ JSON;
         // Step 6: Full inventory with software and without OS should never happen
     }
 
+    public function testUnknownSoftwarePropertiesAreIgnored(): void
+    {
+        $this->login();
+
+        // Inventory format allows extra properties on softwares;
+        // they must not be written, even if they match a table column.
+        $json_source = \Safe\json_decode(\Safe\json_encode([
+            'action'   => 'inventory',
+            'deviceid' => 'test-unknown-soft-props',
+            'itemtype' => 'Computer',
+            'content'  => [
+                'hardware'  => ['name' => 'pc-unknown-soft-props'],
+                'bios'      => ['ssn' => 'unknown-soft-props-ssn'],
+                'versionclient' => 'GLPI-Agent_v1.11',
+                'softwares' => [
+                    [
+                        'name'          => 'Unknown props software 1',
+                        'version'       => '1.0',
+                        'publisher'     => 'Unknown props publisher',
+                        'id'            => 999999,
+                        'is_deleted'    => 1,
+                        'is_template'   => 1,
+                        'template_name' => 'tpl',
+                        'is_valid'      => 0,
+                        'states_id'     => 42,
+                    ],
+                    [
+                        // different set of extra properties than first software
+                        'name'          => 'Unknown props software 2',
+                        'version'       => '2.0',
+                        'ticket_tco'    => 1234,
+                    ],
+                    [
+                        'name'          => 'Unknown props software 3',
+                        'version'       => '3.0',
+                    ],
+                ],
+            ],
+        ]));
+        $this->doInventory($json_source);
+
+        $softwares = getAllDataFromTable(
+            \Software::getTable(),
+            ['name' => ['LIKE', 'Unknown props software %']]
+        );
+        $this->assertCount(3, $softwares);
+        foreach ($softwares as $software) {
+            $this->assertNotEquals(999999, $software['id']);
+            $this->assertSame(0, $software['is_deleted']);
+            $this->assertSame(0, $software['is_template']);
+            $this->assertNull($software['template_name']);
+            $this->assertSame(1, $software['is_valid']);
+            $this->assertEquals(0, $software['ticket_tco']);
+
+            $versions = getAllDataFromTable(
+                SoftwareVersion::getTable(),
+                ['softwares_id' => $software['id']]
+            );
+            $this->assertCount(1, $versions);
+            $version = array_pop($versions);
+            $this->assertSame(0, $version['states_id']);
+            $this->assertSame(
+                str_replace('Unknown props software ', '', $software['name']) . '.0',
+                $version['name']
+            );
+        }
+    }
 }

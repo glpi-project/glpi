@@ -50,6 +50,8 @@ const StencilEditor = function (container, rand, zones_definition) {
     const zones = zones_definition;
 
     const croppers = [];
+    const ready_croppers = new WeakSet();
+    let pending_selection_restore = null;
 
     const _this = this;
 
@@ -61,16 +63,20 @@ const StencilEditor = function (container, rand, zones_definition) {
             croppers.push(cropper);
             img.cropper = cropper;
 
-            const setAspectRatio = () => {
-                if (img.naturalWidth > 0) {
-                    $(img).closest('.cropper-container').css('aspect-ratio', `${img.naturalWidth} / ${img.naturalHeight}`);
+            // a zone is stored on a single side, so only one cropper may hold a selection
+            cropper.getCropperSelection().addEventListener('change', (e) => {
+                if (e.detail.width <= 0 || e.detail.height <= 0) {
+                    // ignore empty selections, else clearing a cropper would clear the others back
+                    return;
                 }
-            };
-            if (img.complete) {
-                setAspectRatio();
-            } else {
-                img.addEventListener('load', setAspectRatio);
-            }
+
+                pending_selection_restore = null;
+                croppers.forEach((other_cropper) => {
+                    if (other_cropper !== cropper) {
+                        other_cropper.getCropperSelection().$clear();
+                    }
+                });
+            });
         });
 
         // set default state of croppers objects
@@ -83,13 +89,21 @@ const StencilEditor = function (container, rand, zones_definition) {
                 cropper.container.querySelector('cropper-shade').hidden = true;
 
                 const cr_image = cropper.getCropperImage();
-                cr_image.$ready(() => {
+                cr_image.$ready((image) => {
                     const cr_canvas = cropper.getCropperCanvas();
+                    $(cropper.container).css('aspect-ratio', `${image.naturalWidth} / ${image.naturalHeight}`);
                     $(cr_canvas).css({
                         'width': '100%',
                         'height': '100%'
                     });
                     cr_image.$center('contain');
+                    ready_croppers.add(cropper);
+
+                    if (pending_selection_restore?.cropper === cropper) {
+                        const restore = pending_selection_restore.restore;
+                        pending_selection_restore = null;
+                        restore();
+                    }
 
                     new MutationObserver(() => _this.updateZonesPosition())
                         .observe(cr_image, { attributes: true, attributeFilter: ['style'] });
@@ -100,7 +114,11 @@ const StencilEditor = function (container, rand, zones_definition) {
 
         window.addEventListener('resize', () => {
             if (!_this.isEditorActive()) {
-                croppers.forEach((cropper) => cropper.getCropperImage().$center('contain'));
+                croppers.forEach((cropper) => {
+                    if (ready_croppers.has(cropper)) {
+                        cropper.getCropperImage().$center('contain');
+                    }
+                });
             }
             _this.updateZonesPosition();
         });
@@ -198,6 +216,7 @@ const StencilEditor = function (container, rand, zones_definition) {
     // open zone definition control (and enable croppers)
     _this.editorEnable = function (current_zone) {
         const zone = zones[current_zone] ?? { 'side': 0 };
+        pending_selection_restore = null;
 
         // Hide tooltips to avoid bug : tooltip doesn't disappear when dom is altered
         $(container).find('a.defined-zone[data-bs-toggle="tooltip"]').tooltip('hide');
@@ -219,26 +238,31 @@ const StencilEditor = function (container, rand, zones_definition) {
 
             // load existing data
             if (Object.keys(zone).length > 1 && side == zone['side']) {
-                // set image in the state it was saved
-                const cr_image = cropper.getCropperImage();
-                cr_image.$setTransform(zone['image']);
+                const restore = () => {
+                    const cr_image = cropper.getCropperImage();
 
-                // restore the selection using saved percentages to adapt to current canvas size
-                const cr_canvas = cropper.getCropperCanvas();
-                const can_rect = cr_canvas.getBoundingClientRect();
-                const img_rect = cr_image.getBoundingClientRect();
+                    // restore the selection using saved percentages to adapt to current canvas size
+                    const cr_canvas = cropper.getCropperCanvas();
+                    const can_rect = cr_canvas.getBoundingClientRect();
+                    const img_rect = cr_image.getBoundingClientRect();
 
-                const img_x = img_rect.left - can_rect.left;
-                const img_y = img_rect.top - can_rect.top;
-                const img_w = img_rect.width;
-                const img_h = img_rect.height;
+                    const img_x = img_rect.left - can_rect.left;
+                    const img_y = img_rect.top - can_rect.top;
+                    const img_w = img_rect.width;
+                    const img_h = img_rect.height;
 
-                const sel_x = img_x + (zone['x_percent'] * img_w / 100);
-                const sel_y = img_y + (zone['y_percent'] * img_h / 100);
-                const sel_w = zone['width_percent'] * img_w / 100;
-                const sel_h = zone['height_percent'] * img_h / 100;
+                    const sel_x = img_x + (zone['x_percent'] * img_w / 100);
+                    const sel_y = img_y + (zone['y_percent'] * img_h / 100);
+                    const sel_w = zone['width_percent'] * img_w / 100;
+                    const sel_h = zone['height_percent'] * img_h / 100;
 
-                cropper.getCropperSelection().$change(sel_x, sel_y, sel_w, sel_h);
+                    cropper.getCropperSelection().$change(sel_x, sel_y, sel_w, sel_h);
+                };
+                if (ready_croppers.has(cropper)) {
+                    restore();
+                } else {
+                    pending_selection_restore = { cropper, restore };
+                }
             }
         });
     };
@@ -251,6 +275,10 @@ const StencilEditor = function (container, rand, zones_definition) {
                 && cropper.getCropperSelection().height > 0
                 && cropper.getCropperSelection().width > 0;
         })[0];
+
+        if (cropper === undefined) {
+            return;
+        }
 
         // get the different dom object
         const cr_canvas = cropper.getCropperCanvas();
@@ -336,14 +364,17 @@ const StencilEditor = function (container, rand, zones_definition) {
 
     // reset definition and close controls
     _this.editorDisable = function () {
+        pending_selection_restore = null;
+
         croppers.forEach((cropper) => {
             cropper.getCropperSelection()
                 .$reset()
                 .hidden = true;
             cropper.getCropperCanvas()
                 .disabled = true;
-            cropper.getCropperImage()
-                .$center('contain');
+            if (ready_croppers.has(cropper)) {
+                cropper.getCropperImage().$center('contain');
+            }
 
             cropper.container.querySelector('cropper-shade').hidden = true;
         });
@@ -398,6 +429,8 @@ const StencilEditor = function (container, rand, zones_definition) {
 
     _this.updateZonesPosition = function () {
         croppers.forEach((cropper) => {
+            if (!ready_croppers.has(cropper)) return;
+
             const cr_image = cropper.getCropperImage();
             const cr_canvas = cropper.getCropperCanvas();
             if (!cr_image || !cr_canvas) return;
@@ -472,9 +505,23 @@ const StencilEditor = function (container, rand, zones_definition) {
             success: function () {
                 // Hide tooltip to avoid bug : tooltip doesn't disappear when dom is altered
                 $(`form#stencil-editor-form-${rand} button[name="remove-zone"][data-bs-toggle="tooltip"]`).tooltip('hide');
-                $(`form#stencil-editor-form-${rand} button.set-zone-data`).sort((a, b) => {
+                const lastBtn = $(`form#stencil-editor-form-${rand} button.set-zone-data`).sort((a, b) => {
                     return $(a).data('zone-index') - $(b).data('zone-index');
-                }).last().remove();
+                }).last();
+                
+                const removedZoneIndex = lastBtn.data('zone-index');
+                lastBtn.remove();
+                
+                if (zones[removedZoneIndex] !== undefined) {
+                    delete zones[removedZoneIndex];
+                }
+                
+                const currentZoneIndex = $(container).find(`#zone_number-${rand}`).data('zone-index');
+                if (_this.isEditorActive() && currentZoneIndex == removedZoneIndex) {
+                    _this.editorDisable();
+                } else {
+                    _this.redoZones();
+                }
             },
         });
     };
@@ -514,3 +561,8 @@ const StencilEditor = function (container, rand, zones_definition) {
         });
     };
 };
+
+/* eslint-disable no-undef */
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = StencilEditor;
+}

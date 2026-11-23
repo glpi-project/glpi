@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Override;
@@ -67,6 +68,7 @@ class RequestTypeConditionHandler implements ConditionHandlerInterface
         mixed $a,
         ValueOperator $operator,
         mixed $b,
+        ?JsonFieldInterface $config,
     ): bool {
         // Normalize values.
         $a = (int) $a;

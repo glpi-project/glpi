@@ -50,7 +50,6 @@ use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
-use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -75,7 +74,7 @@ use WebhookCategory;
 #[Route(path: '/Setup', tags: ['Setup'])]
 final class SetupController extends AbstractController
 {
-    public static function getRawKnownSchemas(): array
+    public static function getRawKnownSchemas(string $api_version): array
     {
         global $DB;
 
@@ -265,7 +264,7 @@ EOT,
                 'x-version-introduced' => '2.1.0',
                 'x-itemtype' => OLA::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
-                'properties' => $base_la_properties,
+                'properties' => ['group' => ['x-version-introduced' => '2.4.0'] + self::getDropdownTypeSchema(class: \Group::class, full_schema: 'Group')] + $base_la_properties,
             ],
             'SLALevel' => [
                 'x-version-introduced' => '2.1.0',
@@ -922,7 +921,7 @@ EOT,
 EOT,
                         'readOnly' => true,
                     ],
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User') + ['readOnly' => true],
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User') + ['readOnly' => true],
                 ],
             ],
             'OAuthClient' => [
@@ -1283,9 +1282,7 @@ EOT,
     #[Doc\SearchRoute(schema_name: 'Config')]
     public function searchConfigValuesByContext(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';context==' . $request->getAttribute('context');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'context==' . $request->getAttribute('context'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('Config', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -1361,9 +1358,7 @@ EOT,
     public function searchAutomaticActionLogs(Request $request): Response
     {
         $automatic_action_id = $request->getAttribute('id');
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';automatic_action.id==' . $automatic_action_id;
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'automatic_action.id==' . $automatic_action_id);
         return ResourceAccessor::searchBySchema($this->getKnownSchema('AutomaticActionLog', $this->getAPIVersion($request)), $request->getParameters());
     }
 

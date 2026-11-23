@@ -261,11 +261,11 @@ final class ObserverFieldTest extends AbstractActorFieldTest
             "Observer email 2" => 'test2@test.test',
             "User question 1" => [
                 'itemtype' => User::class,
-                'items_id' => $user1->getID(),
+                'items_ids' => [$user1->getID()],
             ],
             "User question 2" => [
                 'itemtype' => User::class,
-                'items_id' => $user2->getID(),
+                'items_ids' => [$user2->getID()],
             ],
         ];
 
@@ -463,6 +463,33 @@ final class ObserverFieldTest extends AbstractActorFieldTest
             expected_actors: [['items_id' => 0, 'alternative_email' => 'test2@test.test']]
         );
 
+        // First actor question is filled, but the last one is left empty. The
+        // empty answer must be ignored so the last *valid* answer (the first
+        // question) is used.
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $last_valid_answer_config,
+            answers: [
+                "Observer 1" => [
+                    User::getForeignKeyField() . '-' . $user1->getID(),
+                ],
+                "Observer 2" => [], // empty answer
+            ],
+            expected_actors: [['items_id' => $user1->getID()]]
+        );
+
+        // Same scenario with email questions: the last email answer is empty,
+        // so the previous valid email answer must be used.
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $last_valid_answer_config,
+            answers: [
+                "Observer email 1" => 'test1@test.test',
+                "Observer email 2" => '', // empty answer
+            ],
+            expected_actors: [['items_id' => 0, 'alternative_email' => 'test1@test.test']]
+        );
+
         // No answers, fallback to default value
         $this->sendFormAndAssertTicketActors(
             form: $form,
@@ -482,6 +509,39 @@ final class ObserverFieldTest extends AbstractActorFieldTest
             config: $last_valid_answer_config,
             answers: [],
             expected_actors: [['items_id' => $user1->getID()]]
+        );
+    }
+
+    public function testTemplateActorDoesNotShiftNotificationSettings(): void
+    {
+        // Login is required to assign actors
+        $this->login();
+
+        $form = $this->createAndGetFormWithMultipleActorsQuestions();
+        $user = $this->createItem(User::class, ['name' => 'testTemplateActorDoesNotShiftNotificationSettings User']);
+
+        // Set the user as default observer using predefined fields
+        $this->createItem(TicketTemplatePredefinedField::class, [
+            'tickettemplates_id' => getItemByTypeName(TicketTemplate::class, "Default", true),
+            'num' => 66, // User observer
+            'value' => $user->getID(),
+        ]);
+
+        // The email actor is added after the template one: its notification
+        // settings must not be given to the template actor.
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new ObserverFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [$this->getQuestionId($form, "Observer email 1")]
+            ),
+            answers: [
+                "Observer email 1" => 'test1@test.test',
+            ],
+            expected_actors: [
+                ['items_id' => $user->getID(), 'alternative_email' => ''],
+                ['items_id' => 0, 'alternative_email' => 'test1@test.test'],
+            ]
         );
     }
 

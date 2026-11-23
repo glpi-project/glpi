@@ -54,26 +54,6 @@ if (isset($_POST['add'])) {
     $translation->check($_POST['id'], PURGE, $_POST);
     $translation->delete($_POST, true);
     Html::redirect(KnowbaseItem::getFormURLWithID($_POST['knowbaseitems_id']));
-} elseif (isset($_GET["id"]) && isset($_GET['to_rev'])) {
-    $translation->check($_GET["id"], UPDATE, $_POST);
-    if ($translation->revertTo($_GET['to_rev'])) {
-        Session::addMessageAfterRedirect(
-            htmlescape(sprintf(
-                __('Knowledge base item translation has been reverted to revision %s'),
-                $_GET['to_rev']
-            ))
-        );
-    } else {
-        Session::addMessageAfterRedirect(
-            htmlescape(sprintf(
-                __('Knowledge base item translation has not been reverted to revision %s'),
-                $_GET['to_rev']
-            )),
-            false,
-            ERROR
-        );
-    }
-    Html::redirect($translation->getFormURLWithID($_GET['id']));
 } elseif (isset($_GET["id"])) {
     $translation->check($_GET["id"], READ);
 

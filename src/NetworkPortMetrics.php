@@ -41,9 +41,9 @@ use Safe\DateTime;
  */
 class NetworkPortMetrics extends CommonDBChild
 {
-    public static $itemtype = NetworkPort::class;
-    public static $items_id        = 'networkports_id';
-    public $dohistory              = false;
+    public static string $itemtype = NetworkPort::class;
+    public static string $items_id        = 'networkports_id';
+    public bool $dohistory              = false;
 
     public static function getTypeName($nb = 0)
     {
@@ -55,7 +55,7 @@ class NetworkPortMetrics extends CommonDBChild
         $array_ret = [];
 
         if ($item::class === NetworkPort::class) {
-            $cnt = countElementsInTable([static::getTable()], [static::$items_id => $item->getField('id')]);
+            $cnt = countElementsInTable([static::getTable()], [static::$items_id => $item->getID()]);
             $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt, $item::class);
         }
         return $array_ret;

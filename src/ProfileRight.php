@@ -46,9 +46,9 @@ use Glpi\Exception\Database\StatementException;
 class ProfileRight extends CommonDBChild
 {
     // From CommonDBChild:
-    public static $itemtype = Profile::class;
-    public static $items_id = 'profiles_id'; // Field name
-    public $dohistory       = true;
+    public static string $itemtype = Profile::class;
+    public static string $items_id = 'profiles_id'; // Field name
+    public bool $dohistory       = true;
 
     /**
      * {@inheritDoc}
@@ -61,7 +61,7 @@ class ProfileRight extends CommonDBChild
     {
         global $DB;
 
-        if ($DB->isSlave()) {
+        if ($DB->isReplica()) {
             return false;
         }
         $new_item = new static();
@@ -226,12 +226,14 @@ class ProfileRight extends CommonDBChild
         ]);
 
         $expr = 'NOT EXISTS ' . $subq->getQuery();
+        $qexpr = new QueryExpression($expr, values: $subq->getParams());
+
         $iterator = $DB->request([
             'SELECT'          => 'POSSIBLE.name AS NAME',
             'DISTINCT'        => true,
             'FROM'            => 'glpi_profilerights AS POSSIBLE',
             'WHERE'           => [
-                new QueryExpression($expr),
+                $qexpr,
             ],
         ]);
 
@@ -315,6 +317,63 @@ class ProfileRight extends CommonDBChild
         self::fillProfileRights($profiles_id);
     }
 
+
+    public function prepareInputForAdd($input)
+    {
+        if (isset($input['name'], $input['rights'])) {
+            $input['rights'] = self::removeRightsNotHeldByCurrentUser($input['name'], (int) $input['rights'], 0);
+        }
+        return parent::prepareInputForAdd($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        // A right entry can't be renamed or moved to another profile.
+        unset($input['name'], $input['profiles_id']);
+
+        if (isset($input['rights'])) {
+            $input['rights'] = self::removeRightsNotHeldByCurrentUser(
+                $this->fields['name'],
+                (int) $input['rights'],
+                (int) $this->fields['rights']
+            );
+        }
+        return parent::prepareInputForUpdate($input);
+    }
+
+    /**
+     * Prevent privilege escalation: the current user cannot grant a right they do not hold.
+     * Rights already present on the profile are kept, so editing a profile having more rights than
+     * the current user does not drop them.
+     *
+     * @param string $name        Right name
+     * @param int    $new_rights  Requested rights
+     * @param int    $old_rights  Rights currently stored
+     *
+     * @return int Requested rights, without the added rights the current user does not hold
+     */
+    private static function removeRightsNotHeldByCurrentUser(string $name, int $new_rights, int $old_rights): int
+    {
+        if (
+            Session::isRightChecksDisabled()
+            || Session::isCron()
+            || !isset($_SESSION['glpiactiveprofile'])
+            // A `config` UPDATE holder already controls the whole instance.
+            || Session::haveRight(Config::$rightname, UPDATE)
+        ) {
+            return $new_rights;
+        }
+
+        $forbidden = $new_rights & ~$old_rights & ~(int) ($_SESSION['glpiactiveprofile'][$name] ?? 0);
+        if ($forbidden !== 0) {
+            Session::addMessageAfterRedirect(
+                __s('You cannot grant rights that you do not have.'),
+                true,
+                ERROR
+            );
+        }
+        return $new_rights & ~$forbidden;
+    }
 
     /**
      * @param bool $history

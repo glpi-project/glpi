@@ -45,11 +45,11 @@ use function Safe\getimagesize;
 class Notepad extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype        = 'itemtype';
-    public static $items_id        = 'items_id';
-    public $dohistory              = false;
-    public $auto_message_on_action = false; // Link in message can't work'
-    public static $logs_for_parent = true;
+    public static string $itemtype        = 'itemtype';
+    public static string $items_id        = 'items_id';
+    public bool $dohistory              = false;
+    public bool $auto_message_on_action = false; // Link in message can't work'
+    public static bool $logs_for_parent = true;
 
 
     public static function getTypeName($nb = 0)
@@ -76,7 +76,8 @@ class Notepad extends CommonDBChild
             isset($this->fields['itemtype'])
             && ($item = getItemForItemtype($this->fields['itemtype']))
         ) {
-            return Session::haveRight($item::$rightname, UPDATENOTE);
+            return Session::haveRight($item::$rightname, UPDATENOTE)
+                && $item->can($this->fields['items_id'], READ);
         }
         return false;
     }
@@ -89,7 +90,8 @@ class Notepad extends CommonDBChild
             isset($this->fields['itemtype'])
             && ($item = getItemForItemtype($this->fields['itemtype']))
         ) {
-            return Session::haveRight($item::$rightname, UPDATENOTE);
+            return Session::haveRight($item::$rightname, UPDATENOTE)
+                && $item->can($this->fields['items_id'], READ);
         }
         return false;
     }
@@ -122,7 +124,7 @@ class Notepad extends CommonDBChild
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForItem($item);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -148,7 +150,7 @@ class Notepad extends CommonDBChild
 
         return countElementsInTable(
             'glpi_notepads',
-            ['itemtype' => $item->getType(),
+            ['itemtype' => $item::class,
                 'items_id' => $item->getID(),
             ]
         );
@@ -181,7 +183,7 @@ class Notepad extends CommonDBChild
                 ],
             ],
             'WHERE'     => [
-                'itemtype'  => $item->getType(),
+                'itemtype'  => $item::class,
                 'items_id'  => $item->getID(),
             ],
             'ORDERBY'   => 'date_mod DESC',
@@ -200,8 +202,8 @@ class Notepad extends CommonDBChild
                 }
 
                 $item = $document_obj->fields;
-                $item['_can_edit'] = Document::canUpdate() && $document_obj->canUpdateItem();
-                $item['_can_delete'] = Document::canDelete() && $document_obj->canDeleteItem();
+                $item['_can_edit'] = $document_obj->can($document_obj->getID(), UPDATE);
+                $item['_can_delete'] = $document_obj->can($document_obj->getID(), DELETE);
 
                 $docpath = GLPI_DOC_DIR . "/" . $item['filepath'];
                 $is_image = Document::isImage($docpath);
@@ -335,7 +337,7 @@ class Notepad extends CommonDBChild
             TemplateRenderer::getInstance()->display('components/notepad/form.html.twig', [
                 'rand'      => $rand,
                 'url'       => Toolbox::getItemTypeFormURL('Notepad'),
-                'itemtype'  => $item->getType(),
+                'itemtype'  => $item::class,
                 'items_id'  => $item->getID(),
                 'notes'     => $notes,
                 'canedit'   => $canedit,

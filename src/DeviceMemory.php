@@ -34,11 +34,12 @@
  */
 
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 /// Class DeviceMemory
 class DeviceMemory extends CommonDevice
 {
-    protected static $forward_entity_to = ['Item_DeviceMemory', 'Infocom'];
+    protected static array $forward_entity_to = ['Item_DeviceMemory', 'Infocom'];
 
     public static function getTypeName($nb = 0)
     {
@@ -178,7 +179,7 @@ class DeviceMemory extends CommonDevice
             return $father;
         }
 
-        switch ($item->getType()) {
+        switch ($item::class) {
             case 'Computer':
                 Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
                 if ($this->fields["devicememorytypes_id"]) {
@@ -250,9 +251,9 @@ class DeviceMemory extends CommonDevice
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
             'computation'        => '('
-                . QueryFunction::sum('TABLE.size') . '/'
-                . QueryFunction::count('TABLE.id') . ') * '
-                . QueryFunction::count('TABLE.id', true),
+                . QueryFunction::sum(new QueryIdentifier('TABLE.size')) . '/'
+                . QueryFunction::count(new QueryIdentifier('TABLE.id')) . ') * '
+                . QueryFunction::count(new QueryIdentifier('TABLE.id'), true),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 

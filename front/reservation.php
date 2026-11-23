@@ -40,7 +40,13 @@ if (!isset($_GET["reservationitems_id"])) {
 }
 
 if (Session::getCurrentInterface() == "helpdesk") {
-    Html::helpHeader(__('Simplified interface'));
+    Html::helpHeader(
+        sprintf(
+            '%s - %s',
+            Reservation::getTypeName(Session::getPluralNumber()),
+            __('Simplified interface')
+        )
+    );
 } else {
     Html::header(Reservation::getTypeName(Session::getPluralNumber()), '', "tools", "reservationitem");
 }

@@ -61,9 +61,8 @@ class DbTestCase extends GLPITestCase
 {
     /**
      * Indicates whether the custom assets autoloader is registered.
-     * @var bool
      */
-    private $is_asset_autoloader_registered = false;
+    private bool $is_asset_autoloader_registered = false;
 
     public function setUp(): void
     {
@@ -105,8 +104,7 @@ class DbTestCase extends GLPITestCase
         bool $noauto = true,
         bool $expected = true
     ): Auth {
-        Session::destroy();
-        Session::start();
+        $this->logOut();
 
         $auth = new Auth();
         $this->assertEquals($expected, $auth->login($user_name, $user_pass, $noauto));
@@ -130,12 +128,13 @@ class DbTestCase extends GLPITestCase
         string $user_name = TU_USER,
         string $user_pass = "",
     ): Auth {
-        Session::destroy();
-        Session::start();
+        $this->logOut();
 
         $auth = new Auth();
         $auth->user = getItemByTypeName(User::class, $user_name);
         $auth->auth_succeded = true;
+        // Simulate a login with the method configured on the account
+        $auth->setAuthType((int) $auth->user->fields['authtype']);
         Session::init($auth);
 
         return $auth;
@@ -337,6 +336,28 @@ class DbTestCase extends GLPITestCase
     }
 
     /**
+     * Create a Document with a known filename/mime but no uploaded file. Document input no longer
+     * accepts these fields (GLPI sets them from the uploaded file), so they are written directly.
+     *
+     * @param array $input
+     *
+     * @return Document
+     */
+    protected function createDocumentWithFilename(array $input): Document
+    {
+        global $DB;
+
+        $forced   = array_intersect_key($input, ['filename' => true, 'mime' => true]);
+        $document = $this->createItem(Document::class, array_diff_key($input, $forced));
+        if ($forced !== []) {
+            $this->assertTrue($DB->update(Document::getTable(), $forced, ['id' => $document->getID()]));
+            $this->assertTrue($document->getFromDB($document->getID()));
+        }
+
+        return $document;
+    }
+
+    /**
      * Delete an item of the given class
      *
      * @param string $itemtype
@@ -393,6 +414,19 @@ class DbTestCase extends GLPITestCase
             fn($id) => $itemtype::getById($id)->fields['name'],
             $ids,
         );
+    }
+
+    /**
+     * @template T of CommonDBTM
+     * @param T $item
+     * @return T
+     */
+    protected function reloadItem(CommonDBTM $item): CommonDBTM
+    {
+        $new = new ($item::class);
+        $new->getFromDB($item->getID());
+
+        return $new;
     }
 
     /**
@@ -520,7 +554,7 @@ class DbTestCase extends GLPITestCase
         );
 
         $this->assertEqualsCanonicalizing(
-            $capacities,
+            array_values($capacities),
             array_values($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))
         );
         $this->assertEqualsCanonicalizing(
@@ -730,9 +764,10 @@ class DbTestCase extends GLPITestCase
             'profiles_id' => getItemByTypeName(Profile::class, $profile, true),
             'name' => $right,
         ]);
-        $this->updateItem(ProfileRight::class, $profile_right->fields['id'], [
+        // Fixture setup: bypass the "cannot grant rights you do not have" check of the logged-in user.
+        Session::callAsSystem(fn() => $this->updateItem(ProfileRight::class, $profile_right->fields['id'], [
             'rights' => $profile_right->fields['rights'] | $value,
-        ]);
+        ]));
     }
 
     protected function removeRightFromProfile(
@@ -745,9 +780,10 @@ class DbTestCase extends GLPITestCase
             'profiles_id' => getItemByTypeName(Profile::class, $profile, true),
             'name' => $right,
         ]);
-        $this->updateItem(ProfileRight::class, $profile_right->fields['id'], [
+        // Fixture setup: bypass the "cannot grant rights you do not have" check of the logged-in user.
+        Session::callAsSystem(fn() => $this->updateItem(ProfileRight::class, $profile_right->fields['id'], [
             'rights' => $profile_right->fields['rights'] & ~$value,
-        ]);
+        ]));
     }
 
     protected function addDocumentToItem(

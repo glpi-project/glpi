@@ -69,6 +69,6 @@ class ItemtypeFormRouteTest extends GLPITestCase
     {
         $attribute = new ItemtypeFormRoute($itemtype);
 
-        $this->assertEquals($expected_path, $attribute->getPath());
+        $this->assertEquals($expected_path, $attribute->path);
     }
 }

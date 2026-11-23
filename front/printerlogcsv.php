@@ -40,7 +40,7 @@ use Glpi\Csv\PrinterLogCsvExport;
 use Glpi\Csv\PrinterLogCsvExportComparison;
 use Safe\DateTime;
 
-Session::checkRight("printer", READ);
+Session::checkRight(Printer::$rightname, READ);
 
 if (isset($_GET["id"])) {
     $printers = array_map(fn($id) => Printer::getById($id), $_GET["id"]);

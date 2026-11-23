@@ -1,0 +1,158 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{#
+ # Reusable illustration picker component.
+ #
+ # Parameters:
+ #   - name: input name attribute (optional, defaults to '')
+ #   - value: current illustration value
+ #   - size: icon preview size in pixels (defaults to 100)
+ #   - preview_css_classes: CSS classes for the clickable preview container
+ #   - preview_inner_css_classes: CSS classes for the inner preview wrapper
+ #   - backdrop: whether the modal should have a backdrop (defaults to true)
+ #   - editable: whether clicking the preview opens the modal (defaults to true).
+ #     Renders a <button> when true, a <div> otherwise (see setEditable()).
+ #   - allow_empty: whether the modal offers a "No illustration" value.
+ #}
+
+{% set custom_icon_prefix = constant(
+    'Glpi\\UI\\IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX'
+) %}
+{% set container_id = "illustration-picker-" ~ random() %}
+{% set modal_id = "illustration-modal-" ~ random() %}
+{% set size = size ?? 100 %}
+{% set backdrop = backdrop ?? true %}
+{% set editable = editable ?? true %}
+{% set allow_empty = allow_empty ?? false %}
+{% set preview_css_classes = preview_css_classes ?? "illustration-selector d-flex align-items-center card border-1" %}
+{% set preview_inner_css_classes = preview_inner_css_classes ?? "card-body aspect-ratio-1" %}
+
+<div id="{{ container_id }}" data-glpi-illustration-picker>
+    <input
+        {% if name is defined and name is not empty %}
+            name="{{ name }}"
+        {% endif %}
+        type="hidden"
+        value="{{ value }}"
+        data-glpi-icon-picker-value
+        data-testid="illustration-input"
+    >
+
+    {% set is_custom_file = value starts with custom_icon_prefix %}
+    {% set is_empty = value is empty %}
+    {# Only native illustrations have a title; custom uploads don't. #}
+    {% set selected_title = (not is_empty and not is_custom_file) ? getIconTitle(value) : '' %}
+    {% set status_id = container_id ~ "-status" %}
+
+    {% set preview_tag = editable ? 'button' : 'div' %}
+    <{{ preview_tag }}
+        class="{{ preview_css_classes }} illustration-picker-btn"
+        {% if editable %}
+            type="button"
+            aria-label="{{ __("Select an illustration") }}"
+            {% if selected_title is not empty %}
+                aria-describedby="{{ status_id }}"
+            {% endif %}
+            data-bs-toggle="modal"
+            data-bs-target="#{{ modal_id }}"
+        {% else %}
+            aria-disabled="true"
+        {% endif %}
+        data-glpi-icon-picker-value-preview
+        data-glpi-icon-picker-value-preview-title="{{ selected_title }}"
+        data-testid="illustration-picker"
+    >
+        {# <span>s only: a <button> trigger cannot hold block-level children. #}
+        <span class="d-block {{ preview_inner_css_classes }}">
+            {# Placeholder: visible when no illustration is set. #}
+            <span
+                class="d-flex align-items-center justify-content-center{% if not is_empty %} d-none{% endif %}"
+                data-glpi-icon-picker-value-preview-placeholder
+                style="width: {{ size }}px; height: {{ size }}px;"
+            >
+                <i class="ti ti-photo-plus text-muted" style="font-size: {{ (size * 0.6)|round }}px;" aria-hidden="true"></i>
+            </span>
+
+            {# Native illustration preview slot. #}
+            <span
+                class="d-block{% if is_custom_file or is_empty %} d-none{% endif %}"
+                data-glpi-icon-picker-value-preview-native
+                style="width: {{ size }}px; height: {{ size }}px;"
+            >
+                {% if not is_custom_file and not is_empty %}
+                    {{ render_illustration(value, size) }}
+                {% endif %}
+            </span>
+
+            {# Custom illustration preview slot. #}
+            <span
+                class="d-block{% if not is_custom_file %} d-none{% endif %}"
+                data-glpi-icon-picker-value-preview-custom
+                data-testid="illustration-custom-preview"
+            >
+                {{ render_illustration(is_custom_file ? value : custom_icon_prefix, size) }}
+            </span>
+        </span>
+    </{{ preview_tag }}>
+
+    {% if editable and selected_title is not empty %}
+        {# Named as the trigger's description, not a child: a descendant would be
+         # pruned by the trigger button's own name computation. #}
+        <span
+            id="{{ status_id }}"
+            class="visually-hidden"
+            role="img"
+            aria-label="{{ selected_title }}"
+            data-glpi-icon-picker-value-preview-status
+        ></span>
+    {% endif %}
+
+    {{ include('components/illustration/icon_picker_modal.html.twig', {
+        'id': modal_id,
+        'backdrop': backdrop,
+        'allow_empty': allow_empty,
+    }, with_context: false) }}
+
+    <script defer type="module">
+        (async () => {
+            const module = await import(
+                "/js/modules/IllustrationPicker/Controller.js"
+            );
+            new module.GlpiIllustrationPickerController(
+                document.getElementById('{{ container_id|e('js') }}'),
+                document.getElementById('{{ modal_id|e('js') }}'),
+                "{{ custom_icon_prefix|e('js') }}",
+            );
+        })();
+    </script>
+</div>

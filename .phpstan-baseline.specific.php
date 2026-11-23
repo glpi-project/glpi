@@ -21,6 +21,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/migrations/update_11.0.2_to_11.0.3/tokens.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$codepoint of function chr expects int\\<0, 255\\>, int\\<0, 510\\> given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_11.0.x_to_12.0.0/notifications.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type string\\|null\\.$#',
 	'identifier' => 'array.invalidKey',
 	'count' => 1,
@@ -131,7 +137,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type class\\-string\\<CommonDBTM\\>\\|null\\.$#',
 	'identifier' => 'offsetAccess.invalidOffset',
-	'count' => 4,
+	'count' => 6,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
 ];
 $ignoreErrors[] = [
@@ -173,7 +179,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type class\\-string\\<Glpi\\\\Inventory\\\\MainAsset\\\\MainAsset\\>\\|null\\.$#',
 	'identifier' => 'offsetAccess.invalidOffset',
-	'count' => 4,
+	'count' => 5,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
@@ -187,6 +193,12 @@ $ignoreErrors[] = [
 	'identifier' => 'array.invalidKey',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Unmanaged.php',
+];
+$ignoreErrors[] = [
+    'message' => '#^Possibly invalid array key type string\\|null\\.$#',
+    'identifier' => 'offsetAccess.invalidOffset',
+    'count' => 2,
+    'path' => __DIR__ . '/src/Item_Ola.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type string\\|null\\.$#',
@@ -205,12 +217,6 @@ $ignoreErrors[] = [
 	'identifier' => 'offsetAccess.invalidOffset',
 	'count' => 5,
 	'path' => __DIR__ . '/src/Item_Devices.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Possibly invalid array key type string\\|null\\.$#',
-	'identifier' => 'array.invalidKey',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Item_Plug.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type int\\|null\\.$#',

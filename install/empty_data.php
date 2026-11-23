@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\Environment;
+use Glpi\Config\DataAndPrivacyConfig;
 use Glpi\Dashboard\Dashboard;
 use Glpi\Event;
 use Glpi\Form\AnswersSet;
@@ -43,6 +44,7 @@ use Glpi\Inventory\Inventory;
 use Glpi\Marketplace\Controller;
 use Glpi\RichText\UserMention;
 use Glpi\Socket;
+use Glpi\System\HousekeepingCron;
 
 use function Safe\ini_get;
 use function Safe\json_encode;
@@ -73,6 +75,9 @@ $empty_data_builder = new class {
     public const USER_NORMAL          = 5;
     public const USER_SYSTEM          = 6;
 
+    /** @var int Root knowledge base article ID (the base of the KB tree) */
+    public const KB_ROOT_ARTICLE      = 1;
+
     /** @var int Value indicating no rights */
     public const RIGHT_NONE           = 0;
 
@@ -90,11 +95,8 @@ $empty_data_builder = new class {
         // API need to be enabled to ease e2e testing
         $env = Environment::get();
         $add_playwright_data = $env->shouldAddExtraPlaywrightDataDuringInstallation();
-        $add_cypress_data = $env->shouldAddExtraCypressDataDuringInstallation();
-
-        $add_e2e_data = $env->shouldAddExtraE2EDataDuringInstallation();
-        $enable_api = $add_e2e_data ? "1" : "0";
-        $enable_api_login_credentials = $add_e2e_data ? "1" : "0";
+        $enable_api = $add_playwright_data ? "1" : "0";
+        $enable_api_login_credentials = $add_playwright_data ? "1" : "0";
 
         $tables['glpi_apiclients'] = [
             [
@@ -158,6 +160,7 @@ $empty_data_builder = new class {
             ];
         }
 
+        $env = getenv();
         $default_prefs = [
             'version' => 'FILLED AT INSTALL',
             'show_jobs_at_login' => '0',
@@ -201,7 +204,7 @@ $empty_data_builder = new class {
             'utf8_conv' => '1',
             'use_public_faq' => '0',
             'allow_unauthenticated_uploads' => '0',
-            'url_base' => 'http://localhost',
+            'url_base' => $env['GLPI_URL_BASE'] ?? 'http://localhost',
             'show_link_in_mail' => '0',
             'text_login' => '',
             'found_new_version' => '',
@@ -263,7 +266,7 @@ $empty_data_builder = new class {
             'user_deleted_ldap_authorizations' => '0',
             'user_restored_ldap' => '0',
             'auto_create_infocoms' => '0',
-            'use_slave_for_search' => '0',
+            'use_replica_for_search' => '0',
             'proxy_passwd' => '',
             'smtp_passwd' => '',
             // Avoid counters for e2e tests to improve performances.
@@ -317,7 +320,7 @@ $empty_data_builder = new class {
             'attach_documents_to_notifications_for_anonymous' => '0',
             'task_state' => '1',
             'planned_task_state' => '1',
-            'palette' => 'auror',
+            'palette' => $env['GLPI_DEFAULT_THEME'] ?? 'auror',
             'page_layout' => 'vertical',
             'fold_menu' => '0',
             'savedsearches_pinned' => '0',
@@ -416,6 +419,8 @@ $empty_data_builder = new class {
             'glpi_11_form_migration' => 0,
             'glpi_11_assets_migration' => 0,
             'must_unsanitize_db_data' => 0,
+            'login_history_retention_days' => 90,
+            'root_knowbaseitems_id' => self::KB_ROOT_ARTICLE,
         ];
 
         $tables['glpi_configs'] = [];
@@ -619,7 +624,7 @@ $empty_data_builder = new class {
             ], [
                 'id' => 18,
                 'itemtype' => Ticket::class,
-                'name' => 'createinquest',
+                'name' => 'createinquestticket',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
@@ -786,7 +791,7 @@ $empty_data_builder = new class {
                 'hourmax' => 24,
             ], [
                 'id' => 32,
-                'itemtype' => 'OlaLevel_Ticket',
+                'itemtype' => 'Item_Ola',
                 'name' => 'olaticket',
                 'frequency' => 5 * MINUTE_TIMESTAMP,
                 'param' => null,
@@ -823,7 +828,7 @@ $empty_data_builder = new class {
             ], [
                 'id' => 35,
                 'itemtype' => 'Document',
-                'name' => 'cleanorphans',
+                'name' => 'cleanorphansdocument',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_DISABLE,
@@ -858,7 +863,7 @@ $empty_data_builder = new class {
                 'hourmax' => 6,
             ], [
                 'id' => 38,
-                'itemtype' => CleanSoftwareCron::getType(),
+                'itemtype' => CleanSoftwareCron::class,
                 'name' => CleanSoftwareCron::TASK_NAME,
                 'frequency' => MONTH_TIMESTAMP,
                 'param' => 1000,
@@ -895,7 +900,7 @@ $empty_data_builder = new class {
             ], [
                 'id' => 41,
                 'itemtype' => Inventory::class,
-                'name' => 'cleanorphans',
+                'name' => 'cleanorphansinventory',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
@@ -906,7 +911,7 @@ $empty_data_builder = new class {
                 'hourmax' => 6,
             ], [
                 'id' => 42,
-                'itemtype' => PendingReasonCron::getType(),
+                'itemtype' => PendingReasonCron::class,
                 'name' => PendingReasonCron::TASK_NAME,
                 'frequency' => 30 * MINUTE_TIMESTAMP,
                 'param' => null,
@@ -931,7 +936,7 @@ $empty_data_builder = new class {
             ], [
                 'id' => 44,
                 'itemtype' => 'Change',
-                'name' => 'createinquest',
+                'name' => 'createinquestchange',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
@@ -1007,6 +1012,42 @@ $empty_data_builder = new class {
                 'frequency' => WEEK_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_EXTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
+            ], [
+                'id' => 51,
+                'itemtype' => HousekeepingCron::class,
+                'name' => HousekeepingCron::TASK_NAME,
+                'frequency' => HOUR_TIMESTAMP,
+                'param' => HousekeepingCron::DEFAULT_MAX_ROWS,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_EXTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 6,
+            ], [
+                'id' => 52,
+                'itemtype' => 'ProjectTask',
+                'name' => 'projecttasksreminder',
+                'frequency' => HOUR_TIMESTAMP,
+                'param' => 3,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
+            ], [
+                'id' => 53,
+                'itemtype' => DataAndPrivacyConfig::class,
+                'name' => 'purgesessionhistory',
+                'frequency' => DAY_TIMESTAMP,
+                'param' => null,
+                'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
@@ -2700,6 +2741,23 @@ $empty_data_builder = new class {
             ],
         ];
 
+        // The root article, base of the knowledge base tree. Its id is stored in
+        // the `root_knowbaseitems_id` configuration.
+        // Existing installations get theirs from the 12.0.0 migration.
+        $tables['glpi_knowbaseitems'] = [
+            [
+                'id' => self::KB_ROOT_ARTICLE,
+                'entities_id' => 0,
+                'is_recursive' => 1,
+                'name' => __('Home'),
+                'answer' => '',
+                'is_faq' => 0,
+                'users_id' => self::USER_SYSTEM,
+                'date_creation' => date('Y-m-d H:i:s'),
+                'date_mod' => date('Y-m-d H:i:s'),
+            ],
+        ];
+
         $tables['glpi_notifications'] = [
             [
                 'id' => 1,
@@ -3275,6 +3333,13 @@ $empty_data_builder = new class {
                 'event' => 'update',
                 'is_recursive' => 1,
                 'is_active' => 0,
+            ], [
+                'id' => 83,
+                'name' => 'Project Task Planning Reminder',
+                'itemtype' => 'ProjectTask',
+                'event' => 'planningrecall',
+                'is_recursive' => 1,
+                'is_active' => 1,
             ],
         ];
 
@@ -3685,10 +3750,15 @@ $empty_data_builder = new class {
                 'mode' => 'mailing',
                 'notificationtemplates_id' => 32,
             ], [
-                'id' => 82,
-                'notifications_id' => '82',
-                'mode' => 'mailing',
+                'id'                       => 82,
+                'notifications_id'         => '82',
+                'mode'                     => 'mailing',
                 'notificationtemplates_id' => 32,
+            ], [
+                'id'                       => 83,
+                'notifications_id'         => '83',
+                'mode'                     => 'mailing',
+                'notificationtemplates_id' => 22,
             ],
         ];
 
@@ -4638,6 +4708,21 @@ $empty_data_builder = new class {
                 'items_id'         => '1',
                 'type'             => '1',
                 'notifications_id' => '82',
+            ], [
+                'id'               => '193',
+                'items_id'         => '31',
+                'type'             => '1',
+                'notifications_id' => '83',
+            ], [
+                'id'               => '194',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '83',
+            ], [
+                'id'               => '195',
+                'items_id'         => '32',
+                'type'             => '1',
+                'notifications_id' => '83',
             ],
         ];
 
@@ -5983,10 +6068,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'name' => 'cable_management',
                 'rights' => self::RIGHT_NONE,
             ], [
-                'profiles_id' => self::PROFILE_SUPER_ADMIN,
-                'name' => 'knowbasecategory',
-                'rights' => READ | UPDATE | CREATE | PURGE,
-            ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'itilcategory',
                 'rights' => self::RIGHT_NONE,
@@ -6287,10 +6368,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'name' => 'cable_management',
                 'rights' => self::RIGHT_NONE,
             ], [
-                'profiles_id' => self::PROFILE_ADMIN,
-                'name' => 'knowbasecategory',
-                'rights' => READ | UPDATE | CREATE | PURGE,
-            ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'itilcategory',
                 'rights' => READ | UPDATE | CREATE | PURGE,
@@ -6369,7 +6446,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'document',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Document_Item::SEEPRIVATE,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'contract',
@@ -6598,10 +6675,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'name' => 'problem',
                 'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Problem::READALL,
             ], [
-                'profiles_id' => self::PROFILE_OBSERVER,
-                'name' => 'knowbasecategory',
-                'rights' => self::RIGHT_NONE,
-            ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'itilcategory',
                 'rights' => READ | UPDATE | CREATE | PURGE,
@@ -6677,7 +6750,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'document',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK | Document_Item::SEEPRIVATE,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'contract',
@@ -6906,10 +6979,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'problem',
                 'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Problem::READALL,
-            ], [
-                'profiles_id' => self::PROFILE_SELF_SERVICE,
-                'name' => 'knowbasecategory',
-                'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'itilcategory',
@@ -7201,10 +7270,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'name' => 'problem',
                 'rights' => Problem::READALL,
             ], [
-                'profiles_id' => self::PROFILE_SUPERVISOR,
-                'name' => 'knowbasecategory',
-                'rights' => READ | UPDATE | CREATE | PURGE,
-            ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'itilcategory',
                 'rights' => self::RIGHT_NONE,
@@ -7283,7 +7348,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'document',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Document_Item::SEEPRIVATE,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'contract',
@@ -7492,10 +7557,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'name' => 'problem',
                 'rights' => ALLSTANDARDRIGHT | Problem::READMY | Problem::READALL | READNOTE | UPDATENOTE,
             ], [
-                'profiles_id' => self::PROFILE_TECHNICIAN,
-                'name' => 'knowbasecategory',
-                'rights' => self::RIGHT_NONE,
-            ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'itilcategory',
                 'rights' => READ | UPDATE | CREATE | PURGE,
@@ -7578,7 +7639,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'document',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Document_Item::SEEPRIVATE,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'contract',
@@ -7779,10 +7840,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'name' => 'problem',
                 'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Problem::READALL,
             ], [
-                'profiles_id' => self::PROFILE_HOTLINER,
-                'name' => 'knowbasecategory',
-                'rights' => self::RIGHT_NONE,
-            ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'itilcategory',
                 'rights' => self::RIGHT_NONE,
@@ -7910,10 +7967,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'knowbase',
                 'rights' => READ | KnowbaseItem::READFAQ | KnowbaseItem::COMMENTS,
-            ], [
-                'profiles_id' => self::PROFILE_READ_ONLY,
-                'name' => 'knowbasecategory',
-                'rights' => READ,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'link',
@@ -8301,6 +8354,38 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'datacenter',
+                'rights' => READ,
+            ], [
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
+                'name' => 'enclosure',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_OBSERVER,
+                'name' => 'enclosure',
+                'rights' => READ,
+            ], [
+                'profiles_id' => self::PROFILE_ADMIN,
+                'name' => 'enclosure',
+                'rights' => ALLSTANDARDRIGHT,
+            ], [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'enclosure',
+                'rights' => ALLSTANDARDRIGHT,
+            ], [
+                'profiles_id' => self::PROFILE_HOTLINER,
+                'name' => 'enclosure',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_TECHNICIAN,
+                'name' => 'enclosure',
+                'rights' => ALLSTANDARDRIGHT,
+            ], [
+                'profiles_id' => self::PROFILE_SUPERVISOR,
+                'name' => 'enclosure',
+                'rights' => ALLSTANDARDRIGHT,
+            ], [
+                'profiles_id' => self::PROFILE_READ_ONLY,
+                'name' => 'enclosure',
                 'rights' => READ,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
@@ -9303,22 +9388,13 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
         $tables['glpi_ssovariables'] = [
             [
                 'id' => 1,
-                'name' => 'HTTP_AUTH_USER',
-            ], [
-                'id' => 2,
                 'name' => 'REMOTE_USER',
             ], [
-                'id' => 3,
-                'name' => 'PHP_AUTH_USER',
-            ], [
-                'id' => 4,
+                'id' => 2,
                 'name' => 'USERNAME',
             ], [
-                'id' => 5,
+                'id' => 3,
                 'name' => 'REDIRECT_REMOTE_USER',
-            ], [
-                'id' => 6,
-                'name' => 'HTTP_REMOTE_USER',
             ],
         ];
 
@@ -9418,7 +9494,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'id' => self::USER_GLPI,
                 'name' => 'glpi',
                 'realname' => null,
-                'password' => password_hash('glpi', PASSWORD_DEFAULT),
+                'password' => Auth::getPasswordHash('glpi'),
                 'language' => null,
                 'list_limit' => '20',
                 'authtype' => '1',
@@ -9428,7 +9504,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'id' => self::USER_POST_ONLY,
                 'name' => 'post-only',
                 'realname' => null,
-                'password' => password_hash('postonly', PASSWORD_DEFAULT),
+                'password' => Auth::getPasswordHash('postonly'),
                 'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
@@ -9438,7 +9514,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'id' => self::USER_TECH,
                 'name' => 'tech',
                 'realname' => null,
-                'password' => password_hash('tech', PASSWORD_DEFAULT),
+                'password' => Auth::getPasswordHash('tech'),
                 'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
@@ -9448,7 +9524,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'id' => self::USER_NORMAL,
                 'name' => 'normal',
                 'realname' => null,
-                'password' => password_hash('normal', PASSWORD_DEFAULT),
+                'password' => Auth::getPasswordHash('normal'),
                 'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
@@ -9512,142 +9588,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
         $root_entity = array_filter($tables['glpi_entities'], static fn($e) => $e['id'] === 0);
         $root_entity = current($root_entity);
 
-        if ($add_cypress_data) {
-            // Main E2E test entity
-            $e2e_entity = array_replace($root_entity, [
-                'id' => 1,
-                'name' => 'E2ETestEntity',
-                'entities_id' => 0,
-                'completename' => __('Root entity') . ' > E2ETestEntity',
-                'level' => 2,
-            ]);
-            $tables['glpi_entities'][] = $e2e_entity;
-
-            // Sub entity 1
-            $e2e_subentity1 = array_replace($root_entity, [
-                'id' => 2,
-                'name' => 'E2ETestSubEntity1',
-                'entities_id' => 1,
-                'completename' => __('Root entity') . ' > E2ETestEntity > E2ETestSubEntity1',
-                'level' => 3,
-            ]);
-            $tables['glpi_entities'][] = $e2e_subentity1;
-
-            // Sub entity 2
-            $e2e_subentity2 = array_replace($root_entity, [
-                'id' => 3,
-                'name' => 'E2ETestSubEntity2',
-                'entities_id' => 1,
-                'completename' => __('Root entity') . ' > E2ETestEntity > E2ETestSubEntity2',
-                'level' => 3,
-            ]);
-            $tables['glpi_entities'][] = $e2e_subentity2;
-
-            // New e2e super-admin user (login: e2e_tests, password: glpi)
-            $default_glpi_user = array_filter($tables['glpi_users'], static fn($u) => $u['id'] === self::USER_GLPI);
-            $e2e_user = array_shift($default_glpi_user);
-            $e2e_user = array_replace($e2e_user, [
-                'id' => 7,
-                'name' => 'e2e_tests',
-                'realname' => 'E2E Tests',
-                'profiles_id' => self::PROFILE_SUPER_ADMIN,
-            ]);
-            $tables['glpi_users'][] = $e2e_user;
-
-            // Assign e2e user all default profiles on the e2e entity
-            $tables['glpi_profiles_users'][] = [
-                'id' => 6,
-                'users_id' => 7,
-                'profiles_id' => self::PROFILE_SUPER_ADMIN,
-                'entities_id' => 1,
-                'is_recursive' => 1,
-                'is_dynamic' => 0,
-            ];
-            $tables['glpi_profiles_users'][] = [
-                'id' => 7,
-                'users_id' => 7,
-                'profiles_id' => self::PROFILE_SELF_SERVICE,
-                'entities_id' => 1,
-                'is_recursive' => 1,
-                'is_dynamic' => 0,
-            ];
-            $tables['glpi_profiles_users'][] = [
-                'id' => 8,
-                'users_id' => 7,
-                'profiles_id' => self::PROFILE_OBSERVER,
-                'entities_id' => 1,
-                'is_recursive' => 1,
-                'is_dynamic' => 0,
-            ];
-            $tables['glpi_profiles_users'][] = [
-                'id' => 9,
-                'users_id' => 7,
-                'profiles_id' => self::PROFILE_ADMIN,
-                'entities_id' => 1,
-                'is_recursive' => 1,
-                'is_dynamic' => 0,
-            ];
-            $tables['glpi_profiles_users'][] = [
-                'id' => 10,
-                'users_id' => 7,
-                'profiles_id' => self::PROFILE_HOTLINER,
-                'entities_id' => 1,
-                'is_recursive' => 1,
-                'is_dynamic' => 0,
-            ];
-            $tables['glpi_profiles_users'][] = [
-                'id' => 11,
-                'users_id' => 7,
-                'profiles_id' => self::PROFILE_TECHNICIAN,
-                'entities_id' => 1,
-                'is_recursive' => 1,
-                'is_dynamic' => 0,
-            ];
-            $tables['glpi_profiles_users'][] = [
-                'id' => 12,
-                'users_id' => 7,
-                'profiles_id' => self::PROFILE_READ_ONLY,
-                'entities_id' => 1,
-                'is_recursive' => 1,
-                'is_dynamic' => 0,
-            ];
-
-            $tables['glpi_oauthclients'][] = [
-                'name' => 'Test E2E OAuth Client',
-                'redirect_uri' => json_encode(["/api.php/oauth2/redirection"]),
-                'grants' => json_encode(['authorization_code', 'password']),
-                'scopes' => json_encode(['api', 'user', 'graphql', 'status', 'email']),
-                'is_active' => 1,
-                'is_confidential' => 1,
-                'identifier' => '9246d35072ff62193330003a8106d947fafe5ac036d11a51ebc7ca11b9bc135e',
-                'secret' => (new GLPIKey())->encrypt('d2c4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1'),
-            ];
-
-            $tables['glpi_authldaps'][] = [
-                'name'            => '_e2e_ldap',
-                'host'            => 'openldap',
-                'basedn'          => 'dc=glpi,dc=org',
-                'rootdn'          => 'cn=Manager,dc=glpi,dc=org',
-                'port'            => '3890',
-                'condition'       => '(objectclass=inetOrgPerson)',
-                'login_field'     => 'uid',
-                'rootdn_passwd'   => (new GLPIKey())->encrypt('insecure'),
-                'is_default'      => 1,
-                'is_active'       => 0,
-                'use_tls'         => 0,
-                'email1_field'    => 'mail',
-                'realname_field'  => 'cn',
-                'firstname_field' => 'sn',
-                'phone_field'     => 'telephonenumber',
-                'comment_field'   => 'description',
-                'title_field'     => 'title',
-                'category_field'  => 'businesscategory',
-                'language_field'  => 'preferredlanguage',
-                'group_search_type'  => AuthLDAP::GROUP_SEARCH_GROUP,
-                'group_condition' => '(objectclass=groupOfNames)',
-                'group_member_field' => 'member',
-            ];
-        } elseif ($add_playwright_data) {
+        if ($add_playwright_data) {
             // Main E2E test entity
             $e2e_parent_entity_id = max(
                 array_column($tables['glpi_entities'], 'id')
@@ -9667,10 +9608,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
             $users_to_create = [
                 [
                     'login'       => 'e2e_api_account',
-                    'password'    => password_hash(
-                        'e2e_api_account',
-                        PASSWORD_DEFAULT,
-                    ),
+                    'password'    => Auth::getPasswordHash('e2e_api_account'),
                     'realname'    => 'E2E API account',
                     'entities_id' => 0,
                 ],
@@ -9689,10 +9627,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
 
                 $users_to_create[] = [
                     'login'       => "e2e_worker_account_$padded_i",
-                    'password'    => password_hash(
-                        "e2e_worker_account_$padded_i",
-                        PASSWORD_DEFAULT,
-                    ),
+                    'password'    => Auth::getPasswordHash("e2e_worker_account_$padded_i"),
                     'realname'    => "E2E worker account $padded_i",
                     'entities_id' => $entity_id,
                 ];
@@ -9774,6 +9709,32 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                     ];
                 }
             }
+
+            // LDAP server of the CI, see `.github/actions/docker-compose-services.yml`.
+            $tables['glpi_authldaps'][] = [
+                'name'            => '_e2e_ldap',
+                'host'            => 'openldap',
+                'basedn'          => 'dc=glpi,dc=org',
+                'rootdn'          => 'cn=Manager,dc=glpi,dc=org',
+                'port'            => '3890',
+                'condition'       => '(objectclass=inetOrgPerson)',
+                'login_field'     => 'uid',
+                'rootdn_passwd'   => (new GLPIKey())->encrypt('insecure'),
+                'is_default'      => 1,
+                'is_active'       => 0,
+                'use_tls'         => 0,
+                'email1_field'    => 'mail',
+                'realname_field'  => 'cn',
+                'firstname_field' => 'sn',
+                'phone_field'     => 'telephonenumber',
+                'comment_field'   => 'description',
+                'title_field'     => 'title',
+                'category_field'  => 'businesscategory',
+                'language_field'  => 'preferredlanguage',
+                'group_search_type'  => AuthLDAP::GROUP_SEARCH_GROUP,
+                'group_condition' => '(objectclass=groupOfNames)',
+                'group_member_field' => 'member',
+            ];
         }
 
         // initial validation steps

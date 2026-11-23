@@ -39,6 +39,7 @@ namespace Glpi\Inventory\Asset;
 use Blacklist;
 use CommonDBTM;
 use DBmysqlIterator;
+use Dropdown;
 use FQDNLabel;
 use Glpi\DBAL\QueryParam;
 use Glpi\Inventory\Conf;
@@ -50,23 +51,27 @@ use mysqli_stmt;
 use NetworkName;
 use NetworkPort;
 use NetworkPortAggregate;
+use NetworkPortEthernet;
+use NetworkPortFiberchannel;
+use NetworkPortWifi;
 use stdClass;
 use Toolbox;
 use Unmanaged;
+use WifiNetwork;
+
+use function Safe\preg_replace;
 
 trait InventoryNetworkPort
 {
     /** @var object[]  */
-    protected $ports = [];
-    /** @var mysqli_stmt */
-    protected $ipnetwork_stmt;
-    /** @var mysqli_stmt */
-    protected $idevice_stmt;
+    protected array $ports = [];
+    protected mysqli_stmt $ipnetwork_stmt;
+    protected mysqli_stmt $idevice_stmt;
     /** @var object[]  */
-    protected $networks = [];
-    /** @var class-string<CommonDBTM> */
-    protected $itemtype;
-    private ?int $items_id;
+    protected array $networks = [];
+    /** @var ?class-string<CommonDBTM> */
+    protected ?string $port_itemtype;
+    private ?int $port_items_id;
 
     public function handle()
     {
@@ -101,10 +106,6 @@ trait InventoryNetworkPort
     {
         if ($this instanceof MainAsset) {
             return $this->isPartial();
-        } else {
-            if (isset($this->main_asset) && method_exists($this->main_asset, 'isPartial')) {
-                return $this->main_asset->isPartial();
-            }
         }
 
         return false;
@@ -113,8 +114,8 @@ trait InventoryNetworkPort
     /**
      * Manage network ports
      *
-     * @param string  $itemtype Item type, will take current item per default
-     * @param int $items_id Item ID, will take current item per default
+     * @param ?class-string<CommonDBTM> $itemtype Item type, will take current item per default
+     * @param ?int $items_id Item ID, will take current item per default
      *
      * @return void
      */
@@ -124,8 +125,8 @@ trait InventoryNetworkPort
             return;
         }
 
-        $this->itemtype = $itemtype ?? $this->item->getType();
-        $this->items_id = $items_id ?? $this->item->fields['id'];
+        $this->port_itemtype = $itemtype ?? $this->item::class;
+        $this->port_items_id = $items_id ?? $this->item->fields['id'];
 
         if (!$this->isMainPartial()) {
             $this->cleanUnmanageds();
@@ -140,8 +141,8 @@ trait InventoryNetworkPort
             $this->handleAggregations();
         }
 
-        $this->itemtype = null;
-        $this->items_id = null;
+        $this->port_itemtype = null;
+        $this->port_items_id = null;
     }
 
     /**
@@ -172,15 +173,15 @@ trait InventoryNetworkPort
         foreach ($this->ports as $port) {
             if (!$this->isMainPartial() && property_exists($port, 'mac') && $port->mac != '') {
                 $DB->executeStatement($stmt, [Unmanaged::class, $port->mac,]);
-                $results = $stmt->get_result();
+                $results = $DB->getStatementResult($stmt);
 
                 if ($results->num_rows > 0) {
                     $row = $results->fetch_object();
                     $unmanageds_id = $row->items_id;
                     $input = [
                         'logical_number'  => $port->logical_number,
-                        'itemtype'        => $this->itemtype,
-                        'items_id'        => $this->items_id,
+                        'itemtype'        => $this->port_itemtype,
+                        'items_id'        => $this->port_items_id,
                         'is_dynamic'      => 1,
                         'name'            => $port->name,
                     ];
@@ -212,7 +213,7 @@ trait InventoryNetworkPort
                 continue;
             }
 
-            if ($this->ipnetwork_stmt == null) {
+            if (!isset($this->ipnetwork_stmt)) {
                 $criteria = [
                     'COUNT'  => 'cnt',
                     'FROM'   => IPNetwork::getTable(),
@@ -241,7 +242,7 @@ trait InventoryNetworkPort
                     $port->gateway,
                 ]
             );
-            $results = $stmt->get_result();
+            $results = $DB->getStatementResult($stmt);
 
             $row = $results->fetch_object();
             $count = $row->cnt;
@@ -280,14 +281,18 @@ trait InventoryNetworkPort
             $input,
             [
                 'entities_id'  => $this->entities_id,
-                'items_id'     => $this->items_id,
-                'itemtype'     => $this->itemtype,
+                'items_id'     => $this->port_items_id,
+                'itemtype'     => $this->port_itemtype,
                 'is_dynamic'   => 1,
             ]
         );
 
         if (!isset($input['trunk']) || empty($input['trunk'])) {
             $input['trunk'] = 0;
+        }
+
+        if (!isset($input['ifspeed']) && isset($input['speed'])) {
+            $input['ifspeed'] = $input['speed'] * 1000000;
         }
 
         $netports_id = $networkport->add($input);
@@ -358,13 +363,13 @@ trait InventoryNetworkPort
         $db_ports = [];
         $networkport = new NetworkPort();
 
-        $np_dyn_props = ['logical_number', 'ifstatus', 'ifinternalstatus', 'ifalias', 'is_dynamic'];
+        $np_dyn_props = ['logical_number', 'ifstatus', 'ifinternalstatus', 'ifalias', 'is_dynamic', 'ifmtu', 'ifspeed'];
         $iterator = $DB->request([
             'SELECT' => array_merge(['id', 'name', 'mac', 'instantiation_type'], $np_dyn_props),
             'FROM'   => 'glpi_networkports',
             'WHERE'  => [
-                'items_id'     => $this->items_id,
-                'itemtype'     => $this->itemtype,
+                'items_id'     => $this->port_items_id,
+                'itemtype'     => $this->port_itemtype,
             ],
         ]);
         foreach ($iterator as $row) {
@@ -416,6 +421,13 @@ trait InventoryNetworkPort
                     }
                 }
 
+                if (!isset($criteria['ifspeed']) && !property_exists($data, 'ifspeed') && property_exists($data, 'speed')) {
+                    $computed_ifspeed = $data->speed * 1000000;
+                    if ($computed_ifspeed != $dbdata_copy['ifspeed']) {
+                        $criteria['ifspeed'] = $computed_ifspeed;
+                    }
+                }
+
                 // force dynamic for manually added NetworkPort
                 if (count($criteria) || !$dbdata_copy['is_dynamic']) {
                     $criteria['id'] = $keydb;
@@ -440,7 +452,7 @@ trait InventoryNetworkPort
                 //handle instantiation type
                 if (property_exists($data, 'instantiation_type')) {
                     $type = $data->instantiation_type;
-                    //handle only ethernet and fiberchannel
+                    //handle only ethernet, fiberchannel and wifi
                     $this->handleInstantiation($type, $data, $keydb, true);
                 }
 
@@ -463,8 +475,8 @@ trait InventoryNetworkPort
                         $netname_stmt = $DB->prepare($query);
                     }
 
-                    $DB->executeStatement($netname_stmt, [$keydb]);
-                    $results = $netname_stmt->get_result();
+                    $DB->executeStatement($netname_stmt, [NetworkPort::class, $keydb]);
+                    $results = $DB->getStatementResult($netname_stmt);
 
                     if ($results->num_rows) {
                         $row = $results->fetch_object();
@@ -568,7 +580,7 @@ trait InventoryNetworkPort
     {
         global $DB;
 
-        if (!in_array($type, ['NetworkPortEthernet', 'NetworkPortFiberchannel'])) {
+        if (!in_array($type, [NetworkPortEthernet::class, NetworkPortFiberchannel::class, NetworkPortWifi::class])) {
             return;
         }
 
@@ -580,27 +592,56 @@ trait InventoryNetworkPort
         }
         $input['networkports_id'] = $ports_id;
 
-        if (property_exists($data, 'speed')) {
-            $input['speed'] = $data->speed;
-            $input['speed_other_value'] = $data->speed;
-        } elseif (property_exists($data, 'ifspeed') && $data->ifspeed > 0) {
-            // network equipment (SNMP) inventory only provides `ifspeed` (in bits/s),
-            // while the instantiation `speed` is expected in Mbit/s.
-            $speed = (int) ($data->ifspeed / 1000000);
-            // ignore out of range values (the `speed` column is a signed int):
-            // some interfaces report a saturated/garbage ifspeed (e.g. 4294967295000000).
-            if ($speed > 0 && $speed <= 2147483647) {
-                $input['speed'] = $speed;
-                $input['speed_other_value'] = $speed;
+        if ($type === NetworkPortWifi::class) {
+            if (property_exists($data, 'wifi_ssid') && (!empty($data->wifi_ssid) || (string) $data->wifi_ssid === '0')) {
+                $wifinetworks_id = Dropdown::importExternal(
+                    WifiNetwork::class,
+                    $data->wifi_ssid,
+                    $this->entities_id
+                );
+                if ($wifinetworks_id > 0) { //importExternal can return -1
+                    $input['wifinetworks_id'] = $wifinetworks_id;
+                }
+            }
+
+            //`mode` only accepts a limited set of values
+            if (property_exists($data, 'wifi_mode')) {
+                $modes = WifiNetwork::getWifiCardModes();
+                $mode = strtolower(trim((string) $data->wifi_mode));
+                if ($mode !== '' && array_key_exists($mode, $modes)) {
+                    $input['mode'] = $mode;
+                }
+            }
+
+            if (property_exists($data, 'wifi_version')) {
+                $version = $this->getWifiVersion((string) $data->wifi_version);
+                if ($version !== null) {
+                    $input['version'] = $version;
+                }
+            }
+        } else {
+            if (property_exists($data, 'speed')) {
+                $input['speed'] = $data->speed;
+                $input['speed_other_value'] = $data->speed;
+            } elseif (property_exists($data, 'ifspeed') && $data->ifspeed > 0) {
+                // network equipment (SNMP) inventory only provides `ifspeed` (in bits/s),
+                // while the instantiation `speed` is expected in Mbit/s.
+                $speed = (int) ($data->ifspeed / 1000000);
+                // ignore out of range values (the `speed` column is a signed int):
+                // some interfaces report a saturated/garbage ifspeed (e.g. 4294967295000000).
+                if ($speed > 0 && $speed <= 2147483647) {
+                    $input['speed'] = $speed;
+                    $input['speed_other_value'] = $speed;
+                }
+            }
+
+            if (property_exists($data, 'wwn')) {
+                $input['wwn'] = $data->wwn;
             }
         }
 
-        if (property_exists($data, 'wwn')) {
-            $input['wwn'] = $data->wwn;
-        }
-
         if (property_exists($data, 'mac')) {
-            if ($this->idevice_stmt == null) {
+            if (!isset($this->idevice_stmt)) {
                 $criteria = [
                     'SELECT' => 'id',
                     'FROM'   => Item_DeviceNetworkCard::getTable(),
@@ -621,12 +662,12 @@ trait InventoryNetworkPort
             $DB->executeStatement(
                 $stmt,
                 [
-                    $this->itemtype,
-                    $this->items_id,
+                    $this->port_itemtype,
+                    $this->port_items_id,
                     $data->mac,
                 ]
             );
-            $results = $stmt->get_result();
+            $results = $DB->getStatementResult($stmt);
 
             if ($results->num_rows > 0) {
                 $row = $results->fetch_object();
@@ -640,6 +681,45 @@ trait InventoryNetworkPort
         } else {
             $instance->update($input);
         }
+    }
+
+    /**
+     * Get the Wi-Fi protocol version to store from the inventoried one
+     *
+     * Inventory reports the version the way the operating system does, prefixed with the
+     * standard name (`802.11`, `802.11ac`, `802.11abgn`, ...).
+     *
+     * @param string $value Inventoried version
+     *
+     * @return ?string Version to store, or null if it is not a known one
+     */
+    private function getWifiVersion(string $value): ?string
+    {
+        $versions = WifiNetwork::getWifiCardVersion();
+
+        //drop the standard name; `802.11` alone does not tell anything on the protocol
+        //also drop potential `ieee` prefix, and normalize to lowercase
+        $version = (string) preg_replace(
+            '/^(ieee[\s_-]*)?802\.11[\s_-]*/',
+            '',
+            strtolower(trim($value))
+        );
+
+        if ($version === '') {
+            return null;
+        }
+
+        if (array_key_exists($version, $versions)) {
+            return $version;
+        }
+
+        //protocols may be reported as a plain letters list (`abgn`)
+        $listed = implode('/', str_split($version));
+        if (array_key_exists($listed, $versions)) {
+            return $listed;
+        }
+
+        return null;
     }
 
     /**
@@ -693,9 +773,9 @@ trait InventoryNetworkPort
                 //remove all port management ports
                 $networkport = new NetworkPort();
                 $networkport->deleteByCriteria([
-                    "itemtype"           => $this->itemtype,
-                    "items_id"           => $this->items_id,
-                    "instantiation_type" => NetworkPortAggregate::getType(),
+                    "itemtype"           => $this->port_itemtype,
+                    "items_id"           => $this->port_items_id,
+                    "instantiation_type" => NetworkPortAggregate::class,
                     "name"               => "Management",
                 ], true);
             }

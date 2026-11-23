@@ -43,7 +43,7 @@ class TicketRecurrent extends CommonITILRecurrent
     /**
      * @var string Right managements
      */
-    public static $rightname = 'ticketrecurrent';
+    public static string $rightname = 'ticketrecurrent';
 
     public static function getTypeName($nb = 0)
     {
@@ -75,15 +75,6 @@ class TicketRecurrent extends CommonITILRecurrent
         array $input
     ): array {
         $input = parent::handlePredefinedFields($predefined, $input);
-
-        // Compute internal_time_to_resolve if predefined based on create date
-        if (isset($predefined['internal_time_to_resolve'])) {
-            $input['internal_time_to_resolve'] = Html::computeGenericDateTimeSearch(
-                $predefined['internal_time_to_resolve'],
-                false,
-                $this->getCreateTime()
-            );
-        }
 
         return $input;
     }

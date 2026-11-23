@@ -92,28 +92,6 @@ namespace tests\units {
             return vfsStream::url('glpi/plugins/' . $directory);
         }
 
-        public function testGetWebDir(): void
-        {
-            global $CFG_GLPI;
-
-            $this->assertEquals('plugins/tester', @Plugin::getWebDir('tester', false, false));
-            $this->assertEquals('marketplace/myplugin', @Plugin::getWebDir('myplugin', false, false));
-
-            foreach (['', '/glpi', '/path/to/app'] as $root_doc) {
-                $CFG_GLPI['root_doc'] = $root_doc;
-                $this->assertEquals($root_doc . '/plugins/tester', @Plugin::getWebDir('tester', true, false));
-                $this->assertEquals($root_doc . '/marketplace/myplugin', @Plugin::getWebDir('myplugin', true, false));
-            }
-
-            foreach (['http://localhost', 'https://www.example.org/glpi'] as $url_base) {
-                $CFG_GLPI['url_base'] = $url_base;
-                $this->assertEquals($url_base . '/plugins/tester', @Plugin::getWebDir('tester', true, true));
-                $this->assertEquals($url_base . '/marketplace/myplugin', @Plugin::getWebDir('myplugin', true, true));
-            }
-
-            $this->assertFalse(@Plugin::getWebDir('notaplugin', true, true));
-        }
-
         public function testGetGlpiVersion()
         {
             $plugin = new Plugin();
@@ -376,6 +354,49 @@ namespace tests\units {
             // check also Plugin::isUpdatable method
             $plugin_inst = $this->getPluginMock();
             $this->assertTrue($plugin_inst->isUpdatable($directory));
+        }
+
+        /**
+         * The check of the active plugins done on each request detects a new version on disk.
+         */
+        public function testCheckStatesDetectsVersionChangeOfActivePlugin(): void
+        {
+            $directory = $this->getRandomPluginName();
+            $plugin = new class extends Plugin {
+                protected static function getPluginDirectories(): array
+                {
+                    // The test plugin, plus the real directories of the other active plugins.
+                    return [vfsStream::url('glpi/plugins'), ...parent::getPluginDirectories()];
+                }
+            };
+
+            $this->assertGreaterThan(0, (int) $plugin->add([
+                'directory' => $directory,
+                'name'      => 'Test plugin',
+                'version'   => '1.0',
+                'state'     => Plugin::ACTIVATED,
+            ]));
+            $this->createTestPluginFiles(
+                informations: ['name' => 'Test plugin', 'version' => '2.0'],
+                directory: $directory
+            );
+
+            $errors = [];
+            // PHPUnit won't let us expect errors so we need our own handler
+            set_error_handler(static function (int $errno, string $errstr) use (&$errors): bool {
+                $errors[] = $errstr;
+                return true;
+            }, E_USER_WARNING);
+            $plugin->checkStates();
+            restore_error_handler();
+
+            $this->assertContains(
+                'Plugin "' . $directory . '" version changed. It has been deactivated as its update process has to be launched.',
+                $errors
+            );
+            $this->assertTrue($plugin->getFromDBByCrit(['directory' => $directory]));
+            $this->assertSame(Plugin::NOTUPDATED, (int) $plugin->fields['state']);
+            $this->assertSame('2.0', $plugin->fields['version']);
         }
 
         /**

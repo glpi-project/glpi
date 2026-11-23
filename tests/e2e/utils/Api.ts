@@ -35,6 +35,7 @@ import { openSync, closeSync, unlinkSync, existsSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
 import { Config } from "./Config";
+import { KnowbaseApi } from "./KnowbaseApi";
 import { WorkerSessionCache } from "./WorkerSessionCache";
 
 const ENTITY_LOCK_FILE = join(tmpdir(), 'glpi-e2e-entity-creation.lock');
@@ -56,14 +57,26 @@ export class Api
 {
     private cache: WorkerSessionCache;
 
+    public knowbase: KnowbaseApi;
+
     public constructor(cache: WorkerSessionCache)
     {
         this.cache = cache;
+        this.knowbase = new KnowbaseApi(this);
     }
 
     public async getItem(itemtype: string, id: number): Promise<any>
     {
         const response = await this.doCrudRequest('GET', `${itemtype}/${id}`);
+        return response.data;
+    }
+
+    public async getItemsByName(itemtype: string, name: string): Promise<any[]>
+    {
+        const response = await this.doCrudRequest(
+            'GET',
+            `${itemtype}?searchText[name]=^${name}$`
+        );
         return response.data;
     }
 
@@ -110,11 +123,16 @@ export class Api
         return response.data;
     }
 
-    public async purgeItem(itemtype: string, id: number): Promise<any>
-    {
+    public async purgeItem(
+        itemtype: string,
+        id: number,
+        force_purge: boolean = false,
+    ): Promise<any> {
+        // Without `force_purge`, the items that have a trashbin are only
+        // moved to it.
         const response = await this.doCrudRequest(
             'DELETE',
-            `${itemtype}/${id}`,
+            `${itemtype}/${id}${force_purge ? '?force_purge=1' : ''}`,
         );
         return response.data;
     }

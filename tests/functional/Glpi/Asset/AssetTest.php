@@ -39,10 +39,17 @@ use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\CapacityInterface;
+use Glpi\Asset\Capacity\IsInventoriableCapacity;
+use Glpi\Asset\CapacityConfig;
 use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Asset\CustomFieldType\DropdownType;
 use Glpi\Asset\CustomFieldType\StringType;
+use Glpi\Inventory\MainAsset\GenericAsset;
+use Glpi\Inventory\MainAsset\GenericNetworkAsset;
+use Glpi\Inventory\MainAsset\GenericPrinterAsset;
+use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class AssetTest extends DbTestCase
 {
@@ -139,15 +146,30 @@ class AssetTest extends DbTestCase
             'entities_id' => $this->getTestRootEntity(true),
         ]);
 
-        $this->expectExceptionMessage('Definition cannot be changed.');
+        // The item of another definition cannot be loaded, so it cannot be updated
         $asset_2 = new $classname_2();
-        $asset_2->update(['id' => $asset->getID(), 'name' => 'updated']);
+        $this->assertFalse($asset_2->update(['id' => $asset->getID(), 'name' => 'updated']));
+        $this->assertTrue($asset->getFromDB($asset->getID()));
+        $this->assertSame('new asset', $asset->fields['name']);
     }
 
-    public function testSearchOptionsUnicity(): void
+    public static function inventoryMainAssetProvider(): iterable
+    {
+        yield [GenericAsset::class];
+        yield [GenericNetworkAsset::class];
+        yield [GenericPrinterAsset::class];
+    }
+
+    #[DataProvider('inventoryMainAssetProvider')]
+    public function testSearchOptionsUnicity(string $inventory_mainasset): void
     {
         $capacities = array_map(
-            fn(CapacityInterface $capacity) => new Capacity(name: $capacity::class),
+            fn(CapacityInterface $capacity) => new Capacity(
+                name: $capacity::class,
+                config: $capacity instanceof IsInventoriableCapacity
+                    ? new CapacityConfig(['inventory_mainasset' => $inventory_mainasset])
+                    : new CapacityConfig()
+            ),
             AssetDefinitionManager::getInstance()->getAvailableCapacities()
         );
         $definition = $this->initAssetDefinition(
@@ -160,6 +182,8 @@ class AssetTest extends DbTestCase
         ]);
 
         $this->assertIsArray($asset->searchOptions());
+        // Also check options added by other itemtypes (e.g. `Infocom`)
+        $this->assertIsArray(SearchOption::getOptionsForItemtype($definition->getAssetClassName()));
     }
 
     public function testPrepareInputForAdd()
@@ -392,5 +416,115 @@ class AssetTest extends DbTestCase
             'is_active' => 0,
         ]);
         $this->assertFalse((new ($definition->getAssetClassName()))::canView());
+    }
+
+    public function testTemplateUrlsAreUrlEncoded(): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $definition = $this->initAssetDefinition();
+        $this->login();
+
+        $class_name = $definition->getAssetClassName();
+        $encoded    = rawurlencode($class_name);
+
+        // A namespaced class name contains backslashes, which are unsafe in a raw query
+        // value; they must be percent-encoded in the generated template URLs.
+        $menu = $class_name::getMenuContent();
+        $this->assertSame(
+            '/front/setup.templates.php?itemtype=' . $encoded . '&add=1',
+            $menu['links']['add']
+        );
+        $this->assertSame(
+            '/front/setup.templates.php?itemtype=' . $encoded . '&add=0',
+            $menu['links']['template']
+        );
+        $this->assertStringNotContainsString('\\', $menu['links']['add']);
+        $this->assertStringNotContainsString('\\', $menu['links']['template']);
+
+        // The redirect back to the templates list after a template action encodes it too.
+        $saved_get = $_GET;
+        $_GET['withtemplate'] = 1;
+        try {
+            $redirect = (new $class_name())->getRedirectToListUrl();
+        } finally {
+            $_GET = $saved_get;
+        }
+        $this->assertSame(
+            $CFG_GLPI['root_doc'] . '/front/setup.templates.php?add=0&itemtype=' . $encoded,
+            $redirect
+        );
+        $this->assertStringNotContainsString('\\', $redirect);
+    }
+
+    public function testTemplateUrlLeavesPlainItemtypeUnchanged(): void
+    {
+        $this->login();
+
+        // A non-namespaced itemtype has nothing to encode and must be untouched.
+        $menu = \Computer::getMenuContent();
+        $this->assertSame(
+            '/front/setup.templates.php?itemtype=Computer&add=1',
+            $menu['links']['add']
+        );
+        $this->assertSame(
+            '/front/setup.templates.php?itemtype=Computer&add=0',
+            $menu['links']['template']
+        );
+    }
+
+    public function testCannotLoadItemOfAnotherDefinition(): void
+    {
+        $foo_classname = $this->initAssetDefinition()->getAssetClassName();
+        $bar_classname = $this->initAssetDefinition()->getAssetClassName();
+
+        $bar_asset = $this->createItem($bar_classname, ['name' => 'Bar asset', 'entities_id' => $this->getTestRootEntity(true)]);
+
+        // Definitions share the same table, an item must only be loaded by the class of its definition
+        $foo_asset = new $foo_classname();
+        $this->assertFalse($foo_asset->getFromDB($bar_asset->getID()));
+        $this->assertSame([], $foo_asset->fields);
+
+        $this->assertTrue((new $bar_classname())->getFromDB($bar_asset->getID()));
+    }
+
+    public function testShowFormWithUnavailableField(): void
+    {
+        $definition = $this->initAssetDefinition(
+            capacities: [
+                new Capacity(
+                    name: IsInventoriableCapacity::class,
+                    config: new CapacityConfig(['inventory_mainasset' => GenericNetworkAsset::class])
+                ),
+            ]
+        );
+        $this->updateItem(
+            AssetDefinition::class,
+            $definition->getID(),
+            ['fields_display' => ['name', 'sysdescr']],
+            ['fields_display']
+        );
+
+        // Disabling the capacity makes the `sysdescr` field unavailable, but it is still in `fields_display`
+        $this->updateItem(AssetDefinition::class, $definition->getID(), ['capacities' => []], ['capacities']);
+        $definition->getFromDB($definition->getID());
+        $this->assertContains('sysdescr', array_column($definition->getDecodedFieldsField(), 'key'));
+        $this->assertArrayNotHasKey('sysdescr', $definition->getAllFields());
+
+        $this->login(); // must be done after the definition creation, to get rights on it
+
+        $asset = $this->createItem($definition->getAssetClassName(), [
+            'name'        => 'test asset',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        ob_start();
+        $result = $asset->showForm($asset->getID());
+        $output = ob_get_clean();
+
+        $this->assertTrue($result);
+        $this->assertStringContainsString('name="name"', $output);
+        $this->assertStringNotContainsString('name="sysdescr"', $output);
     }
 }

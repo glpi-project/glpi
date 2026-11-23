@@ -61,29 +61,51 @@ export class GlpiFormQuestionTypeItem {
                 return;
             }
 
-            const select = question.find('[data-glpi-form-editor-question-type-specific] select[name="default_value"], [data-glpi-form-editor-question-type-specific] select[data-glpi-form-editor-original-name="default_value"]');
-            const container = select.parent();
+            // Both the single and multiple item dropdowns must be reloaded so
+            // they reflect the newly selected itemtype. The multiple dropdown's
+            // name ends with "[]", so it has to be matched explicitly.
+            const selects = question.find([
+                'select[name="default_value"]',
+                'select[name="default_value[]"]',
+                'select[data-glpi-form-editor-original-name="default_value"]',
+                'select[data-glpi-form-editor-original-name="default_value[]"]',
+            ].map((selector) => `[data-glpi-form-editor-question-type-specific] ${selector}`).join(', '));
 
-            // Add a flag to all children to mark them as to be removed
-            container.children().attr('data-to-remove', 'true');
+            selects.each((index, element) => {
+                const select = $(element);
+                const container = select.parent();
+                const name = select.data('glpi-form-editor-original-name') || select.attr('name');
+                const is_multiple = name.endsWith('[]');
+                const is_disabled = select.prop('disabled');
 
-            // Load the new dropdown
-            container.load(
-                `${CFG_GLPI.root_doc}/ajax/dropdownAllItems.php`,
-                {
-                    'idtable'            : sub_type,
-                    'width'              : '100%',
-                    'name'               : select.data('glpi-form-editor-original-name') || select.attr('name'),
-                    'aria_label'         : select.attr('aria-label'),
-                    'display_emptychoice': 0,
-                    'value'              : -1,
-                    'valuename'          : empty_label,
-                    'toadd'              : {
-                        '-1': empty_label
+                // Add a flag to all children to mark them as to be removed
+                container.children().attr('data-to-remove', 'true');
+
+                // Load the new dropdown
+                container.load(
+                    `${CFG_GLPI.root_doc}/ajax/dropdownAllItems.php`,
+                    {
+                        'idtable'            : sub_type,
+                        'width'              : '100%',
+                        'name'               : name,
+                        'aria_label'         : select.attr('aria-label'),
+                        'display_emptychoice': 0,
+                        'multiple'           : is_multiple ? 1 : 0,
+                        'value'              : -1,
+                        'valuename'          : empty_label,
+                        'toadd'              : {
+                            '-1': empty_label
+                        },
                     },
-                },
-                () => container.find('[data-to-remove]').remove()
-            );
+                    () => {
+                        container.find('[data-to-remove]').remove();
+
+                        // Restore the enabled/disabled state lost on reload
+                        container.find('select, input[type="hidden"]')
+                            .prop('disabled', is_disabled);
+                    }
+                );
+            });
         });
     }
 

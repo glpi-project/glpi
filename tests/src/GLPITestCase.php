@@ -51,7 +51,9 @@ use DomainRecord;
 use Dropdown;
 use Entity;
 use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Cache\CacheManager;
+use Glpi\Config\ConfigContainer;
+use Glpi\Dashboard\Dashboard;
+use Glpi\Dashboard\Grid;
 use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Search\SearchOption;
 use Glpi\Tests\Log\TestHandler;
@@ -87,13 +89,10 @@ class GLPITestCase extends TestCase
     private $int;
     private $str;
     protected $has_failed = false;
-    private ?array $config_copy = null;
+    private ?ConfigContainer $config_copy = null;
     private array $superglobals_copy = [];
 
-    /**
-     * @var TestHandler
-     */
-    private $log_handler;
+    private TestHandler $log_handler;
 
     public function setUp(): void
     {
@@ -112,12 +111,6 @@ class GLPITestCase extends TestCase
         global $GLPI_CACHE;
         $GLPI_CACHE->clear();
 
-        // Some tests might change the current language, thus storing some
-        // translations in the cache
-        $manager = new CacheManager();
-        $cache = $manager->getTranslationsCacheInstance();
-        $cache->clear();
-
         // Init log handler
         global $PHPLOGGER;
         /** @var Logger $PHPLOGGER */
@@ -125,6 +118,10 @@ class GLPITestCase extends TestCase
         $PHPLOGGER->setHandlers([$this->log_handler]);
 
         vfsStreamWrapper::register();
+
+        // Reset dashboard caches
+        Grid::$all_dashboards = [];
+        Dashboard::$all_dashboards = [];
 
         // Make sure the tester plugin is never deactived by a test as it would
         // impact others tests that depend on it.
@@ -236,7 +233,10 @@ class GLPITestCase extends TestCase
     {
         $method = new ReflectionMethod($instance, $methodName);
 
-        return $method->invoke($instance, ...$args);
+        return $method->invoke(
+            $method->isStatic() ? null : $instance,
+            ...$args
+        );
     }
 
     /**
@@ -507,7 +507,9 @@ class GLPITestCase extends TestCase
         $this->superglobals_copy['SERVER'] = $_SERVER;
 
         if ($this->config_copy === null) {
-            $this->config_copy = $CFG_GLPI;
+            // Snapshot the config as an independent copy (ConfigContainer holds
+            // its data in an array property, copied by value on clone).
+            $this->config_copy = clone $CFG_GLPI;
         }
     }
 
@@ -534,7 +536,7 @@ class GLPITestCase extends TestCase
 
         // Globals
         global $CFG_GLPI, $FOOTER_LOADED, $HEADER_LOADED;
-        $CFG_GLPI = $this->config_copy;
+        $CFG_GLPI = clone $this->config_copy;
         $FOOTER_LOADED = false;
         $HEADER_LOADED = false;
 
@@ -544,6 +546,7 @@ class GLPITestCase extends TestCase
         CommonDBTM::clearSearchOptionCache();
         SearchOption::clearSearchOptionCache();
         Dropdown::resetItemtypesStaticCache();
+        Session::clearEntitiesCountCache();
 
         // Reboot assets definitions
         AssetDefinitionManager::unsetInstance();
@@ -704,7 +707,7 @@ class GLPITestCase extends TestCase
      * @param $sql
      * @return string
      */
-    protected function cleanSQL($sql)
+    protected function cleanSQL(string $sql): string
     {
         // Clean whitespaces
         $sql = preg_replace('/\s+/', ' ', $sql);

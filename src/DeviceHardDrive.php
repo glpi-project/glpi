@@ -34,11 +34,12 @@
  */
 
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 /// Class DeviceHardDrive
 class DeviceHardDrive extends CommonDevice
 {
-    protected static $forward_entity_to = ['Item_DeviceHardDrive', 'Infocom'];
+    protected static array $forward_entity_to = ['Item_DeviceHardDrive', 'Infocom'];
 
     public static function getTypeName($nb = 0)
     {
@@ -204,7 +205,7 @@ class DeviceHardDrive extends CommonDevice
             return $father;
         }
 
-        switch ($item->getType()) {
+        switch ($item::class) {
             case 'Computer':
                 Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
                 if ($this->fields["rpm"]) {
@@ -282,9 +283,9 @@ class DeviceHardDrive extends CommonDevice
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
             'computation'        => '('
-                . QueryFunction::sum('TABLE.capacity') . ' / '
-                . QueryFunction::count('TABLE.id') . ') * '
-                . QueryFunction::count(expression: 'TABLE.id', distinct: true),
+                . QueryFunction::sum(new QueryIdentifier('TABLE.capacity')) . ' / '
+                . QueryFunction::count(new QueryIdentifier('TABLE.id')) . ') * '
+                . QueryFunction::count(expression: new QueryIdentifier('TABLE.id'), distinct: true),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 

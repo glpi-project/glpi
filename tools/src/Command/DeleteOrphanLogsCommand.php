@@ -59,7 +59,7 @@ final class DeleteOrphanLogsCommand extends AbstractCommand
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         if (!$input->getOption('no-interaction') && !$input->getOption('dry-run')) {

@@ -42,6 +42,7 @@ use Glpi\Form\Migration\FormMigration;
 use Glpi\Marketplace\Controller;
 use Glpi\Migration\GenericobjectPluginMigration;
 use Glpi\Plugin\Hooks;
+use Glpi\System\HousekeepingCron;
 use Glpi\System\Requirement\PhpSupportedVersion;
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
 
@@ -50,6 +51,11 @@ use Glpi\System\Requirement\SessionsSecurityConfiguration;
  **/
 class Central extends CommonGLPI
 {
+    /**
+     * Cache key of the database schema checks displayed to administrators.
+     */
+    private const DATABASE_SCHEMA_CHECKS_CACHE_KEY = 'central_database_schema_checks';
+
     public static function getTypeName($nb = 0)
     {
 
@@ -71,17 +77,30 @@ class Central extends CommonGLPI
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-        if ($item->getType() == self::class) {
+        if ($item instanceof self) {
             $tabs = [
                 1 => self::createTabEntry(__('Personal View'), 0, null, User::getIcon()),
-                2 => self::createTabEntry(__('Group View'), 0, null, Group::getIcon()),
                 3 => self::createTabEntry(__('Global View'), 0, null, 'ti ti-world'),
-                4 => self::createTabEntry(_n('RSS feed', 'RSS feeds', Session::getPluralNumber()), 0, null, RSSFeed::getIcon()),
             ];
 
-            if (Grid::canViewOneDashboard()) {
-                array_unshift($tabs, self::createTabEntry(__('Dashboard'), 0, null, Dashboard::getIcon()));
+            if (self::canViewGroupView()) {
+                $tabs[2] = self::createTabEntry(__('Group View'), 0, null, Group::getIcon());
             }
+
+            if (RSSFeed::canView()) {
+                $tabs[4] = self::createTabEntry(
+                    _n('RSS feed', 'RSS feeds', Session::getPluralNumber()),
+                    0,
+                    null,
+                    RSSFeed::getIcon(),
+                );
+            }
+
+            if (Grid::canViewOneDashboard()) {
+                $tabs[0] = self::createTabEntry(__('Dashboard'), 0, null, Dashboard::getIcon());
+            }
+
+            ksort($tabs);
 
             return $tabs;
         }
@@ -145,9 +164,9 @@ class Central extends CommonGLPI
     public static function showGlobalView()
     {
 
-        $showticket  = Session::haveRight("ticket", Ticket::READALL);
-        $showproblem = Session::haveRight("problem", Problem::READALL);
-        $show_change = Session::haveRight('change', Change::READALL);
+        $showticket  = Session::haveRight(Ticket::$rightname, Ticket::READALL);
+        $showproblem = Session::haveRight(Problem::$rightname, Problem::READALL);
+        $show_change = Session::haveRight(Change::$rightname, Change::READALL);
 
         $grid_items = [];
 
@@ -184,22 +203,22 @@ class Central extends CommonGLPI
     public static function showMyView()
     {
         $showticket  = Session::haveRightsOr(
-            "ticket",
+            Ticket::$rightname,
             [Ticket::READMY, Ticket::READALL, Ticket::READASSIGN]
         );
 
         $showmyticket = Session::haveRightsOr(
-            "ticket",
+            Ticket::$rightname,
             [Ticket::READMY, Ticket::READALL]
         );
 
-        $showproblem = Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
+        $showproblem = Session::haveRightsOr(Problem::$rightname, [Problem::READALL, Problem::READMY]);
 
-        $showchanges = Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
+        $showchanges = Session::haveRightsOr(Change::$rightname, [Change::READALL, Change::READMY]);
 
         $lists = [];
 
-        if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
+        if (Session::haveRightsOr(TicketValidation::$rightname, TicketValidation::getValidateRights())) {
             $lists[] = [
                 'itemtype'  => Ticket::class,
                 'status'    => 'tovalidate',
@@ -263,7 +282,7 @@ class Central extends CommonGLPI
             ];
         }
 
-        if (Session::haveRightsOr('changevalidation', ChangeValidation::getValidateRights())) {
+        if (Session::haveRightsOr(ChangeValidation::$rightname, ChangeValidation::getValidateRights())) {
             $lists[] = [
                 'itemtype'  => Change::class,
                 'status'    => 'tovalidate',
@@ -314,16 +333,18 @@ class Central extends CommonGLPI
             ],
         ];
 
-        $idor = Session::getNewIDORToken(Reminder::class);
-        $twig_params['cards'][] = [
-            'itemtype'  => Reminder::class,
-            'widget'    => 'central_list',
-            'params'    => [
-                '_idor_token'  => $idor,
-            ],
-        ];
+        if (Reminder::canView()) {
+            $idor = Session::getNewIDORToken(Reminder::class);
+            $twig_params['cards'][] = [
+                'itemtype'  => Reminder::class,
+                'widget'    => 'central_list',
+                'params'    => [
+                    '_idor_token'  => $idor,
+                ],
+            ];
+        }
 
-        if (Session::haveRight("reminder_public", READ)) {
+        if (Session::haveRight(Reminder::$rightname, READ)) {
             $idor = Session::getNewIDORToken(Reminder::class, [
                 'personal' => 'false',
             ]);
@@ -338,28 +359,28 @@ class Central extends CommonGLPI
             ];
         }
 
-        if (Session::haveRight("project", Project::READMY)) {
+        if (Session::haveRight(Project::$rightname, Project::READMY)) {
             $idor = Session::getNewIDORToken(Project::class);
 
             $twig_params['cards'][] = [
-                'itemtype' => Project::class,
-                'widget' => 'central_list',
-                'params' => $card_params + [
-                    'itemtype'    => User::getType(),
-                    '_idor_token' => $idor,
+                'itemtype'  => Project::class,
+                'widget'    => 'central_list',
+                'params'    => $card_params + [
+                    'itemtype'      => User::class,
+                    '_idor_token'  => $idor,
                 ],
             ];
         }
 
-        if (Session::haveRight("projecttask", ProjectTask::READMY)) {
+        if (Session::haveRight(ProjectTask::$rightname, ProjectTask::READMY)) {
             $idor = Session::getNewIDORToken(ProjectTask::class);
 
             $twig_params['cards'][] = [
-                'itemtype' => ProjectTask::class,
-                'widget' => 'central_list',
-                'params' => $card_params + [
-                    'itemtype'    => User::getType(),
-                    '_idor_token' => $idor,
+                'itemtype'  => ProjectTask::class,
+                'widget'    => 'central_list',
+                'params'    => $card_params + [
+                    'itemtype'      => User::class,
+                    '_idor_token'  => $idor,
                 ],
             ];
         }
@@ -417,12 +438,15 @@ class Central extends CommonGLPI
      */
     public static function showGroupView()
     {
+        if (!self::canViewGroupView()) {
+            return;
+        }
 
-        $showticket = Session::haveRightsOr("ticket", [Ticket::READALL, Ticket::READASSIGN]);
+        $showticket = Session::haveRightsOr(Ticket::$rightname, [Ticket::READALL, Ticket::READASSIGN]);
 
-        $showproblem = Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
+        $showproblem = Session::haveRightsOr(Problem::$rightname, [Problem::READALL, Problem::READMY]);
 
-        $showchange = Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
+        $showchange = Session::haveRightsOr(Change::$rightname, [Change::READALL, Change::READMY]);
 
         $lists = [];
 
@@ -436,7 +460,7 @@ class Central extends CommonGLPI
                 'status'    => 'todo',
             ];
         }
-        if (Session::haveRight('ticket', Ticket::READGROUP)) {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READGROUP)) {
             $lists[] = [
                 'itemtype'  => Ticket::class,
                 'status'    => 'waiting',
@@ -464,7 +488,7 @@ class Central extends CommonGLPI
             ];
         }
 
-        if (Session::haveRight('ticket', Ticket::READGROUP)) {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READGROUP)) {
             $lists[] = [
                 'itemtype'  => Ticket::class,
                 'status'    => 'observed',
@@ -503,24 +527,24 @@ class Central extends CommonGLPI
             ];
         }
 
-        if (Session::haveRight("project", Project::READMY)) {
+        if (Session::haveRight(Project::$rightname, Project::READMY)) {
             $idor = Session::getNewIDORToken(Project::class);
             $twig_params['cards'][] = [
                 'itemtype'  => Project::class,
                 'widget'    => 'central_list',
                 'params'    => [
-                    'itemtype'    => Group::getType(),
+                    'itemtype'    => Group::class,
                     '_idor_token' => $idor,
                 ],
             ];
         }
-        if (Session::haveRight("projecttask", ProjectTask::READMY)) {
+        if (Session::haveRight(ProjectTask::$rightname, ProjectTask::READMY)) {
             $idor = Session::getNewIDORToken(ProjectTask::class);
             $twig_params['cards'][] = [
                 'itemtype'  => ProjectTask::class,
                 'widget'    => 'central_list',
                 'params'    => [
-                    'itemtype'    => Group::getType(),
+                    'itemtype'    => Group::class,
                     '_idor_token' => $idor,
                 ],
             ];
@@ -529,9 +553,32 @@ class Central extends CommonGLPI
         TemplateRenderer::getInstance()->display('central/widget_tab.html.twig', $twig_params);
     }
 
+    private static function canViewGroupView(): bool
+    {
+        if (empty($_SESSION['glpigroups'])) {
+            return false;
+        }
+
+        return Session::haveRightsOr(Ticket::$rightname, [Ticket::READALL, Ticket::READASSIGN, Ticket::READGROUP])
+            || Session::haveRightsOr(Problem::$rightname, [Problem::READALL, Problem::READMY])
+            || Session::haveRightsOr(Change::$rightname, [Change::READALL, Change::READMY])
+            || Session::haveRight(Project::$rightname, Project::READMY)
+            || Session::haveRight(ProjectTask::$rightname, ProjectTask::READMY);
+    }
+
+    /**
+     * Clear the cached database schema checks, to be called when the database schema may have changed.
+     */
+    public static function clearDatabaseSchemaChecksCache(): void
+    {
+        global $GLPI_CACHE;
+
+        $GLPI_CACHE->delete(self::DATABASE_SCHEMA_CHECKS_CACHE_KEY);
+    }
+
     private static function getMessages(): array
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_GLPI, $DB, $GLPI_CACHE;
 
         $messages = [];
 
@@ -546,7 +593,7 @@ class Central extends CommonGLPI
              . '</a>';
         }
 
-        if (Session::haveRight("config", UPDATE)) {
+        if (Session::haveRight(Config::$rightname, UPDATE)) {
             $logins = User::checkDefaultPasswords();
             $user   = new User();
             if (!empty($logins)) {
@@ -561,22 +608,51 @@ class Central extends CommonGLPI
                 );
             }
 
-            if (($myisam_count = $DB->getMyIsamTables()->count()) > 0) {
+            if (
+                $CFG_GLPI['ssovariables_id'] > 0
+                && ($sso_variable = SsoVariable::getById($CFG_GLPI['ssovariables_id'])) !== false
+                && $sso_variable->isSafe() === false
+            ) {
+                $messages['warnings'][] = sprintf(
+                    __s('The %s variable is unsafe. It should not be used for authentication.'),
+                    htmlescape($sso_variable->getName()),
+                )
+                    . ' '
+                    . sprintf(
+                        '<a href="%s">%s</a>',
+                        htmlescape($CFG_GLPI['root_doc'] . '/front/auth.others.php'),
+                        __s('See configuration')
+                    );
+            }
+
+            // These checks query the information schema, which is slow when the server hosts many tables.
+            $schema_checks = $GLPI_CACHE->get(self::DATABASE_SCHEMA_CHECKS_CACHE_KEY);
+            if (!is_array($schema_checks)) {
+                $schema_checks = [
+                    'myisam_tables'       => $DB->getMyIsamTables()->count(),
+                    'datetime_columns'    => $DB->getTzIncompatibleTables()->count(),
+                    'non_utf8mb4_tables'  => $DB->getNonUtf8mb4Tables()->count(),
+                    'signed_keys_columns' => $DB->getSignedKeysColumns()->count(),
+                ];
+                $GLPI_CACHE->set(self::DATABASE_SCHEMA_CHECKS_CACHE_KEY, $schema_checks, HOUR_TIMESTAMP);
+            }
+
+            if (($myisam_count = $schema_checks['myisam_tables']) > 0) {
                 $messages['warnings'][] = sprintf(__s('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)
                     . ' '
                     . sprintf(__s('Run the "%1$s" command to migrate them.'), 'php bin/console migration:myisam_to_innodb');
             }
-            if (($datetime_count = $DB->getTzIncompatibleTables()->count()) > 0) {
+            if (($datetime_count = $schema_checks['datetime_columns']) > 0) {
                 $messages['warnings'][] = sprintf(__s('%1$s columns are using the deprecated datetime storage field type.'), $datetime_count)
                     . ' '
                     . sprintf(__s('Run the "%1$s" command to migrate them.'), 'php bin/console migration:timestamps');
             }
-            if (($non_utf8mb4_count = $DB->getNonUtf8mb4Tables()->count()) > 0) {
+            if (($non_utf8mb4_count = $schema_checks['non_utf8mb4_tables']) > 0) {
                 $messages['warnings'][] = sprintf(__s('%1$s tables are using the deprecated utf8mb3 storage charset.'), $non_utf8mb4_count)
                     . ' '
                     . sprintf(__s('Run the "%1$s" command to migrate them.'), 'php bin/console migration:utf8mb4');
             }
-            if (($signed_keys_col_count = $DB->getSignedKeysColumns()->count()) > 0) {
+            if (($signed_keys_col_count = $schema_checks['signed_keys_columns']) > 0) {
                 $messages['warnings'][] = sprintf(__s('%d primary or foreign keys columns are using signed integers.'), $signed_keys_col_count)
                     . ' '
                     . sprintf(__s('Run the "%1$s" command to migrate them.'), 'php bin/console migration:unsigned_keys');
@@ -637,6 +713,24 @@ class Central extends CommonGLPI
                 );
             }
 
+            // Obsolete data is removed by the housekeeping automatic action, warn if it is disabled
+            $housekeeping = new CronTask();
+            if (
+                $housekeeping->getFromDBbyName(HousekeepingCron::class, HousekeepingCron::TASK_NAME)
+                && (int) $housekeeping->fields['state'] === CronTask::STATE_DISABLE
+                && HousekeepingCron::hasPendingWork()
+            ) {
+                $warning = __s('Some obsolete data should be removed, but the related automatic action is disabled.');
+                if (CronTask::canView()) {
+                    $warning .= ' ' . sprintf(
+                        '<a href="%s">%s</a>',
+                        htmlescape($housekeeping->getLinkURL()),
+                        __s('See automatic action')
+                    );
+                }
+                $messages['warnings'][] = $warning;
+            }
+
             // encrypt/decrypt key problems
             $messages['errors'] = (new GLPIKey())->getKeyFileReadErrors();
 
@@ -652,6 +746,15 @@ class Central extends CommonGLPI
                 }
             }
 
+            // Re-authentication on sensitive actions can be turned off by a constant.
+            // It lowers the security level of the whole instance: warn the administrators.
+            if (GLPI_DISABLE_REAUTH === true) {
+                $messages['warnings'][] = sprintf(
+                    __s('Re-authentication on sensitive actions is disabled by the "%s" constant.'),
+                    'GLPI_DISABLE_REAUTH'
+                ) . ' ' . __s('Remove it from your configuration to restore the expected security level.');
+            }
+
             // Check for available plugin updates
             $count = Controller::countUpdatablePlugins();
 
@@ -663,7 +766,7 @@ class Central extends CommonGLPI
             }
         }
 
-        if ($DB->isSlave() && !$DB->first_connection) {
+        if ($DB->isReplica() && !$DB->first_connection) {
             $messages['warnings'][] = __s('SQL replica: read only');
         }
 

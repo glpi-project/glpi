@@ -33,7 +33,6 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 <form method="get" name="form" action="stat.global.php">
-    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
     <input type="hidden" name="itemtype" value="{{ itemtype }}">
 
     <div class="card mx-auto" style="width: 845px;">

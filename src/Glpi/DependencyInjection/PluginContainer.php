@@ -41,7 +41,6 @@ use Plugin;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionObject;
 use RuntimeException;
-use Symfony\Component\Config\Builder\ConfigBuilderGenerator;
 use Symfony\Component\Config\Loader\DelegatingLoader;
 use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -80,26 +79,36 @@ class PluginContainer implements ContainerInterface
 
     public function set(string $id, ?object $service): void
     {
+        $this->initializeContainer();
+
         $this->internal_container->set($id, $service);
     }
 
     public function initialized(string $id): bool
     {
+        $this->initializeContainer();
+
         return $this->internal_container->initialized($id);
     }
 
     public function getParameter(string $name): UnitEnum|float|array|bool|int|string|null
     {
+        $this->initializeContainer();
+
         return $this->internal_container->getParameter($name) ?? $this->symfony_container->getParameter($name);
     }
 
     public function hasParameter(string $name): bool
     {
+        $this->initializeContainer();
+
         return $this->internal_container->hasParameter($name) || $this->symfony_container->hasParameter($name);
     }
 
     public function setParameter(string $name, UnitEnum|float|array|bool|int|string|null $value): void
     {
+        $this->initializeContainer();
+
         $this->internal_container->setParameter($name, $value);
     }
 
@@ -132,7 +141,12 @@ class PluginContainer implements ContainerInterface
             return;
         }
 
-        $container = new ContainerBuilder(new ParameterBag($this->container_parameters->all()));
+        $parameter_bag = new ParameterBag();
+        $parameter_bag->add(
+            $parameter_bag->escapeValue($this->container_parameters->all())
+        );
+
+        $container = new ContainerBuilder($parameter_bag);
 
         $this->configureContainerServices($container);
 
@@ -190,7 +204,7 @@ class PluginContainer implements ContainerInterface
         $env = $this->kernel->getEnvironment();
         $locator = new FileLocator($this->kernel);
         $resolver = new LoaderResolver([
-            new PhpFileLoader($container, $locator, $env, class_exists(ConfigBuilderGenerator::class) ? new ConfigBuilderGenerator($this->kernel->getBuildDir()) : null),
+            new PhpFileLoader($container, $locator, $env),
             new Psr4DirectoryLoader($locator),
         ]);
 

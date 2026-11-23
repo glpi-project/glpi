@@ -44,7 +44,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
     /** @use Clonable<static> */
     use Clonable;
 
-    public $additional_fields_for_dictionnary = ['manufacturer'];
+    public array $additional_fields_for_dictionnary = ['manufacturer'];
 
 
     public static function getFieldLabel()
@@ -205,7 +205,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         switch ($field) {
             case 'picture_front':
             case 'picture_rear':
-                if (isset($values['name']) && (string) $values['name'] !== '' && isset($options['html']) && $options['html']) {
+                if (isset($values['name']) && ((string) $values['name']) !== '' && isset($options['html']) && $options['html']) {
                     return Html::image(Toolbox::getPictureUrl($values[$field]), [
                         'alt'   => $options['searchopt']['name'],
                         'style' => 'max-height: 60px;',

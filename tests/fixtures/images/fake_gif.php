@@ -1,0 +1,1 @@
+GIF89a<?php echo 'foo bar'; ?>

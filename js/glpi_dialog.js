@@ -74,6 +74,11 @@ var glpi_html_dialog = function({
     buttons     = [],
     bs_focus    = true,
 } = {}) {
+    // Remember the element that triggered the dialog so focus can be restored to it when the dialog closes.
+    // Bootstrap only restores focus for modals opened through data-bs-toggle,
+    // not for those shown programmatically like this one.
+    const previously_focused = document.activeElement;
+
     if (buttons.length > 0) {
         var buttons_html = "";
         buttons.forEach(button => {
@@ -110,7 +115,7 @@ var glpi_html_dialog = function({
          <div class="modal-dialog ${_.escape(dialogclass)}">
             <div class="modal-content">
                <div class="modal-header">
-                  <h2 id="${_.escape(id)}_title" class="fs-4 modal-title" tabindex="-1">${title}</h2>
+                  <h2 id="${_.escape(id)}_title" class="fs-4 modal-title d-flex align-items-center" tabindex="-1">${title}</h2>
                   <button type="button" class="btn-close" data-bs-dismiss="modal"
                            aria-label="${__("Close")}"></button>
                </div>
@@ -143,12 +148,39 @@ var glpi_html_dialog = function({
         show(event);
     });
     myModalEl.addEventListener('hidden.bs.modal', (event) => {
+        // restore focus to the element that opened the dialog, before the close
+        // callback runs so a caller may still redirect focus if needed
+        if (previously_focused && typeof previously_focused.focus === 'function') {
+            previously_focused.focus();
+        }
+
         // call close event
         close(event);
 
         if ($('div.modal.show').length === 0) {
             $('div.modal-backdrop').remove();
         }
+
+        // Destroy TinyMCE instances within the modal to prevent memory leaks
+        if (window.tinymce !== undefined) {
+            window.tinymce.get().forEach((editor) => {
+                if (myModalEl.contains(editor.getElement())) {
+                    editor.remove();
+                }
+            });
+        }
+
+        // Destroy Select2 instances within the modal to prevent memory leaks
+        $(myModalEl).find('.select2-hidden-accessible').each(function() {
+            $(this).select2('destroy');
+        });
+
+        // Destroy Flatpickr instances within the modal to prevent memory leaks
+        $(myModalEl).find('input').each(function() {
+            if (this._flatpickr) {
+                this._flatpickr.destroy();
+            }
+        });
 
         // remove html on modal close
         $(`#${CSS.escape(id)}`).remove();
@@ -325,6 +357,74 @@ var glpi_confirm = function({
 var glpi_close_all_dialogs = function() {
     $('.modal.show').modal('hide').remove();
 };
+
+
+/**
+ * Create a danger confirmation dialog with Tabler styling
+ *
+ * @param {Object} options - options
+ * @param {string} options.title - string to display as the modal title
+ * @param {string} options.message - html string to display as the modal message
+ * @param {string} options.id - id attribute of the modal
+ * @param {string} options.confirm_label - change "confirm" button label
+ * @param {string} options.cancel_label - change "cancel" button label
+ * @returns {Promise<boolean>} - resolves to true if confirmed, false if cancelled
+ */
+var glpi_confirm_danger = function({
+    title         = __('Are you sure?'),
+    message       = "",
+    id            = `modal_${Math.random().toString(36).substring(7)}`,
+    confirm_label = _x('button', 'Confirm'),
+    cancel_label  = _x('button', 'Cancel'),
+} = {}) {
+    return new Promise((resolve) => {
+        // remove old modal
+        glpi_close_all_dialogs();
+
+        const confirm_btn_id = `${id}_confirm`;
+        const cancel_btn_id = `${id}_cancel`;
+
+        // Create a modal with tabler classes
+        const modal_html = `
+            <div class="modal modal-blur fade" id="${_.escape(id)}" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="modal-title">${title}</div>
+                            <div>${message}</div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="${_.escape(cancel_btn_id)}" class="btn btn-link link-secondary me-auto" data-bs-dismiss="modal">${cancel_label}</button>
+                            <button type="button" id="${_.escape(confirm_btn_id)}" class="btn btn-danger" data-bs-dismiss="modal">${confirm_label}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        $('body').append(modal_html);
+
+        let confirmed = false;
+        $(`#${CSS.escape(confirm_btn_id)}`).on('click', () => {
+            confirmed = true;
+        });
+
+        const modal_el = document.getElementById(id);
+        const modal = new bootstrap.Modal(modal_el, {});
+
+        modal_el.addEventListener('hidden.bs.modal', () => {
+            // Defensive cleanup code, won't be needed most of the time
+            if ($('div.modal.show').length === 0) {
+                $('div.modal-backdrop').remove();
+            }
+
+            $(`#${CSS.escape(id)}`).remove();
+            resolve(confirmed);
+        });
+
+        modal.show();
+    });
+};
+
 
 var toast_id = 0;
 

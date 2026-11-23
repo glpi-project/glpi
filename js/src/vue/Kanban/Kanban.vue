@@ -5,7 +5,7 @@
 
     import { Rights } from "./Rights.js";
     import Column from "./Column.vue";
-    import {computed, nextTick, onMounted, ref, watch} from "vue";
+    import {computed, nextTick, onMounted, ref, useTemplateRef, watch} from "vue";
     import SearchInput from "./SearchInput.js";
     import {TeamBadgeProvider} from "./TeamBadgeProvider.js";
 
@@ -94,6 +94,8 @@
     let mutation_observer = null;
     let is_sorting_active = false;
     let sort_data = undefined;
+    const kanban = useTemplateRef('kanban');
+    const source_filter_input = useTemplateRef('source_filter_input');
 
     const team_badge_provider = new TeamBadgeProvider(props.display_initials, props.max_team_images);
 
@@ -153,7 +155,7 @@
                 }
             });
         });
-        mutation_observer.observe($(`#${CSS.escape(props.element_id)}`).get(0), {
+        mutation_observer.observe(kanban.value, {
             subtree: true,
             childList: true
         });
@@ -232,7 +234,7 @@
         filter_input.tokenizer.clearAutocomplete();
 
         // Refresh core tags autocomplete
-        filter_input.tokenizer.setAutocomplete('type', Object.keys(props.supported_itemtypes).map(k => `<i class="${_.escape(props.supported_itemtypes[k].icon)} me-1"></i>` + _.escape(k)));
+        filter_input.tokenizer.setAutocomplete('type', Object.keys(props.supported_itemtypes).map(k => `<i class="${_.escape(props.supported_itemtypes[k].icon)} me-1" aria-hidden="true"></i>` + _.escape(k)));
         filter_input.tokenizer.setAutocomplete('milestone', ["true", "false"]);
         filter_input.tokenizer.setAutocomplete('deleted', ["true", "false"]);
 
@@ -367,7 +369,7 @@
                 entry.folded = entry.folded === 'true' || entry.folded === true;
                 const element = $(`#column-${CSS.escape(props.column_field.id)}-${CSS.escape(entry.column)}`);
                 if (element.length === 0) {
-                    promises.push(loadColumn(entry.column, true, false));
+                    promises.push(loadColumn(entry.column, true));
                 }
                 $(`#${CSS.escape(props.element_id)} .kanban-columns .kanban-column:nth-child(${index})`).after(element);
                 if (entry.folded) {
@@ -422,9 +424,10 @@
      * Load a column from the server and append it to the Kanban if it is visible.
      * @param {number} column_id The ID of the column to load.
      *    This is useful if an item is changed in another tab or by another user to be in the new column after the original column was added.
+     * @param {boolean} nosave Prevent saving the state even if the column doesn't seem present in the current state. This should be true if called during the loadState() function to prevent saving the state before it is fully loaded.
      * @return {Promise<void>}
      */
-    async function loadColumn(column_id) {
+    async function loadColumn(column_id, nosave = false) {
         let skip_load = false;
         if (user_state.value.state !== undefined) {
             $.each(user_state.value.state, function (i, c) {
@@ -465,7 +468,7 @@
                     refreshSortables();
 
                     // If there are no cards in the state for this column, force a state save
-                    if ((state_for_col?.cards || []).length === 0) {
+                    if (!nosave && (state_for_col?.cards || []).length === 0) {
                         saveState();
                     }
                 }
@@ -692,8 +695,8 @@
                         ${member_item}
                         ${_.escape(l.attr('data-name')) || `${_.escape(member_itemtype)} (${_.escape(member_items_id)})`}
                     </div>
-                    <button type="button" name="delete" class="btn btn-ghost-danger">
-                        <i class="ti ti-x" title="${__('Delete')}"></i>
+                    <button type="button" name="delete" class="btn btn-ghost-danger" title="${__('Delete')}" aria-label="${__('Delete')}">
+                        <i class="ti ti-x" aria-hidden="true"></i>
                     </button>
                 `);
             });
@@ -1301,7 +1304,7 @@
     backgroundRefresh();
     onMounted(() => {
         initMutationObserver();
-        filter_input = new SearchInput($(`#${CSS.escape(props.element_id)} input[name="filter"]`), {
+        filter_input = new SearchInput(source_filter_input.value, {
             allowed_tags: props.supported_filters,
             on_result_change: (e, result) => {
                 filters.value = {
@@ -1330,13 +1333,13 @@
 </script>
 
 <template>
-    <div :id="element_id" class="kanban">
+    <div :id="element_id" class="kanban" ref="kanban">
         <div class="kanban-container">
             <div v-if="show_toolbar" class="kanban-toolbar flex-column flex-md-row btn-group shadow-none">
                 <select name="kanban-board-switcher" v-model="kanban_switcher">
                     <option v-for="(k_name, k_id) in all_kanbans" :value="k_id" :selected="k_id === item.items_id" :key="k_id">{{ k_name }}</option>
                 </select>
-                <input name="filter" class="form-control ms-1" type="text" :placeholder="__('Search or filter results')" autocomplete="off"/>
+                <input ref="source_filter_input" name="filter" class="form-control ms-1" type="text" :placeholder="__('Search or filter results')" autocomplete="off"/>
                 <div class="dropdown">
                     <button type="button" class="kanban-add-column btn btn-outline-secondary ms-1" v-if="rights.canModifyView()"
                             data-bs-toggle="dropdown" data-bs-auto-close="outside" @click="updateAllColumnsList()">{{ __('Add column') }}</button>
@@ -1385,24 +1388,24 @@
                 </div>
                 <div class="dropdown">
                     <button type="button" class="btn btn-outline-secondary btn-icon ms-1 kanban-extra-toolbar-options" v-if="rights.canModifyView()"
-                            data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                        <i class="ti ti-dots-vertical"></i>
+                            data-bs-toggle="dropdown" data-bs-auto-close="outside" :title="__('More actions')" :aria-label="__('More actions')">
+                        <i class="ti ti-dots-vertical" aria-hidden="true"></i>
                     </button>
                     <ul class="kanban-dropdown dropdown-menu kanban-extra-toolbar-options-menu" role="menu">
                         <li class="dropdown-item cursor-pointer" @click="clearState(true)">
                             <span>
-                                <i class="ti ti-trash"></i>{{ __('Reset view') }}
+                                <i class="ti ti-trash" aria-hidden="true"></i>{{ __('Reset view') }}
                             </span>
                         </li>
                         <template v-if="debug_mode">
                             <li class="dropdown-item cursor-pointer" @click="loadState()">
-                                <span><i class="ti ti-cloud-download"></i>Load state (Debug)</span>
+                                <span><i class="ti ti-cloud-download" aria-hidden="true"></i>Load state (Debug)</span>
                             </li>
                             <li class="dropdown-item cursor-pointer" @click="saveState(true, true)">
-                                <span><i class="ti ti-cloud-upload"></i>Save state (Debug)</span>
+                                <span><i class="ti ti-cloud-upload" aria-hidden="true"></i>Save state (Debug)</span>
                             </li>
                             <li class="dropdown-item cursor-pointer" @click="refresh(false)">
-                                <span><i class="ti ti-refresh"></i>Refresh (Debug)</span>
+                                <span><i class="ti ti-refresh" aria-hidden="true"></i>Refresh (Debug)</span>
                             </li>
                         </template>
                     </ul>
@@ -1422,17 +1425,17 @@
             <ul id="kanban-item-overflow-dropdown" class="kanban-dropdown dropdown-menu d-none">
                 <li class="kanban-item-goto dropdown-item">
                     <a href="#" @click.prevent.stop="toggleSubDropdown($event)">
-                        <i class="ti ti-share-3"></i>{{ __('Go to') }}
+                        <i class="ti ti-share-3" aria-hidden="true"></i>{{ __('Go to') }}
                     </a>
                 </li>
                 <li class="kanban-item-restore dropdown-item d-none" v-if="rights.canDeleteItem()">
                     <span>
-                        <i class="ti ti-trash-off"></i>{{ __('Restore') }}
+                        <i class="ti ti-trash-off" aria-hidden="true"></i>{{ __('Restore') }}
                     </span>
                 </li>
                 <li class="kanban-item-remove dropdown-item d-none" v-if="rights.canDeleteItem()">
                     <span>
-                        <i class="ti ti-trash"></i>{{ __('Delete') }}
+                        <i class="ti ti-trash" aria-hidden="true"></i>{{ __('Delete') }}
                     </span>
                 </li>
             </ul>

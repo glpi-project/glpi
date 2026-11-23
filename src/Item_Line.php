@@ -37,10 +37,10 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Item_Line extends CommonDBRelation
 {
-    public static $itemtype_1 = Line::class;
-    public static $items_id_1 = 'lines_id';
-    public static $itemtype_2 = 'itemtype';
-    public static $items_id_2 = 'items_id';
+    public static ?string $itemtype_1 = Line::class;
+    public static ?string $items_id_1 = 'lines_id';
+    public static ?string $itemtype_2 = 'itemtype';
+    public static ?string $items_id_2 = 'items_id';
 
     public static function getTypeName($nb = 0)
     {
@@ -58,12 +58,12 @@ class Item_Line extends CommonDBRelation
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForMainItem($item) + self::countSimcardItemsForLine($item);
             }
-            return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
+            return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::class, 'ti ti-package');
         } else {
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForItem($item) + self::countSimcardLinesForItem($item);
             }
-            return self::createTabEntry(Line::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(Line::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
     }
 
@@ -135,7 +135,7 @@ class Item_Line extends CommonDBRelation
     {
         return countElementsInTable(Item_DeviceSimcard::getTable(), [
             'items_id' => $item->getID(),
-            'itemtype' => $item->getType(),
+            'itemtype' => $item::class,
             'NOT'   => [
                 'lines_id' => 0,
             ],
@@ -210,6 +210,7 @@ class Item_Line extends CommonDBRelation
             'nosort' => true,
             'super_header' => [
                 'label' => Item_DeviceSimcard::getTypeName(Session::getPluralNumber()),
+                'level' => 2,
             ],
             'columns' => [
                 'name' => __('Name'),
@@ -219,7 +220,6 @@ class Item_Line extends CommonDBRelation
             ],
             'entries' => $simcard_entries,
             'total_number' => count($simcard_entries),
-            'filtered_number' => count($simcard_entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($simcard_entries),
@@ -254,6 +254,7 @@ class Item_Line extends CommonDBRelation
                     'used'        => $used,
                 ],
                 'form_label' => __('Add an item'),
+                'form_label_level' => 2,
             ]);
         }
 
@@ -277,6 +278,7 @@ class Item_Line extends CommonDBRelation
             'nosort' => true,
             'super_header' => [
                 'label' => _n('Item', 'Items', Session::getPluralNumber()),
+                'level' => 2,
             ],
             'columns' => [
                 'name' => __('Name'),
@@ -286,7 +288,6 @@ class Item_Line extends CommonDBRelation
             ],
             'entries' => $item_entries,
             'total_number' => count($item_entries),
-            'filtered_number' => count($item_entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($item_entries),
@@ -308,7 +309,7 @@ class Item_Line extends CommonDBRelation
     {
         global $DB;
 
-        $itemtype = $item::getType();
+        $itemtype = $item::class;
         $ID = $item->fields['id'];
 
         if (
@@ -356,6 +357,7 @@ class Item_Line extends CommonDBRelation
             'nosort' => true,
             'super_header' => [
                 'label' => Item_DeviceSimcard::getTypeName(Session::getPluralNumber()),
+                'level' => 2,
             ],
             'columns' => [
                 'name' => __('Name'),
@@ -365,7 +367,6 @@ class Item_Line extends CommonDBRelation
             ],
             'entries' => $simcard_entries,
             'total_number' => count($simcard_entries),
-            'filtered_number' => count($simcard_entries),
             'showmassiveactions' => $simcard_entries,
             'massiveactionparams' => [
                 'num_displayed' => count($simcard_entries),
@@ -400,6 +401,7 @@ class Item_Line extends CommonDBRelation
                     'used'        => $used,
                 ],
                 'form_label' => __('Add a phone line'),
+                'form_label_level' => 2,
             ]);
         }
 
@@ -420,6 +422,7 @@ class Item_Line extends CommonDBRelation
             'nosort' => true,
             'super_header' => [
                 'label' => Line::getTypeName(Session::getPluralNumber()),
+                'level' => 2,
             ],
             'columns' => [
                 'name' => __('Name'),
@@ -429,7 +432,6 @@ class Item_Line extends CommonDBRelation
             ],
             'entries' => $line_entries,
             'total_number' => count($line_entries),
-            'filtered_number' => count($line_entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($line_entries),

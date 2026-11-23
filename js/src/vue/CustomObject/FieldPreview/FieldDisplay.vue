@@ -313,7 +313,10 @@
                             <template v-slot:field_label>{{ sortable_field.label }}</template>
                             <template v-slot:field_markers>
                                 <span v-if="parseInt(sortable_field.field_options.required ?? 0) === 1" class="required">*</span>
-                                <i v-if="parseInt(sortable_field.field_options.readonly ?? 0) === 1" class="ti ti-pencil-off ms-2" :title="__('Readonly')"></i>
+                                <template v-if="parseInt(sortable_field.field_options.readonly ?? 0) === 1">
+                                    <i class="ti ti-pencil-off ms-2" :title="__('Readonly')" aria-hidden="true"></i>
+                                    <span class="visually-hidden">{{ __('Readonly') }}</span>
+                                </template>
                             </template>
                             <template v-slot:field_options>
                                 <template v-for="(field_option_value, field_option_name) in sortable_field.field_options" :key="field_option_name">

@@ -35,13 +35,17 @@
 namespace Glpi\Tools\Command;
 
 use Glpi\UI\IllustrationManager;
+use Override;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function Safe\file_put_contents;
+
 final class GenerateIllustrationTranslationFileCommand extends Command
 {
-    protected $requires_db = false;
+    protected bool $requires_db = false;
 
     #[Override]
     protected function configure()
@@ -49,10 +53,12 @@ final class GenerateIllustrationTranslationFileCommand extends Command
         parent::configure();
 
         $this->setName('tools:generate_illustration_translations');
+        $this->setDescription('Generate a files Illustrations tags and title. It\'s required for translations generation - tools:locales:extract');
+        $this->setHidden();
     }
 
     #[Override]
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $content = "<?php" . PHP_EOL . PHP_EOL;
 

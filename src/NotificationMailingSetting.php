@@ -35,6 +35,9 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Mail\SMTP\OauthConfig;
+use Symfony\Component\Mailer\Exception\TransportException;
+use Symfony\Component\Mailer\Transport\Dsn;
+use Symfony\Component\Mailer\Transport\NativeTransportFactory;
 
 use function Safe\json_decode;
 
@@ -59,6 +62,21 @@ class NotificationMailingSetting extends NotificationSetting
     public static function getMode()
     {
         return Notification_NotificationTemplate::MODE_MAIL;
+    }
+
+    /**
+     * Check whether the PHP native mail transport can be used.
+     */
+    public static function isMailFunctionAvailable(): bool
+    {
+        try {
+            (new NativeTransportFactory())->create(Dsn::fromString('native://default'));
+        } catch (TransportException|InvalidArgumentException) {
+            // `InvalidArgumentException` is thrown when `sendmail_path` lacks the `-t` or `-bs` flag.
+            return false;
+        }
+
+        return true;
     }
 
     #[Override]
@@ -146,16 +164,15 @@ class NotificationMailingSetting extends NotificationSetting
             self::ATTACH_FROM_TRIGGER_ONLY => __('Only documents related to the item that triggers the event'),
         ];
 
-        $mail_methods = [
-            MAIL_MAIL       => __('PHP'),
+        $is_mail_function_available = self::isMailFunctionAvailable();
+        $mail_methods = [];
+        if ($is_mail_function_available) {
+            $mail_methods[MAIL_MAIL] = __('PHP');
+        }
+        $mail_methods += [
             MAIL_SMTP       => __('SMTP'),
             MAIL_SMTPOAUTH  => __('SMTP+OAUTH'),
         ];
-        $is_mail_function_available = true;
-        if (!function_exists('mail')) {
-            unset($mail_methods[MAIL_MAIL]);
-            $is_mail_function_available = false;
-        }
 
         $providers_values = [];
         foreach (OauthConfig::getInstance()->getSupportedProviders() as $provider_class) {

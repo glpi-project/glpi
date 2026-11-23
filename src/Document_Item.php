@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 
 /**
@@ -45,13 +46,21 @@ use Glpi\DBAL\QueryUnion;
 class Document_Item extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = Document::class;
-    public static $items_id_1    = 'documents_id';
-    public static $take_entity_1 = true;
+    public static ?string $itemtype_1 = Document::class;
+    public static ?string $items_id_1    = 'documents_id';
+    public static bool $take_entity_1 = true;
 
-    public static $itemtype_2    = 'itemtype';
-    public static $items_id_2    = 'items_id';
-    public static $take_entity_2 = false;
+    public static ?string $itemtype_2    = 'itemtype';
+    public static ?string $items_id_2    = 'items_id';
+    public static bool $take_entity_2 = false;
+
+    /**
+     * Right constant to see private documents attached to items.
+     * This follows the ITILSubItemRights pattern (value 8192).
+     *
+     * @var int
+     */
+    public const SEEPRIVATE = 8192;
 
     public static function getTypeName($nb = 0)
     {
@@ -78,7 +87,91 @@ class Document_Item extends CommonDBRelation
             }
         }
 
-        return parent::canCreateItem();
+        return $this->canEditLinkedKnowbaseItem() && parent::canCreateItem();
+    }
+
+    public function canUpdateItem(): bool
+    {
+        return $this->canEditLinkedKnowbaseItem() && parent::canUpdateItem();
+    }
+
+    public function canDeleteItem(): bool
+    {
+        return $this->canEditLinkedKnowbaseItem() && parent::canDeleteItem();
+    }
+
+    public function canPurgeItem(): bool
+    {
+        return $this->canEditLinkedKnowbaseItem() && parent::canPurgeItem();
+    }
+
+    /**
+     * Linking to or unlinking from an article requires the right to edit it, see `KnowbaseItem::canAddItem()`.
+     */
+    private function canEditLinkedKnowbaseItem(): bool
+    {
+        $item = getItemForItemtype((string) $this->fields['itemtype']);
+        if (!$item instanceof KnowbaseItem) {
+            return true;
+        }
+
+        return !$item->getFromDB($this->fields['items_id']) || $item->canAddItem(Document::class);
+    }
+
+    public function canViewItem(): bool
+    {
+        if (!parent::canViewItem()) {
+            return false;
+        }
+
+        if ((bool) $this->fields['is_private']) {
+            if (Session::haveRight(Document::$rightname, self::SEEPRIVATE)) {
+                return true;
+            }
+            if ($this->fields['users_id'] === Session::getLoginUserID()) {
+                return true;
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns criteria restricting a `glpi_documents_items` query to the links the current user
+     * is allowed to see, i.e. excluding the private ones when the user does not hold the
+     * `self::SEEPRIVATE` right and is not the author of the link.
+     *
+     * Mirrors the restriction enforced by `self::canViewItem()` on display.
+     *
+     * @return list<array<string, mixed>> Criteria to spread into a `WHERE` clause,
+     *                                      empty when no restriction applies.
+     */
+    public static function getPrivacyRestrictionCriteria(): array
+    {
+        if (Session::haveRight(Document::$rightname, self::SEEPRIVATE)) {
+            return [];
+        }
+
+        $users_id = Session::getLoginUserID();
+        if ($users_id === false) {
+            // Anonymous access (public FAQ, share token): no link can belong to the current
+            // user, and comparing `false` would match the ownerless links stored with a 0.
+            return [
+                [
+                    self::getTableField('is_private') => 0,
+                ],
+            ];
+        }
+
+        return [
+            [
+                'OR' => [
+                    self::getTableField('is_private') => 0,
+                    self::getTableField('users_id')   => $users_id,
+                ],
+            ],
+        ];
     }
 
     public function prepareInputForAdd($input)
@@ -224,6 +317,11 @@ class Document_Item extends CommonDBRelation
 
     private function addToMergedTickets(): void
     {
+        // Ticket merge relationships must only be applied to ticket documents.
+        if ($this->fields['itemtype'] !== Ticket::class) {
+            return;
+        }
+
         $merged = Ticket::getMergedTickets($this->fields['items_id']);
         foreach ($merged as $ticket_id) {
             $input = $this->input;
@@ -295,7 +393,6 @@ class Document_Item extends CommonDBRelation
                     Document::canView()
                     || ($item::class === Ticket::class)
                     || ($item::class === Reminder::class)
-                    || ($item::class === KnowbaseItem::class)
                 ) {
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nbitem = self::countForItem($item);
@@ -358,7 +455,6 @@ class Document_Item extends CommonDBRelation
                 {% set rand = random() %}
                 <div class="mb-3">
                     <form method="post" action="{{ 'Document_Item'|itemtype_form_path }}">
-                        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                         {{ inputs.hidden('documents_id', doc.fields['id']) }}
                         {{ fields.dropdownItemsFromItemtypes('', add_item_msg, {
                             'itemtypes': doc.getItemtypesThatCanHave(),
@@ -475,7 +571,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -498,15 +593,12 @@ TWIG, $twig_params);
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0): bool
     {
-        $ID = $item->getField('id');
-
-        if ($item->isNewID($ID)) {
+        if ($item->isNewItem()) {
             return false;
         }
 
         if (
             ($item::class !== Ticket::class)
-            && ($item::class !== KnowbaseItem::class)
             && ($item::class !== Reminder::class)
             && !Document::canView()
         ) {
@@ -569,8 +661,8 @@ TWIG, $twig_params);
             $entity   = $_SESSION["glpiactive_entity"];
 
             if ($item->isEntityAssign()) {
-                // Case of personal items : entity = -1 : create on active entity (Reminder case))
-                if ($item->getEntityID() >= 0) {
+                // Item's entity when the user may write there, otherwise their active entity.
+                if ($item->getEntityID() >= 0 && Session::haveAccessToEntity($item->getEntityID())) {
                     $entity = $item->getEntityID();
                 }
 
@@ -659,6 +751,7 @@ TWIG, $twig_params);
             $reverse_criteria['WHERE'] = [
                 'glpi_documents_items.documents_id' => $item->getID(),
                 'glpi_documents_items.itemtype' => $item::class,
+                ...self::getPrivacyRestrictionCriteria(),
             ];
             $criteria = ['FROM' => new QueryUnion([$criteria, $reverse_criteria])];
         }
@@ -725,7 +818,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit && $withtemplate < 2,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -808,12 +900,20 @@ TWIG, $twig_params);
 
         foreach ($ids as $id) {
             if (!$item->getFromDB($id)) {
-                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                 continue;
             }
             $doc_id = (int) $item->fields['documents_id'];
+
+            $document = new Document();
+            if (!$document->can($doc_id, UPDATE)) {
+                $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                continue;
+            }
+
             $_SESSION['glpitransfer_list'][Document::class][$doc_id] = $doc_id;
-            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
         }
 
         $ma->setRedirect($CFG_GLPI['root_doc'] . '/front/transfer.action.php');
@@ -858,7 +958,22 @@ TWIG, $twig_params);
                 ];
             }
 
-            $params = array_merge_recursive($params, $kb_params);
+            // Use a subquery to check visibility instead of merging LEFT JOINs
+            // into the main query, which would multiply rows when a KB article
+            // has multiple visibility targets (profiles, users, groups, entities).
+            $subquery_criteria = [
+                'SELECT' => ['glpi_knowbaseitems.id'],
+                'FROM'   => 'glpi_knowbaseitems',
+            ];
+            if (isset($kb_params['LEFT JOIN'])) {
+                $subquery_criteria['LEFT JOIN'] = $kb_params['LEFT JOIN'];
+            }
+            if (isset($kb_params['WHERE'])) {
+                $subquery_criteria['WHERE'] = $kb_params['WHERE'];
+            }
+            $params['WHERE'][] = [
+                'glpi_knowbaseitems.id' => new QuerySubQuery($subquery_criteria),
+            ];
         }
 
         return $params;
@@ -999,7 +1114,30 @@ TWIG, $twig_params);
             $criteria['WHERE']['glpi_documents.entities_id'] = 0;
         }
 
+        // Applied after the entity restriction: the latter may return a numerically keyed
+        // criterion, which the union above would silently drop on collision.
+        $criteria['WHERE'] = [...$criteria['WHERE'], ...self::getPrivacyRestrictionCriteria()];
+
         return $criteria;
+    }
+
+    /**
+     * Get rights definitions for this class.
+     * Adds the SEEPRIVATE right for viewing private documents on ITIL objects.
+     *
+     * @param string $interface Interface type ('central' or 'helpdesk')
+     *
+     * @return array<int, string> Array of rights with their labels
+     */
+    public function getRights($interface = 'central'): array
+    {
+        $values = [];
+
+        if ($interface === 'central') {
+            $values[self::SEEPRIVATE] = __('See private ones');
+        }
+
+        return $values;
     }
 
     public static function getIcon()

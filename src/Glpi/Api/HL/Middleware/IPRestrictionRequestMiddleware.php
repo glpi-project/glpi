@@ -37,9 +37,8 @@ namespace Glpi\Api\HL\Middleware;
 
 use Glpi\Api\HL\Router;
 use Glpi\Http\JSONResponse;
+use Glpi\Toolbox\IPUtilities;
 use League\OAuth2\Server\Exception\OAuthServerException;
-
-use function Safe\inet_pton;
 
 class IPRestrictionRequestMiddleware extends AbstractMiddleware implements RequestMiddlewareInterface
 {
@@ -50,6 +49,8 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
             $next($input);
             return;
         }
+
+        $client_ip = IPUtilities::getClientIP();
 
         // Determine client_id from current route or request parameters
         $client = Router::getInstance()->getCurrentClient();
@@ -67,7 +68,7 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
         }
 
         // Check if client is allowed for the remote IP
-        if (!$this->isClientIPAllowed((string) $client_id, $_SERVER['REMOTE_ADDR'])) {
+        if ($client_ip === null || !$this->isClientIPAllowed((string) $client_id, $client_ip)) {
             $input->response = OAuthServerException::accessDenied(
                 'Your IP address is not allowed to use this OAuth client.'
             )->generateHttpResponse(new JSONResponse());
@@ -98,34 +99,6 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
     private function isIPAllowed(string $ip, string $allowed_ips): bool
     {
         $allowed_ip_array = array_map('trim', explode(',', $allowed_ips));
-        foreach ($allowed_ip_array as $allowed_ip) {
-            if (str_contains($allowed_ip, '/')) {
-                if ($this->isCidrMatch($ip, $allowed_ip)) {
-                    return true;
-                }
-            } elseif ($ip === $allowed_ip) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Check that the given IP is in the given CIDR range
-     * @param string $ip The IP to check
-     * @param string $range The CIDR notation range
-     * @return bool
-     */
-    private function isCidrMatch(string $ip, string $range): bool
-    {
-        $ipv6 = str_contains($ip, ':');
-        $max_mask = $ipv6 ? 128 : 32;
-        [$subnet, $mask] = explode('/', $range);
-        $subnet = inet_pton($subnet);
-        $ip = inet_pton($ip);
-        $mask = $mask === '' ? $max_mask : (int) $mask;
-        $subnet = substr($subnet, 0, $mask / 8);
-        $ip = substr($ip, 0, $mask / 8);
-        return $subnet === $ip;
+        return IPUtilities::isIPInList($ip, $allowed_ip_array);
     }
 }

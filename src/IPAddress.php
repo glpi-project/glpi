@@ -60,18 +60,17 @@ use function Safe\preg_match;
 class IPAddress extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype       = 'itemtype';
-    public static $items_id       = 'items_id';
-    public $dohistory             = false;
+    public static string $itemtype       = 'itemtype';
+    public static string $items_id       = 'items_id';
+    public bool $dohistory             = false;
 
-    public $history_blacklist     = ['binary_0', 'binary_1', 'binary_2', 'binary_3'];
+    public array $history_blacklist     = ['binary_0', 'binary_1', 'binary_2', 'binary_3'];
 
     /**
      * Version of the address. Should be 4 or 6, or empty if not valid address
-     * @var int|string
      * @phpstan-var 4|6|''
      */
-    protected $version = '';
+    protected int|string $version = '';
 
     /**
      * Human-readable representation of the IP address.
@@ -79,9 +78,8 @@ class IPAddress extends CommonDBChild
      * Examples:
      * - 192.168.0.0
      * - 2001:db8:0:85a3\::ac1f:8001
-     * @var string
      */
-    protected $textual = '';
+    protected string $textual = '';
 
     /**
      * The binary representation of the IP address.
@@ -90,14 +88,14 @@ class IPAddress extends CommonDBChild
      * This is used for SQL requests.
      * @var string|int[]
      */
-    protected $binary  = [0, 0, 0, 0];
+    protected string|array $binary  = [0, 0, 0, 0];
 
     /**
      * @var bool Is the IPv4 address in dotted quoad format?
      */
-    protected $isDottedQuoadFormat = false;
+    protected bool $isDottedQuoadFormat = false;
 
-    public static $rightname  = 'internet';
+    public static string $rightname  = 'internet';
 
     //////////////////////////////////////////////////////////////////////////////
     // CommonDBTM related methods
@@ -176,8 +174,8 @@ class IPAddress extends CommonDBChild
             if ($input['itemtype'] == 'NetworkName') {
                 $name = new NetworkName();
                 if ($name->getFromDB($input['items_id'])) {
-                    if ($port = getItemForItemtype($name->getField('itemtype'))) {
-                        if ($port->getFromDB($name->getField('items_id'))) {
+                    if ($port = getItemForItemtype($name->fields['itemtype'])) {
+                        if ($port->getFromDB($name->fields['items_id'])) {
                             if (isset($port->fields['itemtype']) && isset($port->fields['items_id'])) {
                                 $input['mainitemtype'] = $port->fields['itemtype'];
                                 $input['mainitems_id'] = $port->fields['items_id'];
@@ -214,7 +212,7 @@ class IPAddress extends CommonDBChild
             || (isset($this->oldvalues['entities_id']))
         ) {
             $link = new IPAddress_IPNetwork();
-            $link->cleanDBonItemDelete($this->getType(), $this->getID());
+            $link->cleanDBonItemDelete(static::class, $this->getID());
             $link->addIPAddress($this);
         }
 
@@ -336,14 +334,13 @@ class IPAddress extends CommonDBChild
             ],
             'entries' => $entries,
             'total_number' => $total_number,
-            'filtered_number' => $total_number,
             'showmassiveactions' => false,
         ]);
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch ($item->getType()) {
+        switch ($item::class) {
             case 'IPNetwork':
                 self::showForItem($item, $withtemplate);
                 break;
@@ -360,7 +357,7 @@ class IPAddress extends CommonDBChild
     {
         global $DB;
 
-        switch ($item->getType()) {
+        switch ($item::class) {
             case 'IPNetwork':
                 $result = $DB->request([
                     'COUNT'  => 'cpt',
@@ -379,13 +376,13 @@ class IPAddress extends CommonDBChild
         if (
             ($item instanceof CommonDBTM)
             && $item->getID()
-            && $item->can($item->getField('id'), READ)
+            && $item->can($item->getID(), READ)
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForItem($item);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -1422,7 +1419,7 @@ class IPAddress extends CommonDBChild
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
                     'items_id'     => $item->getID(),
-                    'itemtype'     => $item->getType(),
+                    'itemtype'     => $item::class,
                     'is_deleted'   => 0,
                 ],
             ]);

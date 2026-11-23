@@ -38,16 +38,16 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 use Glpi\Csv\CsvResponse;
 use Glpi\Csv\PlanningCsv;
 
-Session::checkRight("planning", READ);
+Session::checkRight(Planning::$rightname, READ);
 
 $users_id = null;
-$groups_id = (isset($_GET["gID"]) ? (int) $_GET['uID'] : 0);
+$groups_id = (isset($_GET["gID"]) ? (int) $_GET['gID'] : 0);
 $limititemtype = ($_GET['limititemtype'] ?? '');
 
 if (!isset($_GET["uID"])) {
     if (
         ($uid = Session::getLoginUserID())
-        && !Session::haveRight("planning", Planning::READALL)
+        && !Session::haveRight(Planning::$rightname, Planning::READALL)
     ) {
         $users_id = $uid;
     } else {

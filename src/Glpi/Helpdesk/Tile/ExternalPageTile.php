@@ -39,6 +39,7 @@ use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\Session\SessionInfo;
+use Glpi\Toolbox\URL;
 use Glpi\UI\IllustrationManager;
 use Override;
 
@@ -46,7 +47,7 @@ final class ExternalPageTile extends CommonDBTM implements TileInterface, Provid
 {
     use TileRightTrait;
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     public const TRANSLATION_KEY_TITLE = 'title';
     public const TRANSLATION_KEY_DESCRIPTION = 'description';
@@ -84,13 +85,13 @@ final class ExternalPageTile extends CommonDBTM implements TileInterface, Provid
     #[Override]
     public function getIllustration(): string
     {
-        return $this->fields['illustration'] ?? IllustrationManager::DEFAULT_ILLUSTRATION;
+        return ($this->fields['illustration'] ?? '') ?: IllustrationManager::DEFAULT_ILLUSTRATION;
     }
 
     #[Override]
     public function getTileUrl(): string
     {
-        return $this->fields['url'] ?? "";
+        return URL::sanitizeURL($this->fields['url'] ?? '');
     }
 
     #[Override]
@@ -125,7 +126,7 @@ final class ExternalPageTile extends CommonDBTM implements TileInterface, Provid
     public function listTranslationsHandlers(): array
     {
         $handlers = [];
-        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $key = sprintf('%s_%d', self::class, $this->getID());
         $category_name = sprintf('%s: %s', $this->getLabel(), $this->fields['title'] ?? NOT_AVAILABLE);
         if (!empty($this->fields['title'])) {
             $handlers[$key][] = new TranslationHandler(

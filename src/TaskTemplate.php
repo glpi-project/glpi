@@ -45,10 +45,10 @@ class TaskTemplate extends AbstractITILChildTemplate
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory          = true;
-    public $can_be_translated  = true;
+    public bool $dohistory          = true;
+    public bool $can_be_translated  = true;
 
-    public static $rightname          = 'tasktemplate';
+    public static string $rightname          = 'tasktemplate';
 
     public function post_getFromDB()
     {

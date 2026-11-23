@@ -61,7 +61,7 @@ HTML;
     return;
 }
 
-Session::checkRight("config", UPDATE);
+Session::checkRight(Config::$rightname, UPDATE);
 
 if (
     (array_key_exists('error', $_GET) && $_GET['error'] !== '')

@@ -1,0 +1,14 @@
+Date: Mon, 18 Aug 2026 12:45:00 +0200 (CEST)
+From: Normal User <normal@glpi-project.org>
+To: GLPI debug <unittests@glpi-project.org>
+Message-ID: <invalid-charset@glpi-project.org>
+Subject: 54 - Invalid charset
+MIME-Version: 1.0
+Content-Type: text/html; charset="text/html"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<body>
+<p>This message declares an invalid charset: caf=E9 and pi=E8ces jointes.</p>
+</body>
+</html>

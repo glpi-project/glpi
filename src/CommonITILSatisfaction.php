@@ -36,14 +36,16 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
+use Glpi\Toolbox\URL;
 
 use function Safe\preg_replace;
 use function Safe\strtotime;
 
 abstract class CommonITILSatisfaction extends CommonDBTM
 {
-    public $dohistory         = true;
-    public $history_blacklist = ['date_answered'];
+    public bool $dohistory         = true;
+    public array $history_blacklist = ['date_answered'];
 
     /**
      * Survey is done internally
@@ -99,11 +101,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         return (Session::haveRight($item::$rightname, READ));
     }
 
-    /**
-     * Is the current user have right to update the current satisfaction
-     *
-     * @return bool
-     **/
+    #[Override]
     public function canUpdateItem(): bool
     {
         $item = static::getItemInstance();
@@ -131,14 +129,28 @@ abstract class CommonITILSatisfaction extends CommonDBTM
     }
 
     /**
+     *
+     * @param CommonITILObject $item The item this satisfaction is for
+     *
+     * @return void
+     *
+     * @deprecated 12.0.0
+     */
+    public function showSatisactionForm($item)
+    {
+        Toolbox::deprecated();
+        $this->showSatisfactionForm($item);
+    }
+
+    /**
      * form for satisfaction
      *
      * @param CommonITILObject $item The item this satisfaction is for
      * @param bool $add_form_header
      *
      * @return void
-     */
-    public function showSatisactionForm($item, bool $add_form_header = true)
+     **/
+    public function showSatisfactionForm($item, bool $add_form_header = true)
     {
         $options             = [];
         $options['colspan']  = 1;
@@ -148,10 +160,10 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         if ((int) $this->fields["type"] === self::TYPE_EXTERNAL) {
             $url = Entity::generateLinkSatisfaction($item);
             TemplateRenderer::getInstance()->display('/components/itilobject/itilsatisfaction.html.twig', [
-                'url' => $url,
+                'url' => URL::sanitizeURL($url),
             ]);
         } else { // for internal inquest => form
-            $config_suffix = $item instanceof Ticket ? '' : ('_' . strtolower($item->getType()));
+            $config_suffix = $item instanceof Ticket ? '' : ('_' . strtolower($item::class));
 
             if ($add_form_header) {
                 $this->showFormHeader($options);
@@ -269,27 +281,11 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'inquest_max_rate' . static::getConfigSufix()
         );
 
-        if ($value < 0) {
-            $value = 0;
-        }
-        if ($value > $max_rate) {
-            $value = $max_rate;
-        }
-
-        $rand = mt_rand();
-        $out = "<div id='rateit_$rand' class='rateit'></div>";
-        $out .= Html::scriptBlock("
-            $(function () {
-                $('#rateit_$rand').rateit({
-                    max: $max_rate,
-                    resetable: false,
-                    value: $value,
-                    readonly: true,
-                });
-            });
-        ");
-
-        return $out;
+        return TemplateRenderer::getInstance()->render('components/form/rating.html.twig', [
+            'value' => max(0, min($value, $max_rate)),
+            'max' => $max_rate,
+            'readonly' => true,
+        ]);
     }
 
 
@@ -487,7 +483,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'computation'        => QueryFunction::if(
                 condition: new QueryExpression("EXISTS (SELECT 1 FROM $subquery WHERE durations.entity_id = $parent_table.entities_id AND durations.inquest_duration > 0)"),
                 true_expression: QueryFunction::dateAdd(
-                    date: "$table.date_begin",
+                    date: new QueryIdentifier("$table.date_begin"),
                     interval: new QueryExpression("(SELECT durations.inquest_duration FROM $subquery WHERE durations.entity_id = $parent_table.entities_id)"),
                     interval_unit: 'DAY',
                 ),

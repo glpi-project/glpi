@@ -154,6 +154,10 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         /** @var CommonITILObject $itil */
         $itil = new static::$itemtype_1();
         $item = getItemForItemtype($input["itemtype"]);
+        if (!($item instanceof CommonDBTM)) {
+            // Unknown itemtype (e.g. relation from an uninstalled plugin)
+            return false;
+        }
 
         // Process rules based on linked item location if needed
         if (
@@ -434,7 +438,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     <form method="post" action="{{ link_class|itemtype_form_path }}">
                         <div class="d-flex w-100 flex-column">
                             <input type="hidden" name="{{ itil_object|itemtype_foreign_key }}" value="{{ itil_object.getID() }}">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             {% if requester_id > 0 %}
                                 {% do call([link_class, 'dropdownMyDevices'], [requester_id, itil_object.getEntityID(), null, 0, {(itil_object|itemtype_foreign_key): itil_object.getID()}]) %}
                             {% endif %}
@@ -487,7 +490,7 @@ TWIG, $twig_params);
                     'kb' => $item->getKBLinks(),
                     'showmassiveactions' => $canedit && !$is_closed,
                 ];
-                $name = htmlescape($data["name"]);
+                $name = htmlescape($data["name"] ?? '');
                 if (
                     $_SESSION["glpiis_ids_visible"]
                     || empty($data["name"])
@@ -526,7 +529,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -727,7 +729,7 @@ TWIG, $twig_params);
 
         $restrict = static::$itemtype_1::getListForItemRestrict($item);
 
-        switch ($item->getType()) {
+        switch ($item::class) {
             case User::class:
                 $params['criteria'][] = [
                     'link'       => 'AND',
@@ -767,7 +769,7 @@ TWIG, $twig_params);
         if (
             $item->getID()
             && !$item->isDeleted()
-            && (CommonITILObject::isPossibleToAssignType($item->getType()) || $item->getType() == User::class)
+            && (CommonITILObject::isPossibleToAssignType($item::class) || $item instanceof User)
             && static::canCreate()
             && !(!empty($withtemplate) && ($withtemplate == 2))
             && (!isset($item->fields['is_template']) || ($item->fields['is_template'] == 0))
@@ -787,7 +789,12 @@ TWIG, $twig_params);
         if (count($linkeditems)) {
             foreach ($linkeditems as $ltype => $tab) {
                 foreach ($tab as $lID) {
-                    $restrict[] = ['AND' => ['itemtype' => $ltype, 'items_id' => $lID]];
+                    $restrict[] = [
+                        'AND' => [
+                            static::getTable() . '.' . static::$itemtype_2 => $ltype,
+                            static::getTable() . '.' . static::$items_id_2 => $lID,
+                        ],
+                    ];
                 }
             }
         }
@@ -940,7 +947,7 @@ TWIG, $twig_params);
         }
 
         // My group items
-        if (Session::haveRight("show_group_hardware", READ)) {
+        if (Session::haveRight(Profile::HELPDESK_RIGHT_SHOW_GROUP_HARDWARE, READ)) {
             $devices = self::getMyGroupsDevices($userID, $entity_restrict, $already_add);
             foreach ($devices as $itemtype => $items) {
                 foreach ($items as $data) {
@@ -1375,7 +1382,7 @@ TWIG, $twig_params);
 
         $data = getAllDataFromTable(static::getTable(), [static::$items_id_1 => $items_id]);
         $used = [];
-        if (!empty($data)) {
+        if ($data !== []) {
             foreach ($data as $val) {
                 $used[$val['itemtype']][] = $val['items_id'];
             }
@@ -1448,17 +1455,17 @@ TWIG, $twig_params);
                             }
 
                             if ($ok) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                     }
                 }
@@ -1485,21 +1492,21 @@ TWIG, $twig_params);
                                 }
 
                                 if ($ok) {
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                                 } else {
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                                 }
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                                 $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                     }
                 }
@@ -1825,7 +1832,7 @@ TWIG, $twig_params);
         return countElementsInTable(
             static::getTable(),
             [
-                'itemtype' => $asset::getType(),
+                'itemtype' => $asset::class,
                 'items_id' => $asset->getId(),
             ]
         ) > 0;

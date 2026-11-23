@@ -39,13 +39,10 @@ use function Safe\json_encode;
 
 class Item_Rack extends CommonDBRelation
 {
-    public static $itemtype_1 = Rack::class;
-    public static $items_id_1 = 'racks_id';
-    public static $itemtype_2 = 'itemtype';
-    public static $items_id_2 = 'items_id';
-    public static $checkItem_2_Rights = self::DONT_CHECK_ITEM_RIGHTS;
-    public static $mustBeAttached_1 = false; // FIXME It make no sense for a rack item to not be attached to a Rack.
-    public static $mustBeAttached_2 = false; // FIXME It make no sense for a rack item to not be attached to an Item.
+    public static ?string $itemtype_1 = Rack::class;
+    public static ?string $items_id_1 = 'racks_id';
+    public static ?string $itemtype_2 = 'itemtype';
+    public static ?string $items_id_2 = 'items_id';
 
     public static function getTypeName($nb = 0)
     {
@@ -103,22 +100,22 @@ class Item_Rack extends CommonDBRelation
                 foreach ($ids as $id) {
                     if ($item->can($id, UPDATE, $input)) {
                         $relation_criteria = [
-                            'itemtype' => $item->getType(),
+                            'itemtype' => $item::class,
                             'items_id' => $item->getID(),
                         ];
                         if (countElementsInTable(Item_Rack::getTable(), $relation_criteria) > 0) {
                             if ($item_rack->deleteByCriteria($relation_criteria)) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
                             // Item is not linked to a rack, not an error
-                            $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                            $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
@@ -162,7 +159,6 @@ class Item_Rack extends CommonDBRelation
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
@@ -401,7 +397,7 @@ class Item_Rack extends CommonDBRelation
 
         if ($canedit) {
             Session::initNavigateListItems(
-                self::getType(),
+                static::class,
                 //TRANS : %1$s is the itemtype name,
                 //        %2$s is the name of the item (used for headings of a list)
                 sprintf(
@@ -876,10 +872,10 @@ class Item_Rack extends CommonDBRelation
                . (!empty($gs_item['url'])
                   ? "<a href='" . htmlescape($gs_item['url']) . "' class='itemrack_name' style='" . htmlescape($fg_color_s) . "'>" . htmlescape($gs_item['name']) . "</a>"
                   : "<span class='itemrack_name'>" . htmlescape($gs_item['name']) . "</span>") . "
-               <a href='" . htmlescape($gs_item['rel_url']) . "' class='edit_rack_item'>
+               <a href='" . htmlescape($gs_item['rel_url']) . "' class='edit_rack_item'
+                  title='" . __s("Edit rack relation") . "'>
                   <i class='fa fa-pencil-alt rel-link'
-                     style='" . htmlescape($fg_color_s) . "'
-                     title='" . __s("Edit rack relation") . "'></i>
+                     style='" . htmlescape($fg_color_s) . "' aria-hidden='true'></i>
                </a>
                $tip
             </div>
@@ -912,7 +908,7 @@ class Item_Rack extends CommonDBRelation
         }
 
         if (!empty($icon)) {
-            $icon = "<i class='item_rack_icon " . htmlescape($icon) . "'></i>";
+            $icon = "<i class='item_rack_icon " . htmlescape($icon) . "' aria-hidden='true'></i>";
         }
 
         return "";

@@ -45,27 +45,19 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ClearCommand extends Command
 {
     /**
-     * Error code returned when failed to clear chache.
+     * Error code returned when failed to clear cache.
      *
      * @var int
      */
     public const ERROR_CACHE_CLEAR_FAILURE = 1;
 
-    /** @var bool */
-    protected $requires_db_up_to_date = false;
+    protected bool $requires_db_up_to_date = false;
 
     protected function configure()
     {
         parent::configure();
 
         $this->setName('cache:clear');
-        $this->setAliases(
-            [
-                // Old command alias
-                // FIXME Remove it in GLPI 11.0.
-                'system:clear_cache',
-            ]
-        );
         $this->setDescription('Clear GLPI cache.');
 
         $this->addOption(
@@ -76,7 +68,7 @@ class ClearCommand extends Command
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $cache_manager = new CacheManager();

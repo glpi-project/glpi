@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\RichText\RichText;
 
 /**
@@ -44,19 +45,19 @@ use Glpi\RichText\RichText;
 class ReservationItem extends CommonDBChild
 {
     /// From CommonDBChild
-    public static $itemtype          = 'itemtype';
-    public static $items_id          = 'items_id';
+    public static string $itemtype          = 'itemtype';
+    public static string $items_id          = 'items_id';
 
-    public static $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
+    public static int $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
-    public static $rightname                = 'reservation';
+    public static string $rightname                = 'reservation';
 
     public const RESERVEANITEM              = 1024;
 
-    public $get_item_to_display_tab  = false;
-    public $showdebug                = false;
+    public bool $get_item_to_display_tab  = false;
+    public bool $showdebug                = false;
 
-    public $taborientation           = 'horizontal';
+    public string $taborientation           = 'horizontal';
 
     public static function canView(): bool
     {
@@ -339,7 +340,7 @@ class ReservationItem extends CommonDBChild
                 <input type="hidden" name="is_active" value="{{ reservable ? (toggle_state ? 0 : 1) : 1 }}">
                 {% if reservable %}
                     <button name="update" class="btn btn-{{ toggle_state ? 'danger' : 'primary' }} mx-1">
-                        <i class="{{ toggle_state ? 'ti ti-toggle-right' : 'ti ti-toggle-left' }} me-2"></i>
+                        <i class="{{ toggle_state ? 'ti ti-toggle-right' : 'ti ti-toggle-left' }} me-2" aria-hidden="true"></i>
                         {{ toggle_state_label }}
                     </button>
                     <input type="hidden" name="id" value="{{ id }}">
@@ -348,10 +349,9 @@ class ReservationItem extends CommonDBChild
                     </script>
                 {% endif %}
                 <button name="{{ toggle_reservable ? 'purge' : 'add' }}" class="btn btn-{{ toggle_reservable ? 'danger' : 'primary' }} mx-1">
-                    <i class="{{ toggle_reservable ? 'ti ti-ban' : 'ti ti-check' }} me-2"></i>
+                    <i class="{{ toggle_reservable ? 'ti ti-ban' : 'ti ti-check' }} me-2" aria-hidden="true"></i>
                     {{ toggle_reservable_label }}
                 </button>
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
             </form>
             </div>
 TWIG, $twig_params);
@@ -426,10 +426,10 @@ TWIG, $twig_params);
             {% if not reserve %}
                 <div id="makesearch" class="text-center mb-3">
                     <a class="btn btn-secondary" href="{{ path('front/reservation.php?reservationitems_id=0') }}">
-                        <i class="{{ 'Reservation'|itemtype_icon }} me-2"></i>{{ view_calendar_label }}
+                        <i class="{{ 'Reservation'|itemtype_icon }} me-2" aria-hidden="true"></i>{{ view_calendar_label }}
                     </a>
                     <button type="button" class="btn btn-secondary mw-100 d-inline-block text-truncate" onClick="$('#viewresasearch').toggleClass('d-none');$('#makesearch').toggleClass('d-none')">
-                        <i class="ti ti-search me-2"></i>{{ find_free_item_label }}
+                        <i class="ti ti-search me-2" aria-hidden="true"></i>{{ find_free_item_label }}
                     </button>
                 </div>
                 <div id="viewresasearch" class="d-none text-center">
@@ -624,10 +624,13 @@ TWIG, $twig_params);
                 }
                 $entry['item'] = $item_link;
 
-                if (!isset($location_cache[$row["location"]])) {
-                    $location_cache[$row["location"]] = Dropdown::getDropdownName("glpi_locations", $row["location"]);
+                // `location` comes from a LEFT JOIN on `glpi_locations`, so it
+                // is null for an item that has no location.
+                $locations_id = (int) $row["location"];
+                if (!isset($location_cache[$locations_id])) {
+                    $location_cache[$locations_id] = Dropdown::getDropdownName("glpi_locations", $locations_id);
                 }
-                $entry['location'] = $location_cache[$row["location"]];
+                $entry['location'] = $location_cache[$locations_id];
 
                 $entry['comment'] = RichText::getSafeHtml($row["comment"]);
 
@@ -639,7 +642,9 @@ TWIG, $twig_params);
                 }
                 $cal_href = htmlescape(Reservation::getSearchURL() . "?reservationitems_id=" . $row['id']);
                 $entry['calendar'] = "<a href='$cal_href'>";
-                $entry['calendar'] .= "<i class='" . htmlescape(Reservation::getIcon()) . " fa-2x cursor-pointer' title=\"" . __s("Reserve this item") . "\"></i>";
+                $entry['calendar'] .= "<i class='" . htmlescape(Reservation::getIcon()) . " fa-2x cursor-pointer' aria-hidden='true'></i>";
+                $entry['calendar'] .= "<span class='visually-hidden'>" . __s("Reserve this item") . "</span>";
+                $entry['calendar'] .= "</a>";
 
                 $ok = true;
                 $entries[] = $entry;
@@ -672,12 +677,11 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => false,
         ]);
 
-        if ($ok && Session::haveRight("reservation", self::RESERVEANITEM)) {
-            echo "<i class='ti ti-corner-left-up mx-3'></i>";
+        if ($ok && Session::haveRight(Reservation::$rightname, self::RESERVEANITEM)) {
+            echo "<i class='ti ti-corner-left-up mx-3' aria-hidden='true'></i>";
             echo "<th colspan='" . ($showentity ? "5" : "4") . "'>";
             if (isset($_POST['reserve'])) {
                 echo Html::hidden('begin', ['value' => $_POST['reserve']["begin"]]);
@@ -690,7 +694,7 @@ TWIG, $twig_params);
         }
 
         echo "<input type='hidden' name='id' value=''>";
-        echo "</form>";// No CSRF token needed
+        echo "</form>";
         echo "</div>";
     }
 
@@ -758,7 +762,7 @@ TWIG, $twig_params);
                 'WHERE'     => [
                     'glpi_reservationitems.entities_id' => $entity,
                     new QueryExpression(
-                        QueryFunction::unixTimestamp('glpi_reservations.end') . ' - ' . $secs
+                        QueryFunction::unixTimestamp(new QueryIdentifier('glpi_reservations.end')) . ' - ' . $secs
                             . ' < ' . QueryFunction::unixTimestamp()
                     ),
                     'glpi_reservations.begin'  => ['<', QueryFunction::now()],
@@ -862,12 +866,12 @@ TWIG, $twig_params);
     {
         if ($item::class === self::class) {
             $tabs = [];
-            if (Session::haveRightsOr("reservation", [READ, self::RESERVEANITEM])) {
+            if (Session::haveRightsOr(Reservation::$rightname, [READ, self::RESERVEANITEM])) {
                 $tabs[1] = self::createTabEntry(Reservation::getTypeName(Session::getPluralNumber()));
             }
             if (
                 (Session::getCurrentInterface() === "central")
-                && Session::haveRight("reservation", READ)
+                && Session::haveRight(Reservation::$rightname, READ)
             ) {
                 $tabs[2] = self::createTabEntry(__('Administration'), icon: 'ti ti-shield-check');
             }

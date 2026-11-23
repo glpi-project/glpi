@@ -30,8 +30,6 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/form/fields_macros.html.twig' as fields %}
-
 {% do call(['Html', 'nullHeader'], [__('Update needed')]) %}
 <div class="container-fluid mb-4">
     <div class="row justify-content-evenly">
@@ -41,14 +39,13 @@
                 {% if core_requirements.hasMissingMandatoryRequirements() or core_requirements.hasMissingOptionalRequirements() %}
                     <form action="{{ path('index.php') }}" method="post">
                         <button type="submit" class="btn btn-primary">
-                            <i class="ti ti-reload"></i>{{ __('Try again') }}
+                            <i class="ti ti-reload" aria-hidden="true"></i>{{ __('Try again') }}
                         </button>
                     </form>
                 {% endif %}
                 {% if not core_requirements.hasMissingMandatoryRequirements() %}
                     {% if not is_outdated %}
                         <form method="post" action="{{ path('install/update.php') }}" class="p-2">
-                            {{ fields.csrfField() }}
                             <input type="hidden" name="from_update" value="1">
                             {% if not is_stable_release %}
                                 {% include 'install/agree_unstable.html.twig' with {'is_dev': is_dev_version} only %}
@@ -57,7 +54,7 @@
                                 {{ __('The GLPI codebase has been updated. The update of the GLPI database is necessary.') }}
                             </p>
                             <button type="submit" name="continue" value="1" class="btn btn-primary">
-                                <i class="ti ti-check"></i>{{ _x('button', 'Upgrade') }}
+                                <i class="ti ti-check" aria-hidden="true"></i>{{ _x('button', 'Upgrade') }}
                             </button>
                         </form>
                     {% else %}

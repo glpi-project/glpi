@@ -81,6 +81,9 @@ if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
                     'lat'    => $row['raw']["ITEM_$lat_field"],
                     'lng'    => $row['raw']["ITEM_$lng_field"],
                     'title'  => $row['raw']["ITEM_$name_field"],
+                    // The marker links to the entity itself, so the location id
+                    // used to build the target URL is the entity id.
+                    'loc_id' => $row['raw']['id'],
                     'count'  => 1,
                 ];
             } else {
@@ -94,7 +97,7 @@ if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
             }
         }
 
-        if ($itemtype == AllAssets::getType()) {
+        if ($itemtype == AllAssets::class) {
             $curtype = $row['TYPE'];
             if (isset($points[$idx]['types'][$curtype])) {
                 $points[$idx]['types'][$curtype]['count']++;

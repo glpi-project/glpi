@@ -36,6 +36,30 @@ use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\Config\RectorConfig;
 use Rector\Configuration\RectorConfigBuilder;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector;
+use RectorGlpi\Set\GlpiSetList;
+
+/**
+ * Marks the plugin as loaded so `Plugin*` classes resolve through the legacy autoloader during
+ * static analysis, without a full framework bootstrap (DB, session, plugin init logic).
+ *
+ * @param string[] $paths
+ */
+function registerPluginAutoloading(array $paths): void
+{
+    $plugin_root = \dirname($paths[0] ?? __DIR__);
+    $plugin_key  = \strtolower(\basename($plugin_root));
+
+    if (!\defined('GLPI_PLUGINS_DIRECTORIES')) {
+        \define('GLPI_PLUGINS_DIRECTORIES', [\dirname($plugin_root)]);
+    }
+
+    $loaded_plugins_property = new ReflectionProperty(Plugin::class, 'loaded_plugins');
+    $loaded_plugins          = $loaded_plugins_property->getValue();
+
+    if (!\in_array($plugin_key, $loaded_plugins, true)) {
+        $loaded_plugins_property->setValue(null, [...$loaded_plugins, $plugin_key]);
+    }
+}
 
 /**
  * Shared rector baseline for GLPI plugins.
@@ -50,9 +74,15 @@ use Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRect
  *
  * @param string[] $paths
  */
-return static fn(array $paths): RectorConfigBuilder => RectorConfig::configure()
+return static function (array $paths): RectorConfigBuilder {
+    registerPluginAutoloading($paths);
+
+    return RectorConfig::configure()
     ->withPaths($paths)
     ->withRootFiles()
+    ->withSets([
+        GlpiSetList::GLPI_DEFAULT_SET,
+    ])
     ->withCache(
         cacheDirectory: 'var/rector',
         cacheClass: FileCacheStorage::class,
@@ -72,4 +102,5 @@ return static fn(array $paths): RectorConfigBuilder => RectorConfig::configure()
         // `strict_types=1` turns scalar coercion that return runtime TypeErrors.
         SafeDeclareStrictTypesRector::class,
     ])
-;
+    ;
+};

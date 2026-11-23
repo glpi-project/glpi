@@ -71,4 +71,33 @@ class ProjectTask_TicketTest extends DbTestCase
         );
         $this->hasSessionMessages(ERROR, ['Relation already exists.']);
     }
+    public function testCreateTicketFromProjectTaskPreSelectsEntity(): void
+    {
+        $this->login('glpi', 'glpi');
+
+        $this->assertTrue(\Session::changeActiveEntities());
+
+        $task_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+
+        $project = $this->createItem('Project', [
+            'name'        => 'Test Project',
+            'entities_id' => $task_entity_id,
+        ]);
+
+        $task = $this->createItem('ProjectTask', [
+            'name'        => 'Test Task',
+            'projects_id' => $project->getID(),
+            'entities_id' => $task_entity_id,
+        ]);
+
+        $ticket = new \Ticket();
+        $ticket->getEmpty();
+
+        ob_start();
+        $ticket->showForm($ticket->getID(), ['_projecttasks_id' => $task->getID()]);
+        ob_get_clean();
+
+        $this->assertEquals($task_entity_id, (int) $ticket->fields['entities_id']);
+    }
+
 }

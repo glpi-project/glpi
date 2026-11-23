@@ -40,7 +40,7 @@ if (($_GET["action"] ?? null) === "get_dl_progress") {
     return;
 }
 
-Session::checkRight("config", UPDATE);
+(new Config())->checkGlobal(UPDATE);
 
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;

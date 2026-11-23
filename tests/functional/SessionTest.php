@@ -35,20 +35,100 @@
 namespace tests\units;
 
 use Computer;
-use Glpi\Cache\CacheManager;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\SessionExpiredException;
 use Glpi\Tests\DbTestCase;
+use Laminas\I18n\Translator\Translator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Group;
 use Profile;
 use Profile_User;
 use ProfileRight;
 use ReflectionClass;
 use User;
 
+use function Safe\copy;
+use function Safe\file_put_contents;
+use function Safe\glob;
+use function Safe\mkdir;
+use function Safe\rmdir;
+use function Safe\unlink;
+
 class SessionTest extends DbTestCase
 {
+    public function testCanViewAllEntitiesFollowsEntitiesChanges(): void
+    {
+        $this->login();
+        $this->setEntity('Root entity', true);
+
+        // The command line can always view all entities, emulate a web request.
+        $GLOBALS['GLPI_IS_COMMAND_LINE'] = false;
+        try {
+            $this->assertTrue(\Session::canViewAllEntities());
+
+            // An added entity is counted, and is added to the active entities of its creator.
+            $entity = $this->createItem(\Entity::class, [
+                'name'        => 'canViewAllEntities test',
+                'entities_id' => 0,
+            ]);
+            $this->assertTrue(\Session::canViewAllEntities());
+
+            unset($_SESSION['glpiactiveentities'][$entity->getID()]);
+            $this->assertFalse(\Session::canViewAllEntities());
+
+            // A purged entity is no longer counted.
+            $this->assertTrue($entity->delete(['id' => $entity->getID()], true));
+            $this->assertTrue(\Session::canViewAllEntities());
+        } finally {
+            unset($GLOBALS['GLPI_IS_COMMAND_LINE']);
+        }
+    }
+
+    /**
+     * Language used to test the local i18n files.
+     * It must be a language that is not used by any other test, as the local
+     * i18n overrides would be visible by the tests running concurrently.
+     */
+    private const LOCAL_I18N_LANGUAGE = 'mn_MN';
+
+    /**
+     * Directory holding the local i18n files used by the tests, if any.
+     */
+    private ?string $local_i18n_directory = null;
+
+    public function tearDown(): void
+    {
+        if ($this->local_i18n_directory !== null) {
+            /** @var Translator $TRANSLATE */
+            global $TRANSLATE;
+
+            foreach (glob($this->local_i18n_directory . '/*') as $local_file) {
+                unlink($local_file);
+            }
+            rmdir($this->local_i18n_directory);
+            $this->local_i18n_directory = null;
+
+            // Drop the translations loaded from the local files.
+            $TRANSLATE->clearCache('glpi', self::LOCAL_I18N_LANGUAGE);
+        }
+
+        parent::tearDown();
+    }
+
+    public function testAnonymousSessionRereadsMultiEntitiesModeOnEachRequest(): void
+    {
+        $this->assertGreaterThan(1, countElementsInTable(\Entity::getTable()));
+
+        // Mode cached while the instance had a single entity.
+        $this->logOut();
+        $_SESSION['glpi_multientitiesmode'] = 0;
+        $this->assertEquals(1, \Session::isMultiEntitiesMode());
+
+        // A logged-in session keeps its cached mode.
+        $this->login();
+        $_SESSION['glpi_multientitiesmode'] = 0;
+        $this->assertEquals(0, \Session::isMultiEntitiesMode());
+    }
+
     public function testAddMessageAfterRedirect()
     {
         $err_msg = 'Something is broken. Weird.';
@@ -217,47 +297,50 @@ class SessionTest extends DbTestCase
         }
     }
 
-    #[Group('single-thread')] // Changing locale files
     public function testLocalI18n()
     {
-        $manager = new CacheManager();
-        $cache = $manager->getTranslationsCacheInstance();
-        $cache->clear();
+        /** @var Translator $TRANSLATE */
+        global $TRANSLATE;
+
+        $language = self::LOCAL_I18N_LANGUAGE;
+        $mofile = $language . '.mo';
+        $phpfile = $language . '.php';
+
+        //create a dedicated directory for local i18n ("core_*" directories are loaded like the "core" one)
+        $directory = GLPI_LOCAL_I18N_DIR . '/core_test_' . uniqid();
+        mkdir($directory, 0o755, true);
+        $this->local_i18n_directory = $directory;
 
         //load locales
-        \Session::loadLanguage('en_GB');
-        $this->assertEquals('Login', __('Login'));
+        \Session::loadLanguage($language);
+        $default_login = __('Login');
+        $default_password = __('Password');
 
-        //create directory for local i18n
-        if (!file_exists(GLPI_LOCAL_I18N_DIR . '/core')) {
-            mkdir(GLPI_LOCAL_I18N_DIR . '/core');
-        }
+        //make sure the language catalog was actually loaded (`loadLanguage()` silently falls back to en_GB)
+        $this->assertNotEquals('Login', $default_login);
 
         //write local MO file with i18n override
         copy(
             __DIR__ . '/../local_en_GB.mo',
-            GLPI_LOCAL_I18N_DIR . '/core/en_GB.mo'
+            $directory . '/' . $mofile
         );
-        $cache->clear();
-        \Session::loadLanguage('en_GB');
+        $TRANSLATE->clearCache('glpi', $language);
+        \Session::loadLanguage($language);
 
         $this->assertEquals('Login from local gettext', __('Login'));
-        $this->assertEquals('Password', __('Password'));
+        $this->assertEquals($default_password, __('Password'));
 
         //write local PHP file with i18n override
         file_put_contents(
-            GLPI_LOCAL_I18N_DIR . '/core/en_GB.php',
+            $directory . '/' . $phpfile,
             "<?php\n\$lang['Login'] = 'Login from local PHP';\n\$lang['Password'] = 'Password from local PHP';\nreturn \$lang;"
         );
-        $cache->clear();
-        \Session::loadLanguage('en_GB');
+        $TRANSLATE->clearCache('glpi', $language);
+        \Session::loadLanguage($language);
 
+        //MO file takes precedence over the PHP one
         $this->assertEquals('Login from local gettext', __('Login'));
         $this->assertEquals('Password from local PHP', __('Password'));
-
-        //cleanup -- keep at the end
-        unlink(GLPI_LOCAL_I18N_DIR . '/core/en_GB.php');
-        unlink(GLPI_LOCAL_I18N_DIR . '/core/en_GB.mo');
     }
 
     public static function mustChangePasswordProvider()
@@ -558,9 +641,232 @@ class SessionTest extends DbTestCase
             ],
             'data'     => [
                 'itemtype'    => 'User',
+                'displaywith' => ['id', 'phone', 'serial'],
+            ],
+            'is_valid' => false, // additional `displaywith` entry
+        ];
+        yield [
+            'token_itemtype' => 'User',
+            'token_data'     => [
+                'displaywith' => ['id', 'phone'],
+            ],
+            'data'     => [
+                'itemtype'    => 'User',
             ],
             'is_valid' => false, // missing displaywith
         ];
+
+        // bool matches
+        $truely_values = [true, 1, '1'];
+        $falsly_values = [false, 0, '0'];
+        foreach ($truely_values as $truely) {
+            yield [
+                'token_itemtype' => '',
+                'token_data'     => [
+                    'val' => true,
+                ],
+                'data'     => [
+                    'val' => $truely,
+                ],
+                'is_valid' => true,
+            ];
+            foreach (array_merge($falsly_values, ["00", "01", "foo", ['an array']]) as $falsy) {
+                yield [
+                    'token_itemtype' => '',
+                    'token_data'     => [
+                        'val' => $truely,
+                    ],
+                    'data'     => [
+                        'val' => $falsy,
+                    ],
+                    'is_valid' => false,
+                ];
+            }
+        }
+        foreach ($falsly_values as $falsy) {
+            yield [
+                'token_itemtype' => '',
+                'token_data'     => [
+                    'val' => false,
+                ],
+                'data'     => [
+                    'val' => $falsy,
+                ],
+                'is_valid' => true,
+            ];
+            foreach (array_merge($truely_values, ["00", "01", "foo", ['an array']]) as $truely) {
+                yield [
+                    'token_itemtype' => '',
+                    'token_data'     => [
+                        'val' => $falsy,
+                    ],
+                    'data'     => [
+                        'val' => $truely,
+                    ],
+                    'is_valid' => false,
+                ];
+            }
+        }
+
+        // positive int matches
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => 12,
+            ],
+            'data'     => [
+                'val' => 12,
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => 12,
+            ],
+            'data'     => [
+                'val' => "12",
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => 12,
+            ],
+            'data'     => [
+                'val' => "12 something",
+            ],
+            'is_valid' => false,
+        ];
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => 12,
+            ],
+            'data'     => [
+                'val' => "12.0",
+            ],
+            'is_valid' => false,
+        ];
+
+        // negative int matches
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => -1,
+            ],
+            'data'     => [
+                'val' => -1,
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => -1,
+            ],
+            'data'     => [
+                'val' => "-1",
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => -1,
+            ],
+            'data'     => [
+                'val' => "-1 foo",
+            ],
+            'is_valid' => false,
+        ];
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => -1,
+            ],
+            'data'     => [
+                'val' => "-1.0",
+            ],
+            'is_valid' => false,
+        ];
+
+        // float matches
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => 12.0,
+            ],
+            'data'     => [
+                'val' => 12.0,
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => 12.0,
+            ],
+            'data'     => [
+                'val' => "12.0",
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => 12.0,
+            ],
+            'data'     => [
+                'val' => 12,
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => 12.0,
+            ],
+            'data'     => [
+                'val' => 12.5,
+            ],
+            'is_valid' => false,
+        ];
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => 12.0,
+            ],
+            'data'     => [
+                'val' => "something like 12",
+            ],
+            'is_valid' => false,
+        ];
+
+        // null matches
+        yield [
+            'token_itemtype' => '',
+            'token_data'     => [
+                'val' => null,
+            ],
+            'data'     => [
+                'val' => null,
+            ],
+            'is_valid' => true,
+        ];
+        foreach (['foo', 0, 1, true, false, []] as $value) {
+            yield [
+                'token_itemtype' => '',
+                'token_data'     => [
+                    'val' => null,
+                ],
+                'data'     => [
+                    'val' => $value,
+                ],
+                'is_valid' => false,
+            ];
+        }
     }
 
     #[DataProvider('idorDataProvider')]
@@ -691,73 +997,6 @@ class SessionTest extends DbTestCase
                     'test'       => $i,
                 ]
             );
-            // if $i < $overflow, then the token should have been dropped from the list
-            $this->assertEquals($i >= $overflow, $result);
-        }
-    }
-
-    public function testGetNewCSRFToken(): void
-    {
-        /** @var string $CURRENTCSRFTOKEN */
-        global $CURRENTCSRFTOKEN;
-
-        $CURRENTCSRFTOKEN = null;
-
-        $shared_token = \Session::getNewCSRFToken();
-        $this->assertNotEmpty($shared_token);
-
-        $standalone_token = null;
-        for ($i = 0; $i < 10; $i++) {
-            $previous_shared_token = $shared_token;
-            $shared_token = \Session::getNewCSRFToken(false);
-            $this->assertEquals($previous_shared_token, $shared_token);
-            $this->assertEquals($CURRENTCSRFTOKEN, $shared_token);
-
-            $previous_standalone_token = $standalone_token;
-            $standalone_token = \Session::getNewCSRFToken(true);
-            $this->assertNotEmpty($standalone_token);
-            $this->assertNotEquals($shared_token, $standalone_token);
-            $this->assertNotEquals($previous_standalone_token, $standalone_token);
-        }
-    }
-
-    public function testValidateCSRF(): void
-    {
-        for ($i = 0; $i < 10; $i++) {
-            // A shared token is only valid once
-            $shared_token = \Session::getNewCSRFToken(false);
-            $this->assertTrue(\Session::validateCSRF(['_glpi_csrf_token' => $shared_token]));
-            $this->assertFalse(\Session::validateCSRF(['_glpi_csrf_token' => $shared_token]));
-
-            // A standalone token is only valid once
-            $standalone_token = \Session::getNewCSRFToken(true);
-            $this->assertTrue(\Session::validateCSRF(['_glpi_csrf_token' => $standalone_token]));
-            $this->assertFalse(\Session::validateCSRF(['_glpi_csrf_token' => $standalone_token]));
-
-            // A fake token is never valid
-            $this->assertFalse(\Session::validateCSRF(['_glpi_csrf_token' => bin2hex(random_bytes(32))]));
-        }
-    }
-
-    public function testCleanCSRFTokens(): void
-    {
-        $refected_class = new ReflectionClass(\Session::class);
-        $max = $refected_class->getConstant('CSRF_MAX_TOKENS');
-        $overflow = 100;
-
-        $tokens = [];
-        for ($i = 1; $i < $max + $overflow; $i++) {
-            $tokens[$i] = \Session::getNewCSRFToken(true);
-        }
-
-        \Session::cleanCSRFTokens();
-
-        // Ensure that only max token count has been preserved
-        $this->assertCount($max, $_SESSION['glpicsrftokens']);
-
-        // Ensure that latest tokens are preserved during cleaning
-        for ($i = 1; $i < $max + $overflow; $i++) {
-            $result = \Session::validateCSRF(['_glpi_csrf_token' => $tokens[$i]]);
             // if $i < $overflow, then the token should have been dropped from the list
             $this->assertEquals($i >= $overflow, $result);
         }
@@ -1555,16 +1794,6 @@ class SessionTest extends DbTestCase
         }
         \Session::checkSeveralRightsOr($rights);
     }
-
-    public function testCheckCSRF(): void
-    {
-        $token = \Session::getNewCSRFToken();
-        \Session::checkCSRF(['_glpi_csrf_token' => $token]); // No exception thrown
-
-        $this->expectException(AccessDeniedHttpException::class);
-        \Session::checkCSRF(['_glpi_csrf_token' => 'invalid token']);
-    }
-
     public function testRightCheckBypass()
     {
         $this->login();
@@ -1632,6 +1861,46 @@ class SessionTest extends DbTestCase
         $this->assertArrayHasKey('content', $_SESSION['glpimenu']['config']);
     }
 
+    public function testSavedSearchMenuDependsOnProfileRight(): void
+    {
+        global $DB;
+
+        // Arrange: create a central user with ticket rights only
+        $profile = $this->createItem(Profile::class, [
+            'name' => 'Assistance only profile',
+            'interface' => 'central',
+        ]);
+        $user = $this->createItem(User::class, [
+            'name' => 'assistance_only_user',
+        ]);
+        $this->createItem(Profile_User::class, [
+            'users_id' => $user->getID(),
+            'profiles_id' => $profile->getID(),
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $DB->update(ProfileRight::getTable(), ['rights' => 0], ['profiles_id' => $profile->getID()]);
+        $DB->update(
+            ProfileRight::getTable(),
+            ['rights' => ALLSTANDARDRIGHT | \Ticket::READALL],
+            ['profiles_id' => $profile->getID(), 'name' => 'ticket']
+        );
+
+        // Act + Assert: no "Saved searches" entry without the "bookmark_public" right
+        $this->login('assistance_only_user');
+        \Html::generateMenuSession(true);
+        $this->assertArrayNotHasKey('savedsearch', $_SESSION['glpimenu']['tools']['content'] ?? []);
+
+        // Granting READ on "bookmark_public" brings the entry back
+        $DB->update(
+            ProfileRight::getTable(),
+            ['rights' => READ],
+            ['profiles_id' => $profile->getID(), 'name' => 'bookmark_public']
+        );
+        $this->login('assistance_only_user');
+        \Html::generateMenuSession(true);
+        $this->assertArrayHasKey('savedsearch', $_SESSION['glpimenu']['tools']['content']);
+    }
+
     public function testLoadEntitySetsParentEntities(): void
     {
         // Non-regression: Session::loadEntity() was not setting glpiparententities,
@@ -1642,5 +1911,34 @@ class SessionTest extends DbTestCase
         $this->assertArrayHasKey('glpiparententities', $_SESSION);
         $this->assertArrayHasKey('glpiparententities_string', $_SESSION);
         $this->assertIsArray($_SESSION['glpiparententities']);
+    }
+
+    public function testCleanOnLogoutOnReplica(): void
+    {
+        global $CFG_GLPI, $DB;
+
+        $this->login();
+        $users_id = \Session::getLoginUserID();
+        $token_uid = bin2hex(random_bytes(8));
+
+        $CFG_GLPI['login_remember_time'] = 3600;
+        $this->callPrivateMethod(\Auth::class, 'setRememberMeCookie', $users_id, $token_uid, bin2hex(random_bytes(16)));
+        $cookie_name = \Auth::getRememberMeCookieName();
+        $this->assertArrayHasKey($cookie_name, $_COOKIE);
+
+        $DB->replica = true;
+        try {
+            \Session::cleanOnLogout();
+        } finally {
+            $DB->replica = false;
+        }
+
+        // Token cannot be deleted from the replica, but the cookie is removed.
+        $this->assertEquals(1, countElementsInTable('glpi_usertokens', [
+            'users_id' => $users_id,
+            'token_uid' => $token_uid,
+            'type' => 'rememberme',
+        ]));
+        $this->assertArrayNotHasKey($cookie_name, $_COOKIE);
     }
 }

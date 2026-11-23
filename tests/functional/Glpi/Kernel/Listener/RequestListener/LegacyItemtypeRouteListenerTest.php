@@ -34,8 +34,10 @@
 
 namespace tests\units\Glpi\Kernel\Listener\RequestListener;
 
+use CommonDropdown;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Controller\DropdownFormController;
+use Glpi\Controller\GenericFormController;
 use Glpi\Controller\GenericListController;
 use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Event;
@@ -45,6 +47,7 @@ use Glpi\Socket;
 use Glpi\SocketModel;
 use GlpiPlugin\Tester\MyPsr4Class;
 use GlpiPlugin\Tester\MyPsr4Dropdown;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
@@ -56,6 +59,7 @@ use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 
 final class LegacyItemtypeRouteListenerTest extends TestCase
 {
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('provideItemtypes')]
     public function testFindGlpiClass(string $path_info, string $expected_class_name): void
     {
@@ -66,7 +70,10 @@ final class LegacyItemtypeRouteListenerTest extends TestCase
         $listener->onKernelRequest($event);
 
         if (\str_contains($path_info, '.form.php')) {
-            self::assertSame(DropdownFormController::class, $request->attributes->get('_controller'));
+            $expected_controller = is_a($expected_class_name, CommonDropdown::class, true)
+                ? DropdownFormController::class
+                : GenericFormController::class;
+            self::assertSame($expected_controller, $request->attributes->get('_controller'));
         } else {
             self::assertSame(GenericListController::class, $request->attributes->get('_controller'));
         }
@@ -185,8 +192,6 @@ final class LegacyItemtypeRouteListenerTest extends TestCase
             '/front/itilfollowuptemplate.php' => \ITILFollowupTemplate::class,
             '/front/itilvalidationtemplate.form.php' => \ITILValidationTemplate::class,
             '/front/itilvalidationtemplate.php' => \ITILValidationTemplate::class,
-            '/front/knowbaseitemcategory.form.php' => \KnowbaseItemCategory::class,
-            '/front/knowbaseitemcategory.php' => \KnowbaseItemCategory::class,
             '/front/line.php' => \Line::class,
             '/front/lineoperator.form.php' => \LineOperator::class,
             '/front/lineoperator.php' => \LineOperator::class,
@@ -269,7 +274,6 @@ final class LegacyItemtypeRouteListenerTest extends TestCase
             '/front/planningexternalevent.php' => \PlanningExternalEvent::class,
             '/front/planningexternaleventtemplate.form.php' => \PlanningExternalEventTemplate::class,
             '/front/planningexternaleventtemplate.php' => \PlanningExternalEventTemplate::class,
-            '/front/plug.form.php' => \Plug::class,
             '/front/plug.php' => \Plug::class,
             '/front/printer.php' => \Printer::class,
             '/front/printermodel.form.php' => \PrinterModel::class,
@@ -411,6 +415,7 @@ final class LegacyItemtypeRouteListenerTest extends TestCase
         }
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[RunInSeparateProcess]
     #[DataProvider('provideClassesForPlugin')]
     public function testFindClassForPlugin(string $path_info, string $class): void

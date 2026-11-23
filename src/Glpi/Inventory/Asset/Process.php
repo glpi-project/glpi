@@ -41,8 +41,7 @@ use Item_Process;
 
 class Process extends InventoryAsset
 {
-    /** @var Conf */
-    private $conf;
+    private Conf $conf;
 
     public function prepare(): array
     {
@@ -89,7 +88,7 @@ class Process extends InventoryAsset
             'FROM'   => Item_Process::getTable(),
             'WHERE'  => [
                 'items_id' => $this->item->fields['id'],
-                'itemtype' => $this->item->getType(),
+                'itemtype' => $this->item::class,
             ],
         ]);
         foreach ($iterator as $data) {
@@ -143,7 +142,7 @@ class Process extends InventoryAsset
             foreach ($value as $val) {
                 $input = (array) $val + [
                     'items_id'     => $this->item->fields['id'],
-                    'itemtype'     => $this->item->getType(),
+                    'itemtype'     => $this->item::class,
                 ];
 
                 $itemProcess->add($input);

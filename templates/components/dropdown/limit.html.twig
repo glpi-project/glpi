@@ -43,10 +43,10 @@
 
 {% if no_onchange is not defined or not no_onchange %}
    {% if is_tab is defined and is_tab == true %}
-      {% set href = "javascript:reloadTab('glpilist_limit='+this.value+'" ~ additional_params ~ "');" %}
+      {% set href = "javascript:reloadTab('glpilist_limit='+this.value+'" ~ additional_params|e('js') ~ "');" %}
    {% elseif href is defined %}
       {% set href_separator = '?' in href ? '&' : '?' %}
-      {% set href = "location.href='" ~ href ~ href_separator ~ "glpilist_limit='+this.value+'" ~ additional_params ~ "'" %}
+      {% set href = "location.href='" ~ href|e('js') ~ href_separator ~ "glpilist_limit='+this.value+'" ~ additional_params|e('js') ~ "'" %}
    {% endif %}
 {% endif %}
 
@@ -79,7 +79,7 @@
 {% endif %}
 {% set select_name = select_name|default('list_limit') %}
 <select id="{{ select_name|safe_dom_id }}{{ rand|default(random()) }}" class="form-select form-select-sm mx-1 d-inline-block w-auto {{ select_class|default('') }}"
-        {% if not no_onchange %}onChange="{{ href }}"{% endif %} name="{{ select_name }}"
+        {% if not no_onchange and href is defined %}onChange="{{ href }}"{% endif %} name="{{ select_name }}"
         {% for attr, value in additional_attributes %}
             {{ attr }}="{{ value }}"
         {% endfor %}>

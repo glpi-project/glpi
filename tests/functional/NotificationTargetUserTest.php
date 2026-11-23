@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/notificationtargetuser.class.php */
@@ -97,6 +98,7 @@ class NotificationTargetUserTest extends DbTestCase
         ];
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('addDataForPasswordExpiresTemplateProvider')]
     public function testAddDataForPasswordExpiresTemplate(int $expiration_time, int $lock_delay, array $expected)
     {

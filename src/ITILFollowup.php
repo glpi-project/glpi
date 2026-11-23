@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Features\ParentStatus;
 
@@ -47,29 +48,16 @@ class ITILFollowup extends CommonDBChild
     use ITILSubItemRights;
 
     // From CommonDBTM
-    public $auto_message_on_action = false;
-    public static $rightname              = 'followup';
+    public bool $auto_message_on_action = false;
+    public static string $rightname              = 'followup';
     private ?CommonITILObject $item = null;
 
-    public static $log_history_add    = Log::HISTORY_LOG_SIMPLE_MESSAGE;
-    public static $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;
-    public static $log_history_delete = Log::HISTORY_LOG_SIMPLE_MESSAGE;
+    public static int $log_history_add    = Log::HISTORY_LOG_SIMPLE_MESSAGE;
+    public static int $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;
+    public static int $log_history_delete = Log::HISTORY_LOG_SIMPLE_MESSAGE;
 
-    /**
-     * @deprecated 11.0 Use ITILFollowup::ADDMY
-     */
-    public const ADDMYTICKET     = self::ADDMY;
-    /**
-     * @deprecated 11.0 Use ITILFollowup::ADD_AS_GROUP
-     */
-    public const ADDGROUPTICKET  = self::ADD_AS_GROUP;
-    /**
-     * @deprecated 11.0 Use ITILFollowup::ADDALLITEM
-     */
-    public const ADDALLTICKET    = self::ADDALLITEM;
-
-    public static $itemtype = 'itemtype';
-    public static $items_id = 'items_id';
+    public static string $itemtype = 'itemtype';
+    public static string $items_id = 'items_id';
 
 
     /**
@@ -77,7 +65,7 @@ class ITILFollowup extends CommonDBChild
      */
     public function getItilObjectItemType()
     {
-        return str_replace('Followup', '', $this->getType());
+        return str_replace('Followup', '', static::class);
     }
 
 
@@ -104,7 +92,7 @@ class ITILFollowup extends CommonDBChild
             $itemtype = $this->getItilObjectItemType();
             $item     = getItemForItemtype($itemtype);
         }
-        if (!$item->can($this->getField($item->getForeignKeyField()), READ)) {
+        if (!$item->can($this->fields[$item::getForeignKeyField()], READ)) {
             return false;
         }
         return true;
@@ -161,7 +149,7 @@ class ITILFollowup extends CommonDBChild
         } else {
             $itilobject = getItemForItemtype($this->fields['itemtype']);
         }
-        if (!$itilobject->can($this->getField('items_id'), READ)) {
+        if (!$itilobject->can($this->fields['items_id'], READ)) {
             return false;
         }
         if (Session::haveRight(self::$rightname, self::SEEPRIVATE)) {
@@ -203,7 +191,7 @@ class ITILFollowup extends CommonDBChild
         }
 
         if (
-            !$itilobject->can($this->getField('items_id'), READ)
+            !$itilobject->can($this->fields['items_id'], READ)
             // No validation for closed tickets
             || in_array($itilobject->fields['status'], $itilobject->getClosedStatusArray())
             && !$itilobject->canReopen()
@@ -221,7 +209,7 @@ class ITILFollowup extends CommonDBChild
         } else {
             $itilobject = getItemForItemtype($this->fields['itemtype']);
         }
-        if (!$itilobject->can($this->getField('items_id'), READ)) {
+        if (!$itilobject->can($this->fields['items_id'], READ)) {
             return false;
         }
 
@@ -248,7 +236,7 @@ class ITILFollowup extends CommonDBChild
         } else {
             $itilobject = getItemForItemtype($this->fields['itemtype']);
         }
-        if (!$itilobject instanceof CommonITILObject || !$itilobject->can($this->getField('items_id'), READ)) {
+        if (!$itilobject instanceof CommonITILObject || !$itilobject->can($this->fields['items_id'], READ)) {
             return false;
         }
 
@@ -308,10 +296,10 @@ class ITILFollowup extends CommonDBChild
             $this->fields['id'],
         ];
         Log::history(
-            $this->getField('items_id'),
+            $this->fields['items_id'],
             get_class($parentitem),
             $changes,
-            $this->getType(),
+            static::class,
             Log::HISTORY_ADD_SUBITEM
         );
 
@@ -334,6 +322,11 @@ class ITILFollowup extends CommonDBChild
 
     private function addToMergedTickets(): void
     {
+        // Ticket merge relationships must only be applied to ticket follow-ups.
+        if ($this->fields['itemtype'] !== Ticket::class) {
+            return;
+        }
+
         $merged = Ticket::getMergedTickets($this->fields['items_id']);
         foreach ($merged as $ticket_id) {
             $input = $this->input;
@@ -373,10 +366,10 @@ class ITILFollowup extends CommonDBChild
             $this->fields['id'],
         ];
         Log::history(
-            $this->getField(self::$items_id),
+            $this->fields[self::$items_id],
             $this->fields['itemtype'],
             $changes,
-            $this->getType(),
+            static::class,
             Log::HISTORY_DELETE_SUBITEM
         );
 
@@ -504,7 +497,7 @@ class ITILFollowup extends CommonDBChild
 
         // Only calculate timeline_position if not already specified in the input
         if (!isset($input['timeline_position'])) {
-            $input['timeline_position'] = $itemtype::getTimelinePosition($input["items_id"], $this->getType(), $input["users_id"]);
+            $input['timeline_position'] = $itemtype::getTimelinePosition($input["items_id"], static::class, $input["users_id"]);
         }
 
         if (!isset($input['date'])) {
@@ -605,10 +598,10 @@ class ITILFollowup extends CommonDBChild
             $this->fields['id'],
         ];
         Log::history(
-            $this->getField('items_id'),
+            $this->fields['items_id'],
             $this->fields['itemtype'],
             $changes,
-            $this->getType(),
+            static::class,
             Log::HISTORY_UPDATE_SUBITEM
         );
 
@@ -634,7 +627,7 @@ class ITILFollowup extends CommonDBChild
         }
 
         // Fail if loaded item's type doesn't match our expected parent itemtype
-        if ($this->item->getType() !== $this->fields['itemtype']) {
+        if (!$this->item instanceof $this->fields['itemtype']) {
             return false;
         }
 
@@ -765,11 +758,11 @@ class ITILFollowup extends CommonDBChild
         ];
 
         $followup_condition = '';
-        if (!Session::haveRight('followup', self::SEEPRIVATE)) {
+        if (!Session::haveRight(ITILFollowup::$rightname, self::SEEPRIVATE)) {
             $followup_condition = [
                 'OR' => [
                     'NEWTABLE.is_private'   => 0,
-                    'NEWTABLE.users_id'     => Session::getLoginUserID(),
+                    'NEWTABLE.users_id'     => (int) Session::getLoginUserID(),
                 ],
             ];
         }
@@ -817,7 +810,7 @@ class ITILFollowup extends CommonDBChild
                 'jointype'           => 'itemtype_item',
                 'condition'          => $followup_condition,
             ],
-            'computation'        => QueryFunction::max('TABLE.date'),
+            'computation'        => QueryFunction::max(new QueryIdentifier('TABLE.date')),
             'nometa'             => true, // cannot GROUP_CONCAT a MAX
         ];
 
@@ -1018,30 +1011,30 @@ class ITILFollowup extends CommonDBChild
                         && $item->getFromDB($id)
                     ) {
                         if (in_array($item->fields['status'], array_merge($item->getSolvedStatusArray(), $item->getClosedStatusArray()))) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         } else {
                             $input2 = [
                                 'items_id'        => $id,
-                                'itemtype'        => $item->getType(),
+                                'itemtype'        => $item::class,
                                 'is_private'      => $input['is_private'],
                                 'requesttypes_id' => $input['requesttypes_id'],
                                 'content'         => $input['content'],
                             ];
                             if ($fup->can(-1, CREATE, $input2)) {
                                 if ($fup->add($input2)) {
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                                 } else {
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                                 }
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                                 $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                             }
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                     }
                 }

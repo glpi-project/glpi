@@ -41,24 +41,24 @@
 class ProblemCost extends CommonITILCost
 {
     // From CommonDBChild
-    public static $itemtype = Problem::class;
-    public static $items_id  = 'problems_id';
+    public static string $itemtype = Problem::class;
+    public static string $items_id  = 'problems_id';
 
 
     public static function canCreate(): bool
     {
-        return Session::haveRight('problem', UPDATE);
+        return Session::haveRight(Problem::$rightname, UPDATE);
     }
 
 
     public static function canView(): bool
     {
-        return Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
+        return Session::haveRightsOr(Problem::$rightname, [Problem::READALL, Problem::READMY]);
     }
 
 
     public static function canUpdate(): bool
     {
-        return Session::haveRight('problem', UPDATE);
+        return Session::haveRight(Problem::$rightname, UPDATE);
     }
 }

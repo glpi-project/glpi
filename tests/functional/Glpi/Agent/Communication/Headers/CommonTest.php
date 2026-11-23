@@ -95,7 +95,6 @@ class CommonTest extends GLPITestCase
 
         $headers = $instance->getHeaders();
         $this->assertArrayHasKey('Content-Type', $headers);
-        $this->assertArrayHasKey('Pragma', $headers);
         $this->assertArrayHasKey('GLPI-Agent-ID', $headers);
 
         $instance = new Common();
@@ -106,14 +105,13 @@ class CommonTest extends GLPITestCase
 
         $headers = $instance->getHeaders();
         $this->assertArrayHasKey('Content-Type', $headers);
-        $this->assertArrayHasKey('Pragma', $headers);
         $this->assertArrayHasKey('GLPI-Agent-ID', $headers);
     }
 
     public function testGetRequireds()
     {
         $instance = new Common();
-        $this->assertCount(5, $instance->getRequireds());
+        $this->assertCount(4, $instance->getRequireds());
     }
 
     public function testGetHeadersNames()

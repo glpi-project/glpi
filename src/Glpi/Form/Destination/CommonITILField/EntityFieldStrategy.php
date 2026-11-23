@@ -68,8 +68,7 @@ enum EntityFieldStrategy: string
     public function getEntityID(
         EntityFieldConfig $config,
         AnswersSet $answers_set,
-        // TODO: remove default value on 12.0, it was only added to prevent BC breaks
-        array $input = [],
+        array $input,
     ): int {
         return match ($this) {
             self::FORM_FILLER          => $this->getFormFillerEntityID(),
@@ -107,11 +106,22 @@ enum EntityFieldStrategy: string
         }
 
         $value = $answer->getRawAnswer();
-        if ($value['itemtype'] !== Entity::getType() || !is_numeric($value['items_id'])) {
+        if ($value['itemtype'] !== Entity::class) {
             return $this->getFormFillerEntityID();
         }
 
-        return (int) $value['items_id'];
+        $items_ids = $value['items_ids'] ?? [];
+        if (!is_array($items_ids)) {
+            $items_ids = [$items_ids];
+        }
+
+        foreach ($items_ids as $items_id) {
+            if (is_numeric($items_id) && $items_id > -1) {
+                return (int) $items_id;
+            }
+        }
+
+        return $this->getFormFillerEntityID();
     }
 
     public function getEntityIDForLastValidAnswer(
@@ -121,9 +131,11 @@ enum EntityFieldStrategy: string
             $answers_set->getAnswersByType(
                 QuestionTypeItem::class
             ),
-            fn($answer)
-                => $answer->getRawAnswer()['itemtype'] === Entity::getType()
-                && $answer->getRawAnswer()['items_id'] > -1
+            fn($answer) => $answer->getRawAnswer()['itemtype'] === Entity::class
+                && array_filter(
+                    (array) ($answer->getRawAnswer()['items_ids'] ?? []),
+                    fn($id) => is_numeric($id) && $id > -1
+                ) !== []
         );
 
         if (count($valid_answers) == 0) {
@@ -132,11 +144,19 @@ enum EntityFieldStrategy: string
 
         $answer = end($valid_answers);
         $value = $answer->getRawAnswer();
-        if (!is_numeric($value['items_id'])) {
-            return $this->getFormFillerEntityID();
+
+        $items_ids = $value['items_ids'] ?? [];
+        if (!is_array($items_ids)) {
+            $items_ids = [$items_ids];
         }
 
-        return (int) $value['items_id'];
+        foreach ($items_ids as $items_id) {
+            if (is_numeric($items_id) && $items_id > -1) {
+                return (int) $items_id;
+            }
+        }
+
+        return $this->getFormFillerEntityID();
     }
 
     /**
@@ -172,11 +192,19 @@ enum EntityFieldStrategy: string
         if (count($it) === 0) {
             return null;
         }
-        $profile = $it->current();
+        $entities = array_map('intval', array_column(iterator_to_array($it), 'entities_id'));
 
         // If only one profile, use its entity
-        if (count($it) === 1) {
-            return $profile['entities_id'];
+        if (count($entities) === 1) {
+            return $entities[0];
+        }
+
+        // Prefer the requester's own configured default entity (Preferences >
+        // Default entity), if they are actually assigned to it. This mirrors
+        // the entity GLPI itself would activate for that user on login.
+        $default_entity = $requester->fields['entities_id'];
+        if ($default_entity !== null && in_array((int) $default_entity, $entities, true)) {
+            return (int) $default_entity;
         }
 
         $default_profiles = $DB->request([
@@ -219,6 +247,6 @@ enum EntityFieldStrategy: string
         }
 
         // Fallback to first profile
-        return $profile['entities_id'];
+        return $entities[0];
     }
 }

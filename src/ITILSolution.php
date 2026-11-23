@@ -42,11 +42,11 @@ use Glpi\ContentTemplates\TemplateManager;
 class ITILSolution extends CommonDBChild
 {
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
     private ?CommonITILObject $item = null;
 
-    public static $itemtype = 'itemtype'; // Class name or field name (start with itemtype) for link to Parent
-    public static $items_id = 'items_id'; // Field name
+    public static string $itemtype = 'itemtype'; // Class name or field name (start with itemtype) for link to Parent
+    public static string $items_id = 'items_id'; // Field name
 
     public static function getNameField()
     {
@@ -70,9 +70,9 @@ class ITILSolution extends CommonDBChild
             $nb    = 0;
             $title = self::getTypeName(Session::getPluralNumber());
             if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = self::countFor($item->getType(), $item->getID());
+                $nb = self::countFor($item::class, $item->getID());
             }
-            return self::createTabEntry($title, $nb, $item::getType());
+            return self::createTabEntry($title, $nb, $item::class);
         }
         return '';
     }
@@ -109,6 +109,10 @@ class ITILSolution extends CommonDBChild
 
     public function canCreateItem(): bool
     {
+        if ($this->isParentAlreadyLoaded()) {
+            return $this->item->canSolve();
+        }
+
         $item = getItemForItemtype($this->fields['itemtype']);
 
         if (!($item instanceof CommonITILObject)) {
@@ -117,6 +121,25 @@ class ITILSolution extends CommonDBChild
 
         $item->getFromDB($this->fields['items_id']);
         return $item->canSolve();
+    }
+
+    /**
+     * Check if $this->item already contains the correct parent item, to avoid
+     * reloading it for no reason.
+     *
+     * @phpstan-assert-if-true !null $this->item
+     *
+     * @return bool
+     */
+    private function isParentAlreadyLoaded(): bool
+    {
+        if (!isset($this->fields['itemtype'], $this->fields['items_id'])) {
+            return false;
+        }
+
+        return $this->item !== null
+            && $this->item::class === $this->fields['itemtype']
+            && $this->item->getID() === $this->fields['items_id'];
     }
 
     public function canEdit($ID): bool
@@ -128,11 +151,7 @@ class ITILSolution extends CommonDBChild
     {
         // Bandaid to avoid loading parent item if not needed
         // TODO: replace by proper lazy loading
-        if (
-            $this->item == null // No item loaded
-            || $this->item->getType() !== $this->fields['itemtype'] // Another item is loaded
-            || $this->item->getID() !== $this->fields['items_id']   // Another item is loaded
-        ) {
+        if (!$this->isParentAlreadyLoaded()) {
             $item = getItemForItemtype($this->fields['itemtype']);
             if ($item instanceof CommonITILObject) {
                 $this->item = $item;
@@ -203,6 +222,15 @@ class ITILSolution extends CommonDBChild
 
         $this->item = $parent_item;
 
+        if (!$this->item->checkRequiredFieldsFilled()) {
+            Session::addMessageAfterRedirect(
+                __s('Mandatory fields are not filled.'),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
         // Handle template
         if (isset($input['_solutiontemplates_id'])) {
             $template = new SolutionTemplate();
@@ -249,7 +277,7 @@ class ITILSolution extends CommonDBChild
             $status = CommonITILValidation::ACCEPTED;
 
             //handle autoclose, for tickets only
-            if ($input['itemtype'] == Ticket::getType()) {
+            if ($input['itemtype'] == Ticket::class) {
                 $autoclosedelay =  Entity::getUsedConfig(
                     'autoclose_delay',
                     $this->item->getEntityID(),
@@ -317,7 +345,7 @@ class ITILSolution extends CommonDBChild
             $status = $item::SOLVED;
 
             //handle autoclose, for tickets only
-            if ($item->getType() == Ticket::getType()) {
+            if ($item instanceof Ticket) {
                 $autoclosedelay =  Entity::getUsedConfig(
                     'autoclose_delay',
                     $this->item->getEntityID(),

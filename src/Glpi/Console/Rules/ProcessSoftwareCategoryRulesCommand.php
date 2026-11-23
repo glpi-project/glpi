@@ -60,7 +60,7 @@ class ProcessSoftwareCategoryRulesCommand extends AbstractCommand
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $query = [
@@ -75,7 +75,7 @@ class ProcessSoftwareCategoryRulesCommand extends AbstractCommand
             ];
         }
 
-        $software_iterator = $this->db->request($query);
+        $software_iterator = $this->getDb()->request($query);
 
         $sofware_count = $software_iterator->count();
         if ($sofware_count === 0) {

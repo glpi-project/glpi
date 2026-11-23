@@ -42,6 +42,7 @@ use Glpi\Tests\DbTestCase;
 use ITILFollowup as CoreITILFollowup;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
+use Symfony\Component\DomCrawler\Crawler;
 use Ticket;
 use Ticket_User;
 use User;
@@ -74,6 +75,31 @@ class ITILFollowupTest extends DbTestCase
         $this->assertFalse($itilobject->isNewItem());
         $this->assertTrue($itilobject->can($itilobject->getID(), \READ));
         return $as_object ? $itilobject : (int) $itilobject->getID();
+    }
+
+    /**
+     * Forging `is_private` + `users_id` must not grant the right to add a
+     * followup to an ITIL item the user has no access to.
+     */
+    public function testPrivateFlagDoesNotBypassCreateRights(): void
+    {
+        $this->login();
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $this->login('post-only', 'postonly');
+        $input = [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => __FUNCTION__,
+        ];
+        $this->assertFalse((new CoreITILFollowup())->can(-1, CREATE, $input));
+
+        $input += ['is_private' => 1, 'users_id' => \Session::getLoginUserID()];
+        $this->assertFalse((new CoreITILFollowup())->can(-1, CREATE, $input));
     }
 
     public function testACL()
@@ -826,5 +852,77 @@ HTML,
             'items_id' => $itil->getID(),
             'content'  => 'Test followup',
         ]);
+    }
+
+    public function testFollowupDoesNotPropagateThroughTicketMergeForProblem(): void
+    {
+        global $DB;
+
+        $this->login();
+        $entity = $this->getTestRootEntity(true);
+
+        // Two tickets; ticket B is merged (SON_OF) into ticket A and soft-deleted.
+        $ticket = new Ticket();
+        $id_a = $ticket->add(['name' => __FUNCTION__ . ' A', 'content' => 'a', 'entities_id' => $entity]);
+        $id_b = $ticket->add(['name' => __FUNCTION__ . ' B', 'content' => 'b', 'entities_id' => $entity]);
+        $this->assertGreaterThan(0, $id_a);
+        $this->assertGreaterThan(0, $id_b);
+        $this->assertTrue($DB->update('glpi_tickets', ['is_deleted' => 1], ['id' => $id_b]));
+        $this->assertTrue((bool) $DB->insert('glpi_tickets_tickets', [
+            'tickets_id_1' => $id_b,
+            'tickets_id_2' => $id_a,
+            'link'         => \Ticket_Ticket::SON_OF,
+        ]));
+        $this->assertSame([$id_a], Ticket::getMergedTickets($id_b));
+
+        // Two problems sharing the ids of the merged ticket (B) and its parent (A).
+        $problem = new Problem();
+        $pb = $problem->add(['name' => __FUNCTION__ . ' PB', 'content' => 'pb', 'entities_id' => $entity]);
+        $this->assertTrue($DB->update('glpi_problems', ['id' => $id_b], ['id' => $pb]));
+        $pn = (new Problem())->add(['name' => __FUNCTION__ . ' PN', 'content' => 'pn', 'entities_id' => $entity]);
+        $this->assertTrue($DB->update('glpi_problems', ['id' => $id_a], ['id' => $pn]));
+
+        // A follow-up on Problem #id_b must not be propagated onto Problem #id_a
+        // through the ticket merge graph.
+        $followup = new CoreITILFollowup();
+        $this->assertGreaterThan(0, $followup->add([
+            'itemtype' => Problem::class,
+            'items_id' => $id_b,
+            'content'  => 'problem followup',
+        ]));
+
+        $this->assertEquals(0, countElementsInTable(CoreITILFollowup::getTable(), ['itemtype' => Problem::class, 'items_id' => $id_a]));
+    }
+
+    public function testNewFollowupFormRequestedByTheTimeline(): void
+    {
+        $this->login();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Ticket',
+            'content'     => 'Ticket',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // The timeline requests the form on its own, without any display mode
+        $request = [
+            'action'     => 'viewsubitem',
+            'type'       => CoreITILFollowup::class,
+            'parenttype' => Ticket::class,
+            'tickets_id' => $ticket->getID(),
+        ];
+        $_REQUEST = $request + $_REQUEST;
+
+        ob_start();
+        try {
+            include GLPI_ROOT . '/ajax/timeline.php';
+        } finally {
+            $output = ob_get_clean();
+            $_REQUEST = array_diff_key($_REQUEST, $request);
+        }
+
+        $crawler = new Crawler($output);
+        $this->assertCount(1, $crawler->filter('textarea[name="content"]'));
+        $this->assertCount(1, $crawler->filter('button[name="add"]'));
     }
 }

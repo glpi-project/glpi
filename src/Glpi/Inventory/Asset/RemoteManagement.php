@@ -45,7 +45,7 @@ class RemoteManagement extends InventoryAsset
     {
         global $CFG_GLPI;
 
-        if (!in_array($this->item->getType(), $CFG_GLPI['remote_management_types'])) {
+        if (!in_array($this->item::class, $CFG_GLPI['remote_management_types'])) {
             throw new RuntimeException(
                 'Remote Management are handled for following types only: '
                 . implode(', ', $CFG_GLPI['remote_management_types'])
@@ -85,7 +85,7 @@ class RemoteManagement extends InventoryAsset
             'SELECT' => ['id', 'remoteid', 'type', 'is_dynamic'],
             'FROM'   => Item_RemoteManagement::getTable(),
             'WHERE'  => [
-                'itemtype' => $this->item->getType(),
+                'itemtype' => $this->item::class,
                 'items_id' => $this->item->fields['id'],
             ],
         ]);
@@ -131,7 +131,7 @@ class RemoteManagement extends InventoryAsset
         }
 
         foreach ($value as $val) {
-            $val->itemtype = $this->item->getType();
+            $val->itemtype = $this->item::class;
             $val->items_id = $this->item->fields['id'];
             $val->is_dynamic = 1;
             $mgmt->add((array) $val);

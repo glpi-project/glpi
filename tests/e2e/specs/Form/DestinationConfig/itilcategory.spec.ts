@@ -98,7 +98,8 @@ test.describe('ITILCategory configuration', () => {
             false
         );
         await form_page.getButton('Submit').click();
-        await page.getByRole('link', { name: 'My test form' }).click();
+        // Check that the user is redirected to the created ticket
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
 
         // Check ticket values
         await expect(form_page.getDropdownByLabel('Category')).toHaveText(itilcategory_name);

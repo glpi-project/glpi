@@ -44,20 +44,19 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 abstract class LevelAgreementLevel extends RuleTicket
 {
-    public static $rightname            = 'slm';
+    public static string $rightname            = 'slm';
 
     /**
      * LevelAgreement parent class.
      * Have to be redefined by concrete class.
      * @var class-string<LevelAgreement>
      */
-    protected static $parentclass;
+    protected static string $parentclass;
     /**
      * LevelAgreement parent class foreign key.
      * Have to be redefined by concrete class.
-     * @var string
      */
-    protected static $fkparent;
+    protected static string $fkparent;
 
     /**
      * Constructor
@@ -368,7 +367,7 @@ abstract class LevelAgreementLevel extends RuleTicket
     {
         if (!$withtemplate) {
             $nb = 0;
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case static::$parentclass:
                     if (
                         $_SESSION['glpishow_count_on_tabs']
@@ -376,7 +375,7 @@ abstract class LevelAgreementLevel extends RuleTicket
                     ) {
                         $nb =  countElementsInTable(static::getTable(), [static::$fkparent => $item->getID()]);
                     }
-                    return self::createTabEntry(static::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                    return self::createTabEntry(static::getTypeName(Session::getPluralNumber()), $nb, $item::class);
             }
         }
         return '';
@@ -438,7 +437,7 @@ abstract class LevelAgreementLevel extends RuleTicket
     {
         global $DB;
 
-        $ID = $la->getField('id');
+        $ID = $la->getID();
         if (!$la->can($ID, READ)) {
             return;
         }
@@ -527,7 +526,6 @@ TWIG, ['la_level' => $la_level]);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

@@ -53,7 +53,7 @@ class NetworkEquipment extends MainAsset
     /** @var array<string, object> */
     private array $management_ports = [];
 
-    protected $extra_data = [
+    protected array $extra_data = [
         'network_device'                          => null,
         'network_components'                      => null,
         NetworkPort::class       => null,
@@ -489,7 +489,7 @@ class NetworkEquipment extends MainAsset
                     $ipaddress = new IPAddress($ip);
                     $criteria = [
                         'mainitems_id' => $item->fields['id'],
-                        'mainitemtype' => $item::getType(),
+                        'mainitemtype' => $item::class,
                         'is_dynamic'   => 1,
                         'name'         => $ipaddress->getTextual(),
                     ];

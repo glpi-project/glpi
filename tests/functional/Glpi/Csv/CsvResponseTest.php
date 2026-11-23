@@ -38,10 +38,11 @@ use Computer;
 use Glpi\Csv\CsvResponse as Core_CsvResponse;
 use Glpi\Csv\LogCsvExport as CsvLogCsvExport;
 use Glpi\Tests\DbTestCase;
-use League\Csv\Reader;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 class CsvResponseTest extends DbTestCase
 {
+    #[AllowMockObjectsWithoutExpectations]
     public function testCsvResponse()
     {
         $_SESSION['glpicronuserrunning'] = "cron_phpunit";
@@ -66,18 +67,13 @@ class CsvResponseTest extends DbTestCase
         Core_CsvResponse::output($mock_logexport);
 
         // Parse CSV
-        $csv = Reader::createFromString(ob_get_clean());
-        $csv->setHeaderOffset(0);
-        $csv->setDelimiter($_SESSION["glpicsv_delimiter"] ?? ";");
-        $csv->setEscape('');
-        $header = $csv->getHeader();
-        $records = iterator_to_array($csv->getRecords());
-
-        // Check if content is OK
+        $csv = explode("\r\n", trim(ob_get_clean()));
+        $header = str_getcsv(array_shift($csv), $_SESSION["glpicsv_delimiter"] ?? ";", '"', "\\");
+        $records = array_map(static fn($line) =>  str_getcsv($line, $_SESSION["glpicsv_delimiter"] ?? ";", '"', "\\"), $csv);
         $this->assertCount(5, $header);
         $this->assertCount(1, $records);
         $record = array_pop($records);
-        $this->assertEquals($_SESSION['glpicronuserrunning'], $record['User']);
-        $this->assertEquals("Add the item", $record['Update']);
+        $this->assertEquals($_SESSION['glpicronuserrunning'], $record[2]);
+        $this->assertEquals("Add the item", $record[4]);
     }
 }

@@ -30,8 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-require('@jest/globals');
-const common = require('/js/common.js');
+import * as common from '/js/common.js';
 
 describe('Common', () => {
     beforeEach(() => {
@@ -175,10 +174,10 @@ describe('Common', () => {
 
     it('getExtIcon', () => {
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//pics/icones/png-dist.png', 'HEAD', {}, () => ''));
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/pics/icones/png-dist.png', 'HEAD', {}, () => ''));
         expect(common.getExtIcon('png')).toBe(`<img src="${window.CFG_GLPI.root_doc}/pics/icones/png-dist.png" title="png">`);
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//pics/icones/fake-dist.png', 'HEAD', {}, () => '', false, 'error'));
+        expect(window.AjaxMock.isResponseStackEmpty()).toBe(true);
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/pics/icones/fake-dist.png', 'HEAD', {}, () => '', false, 'error'));
         expect(common.getExtIcon('fake')).toBe(`<img src="${window.CFG_GLPI.root_doc}/pics/icones/defaut-dist.png" title="fake">`);
     });
 
@@ -232,14 +231,6 @@ describe('Common', () => {
         expect(common.getFlatPickerLocale('fr', 'FR')).toBe('fr');
         expect(common.getFlatPickerLocale('es', 'ES')).toBe('es');
         expect(common.getFlatPickerLocale('de', 'DE')).toBe('de');
-    });
-
-    it('getAjaxCsrfToken', () => {
-        const csrf_meta = document.createElement('meta');
-        csrf_meta.setAttribute('property', 'glpi:csrf_token');
-        csrf_meta.setAttribute('content', 'dummy_csrf_token_value');
-        document.head.append(csrf_meta);
-        expect(common.getAjaxCsrfToken()).toBe('dummy_csrf_token_value');
     });
 
     it('tableToDetails', () => {

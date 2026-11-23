@@ -46,7 +46,6 @@ final class TilesManager
 {
     /**
      * Singleton instance
-     * @var TilesManager|null
      */
     private static ?TilesManager $instance = null;
 
@@ -296,6 +295,11 @@ final class TilesManager
 
         // Set new ranks
         foreach (array_values($order) as $rank => $id) {
+            // Only the tiles of the given item can be ordered
+            if (!in_array($id, $items_tiles_ids)) {
+                continue;
+            }
+
             // Find the associated Profile_Tile
             $item_tile = new Item_Tile();
             $item_tile->update([
@@ -338,9 +342,22 @@ final class TilesManager
             'tiles'         => $this->getTilesForItem($item),
             'itemtype_item' => $item::class,
             'items_id_item' => $item->getID(),
-            'editable'      => $item::canUpdate() && $item->canUpdateItem(),
+            'editable'      => $item->can($item->getID(), UPDATE),
             'info_text'     => $item->getTilesConfigInformationText(),
         ]);
+    }
+
+    /**
+     * Whether the current user is allowed to create at least one tile type.
+     */
+    public function canAddTile(): bool
+    {
+        foreach ($this->getTileTypes() as $tile_type) {
+            if ($tile_type::canCreate()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function copyTilesFromParentEntity(Entity $entity): void

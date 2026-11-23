@@ -367,6 +367,36 @@ final class TilesManagerTest extends DbTestCase
         $this->assertEquals("/front/helpdesk.faq.php", $third_tile->getTileUrl());
     }
 
+    public function testTilesOrderCannotChangeTilesOfAnotherItem(): void
+    {
+        // Arrange: two profiles with their own tiles
+        $manager = $this->getManager();
+        $profile = $this->createNewHelpdeskProfile();
+        $other_profile = $this->createItem(Profile::class, [
+            'name' => 'Other helpdesk profile',
+            'interface' => 'helpdesk',
+        ]);
+        $profile_tile_id = $manager->addTile($profile, ExternalPageTile::class, [
+            'title'        => "GLPI project",
+            'description'  => "Link to GLPI project website",
+            'illustration' => "request-service",
+            'url'          => "https://glpi-project.org",
+        ]);
+        $other_tile_id = $manager->addTile($other_profile, ExternalPageTile::class, [
+            'title'        => "Support",
+            'description'  => "Link to teclib support",
+            'illustration' => "report-issue",
+            'url'          => "https://support.teclib.org",
+        ]);
+        $this->updateItem(Item_Tile::class, $other_tile_id, ['rank' => 10]);
+
+        // Act: set an order for the first profile that contains the tile of the other one
+        $manager->setOrderForItem($profile, [$other_tile_id, $profile_tile_id]);
+
+        // Assert: the tile of the other profile is not changed
+        $this->assertEquals(10, Item_Tile::getById($other_tile_id)->fields['rank']);
+    }
+
     public function testDeleteTile(): void
     {
         // Arrange: create a profile with some tiles
@@ -661,7 +691,7 @@ final class TilesManagerTest extends DbTestCase
         $this->assertTrue($this->tilesExist("Report an issue", $tiles));
     }
 
-    public function testFormsTilesAreHiddenIfUserCantCreateTicket(): void
+    public function testFormsTilesAreVisibleEvenIfUserCantCreateTicket(): void
     {
         // Arrange: remove the right to create ticket from self service user.
         $this->removeRightFromProfile("Self-Service", Ticket::$rightname, CREATE);
@@ -673,13 +703,14 @@ final class TilesManagerTest extends DbTestCase
             Session::getCurrentSessionInfo()
         );
 
-        // Assert: tiles related to ticket creation should not be found
+        // Assert: form tiles are only gated by their own access control
+        // policy, not by the ticket creation right.
         $this->assertTrue($this->tilesExist("Browse help articles", $tiles));
         $this->assertTrue($this->tilesExist("Make a reservation", $tiles));
         $this->assertTrue($this->tilesExist("See your tickets", $tiles));
         $this->assertTrue($this->tilesExist("Create a ticket", $tiles));
-        $this->assertFalse($this->tilesExist("Request a service", $tiles));
-        $this->assertFalse($this->tilesExist("Report an issue", $tiles));
+        $this->assertTrue($this->tilesExist("Request a service", $tiles));
+        $this->assertTrue($this->tilesExist("Report an issue", $tiles));
     }
 
     /** @param array<TileInterface> $tiles */

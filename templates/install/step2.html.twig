@@ -30,8 +30,6 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/form/fields_macros.html.twig' as fields %}
-
 <h3>{{ __('Database connection setup') }}</h3>
 
 <form action="install.php" method="post" data-submit-once>
@@ -53,10 +51,9 @@
 
    <button type="submit" name="submit" class="btn btn-primary">
       {{ __("Continue") }}
-      <i class="ti ti-chevron-right ms-1"></i>
+      <i class="ti ti-chevron-right ms-1" aria-hidden="true"></i>
    </button>
 
    <input type="hidden" name="update" value="{{ update }}">
    <input type="hidden" name="install" value="Etape_2">
-   {{ fields.csrfField() }}
 </form>

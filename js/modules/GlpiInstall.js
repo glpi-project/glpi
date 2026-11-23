@@ -30,8 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/* global getAjaxCsrfToken */
-
 import { ProgressIndicator } from '/js/modules/ProgressIndicator.js';
 
 export function init_database()
@@ -48,7 +46,6 @@ export function init_database()
                 'Accept': 'application/json',
                 'Content-Type': 'application/x-www-form-urlencoded;',
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
             },
         },
     );
@@ -82,7 +79,6 @@ export async function update_database()
                 'Accept': 'application/json',
                 'Content-Type': 'application/x-www-form-urlencoded;',
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
             },
         },
     );

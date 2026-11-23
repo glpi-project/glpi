@@ -47,3 +47,22 @@
         })
     ) }}
 </div>
+
+<div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_CONTENT }}">
+    {{ fields.textareaField(
+        specific_content_extra_field.input_name,
+        specific_content_extra_field.value,
+        "",
+        options|merge({
+            field_class: '',
+            mb: '',
+            no_label: true,
+            aria_label: specific_content_extra_field.aria_label,
+            enable_richtext: true,
+            enable_images: false,
+            enable_form_tags: true,
+            form_tags_form_id: specific_content_extra_field.form_id,
+            content_style: 'body { line-height: 2.3; }',
+        })
+    ) }}
+</div>

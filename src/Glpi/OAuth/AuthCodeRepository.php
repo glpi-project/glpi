@@ -36,6 +36,7 @@
 namespace Glpi\OAuth;
 
 use Glpi\DBAL\QueryFunction;
+use Glpi\Toolbox\IPUtilities;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 
@@ -63,6 +64,7 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
             'date_expiration' => $authCodeEntity->getExpiryDateTime()->format('Y-m-d H:i:s'),
             'user_identifier' => $authCodeEntity->getUserIdentifier(),
             'scopes' => exportArrayToDB($authCodeEntity->getScopes()),
+            'ip_address' => IPUtilities::getClientIP(),
         ]);
     }
 

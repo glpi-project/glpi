@@ -182,6 +182,28 @@ class AnswersHandlerTest extends DbTestCase
         );
     }
 
+    public function testIndexIsTakenFromUsageCount(): void
+    {
+        global $DB;
+
+        // Arrange: create a form and submit it once
+        $builder = new FormBuilder("Form");
+        $builder->addQuestion("Name", QuestionTypeShortText::class);
+        $form = $this->createForm($builder);
+        $this->sendFormAndGetAnswerSet($form, ['Name' => 'First answer']);
+
+        // Simulate a concurrent submission that already incremented the
+        // counter but whose answers set is not committed yet
+        $DB->update(Form::getTable(), ['usage_count' => 2], ['id' => $form->getID()]);
+
+        // Act: submit the form again
+        $answers_set = $this->sendFormAndGetAnswerSet($form, ['Name' => 'Third answer']);
+
+        // Assert: the index does not reuse the one of the concurrent submission
+        $this->assertEquals(3, $answers_set->fields['index']);
+        $this->assertEquals("Form #3", $answers_set->fields['name']);
+    }
+
     public static function provideTestValidateAnswers(): iterable
     {
         // Basic mandatory form builder
@@ -285,7 +307,7 @@ class AnswersHandlerTest extends DbTestCase
             'answers' => [
                 'Mandatory Entity Question' => [
                     'itemtype' => Entity::class,
-                    'items_id' => -1, // Empty choice
+                    'items_ids' => [-1], // Empty choice
                 ],
             ],
             'expectedIsValid' => false,
@@ -299,7 +321,7 @@ class AnswersHandlerTest extends DbTestCase
             'answers' => [
                 'Mandatory Entity Question' => [
                     'itemtype' => Entity::class,
-                    'items_id' => 0, // Root entity
+                    'items_ids' => [0], // Root entity
                 ],
             ],
             'expectedIsValid' => true,
@@ -321,7 +343,7 @@ class AnswersHandlerTest extends DbTestCase
             'answers' => [
                 'Mandatory Location Question' => [
                     'itemtype' => Location::class,
-                    'items_id' => -1, // Empty choice
+                    'items_ids' => [-1], // Empty choice
                 ],
             ],
             'expectedIsValid' => false,
@@ -335,7 +357,7 @@ class AnswersHandlerTest extends DbTestCase
             'answers' => [
                 'Mandatory Location Question' => [
                     'itemtype' => Location::class,
-                    'items_id' => 1,
+                    'items_ids' => [1],
                 ],
             ],
             'expectedIsValid' => true,

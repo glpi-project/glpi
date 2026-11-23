@@ -57,50 +57,6 @@ class SavedSearchTest extends DbTestCase
         $this->assertNotEmpty(SavedSearch::getVisibilityCriteria()['WHERE']);
     }
 
-    public function testAddVisibilityRestrict()
-    {
-        $test_root    = getItemByTypeName('Entity', '_test_root_entity', true);
-        $test_child_1 = getItemByTypeName('Entity', '_test_child_1', true);
-        $test_child_2 = getItemByTypeName('Entity', '_test_child_2', true);
-        $test_child_3 = getItemByTypeName('Entity', '_test_child_3', true);
-
-        //first, as a super-admin
-        $this->login();
-        $this->assertSame('', SavedSearch::addVisibilityRestrict());
-
-        $this->login('normal', 'normal');
-        $this->assertSame(
-            "`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5' AND (true)",
-            SavedSearch::addVisibilityRestrict()
-        );
-
-        //add public saved searches read right for normal profile
-        global $DB;
-        $DB->update(
-            'glpi_profilerights',
-            ['rights' => 1],
-            [
-                'profiles_id'  => 2,
-                'name'         => 'bookmark_public',
-            ]
-        );
-
-        //ACLs have changed: login again.
-        $this->login('normal', 'normal');
-
-        $this->assertSame(
-            "((`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5') OR (`glpi_savedsearches`.`is_private` = '0')) AND (true)",
-            SavedSearch::addVisibilityRestrict()
-        );
-
-        // Check entity restriction
-        $this->setEntity('_test_root_entity', true);
-        $this->assertSame(
-            "((`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5') OR (`glpi_savedsearches`.`is_private` = '0')) AND ((`glpi_savedsearches`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2', '$test_child_3') OR (`glpi_savedsearches`.`is_recursive` = '1' AND `glpi_savedsearches`.`entities_id` IN ('0'))))",
-            SavedSearch::addVisibilityRestrict()
-        );
-    }
-
     public function testGetMine()
     {
         global $DB;
@@ -350,6 +306,39 @@ class SavedSearchTest extends DbTestCase
         $this->assertEquals(0, $ma->results['ok']);
     }
 
+    public function testCreateNotifFallsBackToSavedSearchEntity()
+    {
+        $this->login();
+
+        $entity_id = getItemByTypeName(\Entity::class, '_test_child_1', true);
+
+        $savedsearch = $this->createItem(SavedSearch::class, [
+            'name'         => __FUNCTION__,
+            'entities_id'  => $entity_id,
+            'is_recursive' => 1,
+            'users_id'     => $_SESSION['glpiID'],
+            'itemtype'     => Ticket::class,
+            'is_private'   => 0,
+            'type'         => 1,
+            'url'          => '/front/ticket.php',
+        ], ['url']);
+
+        // Reproduce the reported condition: the user has no single default
+        // entity, so the previous code would insert a null `entities_id`.
+        $_SESSION['glpidefault_entity'] = null;
+
+        $savedsearch->createNotif();
+
+        $notif = new \Notification();
+        // The notification must be created (previously the insert failed with a
+        // null entities_id, yet a success message was still shown).
+        $this->assertTrue(
+            $notif->getFromDBByCrit(['event' => 'alert_' . $savedsearch->getID()])
+        );
+        // With no default entity, it falls back to the saved search entity.
+        $this->assertEquals($entity_id, (int) $notif->fields['entities_id']);
+    }
+
     public function testPrepareInputAdd()
     {
         $this->login();
@@ -443,5 +432,41 @@ class SavedSearchTest extends DbTestCase
         ], $saved_search->prepareInputForUpdate([
             'is_private' => 1,
         ]));
+    }
+
+    /**
+     * Without the `bookmark_public` right, a user keeps full access to its own
+     * private searches, and only to them.
+     */
+    public function testOwnerAccessToPrivateSearch(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(true);
+        $normal_id = getItemByTypeName(\User::class, 'normal', true);
+        $glpi_id   = getItemByTypeName(\User::class, 'glpi', true);
+
+        $input = [
+            'type'         => 1,
+            'itemtype'     => 'Ticket',
+            'is_private'   => 1,
+            'entities_id'  => $entity_id,
+            'url'          => 'front/ticket.php?itemtype=Ticket',
+        ];
+        $own   = $this->createItem(SavedSearch::class, ['name' => 'own', 'users_id' => $normal_id] + $input, ['url']);
+        $other = $this->createItem(SavedSearch::class, ['name' => 'other', 'users_id' => $glpi_id] + $input, ['url']);
+
+        $this->login('normal', 'normal');
+        $_SESSION['glpiactiveprofile'][SavedSearch::$rightname] = 0;
+
+        $own_input = ['users_id' => $normal_id] + $input;
+        $this->assertTrue((new SavedSearch())->can(-1, CREATE, $own_input));
+        $other_input = ['users_id' => $glpi_id] + $input;
+        $this->assertFalse((new SavedSearch())->can(-1, CREATE, $other_input));
+
+        foreach ([READ, UPDATE, DELETE, PURGE] as $right) {
+            $this->assertTrue((new SavedSearch())->can($own->getID(), $right), "Owner right $right");
+            $this->assertFalse((new SavedSearch())->can($other->getID(), $right), "Non-owner right $right");
+        }
+        $this->assertFalse((new SavedSearch())->can($own->getID(), READNOTE));
     }
 }

@@ -47,8 +47,8 @@ class RefusedEquipment extends CommonDBTM implements DefaultSearchRequestInterfa
     use Inventoriable;
 
     // From CommonDBTM
-    public $dohistory                   = true;
-    public static $rightname                   = 'refusedequipment';
+    public bool $dohistory                   = true;
+    public static string $rightname                   = 'refusedequipment';
 
     public static function getTypeName($nb = 0)
     {
@@ -68,7 +68,7 @@ class RefusedEquipment extends CommonDBTM implements DefaultSearchRequestInterfa
             'id'            => '2',
             'table'         => RuleImportAsset::getTable(),
             'field'         => 'id',
-            'real_type'     => RuleImportAsset::getType(),
+            'real_type'     => RuleImportAsset::class,
             'name'          => Rule::getTypeName(1),
             'datatype'      => 'specific',
             'massiveaction' => false,
@@ -215,7 +215,7 @@ class RefusedEquipment extends CommonDBTM implements DefaultSearchRequestInterfa
         );
         Ajax::createIframeModalWindow(
             'allruletest' . $rand,
-            $CFG_GLPI['root_doc'] . "/front/rulesengine.test.php?" . "sub_type=" . RuleImportAsset::getType() . "&refusedequipments_id=" . $this->fields['id'],
+            $CFG_GLPI['root_doc'] . "/front/rulesengine.test.php?" . "sub_type=" . RuleImportAsset::class . "&refusedequipments_id=" . $this->fields['id'],
             ['title' => __('Test rules engine')]
         );
 

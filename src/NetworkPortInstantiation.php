@@ -56,20 +56,17 @@ use Glpi\Toolbox\ArrayPathAccessor;
 class NetworkPortInstantiation extends CommonDBChild
 {
     // From CommonDBTM
-    public $auto_message_on_action   = false;
+    public bool $auto_message_on_action   = false;
 
     // From CommonDBChild
-    public static $itemtype       = NetworkPort::class;
-    public static $items_id       = 'networkports_id';
-    public $dohistory             = false;
+    public static string $itemtype       = NetworkPort::class;
+    public static string $items_id       = 'networkports_id';
+    public bool $dohistory             = false;
 
     // Instantiation properties
-    /** @var bool */
-    public $canHaveVLAN           = true;
-    /** @var bool */
-    public $canHaveVirtualPort    = true;
-    /** @var bool */
-    public $haveMAC               = true;
+    public bool $canHaveVLAN           = true;
+    public bool $canHaveVirtualPort    = true;
+    public bool $haveMAC               = true;
 
     public static function getIndexName()
     {

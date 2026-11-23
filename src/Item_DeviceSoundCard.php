@@ -43,10 +43,10 @@
  **/
 class Item_DeviceSoundCard extends Item_Devices
 {
-    public static $itemtype_2 = DeviceSoundCard::class;
-    public static $items_id_2 = 'devicesoundcards_id';
+    public static ?string $itemtype_2 = DeviceSoundCard::class;
+    public static ?string $items_id_2 = 'devicesoundcards_id';
 
-    protected static $notable = false;
+    protected static bool $notable = false;
 
 
     public static function getSpecificities($specif = '')

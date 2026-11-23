@@ -35,8 +35,8 @@
 
 class RuleDictionnaryPhoneTypeCollection extends RuleDictionnaryDropdownCollection
 {
-    public $item_table  = "glpi_phonetypes";
-    public $menu_option = "type.phone";
+    public string $item_table  = "glpi_phonetypes";
+    public string $menu_option = "type.phone";
 
     public function getTitle()
     {

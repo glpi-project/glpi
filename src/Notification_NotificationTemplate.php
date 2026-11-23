@@ -43,14 +43,13 @@ use Glpi\Application\View\TemplateRenderer;
 class Notification_NotificationTemplate extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = Notification::class;
-    public static $items_id_1       = 'notifications_id';
-    public static $itemtype_2 = NotificationTemplate::class;
-    public static $items_id_2       = 'notificationtemplates_id';
-    public static $mustBeAttached_2 = false; // Mandatory to display creation form
+    public static ?string $itemtype_1 = Notification::class;
+    public static ?string $items_id_1       = 'notifications_id';
+    public static ?string $itemtype_2 = NotificationTemplate::class;
+    public static ?string $items_id_2       = 'notificationtemplates_id';
 
-    public $no_form_page    = false;
-    protected $displaylist  = false;
+    public bool $no_form_page    = false;
+    protected bool $displaylist  = false;
 
     public const MODE_MAIL      = 'mailing';
     public const MODE_AJAX      = 'ajax';
@@ -163,7 +162,7 @@ TWIG, $twig_params);
 
             $tpl_link = $tpl->getLink();
             if (empty($tpl_link)) {
-                $tpl_link = "<i class='ti ti-alert-triangle red'></i>
+                $tpl_link = "<i class='ti ti-alert-triangle red' aria-hidden='true'></i>
                         <a href='" . htmlescape($notiftpl->getLinkUrl()) . "'>"
                          . __s("No template selected")
                       . "</a>";
@@ -198,7 +197,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -275,7 +273,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -318,7 +315,7 @@ TWIG, $twig_params);
     #[Override]
     public function showForm($ID, array $options = [])
     {
-        if (!Session::haveRight("notification", UPDATE)) {
+        if (!Session::haveRight(Notification::$rightname, UPDATE)) {
             return false;
         }
 
@@ -327,7 +324,7 @@ TWIG, $twig_params);
             $this->check($ID, READ);
             $notif->getFromDB($this->fields['notifications_id']);
         } else {
-            $this->check(-1, CREATE, $options);
+            $this->checkGlobal(CREATE);
             $notif->getFromDB($options['notifications_id']);
         }
 

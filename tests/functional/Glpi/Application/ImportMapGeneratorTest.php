@@ -38,6 +38,7 @@ use Glpi\Application\ImportMapGenerator;
 use Glpi\Tests\GLPITestCase;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\SimpleCache\CacheInterface;
 
@@ -171,6 +172,7 @@ class ImportMapGeneratorTest extends GLPITestCase
     /**
      * Test the generate method for core and plugin modules
      */
+    #[AllowMockObjectsWithoutExpectations]
     public function testGenerate()
     {
         // Set up virtual file system
@@ -216,6 +218,7 @@ class ImportMapGeneratorTest extends GLPITestCase
     /**
      * Test that version parameters change when file content changes
      */
+    #[AllowMockObjectsWithoutExpectations]
     public function testVersionParameterChangesWhenFileContentChanges()
     {
         // Set up basic virtual filesystem with a test module
@@ -263,6 +266,7 @@ class ImportMapGeneratorTest extends GLPITestCase
     /**
      * Test the registerModulesPath method for plugin-specific module paths
      */
+    #[AllowMockObjectsWithoutExpectations]
     public function testRegisterModulesPath()
     {
         // Set up virtual file system

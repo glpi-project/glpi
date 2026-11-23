@@ -40,11 +40,11 @@ use Glpi\Toolbox\URL;
 class Contract_Supplier extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = Contract::class;
-    public static $items_id_1 = 'contracts_id';
+    public static ?string $itemtype_1 = Contract::class;
+    public static ?string $items_id_1 = 'contracts_id';
 
-    public static $itemtype_2 = Supplier::class;
-    public static $items_id_2 = 'suppliers_id';
+    public static ?string $itemtype_2 = Supplier::class;
+    public static ?string $items_id_2 = 'suppliers_id';
 
     public function getForbiddenStandardMassiveAction()
     {
@@ -76,7 +76,7 @@ class Contract_Supplier extends CommonDBRelation
                     break;
 
                 case Contract::class:
-                    if (Session::haveRight("contact_enterprise", READ)) {
+                    if (Session::haveRight(Supplier::$rightname, READ)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $nb = self::countForItem($item);
                         }
@@ -149,7 +149,6 @@ class Contract_Supplier extends CommonDBRelation
                     <form method="post" action="{{ 'Contract_Supplier'|itemtype_form_path }}">
                         <div class="d-flex">
                             <input type="hidden" name="suppliers_id" value="{{ supplier.getID() }}">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             {{ fields.dropdownField('Contract', 'contracts_id', 0, __('Add a contract'), {
                                 used: used,
                                 entity: supplier.fields['entities_id'],
@@ -157,7 +156,7 @@ class Contract_Supplier extends CommonDBRelation
                                 nochecklimit: true
                             }) }}
                             {% set btn %}
-                                <button type="submit" name='add' class="btn btn-primary"><i class="ti ti-link"></i><span>{{ btn_label }}</span></button>
+                                <button type="submit" name='add' class="btn btn-primary"><i class="ti ti-link" aria-hidden="true"></i><span>{{ btn_label }}</span></button>
                             {% endset %}
                             {{ fields.htmlField('', btn, null) }}
                         </div>
@@ -219,7 +218,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -243,7 +241,7 @@ TWIG, $twig_params);
 
         if (
             !$contract->can($instID, READ)
-            || !Session::haveRight("contact_enterprise", READ)
+            || !Session::haveRight(Supplier::$rightname, READ)
         ) {
             return;
         }
@@ -272,14 +270,13 @@ TWIG, $twig_params);
                     <form method="post" action="{{ 'Contract_Supplier'|itemtype_form_path }}">
                         <div class="d-flex">
                             <input type="hidden" name="contracts_id" value="{{ contract.getID() }}">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             {{ fields.dropdownField('Supplier', 'suppliers_id', 0, __('Add a supplier'), {
                                 used: used,
                                 entity: contract.fields['entities_id'],
                                 entity_sons: contract.fields['is_recursive']
                             }) }}
                             {% set btn %}
-                                <button type="submit" name='add' class="btn btn-primary"><i class="ti ti-link"></i><span>{{ btn_label }}</span></button>
+                                <button type="submit" name='add' class="btn btn-primary"><i class="ti ti-link" aria-hidden="true"></i><span>{{ btn_label }}</span></button>
                             {% endset %}
                             {{ fields.htmlField('', btn, null) }}
                         </div>
@@ -342,7 +339,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

@@ -60,12 +60,12 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
 
     /// TODO move to CommonDBChild ?
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    protected static $forward_entity_to = ['Infocom'];
+    protected static array $forward_entity_to = ['Infocom'];
 
-    public static $rightname                   = 'license';
-    protected $usenotepad               = true;
+    public static string $rightname                   = 'license';
+    protected bool $usenotepad               = true;
 
 
     public function getCloneRelations(): array
@@ -310,6 +310,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
             'name'               => __('Number'),
             'datatype'           => 'number',
             'max'                => 100,
+            'forcegroupby'       => true,
             'toadd'              => [
                 '-1'                 => 'Unlimited',
             ],
@@ -676,15 +677,13 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
                     'glpi_softwares.name AS softname',
                 ],
                 'FROM'   => 'glpi_softwarelicenses',
-                'INNER JOIN'   => [
+                'LEFT JOIN'    => [
                     'glpi_softwares'  => [
                         'ON'  => [
                             'glpi_softwarelicenses' => 'softwares_id',
                             'glpi_softwares'        => 'id',
                         ],
                     ],
-                ],
-                'LEFT JOIN'    => [
                     'glpi_alerts'  => [
                         'ON'  => [
                             'glpi_softwarelicenses' => 'id',
@@ -703,27 +702,37 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
                         QueryFunction::datediff(
                             expression1: $DB::quoteName('glpi_softwarelicenses.expire'),
                             expression2: QueryFunction::curdate()
-                        )
-                    ) . ' < ' . $before,
-                    'glpi_softwares.is_template'  => 0,
-                    'glpi_softwares.is_deleted'   => 0,
-                    'glpi_softwares.entities_id'  => $entity,
+                        ) . ' < ' . $before
+                    ),
+                    'glpi_softwarelicenses.is_template'  => 0,
+                    'glpi_softwarelicenses.is_deleted'   => 0,
+                    'glpi_softwarelicenses.entities_id'  => $entity,
                 ],
             ];
             $iterator = $DB->request($criteria);
 
-            $messages = [];
-            $items    = [];
-
+            $items = [];
             foreach ($iterator as $license) {
-                $name     = $license['softname'] . ' - ' . $license['name'] . ' - ' . $license['serial'];
+                $license['softname'] ??= __('Not linked to any software');
+                $items[$license['id']] = $license;
+            }
+
+            // Licenses excluded by the notifications filters must not be marked as alerted,
+            // otherwise they would never be notified
+            $items = array_intersect_key(
+                $items,
+                array_flip(NotificationEvent::getGroupedItemsIdsToNotify('alert', self::class, $entity, array_keys($items)))
+            );
+
+            $messages = [];
+            foreach ($items as $license) {
+                $name = $license['softname'] . ' - ' . $license['name'] . ' - ' . $license['serial'];
                 //TRANS: %1$s the license name, %2$s is the expiration date
                 $messages[] = sprintf(
                     __('License %1$s expired on %2$s'),
-                    Html::convDate($license["expire"]),
-                    $name
+                    $name,
+                    Html::convDate($license["expire"])
                 );
-                $items[$license['id']] = $license;
             }
 
             if ($items !== []) {
@@ -838,7 +847,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
         $actions = parent::getSpecificMassiveActions($checkitem);
         if (static::canUpdate()) {
             $prefix                       = 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'add_item']  = "<i class='ti ti-package'></i>" . _sx('button', 'Add an item');
+            $actions[$prefix . 'add_item']  = "<i class='ti ti-package' aria-hidden='true'></i>" . _sx('button', 'Add an item');
         }
 
         return $actions;
@@ -882,7 +891,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
     {
         global $DB;
 
-        $softwares_id  = $software->getField('id');
+        $softwares_id  = $software->getID();
         $license       = new self();
 
         if (!$software->can($softwares_id, READ)) {
@@ -1055,7 +1064,6 @@ TWIG, $twig_params);
             'footer_class' => 'fw-bold',
             'entries' => $entries,
             'total_number' => $number,
-            'filtered_number' => $number,
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -1109,17 +1117,7 @@ TWIG, $twig_params);
                     if (!self::canView()) {
                         return '';
                     }
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            static::getTable(),
-                            ['softwarelicenses_id' => $item->getID()]
-                        );
-                    }
-                    return self::createTabEntry(
-                        self::getTypeName(Session::getPluralNumber()),
-                        (($nb >= 0) ? $nb : '&infin;'),
-                        $item::class
-                    );
+                    return parent::getTabNameForItem($item, $withtemplate);
             }
         }
         return '';

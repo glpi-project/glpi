@@ -41,6 +41,7 @@ use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Tests\AbstractConditionHandlerTest;
+use Location;
 use Override;
 use SoftwareCategory;
 
@@ -67,6 +68,44 @@ final class ItemAsTextConditionHandlerTest extends AbstractConditionHandlerTest
         }
     }
 
+    public function testComparisonIsDoneOnCompleteNameForTreeDropdowns(): void
+    {
+        $this->login();
+
+        // Arrange: create a location with a parent
+        $parent = $this->createItem(Location::class, ['name' => 'Parent location']);
+        $child  = $this->createItem(Location::class, [
+            'name'         => 'Child location',
+            'locations_id' => $parent->getID(),
+        ]);
+
+        // Act: compare the child with its parent name
+        $handler = new ItemAsTextConditionHandler(Location::class);
+        $answer  = ['itemtype' => Location::class, 'items_ids' => [$child->getID()]];
+
+        // Assert: the complete name of the child contains the parent name
+        $this->assertTrue($handler->applyValueOperator(
+            $answer,
+            ValueOperator::CONTAINS,
+            'Parent location > Child location',
+            null,
+        ));
+
+        // Assert: the parent name is part of the child complete name
+        $this->assertTrue($handler->applyValueOperator(
+            $answer,
+            ValueOperator::CONTAINS,
+            'Parent location',
+            null,
+        ));
+        $this->assertFalse($handler->applyValueOperator(
+            $answer,
+            ValueOperator::NOT_CONTAINS,
+            'Parent location',
+            null,
+        ));
+    }
+
     #[Override]
     public static function conditionHandlerProvider(): iterable
     {
@@ -80,7 +119,7 @@ final class ItemAsTextConditionHandlerTest extends AbstractConditionHandlerTest
             'condition_value'     => '_test_pc0',
             'submitted_answer'    => [
                 'itemtype' => Computer::class,
-                'items_id' => getItemByTypeName(Computer::class, "_test_pc01", true),
+                'items_ids' => [getItemByTypeName(Computer::class, "_test_pc01", true)],
             ],
             'expected_result'     => true,
             'question_extra_data' => $extra_data,
@@ -91,7 +130,7 @@ final class ItemAsTextConditionHandlerTest extends AbstractConditionHandlerTest
             'condition_value'     => '_test_pc02',
             'submitted_answer'    => [
                 'itemtype' => Computer::class,
-                'items_id' => getItemByTypeName(Computer::class, "_test_pc01", true),
+                'items_ids' => [getItemByTypeName(Computer::class, "_test_pc01", true)],
             ],
             'expected_result'     => false,
             'question_extra_data' => $extra_data,
@@ -104,7 +143,7 @@ final class ItemAsTextConditionHandlerTest extends AbstractConditionHandlerTest
             'condition_value'     => '_test_pc0',
             'submitted_answer'    => [
                 'itemtype' => Computer::class,
-                'items_id' => getItemByTypeName(Computer::class, "_test_pc01", true),
+                'items_ids' => [getItemByTypeName(Computer::class, "_test_pc01", true)],
             ],
             'expected_result'     => false,
             'question_extra_data' => $extra_data,
@@ -115,7 +154,7 @@ final class ItemAsTextConditionHandlerTest extends AbstractConditionHandlerTest
             'condition_value'     => '_test_pc02',
             'submitted_answer'    => [
                 'itemtype' => Computer::class,
-                'items_id' => getItemByTypeName(Computer::class, "_test_pc01", true),
+                'items_ids' => [getItemByTypeName(Computer::class, "_test_pc01", true)],
             ],
             'expected_result'     => true,
             'question_extra_data' => $extra_data,

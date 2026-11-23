@@ -37,7 +37,6 @@
     <form method="post" action="{{ 'Item_Project'|itemtype_form_path }}">
     <div class="d-flex">
         <div class="col-auto">
-        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
         {% if item is instanceof('Project') %}
             {{ inputs.hidden('projects_id', item.getID()) }}
             {{ fields.dropdownItemsFromItemtypes('items_id', '', {

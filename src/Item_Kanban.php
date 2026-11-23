@@ -41,11 +41,11 @@ use function Safe\strtotime;
 
 class Item_Kanban extends CommonDBRelation
 {
-    public static $itemtype_1 = 'itemtype';
-    public static $items_id_1 = 'items_id';
-    public static $itemtype_2 = User::class;
-    public static $items_id_2 = 'users_id';
-    public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
+    public static ?string $itemtype_1 = 'itemtype';
+    public static ?string $items_id_1 = 'items_id';
+    public static ?string $itemtype_2 = User::class;
+    public static ?string $items_id_2 = 'users_id';
+    public static int $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
 
     public static function getKanbanItemForItemtype(string $itemtype): KanbanInterface&CommonDBTM
     {
@@ -53,11 +53,6 @@ class Item_Kanban extends CommonDBRelation
 
         if (!$item instanceof KanbanInterface) {
             $message = "Given itemtype do not implement KanbanInterface: " . $itemtype;
-            throw new RuntimeException($message);
-        }
-
-        if (!$item instanceof CommonDBTM) {
-            $message = "Given itemtype do not extends CommonDBTM: " . $itemtype;
             throw new RuntimeException($message);
         }
 

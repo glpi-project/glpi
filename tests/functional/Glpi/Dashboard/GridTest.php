@@ -38,7 +38,9 @@ use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Grid;
 use Glpi\Dashboard\Item;
 use Glpi\Dashboard\Right;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Tests\DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class GridTest extends DbTestCase
 {
@@ -179,5 +181,100 @@ class GridTest extends DbTestCase
 
         $result = Grid::getDefaultDashboardForMenu('mini_ticket', false);
         $this->assertSame('mini_tickets', $result);
+    }
+
+    public static function deniedProvider(): array
+    {
+        throw new AccessDeniedHttpException();
+    }
+
+    public static function deniedWithMessageProvider(): array
+    {
+        $exception = new AccessDeniedHttpException();
+        $exception->setMessageToDisplay('Custom denial message');
+        throw $exception;
+    }
+
+    public static function accessDeniedProvider(): iterable
+    {
+        yield 'default message' => [
+            'provider' => self::class . '::deniedProvider',
+            'expected' => "You don't have permission to perform this action.",
+        ];
+        yield 'message to display' => [
+            'provider' => self::class . '::deniedWithMessageProvider',
+            'expected' => 'Custom denial message',
+        ];
+    }
+
+    public function testShowSendsTheFiltersOfTheDisplayedDashboard(): void
+    {
+        global $CFG_GLPI;
+
+        (new Dashboard('assistance'))->saveFilter('{"requesttype":"2"}');
+        (new Dashboard('central'))->saveFilter('{"itilcategory":"1"}');
+        $_REQUEST['_target'] = $CFG_GLPI['root_doc'] . '/front/dashboard_helpdesk.php';
+
+        $show = static function (): string {
+            Grid::$all_dashboards = [];
+            \ob_start();
+            (new Grid('assistance'))->show();
+            return (string) \ob_get_clean();
+        };
+
+        $html = $show();
+        $this->assertStringContainsString('"current":"assistance"', $html);
+        $this->assertStringContainsString('"filters":{"requesttype":"2"}', $html);
+
+        // The last dashboard viewed on the page is displayed instead, with its own filters.
+        $_SESSION['last_dashboards']['/front/dashboard_helpdesk.php'] = 'central';
+        $html = $show();
+        $this->assertStringContainsString('"current":"central"', $html);
+        $this->assertStringContainsString('"filters":{"itilcategory":"1"}', $html);
+    }
+
+    public function testShowLoadsTheCardsInBatchesExceptInADebugSession(): void
+    {
+        $show = static function (): string {
+            Grid::$all_dashboards = [];
+            \ob_start();
+            (new Grid('central'))->show();
+            return (string) \ob_get_clean();
+        };
+
+        $html = $show();
+        $this->assertStringContainsString('"batches":4', $html);
+        // The page sends the requests itself, without waiting for its scripts.
+        $this->assertStringContainsString('window.glpi_dashboard_early_cards', $html);
+
+        // Each card keeps its own request, and its own profile, in a debug session.
+        $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
+        try {
+            $html = $show();
+            $this->assertStringContainsString('"batches":0', $html);
+            $this->assertStringNotContainsString('window.glpi_dashboard_early_cards', $html);
+        } finally {
+            $_SESSION['glpi_use_mode'] = \Session::NORMAL_MODE;
+        }
+    }
+
+    #[DataProvider('accessDeniedProvider')]
+    public function testGetCardHtmlWithAccessDeniedProvider(string $provider, string $expected): void
+    {
+        $grid = $this->getMockBuilder(Grid::class)
+            ->onlyMethods(['getAllDasboardCards'])
+            ->getMock();
+        $grid->expects($this->atLeastOnce())->method('getAllDasboardCards')->willReturn([
+            'denied_card' => [
+                'widgettype' => ['bigNumber'],
+                'label'      => 'Denied card',
+                'provider'   => $provider,
+            ],
+        ]);
+
+        $html = $grid->getCardHtml('denied_card', ['args' => ['widgettype' => 'bigNumber']]);
+
+        $this->assertStringContainsString(\htmlescape($expected), $html);
+        $this->assertStringNotContainsString('Error rendering card!', $html);
     }
 }

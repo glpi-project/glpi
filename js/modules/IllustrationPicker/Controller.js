@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global bootstrap, _, getAjaxCsrfToken */
+/* global bootstrap, _ */
 
 export class GlpiIllustrationPickerController
 {
@@ -55,12 +55,131 @@ export class GlpiIllustrationPickerController
      */
     #custom_icon_prefix;
 
+    /**
+     * @type {string}
+     */
+    #initial_value;
+
+    /**
+     * @type {string}
+     */
+    #initial_preview_html;
+
+    /**
+     * Baseline for #selected_title, restored by restore(). Lives outside
+     * #initial_preview_html since the status is now a sibling, not a child.
+     * @type {?string}
+     */
+    #initial_title;
+
+    /**
+     * Title of the currently selected native illustration, if any.
+     * @type {?string}
+     */
+    #selected_title;
+
     constructor(container, modal_node, custom_icon_prefix)
     {
         this.#container = container;
         this.#modal_node = modal_node;
         this.#custom_icon_prefix = custom_icon_prefix;
+        this.#selected_title = this.#getPreviewElement().dataset['glpiIconPickerValuePreviewTitle'] || null;
         this.#initEventListeners();
+
+        this.#initial_value = this.#getSelectedIllustrationsInput().value;
+        this.#initial_preview_html = this.#getPreviewElement().innerHTML;
+        this.#initial_title = this.#selected_title;
+
+        container.glpiIllustrationPicker = this;
+        container.dispatchEvent(new CustomEvent('glpi:illustration-picker:ready', {
+            detail: { controller: this },
+            bubbles: true,
+        }));
+    }
+
+    /**
+     * @param {boolean} editable
+     */
+    setEditable(editable)
+    {
+        if (this.#getPreviewElement() === null) {
+            return;
+        }
+
+        const preview = this.#morphPreview(editable ? 'button' : 'div');
+
+        if (editable) {
+            preview.setAttribute('type', 'button');
+            preview.setAttribute('aria-label', __('Select an illustration'));
+            preview.setAttribute('data-bs-toggle', 'modal');
+            preview.setAttribute('data-bs-target', `#${this.#modal_node.id}`);
+            preview.removeAttribute('aria-disabled');
+        } else {
+            preview.removeAttribute('type');
+            preview.removeAttribute('aria-label');
+            preview.removeAttribute('data-bs-toggle');
+            preview.removeAttribute('data-bs-target');
+            preview.setAttribute('aria-disabled', 'true');
+        }
+
+        // Re-apply now that the trigger changed.
+        this.#setPreviewStatus(this.#selected_title);
+    }
+
+    /**
+     * Swaps the trigger between <button> (editable) and <div> (read-only).
+     *
+     * @param {string} tag
+     * @return {HTMLElement}
+     */
+    #morphPreview(tag)
+    {
+        const current = this.#getPreviewElement();
+        if (current.localName === tag) {
+            return current;
+        }
+
+        const morphed = document.createElement(tag);
+        for (const { name, value } of current.attributes) {
+            morphed.setAttribute(name, value);
+        }
+        morphed.replaceChildren(...current.childNodes);
+        current.replaceWith(morphed);
+
+        return morphed;
+    }
+
+    /**
+     * @return {string}
+     */
+    getValue()
+    {
+        return this.#getSelectedIllustrationsInput().value;
+    }
+
+    /**
+     * Promote the current state as the new baseline used by restore().
+     */
+    commit()
+    {
+        this.#initial_value = this.#getSelectedIllustrationsInput().value;
+        this.#initial_preview_html = this.#getPreviewElement().innerHTML;
+        this.#initial_title = this.#selected_title;
+    }
+
+    /**
+     * Revert input value and preview rendering to the last committed baseline.
+     */
+    restore()
+    {
+        this.#getSelectedIllustrationsInput().value = this.#initial_value;
+        this.#getPreviewElement().innerHTML = this.#initial_preview_html;
+        this.#setPreviewStatus(this.#initial_title);
+    }
+
+    #getPreviewElement()
+    {
+        return this.#container.querySelector('[data-glpi-icon-picker-value-preview]');
     }
 
     #initEventListeners()
@@ -135,45 +254,99 @@ export class GlpiIllustrationPickerController
         this.#modal_node.addEventListener('shown.bs.modal', () => {
             this.#container.querySelector("[data-glpi-icon-picker-filter]").focus();
         });
+
+        // The tab data-api skips pickers injected after load: no arrows, no roving tabindex.
+        const active_tab = this.#container.querySelector('[data-bs-toggle="tab"].active');
+        if (active_tab !== null) {
+            bootstrap.Tab.getOrCreateInstance(active_tab);
+        }
     }
 
     #setNativeIllustration(illustration)
     {
         // Gets details of the newly selected item.
         const illustration_id = illustration.dataset['glpiIconPickerValue'];
-        const illustration_title = illustration
-            .querySelector('svg')
-            .querySelector('title')
-        ;
 
         // Apply the new illustration id to the hidden input.
         this.#getSelectedIllustrationsInput().value = illustration_id;
 
-        // Update the preview of the selected item.
-        const selected_svg = this.#container
-            .querySelector('[data-glpi-icon-picker-value-preview]')
-            .querySelector('svg')
-        ;
-        const title = selected_svg.querySelector('title');
-        const use = selected_svg.querySelector('use');
-        const xlink = use.getAttribute('xlink:href');
+        if (illustration_id === '') {
+            // Empty selection: show placeholder, hide both preview slots.
+            this.#setEmptyPreview();
+            return;
+        }
 
-        use.setAttribute(
-            'xlink:href',
-            xlink.replace(/#.*/, `#${illustration_id}`)
-        );
-        title.innerHTML = illustration_title.innerHTML;
+        // Clone the clicked illustration's SVG into the native preview slot.
+        // Cloning (vs in-place mutation) handles the transition from an empty
+        // article — where the slot has no SVG to mutate — without requiring
+        // the template to pre-render a skeleton SVG.
+        const native_slot = this.#getNativePreviewSlot();
+        const clicked_svg = illustration.querySelector('svg');
+        native_slot.replaceChildren(clicked_svg.cloneNode(true));
 
-        this.#container
-            .querySelector('[data-glpi-icon-picker-value-preview-native]')
-            .classList
-            .remove('d-none')
-        ;
-        this.#container
-            .querySelector('[data-glpi-icon-picker-value-preview-custom]')
-            .classList
-            .add('d-none')
-        ;
+        native_slot.classList.remove('d-none');
+        this.#getCustomPreviewSlot().classList.add('d-none');
+        this.#getPlaceholderSlot()?.classList.add('d-none');
+
+        // The svg illustration itself is never named (see icon.svg.twig), so the
+        // grid tile's own aria-label (the icon's title) is reused here instead.
+        this.#setPreviewStatus(illustration.getAttribute('aria-label'));
+    }
+
+    #setEmptyPreview()
+    {
+        this.#getNativePreviewSlot()?.classList.add('d-none');
+        this.#getCustomPreviewSlot()?.classList.add('d-none');
+        this.#getPlaceholderSlot()?.classList.remove('d-none');
+
+        this.#setPreviewStatus(null);
+    }
+
+    /**
+     * Names the currently selected illustration, as a sibling of the
+     * trigger referenced via aria-describedby (a descendant would be
+     * pruned by the trigger button's own name computation).
+     *
+     * @param {?string} title
+     */
+    #setPreviewStatus(title)
+    {
+        this.#selected_title = title;
+
+        const preview = this.#getPreviewElement();
+        let status = this.#container.querySelector('[data-glpi-icon-picker-value-preview-status]');
+
+        if (!title || preview.localName !== 'button') {
+            status?.remove();
+            preview.removeAttribute('aria-describedby');
+            return;
+        }
+
+        if (status === null) {
+            status = document.createElement('span');
+            status.id = `${this.#container.id}-status`;
+            status.className = 'visually-hidden';
+            status.setAttribute('role', 'img');
+            status.setAttribute('data-glpi-icon-picker-value-preview-status', '');
+            preview.insertAdjacentElement('afterend', status);
+        }
+        status.setAttribute('aria-label', title);
+        preview.setAttribute('aria-describedby', status.id);
+    }
+
+    #getNativePreviewSlot()
+    {
+        return this.#container.querySelector('[data-glpi-icon-picker-value-preview-native]');
+    }
+
+    #getCustomPreviewSlot()
+    {
+        return this.#container.querySelector('[data-glpi-icon-picker-value-preview-custom]');
+    }
+
+    #getPlaceholderSlot()
+    {
+        return this.#container.querySelector('[data-glpi-icon-picker-value-preview-placeholder]');
     }
 
     #setCustomIllustration(file_id)
@@ -182,21 +355,14 @@ export class GlpiIllustrationPickerController
         this.#getSelectedIllustrationsInput().value = icon_id;
 
         // Update preview
-        this.#container
-            .querySelector('[data-glpi-icon-picker-value-preview-custom]')
-            .querySelector('img')
-            .src = `${CFG_GLPI.root_doc}/UI/Illustration/CustomIllustration/${file_id}`
-        ;
-        this.#container
-            .querySelector('[data-glpi-icon-picker-value-preview-custom]')
-            .classList
-            .remove('d-none')
-        ;
-        this.#container
-            .querySelector('[data-glpi-icon-picker-value-preview-native]')
-            .classList
-            .add('d-none')
-        ;
+        const custom_slot = this.#getCustomPreviewSlot();
+        custom_slot.querySelector('img').src
+            = `${CFG_GLPI.root_doc}/UI/Illustration/CustomIllustration/${file_id}`;
+        custom_slot.classList.remove('d-none');
+        this.#getNativePreviewSlot().classList.add('d-none');
+        this.#getPlaceholderSlot()?.classList.add('d-none');
+
+        this.#setPreviewStatus(null);
     }
 
     /**
@@ -264,9 +430,10 @@ export class GlpiIllustrationPickerController
     {
         const url = `${CFG_GLPI.root_doc}/UI/Illustration/Search`;
         const url_params = new URLSearchParams({
-            filter   : filter,
-            page     : page,
-            page_size: this.#getPageSizeValue(),
+            filter     : filter,
+            page       : page,
+            page_size  : this.#getPageSizeValue(),
+            allow_empty: this.#getAllowEmptyValueUrlParameter(),
         });
         const response = await fetch(`${url}?${url_params}`);
 
@@ -302,7 +469,6 @@ export class GlpiIllustrationPickerController
             body: form_data,
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
             }
         });
 
@@ -319,6 +485,16 @@ export class GlpiIllustrationPickerController
     {
         return this.#container.querySelector('[data-glpi-icon-picker-page-size]')
             .dataset['glpiIconPickerPageSize']
+        ;
+    }
+
+    /**
+     * @return {string} '1' or '0' (not a boolean because it is only used as an url parameter)
+     */
+    #getAllowEmptyValueUrlParameter()
+    {
+        return this.#container.querySelector('[data-glpi-icon-picker-allow-empty]')
+            ?.dataset['glpiIconPickerAllowEmpty'] ?? '0'
         ;
     }
 

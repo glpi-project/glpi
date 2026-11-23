@@ -320,6 +320,8 @@ final class HLAPIHelper
             // Expect the new location to be a singleton (i.e. /endpoint instead of /endpoint/{id})
             'new_location_singleton' => false,
             'skip_update_test' => false,
+            // Params sent in the POST request but not returned by the GET response
+            'create_only_params' => [],
         ], $extra_options);
         $this->test->resetSession();
         $this->test->login();
@@ -379,6 +381,9 @@ final class HLAPIHelper
             $create_params['entity'] = getItemByTypeName('Entity', '_test_root_entity', true);
         }
         foreach ($create_params as $key => $value) {
+            $request->setParameter($key, $value);
+        }
+        foreach ($extra_options['create_only_params'] as $key => $value) {
             $request->setParameter($key, $value);
         }
         // remove writeonly properties from $create_params so checks below don't fail
@@ -1366,7 +1371,7 @@ final class GraphQLResponseAsserter
     public function isOK(): self
     {
         $this->call_asserter->test->assertEquals(200, $this->response->getStatusCode());
-        $this->call_asserter->test->assertArrayNotHasKey('errors', $this->decoded_content);
+        $this->call_asserter->test->assertArrayNotHasKey('errors', $this->decoded_content, json_encode($this->decoded_content['errors'] ?? []));
         return $this;
     }
 
@@ -1428,5 +1433,56 @@ final class GraphQLResponseAsserter
         }
         $this->call_asserter->test->assertTrue($found, 'GraphQL response does not contain an error with message "' . $message . '"');
         return $this;
+    }
+
+    public function hasFieldAccessDenied(string $field_path, bool $exact = false): self
+    {
+        if ($exact) {
+            return $this->hasErrorWithMessage('You do not have permission to view the field ' . $field_path);
+        } else {
+            // Check for error message that contains the field path but ignoring any numeric path segments which could appear anywhere (e.g. "You do not have permission to view the field data.items.0.name")
+            // In this mode, we don't care about the numeric index within arrays
+            // Ex $field_path = 'data.items.name' would match "You do not have permission to view the field data.items.0.name" or "You do not have permission to view the field data.items.1.name"
+            $this->call_asserter->test->assertArrayHasKey('errors', $this->decoded_content, 'GraphQL response does not contain errors');
+            $found = false;
+            foreach ($this->decoded_content['errors'] as $error) {
+                if (isset($error['message']) && str_contains($error['message'], 'You do not have permission to view the field')) {
+                    // Remove any numeric segments from the error message
+                    $error_field_path = preg_replace('/\.\d+/', '', $error['message']);
+                    if ($error_field_path === 'You do not have permission to view the field ' . $field_path) {
+                        $found = true;
+                        break;
+                    }
+                }
+            }
+            $this->call_asserter->test->assertTrue($found, 'GraphQL response does not contain an error with field access denied for "' . $field_path . '"');
+            return $this;
+        }
+    }
+
+    public function hasUnknownQueryFieldError(string $field): self
+    {
+        $this->call_asserter->test->assertArrayHasKey('errors', $this->decoded_content, 'GraphQL response does not contain errors');
+        $pattern = 'Cannot query field "' . $field . '" on type "Query".';
+        foreach ($this->decoded_content['errors'] as $error) {
+            if (isset($error['message']) && str_starts_with($error['message'], $pattern)) {
+                return $this;
+            }
+        }
+        $this->call_asserter->test->fail('GraphQL response does not contain an error for unknown query field "' . $field . '"');
+    }
+
+    public function hasTypeUnknownOrAccessDeniedError(string $type): self
+    {
+        // Example: 'Unable to resolve field "SoftwareCategory": schema not found or not viewable'
+
+        $this->call_asserter->test->assertArrayHasKey('errors', $this->decoded_content, 'GraphQL response does not contain errors');
+        $pattern = 'Unable to resolve field "' . $type . '": schema not found or not viewable';
+        foreach ($this->decoded_content['errors'] as $error) {
+            if (isset($error['message']) && str_starts_with($error['message'], $pattern)) {
+                return $this;
+            }
+        }
+        $this->call_asserter->test->fail('GraphQL response does not contain an error for unknown or access denied type "' . $type . '"');
     }
 }

@@ -39,30 +39,35 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class LocaleTest extends DbTestCase
 {
+    // `glpi` domain translations come from Transifex and may be reset by any sync, so a fixture domain is used instead.
+    private const TEST_DOMAIN = 'test_locale';
+
     public static function frontLocaleFileProvider(): iterable
     {
-        yield ['en_GN', 'Active'];
-        yield ['fr_FR', 'Activé'];
+        yield ['en_GN', 'en_GB', 'Active']; // unknown language, falls back to the default one
+        yield ['fr_FR', 'fr_FR', 'Activé'];
     }
 
     #[DataProvider('frontLocaleFileProvider')]
-    public function testFrontLocaleFile(string $locale, string $expected): void
+    public function testFrontLocaleFile(string $locale, string $expected_language, string $expected_translation): void
     {
         global $TRANSLATE;
 
         // Arrange: load languages
-        $TRANSLATE->addTranslationFile('gettext', GLPI_I18N_DIR . '/en_GB.mo', 'glpi', 'en_GB');
-        $TRANSLATE->addTranslationFile('gettext', GLPI_I18N_DIR . '/fr_FR.mo', 'glpi', 'fr_FR');
+        $TRANSLATE->addTranslationFile('phparray', FIXTURE_DIR . '/locales/en_GB.php', self::TEST_DOMAIN, 'en_GB');
+        $TRANSLATE->addTranslationFile('phparray', FIXTURE_DIR . '/locales/fr_FR.php', self::TEST_DOMAIN, 'fr_FR');
 
         // Act: render locale file
         $_GET['lang'] = $locale;
-        $_GET['domain'] = 'glpi';
+        $_GET['domain'] = self::TEST_DOMAIN;
         ob_start();
         include(GLPI_ROOT . '/front/locale.php');
         $locales = ob_get_clean();
 
-        // Assert: locales should be translated to expected string
+        // Assert: locale headers and messages should match the expected language
         $locales = json_decode($locales, true);
-        $this->assertEquals($expected, $locales['Active']);
+        $this->assertEquals($expected_language, $locales['']['language']);
+        $this->assertArrayHasKey('plural-forms', $locales['']);
+        $this->assertEquals($expected_translation, $locales['Active']);
     }
 }

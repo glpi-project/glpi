@@ -35,7 +35,7 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-Session::checkRight("reports", READ);
+Session::checkRight(Report::$rightname, READ);
 
 Html::header(Report::getTypeName(Session::getPluralNumber()), '', "tools", "report");
 

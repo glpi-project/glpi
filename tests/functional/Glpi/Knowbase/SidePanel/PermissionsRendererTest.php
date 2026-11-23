@@ -1,0 +1,492 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace tests\units\Glpi\Knowbase\SidePanel;
+
+use Entity;
+use Entity_KnowbaseItem;
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Knowbase\SidePanel\PermissionsRenderer;
+use Glpi\Tests\DbTestCase;
+use Group;
+use Group_KnowbaseItem;
+use KnowbaseItem;
+use KnowbaseItem_Profile;
+use KnowbaseItem_User;
+use Profile;
+use Symfony\Component\DomCrawler\Crawler;
+use User;
+
+final class PermissionsRendererTest extends DbTestCase
+{
+    public function testEmptyState(): void
+    {
+        // Arrange: create a KB article without permissions
+        $kb = $this->createArticle();
+
+        // Act: render permission content
+        $permissions = $this->renderPermissions($kb);
+
+        // Assert: empty state label should be printed
+        $this->assertCount(1, $this->getEmptyPermissionNode($permissions));
+    }
+
+    public function testBuildEntryRendersSingleNode(): void
+    {
+        // Arrange: create a KB article visible for a group on a target entity.
+        // This mirrors what happens when a permission is added through AJAX:
+        // a single entry is built and rendered server-side to be inserted in
+        // the DOM without a full page reload.
+        $this->login();
+        $kb = $this->createArticle();
+        $relation = $this->createItem(Group_KnowbaseItem::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'groups_id'        => getItemByTypeName(Group::class, "_test_group_1")->getID(),
+            'entities_id'      => getItemByTypeName(Entity::class, "_test_root_entity")->getID(),
+            'is_recursive'     => 1,
+        ]);
+
+        // Act: build and render the single entry
+        $renderer = new PermissionsRenderer();
+        $entry = $renderer->buildEntry(Group_KnowbaseItem::class, $relation->getID());
+        $this->assertNotNull($entry);
+
+        $html = TemplateRenderer::getInstance()->render(
+            'pages/tools/kb/permission_entry.html.twig',
+            [
+                'entry'    => $entry,
+                'can_edit' => true,
+            ]
+        );
+        $node = new Crawler($html);
+
+        // Assert: the rendered node matches the entry rendered in the full list
+        $entries = $this->getEntriesNodes($node);
+        $this->assertCount(1, $entries);
+
+        $rendered_entry = $entries->eq(0);
+        $this->assertEquals("_test_group_1", $this->getEntryLabel($rendered_entry)->text());
+        $this->assertEquals(
+            "Root entity > _test_root_entity (recursive)",
+            $this->getEntryContext($rendered_entry)->text()
+        );
+    }
+
+    public function testCanViewRequiresUpdateRight(): void
+    {
+        // Arrange: create a KB article visible for a user that can not edit it
+        $this->login();
+        $kb = $this->createArticle();
+        $this->addUserVisiblity($kb, getItemByTypeName(User::class, "normal"));
+        $this->assertTrue($kb->getFromDB($kb->getID()));
+        $renderer = new PermissionsRenderer();
+        $this->assertTrue($renderer->canView($kb));
+
+        // Act: log in as this user
+        $this->login('normal', 'normal');
+
+        // Assert: the permissions are only visible to the users that can edit the article
+        $this->assertTrue($kb->can($kb->getID(), READ));
+        $this->assertFalse($kb->can($kb->getID(), UPDATE));
+        $this->assertFalse($renderer->canView($kb));
+    }
+
+    public function testCanViewRequiresPublishFaqRightForFaq(): void
+    {
+        // Arrange: create a FAQ article visible for a user that is not its author
+        $this->login();
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'My FAQ article',
+            'answer' => 'My content',
+            'is_faq' => 1,
+        ]);
+        $this->addUserVisiblity($kb, getItemByTypeName(User::class, "tech"));
+        $this->assertTrue($kb->getFromDB($kb->getID()));
+        $renderer = new PermissionsRenderer();
+
+        // Act: log in as this user
+        $this->login('tech', 'tech');
+
+        // Assert: the update right is not enough for a FAQ article
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE;
+        $this->assertFalse($renderer->canView($kb));
+
+        // Assert: the right to publish in the FAQ is also required
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE | KnowbaseItem::PUBLISHFAQ;
+        $this->assertTrue($renderer->canView($kb));
+    }
+
+    public function testBuildEntryReturnsNullForUnknownClass(): void
+    {
+        $renderer = new PermissionsRenderer();
+        $this->assertNull($renderer->buildEntry(KnowbaseItem::class, 1));
+    }
+
+    public function testWithUser(): void
+    {
+        // Arrange: create a KB article visible for a user
+        $kb = $this->createArticle();
+        $this->addUserVisiblity($kb, getItemByTypeName(User::class, "glpi"));
+
+        // Act: render permission content
+        $permissions = $this->renderPermissions($kb);
+
+        // Assert: an entry should be visible with the user name
+        $this->assertCount(0, $this->getEmptyPermissionNode($permissions));
+
+        $entries = $this->getEntriesNodes($permissions);
+        $this->assertCount(1, $entries);
+
+        $entry = $entries->eq(0);
+        $this->assertEquals("glpi", $this->getEntryLabel($entry)->text());
+        $this->assertCount(0, $this->getEntryContext($entry));
+    }
+
+    public function testWithGroup(): void
+    {
+        // Arrange: create a KB article visible for a group
+        $kb = $this->createArticle();
+        $this->addGroupVisiblity($kb, getItemByTypeName(
+            Group::class,
+            "_test_group_1",
+        ));
+
+        // Act: render permission content
+        $permissions = $this->renderPermissions($kb);
+
+        // Assert: an entry should be visible with the group name
+        $this->assertCount(0, $this->getEmptyPermissionNode($permissions));
+
+        $entries = $this->getEntriesNodes($permissions);
+        $this->assertCount(1, $entries);
+
+        $entry = $entries->eq(0);
+        $this->assertEquals("_test_group_1", $this->getEntryLabel($entry)->text());
+        $this->assertCount(0, $this->getEntryContext($entry));
+    }
+
+    public function testWithGroupAndContext1(): void
+    {
+        // Arrange: create a KB article visible for a group on a target entity
+        $this->login();
+        $kb = $this->createArticle();
+        $this->addGroupVisiblity(
+            article: $kb,
+            group: getItemByTypeName(Group::class, "_test_group_1"),
+            entity: getItemByTypeName(Entity::class, "_test_root_entity"),
+        );
+
+        // Act: render permission content
+        $permissions = $this->renderPermissions($kb);
+
+        // Assert: an entry should be visible with the group name
+        $this->assertCount(0, $this->getEmptyPermissionNode($permissions));
+
+        $entries = $this->getEntriesNodes($permissions);
+        $this->assertCount(1, $entries);
+
+        $entry = $entries->eq(0);
+        $this->assertEquals("_test_group_1", $this->getEntryLabel($entry)->text());
+        $this->assertEquals(
+            "Root entity > _test_root_entity (recursive)",
+            $this->getEntryContext($entry)->text()
+        );
+    }
+
+    public function testWithGroupAndContext2(): void
+    {
+        // Arrange: create a KB article visible for a group on a target entity,
+        // with recursion disabled.
+        $this->login();
+        $kb = $this->createArticle();
+        $this->addGroupVisiblity(
+            article: $kb,
+            group: getItemByTypeName(Group::class, "_test_group_1"),
+            entity: getItemByTypeName(Entity::class, "_test_root_entity"),
+            is_recursive: false,
+        );
+
+        // Act: render permission content
+        $permissions = $this->renderPermissions($kb);
+
+        // Assert: an entry should be visible with the group name
+        $this->assertCount(0, $this->getEmptyPermissionNode($permissions));
+
+        $entries = $this->getEntriesNodes($permissions);
+        $this->assertCount(1, $entries);
+
+        $entry = $entries->eq(0);
+        $this->assertEquals("_test_group_1", $this->getEntryLabel($entry)->text());
+        $this->assertEquals(
+            "Root entity > _test_root_entity",
+            $this->getEntryContext($entry)->text()
+        );
+    }
+
+    public function testWithEntity(): void
+    {
+        // Arrange: create a KB article visible for a group on a target entity,
+        // with recursion disabled.
+        $this->login();
+        $kb = $this->createArticle();
+        $this->addEntityVisiblity(
+            article: $kb,
+            entity: getItemByTypeName(Entity::class, "_test_root_entity"),
+            is_recursive: false,
+        );
+
+        // Act: render permission content
+        $permissions = $this->renderPermissions($kb);
+
+        // Assert: an entry should be visible with the entity name
+        $this->assertCount(0, $this->getEmptyPermissionNode($permissions));
+
+        $entries = $this->getEntriesNodes($permissions);
+        $this->assertCount(1, $entries);
+
+        $entry = $entries->eq(0);
+        $this->assertEquals(
+            "Root entity > _test_root_entity",
+            $this->getEntryLabel($entry)->text()
+        );
+    }
+
+    public function testWithEntityRecursive(): void
+    {
+        // Arrange: create a KB article visible for a group on a target entity,
+        // with recursion disabled.
+        $this->login();
+        $kb = $this->createArticle();
+        $this->addEntityVisiblity(
+            article: $kb,
+            entity: getItemByTypeName(Entity::class, "_test_root_entity"),
+            is_recursive: true,
+        );
+
+        // Act: render permission content
+        $permissions = $this->renderPermissions($kb);
+
+        // Assert: an entry should be visible with the entity name
+        $this->assertCount(0, $this->getEmptyPermissionNode($permissions));
+
+        $entries = $this->getEntriesNodes($permissions);
+        $this->assertCount(1, $entries);
+
+        $entry = $entries->eq(0);
+        $this->assertEquals(
+            "Root entity > _test_root_entity (recursive)",
+            $this->getEntryLabel($entry)->text()
+        );
+    }
+
+    public function testWithProfile(): void
+    {
+        // Arrange: create a KB article visible for a profile
+        $kb = $this->createArticle();
+        $this->addProfileVisiblity($kb, getItemByTypeName(
+            Profile::class,
+            "Admin",
+        ));
+
+        // Act: render permission content
+        $permissions = $this->renderPermissions($kb);
+
+        // Assert: an entry should be visible with the profile name
+        $this->assertCount(0, $this->getEmptyPermissionNode($permissions));
+
+        $entries = $this->getEntriesNodes($permissions);
+        $this->assertCount(1, $entries);
+
+        $entry = $entries->eq(0);
+        $this->assertEquals("Admin", $this->getEntryLabel($entry)->text());
+        $this->assertCount(0, $this->getEntryContext($entry));
+    }
+
+    public function testWithProfileAndContext1(): void
+    {
+        // Arrange: create a KB article visible for a profile on a target entity
+        $this->login();
+        $kb = $this->createArticle();
+        $this->addProfileVisiblity(
+            article: $kb,
+            profile: getItemByTypeName(Profile::class, "Technician"),
+            entity: getItemByTypeName(Entity::class, "_test_root_entity"),
+        );
+
+        // Act: render permission content
+        $permissions = $this->renderPermissions($kb);
+
+        // Assert: an entry should be visible with the profile name
+        $this->assertCount(0, $this->getEmptyPermissionNode($permissions));
+
+        $entries = $this->getEntriesNodes($permissions);
+        $this->assertCount(1, $entries);
+
+        $entry = $entries->eq(0);
+        $this->assertEquals("Technician", $this->getEntryLabel($entry)->text());
+        $this->assertEquals(
+            "Root entity > _test_root_entity (recursive)",
+            $this->getEntryContext($entry)->text()
+        );
+    }
+
+    public function testWithProfileAndContext2(): void
+    {
+        // Arrange: create a KB article visible for a profile on a target entity,
+        // with recursion disabled.
+        $this->login();
+        $kb = $this->createArticle();
+        $this->addProfileVisiblity(
+            article: $kb,
+            profile: getItemByTypeName(Profile::class, "Observer"),
+            entity: getItemByTypeName(Entity::class, "_test_root_entity"),
+            is_recursive: false,
+        );
+
+        // Act: render permission content
+        $permissions = $this->renderPermissions($kb);
+
+        // Assert: an entry should be visible with the profile name
+        $this->assertCount(0, $this->getEmptyPermissionNode($permissions));
+
+        $entries = $this->getEntriesNodes($permissions);
+        $this->assertCount(1, $entries);
+
+        $entry = $entries->eq(0);
+        $this->assertEquals("Observer", $this->getEntryLabel($entry)->text());
+        $this->assertEquals(
+            "Root entity > _test_root_entity",
+            $this->getEntryContext($entry)->text()
+        );
+    }
+
+    private function renderPermissions(KnowbaseItem $kb): Crawler
+    {
+        $permissions = new PermissionsRenderer();
+        $html = TemplateRenderer::getInstance()->render(
+            $permissions->getTemplate(),
+            $permissions->getParams($kb),
+        );
+
+        return new Crawler($html);
+    }
+
+    private function getEmptyPermissionNode(Crawler $parent): Crawler
+    {
+        return $parent->filter('[data-testid="empty-permissions"]');
+    }
+
+    private function getEntriesNodes(Crawler $parent): Crawler
+    {
+        return $parent->filter('[data-testid="permission-entry"]');
+    }
+
+    private function getEntryLabel(Crawler $parent): Crawler
+    {
+        return $parent->filter('[data-testid="entry-label"]');
+    }
+
+    private function getEntryContext(Crawler $parent): Crawler
+    {
+        return $parent->filter('[data-testid="entry-context"]');
+    }
+
+    private function createArticle(
+        string $name = 'My article',
+        string $content = 'My content',
+    ): KnowbaseItem {
+        return $this->createItem(KnowbaseItem::class, [
+            'name' => $name,
+            'answer' => $content,
+        ]);
+    }
+
+    private function addUserVisiblity(
+        KnowbaseItem $article,
+        User $user,
+    ): void {
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $article->getID(),
+            'users_id' => $user->getID(),
+        ]);
+    }
+
+    private function addGroupVisiblity(
+        KnowbaseItem $article,
+        Group $group,
+        ?Entity $entity = null,
+        bool $is_recursive = true,
+    ): void {
+        if ($entity === null) {
+            $entity = getItemByTypeName(Entity::class, "Root entity");
+        }
+
+        $this->createItem(Group_KnowbaseItem::class, [
+            'knowbaseitems_id' => $article->getID(),
+            'groups_id' => $group->getID(),
+            'entities_id' => $entity->getID(),
+            'is_recursive' => $is_recursive,
+        ]);
+    }
+
+    private function addEntityVisiblity(
+        KnowbaseItem $article,
+        Entity $entity,
+        bool $is_recursive,
+    ): void {
+        $this->createItem(Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $article->getID(),
+            'entities_id' => $entity->getID(),
+            'is_recursive' => $is_recursive,
+        ]);
+    }
+
+    private function addProfileVisiblity(
+        KnowbaseItem $article,
+        Profile $profile,
+        ?Entity $entity = null,
+        bool $is_recursive = true,
+    ): void {
+        if ($entity === null) {
+            $entity = getItemByTypeName(Entity::class, "Root entity");
+        }
+
+        $this->createItem(KnowbaseItem_Profile::class, [
+            'knowbaseitems_id' => $article->getID(),
+            'profiles_id' => $profile->getID(),
+            'entities_id' => $entity->getID(),
+            'is_recursive' => $is_recursive,
+        ]);
+    }
+}

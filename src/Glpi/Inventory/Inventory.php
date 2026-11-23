@@ -108,37 +108,26 @@ class Inventory
     public const FULL_MODE = 0;
     public const INCR_MODE = 1;
 
-    /** @var int */
-    protected $mode;
-    /** @var ?stdClass */
-    protected $raw_data = null;
+    protected int $mode;
+    protected ?stdClass $raw_data = null;
     /** @var array<string, object> */
-    protected $data = [];
+    protected array $data = [];
     /** @var array<string, mixed> */
-    private $metadata = [];
+    private array $metadata = [];
     /** @var string[] */
-    private $errors = [];
-    /** @var CommonDBTM */
-    protected $item;
-    /** @var Agent */
-    private $agent;
+    private array $errors = [];
+    protected CommonDBTM $item;
+    private Agent $agent;
     /** @var array<string, InventoryAsset[]> */
-    protected $assets = [];
-    /** @var Conf */
-    protected $conf;
+    protected array $assets = [];
+    protected Conf $conf;
     /** @var array<string, array<stirng, mixed>> */
-    private $benchs = [];
-    /** @var string|false */
-    private $inventory_tmpfile = false;
-    /** @var ?string */
-    private $inventory_content;
-    /** @var int */
-    private $inventory_format;
-    /** @var ?MainAsset */
-    private $mainasset;
-    /** @var string */
-    private $request_query;
-    /** @var bool */
+    private array $benchs = [];
+    private string|false $inventory_tmpfile = false;
+    private ?string $inventory_content = null;
+    private int $inventory_format;
+    private ?MainAsset $mainasset = null;
+    private string $request_query = Request::INVENT_QUERY;
     private bool $is_discovery = false;
 
     /**
@@ -206,6 +195,7 @@ class Inventory
             //convert legacy format
             $data = json_decode($converter->convert($contentdata));
         } else {
+            $this->inventory_format = Request::JSON_MODE;
             $contentdata = json_encode($data, JSON_PRETTY_PRINT);
         }
 
@@ -356,6 +346,7 @@ class Inventory
             }
             $contents = $this->raw_data->content;
             $all_props = get_object_vars($contents);
+
             unset($all_props['versionclient'], $all_props['versionprovider']); //already handled in extractMetadata
 
             $empty_props = [];
@@ -447,7 +438,7 @@ class Inventory
 
             $item_start = microtime(true);
             $main->prepare();
-            $this->addBench($this->item->getType(), 'prepare', $item_start);
+            $this->addBench($this->item::class, 'prepare', $item_start);
 
             $this->mainasset = $main;
             if (isset($this->data['hardware'])) {
@@ -491,11 +482,11 @@ class Inventory
                 if (count($items)) {
                     $extra = 'Inventoried assets: ';
                     foreach ($items as $item) {
-                        $extra .= $item->getType() . ' #' . $item->getId() . ', ';
+                        $extra .= $item::class . ' #' . $item->getId() . ', ';
                     }
                     $extra = rtrim($extra, ', ') . "\n";
                 }
-                $this->addBench($this->item->getType(), 'full', $main_start, $extra);
+                $this->addBench($this->item::class, 'full', $main_start, $extra);
                 $this->printBenchResults();
             }
         }
@@ -545,7 +536,7 @@ class Inventory
             $items = $this->getItems();
 
             foreach ($items as $item) {
-                $itemtype = $item->getType();
+                $itemtype = $item::class;
                 if (!isset($item->fields['id']) || empty($item->fields['id'])) {
                     throw new RuntimeException('Item ID is missing :(');
                 }
@@ -606,8 +597,10 @@ class Inventory
         ];
         $links = [];
         foreach ($classes as $class) {
-            $entry = "<i class=\"" . \htmlescape($class::getIcon()) . " pointer\" title=\"" . \htmlescape($class::getTypeName(Session::getPluralNumber()))
-            . "\"></i><span class=\"d-none d-xxl-block\">" . \htmlescape($class::getTypeName(Session::getPluralNumber())) . "</span>";
+            $label = \htmlescape($class::getTypeName(Session::getPluralNumber()));
+            $entry = "<i class=\"" . \htmlescape($class::getIcon()) . " pointer\" title=\"$label\" aria-hidden=\"true\"></i>"
+            . "<span class=\"d-none d-xxl-block\" aria-hidden=\"true\">$label</span>"
+            . "<span class=\"visually-hidden\">$label</span>";
             $links[$entry] = $class::getSearchURL(false);
         }
 
@@ -639,7 +632,9 @@ class Inventory
                 'title' => Lockedfield::getTypeName(Session::getPluralNumber()),
                 'page'  => Lockedfield::getSearchURL(false),
                 'links' => [
-                    "<i class=\"ti ti-plus\" title=\"" . __s('Add global lock') . "\"></i><span class='d-none d-xxl-block'>" . __s('Add global lock') . "</span>" => Lockedfield::getFormURL(false),
+                    "<i class=\"ti ti-plus\" title=\"" . __s('Add global lock') . "\" aria-hidden=\"true\"></i>"
+                    . "<span class=\"d-none d-xxl-block\" aria-hidden=\"true\">" . __s('Add global lock') . "</span>"
+                    . "<span class=\"visually-hidden\">" . __s('Add global lock') . "</span>" => Lockedfield::getFormURL(false),
                 ] + $links,
                 'lists_itemtype' => Lockedfield::class,
             ];
@@ -730,6 +725,7 @@ class Inventory
                 case 'network_device': //handled from Asset\NetworkEquipment
                 case 'network_components': //handled from Asset\NetworkEquipment
                 case 'pagecounters': //handled from Asset\Printer
+                case 'pdu': //handled from Asset\PDU
                     break;
                 case 'cpus':
                     $assettype = Processor::class;
@@ -866,7 +862,7 @@ class Inventory
             }
             $this->mainasset->handle();
             $this->item = $this->mainasset->getItem();
-            $this->addBench($this->item->getType(), 'handle', $item_start);
+            $this->addBench($this->item::class, 'handle', $item_start);
         }
         return;
     }
@@ -1011,7 +1007,7 @@ class Inventory
             case 'cleantemp':
                 return ['description' => __('Clean temporary files created from inventories')];
 
-            case 'cleanorphans':
+            case 'cleanorphansinventory':
                 return ['description' => __('Clean inventories orphaned files')];
         }
         return [];
@@ -1029,10 +1025,13 @@ class Inventory
         $conf = new Conf();
         $temp_files = glob(GLPI_INVENTORY_DIR . '/*.{' . implode(',', $conf->knownInventoryExtensions()) . '}', GLOB_BRACE);
 
+        // Files created by `tempnam()` while an inventory is being processed (see `Inventory::setData()`).
+        $temp_files = array_merge($temp_files, glob(GLPI_INVENTORY_DIR . '/{xml_,json_}*', GLOB_BRACE));
+
         $time_limit = 60 * 60 * 12;//12 hours
         foreach ($temp_files as $temp_file) {
             //drop only inventory files that have been created more than 12 hours ago
-            if (time() - filemtime($temp_file) >= $time_limit) {
+            if (is_file($temp_file) && time() - filemtime($temp_file) >= $time_limit) {
                 try {
                     unlink($temp_file);
                     $message = sprintf(__('File %1$s has been removed'), $temp_file);
@@ -1058,7 +1057,7 @@ class Inventory
      *
      * @return int
      **/
-    public static function cronCleanorphans($task)
+    public static function cronCleanOrphansInventory($task)
     {
         global $DB;
 
@@ -1073,8 +1072,8 @@ class Inventory
                 // Class might not exist if it refer to a deleted custom asset type
                 continue;
             }
-            /** @var class-string<CommonDBTM> $itemtype */
-            $itemtype = $item::getType();
+            $itemtype = $item::class;
+
             $inventory_files = new RegexIterator(
                 new RecursiveIteratorIterator(
                     new RecursiveDirectoryIterator($existing_type)

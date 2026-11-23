@@ -45,10 +45,10 @@ class ITILFollowupTemplate extends AbstractITILChildTemplate
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory          = true;
-    public $can_be_translated  = true;
+    public bool $dohistory          = true;
+    public bool $can_be_translated  = true;
 
-    public static $rightname          = 'itilfollowuptemplate';
+    public static string $rightname          = 'itilfollowuptemplate';
 
     public static function getTypeName($nb = 0)
     {

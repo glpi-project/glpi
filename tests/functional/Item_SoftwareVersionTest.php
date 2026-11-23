@@ -113,14 +113,49 @@ class Item_SoftwareVersionTest extends DbTestCase
             'items_id'              => $computer1->getID(),
             'itemtype'              => 'Computer',
             'name'                  => 'A name',
-            'is_template_item'      => $computer1->getField('is_template'),
-            'is_deleted_item'       => $computer1->getField('is_deleted'),
+            'is_template_item'      => $computer1->isTemplate(),
+            'is_deleted_item'       => $computer1->isDeleted(),
             'entities_id'           => getItemByTypeName('Entity', '_test_root_entity', true),
             'is_recursive'          => 0,
         ];
 
         $this->setEntity('_test_root_entity', true);
         $this->assertSame($expected, $ins->prepareInputForAdd($input));
+    }
+
+    public function testPrepareInputForAddDuplicate()
+    {
+        $this->login();
+
+        $computer1 = getItemByTypeName('Computer', '_test_pc01');
+        $ver = getItemByTypeName('SoftwareVersion', '_test_softver_1', true);
+
+        $ins = new Item_SoftwareVersion();
+        $input = [
+            'items_id'              => $computer1->getID(),
+            'itemtype'              => 'Computer',
+            'softwareversions_id'   => $ver,
+        ];
+
+        $this->assertGreaterThan(0, $ins->add($input));
+
+        // Second install attempt of the same version on the same item must be rejected,
+        // not throw a DB unicity exception.
+        $ins2 = new Item_SoftwareVersion();
+        $this->assertFalse($ins2->add($input));
+        $this->hasSessionMessages(ERROR, ['This software version is already installed on this item.']);
+
+        $this->assertSame(
+            1,
+            countElementsInTable(
+                Item_SoftwareVersion::getTable(),
+                [
+                    'itemtype'            => 'Computer',
+                    'items_id'            => $computer1->getID(),
+                    'softwareversions_id' => $ver,
+                ]
+            )
+        );
     }
 
     public function testPrepareInputForUpdate()
@@ -151,8 +186,8 @@ class Item_SoftwareVersionTest extends DbTestCase
             'items_id'              => $computer1->getID(),
             'itemtype'              => 'Computer',
             'name'                  => 'Another name',
-            'is_template_item'      => $computer1->getField('is_template'),
-            'is_deleted_item'       => $computer1->getField('is_deleted'),
+            'is_template_item'      => $computer1->isTemplate(),
+            'is_deleted_item'       => $computer1->isDeleted(),
         ];
 
         $this->assertSame($expected, $ins->prepareInputForUpdate($input));

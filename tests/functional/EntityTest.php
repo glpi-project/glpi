@@ -183,6 +183,38 @@ class EntityTest extends DbTestCase
         $this->assertEquals($input, $entity->prepareInputForUpdate($input));
     }
 
+    public function testPrepareInputForUpdateSanitizesEmptyDefaultSatisfactionRate(): void
+    {
+        $this->login();
+
+        $entity = new Entity();
+        $input = [
+            'id' => 1,
+            'inquest_default_rate' => '',
+            'inquest_default_rate_change' => '',
+        ];
+
+        $result = $entity->prepareInputForUpdate($input);
+        $this->assertSame(0, $result['inquest_default_rate']);
+        $this->assertSame(0, $result['inquest_default_rate_change']);
+    }
+
+    public function testPrepareInputForUpdateSanitizesEmptyMandatoryComment(): void
+    {
+        $this->login();
+
+        $entity = new Entity();
+        $input = [
+            'id' => 1,
+            'inquest_mandatory_comment' => '',
+            'inquest_mandatory_comment_change' => '',
+        ];
+
+        $result = $entity->prepareInputForUpdate($input);
+        $this->assertSame(0, $result['inquest_mandatory_comment']);
+        $this->assertSame(0, $result['inquest_mandatory_comment_change']);
+    }
+
     /**
      * Test that entity creation generates sequential IDs.
      */
@@ -1438,9 +1470,6 @@ class EntityTest extends DbTestCase
 
     public static function entityTreeProvider(): iterable
     {
-        $e2e_test_root = getItemByTypeName('Entity', 'E2ETestEntity', true);
-        $e2e_test_child1 = getItemByTypeName('Entity', 'E2ETestSubEntity1', true);
-        $e2e_test_child2 = getItemByTypeName('Entity', 'E2ETestSubEntity2', true);
         $entity_test_root    = getItemByTypeName('Entity', '_test_root_entity');
         $entity_test_child_1 = getItemByTypeName('Entity', '_test_child_1');
         $entity_test_child_2 = getItemByTypeName('Entity', '_test_child_2');
@@ -1452,19 +1481,6 @@ class EntityTest extends DbTestCase
                 0 => [
                     'name' => 'Root entity',
                     'tree' => [
-                        $e2e_test_root => [
-                            'name' => 'E2ETestEntity',
-                            'tree' => [
-                                $e2e_test_child1 => [
-                                    'name' => 'E2ETestSubEntity1',
-                                    'tree' => [],
-                                ],
-                                $e2e_test_child2 => [
-                                    'name' => 'E2ETestSubEntity2',
-                                    'tree' => [],
-                                ],
-                            ],
-                        ],
                         $entity_test_root->getID() => [
                             'name' => $entity_test_root->fields['name'],
                             'tree' => [
@@ -1555,16 +1571,13 @@ class EntityTest extends DbTestCase
 
         $fn_find_entities_in_selector = static function ($selector, $entities, $parent_id = 0, &$found = []) use (&$fn_find_entities_in_selector) {
             foreach ($selector as $item) {
-                // extract entity name from the first <button> element inside the 'title' property
-                $matches = [];
-                preg_match('/<button.*?>(.*?)<\/button>/s', $item['title'], $matches);
-                $entity_name = trim($matches[1]);
+                $entity_name = $item['label'];
                 foreach ($entities as $child) {
                     if ($child['name'] === $entity_name && $child['entities_id'] === $parent_id) {
                         $found[] = $child['id'];
                     }
                 }
-                if ($item['folder'] ?? false) {
+                if (count($item['children']) > 0) {
                     // Extract item id from the number at the end of the first <a> element's href inside the 'title' property
                     $fn_find_entities_in_selector($item['children'], $entities, (int) $item['key'], $found);
                 }

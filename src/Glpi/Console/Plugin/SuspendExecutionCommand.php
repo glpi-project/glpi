@@ -50,7 +50,7 @@ class SuspendExecutionCommand extends AbstractCommand
         $this->setDescription(__('Suspend execution of all active plugins'));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!(new Plugin())->suspendAllPluginsExecution()) {
             $this->output->writeln(

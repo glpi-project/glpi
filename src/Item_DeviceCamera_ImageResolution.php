@@ -37,11 +37,11 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Item_DeviceCamera_ImageResolution extends CommonDBRelation
 {
-    public static $itemtype_1 = Item_DeviceCamera::class;
-    public static $items_id_1 = 'items_devicecameras_id';
+    public static ?string $itemtype_1 = Item_DeviceCamera::class;
+    public static ?string $items_id_1 = 'items_devicecameras_id';
 
-    public static $itemtype_2 = ImageResolution::class;
-    public static $items_id_2 = 'imageresolutions_id';
+    public static ?string $itemtype_2 = ImageResolution::class;
+    public static ?string $items_id_2 = 'imageresolutions_id';
 
     public static function getTypeName($nb = 0)
     {
@@ -143,7 +143,6 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),

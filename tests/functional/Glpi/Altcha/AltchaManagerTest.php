@@ -34,6 +34,9 @@
 
 namespace tests\units\Glpi\Altcha;
 
+use AltchaOrg\Altcha\Algorithm\Pbkdf2;
+use AltchaOrg\Altcha\Altcha;
+use AltchaOrg\Altcha\SolveChallengeOptions;
 use Glpi\Altcha\AltchaManager;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Tests\GLPITestCase;
@@ -64,20 +67,20 @@ final class AltchaManagerTest extends GLPITestCase
         // Act: compute the proof of work and submit a correct solution to the
         // challenge.
         // Then, mark the challenge as resolved and send the same solution again.
-        $pow = null;
-        for ($i = 0; $i <= $challenge->maxNumber; $i++) {
-            $digest = hash("sha256", $challenge->salt . $i);
-            if (hash_equals($digest, $challenge->challenge)) {
-                $pow = $i;
-                break;
-            }
-        }
+        // Using (new Altcha()) work because we don't actually need the HMAC key
+        // from the internal altcha instance of the manager here, indeed
+        // solveChallenge only does the proof of work computation that will
+        // be done on the client side in production which does not require the
+        // key.
+        $solution = (new Altcha())->solveChallenge(new SolveChallengeOptions(
+            challenge: $challenge,
+            algorithm: new Pbkdf2(),
+        ));
+
+        // Fake payload to simulate what a valid client would submit
         $payload = base64_encode(json_encode([
-            'algorithm' => $challenge->algorithm,
-            'challenge' => $challenge->challenge,
-            'number'    => $pow,
-            'salt'      => $challenge->salt,
-            'signature' => $challenge->signature,
+            'challenge' => $challenge->toArray(),
+            'solution'  => $solution,
         ]));
         $is_valid_1 = $altcha_manager->verifySolution($payload);
         $altcha_manager->removeChallenge($payload);
@@ -96,11 +99,12 @@ final class AltchaManagerTest extends GLPITestCase
 
         // Act: submit an incorrect solution to the challenge.
         $payload = base64_encode(json_encode([
-            'algorithm' => $challenge->algorithm,
-            'challenge' => $challenge->challenge,
-            'number'    => GLPI_ALTCHA_MAX_NUMBER + 10, // Impossible value
-            'salt'      => $challenge->salt,
-            'signature' => $challenge->signature,
+            'challenge' => $challenge->toArray(),
+            'solution' => [
+                'counter'    => -1,
+                'derivedKey' => 'not_a_real_key',
+                'time'       => 82,
+            ],
         ]));
         $is_valid = $altcha_manager->verifySolution($payload);
 

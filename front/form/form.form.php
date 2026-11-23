@@ -67,5 +67,5 @@ if (($_REQUEST['id'] ?? 0) == 0) {
 } else {
     // Show requested form
     Session::checkRight(Form::$rightname, READ);
-    Form::displayFullPageForItem($id, ['admin', Form::getType()], []);
+    Form::displayFullPageForItem($id, ['admin', Form::class], []);
 }

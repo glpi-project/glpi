@@ -38,14 +38,15 @@
 class Reminder_User extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1          = Reminder::class;
-    public static $items_id_1          = 'reminders_id';
-    public static $itemtype_2          = User::class;
-    public static $items_id_2          = 'users_id';
+    public static ?string $itemtype_1          = Reminder::class;
+    public static ?string $items_id_1          = 'reminders_id';
+    public static ?string $itemtype_2          = User::class;
+    public static ?string $items_id_2          = 'users_id';
 
-    public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
-    public static $logs_for_item_2     = false;
+    public static int $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
+    public static bool $logs_for_item_2     = false;
 
+    public static bool $checkAlwaysBothItems   = true;
 
     /**
      * Get users for a reminder

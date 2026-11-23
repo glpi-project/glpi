@@ -157,7 +157,7 @@
                         ) }}
 
                         <div class="hr-text">
-                            <i class="ti ti-adjustments"></i>
+                            <i class="ti ti-adjustments" aria-hidden="true"></i>
                             <span>{{ __('Agent configuration') }}</span>
                         </div>
 
@@ -186,9 +186,10 @@
                         {% endfor %}
 
                         <div class="hr-text">
-                            <i class="ti ti-list"></i>
+                            <i class="ti ti-list" aria-hidden="true"></i>
                             <span>{{ __('Supported tasks') }} </span>
-                            <span class="form-help" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"
+                            <span class="form-help" tabindex="0" aria-label="{{ __('When reported by GLPI agent via native inventory') }}"
+                                  data-bs-toggle="tooltip" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-html="true"
                                   data-bs-title="{{ __('When reported by GLPI agent via native inventory') }}">?</span>
                         </div>
 
@@ -203,11 +204,11 @@
                             'use_module_remote_inventory': __('Remote inventory'),
                         } %}
 
-                        {% if item.fields[modulefield] %}
-                            {% set html = '<i class="ti ti-check green"></i>' %}
-                        {% else %}
-                            {% set html = '<i class="ti ti-x red"></i>' %}
-                        {% endif %}
+                        {% set is_supported = item.fields[modulefield] %}
+                        {% set html %}
+                            <i class="ti {{ is_supported ? 'ti-check green' : 'ti-x red' }}" aria-hidden="true"></i>
+                            <span class="visually-hidden">{{ is_supported ? __('Yes') : __('No') }}</span>
+                        {% endset %}
 
                         {{ fields.htmlField('', html, modulelabel) }}
                         {% endfor %}

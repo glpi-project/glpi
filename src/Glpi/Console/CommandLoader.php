@@ -59,29 +59,26 @@ class CommandLoader implements CommandLoaderInterface
     /**
      * Indicates if plugin commands should be included.
      *
-     * @var bool
      */
-    private $include_plugins;
+    private bool $include_plugins;
 
     /**
      * Root directory path to search on.
-     * @var string
      */
-    private $rootdir;
+    private string $rootdir;
 
     /**
      * Found commands.
      *
      * @var Command[]|null
      */
-    private $commands = null;
+    private ?array $commands = null;
 
     /**
      * Plugins info services
      *
-     * @var Plugin|null
      */
-    private $plugin = null;
+    private ?Plugin $plugin = null;
 
     /**
      * @param bool          $include_plugins

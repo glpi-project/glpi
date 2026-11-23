@@ -59,7 +59,7 @@ $item = new $itemtype();
 // Validate item
 if (
     !$item->getFromDB($items_id)
-    || !$item->canViewItem()
+    || !$item->can($item->getID(), READ)
     || !$item->isField('content')
 ) {
     throw new NotFoundHttpException("Item not found");

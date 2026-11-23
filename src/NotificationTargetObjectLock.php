@@ -85,7 +85,7 @@ class NotificationTargetObjectLock extends NotificationTarget
 
         $user = new User();
         if ($user->getFromDB($this->obj->fields['users_id'])) {
-            $this->addToRecipientsList(['language' => $user->getField('language'),
+            $this->addToRecipientsList(['language' => $user->fields['language'],
                 'users_id' => $user->getID(),
             ]);
         }

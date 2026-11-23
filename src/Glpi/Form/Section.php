@@ -64,8 +64,8 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     public const TRANSLATION_KEY_NAME = 'section_name';
     public const TRANSLATION_KEY_DESCRIPTION = 'section_description';
 
-    public static $itemtype = Form::class;
-    public static $items_id = 'forms_forms_id';
+    public static string $itemtype = Form::class;
+    public static string $items_id = 'forms_forms_id';
 
     /**
      * Lazy loaded array of questions
@@ -190,7 +190,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
         }
 
         $handlers = [];
-        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $key = sprintf('%s_%d', self::class, $this->getID());
         $category_name = sprintf('%s: %s', self::getTypeName(), $this->getName());
         if (count($form->getSections()) > 1) {
             $handlers[$key][] = new TranslationHandler(
@@ -301,7 +301,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
             // Read from database
             $questions_data = (new Question())->find(
                 [self::getForeignKeyField() => $this->fields['id']],
-                'vertical_rank ASC, horizontal_rank ASC',
+                ['vertical_rank ASC', 'horizontal_rank ASC'],
             );
             foreach ($questions_data as $row) {
                 $question = new Question();
@@ -335,7 +335,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
             // Read from database
             $comments_data = (new Comment())->find(
                 [self::getForeignKeyField() => $this->fields['id']],
-                'vertical_rank ASC, horizontal_rank ASC',
+                ['vertical_rank ASC', 'horizontal_rank ASC'],
             );
             foreach ($comments_data as $row) {
                 $comment = new Comment();

@@ -30,8 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-require('@jest/globals');
-const cable = require('/js/cable.js');
+import * as cable from '/js/cable.js';
 
 describe('Cable', () => {
     beforeEach(() => {
@@ -49,7 +48,7 @@ describe('Cable', () => {
     });
     it('refreshAssetBreadcrumb', async () => {
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/cable.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/cable.php', 'GET', {
             action: 'get_item_breadcrum',
             itemtype: 'Computer',
             items_id: '123',
@@ -58,13 +57,13 @@ describe('Cable', () => {
         }));
         cable.refreshAssetBreadcrumb('Computer', 123, 'show_a_asset_breadcrumb');
         await new Promise(process.nextTick);
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBe(true);
         expect(document.getElementById('show_a_asset_breadcrumb').innerHTML).toBe('<div>Breadcrumb HTML</div>');
         expect(document.getElementById('show_b_asset_breadcrumb').innerHTML).toBe('Default B');
     });
     it('refreshNetworkPortDropdown', async () => {
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/cable.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/cable.php', 'GET', {
             action: 'get_networkport_dropdown',
             itemtype: 'Computer',
             items_id: '123',
@@ -73,12 +72,12 @@ describe('Cable', () => {
         }));
         cable.refreshNetworkPortDropdown('Computer', 123, 'networkport_dropdown');
         await new Promise(process.nextTick);
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBe(true);
         expect(document.getElementById('networkport_dropdown').innerHTML).toBe('<select><option>Port 1</option><option>Port 2</option></select>');
     });
     it('refreshSocketDropdown', async () => {
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/cable.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/cable.php', 'GET', {
             action: 'get_socket_dropdown',
             itemtype: 'Computer',
             items_id: '123',
@@ -89,7 +88,7 @@ describe('Cable', () => {
         }));
         cable.refreshSocketDropdown('Computer', 123, 456, 'socket_select');
         await new Promise(process.nextTick);
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBe(true);
         expect(document.querySelector('select[name="socket_select"]').innerHTML).toBe('<option>Socket A</option><option>Socket B</option>');
         // make sure other elements are untouched
         expect(document.getElementById('show_b_asset_breadcrumb').innerHTML).toBe('Default B');

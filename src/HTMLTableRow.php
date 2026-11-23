@@ -38,16 +38,13 @@
  **/
 class HTMLTableRow extends HTMLTableEntity
 {
-    /** @var HTMLTableGroup */
-    private $group;
-    /** @var bool */
-    private $empty              = true;
+    private HTMLTableGroup $group;
+    private bool $empty              = true;
     /** @var array<string, array<HTMLTableCell>> */
-    private $cells              = [];
-    /** @var int */
-    private $numberOfSubRows    = 1;
+    private array $cells              = [];
+    private int $numberOfSubRows    = 1;
     /** @var array<int, array> */
-    private $linesWithAttributs = [];
+    private array $linesWithAttributs = [];
 
     /**
      * @param HTMLTableGroup $group

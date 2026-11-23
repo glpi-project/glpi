@@ -60,9 +60,10 @@ final class EndUserInputNameProvider
     public function getFiles(array $inputs, array $answers): array
     {
         $files = [
-            'filename' => [],
-            'prefix'   => [],
-            'tag'      => [],
+            'filename'    => [],
+            'prefix'      => [],
+            'tag'         => [],
+            'question_id' => [],
         ];
 
         foreach (array_keys($answers) as $answer_id) {
@@ -72,9 +73,10 @@ final class EndUserInputNameProvider
                 && isset($inputs["_tag_answers_$answer_id"])
             ) {
                 foreach (array_keys($inputs["_answers_$answer_id"]) as $i) {
-                    $files['filename'][] = $inputs["_answers_$answer_id"][$i];
-                    $files['prefix'][]   = $inputs["_prefix_answers_$answer_id"][$i];
-                    $files['tag'][]      = $inputs["_tag_answers_$answer_id"][$i];
+                    $files['filename'][]    = $inputs["_answers_$answer_id"][$i];
+                    $files['prefix'][]      = $inputs["_prefix_answers_$answer_id"][$i];
+                    $files['tag'][]         = $inputs["_tag_answers_$answer_id"][$i];
+                    $files['question_id'][] = (int) $answer_id;
                 }
             }
         }

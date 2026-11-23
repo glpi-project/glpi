@@ -196,6 +196,11 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
             'state_types',
             'ticket_types',
             'unicity_types',
+            // keys derived from assignable_types which need manually updated
+            'linkuser_types',
+            'linkgroup_types',
+            'linkuser_tech_types',
+            'linkgroup_tech_types',
         ];
         foreach ($config_keys as $config_key) {
             if (!in_array($asset_class_name, $CFG_GLPI[$config_key], true)) {
@@ -209,6 +214,11 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
         }
         if (!in_array($definition->getAssetModelClassName(), $CFG_GLPI['dictionnary_types'], true)) {
             $CFG_GLPI['dictionnary_types'][] = $definition->getAssetModelClassName();
+        }
+
+        // Allow model to have documents
+        if (!in_array($definition->getAssetModelClassName(), $CFG_GLPI['document_types'], true)) {
+            $CFG_GLPI['document_types'][] = $definition->getAssetModelClassName();
         }
 
         // Bootstrap capacities
@@ -412,7 +422,7 @@ use Glpi\\Asset\\Asset;
 
 final class {$definition->getAssetClassName(false)} extends Asset {
     protected static string \$definition_system_name = '{$definition->fields['system_name']}';
-    public static \$rightname = '{$rightname}';
+    public static string \$rightname = '{$rightname}';
 }
 PHP
         );

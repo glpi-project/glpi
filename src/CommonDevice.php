@@ -34,6 +34,7 @@
  */
 
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 /**
  * CommonDevice Class
@@ -41,12 +42,12 @@ use Glpi\DBAL\QueryFunction;
  */
 abstract class CommonDevice extends CommonDropdown
 {
-    public static $rightname          = 'device';
+    public static string $rightname          = 'device';
 
-    public $can_be_translated  = false;
+    public bool $can_be_translated  = false;
 
     // From CommonDBTM
-    public $dohistory           = true;
+    public bool $dohistory           = true;
 
     public static function getTypeName($nb = 0)
     {
@@ -68,7 +69,6 @@ abstract class CommonDevice extends CommonDropdown
      **/
     public static function getDeviceTypes(bool $grouped = false)
     {
-        //TODO After GLPI 11.0, make this always return grouped values
         global $CFG_GLPI;
 
         $valid_types = [
@@ -188,7 +188,7 @@ abstract class CommonDevice extends CommonDropdown
                             );
 
                             $listLabel = '<i class="ti ti-list pointer" title="' . htmlescape($itemTypeName) . '"></i>'
-                            . '<span class="sr-only">' . htmlescape($itemTypeName) . '</span>';
+                            . '<span class="visually-hidden">' . htmlescape($itemTypeName) . '</span>';
                             $menu['options'][$key]['links'][$listLabel] = $itemClass::getSearchURL(false);
 
                             // item device self links
@@ -263,7 +263,7 @@ abstract class CommonDevice extends CommonDropdown
                 'SELECT'    => [
                     'itemtype',
                     QueryFunction::groupConcat(
-                        expression: 'items_id',
+                        expression: new QueryIdentifier('items_id'),
                         distinct: true,
                         alias: 'ids'
                     ),
@@ -381,6 +381,15 @@ abstract class CommonDevice extends CommonDropdown
             'datatype'           => 'dropdown',
         ];
 
+        $tab[] = [
+            'id'       => 86,
+            'table'      => static::getTable(),
+            'field'      => 'is_recursive',
+            'name'       => __('Child entities'),
+            'datatype'   => 'bool',
+            'searchtype' => 'equals',
+        ];
+
         return $tab;
     }
 
@@ -466,7 +475,7 @@ abstract class CommonDevice extends CommonDropdown
             $field_name  = 'quantity_' . static::class . '_' . $this->getID();
             $content .= "&nbsp;<span class='ti ti-plus cursor-pointer' title='" . __s('Add') . "'
                       onClick=\"$('#" . htmlescape(jsescape($field_name)) . "').show();\"
-                      ><span class='sr-only'>" . __s('Add') . "</span></span>";
+                      ><span class='visually-hidden'>" . __s('Add') . "</span></span>";
             $content .= "<span id='" . htmlescape($field_name) . "' style='display:none'><br>";
             $content .= __s('Add') . "&nbsp;";
 
@@ -601,7 +610,7 @@ abstract class CommonDevice extends CommonDropdown
             (isset($this->input['_registeredID']))
             && (is_array($this->input['_registeredID']))
         ) {
-            $input = ['itemtype' => $this->getType(),
+            $input = ['itemtype' => static::class,
                 'items_id' => $this->getID(),
             ];
 
@@ -643,6 +652,15 @@ abstract class CommonDevice extends CommonDropdown
     {
         $this->post_workOnItem();
         parent::post_updateItem($history);
+    }
+
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                static::getItem_DeviceType(),
+            ]
+        );
     }
 
     public static function getFormURL($full = true)

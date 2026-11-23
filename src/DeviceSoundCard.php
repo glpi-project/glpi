@@ -38,7 +38,7 @@
  **/
 class DeviceSoundCard extends CommonDevice
 {
-    protected static $forward_entity_to = ['Item_DeviceSoundCard', 'Infocom'];
+    protected static array $forward_entity_to = ['Item_DeviceSoundCard', 'Infocom'];
 
     public static function getTypeName($nb = 0)
     {

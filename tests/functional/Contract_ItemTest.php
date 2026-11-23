@@ -77,4 +77,42 @@ class Contract_ItemTest extends DbTestCase
             $this->assertContains(Contract_Item::class, $item->getCloneRelations(), $itemtype);
         }
     }
+
+    public function testCannotUnlinkContractWithOnlyReadRights(): void
+    {
+        $this->login();
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => 'Unlink ' . $this->getUniqueString(),
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $contract = $this->createItem(\Contract::class, [
+            'name'        => 'Unlink ' . $this->getUniqueString(),
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $link_id = $this->createItem(Contract_Item::class, [
+            'contracts_id' => $contract->getID(),
+            'itemtype'     => \Computer::class,
+            'items_id'     => $computer->getID(),
+        ])->getID();
+
+        // Can view both items, but can update neither
+        $_SESSION['glpiactiveprofile']['contract'] = READ;
+        $_SESSION['glpiactiveprofile']['computer'] = READ;
+
+        $link = new Contract_Item();
+        $this->assertFalse($link->can($link_id, DELETE));
+        $this->assertFalse($link->can($link_id, PURGE));
+
+        // Update right on the contract side is enough
+        $_SESSION['glpiactiveprofile']['contract'] = READ | UPDATE;
+        $_SESSION['glpiactiveprofile']['computer'] = READ;
+        $this->assertTrue($link->can($link_id, DELETE));
+        $this->assertTrue($link->can($link_id, PURGE));
+
+        // Update right on the computer side is enough
+        $_SESSION['glpiactiveprofile']['contract'] = READ;
+        $_SESSION['glpiactiveprofile']['computer'] = READ | UPDATE;
+        $this->assertTrue($link->can($link_id, DELETE));
+        $this->assertTrue($link->can($link_id, PURGE));
+    }
 }

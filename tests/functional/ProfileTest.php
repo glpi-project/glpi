@@ -36,6 +36,7 @@ namespace tests\units;
 
 use Glpi\Asset\AssetDefinition;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -430,6 +431,82 @@ class ProfileTest extends DbTestCase
         }
     }
 
+    public function testCleanDefinitionsOnPurge(): void
+    {
+        $profile = $this->createItem(\Profile::class, ['name' => 'Profile to purge']);
+        $profile_id = $profile->getID();
+
+        $asset_definition = $this->initAssetDefinition(
+            profiles: [$profile_id => READ]
+        );
+        $dropdown_definition = $this->initDropdownDefinition(
+            profiles: [$profile_id => READ]
+        );
+
+        // Also create an inactive definition to ensure it is cleaned up as well.
+        $inactive_asset_definition = $this->initAssetDefinition(
+            profiles: [$profile_id => READ]
+        );
+        $this->updateItem(
+            AssetDefinition::class,
+            $inactive_asset_definition->getID(),
+            ['is_active' => false]
+        );
+        $inactive_asset_definition->getFromDB($inactive_asset_definition->getID());
+
+        // Also create an inactive dropdown definition to ensure it is cleaned up as well.
+        $inactive_dropdown_definition = $this->initDropdownDefinition(
+            profiles: [$profile_id => READ]
+        );
+        $this->updateItem(
+            DropdownDefinition::class,
+            $inactive_dropdown_definition->getID(),
+            ['is_active' => false]
+        );
+        $inactive_dropdown_definition->getFromDB($inactive_dropdown_definition->getID());
+
+        $this->assertArrayHasKey(
+            $profile_id,
+            $this->callPrivateMethod($asset_definition, 'getDecodedProfilesField')
+        );
+        $this->assertArrayHasKey(
+            $profile_id,
+            $this->callPrivateMethod($dropdown_definition, 'getDecodedProfilesField')
+        );
+        $this->assertArrayHasKey(
+            $profile_id,
+            $this->callPrivateMethod($inactive_asset_definition, 'getDecodedProfilesField')
+        );
+        $this->assertArrayHasKey(
+            $profile_id,
+            $this->callPrivateMethod($inactive_dropdown_definition, 'getDecodedProfilesField')
+        );
+
+        $this->deleteItem(\Profile::class, $profile_id);
+
+        $asset_definition->getFromDB($asset_definition->getID());
+        $dropdown_definition->getFromDB($dropdown_definition->getID());
+        $inactive_asset_definition->getFromDB($inactive_asset_definition->getID());
+        $inactive_dropdown_definition->getFromDB($inactive_dropdown_definition->getID());
+
+        $this->assertArrayNotHasKey(
+            $profile_id,
+            $this->callPrivateMethod($asset_definition, 'getDecodedProfilesField')
+        );
+        $this->assertArrayNotHasKey(
+            $profile_id,
+            $this->callPrivateMethod($dropdown_definition, 'getDecodedProfilesField')
+        );
+        $this->assertArrayNotHasKey(
+            $profile_id,
+            $this->callPrivateMethod($inactive_asset_definition, 'getDecodedProfilesField')
+        );
+        $this->assertArrayNotHasKey(
+            $profile_id,
+            $this->callPrivateMethod($inactive_dropdown_definition, 'getDecodedProfilesField')
+        );
+    }
+
     public function testRightsForForm()
     {
         $all_rights = \Profile::getRightsForForm();
@@ -451,5 +528,73 @@ class ProfileTest extends DbTestCase
         $this->assertArrayHasKey(\ConsumableItem::class, $types);
         $this->assertSame(\ConsumableItem::getTypeName(), $types[\ConsumableItem::class]);
         $this->assertArrayHasKey(\Computer::class, $types);
+    }
+
+    public function testEnclosureHasDedicatedProfileRight(): void
+    {
+        global $DB;
+
+        $this->assertSame('enclosure', \Enclosure::$rightname);
+
+        $asset_rights = \Profile::getRightsForForm('central', 'assets', 'general');
+        $enclosure_rights = array_filter(
+            $asset_rights,
+            static fn(array $right): bool => $right['field'] === \Enclosure::$rightname,
+        );
+
+        $this->assertCount(1, $enclosure_rights);
+
+        $enclosure_rights = iterator_to_array($DB->request([
+            'SELECT' => ['profiles_id', 'rights'],
+            'FROM'   => \ProfileRight::getTable(),
+            'WHERE'  => [
+                'name'        => \Enclosure::$rightname,
+                'profiles_id' => range(1, 8),
+            ],
+            'ORDER'  => 'profiles_id',
+        ]));
+        $this->assertSame([
+            1 => 0,
+            2 => READ,
+            3 => ALLSTANDARDRIGHT,
+            4 => ALLSTANDARDRIGHT,
+            5 => 0,
+            6 => ALLSTANDARDRIGHT,
+            7 => ALLSTANDARDRIGHT,
+            8 => READ,
+        ], array_column($enclosure_rights, 'rights', 'profiles_id'));
+    }
+
+    public function testExcludedSearchOptionsPrepareInput(): void
+    {
+        $this->login();
+
+        $profile = $this->createItem(\Profile::class, [
+            'name'      => 'Test excluded searchoptions ' . __FUNCTION__,
+            'interface' => 'central',
+        ]);
+
+        // deduplication and non-integer filtering
+        $profile->update([
+            'id'                     => $profile->getID(),
+            'excluded_searchoptions' => [
+                'Ticket' => [5, 3, 5, 0, 'abc'],
+            ],
+        ]);
+        $reloaded = new \Profile();
+        $reloaded->getFromDB($profile->getID());
+        $reloaded->cleanProfile();
+        $actual = $reloaded->fields['excluded_searchoptions'];
+        sort($actual['Ticket']);
+        $this->assertEquals([3, 5], $actual['Ticket']);
+
+        // empty input stores null (no restrictions)
+        $profile->update([
+            'id'                     => $profile->getID(),
+            'excluded_searchoptions' => [],
+        ]);
+        $reloaded->getFromDB($profile->getID());
+        $reloaded->cleanProfile();
+        $this->assertEquals([], $reloaded->fields['excluded_searchoptions']);
     }
 }

@@ -332,7 +332,8 @@
                                   specific_field_options|merge({
                                       'entity': item.fields['entities_id']|default(-1),
                                       'condition': {'is_assign': 1},
-                                      'multiple': item is usingtrait('Glpi\\Features\\AssignableItem') ? true : false
+                                      'multiple': item is usingtrait('Glpi\\Features\\AssignableItem') ? true : false,
+                                      'templateSelection': item is usingtrait('Glpi\\Features\\AssignableItem') ? 'templateGroupSelection' : null
                                   })
                               ) }}
                           {% elseif field is same as item.getModelForeignKeyField() %}
@@ -430,6 +431,7 @@
                                   __('Size'),
                                   specific_field_options|merge({
                                       'min': 0,
+                                      'max': 999.99,
                                       'step': 0.01
                                   }),
                               ) }}
@@ -450,7 +452,8 @@
                                   specific_field_options|merge({
                                       'entity': item.fields['entities_id']|default(-1),
                                       'condition': {'is_itemgroup': 1},
-                                      'multiple': item is usingtrait('Glpi\\Features\\AssignableItem') ? true : false
+                                      'multiple': item is usingtrait('Glpi\\Features\\AssignableItem') ? true : false,
+                                      'templateSelection': item is usingtrait('Glpi\\Features\\AssignableItem') ? 'templateGroupSelection' : null
                                   })
                               ) }}
                           {% elseif field is same as 'uuid' %}
@@ -480,6 +483,13 @@
                                   'ram',
                                   item.fields['ram'],
                                   __('%1$s (%2$s)')|format(_n('Memory', 'Memories', 1), __('Mio')),
+                                  specific_field_options
+                              ) }}
+                          {% elseif field is same as 'last_pages_counter' %}
+                              {{ fields.numberField(
+                                  'last_pages_counter',
+                                  item.fields['last_pages_counter'],
+                                  __('Current counter of pages'),
                                   specific_field_options
                               ) }}
                           {% elseif field is same as 'alarm_threshold' %}

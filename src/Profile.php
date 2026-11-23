@@ -38,6 +38,7 @@ use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Dashboard\Grid;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Event;
 use Glpi\Features\Clonable;
 use Glpi\Form\Form;
@@ -45,7 +46,11 @@ use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\Inventory\Conf;
 use Glpi\Plugin\Hooks;
+use Glpi\Search\SearchOption;
 use Glpi\Toolbox\ArrayNormalizer;
+
+use function Safe\json_decode;
+use function Safe\json_encode;
 
 /**
  * Profile class
@@ -57,26 +62,30 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     /** @use Clonable<static> */
     use Clonable;
 
+    public const HELPDESK_RIGHT_PASSWORD_UPDATE = 'password_update';
+    public const HELPDESK_RIGHT_PERSONALIZATION = 'personalization';
+    public const HELPDESK_RIGHT_SHOW_GROUP_HARDWARE = 'show_group_hardware';
+
     // Specific ones
 
     /**
      * Helpdesk fields of helpdesk profiles
      * @var string[]
      */
-    public static $helpdesk_rights = [
+    public static array $helpdesk_rights = [
         'create_ticket_on_login',
         'changetemplates_id',
         'followup',
         'helpdesk_hardware',
         'helpdesk_item_type',
         'knowbase',
-        'password_update',
-        'personalization',
+        self::HELPDESK_RIGHT_PASSWORD_UPDATE,
+        self::HELPDESK_RIGHT_PERSONALIZATION,
         'problemtemplates_id',
         'reminder_public',
         'reservation',
         'rssfeed_public',
-        'show_group_hardware',
+        self::HELPDESK_RIGHT_SHOW_GROUP_HARDWARE,
         'use_mentions',
         'task',
         'ticket',
@@ -91,15 +100,17 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * Common fields used for all profiles type
      * @var string[]
      */
-    public static $common_fields  = ['id', 'interface', 'is_default', 'name', '2fa_enforced'];
+    public static array $common_fields  = ['id', 'interface', 'is_default', 'name', '2fa_enforced', 'excluded_searchoptions', 'show_map'];
 
-    public $dohistory             = true;
+    /** @var list<class-string> Itemtypes whose search options can be restricted per profile */
+    public const SEARCHOPTION_RESTRICTED_ITEMTYPES = [Ticket::class];
 
-    public static $rightname             = 'profile';
+    public bool $dohistory             = true;
+
+    public static string $rightname             = 'profile';
 
     /**
      * Profile rights to update after profile update.
-     * @var array
      */
     private array $profileRight = [];
 
@@ -191,6 +202,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                         $ong[6] = self::createTabEntry(__('Tools'), 0, $item::class, 'ti ti-briefcase');
                         $ong[7] = self::createTabEntry(__('Setup'), 0, $item::class, 'ti ti-settings');
                         $ong[8] = self::createTabEntry(__('Security'), 0, $item::class, 'ti ti-shield-lock');
+                        $ong[9] = self::createTabEntry(__('Search / list'), 0, $item::class, 'ti ti-search');
                     } else {
                         $ong[2] = self::createTabEntry(_n('Asset', 'Assets', Session::getPluralNumber()), 0, $item::class, 'ti ti-package');
                         $ong[3] = self::createTabEntry(__('Assistance'), 0, $item::class, 'ti ti-headset');
@@ -200,6 +212,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                         $ong[7] = self::createTabEntry(__('Administration'), 0, $item::class, 'ti ti-shield-check');
                         $ong[8] = self::createTabEntry(__('Setup'), 0, $item::class, 'ti ti-settings');
                         $ong[9] = self::createTabEntry(__('Security'), 0, $item::class, 'ti ti-shield-lock');
+                        $ong[10] = self::createTabEntry(__('Search / list'), 0, $item::class, 'ti ti-search');
                     }
                     return $ong;
             }
@@ -220,6 +233,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                     6 => $item->showFormToolsHelpdesk(),
                     7 => $item->showFormSetupHelpdesk(),
                     8 => $item->showFormSecurity(),
+                    9 => $item->showFormSearchList(),
                     default => false,
                 };
             } else {
@@ -232,6 +246,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                     7 => $item->showFormAdmin(),
                     8 => $item->showFormSetup(),
                     9 => $item->showFormSecurity(),
+                    10 => $item->showFormSearchList(),
                     default => false,
                 };
             }
@@ -286,7 +301,16 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                 $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] = importArrayFromDB($this->input['managed_domainrecordtypes']);
             }
 
-            ///TODO other needed fields
+            if (in_array('excluded_searchoptions', $this->updates, true)) {
+                $raw = $this->input['excluded_searchoptions'];
+                $_SESSION['glpiactiveprofile']['excluded_searchoptions'] = $raw !== null
+                    ? (json_decode($raw, true) ?? [])
+                    : [];
+            }
+
+            if (in_array('show_map', $this->updates, true)) {
+                $_SESSION['glpiactiveprofile']['show_map'] = (int) $this->input['show_map'];
+            }
         }
     }
 
@@ -339,6 +363,14 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         // PROFILES and UNIQUE_PROFILE in RuleMailcollector
         Rule::cleanForItemCriteria($this, 'PROFILES');
         Rule::cleanForItemCriteria($this, 'UNIQUE_PROFILE');
+
+        $profile_id = $this->getID();
+        foreach (AssetDefinitionManager::getInstance()->getDefinitions() as $definition) {
+            $definition->removeProfileFromField($profile_id);
+        }
+        foreach (DropdownDefinitionManager::getInstance()->getDefinitions() as $definition) {
+            $definition->removeProfileFromField($profile_id);
+        }
     }
 
     public function getCloneRelations(): array
@@ -365,6 +397,12 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             }
             $input["managed_domainrecordtypes"] = exportArrayToDB(
                 ArrayNormalizer::normalizeValues($input["managed_domainrecordtypes"] ?: [], 'intval')
+            );
+        }
+
+        if (isset($input['excluded_searchoptions'])) {
+            $input['excluded_searchoptions'] = self::normalizeExcludedSearchoptions(
+                is_array($input['excluded_searchoptions']) ? $input['excluded_searchoptions'] : []
             );
         }
 
@@ -587,7 +625,29 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             }
         }
 
+        if (isset($input['excluded_searchoptions'])) {
+            $input['excluded_searchoptions'] = self::normalizeExcludedSearchoptions(
+                is_array($input['excluded_searchoptions']) ? $input['excluded_searchoptions'] : []
+            );
+        }
+
         return $input;
+    }
+
+    /**
+     * @param array<string, list<int>> $input Keyed by itemtype short name
+     */
+    private static function normalizeExcludedSearchoptions(array $input): ?string
+    {
+        $result = [];
+        foreach (self::SEARCHOPTION_RESTRICTED_ITEMTYPES as $itemtype) {
+            $values = is_array($input[$itemtype] ?? null) ? $input[$itemtype] : [];
+            $values = array_values(array_unique(array_filter(array_map('intval', $values))));
+            if ($values !== []) {
+                $result[$itemtype] = $values;
+            }
+        }
+        return $result !== [] ? json_encode($result) : null;
     }
 
     /**
@@ -614,7 +674,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     public function cleanProfile()
     {
         if (isset($this->fields['interface']) && $this->fields["interface"] === "helpdesk") {
-            foreach ($this->fields as $key => $val) {
+            foreach (array_keys($this->fields) as $key) {
                 if (
                     !in_array($key, self::$common_fields, true)
                     && !in_array($key, self::$helpdesk_rights, true)
@@ -666,6 +726,16 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                     $this->fields[$val] = [];
                 }
             }
+        }
+
+        if (
+            isset($this->fields['excluded_searchoptions'])
+            && !is_array($this->fields['excluded_searchoptions'])
+        ) {
+            $this->fields['excluded_searchoptions'] = json_decode($this->fields['excluded_searchoptions'], true) ?? [];
+        }
+        if (!isset($this->fields['excluded_searchoptions'])) {
+            $this->fields['excluded_searchoptions'] = [];
         }
     }
 
@@ -720,7 +790,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                 'OR'                             => $right_subqueries,
             ],
         ]);
-        $criteria[] = new QueryExpression(count($right_subqueries) . " = " . $sub_query->getQuery());
+        $criteria[] = new QueryExpression(count($right_subqueries) . " = " . $sub_query->getQuery(), values: $sub_query->getParams());
 
         if (Session::getCurrentInterface() === 'central') {
             return [
@@ -882,6 +952,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                             'followups_tasks' => [
                                 $fn_get_rights(ITILFollowup::class, 'central'),
                                 $fn_get_rights(TicketTask::class, 'central'),
+                                $fn_get_rights(Document_Item::class, 'central', ['field' => 'document']),
                             ],
                             'validations' => [
                                 $fn_get_rights(TicketValidation::class, 'central'),
@@ -933,6 +1004,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                                 $fn_get_rights(Consumable::class, 'central'),
                                 $fn_get_rights(Phone::class, 'central'),
                                 $fn_get_rights(Peripheral::class, 'central'),
+                                $fn_get_rights(Enclosure::class, 'central'),
+                                $fn_get_rights(Cable::class, 'central'),
                                 $fn_get_rights(NetworkName::class, 'central', [
                                     'label' => __('Internet'),
                                 ]),
@@ -960,7 +1033,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                                 $fn_get_rights(Domain::class, 'central'),
                                 $fn_get_rights(Appliance::class, 'central'),
                                 $fn_get_rights(DatabaseInstance::class, 'central'),
-                                $fn_get_rights(Cable::class, 'central'),
                             ],
                         ],
                         'admin' => [
@@ -1121,7 +1193,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                                 ]),
                                 $fn_get_rights(Location::class, 'central'),
                                 $fn_get_rights(ITILCategory::class, 'central'),
-                                $fn_get_rights(KnowbaseItemCategory::class, 'central'),
                                 $fn_get_rights(TaskCategory::class, 'central'),
                                 $fn_get_rights(State::class, 'central'),
                                 $fn_get_rights(ITILFollowupTemplate::class, 'central'),
@@ -1482,6 +1553,46 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'canedit' => $canedit,
             'item'   => $this,
             'action' => Toolbox::getItemTypeFormURL(self::class),
+        ]);
+    }
+
+    /**
+     * Print the Search / list settings form for a profile.
+     */
+    private function showFormSearchList(): void
+    {
+        if (!self::canView()) {
+            return;
+        }
+
+        $itemtypes_data = [];
+        foreach (self::SEARCHOPTION_RESTRICTED_ITEMTYPES as $itemtype) {
+            $options = [];
+            $group = '';
+            foreach (SearchOption::getOptionsForItemtype($itemtype, true, false) as $key => $val) {
+                if (!is_array($val)) {
+                    $group = $val;
+                    continue;
+                }
+                if (count($val) === 1) {
+                    $group = $val['name'];
+                    continue;
+                }
+                if (isset($val['nodisplay']) && $val['nodisplay']) {
+                    continue;
+                }
+                $options[$group][$key] = $val['name'];
+            }
+            $itemtypes_data[] = [
+                'key'     => $itemtype,
+                'label'   => $itemtype::getTypeName(Session::getPluralNumber()),
+                'options' => $options,
+            ];
+        }
+
+        TemplateRenderer::getInstance()->display('pages/admin/profile/search_list.html.twig', [
+            'item'           => $this,
+            'itemtypes_data' => $itemtypes_data,
         ]);
     }
 
@@ -1874,6 +1985,20 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         ];
 
         $tab[] = [
+            'id'                 => '178',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => Enclosure::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => Enclosure::class,
+            'rightname'          => Enclosure::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => Enclosure::$rightname],
+            ],
+        ];
+
+        $tab[] = [
             'id'                 => '147',
             'table'              => 'glpi_profilerights',
             'field'              => 'rights',
@@ -2193,20 +2318,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'joinparams'         => [
                 'jointype'           => 'child',
                 'condition'          => ['NEWTABLE.name' => ITILCategory::$rightname],
-            ],
-        ];
-
-        $tab[] = [
-            'id'                 => '165',
-            'table'              => 'glpi_profilerights',
-            'field'              => 'rights',
-            'name'               => KnowbaseItemCategory::getTypeName(Session::getPluralNumber()),
-            'datatype'           => 'right',
-            'rightclass'         => KnowbaseItemCategory::class,
-            'rightname'          => KnowbaseItemCategory::$rightname,
-            'joinparams'         => [
-                'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => KnowbaseItemCategory::$rightname],
             ],
         ];
 
@@ -3865,5 +3976,11 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     public function getTilesConfigInformationText(): ?string
     {
         return __("Users with this profile will see the tiles below if defined, overriding the one found in the entities configuration.");
+    }
+
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
     }
 }

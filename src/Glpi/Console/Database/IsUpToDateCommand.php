@@ -42,7 +42,7 @@ use Update;
 
 final class IsUpToDateCommand extends AbstractCommand
 {
-    protected $requires_db_up_to_date = false;
+    protected bool $requires_db_up_to_date = false;
 
     protected function configure()
     {

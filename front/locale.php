@@ -37,15 +37,15 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Application\Environment;
 use Glpi\Error\ErrorHandler;
+use Glpi\Locale\LanguageRegistry;
 use Laminas\I18n\Translator\TextDomain;
-use Laminas\I18n\Translator\Translator;
 
 use function Safe\fopen;
 use function Safe\json_encode;
 use function Safe\preg_match;
 use function Safe\preg_replace;
 
-global $CFG_GLPI, $TRANSLATE;
+global $TRANSLATE;
 
 header("Content-Type: application/json; charset=UTF-8");
 
@@ -59,11 +59,11 @@ if ($is_cacheable) {
 }
 
 $requested_language = $_GET['lang'];
-if (!isset($CFG_GLPI['languages'][$requested_language])) {
+if (!LanguageRegistry::has($requested_language)) {
     // Fallback to default language if requested one is not available
     $requested_language = Session::getPreferredLanguage();
 }
-$requested_language_file = $CFG_GLPI['languages'][$requested_language][1];
+$requested_language_file = LanguageRegistry::get($requested_language)->mo_file;
 
 // Default response to send if locales cannot be loaded.
 // Prevent JS error for plugins that does not provide any translation files

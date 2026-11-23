@@ -36,12 +36,16 @@ namespace tests\units;
 
 use Computer;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\FormBuilder;
+use Glpi\Tests\FormTesterTrait;
 use Item_Ticket;
 use Ticket;
 use TicketCost;
 
 class TicketCostTest extends DbTestCase
 {
+    use FormTesterTrait;
+
     private function getNewTicket()
     {
         return $this->createItem(Ticket::class, [
@@ -213,5 +217,26 @@ class TicketCostTest extends DbTestCase
         );
         $computer->getFromDB($computer->getID());
         $this->assertSame(100., floatval($computer->fields['ticket_tco']));
+    }
+
+    public function testAddItemWithoutTcoField(): void
+    {
+        global $DB;
+
+        $form = $this->createForm(new FormBuilder());
+        $DB->update($form->getTable(), ['date_mod' => '2020-01-01 00:00:00'], ['id' => $form->getID()]);
+
+        $ticket = $this->getNewTicket();
+        $this->getNewItemTicket(
+            [
+                'tickets_id' => $ticket->getID(),
+                'itemtype' => $form::class,
+                'items_id' => $form->getID(),
+            ]
+        );
+
+        // Items without a ticket_tco field must not be updated
+        $form->getFromDB($form->getID());
+        $this->assertSame('2020-01-01 00:00:00', $form->fields['date_mod']);
     }
 }

@@ -39,6 +39,7 @@ use AbstractRightsDropdown;
 use Dropdown;
 use Group;
 use Override;
+use Session;
 use Supplier;
 use User;
 
@@ -56,9 +57,9 @@ final class FormActorsDropdown extends AbstractRightsDropdown
     protected static function getTypes(array $options = []): array
     {
         $allowed_types = [
-            User::getType(),
-            Group::getType(),
-            Supplier::getType(),
+            User::class,
+            Group::class,
+            Supplier::class,
         ];
 
         if (isset($options['allowed_types'])) {
@@ -81,23 +82,32 @@ final class FormActorsDropdown extends AbstractRightsDropdown
                     (data.itemtype && data.itemtype === 'User')
                     || (data.id && data.id.startsWith('users_id-'))
                 ) {
-                    icon = '<i class="ti ti-user mx-1" title="' + title + '"></i>';
+                    icon = '<i class="ti ti-user mx-1" title="' + title + '" aria-hidden="true"></i>';
                 } else if (
                     (data.itemtype && data.itemtype === 'Group')
                     || (data.id && data.id.startsWith('groups_id-'))
                 ) {
-                    icon = '<i class="ti ti-users mx-1" title="' + title + '"></i>';
+                    icon = '<i class="ti ti-users mx-1" title="' + title + '" aria-hidden="true"></i>';
                 } else if (
                     (data.itemtype && data.itemtype === 'Supplier')
                     || (data.id && data.id.startsWith('suppliers_id-'))
                 ) {
-                    icon = '<i class="ti ti-package mx-1" title="' + title + '"></i>';
+                    icon = '<i class="ti ti-package mx-1" title="' + title + '" aria-hidden="true"></i>';
                 }
 
                 return $('<span class="actor_entry">' + icon + text + '</span>');
             }
         JS;
         $params['templateResult'] = $params['templateSelection'];
+
+        $params['_idor_token'] = Session::getNewIDORToken(
+            self::class,
+            [
+                'allowed_types'    => $params['allowed_types'] ?? [],
+                'right_for_users'  => $params['right_for_users'] ?? 'all',
+                'group_conditions' => $params['group_conditions'] ?? [],
+            ],
+        );
 
         return parent::show($name, $values, $params);
     }
@@ -149,18 +159,18 @@ final class FormActorsDropdown extends AbstractRightsDropdown
         $possible_rights = [];
 
         // Add users if enabled
-        if (self::isTypeEnabled(User::getType(), $options)) {
-            $possible_rights[User::getType()] = self::getUsers($text, $options);
+        if (self::isTypeEnabled(User::class, $options)) {
+            $possible_rights[User::class] = self::getUsers($text, $options);
         }
 
         // Add groups if enabled
-        if (self::isTypeEnabled(Group::getType(), $options)) {
-            $possible_rights[Group::getType()] = self::getGroups($text, $options);
+        if (self::isTypeEnabled(Group::class, $options)) {
+            $possible_rights[Group::class] = self::getGroups($text, $options);
         }
 
         // Add suppliers if enabled
-        if (self::isTypeEnabled(Supplier::getType(), $options)) {
-            $possible_rights[Supplier::getType()] = self::getSuppliers($text, $options);
+        if (self::isTypeEnabled(Supplier::class, $options)) {
+            $possible_rights[Supplier::class] = self::getSuppliers($text, $options);
         }
 
         $results = [];

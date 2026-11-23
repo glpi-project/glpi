@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryAliasInterface;
+use Glpi\DBAL\QueryElementInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
@@ -47,31 +49,27 @@ class DBmysqlIterator implements SeekableIterator, Countable
 {
     /**
      * DBmysql object
-     * @var ?DBmysql
      */
-    private $conn;
+    private ?DBmysql $conn = null;
     // Current SQL query
-    /** @var ?string */
-    private $sql;
+    private ?string $sql = null;
+    /** @var array<int, mixed> */
+    private array $values = [];
     // Current result
-    /** @var mysqli_result|bool  */
-    private $res = false;
+    private mysqli_result|bool $res = false;
 
     /**
      * Total number of rows.
-     * @var int
      */
-    private $count;
+    private int $count;
 
     /**
      * Current row value.
-     * @var mixed
      */
-    private $row;
+    private mixed $row = null;
 
     /**
      * Current pointer position.
-     * @var ?int
      */
     private ?int $position = null;
 
@@ -97,6 +95,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
         '|',
         'IN',
         'NOT IN',
+        'BETWEEN',
     ];
 
     /**
@@ -112,6 +111,30 @@ class DBmysqlIterator implements SeekableIterator, Countable
     }
 
     /**
+     * Only the built query state is serializable.
+     * Database connection, result, and so on cannot (and must not) be
+     * serialized
+     *
+     * @return array<string, mixed>
+     */
+    public function __serialize(): array
+    {
+        return [
+            'sql'    => $this->sql,
+            'values' => $this->values,
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->sql    = $data['sql'] ?? null;
+        $this->values = $data['values'] ?? [];
+    }
+
+    /**
      * Executes the query
      *
      * @param array<string, mixed> $criteria Query criteria
@@ -120,12 +143,16 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @since 11.0.0 The `$debug` parameter has been removed.
      */
-    public function execute($criteria): self
+    public function execute(array $criteria): self
     {
-        $criteria = $this->convertOldRequestArgsToCriteria(func_get_args(), __METHOD__);
-
+        $this->values = []; //reset values
         $this->buildQuery($criteria);
-        $this->res = $this->conn ? $this->conn->doQuery($this->sql) : false;
+        $this->res = false;
+        if ($this->conn) {
+            $stmt = $this->conn->prepare($this->sql ?? '');
+            $this->conn->executeStatement($stmt, $this->values);
+            $this->res = $this->conn->getStatementResult($stmt);
+        }
         $this->count = $this->res instanceof mysqli_result ? $this->conn->numrows($this->res) : 0;
         $this->setPosition(0);
         return $this;
@@ -140,10 +167,9 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @since 11.0.0 The `$log` parameter has been removed.
      */
-    public function buildQuery($criteria): void
+    public function buildQuery(array $criteria): void
     {
-        $criteria = $this->convertOldRequestArgsToCriteria(func_get_args(), __METHOD__);
-
+        $this->sql = null;
         $this->res = false;
 
         $table = $criteria['FROM'] ?? null;
@@ -279,8 +305,11 @@ class DBmysqlIterator implements SeekableIterator, Countable
             if ($table instanceof AbstractQuery) {
                 $query = $table;
                 $table = $query->getQuery();
-            } elseif ($table instanceof QueryExpression) {
-                $table = $table->getValue();
+                $this->values = array_merge($this->values, $query->getParams());
+            } elseif ($table instanceof QueryElementInterface) {
+                $query = $table;
+                $table = $query->getValue();
+                $this->values = array_merge($this->values, $query->getParams());
             } else {
                 $table = DBmysql::quoteName($table);
             }
@@ -314,14 +343,12 @@ class DBmysqlIterator implements SeekableIterator, Countable
         // GROUP BY field list
         if (is_array($groupby)) {
             if (count($groupby)) {
-                $groupby = array_map([DBmysql::class, 'quoteName'], $groupby);
-                $this->sql .= ' GROUP BY ' . implode(", ", $groupby);
+                $this->sql .= ' GROUP BY ' . implode(", ", $this->handleGroupByFields($groupby));
             } else {
                 throw new LogicException("Missing group by field.");
             }
         } elseif ($groupby) {
-            $groupby = DBmysql::quoteName($groupby);
-            $this->sql .= " GROUP BY $groupby";
+            $this->sql .= " GROUP BY " . implode(", ", $this->handleGroupByFields([$groupby]));
         }
 
         // HAVING criteria list
@@ -339,9 +366,33 @@ class DBmysqlIterator implements SeekableIterator, Countable
     }
 
     /**
+     * Handle "GROUP BY" fields
+     *
+     * @param array<int, string|QueryExpression> $fields
+     *
+     * @return array<int, string>
+     */
+    private function handleGroupByFields(array $fields): array
+    {
+        $groupby = [];
+        foreach ($fields as $field) {
+            if ($field instanceof QueryElementInterface) {
+                if ($field instanceof QueryAliasInterface) {
+                    $field->withAlias(false);
+                }
+                $this->values = array_merge($this->values, $field->getParams());
+                $groupby[] = $field->getValue();
+            } else {
+                $groupby[] = DBmysql::quoteName($field);
+            }
+        }
+        return $groupby;
+    }
+
+    /**
      * Handle "ORDER BY" SQL clause
      *
-     * @param string|QueryExpression|array<int, string|QueryExpression> $clause Clause parameters
+     * @param string|QueryElementInterface|array<int, string|QueryElementInterface> $clause Clause parameters
      *
      * @return string
      */
@@ -353,7 +404,9 @@ class DBmysqlIterator implements SeekableIterator, Countable
 
         $cleanorderby = [];
         foreach ($clause as $o) {
-            if (is_string($o)) {
+            if (is_string($o) && str_contains($o, ',')) {
+                Toolbox::deprecated('Using comma separated list of fields is deprecated in ORDER BY clause.');
+
                 $fields = explode(',', $o);
                 foreach ($fields as $field) {
                     $new = '';
@@ -365,8 +418,17 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     }
                     $cleanorderby[] = $new;
                 }
-            } elseif ($o instanceof QueryExpression) {
+            } elseif (is_string($o)) {
+                $parts = explode(' ', trim($o));
+                $name = trim($parts[0]);
+                $direction = trim($parts[1] ?? '');
+
+                $cleanorderby[] = DBmysql::quoteName($name)
+                    . (in_array($direction, ['ASC', 'DESC']) ? ' ' . $direction : '');
+
+            } elseif ($o instanceof QueryElementInterface) {
                 $cleanorderby[] = $o->getValue();
+                $this->values = array_merge($this->values, $o->getParams());
             } else {
                 throw new LogicException("Invalid order clause.");
             }
@@ -399,12 +461,12 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Handle fields
      *
-     * @param int|string                                    $t Table name or function
-     * @param string[]|string|QueryExpression|AbstractQuery $f Field(s) name(s)
+     * @param int|string                            $t Table name or function
+     * @param string[]|string|QueryElementInterface $f Field(s) name(s)
      *
      * @return string
      */
-    private function handleFields(int|string $t, array|string|QueryExpression|AbstractQuery $f): string
+    private function handleFields(int|string $t, array|string|QueryElementInterface $f): string
     {
         if (is_numeric($t)) {
             if (is_array($f)) {
@@ -412,8 +474,10 @@ class DBmysqlIterator implements SeekableIterator, Countable
             }
 
             if ($f instanceof AbstractQuery) {
+                $this->values = array_merge($this->values, $f->getParams());
                 return $f->getQuery();
-            } elseif ($f instanceof QueryExpression) {
+            } elseif ($f instanceof QueryElementInterface) {
+                $this->values = array_merge($this->values, $f->getParams());
                 return $f->getValue();
             } else {
                 return DBmysql::quoteName($f);
@@ -494,6 +558,14 @@ class DBmysqlIterator implements SeekableIterator, Countable
     }
 
     /**
+     * @return array<int, mixed>
+     */
+    public function getValues(): array
+    {
+        return $this->values;
+    }
+
+    /**
      * Destructor
      *
      * @return void
@@ -508,41 +580,13 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Generate the SQL statement for a array of criteria
      *
-     * @param array<int|string,mixed>|string $crit Criteria
+     * @param array<int|string,mixed> $crit Criteria
      * @param string $bool Boolean operator (default AND)
      *
      * @return string
      */
-    public function analyseCrit($crit, $bool = "AND")
+    public function analyseCrit(array $crit, $bool = "AND")
     {
-        if (is_string($crit)) {
-            Toolbox::deprecated(
-                sprintf(
-                    'Passing SQL request criteria as strings is deprecated for security reasons. Criteria was `` %s ``.',
-                    $crit
-                ),
-                version: '11.1'
-            );
-
-            /**
-             * Delegate the safeness check to the caller.
-             * There is no such usage in GLPI, it is the plugin developer responsibility to switch to safer criteria specs.
-             * @psalm-taint-escape sql
-             */
-            $safe_crit = $crit;
-
-            return $safe_crit;
-        }
-
-        if (!is_array($crit)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Invalid criteria type. Expected `array`, `%s` received.',
-                    get_debug_type($crit)
-                )
-            );
-        }
-
         $ret = "";
         foreach ($crit as $name => $value) {
             if (!empty($ret)) {
@@ -550,19 +594,9 @@ class DBmysqlIterator implements SeekableIterator, Countable
             }
             if (is_numeric($name)) {
                 // no key and direct expression
-                if ($value instanceof QueryExpression) {
+                if ($value instanceof QueryElementInterface) {
+                    $this->values = array_merge($this->values, $value->getParams());
                     $ret .= $value->getValue();
-                } elseif ($value instanceof QuerySubQuery) {
-                    $ret .= $value->getQuery();
-                } elseif (in_array($value, [1, 0, '1', '0', true, false], true)) {
-                    Toolbox::deprecated(
-                        sprintf(
-                            'Passing SQL request criteria as booleans is deprecated. Please use `new \Glpi\DBAL\QueryExpression("%s");`.',
-                            $value ? 'true' : 'false'
-                        ),
-                        version: '11.1'
-                    );
-                    $ret .= $value ? 'true' : 'false';
                 } else {
                     // No Key case => recurse.
                     $ret .= "(" . $this->analyseCrit($value) . ")";
@@ -637,7 +671,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @param mixed $value The value to handle. This may be:
      *                      - an instance of AbstractQuery
-     *                      - a QueryExpression
+     *                      - a QueryExpression, a QueryIdentifier or any other query element
      *                      - a value quoted as a name in the db engine
      *                      - a QueryParam
      *                      - a value or an array of values
@@ -646,30 +680,37 @@ class DBmysqlIterator implements SeekableIterator, Countable
      */
     private function getCriterionValue($value): string
     {
-        return match (true) {
-            $value instanceof AbstractQuery => $value->getQuery(),
-            $value instanceof QueryExpression => $value->getValue(),
-            $value instanceof QueryParam => $value->getValue(),
-            default => $this->analyseCriterionValue($value)
-        };
+        switch (true) {
+            case $value instanceof AbstractQuery:
+                $this->values = array_merge($this->values, $value->getParams());
+                return $value->getQuery();
+            case $value instanceof QueryElementInterface:
+                $this->values = array_merge($this->values, $value->getParams());
+                return $value->getValue();
+            case $value instanceof QueryParam:
+                return $value->getValue();
+            default:
+                return $this->analyseCriterionValue($value);
+        }
     }
 
     /**
      * @param mixed $value
      *
-     * @return mixed
+     * @return string
      */
     private function analyseCriterionValue($value)
     {
-        $crit_value = null;
         if (is_array($value)) {
-            $values = [];
+            $crit_value = '(' . str_repeat('?, ', count($value) - 1) . '?)';
             foreach ($value as $v) {
-                $values[] = DBmysql::quoteValue($v);
+                if (!($v instanceof QueryParam)) {
+                    $this->values[] = $v;
+                }
             }
-            $crit_value = '(' . implode(', ', $values) . ')';
         } else {
-            $crit_value = DBmysql::quoteValue($value);
+            $crit_value = '?';
+            $this->values[] = $value;
         }
         return $crit_value;
     }
@@ -704,6 +745,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 // QueryExpression support, can be removed once Search::getDefaultJoin no longer returns raw SQL
                 if ($jointablecrit instanceof QueryExpression) {
                     $query .= $jointablecrit->getValue();
+                    $this->values = array_merge($this->values, $jointablecrit->getParams());
                     continue;
                 }
 
@@ -716,6 +758,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 }
 
                 if ($jointablekey instanceof QuerySubQuery) {
+                    $this->values = array_merge($this->values, $jointablekey->getParams());
                     $jointablekey = $jointablekey->getQuery();
                 } else {
                     $jointablekey = DBmysql::quoteName($jointablekey);
@@ -741,15 +784,21 @@ class DBmysqlIterator implements SeekableIterator, Countable
             if (count($values) == 2) {
                 $t1 = $keys[0];
                 $f1 = $values[$t1];
-                $left_value = $f1 instanceof QuerySubQuery || $f1 instanceof QueryExpression
+                $left_value = $f1 instanceof QueryElementInterface
                     ? (string) $f1
                     : (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1));
+                if ($f1 instanceof QueryElementInterface) {
+                    $this->values = array_merge($this->values, $f1->getParams());
+                }
 
                 $t2 = $keys[1];
                 $f2 = $values[$t2];
-                $right_value = $f2 instanceof QuerySubQuery || $f2 instanceof QueryExpression
+                $right_value = $f2 instanceof QueryElementInterface
                     ? (string) $f2
                     : (is_numeric($t2) ? DBmysql::quoteName($f2) : DBmysql::quoteName($t2) . '.' . DBmysql::quoteName($f2));
+                if ($f2 instanceof QueryElementInterface) {
+                    $this->values = array_merge($this->values, $f2->getParams());
+                }
 
                 return $left_value . ' = ' . $right_value;
             } elseif (count($values) == 3) {
@@ -774,7 +823,8 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 }
                 return $fkey;
             }
-        } elseif ($values instanceof QueryExpression) {
+        } elseif ($values instanceof QueryElementInterface) {
+            $this->values = array_merge($this->values, $values->getParams());
             return $values->getValue();
         }
         throw new LogicException('BAD FOREIGN KEY, should be [ table1 => key1, table2 => key2 ] or [ table1 => key1, table2 => key2, [criteria]].');
@@ -917,44 +967,5 @@ class DBmysqlIterator implements SeekableIterator, Countable
     public function fetchFields(): array
     {
         return $this->res->fetch_fields();
-    }
-
-    /**
-     * Convert arguments used for `DBmysql::request()`, `DBmysqlIterator::buildQuery()` and `DBmysqlIterator::execute()` methods
-     * from old signature to new signature.
-     * For security reasons, an exception is thrown whenever the arguments contains a direct raw query.
-     *
-     * @param array<int, mixed> $args
-     * @return array<string, mixed>
-     */
-    private function convertOldRequestArgsToCriteria(array $args, string $method): array
-    {
-        if (is_string($args[0]) && str_contains($args[0], " ")) {
-            $names = preg_split('/\s+AS\s+/i', $args[0]);
-            if (isset($names[1]) && strpos($names[1], ' ') || !isset($names[1]) || strpos($names[0], ' ')) {
-                throw new InvalidArgumentException(
-                    sprintf('Building and executing raw queries with the `%s()` method is prohibited.', $method)
-                );
-            }
-        }
-
-        if (is_array($args[0])) {
-            // The new signature ($criteria, $debug = false) is already used
-            $criteria = $args[0];
-        } else {
-            // The old signature ($tableorsql, $crit = "", $debug = false) is still used
-            Toolbox::deprecated(
-                sprintf('The `%s()` method signature changed. Its previous signature is deprecated.', $method)
-            );
-            $criteria = $args[1] ?? [];
-            if (is_string($criteria)) {
-                $criteria = $criteria !== ''
-                    ? ['WHERE' => [new QueryExpression($criteria)]]
-                    : [];
-            }
-            $criteria['FROM'] = $args[0];
-        }
-
-        return $criteria;
     }
 }

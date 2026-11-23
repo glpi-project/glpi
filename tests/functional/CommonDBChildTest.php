@@ -37,17 +37,112 @@ namespace tests\units;
 use CommonDBChild;
 use Computer;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
+use PHPUnit\Framework\Attributes\Group;
 
 class CommonDBChildTest extends DbTestCase
 {
+    use ReAuthTrait;
+
+    public function tearDown(): void
+    {
+        $this->restoreWebContext();
+        parent::tearDown();
+    }
+
+    /**
+     * No core CommonDBChild flags itself as requiring re-authentication, so this
+     * uses a stub to prove the new can(..., &$reauth_needed) signature is inherited
+     * from CommonDBTM through the CommonDBChild/CommonDBConnexity hierarchy and that
+     * the reauth flag is correctly produced. Exercises the new-item CREATE path
+     * (no DB load needed).
+     */
+    #[Group('reauth')]
+    public function testCanProducesReauthFlagThroughChildHierarchy(): void
+    {
+        // --- arrange ---
+        $this->login();
+        $this->fakeWebContext();
+        $instance = $this->getFakeCommonDBChild(true);
+
+        // --- act + assert : not re-authenticated → can() returns false and sets reauth_needed ---
+        $this->setReauthenticated(false);
+        $reauth_needed = null;
+        $input = [];
+        $this->assertFalse($instance->can(-1, CREATE, $input, $reauth_needed));
+        $this->assertTrue($reauth_needed);
+
+        // --- act + assert : re-authenticated → can() returns true and clears reauth_needed ---
+        $this->setReauthenticated(true);
+        $reauth_needed = null;
+        $input = [];
+        $this->assertTrue($instance->can(-1, CREATE, $input, $reauth_needed));
+        $this->assertFalse($reauth_needed);
+    }
+
+    #[Group('reauth')]
+    public function testCanWithoutCreateRightDoesNotRequireReauth(): void
+    {
+        // --- arrange ---
+        $this->login();
+        $this->fakeWebContext();
+        $this->setReauthenticated(false);
+        $instance = $this->getFakeCommonDBChild(false);
+
+        // --- act + assert ---
+        $reauth_needed = null;
+        $input = [];
+        $this->assertFalse($instance->can(-1, CREATE, $input, $reauth_needed));
+        $this->assertFalse($reauth_needed);
+    }
+
+    /** Creates an anonymous CommonDBChild stub; $rights_granted controls whether static can*() methods return true. */
+    private function getFakeCommonDBChild(bool $rights_granted): CommonDBChild
+    {
+        return new class ($rights_granted) extends CommonDBChild {
+            public static string $itemtype = Computer::class;
+            public static string $items_id = 'computers_id';
+            public static bool $allowed = true;
+
+            public function __construct(bool $allowed = true)
+            {
+                self::$allowed = $allowed;
+            }
+
+            public static function canCreate(): bool
+            {
+                return self::$allowed;
+            }
+
+            // No real parent item in this stub : keep the item-level check trivially true.
+            public function canCreateItem(): bool
+            {
+                return true;
+            }
+
+            #[\Override]
+            public static function itemTypeRequiresReauthentication(): bool
+            {
+                return true;
+            }
+
+            // Avoid any DB access when can() initializes a new item.
+            public function getEmpty()
+            {
+                $this->fields = ['id' => 0];
+                return true;
+            }
+        };
+    }
+
     public function testPrepareInputForAddWithMandatoryFkeyRelation(): void
     {
         $instance = new class extends CommonDBChild {
-            public static $itemtype = Computer::class;
-            public static $items_id = 'computers_id';
-            public static $mustBeAttached = true;
+            public static string $itemtype = Computer::class;
+            public static string $items_id = 'computers_id';
+            public static bool $mustBeAttached = true;
 
-            public static $disableAutoEntityForwarding = true; // prevent DB accesses
+            public static bool $disableAutoEntityForwarding = true; // prevent DB accesses
         };
 
         $this->assertFalse($instance->prepareInputForAdd(['foo' => 'bar']));
@@ -66,11 +161,11 @@ class CommonDBChildTest extends DbTestCase
     public function testPrepareInputForAddWithOptionalFkeyRelation(): void
     {
         $instance = new class extends CommonDBChild {
-            public static $itemtype = Computer::class;
-            public static $items_id = 'computers_id';
-            public static $mustBeAttached = false;
+            public static string $itemtype = Computer::class;
+            public static string $items_id = 'computers_id';
+            public static bool $mustBeAttached = false;
 
-            public static $disableAutoEntityForwarding = true; // prevent DB accesses
+            public static bool $disableAutoEntityForwarding = true; // prevent DB accesses
         };
 
         $this->assertEquals(
@@ -92,11 +187,11 @@ class CommonDBChildTest extends DbTestCase
     public function testPrepareInputForAddWithMandatoryPolymorphicRelation(): void
     {
         $instance = new class extends CommonDBChild {
-            public static $itemtype = 'itemtype';
-            public static $items_id = 'items_id';
-            public static $mustBeAttached = true;
+            public static string $itemtype = 'itemtype';
+            public static string $items_id = 'items_id';
+            public static bool $mustBeAttached = true;
 
-            public static $disableAutoEntityForwarding = true; // prevent DB accesses
+            public static bool $disableAutoEntityForwarding = true; // prevent DB accesses
         };
 
         $this->assertFalse($instance->prepareInputForAdd(['foo' => 'bar']));
@@ -121,11 +216,11 @@ class CommonDBChildTest extends DbTestCase
     public function testPrepareInputForAddWithOptionalPolymorphicRelation(): void
     {
         $instance = new class extends CommonDBChild {
-            public static $itemtype = 'itemtype';
-            public static $items_id = 'items_id';
-            public static $mustBeAttached = false;
+            public static string $itemtype = 'itemtype';
+            public static string $items_id = 'items_id';
+            public static bool $mustBeAttached = false;
 
-            public static $disableAutoEntityForwarding = true; // prevent DB accesses
+            public static bool $disableAutoEntityForwarding = true; // prevent DB accesses
         };
 
         $this->assertEquals(

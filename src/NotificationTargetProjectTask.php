@@ -50,6 +50,8 @@ class NotificationTargetProjectTask extends NotificationTarget
         $events = ['new'               => __('New project task'),
             'update'            => __('Update of a project task'),
             'delete'            => __('Deletion of a project task'),
+            'planningrecall'    => _n('Planning reminder', 'Planning reminders', 0),
+            'assign'            => __('Assignment of a project task'),
         ];
         asort($events);
         return $events;
@@ -68,6 +70,10 @@ class NotificationTargetProjectTask extends NotificationTarget
         );
         $this->addTarget(Notification::TEAM_CONTACT, __('Contact of project team'));
         $this->addTarget(Notification::TEAM_SUPPLIER, __('Supplier of project team'));
+
+        if ($event === 'assign') {
+            $this->addTarget(Notification::NEW_TEAM_MEMBER, __('New project task team member'));
+        }
     }
 
     #[Override]
@@ -106,6 +112,11 @@ class NotificationTargetProjectTask extends NotificationTarget
                     case Notification::TEAM_SUPPLIER:
                         $this->addTeamSuppliers();
                         break;
+
+                        // Send to the member just added to the project task team
+                    case Notification::NEW_TEAM_MEMBER:
+                        $this->addNewTeamMember($options);
+                        break;
                 }
         }
     }
@@ -131,8 +142,9 @@ class NotificationTargetProjectTask extends NotificationTarget
         $user = new User();
         foreach ($iterator as $data) {
             if ($user->getFromDB($data['items_id'])) {
-                $this->addToRecipientsList(['language' => $user->getField('language'),
-                    'users_id' => $user->getField('id'),
+                $this->addToRecipientsList([
+                    'language' => $user->fields['language'],
+                    'users_id' => $user->getID(),
                 ]);
             }
         }
@@ -249,6 +261,64 @@ class NotificationTargetProjectTask extends NotificationTarget
         }
     }
 
+    /**
+     * Add the member just added to the project task team to the notified user list
+     *
+     * @param array<string, mixed> $options Options passed to the event (team_member_itemtype, team_member_items_id)
+     *
+     * @return void
+     **/
+    public function addNewTeamMember(array $options)
+    {
+        global $CFG_GLPI;
+
+        $member = $this->getNewTeamMember($options);
+
+        if ($member instanceof User) {
+            $this->addToRecipientsList([
+                'language' => $member->fields['language'],
+                'users_id' => $member->getID(),
+            ]);
+        } elseif ($member instanceof Group) {
+            $this->addForGroup(0, $member->getID());
+        } elseif ($member instanceof Contact || $member instanceof Supplier) {
+            $this->addToRecipientsList([
+                'email'    => $member->fields['email'],
+                'name'     => $member->getName(),
+                'language' => $CFG_GLPI['language'],
+                'usertype' => NotificationTarget::ANONYMOUS_USER,
+            ]);
+        }
+    }
+
+    /**
+     * Get the member just added to the project task team, from the event options
+     *
+     * @param array<string, mixed> $options Options passed to the event (team_member_itemtype, team_member_items_id)
+     *
+     * @return CommonDBTM|null
+     **/
+    private function getNewTeamMember(array $options): ?CommonDBTM
+    {
+        $itemtype = $options['team_member_itemtype'] ?? null;
+        $items_id = (int) ($options['team_member_items_id'] ?? 0);
+
+        if (
+            !is_string($itemtype)
+            || !in_array($itemtype, ProjectTaskTeam::$available_types, true)
+            || $items_id <= 0
+        ) {
+            return null;
+        }
+
+        $member = getItemForItemtype($itemtype);
+        if (!$member instanceof CommonDBTM || !$member->getFromDB($items_id)) {
+            return null;
+        }
+
+        return $member;
+    }
+
     #[Override]
     public function addDataForTemplate($event, $options = [])
     {
@@ -263,47 +333,81 @@ class NotificationTargetProjectTask extends NotificationTarget
         $this->data['##projecttask.url##']
                   = $this->formatURL(
                       $options['additionnaloption']['usertype'],
-                      "ProjectTask_" . $item->getField("id")
+                      "ProjectTask_" . $item->getID()
                   );
         $this->data["##projecttask.name##"]
                   = $item->getField('name');
-        $this->data["##projecttask.project##"]
-                  = Dropdown::getDropdownName('glpi_projects', $item->getField('projects_id'));
-        $this->data["##projecttask.projecturl##"]
+
+        // Project (parent) infos
+        $project = new Project();
+        $projects_id = $item->fields['projects_id'] ?? 0;
+
+        if ($project->getFromDB($projects_id)) {
+            $this->data["##projecttask.project##"]
+                  = Dropdown::getDropdownName('glpi_projects', $projects_id);
+
+            $this->data["##projecttask.projecturl##"]
                   = $this->formatURL(
                       $options['additionnaloption']['usertype'],
-                      "Project_" . $item->getField("projects_id")
+                      "Project_" . $projects_id
                   );
+
+            $this->data["##projecttask.projectcode##"]        = (string) ($project->fields['code'] ?? '');
+            $this->data["##projecttask.projectdescription##"] = (string) ($project->fields['content'] ?? '');
+            $this->data["##projecttask.projectcomments##"]    = (string) ($project->fields['comment'] ?? '');
+            $this->data["##projecttask.projectplanstartdate##"] = Html::convDateTime($project->fields['plan_start_date'] ?? '') ?? '';
+            $this->data["##projecttask.projectplanenddate##"]   = Html::convDateTime($project->fields['plan_end_date'] ?? '') ?? '';
+            $this->data["##projecttask.projectrealstartdate##"] = Html::convDateTime($project->fields['real_start_date'] ?? '') ?? '';
+            $this->data["##projecttask.projectrealenddate##"]   = Html::convDateTime($project->fields['real_end_date'] ?? '') ?? '';
+
+            if (isset($project->fields['projectstates_id'])) {
+                $this->data["##projecttask.projectstate##"] = Dropdown::getDropdownName(
+                    'glpi_projectstates',
+                    $project->fields['projectstates_id']
+                );
+            }
+            if (isset($project->fields['projecttypes_id'])) {
+                $this->data["##projecttask.projecttype##"] = Dropdown::getDropdownName(
+                    'glpi_projecttypes',
+                    $project->fields['projecttypes_id']
+                );
+            }
+
+            if (isset($project->fields['priority'])) {
+                $this->data["##projecttask.projectpriority##"] = CommonITILObject::getPriorityName($project->fields['priority']);
+            }
+        }
+
         $this->data["##projecttask.description##"]
                   = $item->getField('content');
         $this->data["##projecttask.comments##"]
                   = $item->getField('comment');
         $this->data["##projecttask.creationdate##"]
-                  = Html::convDateTime($item->getField('date_creation'));
+                  = Html::convDateTime($item->fields['date_creation']);
         $this->data["##projecttask.lastupdatedate##"]
-                  = Html::convDateTime($item->getField('date_mod'));
+                  = Html::convDateTime($item->fields['date_mod']);
         $this->data["##projecttask.percent##"]
-                  = Dropdown::getValueWithUnit($item->getField('percent_done'), "%");
+                  = Dropdown::getValueWithUnit($item->fields['percent_done'], "%");
         $this->data["##projecttask.planstartdate##"]
-                  = Html::convDateTime($item->getField('plan_start_date'));
+                  = Html::convDateTime($item->fields['plan_start_date']);
         $this->data["##projecttask.planenddate##"]
-                  = Html::convDateTime($item->getField('plan_end_date'));
+                  = Html::convDateTime($item->fields['plan_end_date']);
         $this->data["##projecttask.realstartdate##"]
-                  = Html::convDateTime($item->getField('real_start_date'));
+                  = Html::convDateTime($item->fields['real_start_date']);
         $this->data["##projecttask.realenddate##"]
-                  = Html::convDateTime($item->getField('real_end_date'));
+                  = Html::convDateTime($item->fields['real_end_date']);
 
         $this->data["##projecttask.plannedduration##"]
-                  = Html::timestampToString($item->getField('planned_duration'), false);
+                  = Html::timestampToString($item->fields['planned_duration'], false);
         $this->data["##projecttask.effectiveduration##"]
-                  = Html::timestampToString($item->getField('effective_duration'), false);
+                  = Html::timestampToString($item->fields['effective_duration'], false);
         $ticket_duration
                   = ProjectTask_Ticket::getTicketsTotalActionTime($item->getID());
         $this->data["##projecttask.ticketsduration##"]
                   = Html::timestampToString($ticket_duration, false);
         $this->data["##projecttask.totalduration##"]
                   = Html::timestampToString(
-                      $ticket_duration + $item->getField('effective_duration'),
+                      $ticket_duration + $item->fields['effective_duration'],
                       false
                   );
 
@@ -316,41 +420,41 @@ class NotificationTargetProjectTask extends NotificationTarget
         }
 
         $this->data["##projecttask.father##"] = '';
-        if ($item->getField('projecttasks_id')) {
+        if ($item->fields['projecttasks_id']) {
             $this->data["##projecttask.father##"]
                               = Dropdown::getDropdownName(
                                   'glpi_projecttasks',
-                                  $item->getField('projecttasks_id')
+                                  $item->fields['projecttasks_id']
                               );
         }
 
         $this->data["##projecttask.state##"] = '';
-        if ($item->getField('projectstates_id')) {
+        if ($item->fields['projectstates_id']) {
             $this->data["##projecttask.state##"]
                               = Dropdown::getDropdownName(
                                   'glpi_projectstates',
-                                  $item->getField('projectstates_id')
+                                  $item->fields['projectstates_id']
                               );
         }
 
         $this->data["##projecttask.type##"] = '';
-        if ($item->getField('projecttasktypes_id')) {
+        if ($item->fields['projecttasktypes_id']) {
             $this->data["##projecttask.type##"]
                               = Dropdown::getDropdownName(
                                   'glpi_projecttasktypes',
-                                  $item->getField('projecttasktypes_id')
+                                  $item->fields['projecttasktypes_id']
                               );
         }
 
         $this->data["##projecttask.createbyuser##"] = '';
-        if ($item->getField('users_id')) {
+        if ($item->fields['users_id']) {
             $user_tmp = new User();
-            $user_tmp->getFromDB($item->getField('users_id'));
+            $user_tmp->getFromDB($item->fields['users_id']);
             $this->data["##projecttask.createbyuser##"] = $user_tmp->getName();
         }
 
         // Team infos
-        $restrict = ['projecttasks_id' => $item->getField('id')];
+        $restrict = ['projecttasks_id' => $item->getID()];
         $items    = getAllDataFromTable('glpi_projecttaskteams', $restrict);
 
         $this->data['teammembers'] = [];
@@ -368,6 +472,15 @@ class NotificationTargetProjectTask extends NotificationTarget
         }
 
         $this->data['##projecttask.numberofteammembers##'] = (string) count($this->data['teammembers']);
+
+        // New team member infos (assign event)
+        $this->data['##newteammember.name##']     = '';
+        $this->data['##newteammember.itemtype##'] = '';
+        $new_member = $this->getNewTeamMember($options);
+        if ($new_member !== null) {
+            $this->data['##newteammember.name##']     = $new_member->getName();
+            $this->data['##newteammember.itemtype##'] = $new_member->getTypeName(1);
+        }
 
         // Task infos
         $tasks                = getAllDataFromTable(
@@ -512,7 +625,7 @@ class NotificationTargetProjectTask extends NotificationTarget
         $this->data["##projecttask.urldocument##"]
                      = $this->formatURL(
                          $options['additionnaloption']['usertype'],
-                         "ProjectTask_" . $item->getField("id") . '_Document_Item$1'
+                         "ProjectTask_" . $item->getID() . '_Document_Item$1'
                      );
 
         $this->data["##projecttask.numberofdocuments##"] = (string) count($this->data['documents']);
@@ -619,6 +732,17 @@ class NotificationTargetProjectTask extends NotificationTarget
                 __('Description')
             ),
             'projecttask.projecturl'  => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('URL')),
+            'projecttask.projectcode'            => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Code')),
+            'projecttask.projectdescription'     => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Description')),
+            'projecttask.projectcomments'        => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), _n('Comment', 'Comments', Session::getPluralNumber())),
+            'projecttask.projectpriority'        => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Priority')),
+            'projecttask.projectstate'           => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), _x('item', 'State')),
+            'projecttask.projecttype'            => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), _n('Type', 'Types', 1)),
+            'projecttask.projectplanstartdate'   => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Planned start date')),
+            'projecttask.projectplanenddate'     => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Planned end date')),
+            'projecttask.projectrealstartdate'   => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Real start date')),
+            'projecttask.projectrealenddate'     => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Real end date')),
+
             'document.url'            => sprintf(
                 __('%1$s: %2$s'),
                 Document::getTypeName(1),
@@ -673,6 +797,16 @@ class NotificationTargetProjectTask extends NotificationTarget
             'teammember.itemtype'    => sprintf(
                 __('%1$s: %2$s'),
                 _n('Team member', 'Team members', 1),
+                _n('Type', 'Types', 1)
+            ),
+            'newteammember.name'     => sprintf(
+                __('%1$s: %2$s'),
+                __('New team member'),
+                __('Name')
+            ),
+            'newteammember.itemtype' => sprintf(
+                __('%1$s: %2$s'),
+                __('New team member'),
                 _n('Type', 'Types', 1)
             ),
         ];

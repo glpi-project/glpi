@@ -51,35 +51,32 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 {
     use State;
 
-    public static $itemtype_1            = 'itemtype';
-    public static $items_id_1            = 'items_id';
-    public static $mustBeAttached_1      = false;
-    public static $take_entity_1         = false;
-    // static public $checkItem_1_Rights    = self::DONT_CHECK_ITEM_RIGHTS;
+    public static ?string $itemtype_1            = 'itemtype';
+    public static ?string $items_id_1            = 'items_id';
+    public static bool $mustBeAttached_1      = false;
+    public static bool $take_entity_1         = false;
 
-    protected static $notable            = true;
+    protected static bool $notable            = true;
 
-    public static $logs_for_item_2       = false;
-    public static $take_entity_2         = true;
+    public static bool $logs_for_item_2       = false;
+    public static bool $take_entity_2         = true;
 
-    public static $log_history_1_add     = Log::HISTORY_ADD_DEVICE;
-    public static $log_history_1_update  = Log::HISTORY_UPDATE_DEVICE;
-    public static $log_history_1_delete  = Log::HISTORY_DELETE_DEVICE;
-    public static $log_history_1_lock    = Log::HISTORY_LOCK_DEVICE;
-    public static $log_history_1_unlock  = Log::HISTORY_UNLOCK_DEVICE;
+    public static int $log_history_1_add     = Log::HISTORY_ADD_DEVICE;
+    public static int $log_history_1_update  = Log::HISTORY_UPDATE_DEVICE;
+    public static int $log_history_1_delete  = Log::HISTORY_DELETE_DEVICE;
+    public static int $log_history_1_lock    = Log::HISTORY_LOCK_DEVICE;
+    public static int $log_history_1_unlock  = Log::HISTORY_UNLOCK_DEVICE;
 
     // This var is defined by CommonDBRelation ...
-    public $no_form_page                 = false;
+    public bool $no_form_page                 = false;
 
-    public $dohistory = true;
+    public bool $dohistory = true;
 
-    protected static $forward_entity_to  = ['Infocom'];
+    protected static array $forward_entity_to  = ['Infocom'];
 
-    public static $undisclosedFields      = [];
+    public static array $undisclosedFields      = [];
 
-    public static $mustBeAttached_2 = false; // Mandatory to display creation form
-
-    public static $rightname = 'device';
+    public static string $rightname = 'device';
 
     public function getCloneRelations(): array
     {
@@ -490,10 +487,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     {
         global $CFG_GLPI;
 
-        if (!in_array($itemtype, $CFG_GLPI['itemdevices_types'], true)) {
-            // Itemtype does not support devices.
-            return [];
-        }
+        $supports_devices = in_array($itemtype, $CFG_GLPI['itemdevices_types'], true);
 
         $result = [];
 
@@ -503,7 +497,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
             if (
                 in_array($itemtype, $item_device_affinities, true)
-                || in_array('*', $item_device_affinities, true)
+                || ($supports_devices && in_array('*', $item_device_affinities, true))
             ) {
                 $result[] = $item_device_class;
             }
@@ -528,7 +522,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
         $conf_param = str_replace('_', '', strtolower(static::class)) . '_types';
         if (isset($CFG_GLPI[$conf_param]) && !in_array('*', $CFG_GLPI[$conf_param])) {
-            $itemtypes = array_intersect($itemtypes, $CFG_GLPI[$conf_param]);
+            $itemtypes = $CFG_GLPI[$conf_param];
         }
 
         return $itemtypes;
@@ -601,13 +595,14 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         /** @var CommonDBTM $item */
         if ($item->canView()) {
             $nb = 0;
-            if (in_array($item->getType(), self::getConcernedItems())) {
+            $affinities = self::getItemAffinities($item::class);
+            if ($affinities !== []) {
                 if ($_SESSION['glpishow_count_on_tabs']) {
-                    foreach (self::getItemAffinities($item->getType()) as $link_type) {
+                    foreach ($affinities as $link_type) {
                         $nb   += countElementsInTable(
                             $link_type::getTable(),
                             ['items_id'   => $item->getID(),
-                                'itemtype'   => $item->getType(),
+                                'itemtype'   => $item::class,
                                 'is_deleted' => 0,
                             ]
                         );
@@ -616,12 +611,12 @@ class Item_Devices extends CommonDBRelation implements StateInterface
                 return self::createTabEntry(
                     _n('Component', 'Components', Session::getPluralNumber()),
                     $nb,
-                    $item::getType()
+                    $item::class
                 );
             }
             if ($item instanceof CommonDevice) {
                 if ($_SESSION['glpishow_count_on_tabs']) {
-                    $deviceClass     = $item->getType();
+                    $deviceClass     = $item::class;
                     $linkClass       = $deviceClass::getItem_DeviceType();
                     $table           = $linkClass::getTable();
                     $foreignkeyField = $deviceClass::getForeignKeyField();
@@ -632,7 +627,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
                         ]
                     );
                 }
-                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
+                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::class);
             }
         }
         return '';
@@ -666,14 +661,14 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
         $canedit = (($withtemplate != 2)
                   && $item->canEdit($ID)
-                  && Session::haveRightsOr('device', [UPDATE, PURGE]));
+                  && Session::haveRightsOr(self::$rightname, [UPDATE, PURGE]));
         echo "<div class='spaced table-responsive'>";
         $rand = mt_rand();
         if ($canedit) {
             echo "<form id='form_device_add$rand' name='form_device_add$rand'
                   action='" . htmlescape(Toolbox::getItemTypeFormURL(self::class)) . "' method='post'>";
             echo "<input type='hidden' name='items_id' value='$ID'>";
-            echo "<input type='hidden' name='itemtype' value='" . htmlescape($item->getType()) . "'>";
+            echo "<input type='hidden' name='itemtype' value='" . htmlescape($item::class) . "'>";
         }
 
         $table = new HTMLTableMain();
@@ -724,7 +719,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
         if ($is_device) {
             Session::initNavigateListItems(
-                static::getType(),
+                static::class,
                 sprintf(
                     __('%1$s = %2$s'),
                     $item->getTypeName(1),
@@ -748,7 +743,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             }
         } else {
             $devtypes = [];
-            foreach (self::getItemAffinities($item->getType()) as $link_type) {
+            foreach (self::getItemAffinities($item::class) as $link_type) {
                 $devtypes [] = $link_type::getDeviceType();
                 $link        = getItemForItemtype($link_type);
 
@@ -791,7 +786,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
                 ]);
             }
             echo "</td><td>";
-            echo "<button type='submit' class='btn btn-primary' name='add'><i class='ti ti-link'></i><span>" . _sx('button', 'Add') . "</span></button>";
+            echo "<button type='submit' class='btn btn-primary' name='add'><i class='ti ti-link' aria-hidden='true'></i><span>" . _sx('button', 'Add') . "</span></button>";
             echo "</td></tr></table>";
             Html::closeForm();
         }
@@ -800,7 +795,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             echo "<form id='form_device_action$rand' name='form_device_action$rand'
                   action='" . htmlescape(Toolbox::getItemTypeFormURL(self::class)) . "' method='post'>";
             echo "<input type='hidden' name='items_id' value='$ID'>";
-            echo "<input type='hidden' name='itemtype' value='" . htmlescape($item->getType()) . "'>";
+            echo "<input type='hidden' name='itemtype' value='" . htmlescape($item::class) . "'>";
         }
 
         $table->display(['display_super_for_each_group' => false,
@@ -808,7 +803,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         ]);
 
         if ($canedit) {
-            echo "<button type='submit' class='btn btn-primary' name='updateall'><i class='ti ti-device-floppy'></i><span>"
+            echo "<button type='submit' class='btn btn-primary' name='updateall'><i class='ti ti-device-floppy' aria-hidden='true'></i><span>"
                 . _sx('button', 'Save') . "</span></button>";
 
             Html::closeForm();
@@ -876,7 +871,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             $fk = static::getDeviceForeignKey();
 
             $criteria['WHERE'] = [
-                'itemtype'     => $item->getType(),
+                'itemtype'     => $item::class,
                 'items_id'     => $item->getID(),
                 'is_deleted'   => 0,
             ];
@@ -962,13 +957,22 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             );
 
             $peer_type::getHTMLTableHeader(
-                $item->getType(),
+                $item::class,
                 $table_group,
                 $common_column,
                 null,
                 $options
             );
         }
+
+        $has_firmware = !$is_device && in_array(
+            Item_DeviceFirmware::class,
+            self::getItemAffinities(static::class),
+            true
+        );
+        $firmware_column = $has_firmware && $table_group instanceof HTMLTableGroup
+            ? $table_group->addHeader('firmware', _sn('Firmware', 'Firmware', 1), $common_column)
+            : null;
 
         $specificity_columns = [];
         $link_column         = $table_group->addHeader('spec_link', '', $specific_column);
@@ -1035,13 +1039,47 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             $peer = null;
         }
 
-        $iterator = $DB->request($criteria);
+        $links = iterator_to_array($DB->request($criteria), false);
+        $firmwares_by_item = [];
+        if ($firmware_column !== null && $links !== []) {
+            $item_firmware_table = Item_DeviceFirmware::getTable();
+            $firmware_table = DeviceFirmware::getTable();
+            $firmware_iterator = $DB->request([
+                'SELECT' => [
+                    "$item_firmware_table.items_id AS item_device_id",
+                    "$firmware_table.*",
+                ],
+                'FROM' => $item_firmware_table,
+                'INNER JOIN' => [
+                    $firmware_table => [
+                        'FKEY' => [
+                            $item_firmware_table => 'devicefirmwares_id',
+                            $firmware_table      => 'id',
+                        ],
+                    ],
+                ],
+                'WHERE' => [
+                    "$item_firmware_table.itemtype"   => static::class,
+                    "$item_firmware_table.items_id"   => array_column($links, 'id'),
+                    "$item_firmware_table.is_deleted" => 0,
+                ],
+            ]);
+            foreach ($firmware_iterator as $firmware_data) {
+                $item_device_id = $firmware_data['item_device_id'];
+                unset($firmware_data['item_device_id']);
+
+                $firmware = new DeviceFirmware();
+                $firmware->getFromResultSet($firmware_data);
+                $firmwares_by_item[$item_device_id][] = $firmware;
+            }
+        }
+
         // Will be loaded only if/when data is needed from the device model
         $device_type = static::getDeviceType();
         /** @var CommonDevice $device */
         $device = getItemForItemtype($device_type);
-        foreach ($iterator as $link) {
-            Session::addToNavigateListItems(static::getType(), $link["id"]);
+        foreach ($links as $link) {
+            Session::addToNavigateListItems(static::class, $link["id"]);
             $this->getFromDB($link['id']);
             $current_row  = $table_group->createRow();
             if ((is_null($peer)) || ($link[$fk] != $peer->getID())) {
@@ -1072,7 +1110,24 @@ class Item_Devices extends CommonDBRelation implements StateInterface
                 }
             }
 
-            if (Session::haveRight('device', UPDATE)) {
+            if ($firmware_column !== null) {
+                $firmware_versions = [];
+                foreach ($firmwares_by_item[$link['id']] ?? [] as $firmware) {
+                    $version = $firmware->fields['version'] ?: $firmware->getName();
+                    if ($firmware->can($firmware->getID(), READ)) {
+                        $firmware_versions[] = sprintf(
+                            '<a href="%s">%s</a>',
+                            htmlescape($firmware->getLinkURL()),
+                            htmlescape($version)
+                        );
+                    } else {
+                        $firmware_versions[] = htmlescape($version);
+                    }
+                }
+                $current_row->addCell($firmware_column, implode('<br>', $firmware_versions));
+            }
+
+            if (Session::haveRight(self::$rightname, UPDATE)) {
                 $mode = __s('Update');
             } else {
                 $mode = _sn('View', 'Views', 1);
@@ -1132,12 +1187,12 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             }
 
             if (
-                countElementsInTable('glpi_infocoms', ['itemtype' => $this->getType(),
+                countElementsInTable('glpi_infocoms', ['itemtype' => static::class,
                     'items_id' => $link['id'],
                 ])
             ) {
                 $content = [['function'   => 'Infocom::showDisplayLink',
-                    'parameters' => [$this->getType(), $link['id']],
+                    'parameters' => [static::class, $link['id']],
                 ],
                 ];
             } else {
@@ -1153,7 +1208,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
                 'WHERE'  => [
                     'OR' => [
                         [
-                            'itemtype'  => $this->getType(),
+                            'itemtype'  => static::class,
                             'items_id'  => $link['id'],
                         ],
                         [
@@ -1185,7 +1240,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
             if ($options['canedit']) {
                 $cell_value = Html::getMassiveActionCheckBox(
-                    $this->getType(),
+                    static::class,
                     $link['id'],
                     ['massive_tags' => $group_checkbox_tag]
                 );
@@ -1487,8 +1542,21 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         $this->addStandardTab(Lock::class, $ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
         $this->addStandardTab(Contract_Item::class, $ong, $options);
+        if (self::getItemAffinities(static::class) !== []) {
+            $this->addStandardTab(self::class, $ong, $options);
+        }
 
         return $ong;
+    }
+
+    public function cleanDBonPurge()
+    {
+        $items_id = $this->getID();
+        if ($items_id > 0) {
+            self::cleanItemDeviceDBOnItemDelete(static::class, $items_id, false);
+        }
+
+        parent::cleanDBonPurge();
     }
 
     public function showForm($ID, array $options = [])
@@ -1497,7 +1565,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             $this->check($ID, READ);
         } else {
             // Create item
-            $this->check(-1, CREATE);
+            $this->checkGlobal(CREATE);
         }
 
         $item1   = $this->getOnePeer(0);
@@ -1531,7 +1599,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             $specificities['label'] = $attributs['long name'];
             $specificities['protected'] = isset($attributs['protected']) && $attributs['protected'];
 
-            if (isset($attributs['tooltip']) && (string) $attributs['tooltip'] !== '') {
+            if (isset($attributs['tooltip']) && ((string) $attributs['tooltip']) !== '') {
                 $tooltip = $attributs['tooltip'];
             } else {
                 $tooltip = null;
@@ -1563,7 +1631,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             $specificities_fields[] = $specificities;
         }
 
-        $options['canedit'] =  Session::haveRight('device', UPDATE);
+        $options['canedit'] =  Session::haveRight(self::$rightname, UPDATE);
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('components/form/item_device.html.twig', [
             'item'                   => $this,

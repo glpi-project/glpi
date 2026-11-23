@@ -129,6 +129,7 @@ class FormTest extends DbTestCase
                 'root_items_id'        => 0,
                 'subtree_depth'        => 0,
                 'selectable_tree_root' => true,
+                'is_multiple_items'    => false,
             ],
             QuestionTypeItemDropdown::class => [
                 'itemtype'             => 'Location',
@@ -136,6 +137,7 @@ class FormTest extends DbTestCase
                 'root_items_id'        => 0,
                 'subtree_depth'        => 0,
                 'selectable_tree_root' => true,
+                'is_multiple_items'    => false,
             ],
         ];
 

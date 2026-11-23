@@ -122,6 +122,7 @@ if (isset($_POST["add"])) {
                 break;
         }
         if (!is_null($item)) {
+            $item->check(-1, CREATE, $_POST);
             $item->add($_POST);
             Event::log(
                 $_POST["rssfeeds_id"],

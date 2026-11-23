@@ -50,19 +50,19 @@ class NotificationTemplate extends CommonDBTM
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     /**
      * @var string Signature to add to the template
      */
-    public $signature = '';
+    public string $signature = '';
 
     /**
      * @var array<string, array{subject: string, content_html:string, content_text:string}> Store templates for each language
      */
-    public $templates_by_languages = [];
+    public array $templates_by_languages = [];
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     #[Override]
     public function getCloneRelations(): array
@@ -512,8 +512,8 @@ class NotificationTemplate extends CommonDBTM
                             $condition_value = __($condition_value);
                         }
 
-                        // Compare data value and condition value
-                        $condition_ok = $condition_value == $data_value;
+                        $condition_ok = html_entity_decode($condition_value, ENT_QUOTES)
+                            == html_entity_decode($data_value, ENT_QUOTES);
                     }
                 }
 
@@ -606,7 +606,7 @@ class NotificationTemplate extends CommonDBTM
         $iterator = $DB->request([
             'FROM'   => 'glpi_notificationtemplatetranslations',
             'WHERE'  => [
-                'notificationtemplates_id' => $this->getField('id'),
+                'notificationtemplates_id' => $this->getID(),
                 'language'                 => [$language, ''],
             ],
             'ORDER'  => 'language DESC',
@@ -649,9 +649,7 @@ class NotificationTemplate extends CommonDBTM
         $mailing_options['subject']      = $template_data['subject'];
         $mailing_options['content_html'] = $template_data['content_html'];
         $mailing_options['content_text'] = $template_data['content_text'];
-        $mailing_options['items_id']     = method_exists($target->obj, "getField")
-         ? $target->obj->getField('id')
-         : 0;
+        $mailing_options['items_id']     = $target->obj instanceof CommonDBTM ? $target->obj->getID() : 0;
         if (property_exists($target->obj, 'documents') && isset($target->obj->documents)) {
             $mailing_options['documents'] = $target->obj->documents;
         }

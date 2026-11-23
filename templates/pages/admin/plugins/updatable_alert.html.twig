@@ -32,7 +32,7 @@
 
 {% if count > 0 %}
     <div class="alert alert-important alert-warning d-flex" role="alert">
-        <i class="ti ti-alert-triangle fs-2x me-3"></i>
+        <i class="ti ti-alert-triangle fs-2x me-3" aria-hidden="true"></i>
         <div>
             {{ _n('You have %d plugin to update', 'You have %d plugins to update', count)|format(count) }}
         </div>

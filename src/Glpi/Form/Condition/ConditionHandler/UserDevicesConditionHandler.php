@@ -35,6 +35,7 @@
 namespace Glpi\Form\Condition\ConditionHandler;
 
 use CommonDBTM;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Override;
@@ -86,6 +87,7 @@ final class UserDevicesConditionHandler implements ConditionHandlerInterface
         mixed $a,
         ValueOperator $operator,
         mixed $b,
+        ?JsonFieldInterface $config,
     ): bool {
         if ($this->is_multiple_devices) {
             return $this->applyMultipleDevicesValueOperator($a, $operator, $b);

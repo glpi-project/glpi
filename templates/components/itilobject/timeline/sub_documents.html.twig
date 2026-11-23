@@ -52,7 +52,7 @@
          {% if document['_is_image'] %}
             {% set imgs = imgs|merge([{
                'title': '',
-               'thumbnail_src': docpath ~ '&context=timeline',
+               'thumbnail_src': docpath,
                'thumbnail_w': 'auto',
                'thumbnail_h': 'auto',
                'src': docpath,
@@ -71,6 +71,8 @@
             {% set imgs = imgs|merge([{
                'title': '',
                '_video': true,
+               'type': 'html',
+               'src': docpath,
                'html': video_html,
                'img_class': 'shadow',
                'gallery_item_class': 'list-group-item border-0 d-flex',

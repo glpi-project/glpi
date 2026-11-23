@@ -48,8 +48,8 @@ use function Safe\json_decode;
  */
 final class CriteriaFilter extends CommonDBChild
 {
-    public static $itemtype = "itemtype";
-    public static $items_id = "items_id";
+    public static string $itemtype = "itemtype";
+    public static string $items_id = "items_id";
 
     public static function getTypeName($nb = 0)
     {
@@ -78,7 +78,7 @@ final class CriteriaFilter extends CommonDBChild
         return self::createTabEntry(
             self::getTypeName($nb),
             $nb,
-            $item::getType(),
+            $item::class,
             'ti ti-adjustments-horizontal'
         );
     }
@@ -97,7 +97,7 @@ final class CriteriaFilter extends CommonDBChild
         $filter = self::getForItem($item);
         $itemtype = $item->getItemtypeToFilter();
         $criteria = $filter ? $filter->fields['search_criteria'] : self::getDefaultSearch($itemtype);
-        $can_edit = $item->canUpdateItem();
+        $can_edit = $item->can($item->getID(), UPDATE);
 
         // Force criteria into session
         // Even when specifying the criteria in $params, they are not taken into
@@ -117,7 +117,7 @@ final class CriteriaFilter extends CommonDBChild
             'actionvalue'             => __("Preview results"),
             'extra_actions_templates' => [
                 "components/search/criteria_filter_actions.html.twig" => [
-                    'itemtype'    => $item->getType(),
+                    'itemtype'    => $item::class,
                     'items_id'    => $item->getID(),
                     'show_save'   => $can_edit,
                     'show_delete' => $can_edit && !is_null($filter),
@@ -169,7 +169,7 @@ final class CriteriaFilter extends CommonDBChild
     {
         $filter = new self();
         $filter_exist = $filter->getFromDBByCrit([
-            'itemtype' => $item->getType(),
+            'itemtype' => $item::class,
             'items_id' => $item->getID(),
         ]);
 

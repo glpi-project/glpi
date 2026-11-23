@@ -41,7 +41,7 @@ use function Safe\mktime;
 
 Html::header(__('Statistics'), '', "helpdesk", "stat");
 
-Session::checkRight("statistic", READ);
+Session::checkRight(Stat::$rightname, READ);
 
 if (isset($_GET["date1"])) {
     $_POST["date1"] = $_GET["date1"];

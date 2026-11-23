@@ -45,6 +45,7 @@ use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportData;
+use Glpi\Form\QuestionType\PredefinedValueValidationInterface;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\QuestionType\TranslationAwareQuestionType;
@@ -73,10 +74,10 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     public const TRANSLATION_KEY_DESCRIPTION   = 'question_description';
     public const TRANSLATION_KEY_DEFAULT_VALUE = 'question_default_value';
 
-    public static $itemtype = Section::class;
-    public static $items_id = 'forms_sections_id';
+    public static string $itemtype = Section::class;
+    public static string $items_id = 'forms_sections_id';
 
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     private ?Section $section = null;
 
@@ -150,7 +151,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     #[Override]
     public function listTranslationsHandlers(): array
     {
-        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $key = sprintf('%s_%d', self::class, $this->getID());
         $category_name = sprintf('%s: %s', self::getTypeName(), $this->getName());
         $handlers = [];
         $handlers[$key][] = new TranslationHandler(
@@ -298,9 +299,19 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
             $type = $this->getQuestionType();
             $value = $type->formatPredefinedValue($get[$uuid]);
 
-            if ($value !== null) {
-                $this->fields['default_value'] = $value;
+            if ($value === null) {
+                return;
             }
+
+            // Discard values that can not be applied to this specific question
+            if (
+                $type instanceof PredefinedValueValidationInterface
+                && !$type->isValidPredefinedValue($value, $this)
+            ) {
+                return;
+            }
+
+            $this->fields['default_value'] = $value;
         }
     }
 
@@ -454,9 +465,9 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         // Report logs to the parent form
         Log::history(
             $form->getID(),
-            $form->getType(),
+            $form::class,
             $changes,
-            $this->getType(),
+            self::class,
             static::$log_history_add
         );
 
@@ -493,9 +504,9 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
 
             Log::history(
                 $form->getID(),
-                $form->getType(),
+                $form::class,
                 $changes,
-                $this->getType(),
+                self::class,
                 static::$log_history_update
             );
         }
@@ -523,9 +534,9 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
 
         Log::history(
             $form->getID(),
-            $form->getType(),
+            $form::class,
             $changes,
-            $this->getType(),
+            self::class,
             static::$log_history_delete
         );
 

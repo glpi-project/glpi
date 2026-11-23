@@ -40,7 +40,8 @@
                         "root_items_id": "0",
                         "subtree_depth": "0",
                         "selectable_tree_root": "0",
-                        "itemtype": "Computer"
+                        "itemtype": "Computer",
+                        "is_multiple_items": false
                     },
                     "section_id": 1,
                     "visibility_strategy": "always_visible",

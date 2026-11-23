@@ -62,11 +62,7 @@
     {{ fields.textareaField('comment', item.fields['comment'], __('Comments')) }}
 
     {% set status_field %}
-        {% if item.fields['have_error'] and item.fields['url'] is not url_safe %}
-            {{ __('URL "%s" is not allowed by your administrator.')|format(item.fields['url']) }}
-        {% else %}
-            {{ item.fields['have_error'] ? __('Yes') : __('No') }}
-        {% endif %}
+        {{ item.fields['have_error'] ? __('Yes') : __('No') }}
     {% endset %}
     {{ fields.htmlField('', status_field|e('html'), __('Error retrieving RSS feed')) }}
 {% endblock %}

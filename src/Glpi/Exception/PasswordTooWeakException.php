@@ -39,8 +39,7 @@ use Exception;
 
 class PasswordTooWeakException extends Exception
 {
-    /** @var array */
-    private $messages = [];
+    private array $messages = [];
 
     /**
      * @param string $message

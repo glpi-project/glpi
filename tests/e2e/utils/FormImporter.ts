@@ -34,22 +34,19 @@ import { APIRequestContext } from "@playwright/test";
 import { readFileSync } from "fs";
 import path from "path";
 import { getWorkerEntityId } from "./WorkerEntities";
-import { CsrfFetcher } from "./CsrfFetcher";
 import { JSDOM } from 'jsdom';
 import { ImportedFormInfo } from "./ImportedFormInfo";
 
 export class FormImporter
 {
     private request: APIRequestContext;
-    private csrf: CsrfFetcher;
 
-    public constructor(request: APIRequestContext, csrf: CsrfFetcher)
+    public constructor(request: APIRequestContext)
     {
         this.request = request;
-        this.csrf = csrf;
     }
 
-    public async importForm(filename: string): Promise<ImportedFormInfo>
+    public async importForm(filename: string, entity_id: number|null = null): Promise<ImportedFormInfo>
     {
         const file_path = path.join(__dirname, `../../fixtures/forms/${filename}`);
 
@@ -61,11 +58,10 @@ export class FormImporter
                 json: readFileSync(file_path).toString(),
                 'replacements[0][itemtype]'      : "Entity",
                 'replacements[0][original_name]' : "Root entity",
-                'replacements[0][replacement_id]': getWorkerEntityId(),
+                'replacements[0][replacement_id]': entity_id ?? getWorkerEntityId(),
             },
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-Glpi-Csrf-Token': await this.csrf.get(),
             }
         });
 

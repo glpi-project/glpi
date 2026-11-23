@@ -65,24 +65,18 @@ use function Safe\json_decode;
  */
 class Dashboard extends CommonDBTM
 {
-    /** @var int */
-    protected $id      = 0;
-    /** @var string */
-    protected $key     = "";
-    /** @var string */
-    protected $title   = "";
-    /** @var bool */
-    protected $embed   = false;
+    protected int $id      = 0;
+    protected string $key     = "";
+    protected string $title   = "";
+    protected bool $embed   = false;
     /** @var ?array  */
-    protected $items   = null;
+    protected ?array $items   = null;
     /** @var ?array */
-    protected $rights  = null;
-    /** @var string */
-    protected $filters  = "";
+    protected ?array $rights  = null;
+    protected string $filters  = "";
 
-    /** @var array */
-    public static $all_dashboards = [];
-    public static $rightname = 'dashboard';
+    public static array $all_dashboards = [];
+    public static string $rightname = 'dashboard';
 
 
     public function __construct(string $dashboard_key = "")
@@ -532,6 +526,26 @@ class Dashboard extends CommonDBTM
         ];
     }
 
+    public function getKey(): string
+    {
+        return $this->key;
+    }
+
+    /**
+     * @param array<string, mixed> $items
+     */
+    public function setItems(array $items): void
+    {
+        $this->items = $items;
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $rights
+     */
+    public function setRights(array $rights): void
+    {
+        $this->rights = $rights;
+    }
 
     /**
      * Retrieve all dashboards and store them into a static var
@@ -558,7 +572,18 @@ class Dashboard extends CommonDBTM
                 $id  = $dashboard['id'];
 
                 $d_rights = array_filter($rights, static fn($right_line) => $right_line['dashboards_dashboards_id'] == $id);
+                $d_items = array_filter($items, static fn($i) => $i['dashboards_dashboards_id'] == $id);
+                $d_items = array_map(static function ($item) {
+                    $item['card_options'] = importArrayFromDB($item['card_options']);
+                    return $item;
+                }, $d_items);
+
+                // Load known data directly into the item properties to avoid
+                // an useless trip to the database
                 $dashboardItem = new self($key);
+                $dashboardItem->fields = $dashboard;
+                $dashboardItem->items  = $d_items;
+                $dashboardItem->rights = $d_rights;
                 if ($check_rights && !$dashboardItem->canViewCurrent()) {
                     continue;
                 }
@@ -566,7 +591,8 @@ class Dashboard extends CommonDBTM
 
                 $d_items = array_filter($items, static fn($item) => $item['dashboards_dashboards_id'] == $id);
                 $d_items = array_map(static function ($item) {
-                    $item['card_options'] = importArrayFromDB($item['card_options']);
+                    $options = importArrayFromDB($item['card_options']);
+                    $item['card_options'] = \is_array($options) ? Item::cleanCardOptions($options) : $options;
                     return $item;
                 }, $d_items);
                 $dashboard['items'] = $d_items;

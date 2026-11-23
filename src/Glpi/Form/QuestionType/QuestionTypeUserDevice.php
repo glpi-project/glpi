@@ -82,7 +82,7 @@ final class QuestionTypeUserDevice extends AbstractQuestionType implements
 
         try {
             /** @var ?QuestionTypeUserDevicesConfig $config */
-            $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+            $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'] ?? '', true) ?? []);
             if ($config === null) {
                 return false;
             }

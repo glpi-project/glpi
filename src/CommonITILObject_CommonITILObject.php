@@ -74,8 +74,12 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
         $links = static::getLinkedTo(static::$itemtype_1, $input[static::$items_id_1]);
         if (count($links)) {
             foreach ($links as $link) {
-                // Allow reclassifying LINK_TO as DUPLICATE_WITH, but otherwise, no duplicates allowed
-                if ($link['items_id'] === $input[static::$items_id_1] || $link['items_id'] === $input[static::$items_id_2]) {
+                // Allow reclassifying LINK_TO as DUPLICATE_WITH, but otherwise, no duplicates allowed.
+                // Compare both itemtype and items_id so that different itemtypes sharing the same id are not seen as duplicates.
+                if (
+                    ($link['itemtype'] === static::$itemtype_1 && $link['items_id'] === $input[static::$items_id_1])
+                    || ($link['itemtype'] === static::$itemtype_2 && $link['items_id'] === $input[static::$items_id_2])
+                ) {
                     if ((int) $link['link'] === self::LINK_TO && (int) $input['link'] === self::DUPLICATE_WITH) {
                         $link_item = getItemForItemtype($link['link_class']);
                         $link_item->delete(['id' => $link['id']]);
@@ -492,7 +496,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
             return htmlescape(NOT_AVAILABLE);
         }
 
-        $icon_tag = '<i class="fas %1$s me-1" title="%2$s" data-bs-toggle="tooltip"></i>%2$s';
+        $icon_tag = '<i class="fas %1$s me-1" title="%2$s" data-bs-toggle="tooltip" aria-hidden="true"></i>%2$s';
 
         $link_type = $link_types[$value];
         $resolved_value = $inverted && isset($link_type['inverse']) ? $link_types[$link_type['inverse']] : $link_type;

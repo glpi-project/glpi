@@ -44,8 +44,8 @@ Session::checkSeveralRightsOr(['notification' => READ,
 Html::header(_n('Notification', 'Notifications', Session::getPluralNumber()), '', "config", "notification");
 
 if (
-    !Session::haveRight("config", READ)
-    && Session::haveRight("notification", READ)
+    !Session::haveRight(Config::$rightname, READ)
+    && Session::haveRight(Notification::$rightname, READ)
 ) {
     Html::redirect($CFG_GLPI["root_doc"] . '/front/notification.php');
 }

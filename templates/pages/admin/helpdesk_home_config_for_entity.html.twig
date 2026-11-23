@@ -30,7 +30,6 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {% set is_root_entity = entity.getID() == 0 %}
@@ -171,13 +170,12 @@
                 name="update"
                 aria-label="{{ __("Save custom illustrations settings") }}"
             >
-                <i class="ti ti-upload me-2"></i>
+                <i class="ti ti-upload me-2" aria-hidden="true"></i>
                 {{ __("Save custom illustrations settings") }}
             </button>
         </div>
 
         <input type="hidden" name="id" value="{{ entity.getID() }}">
-        {{ fields.csrfField() }}
     </form>
 </div>
 
@@ -387,13 +385,12 @@
                 name="update"
                 aria-label="{{ __("Save general settings") }}"
             >
-                <i class="ti ti-upload me-2"></i>
+                <i class="ti ti-upload me-2" aria-hidden="true"></i>
                 {{ __("Save general settings") }}
             </button>
         </div>
 
         <input type="hidden" name="id" value="{{ entity.getID() }}">
-        {{ fields.csrfField() }}
 
     </form>
 </div>

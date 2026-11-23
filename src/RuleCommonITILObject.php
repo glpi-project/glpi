@@ -280,6 +280,9 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                             unset($output[$action->fields["field"] . '_notif']);
 
                             if ($action->fields["value"] === 'requester_manager') {
+                                if (!is_array($input['_users_id_requester'])) {
+                                    $input['_users_id_requester'] = [$input['_users_id_requester']];
+                                }
                                 foreach ($input['_users_id_requester'] as $user_id) {
                                     $user = new User();
                                     $user->getFromDB($user_id);
@@ -303,7 +306,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                             if (!array_key_exists("items_id", $output) || $output['items_id'] == '0') {
                                 $output["items_id"] = [];
                             }
-                            $output["items_id"][Appliance::getType()][] = $action->fields["value"];
+                            $output["items_id"][Appliance::class][] = $action->fields["value"];
                         }
 
                         // Remove values that may have been added by any "append" rule action on same actor field.
@@ -337,9 +340,9 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                             if (!array_key_exists("items_id", $output) || $output['items_id'] == '0') {
                                 $output["items_id"] = [];
                             }
-                            $output["items_id"][Appliance::getType()][] = $value;
-                        } else {
-                            $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
+                            $output["items_id"][Appliance::class][] = $value;
+                        } elseif (isset($actions[$action->fields["field"]]["appendto"])) {
+                            $output[ $actions[$action->fields["field"]]["appendto"] ] [] = $value;
                         }
 
                         // Special case of users_id_requester
@@ -360,6 +363,9 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                             )
                             && $action->fields["value"] === 'requester_manager'
                         ) {
+                            if (!is_array($input['_users_id_requester'])) {
+                                $input['_users_id_requester'] = [$input['_users_id_requester']];
+                            }
                             foreach ($input['_users_id_requester'] as $user_id) {
                                 $user = new User();
                                 $user->getFromDB($user_id);
@@ -433,6 +439,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                     case "affectbyip":
                     case "affectbyfqdn":
                     case "affectbymac":
+                    case "affectbyname":
                         if (!isset($output["entities_id"])) {
                             $output["entities_id"] = $params["entities_id"];
                         }
@@ -462,6 +469,13 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
 
                             case "affectbymac":
                                 $result = NetworkPortInstantiation::getUniqueItemByMac(
+                                    $regexvalue,
+                                    $output["entities_id"]
+                                );
+                                break;
+
+                            case "affectbyname":
+                                $result = self::getUniqueItemByName(
                                     $regexvalue,
                                     $output["entities_id"]
                                 );
@@ -606,7 +620,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                                 }
 
                                 foreach ($target_appliances as $value) {
-                                    $output["items_id"][Appliance::getType()][] = $value['id'];
+                                    $output["items_id"][Appliance::class][] = $value['id'];
                                 }
                             }
                         } elseif ($field == "itilcategories_id") {
@@ -966,9 +980,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         // assign an object
         $actions['affectobject']['name']                            = _n('Associated element', 'Associated elements', Session::getPluralNumber());
         $actions['affectobject']['type']                            = 'text';
-        $actions['affectobject']['force_actions']                   = ['affectbyip', 'affectbyfqdn',
-            'affectbymac',
-        ];
+        $actions['affectobject']['force_actions']                   = ['affectbyip', 'affectbyfqdn', 'affectbymac', 'affectbyname'];
 
         // assign an appliance
         $actions['assign_appliance']['name']                        = _n('Associated element', 'Associated elements', Session::getPluralNumber()) . " : " . Appliance::getTypeName(1);
@@ -1088,5 +1100,46 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
     {
         $itemtype = static::getItemtype();
         return $itemtype::getIcon();
+    }
+
+    /**
+     * Find the first non-deleted, non-template asset whose name matches $name
+     * within $entity, searching across all ticket-assignable item types.
+     *
+     * @param string $name   Asset name to look for
+     * @param int    $entity Entity ID to restrict the search
+     * @return array{id: int, itemtype: class-string}|array{} Empty array when nothing found
+     */
+    public static function getUniqueItemByName(string $name, int $entity): array
+    {
+        global $CFG_GLPI;
+
+        foreach ($CFG_GLPI['ticket_types'] as $itemtype) {
+            $item = getItemForItemtype($itemtype);
+            if (!$item) {
+                continue;
+            }
+
+            if (!$item->isField('name')) {
+                continue;
+            }
+
+            $criteria = ['name' => $name];
+            if ($item->isEntityAssign()) {
+                $criteria['entities_id'] = $entity;
+            }
+            if ($item->maybeDeleted()) {
+                $criteria['is_deleted'] = 0;
+            }
+            if ($item->maybeTemplate()) {
+                $criteria['is_template'] = 0;
+            }
+
+            foreach ($item->getSeveralFromDBByCrit($criteria, [], 1) as $first_item) {
+                return ['id' => $first_item->getID(), 'itemtype' => $itemtype];
+            }
+        }
+
+        return [];
     }
 }

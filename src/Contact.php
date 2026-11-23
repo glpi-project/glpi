@@ -49,10 +49,10 @@ class Contact extends CommonDBTM
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory           = true;
+    public bool $dohistory           = true;
 
-    public static $rightname           = 'contact_enterprise';
-    protected $usenotepad       = true;
+    public static string $rightname           = 'contact_enterprise';
+    protected bool $usenotepad       = true;
 
 
 
@@ -213,7 +213,7 @@ class Contact extends CommonDBTM
                      class="btn btn-icon btn-sm btn-ghost-secondary"
                      title="{$vcard_lbl}"
                      data-bs-toggle="tooltip" data-bs-placement="bottom">
-               <i class="ti ti-id fs-2"></i>
+               <i class="ti ti-id fs-2" aria-hidden="true"></i>
             </a>
 HTML;
             $toolbar[] = $vcard_btn;
@@ -229,7 +229,7 @@ HTML;
 
         if ($isadmin) {
             $actions['Contact_Supplier' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-               = "<i class='" . htmlescape(Supplier::getIcon()) . "'></i>" . _sx('button', 'Add a supplier');
+               = "<i class='" . htmlescape(Supplier::getIcon()) . "' aria-hidden='true'></i>" . _sx('button', 'Add a supplier');
         }
 
         return $actions;

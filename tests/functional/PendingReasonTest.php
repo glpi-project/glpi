@@ -39,15 +39,18 @@ use Change;
 use ChangeTask;
 use CommonITILObject;
 use Config;
+use Glpi\Debug\Profile;
 use Glpi\Tests\DbTestCase;
 use ITILFollowup;
 use ITILFollowupTemplate;
+use MassiveAction;
 use Notification;
 use Notification_NotificationTemplate;
 use NotificationTemplate;
 use NotificationTemplateTranslation;
 use PendingReason;
 use PendingReason_Item;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
 use ProblemTask;
@@ -498,6 +501,105 @@ class PendingReasonTest extends DbTestCase
         $this->assertFalse(PendingReason_Item::getForItem($item));
     }
 
+    #[DataProvider('itemtypeProvider')]
+    #[AllowMockObjectsWithoutExpectations()]
+    public function testPendingReasonKeptOnSolveOrCloseAndDeletedOnReopen($itemtype)
+    {
+        $this->login();
+
+        $item = new $itemtype();
+
+        $items_id = $item->add([
+            'name'        => 'test',
+            'content'     => 'test',
+            'status'      => CommonITILObject::WAITING,
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $this->assertGreaterThan(0, $items_id);
+
+        // Same scenario is expected whether the status change is done through
+        // a direct update() call or through a massive action.
+        foreach ([false, true] as $via_massive_action) {
+            //Covers all Resolve or close status for our current item.
+            foreach ([...$item->getClosedStatusArray(), ...$item->getSolvedStatusArray()] as $status) {
+                //Must start each loop on Waiting status.
+                if ($item->fields["status"] != CommonITILObject::WAITING) {
+                    $this->setItemStatus($item, $items_id, CommonITILObject::WAITING, false);
+                }
+
+                $this->assertTrue(PendingReason_Item::createForItem($item, []));
+
+                //Close/Resolve the item
+                $this->assertTrue(
+                    $this->setItemStatus($item, $items_id, $status, $via_massive_action),
+                    sprintf('Failed to set status to %d (via massive action: %s)', $status, $via_massive_action ? 'yes' : 'no')
+                );
+
+                $this->assertNotFalse(
+                    PendingReason_Item::getForItem($item),
+                    sprintf('PendingReason_Item should not be deleted when status changes to %d (via massive action: %s)', $status, $via_massive_action ? 'yes' : 'no')
+                );
+
+                // Reopen the item.
+                // INCOMING is used here (rather than ASSIGNED) because it is a valid
+                // status for all three itemtypes covered by this test: Change has no
+                // ASSIGNED status, which would make canMassiveAction() reject it.
+                $this->assertTrue(
+                    $this->setItemStatus($item, $items_id, CommonITILObject::INCOMING, $via_massive_action)
+                );
+                $this->assertFalse(PendingReason_Item::getForItem($item));
+            }
+        }
+    }
+
+    /**
+     * Change the status of an ITIL item, either through a direct update() call
+     * or through the same massive action process triggered from the item list.
+     */
+    private function setItemStatus(CommonITILObject $item, int $items_id, int $status, bool $via_massive_action): bool
+    {
+        if (!$via_massive_action) {
+            return (bool) $item->update([
+                'id'     => $items_id,
+                'status' => $status,
+            ]);
+        }
+
+        // canMassiveAction()/isAllowedStatus() reads the item's current status
+        // from $item->fields, so make sure it reflects the current DB state.
+        $this->assertTrue($item->getFromDB($items_id));
+
+        $success = false;
+        $post = [
+            'field'          => 'status',
+            'status'         => $status,
+            // '12' is the "Status" search option shared by all CommonITILObject itemtypes.
+            'search_options' => [$item->getType() => 12],
+        ];
+
+        $ma = $this->getMockBuilder(MassiveAction::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getAction', 'addMessage', 'getInput', 'itemDone'])
+            ->getMock();
+        $ma->POST = $post;
+        $ma->method('getAction')->willReturn('update');
+        $ma->method('addMessage')->willReturn(null);
+        $ma->method('getInput')->willReturn($post);
+        $ma->method('itemDone')->willReturnCallback(
+            function ($itemtype, $ids, $res) use (&$success) {
+                $success = ($res === MassiveAction::ACTION_OK);
+            }
+        );
+
+        MassiveAction::processMassiveActionsForOneItemtype($ma, $item, [$items_id]);
+
+        if ($success) {
+            $this->assertTrue($item->getFromDB($items_id));
+        }
+
+        return $success;
+    }
+
     public function testAddPendingFollowupOnAlreadyPending(): void
     {
         $this->login();
@@ -552,6 +654,58 @@ class PendingReasonTest extends DbTestCase
         ], ['pending']);
         $p_item = PendingReason_Item::getForItem($ticket);
         $this->assertFalse($p_item);
+    }
+
+    /**
+     * @param class-string<CommonITILObject> $itemtype
+     */
+    #[DataProvider('itemtypeProvider')]
+    public function testGetLastPendingTimelineItemDataForItem(string $itemtype): void
+    {
+        $this->login();
+
+        $pending_reason = getItemByTypeName(PendingReason::class, 'needupdate_pendingreason');
+        $task_class     = $itemtype::getTaskClass();
+        $this->assertNotNull($task_class);
+
+        $item       = $this->createItem($itemtype, ['name' => 'item', 'content' => 'item']);
+        $other_item = $this->createItem($itemtype, ['name' => 'other item', 'content' => 'other item']);
+
+        $followup_1 = $this->createItem(ITILFollowup::class, [
+            'itemtype' => $itemtype,
+            'items_id' => $item->getID(),
+            'content'  => 'first followup',
+        ]);
+        $task = $this->createItem($task_class, [
+            $itemtype::getForeignKeyField() => $item->getID(),
+            'content'                       => 'task',
+        ]);
+        $followup_2 = $this->createItem(ITILFollowup::class, [
+            'itemtype' => $itemtype,
+            'items_id' => $item->getID(),
+            'content'  => 'second followup',
+        ]);
+        $other_followup = $this->createItem(ITILFollowup::class, [
+            'itemtype' => $itemtype,
+            'items_id' => $other_item->getID(),
+            'content'  => 'followup of another item',
+        ]);
+
+        $this->assertFalse(PendingReason_Item::getLastPendingTimelineItemDataForItem($item));
+
+        // The last pending action is searched among both the followups and the tasks of the item,
+        // and pending actions of other items are ignored.
+        foreach ([$followup_1, $task, $followup_2, $other_followup] as $timeline_item) {
+            $this->assertTrue(PendingReason_Item::createForItem($timeline_item, [
+                'pendingreasons_id' => $pending_reason->getID(),
+            ]));
+
+            $expected = $timeline_item === $other_followup ? $followup_2 : $timeline_item;
+            $last_pending = PendingReason_Item::getLastPendingTimelineItemDataForItem($item);
+            $this->assertInstanceOf(PendingReason_Item::class, $last_pending);
+            $this->assertEquals($expected::class, $last_pending->fields['itemtype']);
+            $this->assertEquals($expected->getID(), $last_pending->fields['items_id']);
+        }
     }
 
     /**
@@ -1202,11 +1356,11 @@ class PendingReasonTest extends DbTestCase
             ],
             'expected' => [
                 'status'                      => CommonITILObject::SOLVED,
-                'pendingreasons_id'           => 0,
-                'followup_frequency'          => 0,
-                'followups_before_resolution' => 0,
-                'last_bump_date'              => $current_date,
-                'bump_count'                  => 3,
+                'pendingreasons_id'           => $pending_reason1->getID(),
+                'followup_frequency'          => $followup_frequency,
+                'followups_before_resolution' => 2,
+                'last_bump_date'              => $date_to_bump,
+                'bump_count'                  => 2,
             ],
         ];
     }
@@ -1263,14 +1417,88 @@ class PendingReasonTest extends DbTestCase
 
             $ticket_pending_data = PendingReason_Item::getForItem($ticket);
             $this->assertEquals($expected['status'], $ticket->fields['status']);
-            if ($ticket->fields['status'] == CommonITILObject::WAITING) {
-                $this->assertEquals($expected['pendingreasons_id'], $ticket_pending_data->fields['pendingreasons_id']);
-                $this->assertEquals($expected['followup_frequency'], $ticket_pending_data->fields['followup_frequency']);
-                $this->assertEquals($expected['followups_before_resolution'], $ticket_pending_data->fields['followups_before_resolution']);
-                $this->assertEquals($expected['last_bump_date'], $ticket_pending_data->fields['last_bump_date']);
-                $this->assertEquals($expected['bump_count'], $ticket_pending_data->fields['bump_count']);
-            }
+            $this->assertNotFalse($ticket_pending_data);
+            $this->assertEquals($expected['pendingreasons_id'], $ticket_pending_data->fields['pendingreasons_id']);
+            $this->assertEquals($expected['followup_frequency'], $ticket_pending_data->fields['followup_frequency']);
+            $this->assertEquals($expected['followups_before_resolution'], $ticket_pending_data->fields['followups_before_resolution']);
+            $this->assertEquals($expected['last_bump_date'], $ticket_pending_data->fields['last_bump_date']);
+            $this->assertEquals($expected['bump_count'], $ticket_pending_data->fields['bump_count']);
         }
+    }
+
+    public function testCronDeletePendingItemRaisesPendingReasonDelNotification(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $entities_id = $this->getTestRootEntity(true);
+
+        $notification = new Notification();
+        $del_notifications_id = $notification->add([
+            'name'        => 'Remove PendingReason (cron)',
+            'entities_id' => $entities_id,
+            'itemtype'    => 'Ticket',
+            'event'       => 'pendingreason_del',
+            'is_active'   => 1,
+        ]);
+
+        $notification_template = new NotificationTemplate();
+        $del_template_id = $notification_template->add([
+            'name'     => 'PendingReason Remove (cron)',
+            'itemtype' => 'Ticket',
+        ]);
+
+        (new Notification_NotificationTemplate())->add([
+            'notifications_id'         => $del_notifications_id,
+            'mode'                     => 'mailing',
+            'notificationtemplates_id' => $del_template_id,
+        ]);
+
+        (new NotificationTemplateTranslation())->add([
+            'notificationtemplates_id' => $del_template_id,
+            'language'                 => '',
+            'subject'                  => 'PendingReason Remove',
+            'content_text'             => 'PendingReason Remove',
+            'content_html'             => 'PendingReason Remove',
+        ]);
+
+        (new \NotificationTarget())->add([
+            'notifications_id' => $del_notifications_id,
+            'type'              => 1, // User
+            'items_id'          => 7, // Writer
+        ]);
+
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $pending_reason = getItemByTypeName(PendingReason::class, 'needupdate_pendingreason');
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $entities_id,
+            'status'      => CommonITILObject::WAITING,
+        ]);
+
+        $this->assertTrue(PendingReason_Item::createForItem($ticket, [
+            'pendingreasons_id'  => $pending_reason->getID(),
+            'followup_frequency' => 0,
+        ]));
+
+        $this->assertTrue($ticket->update([
+            'id'     => $ticket->getID(),
+            'status' => CommonITILObject::SOLVED,
+        ]));
+        $this->assertNotFalse(PendingReason_Item::getForItem($ticket));
+
+        $this->assertCount(0, getAllDataFromTable('glpi_queuednotifications', ['notificationtemplates_id' => $del_template_id]));
+
+        \PendingReasonCron::cronPendingreason_autobump_autosolve(new \CronTask());
+
+        //Pending reason is to be removed by the cron following ticket resolution
+        $this->assertFalse(PendingReason_Item::getForItem($ticket));
+        $this->assertCount(1, getAllDataFromTable('glpi_queuednotifications', ['notificationtemplates_id' => $del_template_id]));
     }
 
     public function testNotificationEvents(): void
@@ -1300,7 +1528,7 @@ class PendingReasonTest extends DbTestCase
             'name' => 'Auto close PendingReason',
             'entities_id' => $entities_id,
             'itemtype' => 'Ticket',
-            'event' => 'pendingreason_close',
+            'event' => 'pendingreason_resolve',
             'is_active' => 1,
         ]);
 
@@ -1450,6 +1678,124 @@ class PendingReasonTest extends DbTestCase
         $crawler = new Crawler($content);
         $badges_text = $crawler->filter('.timeline-item.ITILTask:not(#new-TicketTask-block) .bg-transparent')->innerText();
         $this->assertStringContainsString('Done:', $badges_text);
+    }
+
+    public function testPendingReasonsMessagesOfSeveralTimelineItems(): void
+    {
+        $this->login();
+
+        $ticket = getItemByTypeName(Ticket::class, '_ticket01');
+        $pending_input = [
+            'pending'                     => 1,
+            'pendingreasons_id'           => getItemByTypeName(PendingReason::class, 'needupdate_pendingreason', true),
+            'followup_frequency'          => DAY_TIMESTAMP,
+            'followups_before_resolution' => 3,
+        ];
+
+        $plain_followup = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => 'Followup without a pending reason',
+        ]);
+        $pending_followup = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => 'Pending followup',
+        ] + $pending_input, array_keys($pending_input));
+        // A pending action added to an item that is already pending replaces the previous one only if it changes it
+        $other_pending_reason = $this->createItem(PendingReason::class, [
+            'name'        => 'Other pending reason',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $pending_input['pendingreasons_id'] = $other_pending_reason->getID();
+        $pending_task = $this->createItem(TicketTask::class, [
+            'tickets_id' => $ticket->getID(),
+            'content'    => 'Pending task',
+        ] + $pending_input, array_keys($pending_input));
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertEquals(CommonITILObject::WAITING, $ticket->fields['status']);
+
+        ob_start();
+        $ticket->showForm($ticket->getID());
+        $crawler = new Crawler(ob_get_clean());
+
+        // Only the last pending action is displayed as pending
+        $badges = static fn(string $anchor): string => $crawler->filter('#' . $anchor . ' .timeline-badges')->text();
+
+        $task_badges = $badges('TicketTask_' . $pending_task->getID());
+        $this->assertStringContainsString('Pending: Other pending reason', $task_badges);
+        $this->assertStringNotContainsString('Done:', $task_badges);
+
+        $followup_badges = $badges('ITILFollowup_' . $pending_followup->getID());
+        $this->assertStringContainsString('Done: needupdate_pendingreason', $followup_badges);
+        $this->assertStringNotContainsString('Pending:', $followup_badges);
+
+        $plain_badges = $badges('ITILFollowup_' . $plain_followup->getID());
+        $this->assertStringNotContainsString('Done:', $plain_badges);
+        $this->assertStringNotContainsString('Pending:', $plain_badges);
+    }
+
+    public function testTimelineQueriesOnPendingReasonsDoNotDependOnEntriesCount(): void
+    {
+        $this->login();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Timeline queries',
+            'content'     => 'Timeline queries',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $add_followup = function () use ($ticket): void {
+            $this->createItem(ITILFollowup::class, [
+                'itemtype' => Ticket::class,
+                'items_id' => $ticket->getID(),
+                'content'  => 'Followup',
+            ]);
+        };
+
+        $count_queries = static function () use ($ticket): array {
+            $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
+            $before = count(Profile::getCurrent()->getDebugInfo()['sql']['queries'] ?? []);
+            ob_start();
+            $ticket->showForm($ticket->getID());
+            ob_end_clean();
+            $queries = array_slice(Profile::getCurrent()->getDebugInfo()['sql']['queries'], $before);
+            $_SESSION['glpi_use_mode'] = \Session::NORMAL_MODE;
+
+            $count = static function (string ...$needles) use ($queries): int {
+                $matching = 0;
+                foreach ($queries as $query) {
+                    foreach ($needles as $needle) {
+                        if (!str_contains($query['query'], $needle)) {
+                            continue 2;
+                        }
+                    }
+                    $matching++;
+                }
+                return $matching;
+            };
+
+            return [
+                // Pending reason of the ticket
+                'parent'    => $count('`glpi_pendingreasons_items`', "'Ticket'"),
+                // Default pending reason, only used by the followup form
+                'default'   => $count('FROM `glpi_pendingreasons`'),
+                // Followups, already loaded with the timeline
+                'followups' => $count('FROM `glpi_itilfollowups`'),
+            ];
+        };
+
+        $add_followup();
+        $count_queries(); // The first display fills the caches
+        $expected = $count_queries();
+        $this->assertGreaterThan(0, $expected['parent']);
+        $this->assertGreaterThan(0, $expected['followups']);
+
+        for ($i = 0; $i < 5; $i++) {
+            $add_followup();
+        }
+
+        $this->assertSame($expected, $count_queries());
     }
 
     /**
@@ -1612,4 +1958,5 @@ class PendingReasonTest extends DbTestCase
         }
         $this->assertTrue($warning_found, 'Expected warning about missing pending reason not found');
     }
+
 }

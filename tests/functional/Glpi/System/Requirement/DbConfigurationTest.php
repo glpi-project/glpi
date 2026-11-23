@@ -36,6 +36,7 @@ namespace tests\units\Glpi\System\Requirement;
 
 use Glpi\System\Requirement\DbConfiguration;
 use Glpi\Tests\GLPITestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class DbConfigurationTest extends GLPITestCase
@@ -44,7 +45,7 @@ class DbConfigurationTest extends GLPITestCase
     {
         return [
             [
-                // Default variables on MySQL 8.0
+                // Default variables on MySQL
                 'version'   => '8.0.24-standard',
                 'variables' => [
                     'innodb_page_size'    => 16384,
@@ -66,7 +67,7 @@ class DbConfigurationTest extends GLPITestCase
                 ],
             ],
             [
-                // Incompatible variables on MySQL 8.0
+                // Incompatible variables on MySQL
                 'version'   => '8.0.24-standard',
                 'variables' => [
                     'innodb_page_size'    => 4096,
@@ -77,8 +78,8 @@ class DbConfigurationTest extends GLPITestCase
                 ],
             ],
             [
-                // Default variables on MariaDB 10.6
-                'version'   => '10.6.8-MariaDB',
+                // Default variables on MariaDB
+                'version'   => '10.11.18-MariaDB',
                 'variables' => [
                     'innodb_page_size'    => 16384,
                 ],
@@ -88,8 +89,8 @@ class DbConfigurationTest extends GLPITestCase
                 ],
             ],
             [
-                // Incompatible variables on MariaDB 10.6
-                'version'   => '10.6.8-MariaDB',
+                // Incompatible variables on MariaDB
+                'version'   => '10.11.18-MariaDB',
                 'variables' => [
                     'innodb_page_size'    => 4096,
                 ],
@@ -101,6 +102,7 @@ class DbConfigurationTest extends GLPITestCase
         ];
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('configurationProvider')]
     public function testCheck(string $version, array $variables, bool $validated, array $messages)
     {

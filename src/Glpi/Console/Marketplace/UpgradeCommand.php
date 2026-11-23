@@ -61,7 +61,7 @@ class UpgradeCommand extends AbstractCommand
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!Controller::isCLIAllowed()) {
             $output->writeln("<error>" . __('Access to the marketplace CLI commands is disallowed by the GLPI configuration') . "</error>");
@@ -227,6 +227,8 @@ class UpgradeCommand extends AbstractCommand
                 }
 
                 $output->writeln('<info>' . sprintf(__('Plugin "%1$s" has been updated and reactivated.'), $plugin_key) . '</info>', );
+
+                \gc_collect_cycles();
             }
             Plugin::forcePluginsExecution(false);
         }

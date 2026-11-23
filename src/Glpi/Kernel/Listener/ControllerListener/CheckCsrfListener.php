@@ -34,22 +34,26 @@
 
 namespace Glpi\Kernel\Listener\ControllerListener;
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Http\CsrfChecker;
 use Glpi\Http\SessionManager;
-use Session;
+use Glpi\Kernel\ListenersPriority;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 final readonly class CheckCsrfListener implements EventSubscriberInterface
 {
     public function __construct(
-        private SessionManager $session_manager
+        private SessionManager $session_manager,
+        private CsrfChecker $csrf_checker
     ) {}
 
     public static function getSubscribedEvents(): array
     {
-        return [KernelEvents::CONTROLLER => 'onKernelController'];
+        return [
+            KernelEvents::CONTROLLER => ['onKernelController', ListenersPriority::CONTROLLER_LISTENERS_PRIORITIES[self::class]],
+        ];
     }
 
     public function onKernelController(ControllerEvent $event): void
@@ -66,27 +70,10 @@ final readonly class CheckCsrfListener implements EventSubscriberInterface
 
         $request = $event->getRequest();
 
-        $bodyless_methods = [
-            Request::METHOD_GET,
-            Request::METHOD_HEAD,
-            Request::METHOD_OPTIONS,
-            Request::METHOD_TRACE,
-        ];
-        if (in_array($request->getRealMethod(), $bodyless_methods)) {
-            // No CSRF checks if method is not supposed to have a body.
-            return;
-        }
-
-        if ($request->isXmlHttpRequest()) {
-            // For AJAX requests, check CSRF token located into "X-Glpi-Csrf-Token" header.
-            Session::checkCSRF(
-                ['_glpi_csrf_token' => $request->server->get('HTTP_X_GLPI_CSRF_TOKEN') ?? ''],
-                // Keep CSRF token as many AJAX requests may be made at the same time.
-                // This is due to the fact that read operations are often made using POST method (see #277).
-                preserve_token: true
-            );
-        } else {
-            Session::checkCSRF($request->request->all());
+        if (!$this->csrf_checker->isRequestSafeFromCSRF($request)) {
+            $exception = new AccessDeniedHttpException();
+            $exception->setMessageToDisplay(__('The action you have requested is not allowed.'));
+            throw $exception;
         }
     }
 }

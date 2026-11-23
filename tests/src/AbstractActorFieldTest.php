@@ -119,8 +119,8 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             config: $config,
             answers: [
                 'Computer question' => [
-                    'itemtype' => Computer::class,
-                    'items_id' => $computers[0]->getID(),
+                    'itemtype'  => Computer::class,
+                    'items_ids' => [$computers[0]->getID()],
                 ],
             ],
             expected_actors: $this->getExpectedNoMatchActors()
@@ -132,8 +132,8 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             config: $config,
             answers: [
                 'Computer question' => [
-                    'itemtype' => Computer::class,
-                    'items_id' => $computers[1]->getID(),
+                    'itemtype'  => Computer::class,
+                    'items_ids' => [$computers[1]->getID()],
                 ],
             ],
             expected_actors: [['items_id' => $users[1]->getID()]]
@@ -188,8 +188,8 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             config: $config,
             answers: [
                 'Computer question' => [
-                    'itemtype' => Computer::class,
-                    'items_id' => $computers[0]->getID(),
+                    'itemtype'  => Computer::class,
+                    'items_ids' => [$computers[0]->getID()],
                 ],
             ],
             expected_actors: [['items_id' => $users[0]->getID()]]
@@ -201,8 +201,8 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             config: $config,
             answers: [
                 'Computer question' => [
-                    'itemtype' => Computer::class,
-                    'items_id' => $computers[1]->getID(),
+                    'itemtype'  => Computer::class,
+                    'items_ids' => [$computers[1]->getID()],
                 ],
             ],
             expected_actors: $this->getExpectedNoMatchActors()
@@ -253,8 +253,8 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             config: $config,
             answers: [
                 'Computer question' => [
-                    'itemtype' => Computer::class,
-                    'items_id' => $computers[0]->getID(),
+                    'itemtype'  => Computer::class,
+                    'items_ids' => [$computers[0]->getID()],
                 ],
             ],
             expected_actors: [['items_id' => $groups[0]->getID()]]
@@ -266,8 +266,8 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             config: $config,
             answers: [
                 'Computer question' => [
-                    'itemtype' => Computer::class,
-                    'items_id' => $computers[1]->getID(),
+                    'itemtype'  => Computer::class,
+                    'items_ids' => [$computers[1]->getID()],
                 ],
             ],
             expected_actors: $this->getExpectedNoMatchActors()
@@ -318,8 +318,8 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             config: $config,
             answers: [
                 'Computer question' => [
-                    'itemtype' => Computer::class,
-                    'items_id' => $computers[0]->getID(),
+                    'itemtype'  => Computer::class,
+                    'items_ids' => [$computers[0]->getID()],
                 ],
             ],
             expected_actors: $this->getExpectedNoMatchActors()
@@ -331,8 +331,8 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             config: $config,
             answers: [
                 'Computer question' => [
-                    'itemtype' => Computer::class,
-                    'items_id' => $computers[1]->getID(),
+                    'itemtype'  => Computer::class,
+                    'items_ids' => [$computers[1]->getID()],
                 ],
             ],
             expected_actors: [['items_id' => $groups[1]->getID()]]
@@ -404,8 +404,8 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             config: $config,
             answers: [
                 'Custom asset question' => [
-                    'itemtype' => $asset_class,
-                    'items_id' => $assets[0]->getID(),
+                    'itemtype'  => $asset_class,
+                    'items_ids' => [$assets[0]->getID()],
                 ],
             ],
             expected_actors: [['items_id' => $users[0]->getID()]]
@@ -417,8 +417,8 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             config: $config,
             answers: [
                 'Custom asset question' => [
-                    'itemtype' => $asset_class,
-                    'items_id' => $assets[1]->getID(),
+                    'itemtype'  => $asset_class,
+                    'items_ids' => [$assets[1]->getID()],
                 ],
             ],
             expected_actors: [['items_id' => $users[1]->getID()]]
@@ -486,8 +486,8 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             config: $config,
             answers: [
                 'Custom asset question' => [
-                    'itemtype' => $asset_class,
-                    'items_id' => $assets[0]->getID(),
+                    'itemtype'  => $asset_class,
+                    'items_ids' => [$assets[0]->getID()],
                 ],
             ],
             expected_actors: [['items_id' => $groups[0]->getID()]]
@@ -499,11 +499,46 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             config: $config,
             answers: [
                 'Custom asset question' => [
-                    'itemtype' => $asset_class,
-                    'items_id' => $assets[1]->getID(),
+                    'itemtype'  => $asset_class,
+                    'items_ids' => [$assets[1]->getID()],
                 ],
             ],
             expected_actors: [['items_id' => $groups[1]->getID()]]
+        );
+    }
+
+    public function testEmptyStrategyValueIsIgnoredWhenDeserializingConfig(): void
+    {
+        $config_class = (new ($this->getFieldClass())())->getConfigClass();
+
+        // "0" is the empty value of the strategy dropdown. It may have been
+        // stored by a configuration form saved without picking any strategy.
+        $config = $config_class::jsonDeserialize([
+            ITILActorFieldConfig::STRATEGIES => ['0'],
+        ]);
+
+        // An unknown strategy must be discarded, so the field falls back on its
+        // default strategy instead of exposing a `null` strategy.
+        $this->assertEquals(
+            $config_class::jsonDeserialize([])->getStrategies(),
+            $config->getStrategies(),
+        );
+    }
+
+    public function testEmptyStrategyValueIsDiscardedFromDeserializedStrategies(): void
+    {
+        $config_class = (new ($this->getFieldClass())())->getConfigClass();
+
+        $config = $config_class::jsonDeserialize([
+            ITILActorFieldConfig::STRATEGIES => [
+                '0',
+                ITILActorFieldStrategy::FORM_FILLER->value,
+            ],
+        ]);
+
+        $this->assertEquals(
+            [ITILActorFieldStrategy::FORM_FILLER],
+            $config->getStrategies(),
         );
     }
 

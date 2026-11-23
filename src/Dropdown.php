@@ -38,9 +38,11 @@ use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Features\AssignableItem;
 use Glpi\Form\Category;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\SocketModel;
@@ -59,19 +61,19 @@ class Dropdown
      * List of standard itemtypes options
      * @var array|null
      */
-    private static $standard_itemtypes_options = null;
+    private static ?array $standard_itemtypes_options = null;
 
     /**
      * List of devices itemtypes options
      * @var array|null
      */
-    private static $devices_itemtypes_options = null;
+    private static ?array $devices_itemtypes_options = null;
 
     /**
      * List of devices itemtypes options grouped by category
      * @var array|null
      */
-    private static $devices_itemtypes_options_grouped = null;
+    private static ?array $devices_itemtypes_options_grouped = null;
 
     /**
      * Print out an HTML "<select>" for a dropdown with preselected value
@@ -112,6 +114,7 @@ class Dropdown
      *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
      *    - readonly             : boolean / return self::getDropdownValue if true (default false)
      *    - parent_id_field      : field used to compute parent id (to filter available values inside the dropdown tree)
+     *    - templateSelection    : name of a JS function used by select2 to render a selected value (default null)
      *
      * @return string|false|int
      *
@@ -160,6 +163,7 @@ class Dropdown
         $params['init']                 = true;
         $params['aria_label']           = '';
         $params['required']             = false;
+        $params['templateSelection']    = null;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -175,7 +179,11 @@ class Dropdown
 
         if ($params['multiple']) {
             $params['display_emptychoice'] = false;
-            $params['values'] = $params['value'] ?? [];
+            // Only fall back to 'value' when 'values' was not provided as an array.
+            // Otherwise the pre-selection is lost
+            if (!isset($params['values']) || !is_array($params['values'])) {
+                $params['values'] = $params['value'] ?? [];
+            }
             $params['comments'] = false;
             unset($params['value']);
         }
@@ -305,6 +313,10 @@ class Dropdown
             'required'             => $params['required'],
         ];
 
+        if ($params['templateSelection'] !== null) {
+            $p['templateSelection'] = $params['templateSelection'];
+        }
+
         if ($params['multiple']) {
             $p['values'] = $params['values'];
             $p['valuesnames'] = $names;
@@ -331,14 +343,12 @@ class Dropdown
             && !isset($_REQUEST['_in_modal'])
             && $params['addicon']
         ) {
-            $add_item_icon .= '<div class="btn btn-outline-secondary"
-                           title="' . __s('Add') . '" data-bs-toggle="modal" data-bs-target="#add_' . htmlescape($field_id) . '">';
+            $add_label = htmlescape(sprintf(__('Add a new %s'), $item::getTypeName(1)));
             $add_item_icon .= Ajax::createIframeModalWindow('add_' . $field_id, $item->getFormURL(), ['display' => false]);
-            $add_item_icon .= "<span data-bs-toggle='tooltip'>
-              <i class='ti ti-plus'></i>
-              <span class='sr-only'>" . __s('Add') . "</span>
-                </span>";
-            $add_item_icon .= '</div>';
+            $add_item_icon .= '<button type="button" class="btn btn-outline-secondary"
+                           title="' . $add_label . '" data-bs-toggle="modal" data-bs-target="#add_' . htmlescape($field_id) . '">';
+            $add_item_icon .= "<i class='ti ti-plus' aria-hidden='true'></i><span class='visually-hidden'>" . $add_label . "</span>";
+            $add_item_icon .= '</button>';
         }
 
         if ($params['display_dc_position'] && method_exists($item, 'getParentRack')) {
@@ -362,7 +372,7 @@ class Dropdown
                     if (
                         $params['value']
                         && $item->getFromDB($params['value'])
-                        && $item->canViewItem()
+                        && $item->can($item->getID(), READ)
                     ) {
                         $options_tooltip['link'] = $item->getLinkURL();
                     } else {
@@ -426,7 +436,7 @@ class Dropdown
             if ($itemtype === 'Location' && Location::canView()) {
                 $location_icon = "<div role='button' class='btn btn-outline-secondary' onclick='showMapForLocation(this)'
                                        data-fid='" . htmlescape($field_id) . "' title='" . __s('Display on map') . "' data-bs-toggle='tooltip' data-bs-placement='bottom'>";
-                $location_icon .= "<i class='ti ti-map'></i></div>";
+                $location_icon .= "<i class='ti ti-map' aria-hidden='true'></i></div>";
                 $icon_array[] = $location_icon;
             }
 
@@ -439,7 +449,7 @@ class Dropdown
 
             // KB links
             if (
-                $item->isField('knowbaseitemcategories_id') && Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ])
+                $item->isField('knowbaseitems_id') && Session::haveRightsOr(KnowbaseItem::$rightname, [READ, KnowbaseItem::READFAQ])
                 && method_exists($item, 'getLinks')
             ) {
                 // With the self-service profile, $item (whose itemtype = ITILCategory) is empty,
@@ -569,7 +579,8 @@ class Dropdown
         if ($id) {
             $SELECTNAME    = new QueryExpression("'' AS " . $DB->quoteName('transname'));
             $JOIN          = [];
-            if ($translate && Session::haveTranslations(getItemTypeForTable($table), 'name')) {
+            $transitemtype = getItemTypeForTable($table);
+            if ($translate && $transitemtype && Session::haveTranslations($transitemtype, 'name')) {
                 $SELECTNAME = 'namet.value AS transname';
                 $JOIN = [
                     'LEFT JOIN' => [
@@ -681,6 +692,7 @@ class Dropdown
 
         if (
             $translate
+            && $itemtype
             && Session::haveTranslations($itemtype, 'comment')
         ) {
             $criteria['SELECT'][] = 'comment_translations.value AS translated_comment';
@@ -1196,8 +1208,7 @@ HTML;
      **/
     public static function getDeviceItemTypes(bool $grouped = false)
     {
-        //TODO After GLPI 11.0, make this always return grouped values
-        if (!Session::haveRight('device', READ)) {
+        if (!Session::haveRight(CommonDevice::$rightname, READ)) {
             return [];
         }
 
@@ -1281,6 +1292,9 @@ HTML;
                     'DeviceGenericType' => null,
                     'DeviceSensorType' => null,
                     'DeviceMemoryType' => null,
+                    'DeviceHardDriveType' => null,
+                    'DeviceBatteryType' => null,
+                    'DeviceFirmwareType' => null,
                     'SupplierType' => null,
                     'InterfaceType' => null,
                     'DeviceCaseType' => null,
@@ -1292,6 +1306,7 @@ HTML;
                     'LineType' => null,
                     'RackType' => null,
                     'PDUType' => null,
+                    'PlugType' => null,
                     'PassiveDCEquipmentType' => null,
                     'ClusterType' => null,
                     'DatabaseInstanceType' => null,
@@ -1306,10 +1321,12 @@ HTML;
                     'PhoneModel' => null,
 
                     // Devices models :
+                    'DeviceBatteryModel' => null,
                     'DeviceCameraModel' => null,
                     'DeviceCaseModel' => null,
                     'DeviceControlModel' => null,
                     'DeviceDriveModel' => null,
+                    'DeviceFirmwareModel' => null,
                     'DeviceGenericModel' => null,
                     'DeviceGraphicCardModel' => null,
                     'DeviceHardDriveModel' => null,
@@ -1338,10 +1355,6 @@ HTML;
                     'DocumentType' => null,
                     'BusinessCriticity' => null,
                     'DatabaseInstanceCategory' => null,
-                ],
-
-                __('Tools') => [
-                    'KnowbaseItemCategory' => null,
                 ],
 
                 _n('Calendar', 'Calendars', Session::getPluralNumber()) => [
@@ -1405,9 +1418,6 @@ HTML;
 
                 __('External authentications') => [
                     'SsoVariable' => null,
-                ],
-                __('Power management') => [
-                    'Plug' => null,
                 ],
                 __('Appliances') => [
                     'ApplianceType' => null,
@@ -1475,7 +1485,7 @@ HTML;
      **/
     public static function showItemTypeMenu(string $title, array $optgroup, string $value = '', array $options = []): void
     {
-        Toolbox::deprecated(version: '11.1.0');
+        Toolbox::deprecated(version: '12.0.0');
         $params = [
             'on_change'             => "var _value = this.options[this.selectedIndex].value; if (_value != 0) {window.location.href=_value;}",
             'width'                 => '300px',
@@ -1567,12 +1577,10 @@ HTML;
      */
     public static function getLanguages()
     {
-        global $CFG_GLPI;
-
         $languages = [];
-        foreach ($CFG_GLPI["languages"] as $key => $val) {
-            if (isset($val[1]) && is_file(GLPI_ROOT . "/locales/" . $val[1])) {
-                $languages[$key] = $val[0];
+        foreach (LanguageRegistry::all() as $key => $language) {
+            if (is_file(GLPI_ROOT . "/locales/" . $language->mo_file)) {
+                $languages[$key] = $language->native_name;
             }
         }
 
@@ -1589,8 +1597,8 @@ HTML;
      **/
     public static function getLanguageName($value)
     {
-        global $CFG_GLPI;
-        return $CFG_GLPI["languages"][$value][0] ?? $value;
+        $language = LanguageRegistry::tryGet($value);
+        return $language !== null ? $language->native_name : $value;
     }
 
 
@@ -1880,6 +1888,7 @@ HTML;
             'width'                           => $params['width'],
             'container_css_class'             => $params['container_css_class'],
             'specific_tags_items_id_dropdown' => $params['specific_tags_items_id_dropdown'],
+            'display_emptychoice'             => $params['display_emptychoice'],
         ];
 
         // manage condition
@@ -1914,7 +1923,16 @@ HTML;
 
         // We check $options as the caller will set $options['default_itemtype'] only if it needs a
         // default itemtype and the default value can be '' thus empty won't be valid !
-        if (array_key_exists('default_itemtype', $options)) {
+        if (array_key_exists('default_itemtype', $options) && empty($params['default_itemtype'])) {
+            // No itemtype to preselect: the server has no item dropdown to return for it,
+            // so both fields are reset in the page, without any request.
+            $out .= Html::scriptBlock("
+                $(function() {
+                    $('#" . jsescape($field_id) . "').val('').trigger('change.select2');
+                    $('#" . jsescape($show_id) . "').empty();
+                });
+            ");
+        } elseif (array_key_exists('default_itemtype', $options)) {
             $out .= Html::scriptBlock("
                 $(function() {
                     $('#" . jsescape($field_id) . "').trigger('setValue', '" . jsescape($params['default_itemtype']) . "');
@@ -2528,6 +2546,8 @@ HTML;
                 'templateResult'    => $param["templateResult"],
                 'templateSelection' => $param["templateSelection"],
                 'init'              => $param["init"],
+                'allowclear'        => !empty($param["allowClear"]),
+                'placeholder'       => $param["placeholder"] ?? '',
             ];
             $output .= Html::jsAdaptDropdown($field_id, $adapt_params);
         }
@@ -2663,7 +2683,7 @@ HTML;
 
                 echo "<span class='fa fa-info pointer'"
                  . " title=\"" . __s('Duplicate the element as many times as there are connections')
-                 . "\"><span class='sr-only'>" . __s('Duplicate the element as many times as there are connections') . "</span></span>";
+                 . "\"><span class='visually-hidden'>" . __s('Duplicate the element as many times as there are connections') . "</span></span>";
             }
         } else {
             if ($params['management_restrict'] == 2) {
@@ -2807,7 +2827,7 @@ HTML;
         Dropdown::showFromArray('display_type', $values, ['rand' => $rand]);
         echo "<button type='submit' name='export' class='btn' "
              . " title=\"" . _sx('button', 'Export') . "\">"
-             . "<i class='ti ti-device-floppy'></i><span class='sr-only'>" . _sx('button', 'Export') . "<span>";
+             . "<i class='ti ti-device-floppy' aria-hidden='true'></i><span class='visually-hidden'>" . _sx('button', 'Export') . "<span>";
     }
 
 
@@ -2863,6 +2883,37 @@ HTML;
                 'value'     => $list_limit,
                 'display'   => $display,
             ]
+        );
+    }
+
+    /**
+     * Filter values whose label matches a search text, case-insensitively.
+     * Follows the dropdown SQL search: "contains" by default, `^` and `$` anchor the start and end.
+     *
+     * @param array<int|string, mixed> $values      Values to filter (key => label)
+     * @param string                   $search_text Search text
+     *
+     * @return array<int|string, mixed>
+     */
+    private static function filterValuesBySearchText(array $values, string $search_text): array
+    {
+        $search_text = trim($search_text);
+        if ($search_text === '' || $search_text === '^') {
+            return $values;
+        }
+
+        //Search may be a regex
+        $starts_with = str_starts_with($search_text, '^');
+        $ends_with   = str_ends_with($search_text, '$');
+        $search_text = trim(substr($search_text, $starts_with ? 1 : 0, $ends_with ? -1 : null));
+
+        // Ignore accents, as the SQL collation does
+        $remove_accents = static fn(string $value): string => (string) transliterator_transliterate('NFD; [:Nonspacing Mark:] Remove; NFC', $value);
+        $pattern = '/' . ($starts_with ? '^' : '') . preg_quote($remove_accents($search_text), '/') . ($ends_with ? '$' : '') . '/iu';
+
+        return array_filter(
+            $values,
+            static fn($label) => is_scalar($label) && preg_match($pattern, $remove_accents((string) $label))
         );
     }
 
@@ -2965,6 +3016,10 @@ HTML;
         } else {
             $toadd = [];
         }
+        // Keep only the added values matching the search, otherwise they are listed (and highlighted) first
+        if (!empty($post['searchText']) && is_array($toadd)) {
+            $toadd = self::filterValuesBySearchText($toadd, (string) $post['searchText']);
+        }
 
         $ljoin = [];
 
@@ -2985,12 +3040,15 @@ HTML;
             if (isset($condition['WHERE'])) {
                 $where = array_merge($where, $condition['WHERE']);
             } else {
+                $or_where = [];
                 foreach ($condition as $key => $value) {
                     if (is_array($value) && isset($value['LEFT JOIN'])) {
-                        $ljoin = $value['LEFT JOIN'];
+                        $ljoin = array_merge($ljoin, $value['LEFT JOIN']);
                     }
                     if (is_array($value) && isset($value['WHERE'])) {
-                        $where = array_merge($where, $value['WHERE']);
+                        // Combine with OR: sub-conditions target different types but must match any one of them,
+                        // and array_merge would silently produce AND instead of the required OR.
+                        $or_where[] = $value['WHERE'];
                     } elseif (!is_numeric($key) && !in_array($key, ['AND', 'OR', 'NOT']) && !str_contains($key, '.')) {
                         // Ensure condition contains table name to prevent ambiguity with fields from `glpi_entities` table
                         $where["$table.$key"] = $value;
@@ -3002,6 +3060,9 @@ HTML;
                         // e.g. to override the default `is_template` / `is_deleted` filtering.
                         $where[$key] = $value;
                     }
+                }
+                if ($or_where !== []) {
+                    $where[] = ['OR' => $or_where];
                 }
             }
         }
@@ -3504,9 +3565,9 @@ HTML;
                             "$table.entities_id",
                             QueryFunction::concat(
                                 params: [
-                                    QueryFunction::ifnull('name', new QueryExpression($DB::quoteValue(''))),
+                                    QueryFunction::ifnull(new QueryIdentifier('name'), new QueryExpression($DB::quoteValue(''))),
                                     new QueryExpression($DB::quoteValue(' ')),
-                                    QueryFunction::ifnull('firstname', new QueryExpression($DB::quoteValue(''))),
+                                    QueryFunction::ifnull(new QueryIdentifier('firstname'), new QueryExpression($DB::quoteValue(''))),
                                 ],
                                 alias: $field
                             ),
@@ -3522,7 +3583,7 @@ HTML;
                         'SELECT' => [
                             "$table.*",
                             QueryFunction::concat(
-                                params: ['glpi_softwares.name', new QueryExpression($DB::quoteValue(' - ')), 'glpi_softwarelicenses.name'],
+                                params: [new QueryIdentifier('glpi_softwares.name'), new QueryExpression($DB::quoteValue(' - ')), new QueryIdentifier('glpi_softwarelicenses.name')],
                                 alias: $field
                             ),
                         ],
@@ -3554,7 +3615,7 @@ HTML;
                     ];
                     break;
 
-                case KnowbaseItem::getType():
+                case KnowbaseItem::class:
                     $criteria = [
                         'SELECT' => array_merge(["$table.*"], $addselect),
                         'DISTINCT'        => true,
@@ -3598,7 +3659,7 @@ HTML;
                     }
                     break;
 
-                case Project::getType():
+                case Project::class:
                     $visibility = Project::getVisibilityCriteria();
                     if (count($visibility['LEFT JOIN'])) {
                         $ljoin = array_merge($ljoin, $visibility['LEFT JOIN']);
@@ -3629,6 +3690,11 @@ HTML;
             );
 
             $order_field = "$table.$field";
+            if (in_array($post['itemtype'], [Ticket::class, Change::class, Problem::class], true)) {
+                // Ordering by `name` forces a filesort over the whole (unindexable, `LIKE`-filtered)
+                // matching set; ordering by the primary key lets MySQL stop scanning early instead.
+                $order_field = "$table.id DESC";
+            }
             if (isset($post['order']) && !empty($post['order'])) {
                 $order_field = $post['order'];
             }
@@ -3727,7 +3793,7 @@ HTML;
                                         $data[$key]
                                     );
                                 }
-                                if (((string) $withoutput !== '') && ($withoutput != '&nbsp;')) {
+                                if (((string) $withoutput) !== '' && ($withoutput != '&nbsp;')) {
                                     $outputval = sprintf(__('%1$s - %2$s'), $outputval, $withoutput);
                                 }
                             }
@@ -3826,7 +3892,14 @@ HTML;
             return false;
         }
 
-        $where = [];
+        $where = $item->getSystemSQLCriteria();
+
+        if (Toolbox::hasTrait($post['itemtype'], AssignableItem::class)) {
+            $visibility_criteria = $post['itemtype']::getAssignableVisiblityCriteria();
+            if (count($visibility_criteria)) {
+                $where[] = $visibility_criteria;
+            }
+        }
 
         if ($item->maybeDeleted()) {
             $where["$table.is_deleted"] = 0;
@@ -3835,7 +3908,7 @@ HTML;
             $where["$table.is_template"] = 0;
         }
 
-        if (isset($post['searchText']) && ((string) $post['searchText'] !== '')) {
+        if (isset($post['searchText']) && ((string) $post['searchText']) !== '') {
             $search = Search::makeTextSearchValue($post['searchText']);
             $where['OR'] = [
                 "$table.name"        => ['LIKE', $search],
@@ -4032,7 +4105,7 @@ HTML;
             $where[] = State::getDisplayConditionForAssistance();
         }
 
-        if (isset($_POST['searchText']) && ((string) $post['searchText'] !== '')) {
+        if (isset($_POST['searchText']) && ((string) $post['searchText']) !== '') {
             $search = ['LIKE', Search::makeTextSearchValue($post['searchText'])];
             $orwhere = $item->isField('name') ? [
                 'name'   => $search,
@@ -4232,7 +4305,7 @@ HTML;
                     if (is_numeric($post['searchText'])) {
                         $orwhere['id'] = $post['searchText'];
                     }
-                    if (!empty($orwhere)) {
+                    if ($orwhere !== []) {
                         $criteria['WHERE'][] = ['OR' => $orwhere];
                     }
                 }
@@ -4276,7 +4349,7 @@ HTML;
         }
 
         // My group items
-        if (Session::haveRight("show_group_hardware", 1)) {
+        if (Session::haveRight(Profile::HELPDESK_RIGHT_SHOW_GROUP_HARDWARE, 1)) {
             $iterator = $DB->request([
                 'SELECT'    => [
                     'glpi_groups_users.groups_id',
@@ -4361,7 +4434,7 @@ HTML;
                             if (is_numeric($post['searchText'])) {
                                 $orwhere['id'] = $post['searchText'];
                             }
-                            if (!empty($orwhere)) {
+                            if ($orwhere !== []) {
                                 $criteria['WHERE'][] = ['OR' => $orwhere];
                             }
                         }
@@ -4976,6 +5049,12 @@ HTML;
             $entity_restrict = Toolbox::jsonDecode($post['entity_restrict']);
             $entity_restrict = Session::getMatchingActiveEntities($entity_restrict);
         }
+        $default_use_notif = Entity::getUsedConfig(
+            'is_notif_enable_default',
+            $post['item']['entities_id'] ?? $_SESSION['glpiactive_entity'],
+            '',
+            1
+        );
 
         // prevent instanciation of bad classes
         if (!is_subclass_of($post['itiltemplate_class'], ITILTemplate::class)) {
@@ -5010,7 +5089,7 @@ HTML;
                     'title'             => sprintf(__('%1$s - %2$s'), $text, $user['name']),
                     'itemtype'          => "User",
                     'items_id'          => $ID,
-                    'use_notification'  => (string) ($user['default_email'] ?? "") !== '' ? 1 : 0,
+                    'use_notification'  => ($default_use_notif && (string) ($user['default_email'] ?? "") !== '') ? 1 : 0,
                     'default_email'     => $user['default_email'],
                     'alternative_email' => '',
                 ];
@@ -5084,7 +5163,7 @@ HTML;
                         $children['items_id']          = $children['id'];
                         $children['id']                = "Supplier_" . $children['id'];
                         $children['itemtype']          = "Supplier";
-                        $children['use_notification']  = (string) ($supplier_obj->fields['email'] ?? '') !== '' ? 1 : 0;
+                        $children['use_notification']  = ($default_use_notif && (string) ($supplier_obj->fields['email'] ?? '') !== '') ? 1 : 0;
                         $children['default_email']     = $supplier_obj->fields['email'];
                         $children['alternative_email'] = '';
                     }
@@ -5136,8 +5215,20 @@ HTML;
         self::$standard_itemtypes_options = null;
     }
 
-    public static function getDurationDropdown(): array
+    /**
+     * Get the values of the task duration dropdown.
+     *
+     * @param int|string|null $value Current duration, added to the list if it does not match any step
+     *
+     * @return array<int, string>
+     */
+    public static function getDurationDropdown(int|string|null $value = 0): array
     {
+        global $CFG_GLPI;
+
+        // Value comes from DB fields, it can be an empty string for a new task
+        $value = (int) $value;
+        $step = max(1, (int) $CFG_GLPI['time_step']);
         $durationDropdown = [];
 
         // 1..9 minutes
@@ -5146,8 +5237,8 @@ HTML;
             $durationDropdown[$key] = sprintf('%dh%02d', 0, $i);
         }
 
-        // 10..595 step 5 (minutes)
-        for ($i = 10; $i < 595; $i += 5) {
+        // From 10 minutes to 10 hours, using the configured time step
+        for ($i = (int) ceil(10 / $step) * $step; $i < 600; $i += $step) {
             $minutes = $i % 60;
             $hours = intdiv($i, 60);
             $key = $i * MINUTE_TIMESTAMP;
@@ -5164,6 +5255,16 @@ HTML;
         for ($i = 5; $i <= 366; $i++) {
             $key = $i * DAY_TIMESTAMP;
             $durationDropdown[$key] = sprintf(_n('%s day', '%s days', $i), $i);
+        }
+
+        // Keep a duration saved with a previous time step
+        if ($value > 0 && !isset($durationDropdown[$value])) {
+            $durationDropdown[$value] = sprintf(
+                '%dh%02d',
+                intdiv($value, HOUR_TIMESTAMP),
+                intdiv($value % HOUR_TIMESTAMP, MINUTE_TIMESTAMP)
+            );
+            ksort($durationDropdown);
         }
 
         return $durationDropdown;

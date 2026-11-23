@@ -35,8 +35,8 @@
 
 class RuleDictionnaryOperatingSystemArchitectureCollection extends RuleDictionnaryDropdownCollection
 {
-    public $item_table  = "glpi_operatingsystemarchitectures";
-    public $menu_option = "os_arch";
+    public string $item_table  = "glpi_operatingsystemarchitectures";
+    public string $menu_option = "os_arch";
 
     public function getTitle()
     {

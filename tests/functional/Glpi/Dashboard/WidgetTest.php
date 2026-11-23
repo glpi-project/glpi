@@ -49,7 +49,39 @@ class WidgetTest extends DbTestCase
     public function tearDown(): void
     {
         Grid::$embed = false;
+
+        if (filter_var(ini_get('session.use_cookies'), FILTER_VALIDATE_BOOLEAN) === false) {
+            // Restore expected value for `session.use_cookies`.
+            session_write_close();
+            ini_set('session.use_cookies', '1');
+        }
+
         parent::tearDown();
+    }
+
+    /**
+     * Mirror the context of a stateless request (see `SessionStart` listener):
+     * no active session, and session cookies disabled.
+     */
+    private function simulateStatelessContext(): void
+    {
+        session_write_close();
+        ini_set('session.use_cookies', '0');
+    }
+
+    /**
+     * Return the parameters of a valid share link for the given context.
+     */
+    private function getEmbedParams(int $entities_id, int $is_recursive, int $profiles_id, int $users_id): array
+    {
+        return [
+            'dashboard'    => 'test_dashboard',
+            'entities_id'  => $entities_id,
+            'is_recursive' => $is_recursive,
+            'profiles_id'  => $profiles_id,
+            'users_id'     => $users_id,
+            'token'        => Grid::getToken('test_dashboard', $entities_id, $is_recursive, $profiles_id, $users_id),
+        ];
     }
 
     /**
@@ -202,19 +234,65 @@ class WidgetTest extends DbTestCase
         // This profile is never assigned to the logged in user, so even
         // though the token is valid for this exact combination, the
         // DB-backed assignment check must reject it.
-        $profiles_id = 999999;
+        // It exists, so that the rejection does not come from the profile lookup.
+        $profiles_id = getItemByTypeName('Profile', 'Observer', true);
 
-        $token = Grid::getToken('test_dashboard', $entities_id, $is_recursive, $profiles_id, $users_id);
+        $params = $this->getEmbedParams($entities_id, (int) $is_recursive, $profiles_id, $users_id);
+
+        // Run in a stateless context, so that the rejection comes from the profile check.
+        $this->simulateStatelessContext();
 
         $grid = new Grid('test_dashboard');
-        $grid->initEmbed([
-            'dashboard'    => 'test_dashboard',
-            'entities_id'  => $entities_id,
-            'is_recursive' => $is_recursive,
-            'profiles_id'  => $profiles_id,
-            'users_id'     => $users_id,
-            'token'        => $token,
-        ]);
+        $grid->initEmbed($params);
+    }
+
+    public function testInitEmbedInStatelessContext(): void
+    {
+        $this->login();
+        $entities_id  = (int) $_SESSION['glpiactive_entity'];
+        $is_recursive = (int) $_SESSION['glpiactive_entity_recursive'];
+        $profiles_id  = (int) $_SESSION['glpiactiveprofile']['id'];
+        $users_id     = (int) Session::getLoginUserID();
+
+        $params = $this->getEmbedParams($entities_id, $is_recursive, $profiles_id, $users_id);
+
+        $this->simulateStatelessContext();
+
+        $grid = new Grid('test_dashboard');
+        $grid->initEmbed($params);
+
+        $this->assertTrue(Grid::$embed);
+        $this->assertSame($users_id, $_SESSION['glpiID']);
+        $this->assertSame('embed_dashboard', $_SESSION['glpiname']);
+        $this->assertSame($profiles_id, (int) $_SESSION['glpiactiveprofile']['id']);
+    }
+
+    public function testInitEmbedDoesNotAlterAuthenticatedSession(): void
+    {
+        // A Self-Service user holding a valid share link of a Super-Admin dashboard
+        // must not be able to turn their own session into the Super-Admin one.
+        $this->login('post-only', 'postonly');
+        $attacker_id = (int) Session::getLoginUserID();
+        $profile_id  = (int) $_SESSION['glpiactiveprofile']['id'];
+
+        $params = $this->getEmbedParams(
+            0,
+            1,
+            getItemByTypeName('Profile', 'Super-Admin', true),
+            getItemByTypeName('User', 'glpi', true)
+        );
+
+        $grid = new Grid('test_dashboard');
+        try {
+            $grid->initEmbed($params);
+            $this->fail('An embed session must not be initialized in a stateful context.');
+        } catch (AccessDeniedHttpException) {
+            // expected
+        }
+
+        $this->assertFalse(Grid::$embed);
+        $this->assertSame($attacker_id, (int) $_SESSION['glpiID']);
+        $this->assertSame($profile_id, (int) $_SESSION['glpiactiveprofile']['id']);
     }
 
     public function testGetAllTypes()
@@ -284,5 +362,63 @@ class WidgetTest extends DbTestCase
             $expected,
             Widget::getGradientPalette($bg_color, $nb_series, $revert)
         );
+    }
+
+    /**
+     * Extract the `chart_options` JS variable embedded in the HTML returned by
+     * chart widgets (simpleBar/simpleLine/...) and decode it back to an array.
+     */
+    private function extractChartOptions(string $html): array
+    {
+        $this->assertMatchesRegularExpression(
+            '/const chart_options = (\{.*\});$/m',
+            $html
+        );
+        preg_match('/const chart_options = (\{.*\});$/m', $html, $matches);
+
+        return json_decode($matches[1], true);
+    }
+
+    public static function simpleBarDistributionProvider(): iterable
+    {
+        // Mirrors what Provider::ticketsOpened() returns: a single (non-multiple)
+        // bar serie, explicitly marked as non-distributed.
+        yield 'non-distributed single serie (e.g. Provider::ticketsOpened)' => [
+            'distributed' => false,
+        ];
+        // Default behaviour of Widget::simpleBar() when the provider does not
+        // force 'distributed', each bar getting its own color from the palette.
+        yield 'distributed single serie (simpleBar default)' => [
+            'distributed' => true,
+        ];
+    }
+
+    /**
+     * Regression test for the "Number of tickets by month" dashboard card
+     * displaying `undefined`/`NaN` in its "View data" table and no bars at all
+     */
+    #[DataProvider('simpleBarDistributionProvider')]
+    public function testSimpleBarSingleSerieDataIsNotDoubleWrapped(bool $distributed): void
+    {
+        $data = [
+            ['number' => 440, 'label' => '2025-09', 'url' => '/front/ticket.php?…'],
+            ['number' => 558, 'label' => '2025-10', 'url' => '/front/ticket.php?…'],
+            ['number' => 581, 'label' => '2025-11', 'url' => '/front/ticket.php?…'],
+        ];
+
+        $html = Widget::simpleBar([
+            'data'        => $data,
+            'distributed' => $distributed,
+            'label'       => 'Number of tickets by month',
+        ]);
+
+        $chart_options = $this->extractChartOptions($html);
+
+        $this->assertCount(1, $chart_options['series']);
+        $serie_data = $chart_options['series'][0]['data'];
+
+        $this->assertCount(3, $serie_data);
+        $this->assertEquals([440, 558, 581], array_column($serie_data, 'value'));
+        $this->assertEquals(['2025-09', '2025-10', '2025-11'], array_column($serie_data, 'meta'));
     }
 }

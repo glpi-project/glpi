@@ -44,10 +44,10 @@ class TaskCategory extends CommonTreeDropdown
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory          = true;
-    public $can_be_translated  = true;
+    public bool $dohistory          = true;
+    public bool $can_be_translated  = true;
 
-    public static $rightname          = 'taskcategory';
+    public static string $rightname          = 'taskcategory';
 
     public function getAdditionalFields()
     {
@@ -59,8 +59,8 @@ class TaskCategory extends CommonTreeDropdown
             'type'  => 'bool',
         ];
 
-        $tab[] = ['name'  => 'knowbaseitemcategories_id',
-            'label' => KnowbaseItemCategory::getTypeName(),
+        $tab[] = ['name'  => 'knowbaseitems_id',
+            'label' => KnowbaseItem::getTypeName(),
             'type'  => 'dropdownValue',
             'list'  => true,
         ];
@@ -79,6 +79,15 @@ class TaskCategory extends CommonTreeDropdown
             'field'              => 'is_active',
             'name'               => __('Active'),
             'datatype'           => 'bool',
+        ];
+
+        $tab[] = [
+            'id'                 => '9',
+            'table'              => 'glpi_knowbaseitems',
+            'field'              => 'name',
+            'linkfield'          => 'knowbaseitems_id',
+            'name'               => __('Knowledge base'),
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;

@@ -79,6 +79,7 @@ class UserParameters extends AbstractParameters
             new AttributeParameter("mobile", __('Mobile')),
             new AttributeParameter("firstname", __('First name')),
             new AttributeParameter("realname", __('Surname')),
+            new AttributeParameter("registration_number", _x('user', 'Administrative number')),
             new AttributeParameter("responsible", __('Supervisor')),
             new ObjectParameter(new LocationParameters()),
             new ObjectParameter(new UserTitleParameters()),
@@ -103,6 +104,7 @@ class UserParameters extends AbstractParameters
             'mobile'    => $fields['mobile'],
             'firstname' => $fields['firstname'],
             'realname'  => $fields['realname'],
+            'registration_number' => $fields['registration_number'],
         ];
 
         // Add responsible

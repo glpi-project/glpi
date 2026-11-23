@@ -89,9 +89,9 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
      */
     public const ERROR_NO_TABLES_FOUND = 7;
 
-    protected $requires_db = false;
+    protected bool $requires_db = false;
 
-    protected $requires_db_up_to_date = false;
+    protected bool $requires_db_up_to_date = false;
 
     protected function configure()
     {
@@ -176,14 +176,14 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
         parent::initDbConnection();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         global $CFG_GLPI;
 
         $plugin_key = $input->getOption('plugin');
 
         $checker = new DatabaseSchemaIntegrityChecker(
-            $this->db,
+            $this->getDb(),
             $input->getOption('strict'),
             !$input->getOption('check-all-migrations') && !$input->getOption('check-innodb-migration'),
             !$input->getOption('check-all-migrations') && !$input->getOption('check-timestamps-migration'),

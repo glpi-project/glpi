@@ -1,0 +1,2357 @@
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+/* global GLPI */
+
+import {GLPIDashboard} from '/js/modules/Dashboard/Dashboard.js';
+
+describe('Dashboard', () => {
+    beforeAll(() => {
+        // Make backups of some methods on the prototype we will mock by default because they are called from the constructor
+        GLPIDashboard.prototype._refreshDashboard = GLPIDashboard.prototype.refreshDashboard;
+        GLPIDashboard.prototype._loadCards = GLPIDashboard.prototype.loadCards;
+    });
+    beforeEach(() => {
+        vi.clearAllMocks();
+        // clear timer mock
+        vi.useRealTimers();
+        window.AjaxMock.end();
+
+        // Mock some instance methods we don't want to test but are called from the constructor
+        GLPIDashboard.prototype.refreshDashboard = vi.fn().mockImplementation(() => {});
+        GLPIDashboard.prototype.loadCards = vi.fn().mockImplementation(() => {});
+
+        // Mock GridStack
+        window.GridStack = {
+            init: () => {
+                return new class extends EventTarget {
+                    constructor() {
+                        super();
+                        this.setStatic = vi.fn().mockImplementation(() => {});
+                        this.addWidget = vi.fn().mockImplementation(() => {});
+                    }
+                    on(event, callback) {
+                        this.addEventListener(event, callback);
+                    }
+                };
+            },
+        };
+
+        // basic DOM for dashboard
+        $(document).off('click').off('submit');
+        $('body').empty();
+        $('body').append(`
+            <div id="dashboard-12345">
+                <input type="text" class="dashboard-name" value="mytitle"/>
+                <div class="toolbar">
+                    <button class="edit-dashboard"></button>
+                    <select name="dashboard" class="dashboard_select">
+                        <option value="other_dashboard_1">Other Dashboard 1</option>
+                        <option value="current_dashboard" selected>Current Dashboard</option>
+                        <option value="other_dashboard_2">Other Dashboard 2</option>
+                    </select>
+                </div>
+                <div class="grid-stack">
+                    <div class="grid-stack-item" gs-id="1"><div class="card">test1</div></div>
+                    <div class="grid-stack-item" gs-id="2"><div class="card">test2</div></div>
+                    <div class="grid-stack-item" gs-id="3"><div class="card">test3</div></div>
+                </div>
+            </div>
+        `);
+    });
+
+    afterEach(() => {
+        vi.unstubAllGlobals();
+        console_error?.mockRestore();
+        console_error = null;
+    });
+
+    let console_error = null;
+
+    // Cards as getCardsAjax() hands them to the loading methods, one per given widget type
+    const getRequestedCards = (widgettypes) => widgettypes.map((widgettype, i) => ({
+        card_el: $(`<div class="grid-stack-item" gs-id="card${i}"><div class="grid-stack-item-content"></div></div>`),
+        card_id: `card${i}`,
+        args: {gridstack_id: `card${i}`, widgettype: widgettype},
+    }));
+
+    // Response of the streamed cards endpoint, its body is delivered in the given chunks
+    const getCardsResponse = (chunks, status = 200) => {
+        const queue = [...chunks];
+        return {
+            ok: status === 200,
+            status: status,
+            body: {
+                getReader: () => ({
+                    read: () => Promise.resolve(queue.length > 0 ? {done: false, value: queue.shift()} : {done: true, value: undefined}),
+                }),
+                cancel: vi.fn(),
+            },
+        };
+    };
+
+    // Lines of the streamed cards endpoint for the given cards, as bytes
+    const getCardsLines = (lines) => new TextEncoder().encode(lines.map((line) => typeof line === 'string' ? line : JSON.stringify(line)).join('\n'));
+
+    test('Class availability', () => {
+        // Expect class to be available as a global
+        expect(window.GLPI.Dashboard.GLPIDashboard).toBeDefined();
+        // Expect old reference to be available too
+        expect(window.GLPIDashboard).toBeDefined();
+    });
+
+    test('current_name reads the actually selected dashboard from the DOM on init', () => {
+        // The select's selected option ('current_dashboard') differs from the PHP-provided
+        // 'current' option, reproducing the case where the two can get out of sync on first load.
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'stale_dashboard_from_php',
+        });
+        expect(dashboard.current_name).toBe('current_dashboard');
+    });
+
+    test('Init with an empty dashboard select', () => {
+        $('#dashboard-12345 .dashboard_select').empty();
+        expect(() => new GLPIDashboard({'rand': '12345'})).not.toThrow();
+    });
+
+    test('Init loads the cards of the grid items sent with the page', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345', 'current': 'current_dashboard'});
+        expect(dashboard.loadCards).toHaveBeenCalledTimes(1);
+        expect(dashboard.refreshDashboard).not.toHaveBeenCalled();
+    });
+
+    test('Init with the filters sent with the page', () => {
+        const ajax = vi.spyOn($, 'ajax');
+
+        let dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard',
+            'filters': {'filter1': 'value1'},
+        });
+        expect(dashboard.getFiltersFromDB()).toEqual({'filter1': 'value1'});
+
+        // An empty set of filters is serialized as an array
+        dashboard = new GLPIDashboard({'rand': '12345', 'current': 'current_dashboard', 'filters': []});
+        expect(dashboard.getFiltersFromDB()).toEqual({});
+
+        expect(ajax).not.toHaveBeenCalledWith(expect.objectContaining({
+            data: expect.objectContaining({action: 'get_filter_data'}),
+        }));
+        ajax.mockRestore();
+    });
+
+    test('Init ignores the items and the filters of the page when another dashboard is selected', () => {
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'stale_dashboard_from_php',
+            'filters': {'filter1': 'value1'},
+        });
+        expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(1);
+        expect(dashboard.loadCards).not.toHaveBeenCalled();
+
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+            action: 'get_filter_data',
+            dashboard: 'current_dashboard',
+        }, () => {
+            return JSON.stringify({});
+        }));
+        dashboard.getFiltersFromDB();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+    });
+
+    test('loadCards', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.getCardsAjax = vi.fn().mockImplementation(() => {});
+        dashboard.loadCards = GLPIDashboard.prototype._loadCards;
+
+        dashboard.loadCards();
+        expect(dashboard.getCardsAjax).toHaveBeenCalledTimes(1);
+    });
+
+    test('saveMarkdown', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        $('body').find('.grid-stack-item').first().append(`<textarea name="markdown">test</textarea>`);
+        dashboard.saveMarkdown($('body').find('.grid-stack-item textarea').first());
+        expect(dashboard.markdown_contents[1]).toBe('test');
+        $('body').find('.grid-stack-item').first().hasClass('dirty');
+    });
+
+    test('setWidgetFromForm default values', () => {
+        // Mock glpi_close_all_dialogs
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
+
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+
+        //Mock getUuidV4 from legacy script common.js
+        window.getUuidV4 = vi.fn().mockImplementation(() => {
+            // return a UUIDv4
+            return '12345678-1234-1234-1234-123456789012';
+        });
+
+        dashboard.addWidget = vi.fn().mockImplementation(() => {});
+        dashboard.setWidgetFromForm({
+            serializeArray: () => {
+                return [];
+            }
+        });
+
+        expect(dashboard.addWidget).toHaveBeenCalledWith({
+            card_options: {
+                color: null,
+                widgettype: null,
+                palette: null,
+                use_gradient: 0,
+                point_labels: 0,
+                legend: 0,
+                limit: 7,
+                card_id: undefined,
+                gridstack_id: 'undefined_12345678-1234-1234-1234-123456789012',
+                force: true,
+                apply_filters: {},
+            },
+            gridstack_id: 'undefined_12345678-1234-1234-1234-123456789012',
+        });
+
+        // Expect glpi_close_all_dialogs to be called
+        expect(window.glpi_close_all_dialogs).toHaveBeenCalledTimes(1);
+    });
+
+    test('setWidgetFromForm custom form values', () => {
+        // Mock glpi_close_all_dialogs
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
+
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+
+        //Mock getUuidV4 from legacy script common.js
+        window.getUuidV4 = vi.fn().mockImplementation(() => {
+            // return a UUIDv4
+            return '12345678-1234-1234-1234-123456789012';
+        });
+
+        dashboard.addWidget = vi.fn().mockImplementation(() => {});
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {
+                '1': 'test',
+            };
+        });
+        dashboard.setWidgetFromForm({
+            serializeArray: () => {
+                return [
+                    {name: 'color', value: '#ff00ff'},
+                    {name: 'widgettype', value: 'testWidget'},
+                    {name: 'palette', value: 'testPalette'},
+                    {name: 'use_gradient', value: 1},
+                    {name: 'point_labels', value: 1},
+                    {name: 'legend', value: 1},
+                    {name: 'limit', value: 10},
+                    {name: 'card_id', value: 'mycard'},
+                ];
+            }
+        });
+
+        expect(dashboard.addWidget).toHaveBeenCalledWith({
+            card_id: 'mycard',
+            card_options: {
+                card_id: 'mycard',
+                color: '#ff00ff',
+                widgettype: 'testWidget',
+                palette: 'testPalette',
+                use_gradient: 1,
+                point_labels: 1,
+                legend: 1,
+                limit: 10,
+                gridstack_id: 'mycard_12345678-1234-1234-1234-123456789012',
+                force: true,
+                apply_filters: {'1': 'test'},
+            },
+            // TODO These duplicated values probably shouldn't be here
+            color: '#ff00ff',
+            widgettype: 'testWidget',
+            palette: 'testPalette',
+            use_gradient: 1,
+            point_labels: 1,
+            legend: 1,
+            limit: 10,
+            gridstack_id: 'mycard_12345678-1234-1234-1234-123456789012',
+        });
+
+        // Expect glpi_close_all_dialogs to be called
+        expect(window.glpi_close_all_dialogs).toHaveBeenCalledTimes(1);
+    });
+
+    test('setWidgetFromForm No Card', () => {
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.addWidget = vi.fn().mockImplementation(() => {});
+        const result = dashboard.setWidgetFromForm({
+            serializeArray: () => {
+                return [{name: 'card_id', value: '0'}];
+            }
+        });
+        expect(result).toBe(false);
+        expect(dashboard.addWidget).not.toHaveBeenCalled();
+        expect(window.glpi_close_all_dialogs).toHaveBeenCalledTimes(1);
+    });
+
+    test('setWidgetFromForm Edit No Old ID', () => {
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.addWidget = vi.fn().mockImplementation(() => {});
+        const result = dashboard.setWidgetFromForm({
+            serializeArray: () => {
+                return [{name: 'old_id', value: '0'}];
+            }
+        });
+        expect(result).toBe(false);
+        expect(dashboard.addWidget).not.toHaveBeenCalled();
+        expect(window.glpi_close_all_dialogs).toHaveBeenCalledTimes(1);
+    });
+
+    test('setWidgetFromForm Edit Remove Old Card', () => {
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.addWidget = vi.fn().mockImplementation(() => {});
+        dashboard.grid.removeWidget = vi.fn().mockImplementation(() => {});
+        dashboard.setWidgetFromForm({
+            serializeArray: () => {
+                return [
+                    {name: 'color', value: '#ff00ff'},
+                    {name: 'widgettype', value: 'testWidget'},
+                    {name: 'use_gradient', value: 1},
+                    {name: 'point_labels', value: 1},
+                    {name: 'limit', value: 10},
+                    {name: 'card_id', value: '6'},
+                    {name: 'old_id', value: '2'},
+                ];
+            }
+        });
+        expect(dashboard.grid.removeWidget).toHaveBeenCalledWith(expect.toSatisfy((widget) => {
+            return $(widget).attr('gs-id') === '2';
+        }));
+        expect(dashboard.addWidget).toHaveBeenCalled();
+        expect(window.glpi_close_all_dialogs).toHaveBeenCalledTimes(1);
+    });
+
+    test('setWidgetFromForm Encoded Card Options', () => {
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.addWidget = vi.fn().mockImplementation(() => {});
+        dashboard.setWidgetFromForm({
+            serializeArray: () => {
+                return [
+                    {name: 'color', value: '#ff00ff'},
+                    {name: 'widgettype', value: 'testWidget'},
+                    {name: 'use_gradient', value: 1},
+                    {name: 'point_labels', value: 1},
+                    {name: 'limit', value: 10},
+                    {name: 'card_id', value: '6'},
+                    {name: 'card_options', value: JSON.stringify({test: 'test'})},
+                ];
+            }
+        });
+        expect(dashboard.addWidget).toHaveBeenCalledWith(expect.toSatisfy((opts) => {
+            return opts.card_options['test'] === 'test' && opts.card_id === '6'
+                && opts.card_options['gridstack_id'] === '6_12345678-1234-1234-1234-123456789012';
+        }));
+        expect(window.glpi_close_all_dialogs).toHaveBeenCalledTimes(1);
+    });
+
+    /**
+     * Test the calling of the AJAX endpoint for the action 'get_card' from the method setWidgetFromForm
+     */
+    test('setWidgetFromForm ajax', async () => {
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard',
+        });
+
+        window.getUuidV4 = vi.fn().mockImplementation(() => {
+            return '12345678-1234-1234-1234-123456789012';
+        });
+
+        $('body').append(`<div id="widget12345"><div class="grid-stack-item-content"></div></div>`);
+        dashboard.addWidget = vi.fn().mockImplementation(() => {
+            return $('#widget12345');
+        });
+
+        dashboard.fitNumbers = vi.fn();
+        dashboard.animateNumbers = vi.fn();
+        dashboard.saveDashboard = vi.fn();
+
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+            action: 'get_card',
+            dashboard: 'current_dashboard',
+            card_id: undefined,
+            cache_key: '',
+            args: {
+                color: null,
+                widgettype: null,
+                palette: null,
+                use_gradient: 0,
+                point_labels: 0,
+                legend: 0,
+                limit: 7,
+                card_id: undefined,
+                gridstack_id: 'undefined_12345678-1234-1234-1234-123456789012',
+                force: true,
+                apply_filters: {'1': 'test'},
+            }
+        }, () => {
+            return $(`<div class="test-content"></div>`);
+        }));
+
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {
+                '1': 'test',
+            };
+        });
+
+        dashboard.setWidgetFromForm({
+            serializeArray: () => {
+                return [];
+            }
+        });
+        await new Promise(process.nextTick);
+
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+        expect(dashboard.animateNumbers).toHaveBeenCalledWith(
+            expect.toSatisfy((widget) => {
+                return widget.attr('id') === 'widget12345';
+            })
+        );
+        expect(dashboard.saveDashboard).toHaveBeenCalledTimes(1);
+        expect($('#widget12345').html()).toBe(`<div class="grid-stack-item-content"><div class="test-content"></div></div>`);
+    });
+
+    test('addWidget', () => {
+        const widget_params = {
+            x: 1,
+            y: 2,
+            width: 3,
+            height: 4,
+            card_options: {
+                card_id: 'mycard',
+            },
+            gridstack_id: 'mycard_12345678-1234-1234-1234-123456789012',
+        };
+
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.addWidget(widget_params);
+
+        expect(dashboard.grid.addWidget).toHaveBeenCalledWith(
+            expect.toSatisfy((widget_info) => {
+                const html_el = $(`<div>${widget_info.content}</div>`);
+                const has_refresh = html_el.find('.controls i.refresh-item').length === 1;
+                const has_edit = html_el.find('.controls i.edit-item').length === 1;
+                const has_delete = html_el.find('.controls i.delete-item').length === 1;
+                const has_content = html_el.find('div.grid-stack-item-content').length === 1;
+                return widget_info.x === 1 && widget_info.y === 2 && widget_info.w === 3 && widget_info.h === 4
+                    && widget_info.autoPosition === false && widget_info.id === 'mycard_12345678-1234-1234-1234-123456789012'
+                    && has_refresh && has_edit && has_delete && has_content;
+            }),
+        );
+    });
+
+    test('addWidget autoPosition', () => {
+        const widget_params = {
+            card_options: {
+                card_id: 'mycard',
+            },
+            gridstack_id: 'mycard_12345678-1234-1234-1234-123456789012',
+        };
+
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.addWidget(widget_params);
+
+        expect(dashboard.grid.addWidget).toHaveBeenCalledWith(
+            expect.toSatisfy((widget_info) => {
+                const html_el = $(`<div>${widget_info.content}</div>`);
+                const has_refresh = html_el.find('.controls i.refresh-item').length === 1;
+                const has_edit = html_el.find('.controls i.edit-item').length === 1;
+                const has_delete = html_el.find('.controls i.delete-item').length === 1;
+                const has_content = html_el.find('div.grid-stack-item-content').length === 1;
+                return widget_info.x === -1 && widget_info.y === -1 && widget_info.w === 2 && widget_info.h === 2
+                    && widget_info.autoPosition === true && widget_info.id === 'mycard_12345678-1234-1234-1234-123456789012'
+                    && has_refresh && has_edit && has_delete && has_content;
+            }),
+        );
+    });
+
+    test('addWidget return', () => {
+        const widget_params = {
+            x: 1,
+            y: 2,
+            width: 3,
+            height: 4,
+            card_options: {
+                card_id: 'mycard',
+            },
+            gridstack_id: 'mycard_12345678-1234-1234-1234-123456789012',
+        };
+
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        $('body').append('<div id="mock_widget12345" data-card-options="">test</div>');
+        dashboard.grid.addWidget = vi.fn().mockImplementation(() => {
+            return $('#mock_widget12345')[0];
+        });
+        const created_widget = dashboard.addWidget(widget_params);
+
+        expect(dashboard.grid.addWidget).toHaveBeenCalledWith(
+            expect.toSatisfy((widget_info) => {
+                const html_el = $(`<div>${widget_info.content}</div>`);
+                const has_refresh = html_el.find('.controls i.refresh-item').length === 1;
+                const has_edit = html_el.find('.controls i.edit-item').length === 1;
+                const has_delete = html_el.find('.controls i.delete-item').length === 1;
+                const has_content = html_el.find('div.grid-stack-item-content').length === 1;
+                return widget_info.x === 1 && widget_info.y === 2 && widget_info.w === 3 && widget_info.h === 4
+                    && widget_info.autoPosition === false && widget_info.id === 'mycard_12345678-1234-1234-1234-123456789012'
+                    && has_refresh && has_edit && has_delete && has_content;
+            }),
+        );
+
+        expect(created_widget.attr('data-card-options')).toBe(JSON.stringify(widget_params.card_options));
+    });
+
+    test('setFilterFromForm', async () => {
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
+        $('body').append(`<div id="filter-selector"></div>`);
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.filters_selector = '#filter-selector';
+        dashboard.saveFilter = vi.fn().mockImplementation(() => {});
+
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+            action: 'get_filter',
+            filter_id: 'myfilter',
+        }, () => {
+            return $(`<div class="filter-content"></div>`);
+        }));
+
+        dashboard.setFilterFromForm({
+            serializeArray: () => {
+                return [
+                    {name: 'filter_id', value: 'myfilter'}
+                ];
+            }
+        });
+        await new Promise(process.nextTick);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+        expect(dashboard.saveFilter).toHaveBeenCalledWith('myfilter', []);
+        expect(window.glpi_close_all_dialogs).toHaveBeenCalledTimes(1);
+        expect($('#filter-selector .filter-content').length).toBe(1);
+    });
+
+    test('refreshDashboard', async () => {
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard'
+        });
+        dashboard.grid.removeAll = vi.fn().mockImplementation(() => {});
+        dashboard.grid.makeWidget = vi.fn().mockImplementation(() => {});
+        dashboard.getCardsAjax = vi.fn().mockImplementation(() => {});
+        $('body').find('.grid-stack').empty();
+
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+            action: 'get_dashboard_items',
+            dashboard: 'current_dashboard',
+        }, () => {
+            return `
+                <div class="grid-stack-item" gs-id="4"><div class="card"></div></div>
+                <div class="grid-stack-item" gs-id="5"><div class="card"></div></div>
+                <div class="grid-stack-item" gs-id="6"><div class="card"></div></div>
+            `;
+        }));
+
+        // Restore refreshDashboard so it can be tested
+        dashboard.refreshDashboard = GLPIDashboard.prototype._refreshDashboard;
+        dashboard.loadCards = GLPIDashboard.prototype._loadCards;
+        dashboard.refreshDashboard();
+        // We need to wait for the next tick to be sure that the async code is finished
+        await new Promise(process.nextTick);
+
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+        expect(dashboard.grid.removeAll).toHaveBeenCalledTimes(1);
+        expect(dashboard.grid.makeWidget).toHaveBeenNthCalledWith(1, expect.toSatisfy((html) => {
+            return $(html).attr('gs-id') === '4';
+        }));
+        expect(dashboard.grid.makeWidget).toHaveBeenNthCalledWith(2, expect.toSatisfy((html) => {
+            return $(html).attr('gs-id') === '5';
+        }));
+        expect(dashboard.grid.makeWidget).toHaveBeenNthCalledWith(3, expect.toSatisfy((html) => {
+            return $(html).attr('gs-id') === '6';
+        }));
+        expect(dashboard.getCardsAjax).toHaveBeenCalledTimes(1);
+    });
+
+    test('refreshDashboard embed', async () => {
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard'
+        });
+        dashboard.embed = true;
+        dashboard.token = 'mytoken';
+        dashboard.entities_id = 3;
+        dashboard.is_recursive = 1;
+        dashboard.profiles_id = 4;
+        dashboard.users_id = 5;
+        dashboard.grid.removeAll = vi.fn().mockImplementation(() => {});
+        dashboard.grid.makeWidget = vi.fn().mockImplementation(() => {});
+        dashboard.getCardsAjax = vi.fn().mockImplementation(() => {});
+        $('body').find('.grid-stack').empty();
+
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+            action: 'get_dashboard_items',
+            dashboard: 'current_dashboard',
+            embed: 1,
+            token: 'mytoken',
+            entities_id: 3,
+            is_recursive: 1,
+            profiles_id: 4,
+            users_id: 5,
+        }, () => {
+            return `
+                <div class="grid-stack-item" gs-id="4"><div class="card"></div></div>
+                <div class="grid-stack-item" gs-id="5"><div class="card"></div></div>
+                <div class="grid-stack-item" gs-id="6"><div class="card"></div></div>
+            `;
+        }));
+
+        // Restore refreshDashboard so it can be tested
+        dashboard.refreshDashboard = GLPIDashboard.prototype._refreshDashboard;
+        dashboard.loadCards = GLPIDashboard.prototype._loadCards;
+        dashboard.refreshDashboard();
+        // We need to wait for the next tick to be sure that the async code is finished
+        await new Promise(process.nextTick);
+
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+        expect(dashboard.grid.removeAll).toHaveBeenCalledTimes(1);
+        expect(dashboard.grid.makeWidget).toHaveBeenNthCalledWith(1, expect.toSatisfy((html) => {
+            return $(html).attr('gs-id') === '4';
+        }));
+        expect(dashboard.grid.makeWidget).toHaveBeenNthCalledWith(2, expect.toSatisfy((html) => {
+            return $(html).attr('gs-id') === '5';
+        }));
+        expect(dashboard.grid.makeWidget).toHaveBeenNthCalledWith(3, expect.toSatisfy((html) => {
+            return $(html).attr('gs-id') === '6';
+        }));
+        expect(dashboard.getCardsAjax).toHaveBeenCalledTimes(1);
+    });
+
+    test('setLastDashboard', () => {
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard'
+        });
+
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
+            dashboard: 'current_dashboard',
+            page: 'http://localhost/',
+            action: 'set_last_dashboard',
+        }, () => {return true;}));
+        dashboard.setLastDashboard();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+    });
+
+    test('saveFilter', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.filters_selector = '#filter-selector';
+
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {
+                'filter1': 'filter1_value',
+            };
+        });
+        dashboard.setFiltersInDB = vi.fn().mockImplementation(() => {});
+        window.sortable = vi.fn().mockImplementation(() => {});
+        dashboard.refreshCardsImpactedByFilter = vi.fn().mockImplementation(() => {});
+
+        dashboard.saveFilter('filter2', 'filter2_value');
+
+        expect(dashboard.getFiltersFromDB).toHaveBeenCalledTimes(1);
+        expect(dashboard.setFiltersInDB).toHaveBeenCalledWith({
+            'filter1': 'filter1_value',
+            'filter2': 'filter2_value',
+        });
+        expect(window.sortable).toHaveBeenCalledWith('#filter-selector', 'reload');
+        expect(dashboard.refreshCardsImpactedByFilter).toHaveBeenCalledWith(
+            'filter2',
+            {
+                'filter1': 'filter1_value',
+                'filter2': 'filter2_value',
+            }
+        );
+    });
+
+    test('getFiltersFromDB caches filters per dashboard', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const fetched = [];
+
+        window.AjaxMock.start();
+        // persistent, so an unexpected extra request would be counted instead of throwing
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+            action: 'get_filter_data',
+        }, (data) => {
+            fetched.push(data.dashboard);
+            return {filter: `${data.dashboard}_value`};
+        }, true));
+
+        expect(dashboard.getFiltersFromDB()).toEqual({filter: 'current_dashboard_value'});
+        expect(dashboard.getFiltersFromDB()).toEqual({filter: 'current_dashboard_value'});
+
+        // switching dashboard must not reuse the previous dashboard's filters
+        dashboard.current_name = 'other_dashboard_1';
+        expect(dashboard.getFiltersFromDB()).toEqual({filter: 'other_dashboard_1_value'});
+
+        dashboard.current_name = 'current_dashboard';
+        expect(dashboard.getFiltersFromDB()).toEqual({filter: 'current_dashboard_value'});
+
+        expect(fetched).toEqual(['current_dashboard', 'other_dashboard_1']);
+    });
+
+    test('setFiltersInDB updates only the current dashboard cache', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard._filters_cache = {other_dashboard_1: {filter: 'other_value'}};
+
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
+            action: 'save_filter_data',
+            dashboard: 'current_dashboard',
+        }, () => true));
+
+        dashboard.setFiltersInDB({filter: 'new_value'});
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+
+        // served from cache, no GET mock registered
+        expect(dashboard.getFiltersFromDB()).toEqual({filter: 'new_value'});
+        dashboard.current_name = 'other_dashboard_1';
+        expect(dashboard.getFiltersFromDB()).toEqual({filter: 'other_value'});
+    });
+
+    test('saveFilter with an unchanged value', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {
+                'filter1': 'filter1_value',
+                'filter2': ['1', '2'],
+            };
+        });
+        dashboard.setFiltersInDB = vi.fn().mockImplementation(() => {});
+        dashboard.refreshCardsImpactedByFilter = vi.fn().mockImplementation(() => {});
+
+        // Filters save their value when they are initialized
+        dashboard.saveFilter('filter1', 'filter1_value');
+        dashboard.saveFilter('filter2', ['1', '2']);
+
+        expect(dashboard.setFiltersInDB).not.toHaveBeenCalled();
+        expect(dashboard.refreshCardsImpactedByFilter).not.toHaveBeenCalled();
+    });
+
+    test('saveFilter with a new empty filter', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.filters_selector = '#filter-selector';
+
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {};
+        });
+        dashboard.setFiltersInDB = vi.fn().mockImplementation(() => {});
+        window.sortable = vi.fn().mockImplementation(() => {});
+        dashboard.refreshCardsImpactedByFilter = vi.fn().mockImplementation(() => {});
+
+        dashboard.saveFilter('filter1', []);
+
+        expect(dashboard.setFiltersInDB).toHaveBeenCalledWith({'filter1': []});
+    });
+
+    test('refreshCardsImpactedByFilter', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        $('body').append(`
+            <div class="dashboard">
+                <div class="grid-stack-item" gs-id="4"><div class="card filter-filter1"></div></div>
+                <div class="grid-stack-item" gs-id="5"><div class="card filter-filter2"></div></div>
+                <div class="grid-stack-item" gs-id="6"><div class="card filter-filter1"></div></div>
+            </div>
+        `);
+        dashboard.getCardsAjax = vi.fn().mockImplementation(() => {});
+
+        dashboard.refreshCardsImpactedByFilter('filter1', {});
+
+        // One call for the impacted cards, which lets them share their requests
+        expect(dashboard.getCardsAjax).toHaveBeenCalledTimes(1);
+        expect(dashboard.getCardsAjax).toHaveBeenCalledWith(':has(.card.filter-filter1)', {});
+    });
+
+    test('refreshCardsImpactedByFilter loads the impacted cards in batches', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345', 'batches': 2});
+        dashboard.loadCardsBatch = vi.fn().mockImplementation(() => Promise.resolve());
+        $('.grid-stack-item').each((index, item) => {
+            $(item).data('card-options', {});
+        });
+        $('.grid-stack-item[gs-id="1"] .card, .grid-stack-item[gs-id="3"] .card').addClass('filter-filter1');
+
+        dashboard.refreshCardsImpactedByFilter('filter1', {'filter1': 'value1'});
+
+        const requested = dashboard.loadCardsBatch.mock.calls.flatMap((call) => call[0]);
+        expect(requested.map((card) => card.args.gridstack_id).sort()).toEqual(['1', '3']);
+        expect(requested[0].args.apply_filters).toEqual({'filter1': 'value1'});
+    });
+
+    test('saveDashboard', async () => {
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard'
+        });
+        dashboard.refreshDashboard = vi.fn().mockImplementation(() => {});
+
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
+            action: 'save_items',
+            dashboard: 'current_dashboard',
+            items: [], //FIXME There are no items here because the function uses a :visible selector and jsdom doesn't acutally do any layout so nothing is visible
+            title: 'mytitle',
+        }, () => {return true;}));
+
+        dashboard.saveDashboard();
+        await new Promise(process.nextTick);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+        expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(0);
+    });
+
+    test('saveDashboard Force Refresh', async () => {
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard'
+        });
+        dashboard.refreshDashboard = vi.fn().mockImplementation(() => {});
+
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
+            action: 'save_items',
+            dashboard: 'current_dashboard',
+            items: [], //FIXME There are no items here because the function uses a :visible selector and jsdom doesn't acutally do any layout so nothing is visible
+            title: 'mytitle',
+        }, () => {return true;}));
+
+        dashboard.saveDashboard(true);
+        await new Promise(process.nextTick);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+        expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(1);
+    });
+
+    test('fitNumbers', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.dash_width = 1000;
+        dashboard.fitNumbers();
+        expect(dashboard.element[0].style.getPropertyValue('--dashboard-text-offset')).toBe('1.16');
+    });
+
+    test('fitNumbers small width', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.dash_width = 500;
+        dashboard.fitNumbers();
+        expect(dashboard.element[0].style.getPropertyValue('--dashboard-text-offset')).toBe('1.8');
+    });
+
+    test('animateNumbers Int', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        $('body').append(`
+            <div class="parent1">
+                <div class="big-number big-number-1">
+                    <div class="formatted-number"><div class="number" data-precision="0">10000</div></div>
+                    <div class="label">Label 1</div>
+                </div>
+            </div>
+        `);
+
+        vi.useFakeTimers();
+        dashboard.animateNumbers($('.parent1'));
+        expect(parseInt($('.parent1 .formatted-number').text())).toBeLessThan(10000);
+        vi.advanceTimersByTime(500);
+        expect(parseInt($('.parent1 .formatted-number').text())).toBeGreaterThan(400);
+        expect(parseInt($('.parent1 .formatted-number').text())).toBeLessThan(10000);
+        vi.advanceTimersByTime(500);
+        expect(parseInt($('.parent1 .formatted-number').text())).toBe(10000);
+        vi.advanceTimersByTime(500);
+        expect(parseInt($('.parent1 .formatted-number').text())).toBe(10000);
+    });
+
+    test('animateNumbers Float', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        $('body').append(`
+            <div class="parent1">
+                <div class="big-number big-number-1">
+                    <div class="formatted-number"><div class="number" data-precision="3">10000.505</div></div>
+                    <div class="label">Label 1</div>
+                </div>
+            </div>
+        `);
+
+        vi.useFakeTimers();
+        dashboard.animateNumbers($('.parent1'));
+        expect(parseFloat($('.parent1 .formatted-number').text())).toBeLessThan(10000);
+        vi.advanceTimersByTime(500);
+        expect(parseFloat($('.parent1 .formatted-number').text())).toBeGreaterThan(400);
+        expect(parseFloat($('.parent1 .formatted-number').text())).toBeLessThan(10000);
+        vi.advanceTimersByTime(500);
+        expect(parseFloat($('.parent1 .formatted-number').text())).toBe(10000.505);
+        vi.advanceTimersByTime(500);
+        expect(parseFloat($('.parent1 .formatted-number').text())).toBe(10000.505);
+    });
+
+    test('animateNumbers Non-Number', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        $('body').append(`
+            <div class="parent1">
+                <div class="big-number big-number-1">
+                    <div class="formatted-number"><div class="number" data-precision="3">Test</div></div>
+                    <div class="label">Label 1</div>
+                </div>
+            </div>
+        `);
+
+        vi.useFakeTimers();
+        dashboard.animateNumbers($('.parent1'));
+        expect($('.parent1 .formatted-number').text()).toBe('Test');
+        vi.advanceTimersByTime(500);
+        expect($('.parent1 .formatted-number').text()).toBe('Test');
+        vi.advanceTimersByTime(500);
+        expect($('.parent1 .formatted-number').text()).toBe('Test');
+    });
+
+    test('animateNumbers Int + Suffix', () => {
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'filters_selector': '.filters',
+        });
+        $('body').append(`
+            <div class="parent1">
+                <div class="big-number big-number-1">
+                    <div class="formatted-number"><div class="number" data-precision="0">10000</div><div class="suffix">Suffix</div></div>
+                    <div class="label">Label 1</div>
+                </div>
+            </div>
+        `);
+
+        vi.useFakeTimers();
+        dashboard.animateNumbers($('.parent1'));
+        expect($('.parent1 .formatted-number .number').text()).toBe('0');
+        vi.advanceTimersByTime(1000);
+        expect($('.parent1 .formatted-number .number').text()).toBe('10000');
+    });
+
+    test('setEditMode', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.saveDashboard = vi.fn().mockImplementation(() => {});
+        dashboard.grid.setStatic = vi.fn().mockImplementation(() => {});
+        window.sortable = vi.fn().mockImplementation(() => {});
+        $('body').append(`<div class="grid-stack-item dirty"></div><div class="grid-stack-item dirty"></div>`);
+
+        dashboard.setEditMode(true);
+        expect(dashboard.edit_mode).toBe(true);
+        expect($('.edit-dashboard').get(0)).toHaveClass('active');
+        expect(dashboard.element.get(0)).toHaveClass('edit-mode');
+        expect(dashboard.grid.setStatic).toHaveBeenCalledWith(false);
+        // not call as there is no filters expect(window.sortable).toHaveBeenCalledWith('#dashboard-12345 .filters', 'enable');
+        expect(dashboard.saveDashboard).not.toHaveBeenCalled();
+
+        $('body .grid-stack-item').remove();
+
+        vi.clearAllMocks();
+
+        dashboard.setEditMode(false);
+        expect(dashboard.edit_mode).toBe(false);
+        expect($('.edit-dashboard').get(0)).not.toHaveClass('active');
+        expect(dashboard.element.get(0)).not.toHaveClass('edit-mode');
+        expect(dashboard.grid.setStatic).toHaveBeenCalledWith(true);
+        // not call as there is no filters expect(window.sortable).toHaveBeenCalledWith('#dashboard-12345 .filters', 'disable');
+        expect(dashboard.saveDashboard).not.toHaveBeenCalled();
+
+        $('body').append(`<div class="grid-stack-item dirty"></div><div class="grid-stack-item dirty"></div>`);
+        dashboard.setEditMode(false);
+        expect(dashboard.edit_mode).toBe(false);
+        expect(dashboard.saveDashboard).toHaveBeenCalledTimes(1);
+    });
+
+    test('toggleFullscreenMode', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        window.GoInFullscreen = vi.fn().mockImplementation(() => {});
+        window.GoOutFullscreen = vi.fn().mockImplementation(() => {});
+        dashboard.setEditMode = vi.fn().mockImplementation(() => {});
+        $('body').append(`<button class="toggle-fullscreen active"></button>`);
+
+        dashboard.toggleFullscreenMode($('button.toggle-fullscreen'));
+        expect($('button.toggle-fullscreen').get(0)).not.toHaveClass('active');
+        expect(dashboard.setEditMode).not.toHaveBeenCalled();
+        expect(window.GoInFullscreen).not.toHaveBeenCalled();
+        expect(window.GoOutFullscreen).toHaveBeenCalled();
+
+        vi.clearAllMocks();
+
+        dashboard.toggleFullscreenMode($('button.toggle-fullscreen'));
+        expect($('button.toggle-fullscreen').get(0)).toHaveClass('active');
+        expect(dashboard.setEditMode).toHaveBeenCalledWith(false);
+        expect(window.GoInFullscreen).toHaveBeenCalledWith(expect.toSatisfy((arg) => {
+            return $(arg).attr('id') === 'dashboard-12345';
+        }));
+        expect(window.GoOutFullscreen).not.toHaveBeenCalled();
+    });
+
+    test('clone', async () => {
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard',
+        });
+        dashboard.addNewDashbardInSelect = vi.fn().mockImplementation(() => {});
+
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
+            action: 'clone_dashboard',
+            dashboard: 'current_dashboard',
+        }, () => {
+            return {
+                title: 'New dashboard',
+                key: 'new_dashboard',
+            };
+        }));
+
+        dashboard.clone();
+        await new Promise(process.nextTick);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+        expect(dashboard.addNewDashbardInSelect).toHaveBeenCalledWith('New dashboard', 'new_dashboard');
+    });
+
+    test('delete', async () => {
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard',
+        });
+        window.confirm = vi.fn().mockImplementationOnce(() => {
+            return false;
+        }).mockImplementationOnce(() => {
+            return true;
+        });
+        dashboard.setLastDashboard = vi.fn().mockImplementation(() => {});
+
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
+            action: 'delete_dashboard',
+            dashboard: 'current_dashboard',
+        }, () => {
+            return true;
+        }));
+
+        dashboard.delete();
+        await new Promise(process.nextTick);
+        // Confirm dialog should return false (not confirmed), so the dashboard shouldn't be deleted
+        expect(window.AjaxMock.isResponseStackEmpty()).toBe(false);
+        expect($('.dashboard_select option[value="current_dashboard"]').length).toBe(1);
+        expect($('.dashboard_select option').length).toBe(3);
+
+        dashboard.delete();
+        await new Promise(process.nextTick);
+        // Confirm dialog should return true (confirmed), so the dashboard should be deleted
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+        expect(dashboard.setLastDashboard).toHaveBeenCalled();
+        expect($('.dashboard_select option[value="current_dashboard"]').length).toBe(0);
+        expect($('.dashboard_select option').length).toBe(2);
+    });
+
+    test('addForm', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        window.glpi_ajax_dialog = vi.fn().mockImplementation(() => {});
+        dashboard.addForm();
+        expect(window.glpi_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((arg) => {
+            return arg.params.action === 'add_new' && arg.url === '/ajax/dashboard.php';
+        }));
+    });
+
+    test('addNew', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.addNewDashbardInSelect = vi.fn().mockImplementation(() => {});
+        dashboard.setEditMode = vi.fn().mockImplementation(() => {});
+
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
+            action: 'save_new_dashboard',
+            title: 'mytitle',
+            context: 'core'
+        }, () => {
+            return 'new_dashboard';
+        }));
+
+        dashboard.addNew({
+            title: 'mytitle',
+        });
+        await new Promise(process.nextTick);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+        expect(dashboard.addNewDashbardInSelect).toHaveBeenCalledWith('mytitle', 'new_dashboard');
+        expect(dashboard.setEditMode).toHaveBeenCalledWith(true);
+    });
+
+    test('addNew Other Context', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.context = 'other_context';
+        dashboard.addNewDashbardInSelect = vi.fn().mockImplementation(() => {});
+        dashboard.setEditMode = vi.fn().mockImplementation(() => {});
+
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
+            action: 'save_new_dashboard',
+            title: 'mytitle',
+            context: 'other_context'
+        }, () => {
+            return 'new_dashboard';
+        }));
+
+        dashboard.addNew({
+            title: 'mytitle',
+        });
+        await new Promise(process.nextTick);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+        expect(dashboard.addNewDashbardInSelect).toHaveBeenCalledWith('mytitle', 'new_dashboard');
+        expect(dashboard.setEditMode).toHaveBeenCalledWith(true);
+    });
+
+    test('addNewDashbardInSelect', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        $('.dashboard_select').off('change');
+        expect($('.dashboard_select option[value="new_dashboard"]').length).toBe(0);
+        dashboard.addNewDashbardInSelect('New dashboard', 'new_dashboard');
+        const new_option = $('.dashboard_select option[value="new_dashboard"]');
+        expect(new_option.length).toBe(1);
+        expect(new_option.text()).toBe('New dashboard');
+        expect(new_option.is(':selected')).toBeTruthy();
+    });
+
+    test('getCardsAjax multi-mode all', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.ajax_cards = true;
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {
+                'filter1': 'value1',
+                'filter2': 'value2',
+            };
+        });
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+
+        const gridstack_items = $('.grid-stack-item');
+        $.each(gridstack_items, (index, item) => {
+            $(item).data('card-options', {});
+        });
+        // When ajax_cards is true, getCardsAjax should return an array of promises
+        expect(Array.isArray(dashboard.getCardsAjax())).toBeTruthy();
+    });
+
+    test('getCardsAjax multi-mode embed', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.ajax_cards = true;
+        dashboard.embed = true;
+        dashboard.token = 'mytoken';
+        dashboard.entities_id = 3;
+        dashboard.is_recursive = 1;
+        dashboard.profiles_id = 4;
+        dashboard.users_id = 5;
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {
+                'filter1': 'value1',
+                'filter2': 'value2',
+            };
+        });
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+        const gridstack_items = $('.grid-stack-item');
+        $.each(gridstack_items, (index, item) => {
+            $(item).data('card-options', {});
+        });
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+            embed: 1,
+            action: 'get_card',
+            token: 'mytoken',
+            entities_id: 3,
+            is_recursive: 1,
+            profiles_id: 4,
+            users_id: 5,
+            card_id: 1
+        }, () => {return true;}));
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+            embed: 1,
+            action: 'get_card',
+            token: 'mytoken',
+            entities_id: 3,
+            is_recursive: 1,
+            profiles_id: 4,
+            users_id: 5,
+            card_id: 2
+        }, () => {return true;}));
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+            embed: 1,
+            action: 'get_card',
+            token: 'mytoken',
+            entities_id: 3,
+            is_recursive: 1,
+            profiles_id: 4,
+            users_id: 5,
+            card_id: 3
+        }, () => {return true;}));
+
+        dashboard.getCardsAjax();
+        await new Promise(process.nextTick);
+
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+    });
+
+    test('getCardsAjax multi-mode single', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.ajax_cards = true;
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {
+                'filter1': 'value1',
+                'filter2': 'value2',
+            };
+        });
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+
+        const gridstack_items = $('.grid-stack-item');
+        $.each(gridstack_items, (index, item) => {
+            $(item).data('card-options', {});
+        });
+        // When ajax_cards is true, getCardsAjax should return an array of promises
+        expect(Array.isArray(dashboard.getCardsAjax('[gs-id="2"]'))).toBeTruthy();
+    });
+
+    test('getCardsAjax multi-mode Error', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.ajax_cards = true;
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {};
+        });
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+
+        const gridstack_items = $('.grid-stack-item');
+        $.each(gridstack_items, (index, item) => {
+            $(item).data('card-options', {});
+        });
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+            action: 'get_card',
+        }, () => {
+            return true;
+        }, false, 'error'));
+
+        // When ajax_cards is false, getCardsAjax should return a single promise
+        dashboard.getCardsAjax('[gs-id="2"]');
+        await new Promise(process.nextTick);
+        expect($('.grid-stack-item[gs-id="2"] .empty-card.card-error').length).toBe(1);
+        // card 1 and 3 should still be present without error
+        expect($('.grid-stack-item > *:not(.empty-card)').length).toBe(2);
+    });
+
+    test('getCardsAjax single-mode all', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.ajax_cards = false;
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {
+                'filter1': 'value1',
+                'filter2': 'value2',
+            };
+        });
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+
+        const gridstack_items = $('.grid-stack-item');
+        $.each(gridstack_items, (index, item) => {
+            $(item).data('card-options', {});
+        });
+        // When ajax_cards is false, getCardsAjax should return a single promise
+        const result = dashboard.getCardsAjax();
+        expect(typeof result).toBe('object');
+        expect(result.then).toBeDefined();
+    });
+
+    test('getCardsAjax single-mode embed', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.ajax_cards = false;
+        dashboard.embed = true;
+        dashboard.token = 'mytoken';
+        dashboard.entities_id = 3;
+        dashboard.is_recursive = 1;
+        dashboard.profiles_id = 4;
+        dashboard.users_id = 5;
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {
+                'filter1': 'value1',
+                'filter2': 'value2',
+            };
+        });
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+        const gridstack_items = $('.grid-stack-item');
+        $.each(gridstack_items, (index, item) => {
+            $(item).data('card-options', {});
+        });
+        window.AjaxMock.start();
+        const data = {
+            "force": 0,
+            "d_cache_key": "",
+            "cards": [
+                {"card_id":"1","force":0,"args":{"gridstack_id":"1","apply_filters":{"filter1":"value1","filter2":"value2"}},"c_cache_key":""},
+                {"card_id":"2","force":0,"args":{"gridstack_id":"2","apply_filters":{"filter1":"value1","filter2":"value2"}},"c_cache_key":""},
+                {"card_id":"3","force":0,"args":{"gridstack_id":"3","apply_filters":{"filter1":"value1","filter2":"value2"}},"c_cache_key":""}
+            ],
+            "embed": 1,
+            "token": "mytoken",
+            "entities_id": 3,
+            "is_recursive": 1,
+            "profiles_id": 4,
+            "users_id": 5
+        };
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
+            action: 'get_cards',
+            data: JSON.stringify(data)
+        }, () => {
+            return ['<div></div>'];
+        }));
+
+        dashboard.getCardsAjax();
+        await new Promise(process.nextTick);
+
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+    });
+
+    test('getCardsAjax single-mode single', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.ajax_cards = false;
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {
+                'filter1': 'value1',
+                'filter2': 'value2',
+            };
+        });
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+
+        const gridstack_items = $('.grid-stack-item');
+        $.each(gridstack_items, (index, item) => {
+            $(item).data('card-options', {});
+        });
+        // When ajax_cards is false, getCardsAjax should return a single promise
+        const result = dashboard.getCardsAjax('[gs-id="2"]');
+        expect(typeof result).toBe('object');
+        expect(result.then).toBeDefined();
+    });
+
+    test('getCardsAjax single-mode Error', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.ajax_cards = false;
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {};
+        });
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+
+        const gridstack_items = $('.grid-stack-item');
+        $.each(gridstack_items, (index, item) => {
+            $(item).data('card-options', {});
+        });
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
+            action: 'get_cards',
+        }, () => {
+            return true;
+        }, false, 'error'));
+
+        // When ajax_cards is false, getCardsAjax should return a single promise
+        dashboard.getCardsAjax('[gs-id="2"]');
+        await new Promise(process.nextTick);
+        expect($('.grid-stack-item[gs-id="2"] .empty-card.card-error').length).toBe(1);
+        // card 1 and 3 should still be present without error
+        expect($('.grid-stack-item > *:not(.empty-card)').length).toBe(2);
+    });
+
+    test('getCardsAjax batches', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345', 'batches': 2});
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {'filter1': 'value1'};
+        });
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.loadCardsBatch = vi.fn().mockImplementation(() => Promise.resolve());
+        $('.grid-stack-item').each((index, item) => {
+            $(item).data('card-options', {});
+        });
+        // Card requests expected from the multi ajax mode, any other request fails
+        const expectCardRequests = (card_ids, data = {}) => {
+            card_ids.forEach((card_id) => {
+                window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+                    action: 'get_card',
+                    card_id: card_id,
+                    ...data,
+                }, () => {
+                    return '<div></div>';
+                }));
+            });
+        };
+        window.AjaxMock.start();
+
+        // Whole dashboard: one request per group of cards
+        expect(dashboard.getCardsAjax().length).toBe(2);
+        expect(dashboard.loadCardsBatch.mock.calls.map((call) => call[0].map((card) => card.args.gridstack_id))).toEqual([['1', '3'], ['2']]);
+        expect(dashboard.loadCardsBatch.mock.calls[0][0][0].args.apply_filters).toEqual({'filter1': 'value1'});
+        dashboard.loadCardsBatch.mockClear();
+
+        // A single card keeps its own request
+        expectCardRequests([2]);
+        expect(dashboard.getCardsAjax('[gs-id="2"]').length).toBe(1);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+
+        // So do the cards of an embedded dashboard
+        dashboard.embed = true;
+        expectCardRequests([1, 2, 3], {embed: 1});
+        expect(dashboard.getCardsAjax().length).toBe(3);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+        dashboard.embed = false;
+
+        // And the cards of a dashboard without batches
+        dashboard.batches = 0;
+        expectCardRequests([1, 2, 3]);
+        expect(dashboard.getCardsAjax().length).toBe(3);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+
+        // The single ajax mode is left alone
+        dashboard.batches = 2;
+        dashboard.ajax_cards = false;
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
+            action: 'get_cards',
+        }, () => {
+            return {};
+        }));
+        dashboard.getCardsAjax();
+        await new Promise(process.nextTick);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+
+        expect(dashboard.loadCardsBatch).not.toHaveBeenCalled();
+    });
+
+    test('getCardsAjax reads the requests the page sent early', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345', 'batches': 2});
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {};
+        });
+        dashboard.loadCardsBatch = vi.fn().mockImplementation(() => Promise.resolve());
+        $('.grid-stack-item').each((index, item) => {
+            $(item).data('card-options', {});
+        });
+
+        const first    = Promise.resolve(getCardsResponse([]));
+        const obsolete = getCardsResponse([]);
+        window.glpi_dashboard_early_cards = {
+            12345: [
+                {dashboard: 'current_dashboard', ids: ['1', '2'], response: first},
+                // Sent for grid items that are no longer there
+                {dashboard: 'current_dashboard', ids: ['8', '9'], response: Promise.resolve(obsolete)},
+            ],
+        };
+
+        expect(dashboard.getCardsAjax().length).toBe(3);
+        await new Promise(process.nextTick);
+
+        // The first request is read for its two cards, the card it does not cover gets a request
+        expect(dashboard.loadCardsBatch).toHaveBeenCalledTimes(2);
+        expect(dashboard.loadCardsBatch.mock.calls[0][0].map((card) => card.args.gridstack_id)).toEqual(['1', '2']);
+        expect(dashboard.loadCardsBatch.mock.calls[0][1]).toBe(first);
+        expect(dashboard.loadCardsBatch.mock.calls[1][0].map((card) => card.args.gridstack_id)).toEqual(['3']);
+        expect(dashboard.loadCardsBatch.mock.calls[1][1]).toBeUndefined();
+        expect(obsolete.body.cancel).toHaveBeenCalledTimes(1);
+
+        // They are read once
+        expect(window.glpi_dashboard_early_cards[12345]).toBeUndefined();
+        dashboard.loadCardsBatch.mockClear();
+        dashboard.getCardsAjax();
+        expect(dashboard.loadCardsBatch.mock.calls.length).toBe(2);
+        expect(dashboard.loadCardsBatch.mock.calls.every((call) => call[1] === undefined)).toBeTruthy();
+
+        // Requests sent for another dashboard are not used, even when its items have the same ids
+        const other = getCardsResponse([]);
+        window.glpi_dashboard_early_cards = {
+            12345: [
+                {dashboard: 'other_dashboard_1', ids: ['1', '2', '3'], response: Promise.resolve(other)},
+            ],
+        };
+        dashboard.loadCardsBatch.mockClear();
+        dashboard.getCardsAjax();
+        await new Promise(process.nextTick);
+        expect(other.body.cancel).toHaveBeenCalledTimes(1);
+        expect(dashboard.loadCardsBatch.mock.calls.flatMap((call) => call[0].map((card) => card.args.gridstack_id)).sort()).toEqual(['1', '2', '3']);
+        expect(dashboard.loadCardsBatch.mock.calls.every((call) => call[1] === undefined)).toBeTruthy();
+
+        delete window.glpi_dashboard_early_cards;
+    });
+
+    test('splitCardsInBatches', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345', 'batches': 3});
+        const cards = getRequestedCards(['bar', 'bigNumber', 'pie', 'summaryNumbers', 'line', 'multipleNumber', 'donut']);
+        const ids = (batches) => batches.map((batch) => batch.map((card) => card.card_id));
+
+        // Number widgets come first, then the cards are dealt in turn
+        expect(ids(dashboard.splitCardsInBatches(cards))).toEqual([
+            ['card1', 'card0', 'card6'],
+            ['card3', 'card2'],
+            ['card5', 'card4'],
+        ]);
+
+        // Never more groups than cards, never an empty group
+        expect(ids(dashboard.splitCardsInBatches(cards.slice(0, 2)))).toEqual([['card1'], ['card0']]);
+        expect(dashboard.splitCardsInBatches([])).toEqual([]);
+    });
+
+    test('loadCardsBatch', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.getCardsAjax = vi.fn().mockImplementation(() => [Promise.resolve()]);
+        console_error = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const cards = getRequestedCards(['bigNumber', 'bar', 'pie']);
+
+        // Three chunks: the first one ends inside a character of the first line, the second one inside the last line
+        const bytes = getCardsLines([
+            {id: 'card0', html: '<div class="card">Réponse 0</div>'},
+            {id: 'unknown', html: '<div class="card">Unknown</div>'},
+            'not a JSON line',
+            {id: 'card2', html: '<div class="card">Response 2</div>'},
+            '',
+        ]);
+        const first_cut = bytes.indexOf(0xC3) + 1;
+        const chunks    = [bytes.slice(0, first_cut), bytes.slice(first_cut, bytes.length - 10), bytes.slice(bytes.length - 10)];
+        vi.stubGlobal('fetch', vi.fn().mockResolvedValue(getCardsResponse(chunks)));
+
+        await dashboard.loadCardsBatch(cards);
+
+        expect(fetch).toHaveBeenCalledTimes(1);
+        const [url, options] = fetch.mock.calls[0];
+        expect(url).toBe('/Dashboard/Cards');
+        expect(options.method).toBe('POST');
+        expect(options.headers).toEqual({'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'});
+        expect(JSON.parse(options.body)).toEqual({
+            dashboard: 'current_dashboard',
+            cards: cards.map((card) => ({gridstack_id: card.card_id, card_id: card.card_id, args: card.args})),
+        });
+
+        // The cards the server sent are filled, whatever the chunks
+        expect(cards[0].card_el.find('.grid-stack-item-content').html()).toBe('<div class="card">Réponse 0</div>');
+        expect(cards[2].card_el.find('.grid-stack-item-content').html()).toBe('<div class="card">Response 2</div>');
+        expect(dashboard.animateNumbers).toHaveBeenCalledTimes(2);
+        // The unreadable line is reported, the one of another card is ignored
+        expect(console_error).toHaveBeenCalledTimes(1);
+        expect($('body').text()).not.toContain('Unknown');
+        // The card the server did not send gets its own request
+        expect(dashboard.getCardsAjax.mock.calls).toEqual([['[gs-id="card1"]', undefined, false]]);
+    });
+
+    test('loadCardsBatch with a truncated response', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.getCardsAjax = vi.fn().mockImplementation(() => [Promise.resolve()]);
+        console_error = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const cards = getRequestedCards(['bigNumber', 'bar', 'pie']);
+
+        // The last line of a response may lack its line break: it is displayed if it is complete
+        const bytes = getCardsLines([
+            {id: 'card0', html: '<div class="card">Response 0</div>'},
+            {id: 'card1', html: '<div class="card">Response 1</div>'},
+        ]);
+        await dashboard.loadCardsBatch(cards.slice(0, 2), Promise.resolve(getCardsResponse([bytes])));
+        expect(cards[1].card_el.find('.grid-stack-item-content').html()).toBe('<div class="card">Response 1</div>');
+        expect(dashboard.getCardsAjax).not.toHaveBeenCalled();
+
+        // A response cut in the middle of a card: that card and the following ones get their own request
+        const cut = getCardsLines([
+            {id: 'card0', html: '<div class="card">Response 0, again</div>'},
+            {id: 'card1', html: '<div class="card">Response 1, again</div>'},
+        ]).slice(0, -12);
+        await dashboard.loadCardsBatch(cards, Promise.resolve(getCardsResponse([cut])));
+        expect(cards[0].card_el.find('.grid-stack-item-content').html()).toBe('<div class="card">Response 0, again</div>');
+        expect(cards[1].card_el.find('.grid-stack-item-content').html()).toBe('<div class="card">Response 1</div>');
+        expect(dashboard.getCardsAjax.mock.calls).toEqual([['[gs-id="card1"]', undefined, false], ['[gs-id="card2"]', undefined, false]]);
+    });
+
+    test('loadCardsBatch with filters or a dashboard changed meanwhile', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.getCardsAjax = vi.fn().mockImplementation(() => [Promise.resolve()]);
+        const cards = getRequestedCards(['bigNumber', 'bigNumber', 'bigNumber']);
+        const bytes = getCardsLines([
+            {id: 'card0', html: '<div class="card">Response 0</div>'},
+            {id: 'card1', html: '<div class="card">Response 1</div>'},
+            {id: 'card2', html: '<div class="card">Response 2</div>'},
+            '',
+        ]);
+
+        // A filter saved after the first card: the next ones were computed with the former filters
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
+            action: 'save_filter_data',
+        }, () => true));
+        dashboard.animateNumbers = vi.fn().mockImplementationOnce(() => {
+            dashboard.setFiltersInDB({'filter1': 'value1'});
+        });
+        await dashboard.loadCardsBatch(cards, Promise.resolve(getCardsResponse([bytes])));
+        expect(cards[0].card_el.find('.grid-stack-item-content').html()).toBe('<div class="card">Response 0</div>');
+        expect(cards[1].card_el.find('.grid-stack-item-content').html()).toBe('');
+        expect(cards[2].card_el.find('.grid-stack-item-content').html()).toBe('');
+        expect(dashboard.getCardsAjax.mock.calls).toEqual([['[gs-id="card1"]', undefined, false], ['[gs-id="card2"]', undefined, false]]);
+        dashboard.getCardsAjax.mockClear();
+
+        // Another dashboard selected after the first card: the next ones are gone, nothing is requested for them
+        dashboard.animateNumbers = vi.fn().mockImplementationOnce(() => {
+            dashboard.current_name = 'other_dashboard_1';
+        });
+        await dashboard.loadCardsBatch(cards, Promise.resolve(getCardsResponse([bytes])));
+        expect(cards[1].card_el.find('.grid-stack-item-content').html()).toBe('');
+        expect(dashboard.getCardsAjax).not.toHaveBeenCalled();
+    });
+
+    test('getCardsAjax reads the early request of a dashboard with a single card', () => {
+        $('.grid-stack-item[gs-id="2"], .grid-stack-item[gs-id="3"]').remove();
+        const dashboard = new GLPIDashboard({'rand': '12345', 'batches': 2});
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {};
+        });
+        dashboard.loadCardsBatch = vi.fn().mockImplementation(() => Promise.resolve());
+        $('.grid-stack-item').data('card-options', {});
+        const ajax = vi.spyOn($, 'ajax');
+
+        const response = Promise.resolve(getCardsResponse([]));
+        window.glpi_dashboard_early_cards = {
+            12345: [{dashboard: 'current_dashboard', ids: ['1'], response: response}],
+        };
+
+        // The card was already requested by the page: it is not requested again, and the request cannot be read later
+        dashboard.getCardsAjax();
+        expect(dashboard.loadCardsBatch).toHaveBeenCalledTimes(1);
+        expect(dashboard.loadCardsBatch.mock.calls[0][0].map((card) => card.args.gridstack_id)).toEqual(['1']);
+        expect(dashboard.loadCardsBatch.mock.calls[0][1]).toBe(response);
+        expect(window.glpi_dashboard_early_cards[12345]).toBeUndefined();
+        expect(ajax).not.toHaveBeenCalled();
+
+        ajax.mockRestore();
+        delete window.glpi_dashboard_early_cards;
+    });
+
+    test('loadCardsBatch leaves the cards to a later batch asking for them', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.getCardsAjax = vi.fn().mockImplementation(() => [Promise.resolve()]);
+        const cards = getRequestedCards(['bigNumber', 'bigNumber']);
+
+        // First batch: its only line comes late, and the second card never comes
+        let release;
+        const gate = new Promise((resolve) => {
+            release = resolve;
+        });
+        const late = [getCardsLines([{id: 'card0', html: '<div class="card">Former response 0</div>'}, ''])];
+        const first = dashboard.loadCardsBatch(cards, Promise.resolve({
+            ok: true,
+            status: 200,
+            body: {
+                getReader: () => ({
+                    read: async () => {
+                        await gate;
+                        return late.length > 0 ? {done: false, value: late.shift()} : {done: true, value: undefined};
+                    },
+                }),
+                cancel: vi.fn(),
+            },
+        }));
+
+        // Second batch for the same cards, complete before the first one
+        await dashboard.loadCardsBatch(cards, Promise.resolve(getCardsResponse([getCardsLines([
+            {id: 'card0', html: '<div class="card">Response 0</div>'},
+            {id: 'card1', html: '<div class="card">Response 1</div>'},
+            '',
+        ])])));
+
+        release();
+        await first;
+
+        // The first batch neither displays its late card nor requests the missing one again
+        expect(cards[0].card_el.find('.grid-stack-item-content').html()).toBe('<div class="card">Response 0</div>');
+        expect(cards[1].card_el.find('.grid-stack-item-content').html()).toBe('<div class="card">Response 1</div>');
+        expect(dashboard.getCardsAjax).not.toHaveBeenCalled();
+    });
+
+    test('loadCardsBatch with a card failing to render', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.animateNumbers = vi.fn().mockImplementationOnce(() => {
+            throw new Error('Unable to animate');
+        });
+        dashboard.getCardsAjax = vi.fn().mockImplementation(() => [Promise.resolve()]);
+        console_error = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const cards = getRequestedCards(['bigNumber', 'bigNumber']);
+
+        const bytes = getCardsLines([
+            {id: 'card0', html: '<div class="card">Response 0</div>'},
+            {id: 'card1', html: '<div class="card">Response 1</div>'},
+            '',
+        ]);
+        await dashboard.loadCardsBatch(cards, Promise.resolve(getCardsResponse([bytes])));
+
+        // The next card is displayed, and the failing one was received: it is not requested again
+        expect(console_error).toHaveBeenCalledTimes(1);
+        expect(cards[1].card_el.find('.grid-stack-item-content').html()).toBe('<div class="card">Response 1</div>');
+        expect(dashboard.getCardsAjax).not.toHaveBeenCalled();
+    });
+
+    test('loadCardsBatch with a failed request', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.getCardsAjax = vi.fn().mockImplementation(() => [Promise.resolve()]);
+        console_error = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const cards = getRequestedCards(['bigNumber', 'bar', 'pie']);
+        const every_card = [['[gs-id="card0"]', undefined, false], ['[gs-id="card1"]', undefined, false], ['[gs-id="card2"]', undefined, false]];
+
+        // Error status: the response is dropped unread and every card gets its own request
+        const response = getCardsResponse([getCardsLines([{id: 'card0', html: '<div class="card">Error page</div>'}])], 500);
+        vi.stubGlobal('fetch', vi.fn().mockResolvedValue(response));
+        await dashboard.loadCardsBatch(cards);
+        expect(response.body.cancel).toHaveBeenCalledTimes(1);
+        expect(cards[0].card_el.find('.grid-stack-item-content').html()).toBe('');
+        expect(dashboard.getCardsAjax.mock.calls).toEqual(every_card);
+        dashboard.getCardsAjax.mockClear();
+
+        // Request that could not be sent, and a card whose own request fails too: the batch still settles
+        vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('Failed to fetch')));
+        dashboard.getCardsAjax.mockImplementationOnce(() => [Promise.reject(new Error('Unable to load the card'))]);
+        await expect(dashboard.loadCardsBatch(cards)).resolves.toBeUndefined();
+        expect(dashboard.getCardsAjax.mock.calls).toEqual(every_card);
+    });
+
+    test('loadCardsBatch requests a missing card as a card refresh does', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345', 'batches': 2});
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {};
+        });
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+        const cards = [];
+        $('.grid-stack-item').each((index, item) => {
+            $(item).data('card-options', {}).html('<div class="grid-stack-item-content"></div>');
+            cards.push({card_el: $(item), card_id: $(item).attr('gs-id'), args: {gridstack_id: $(item).attr('gs-id')}});
+        });
+
+        // The response has no line for the second card: the single card request of the multi ajax mode is sent
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+            action: 'get_card',
+            dashboard: 'current_dashboard',
+            card_id: 2,
+        }, () => {
+            return '<div class="card">Own response 2</div>';
+        }));
+        const bytes = getCardsLines([
+            {id: '1', html: '<div class="card">Response 1</div>'},
+            {id: '3', html: '<div class="card">Response 3</div>'},
+            '',
+        ]);
+        await dashboard.loadCardsBatch(cards, Promise.resolve(getCardsResponse([bytes])));
+
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+        expect($('.grid-stack-item').map((index, item) => $(item).find('.grid-stack-item-content').html()).get()).toEqual([
+            '<div class="card">Response 1</div>',
+            '<div class="card">Own response 2</div>',
+            '<div class="card">Response 3</div>',
+        ]);
+    });
+
+    test('initFilters', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {
+                'filter1': 'value1',
+                'filter2': ['value2'],
+                'filter3': [],
+            };
+        });
+        window.sortable = vi.fn().mockImplementation((el) => {
+            return $(el);
+        });
+        window.AjaxMock.start();
+
+        dashboard.initFilters();
+        // The call should exit early because there is no filters_selector set in the dashboard object
+        expect(dashboard.getFiltersFromDB).not.toHaveBeenCalled();
+
+        dashboard.filters_selector = '.filters';
+        $('#dashboard-12345').append('<div class="filters"></div>');
+        const init_filter_event_handler = vi.fn().mockImplementation(() => {});
+        $(document).on('glpiDasbhoardInitFilter', init_filter_event_handler);
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+            action: 'get_dashboard_filters',
+            filters: {
+                'filter1': 'value1',
+                'filter2': ['value2'],
+                'filter3': '',
+            }
+        }, () => {
+            return `<div class="new-filter-selector"></div>`;
+        }));
+
+        dashboard.initFilters();
+        await new Promise(process.nextTick);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+        expect(init_filter_event_handler).toHaveBeenCalled();
+        expect($('.filters').length).toBe(1);
+        expect($('.filters .new-filter-selector').length).toBe(1);
+        expect(window.sortable).toHaveBeenNthCalledWith(1, '.filters', {
+            placeholderClass: 'filter-placeholder',
+            orientation: 'horizontal'
+        });
+        expect(window.sortable).toHaveBeenNthCalledWith(2, '.filters', 'disable');
+    });
+
+    test('getFiltersFromDB', () => {
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard',
+        });
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+            action: 'get_filter_data',
+            dashboard: 'current_dashboard',
+        }, () => {
+            return JSON.stringify({
+                'filter1': 'value1',
+                'filter2': ['value2'],
+                'filter3': '',
+            });
+        }));
+
+        // eslint-disable-next-line no-unused-vars
+        const result = dashboard.getFiltersFromDB();
+        //TODO filters returned are undefined. Maybe an issue with the mock AJAX handling and synchronous AJAX calls
+        //Maybe this can be made async
+
+        // expect(result).toEqual({
+        //     'filter1': 'value1',
+        //     'filter2': ['value2'],
+        //     'filter3': '',
+        // });
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+    });
+
+    test('setFiltersInDB', () => {
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard',
+        });
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
+            action: 'save_filter_data',
+            dashboard: 'current_dashboard',
+            filters: JSON.stringify({
+                'filter1': 'value1',
+                'filter2': null
+            })
+        }, () => {
+            return true;
+        }));
+        dashboard.setFiltersInDB({
+            'filter1': 'value1',
+            'filter2': undefined
+        });
+
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+    });
+
+    test('Change selected dashboard', () => {
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard',
+        });
+        dashboard.refreshDashboard = vi.fn().mockImplementation(() => {});
+        dashboard.setLastDashboard = vi.fn().mockImplementation(() => {});
+        dashboard.initFilters = vi.fn().mockImplementation(() => {});
+
+        $('.dashboard_select option[value="other_dashboard_2"]').prop('selected', true).trigger('change');
+        expect(dashboard.refreshDashboard).toHaveBeenCalled();
+        expect(dashboard.setLastDashboard).toHaveBeenCalled();
+        expect(dashboard.initFilters).toHaveBeenCalled();
+        expect($('.dashboard-name').val()).toBe('Other Dashboard 2');
+    });
+
+    test('Change selected dashboard does not apply the filters sent with the page', () => {
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard',
+            'filters': {'filter1': 'value1'},
+        });
+        dashboard.setLastDashboard = vi.fn().mockImplementation(() => {});
+        dashboard.initFilters = vi.fn().mockImplementation(() => {});
+
+        $('.dashboard_select option[value="other_dashboard_2"]').prop('selected', true).trigger('change');
+
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+            action: 'get_filter_data',
+            dashboard: 'other_dashboard_2',
+        }, () => {
+            return JSON.stringify({});
+        }));
+        dashboard.getFiltersFromDB();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+    });
+
+    test('Click add dashboard button', () => {
+        $('#dashboard-12345 .toolbar').append('<button class="add-dashboard"></button>');
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.addForm = vi.fn().mockImplementation(() => {});
+        $('#dashboard-12345 .toolbar .add-dashboard').trigger('click');
+        expect(dashboard.addForm).toHaveBeenCalled();
+    });
+
+    test('Submit add dashboard form', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.addNew = vi.fn().mockImplementation(() => {});
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
+        $('body').append(`
+            <form class="display-add-dashboard-form">
+                <input type="text" name="title" id="title_12345" class="form-control" value="New Dashboard">
+            </form>
+        `);
+        $('.display-add-dashboard-form').submit();
+        expect(dashboard.addNew).toHaveBeenCalledWith({
+            'title': 'New Dashboard',
+        });
+        expect(window.glpi_close_all_dialogs).toHaveBeenCalled();
+    });
+
+    test('Click delete dashboard button', () => {
+        $('#dashboard-12345 .toolbar').append('<button class="delete-dashboard"></button>');
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.delete = vi.fn().mockImplementation(() => {});
+        $('#dashboard-12345 .toolbar .delete-dashboard').trigger('click');
+        expect(dashboard.delete).toHaveBeenCalled();
+    });
+
+    test('Click clone dashboard button', () => {
+        $('#dashboard-12345 .toolbar').append('<button class="clone-dashboard"></button>');
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.clone = vi.fn().mockImplementation(() => {});
+        $('#dashboard-12345 .toolbar .clone-dashboard').trigger('click');
+        expect(dashboard.clone).toHaveBeenCalled();
+    });
+
+    test('Click open embed form button', () => {
+        $('#dashboard-12345 .toolbar').append('<button class="open-embed"></button>');
+        new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard',
+        });
+        window.glpi_ajax_dialog = vi.fn().mockImplementation(() => {});
+        $('#dashboard-12345 .toolbar .open-embed').trigger('click');
+        expect(window.glpi_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((params) => {
+            return params.params.action === 'display_embed_form' && params.params.dashboard === 'current_dashboard';
+        }));
+    });
+
+    test('Click toggle edit mode button', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const edit_btn = $('#dashboard-12345 .toolbar .edit-dashboard');
+        dashboard.setEditMode = vi.fn().mockImplementation(() => {});
+        edit_btn.trigger('click');
+        expect(dashboard.setEditMode).toHaveBeenCalledWith(true);
+        edit_btn.addClass('active');
+        vi.clearAllMocks();
+        edit_btn.trigger('click');
+        expect(dashboard.setEditMode).toHaveBeenCalledWith(false);
+    });
+
+    test('Click toggle fullscreen button', () => {
+        $('#dashboard-12345 .toolbar').append('<button class="toggle-fullscreen"></button>');
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.toggleFullscreenMode = vi.fn().mockImplementation(() => {});
+        $('#dashboard-12345 .toolbar .toggle-fullscreen').trigger('click');
+        expect(dashboard.toggleFullscreenMode).toHaveBeenCalled();
+    });
+
+    test('Click toggle night mode button', () => {
+        $('#dashboard-12345 .toolbar').append('<button class="night-mode"></button>');
+        new GLPIDashboard({'rand': '12345'});
+        $('#dashboard-12345 .toolbar .night-mode').trigger('click');
+        expect($('#dashboard-12345').hasClass('theme-dark')).toBeTruthy();
+        expect($('#dashboard-12345 .toolbar .night-mode').hasClass('active')).toBeTruthy();
+        $('#dashboard-12345 .toolbar .night-mode').trigger('click');
+        expect($('#dashboard-12345').hasClass('theme-dark')).toBe(false);
+        expect($('#dashboard-12345 .toolbar .night-mode').hasClass('active')).toBe(false);
+    });
+
+    test('Click refresh mode button', () => {
+        $('#dashboard-12345 .toolbar').append('<button class="auto-refresh"></button>');
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.refreshDashboard = vi.fn().mockImplementation(() => {});
+        CFG_GLPI.refresh_views = 1; // Refresh every minute
+        const refresh_btn = $('#dashboard-12345 .toolbar .auto-refresh');
+
+        vi.useFakeTimers('legacy');
+        refresh_btn.trigger('click');
+        expect(refresh_btn.hasClass('active')).toBeTruthy();
+        vi.advanceTimersByTime(60000);
+        expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(1);
+        vi.advanceTimersByTime(60000);
+        expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(2);
+        refresh_btn.trigger('click');
+        expect(refresh_btn.hasClass('active')).toBe(false);
+        vi.advanceTimersByTime(60000);
+        expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(2);
+        vi.advanceTimersByTime(60000);
+        expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(2);
+        refresh_btn.trigger('click');
+        expect(refresh_btn.hasClass('active')).toBeTruthy();
+        vi.advanceTimersByTime(60000);
+        expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(3);
+    });
+
+    test('Click Refresh Mode button with Invalid CFG_GLPI.refresh_views', () => {
+        $('#dashboard-12345 .toolbar').append('<button class="auto-refresh"></button>');
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.refreshDashboard = vi.fn().mockImplementation(() => {});
+        CFG_GLPI.refresh_views = 'not a number';
+        const refresh_btn = $('#dashboard-12345 .toolbar .auto-refresh');
+
+        vi.useFakeTimers('legacy');
+        refresh_btn.trigger('click');
+        expect(refresh_btn.hasClass('active')).toBeTruthy();
+        vi.advanceTimersByTime(60000 * 30);
+        expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(1);
+        vi.advanceTimersByTime(60000 * 30);
+        expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(2);
+
+        // Click again to disable
+        refresh_btn.trigger('click');
+        vi.clearAllMocks();
+
+        CFG_GLPI.refresh_views = 0;
+        refresh_btn.trigger('click');
+        expect(refresh_btn.hasClass('active')).toBeTruthy();
+        vi.advanceTimersByTime(60000 * 30);
+        expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(1);
+        vi.advanceTimersByTime(60000 * 30);
+        expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(2);
+    });
+
+    test('Click save rights button', () => {
+        new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard',
+        });
+        $('body').append(`
+            <form class="display-rights-form">
+                <button type="button" class="save_rights"></button>
+                <select name="rights" multiple="multiple">
+                    <option value="users_id-1" selected>User 1</option>
+                    <option value="users_id-2">User 2</option>
+                    <option value="users_id-3" selected>User 3</option>
+                    <option value="profiles_id-1" selected>Profile 1</option>
+                </select>
+                <select name="is_private">
+                    <option value="0" selected>No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </form>
+        `);
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
+            action: 'save_rights',
+            dashboard: 'current_dashboard',
+            rights: {
+                'users_id': ['1', '3'],
+                'profiles_id': ['1'],
+            },
+            is_private: false
+        }, () => {
+            return true;
+        }));
+
+        $('.display-rights-form .save_rights').trigger('click');
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+        expect(window.glpi_close_all_dialogs).toHaveBeenCalled();
+    });
+
+    test('Click widget delete button', () => {
+        $('#dashboard-12345 .grid-stack-item[gs-id="2"]').empty().append(`
+            <div><button class="delete-item"></button></div>
+        `);
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.grid.removeWidget = vi.fn().mockImplementation(() => {});
+        dashboard.saveDashboard = vi.fn().mockImplementation(() => {});
+
+        $('#dashboard-12345 .grid-stack-item[gs-id="2"] .delete-item').trigger('click');
+        expect(dashboard.grid.removeWidget).toHaveBeenCalledTimes(1);
+        expect(dashboard.grid.removeWidget).toHaveBeenCalledWith(expect.toSatisfy((widget) => {
+            return $(widget).attr('gs-id') === '2';
+        }));
+        expect(dashboard.saveDashboard).toHaveBeenCalled();
+    });
+
+    test('Click widget refresh button', () => {
+        $('#dashboard-12345 .grid-stack-item[gs-id="2"]').empty().append(`
+            <div><button class="refresh-item"></button></div>
+        `);
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.getCardsAjax = vi.fn().mockImplementation(() => {});
+
+        $('#dashboard-12345 .grid-stack-item[gs-id="2"] .refresh-item').trigger('click');
+        expect(dashboard.getCardsAjax).toHaveBeenCalledTimes(1);
+        expect(dashboard.getCardsAjax).toHaveBeenCalledWith(`[gs-id="${CSS.escape(2)}"]`);
+    });
+
+    test('Click widget edit button', () => {
+        $('#dashboard-12345 .grid-stack-item[gs-id="2"]').empty().append(`
+            <div><button class="edit-item"></button></div>
+        `);
+        $('#dashboard-12345 .grid-stack-item[gs-id="2"]').data('card-options', {
+            card_id: 'mycard_id'
+        });
+        new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard',
+        });
+        window.glpi_ajax_dialog = vi.fn().mockImplementation(() => {});
+
+        $('#dashboard-12345 .grid-stack-item[gs-id="2"] .edit-item').trigger('click');
+        expect(window.glpi_ajax_dialog).toHaveBeenCalledTimes(1);
+        expect(window.glpi_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((params) => {
+            return params.url === '/ajax/dashboard.php' && params.params.action === 'display_edit_widget'
+                && params.params.gridstack_id === '2' && params.params.dashboard === 'current_dashboard'
+                && params.params.card_id === 'mycard_id';
+        }));
+    });
+
+    test('Click widget add button', () => {
+        $('#dashboard-12345 .grid-stack').append(`
+            <div class="cell-add"></div>
+        `);
+        new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard',
+        });
+        window.glpi_ajax_dialog = vi.fn().mockImplementation(() => {});
+
+        $('#dashboard-12345 .cell-add').trigger('click');
+        expect(window.glpi_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((params) => {
+            return params.url === '/ajax/dashboard.php' && params.params.action === 'display_add_widget'
+                && params.params.dashboard === 'current_dashboard';
+        }));
+    });
+
+    test('Click filter add button', () => {
+        $('#dashboard-12345').append(`
+            <div class="filters_toolbar">
+                <button class="add-filter"></button>
+            </div>
+        `);
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard',
+        });
+        window.glpi_ajax_dialog = vi.fn().mockImplementation(() => {});
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {
+                filter1: 'value1',
+                filter2: 'value2',
+            };
+        });
+
+        $('#dashboard-12345 .filters_toolbar .add-filter').trigger('click');
+        expect(window.glpi_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((params) => {
+            return params.url === '/ajax/dashboard.php' && params.params.action === 'display_add_filter'
+                && params.params.dashboard === 'current_dashboard' && params.params.used.includes('filter1')
+                && params.params.used.includes('filter2');
+        }));
+        expect(window.glpi_close_all_dialogs).toHaveBeenCalled();
+        expect(dashboard.getFiltersFromDB).toHaveBeenCalled();
+    });
+
+    test('Click filter delete button', () => {
+        $('#dashboard-12345').append(`
+            <div class="filters_toolbar">
+                <div class="filter" data-filter-id="filter1">
+                    <button class="delete-filter"></button>
+                </div>
+            </div>
+        `);
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard',
+        });
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
+            return {
+                filter1: 'value1',
+                filter2: 'value2',
+            };
+        });
+        dashboard.setFiltersInDB = vi.fn().mockImplementation(() => {});
+        dashboard.refreshCardsImpactedByFilter = vi.fn().mockImplementation(() => {});
+
+        $('#dashboard-12345 .filters_toolbar .filter .delete-filter').trigger('click');
+        expect(dashboard.getFiltersFromDB).toHaveBeenCalled();
+        expect(dashboard.setFiltersInDB).toHaveBeenCalledWith({
+            filter2: 'value2',
+        });
+        expect(dashboard.refreshCardsImpactedByFilter).toHaveBeenCalledWith(
+            'filter1',
+            {
+                filter2: 'value2',
+            }
+        );
+    });
+
+    test('Single ajax mode - Animate on load', () => {
+        const MockGLPIDashboard = class extends GLPIDashboard {
+            animateNumbers() {}
+        };
+        MockGLPIDashboard.prototype.animateNumbers = vi.fn().mockImplementation(() => {});
+        let dashboard = new MockGLPIDashboard({
+            'rand': '12345',
+            'ajax_cards': true,
+        });
+        expect(dashboard.animateNumbers).not.toHaveBeenCalled();
+        dashboard = new MockGLPIDashboard({
+            'rand': '12345',
+            'ajax_cards': false,
+        });
+        expect(dashboard.animateNumbers).toHaveBeenCalled();
+    });
+
+    test('Update CSS and Fit Numbers on Resize', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        vi.useFakeTimers();
+        $(window).trigger('resize');
+        vi.advanceTimersByTime(250);
+        expect(dashboard.fitNumbers).toHaveBeenCalled();
+    });
+
+    test('Card numbers follow the width of the dashboard after a Resize', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.switchColumnLayout = vi.fn().mockImplementation(() => {});
+        dashboard.dash_width = 500;
+        dashboard.fitNumbers();
+        expect(dashboard.element[0].style.getPropertyValue('--dashboard-text-offset')).toBe('1.8');
+
+        // The dashboard is now wide enough for the regular ratios
+        dashboard.element.width = () => 1000;
+        vi.useFakeTimers();
+        $(window).trigger('resize');
+        vi.advanceTimersByTime(250);
+        expect(dashboard.element[0].style.getPropertyValue('--dashboard-text-offset')).toBe('1.16');
+    });
+
+    test('Do not Update CSS and Fit Numbers on Propagated Resize', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        vi.useFakeTimers();
+        $('body').trigger('resize');
+        vi.advanceTimersByTime(250);
+        expect(dashboard.fitNumbers).not.toHaveBeenCalled();
+    });
+
+    test('Save Dashboard on GridStack DragStop', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.saveDashboard = vi.fn().mockImplementation(() => {});
+        dashboard.grid.dispatchEvent(new Event('dragstop'));
+        expect(dashboard.saveDashboard).toHaveBeenCalled();
+    });
+
+    test('Save Dashboard on GridStack ResizeStop', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.saveDashboard = vi.fn().mockImplementation(() => {});
+        dashboard.grid.dispatchEvent(new Event('resizestop'));
+        expect(dashboard.saveDashboard).toHaveBeenCalled();
+    });
+
+    test('Animate Numbers on GridStack ResizeStop', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.grid.dispatchEvent(new Event('resizestop'));
+        // The numbers follow the card size in CSS
+        expect(dashboard.fitNumbers).not.toHaveBeenCalled();
+        expect(dashboard.animateNumbers).toHaveBeenCalledTimes(1);
+    });
+
+    test('Add/Update Widget after Form Submit', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        $('body').append(`<form class="display-widget-form"></form>`);
+        dashboard.setWidgetFromForm = vi.fn().mockImplementation(() => {});
+        $('.display-widget-form').trigger('submit');
+        expect(dashboard.setWidgetFromForm).toHaveBeenCalled();
+    });
+
+    test('Add/Update Filter after Form Submit', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        $('body').append(`<form class="display-filter-form"></form>`);
+        dashboard.setFilterFromForm = vi.fn().mockImplementation(() => {});
+        $('.display-filter-form').trigger('submit');
+        expect(dashboard.setFilterFromForm).toHaveBeenCalled();
+    });
+
+    test('Rename Dahboard', () => {
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'current_dashboard',
+        });
+        $('#dashboard-12345 .dashboard-name').val('current_dashboard_new');
+        $('#dashboard-12345').append(`<button type="button" class="save-dashboard-name"></button>`);
+        dashboard.saveDashboard = vi.fn().mockImplementation(() => {});
+        $('#dashboard-12345 .save-dashboard-name').trigger('click');
+
+        expect(dashboard.saveDashboard).toHaveBeenCalled();
+        expect($(`#dashboard-12345 .dashboard_select option[value="current_dashboard"]`).text()).toBe('current_dashboard_new');
+    });
+
+    test('Save Markdown on Input', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        $('#dashboard-12345').append(`<div class="card markdown"><textarea class="markdown_content"></textarea></div>`);
+        dashboard.saveMarkdown = vi.fn().mockImplementation(() => {});
+        $('#dashboard-12345 .markdown_content').trigger('input');
+        expect(dashboard.saveMarkdown).toHaveBeenCalled();
+    });
+});

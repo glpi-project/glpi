@@ -240,4 +240,120 @@ class SearchOptionTest extends DbTestCase
         $this->assertArrayHasKey('rows', $result2['data']);
         $this->assertGreaterThan(0, $result2['data']['totalcount']);
     }
+
+    public function testProfileRestrictionsApplied(): void
+    {
+        $this->login();
+
+        $all_options = SearchOption::getOptionsForItemtype(\Ticket::class, true, false);
+        $option_nums = array_filter(array_keys($all_options), 'is_int');
+        $this->assertNotEmpty($option_nums);
+
+        $excluded_num = reset($option_nums);
+
+        $_SESSION['glpiactiveprofile']['excluded_searchoptions'] = ['Ticket' => [$excluded_num]];
+
+        $restricted = SearchOption::getOptionsForItemtype(\Ticket::class);
+
+        $this->assertTrue($restricted[$excluded_num]['nosearch'] ?? false);
+        $this->assertTrue($restricted[$excluded_num]['nodisplay'] ?? false);
+
+        $other_nums = array_filter($option_nums, fn($n) => $n !== $excluded_num);
+        $other_num  = reset($other_nums);
+        $this->assertFalse($restricted[$other_num]['nosearch'] ?? false);
+        $this->assertFalse($restricted[$other_num]['nodisplay'] ?? false);
+    }
+
+    public function testProfileRestrictionsSkippedWhenDisabled(): void
+    {
+        $this->login();
+
+        $all_options = SearchOption::getOptionsForItemtype(\Ticket::class, true, false);
+        $option_nums = array_filter(array_keys($all_options), 'is_int');
+        $excluded_num = reset($option_nums);
+
+        $_SESSION['glpiactiveprofile']['excluded_searchoptions'] = ['Ticket' => [$excluded_num]];
+
+        $unfiltered = SearchOption::getOptionsForItemtype(\Ticket::class, true, false);
+
+        $this->assertFalse($unfiltered[$excluded_num]['nosearch'] ?? false);
+        $this->assertFalse($unfiltered[$excluded_num]['nodisplay'] ?? false);
+    }
+
+    public function testNoRestrictionsWithoutExcludedOptions(): void
+    {
+        $this->login();
+
+        $base = SearchOption::getOptionsForItemtype(\Ticket::class, true, false);
+
+        $_SESSION['glpiactiveprofile']['excluded_searchoptions'] = [];
+
+        $filtered = SearchOption::getOptionsForItemtype(\Ticket::class);
+
+        foreach ($base as $key => $val) {
+            if (!is_array($val) || count($val) <= 1) {
+                continue;
+            }
+            $this->assertEquals(
+                $val['nosearch'] ?? false,
+                $filtered[$key]['nosearch'] ?? false,
+                "Option $key nosearch should be unchanged with empty exclusions"
+            );
+            $this->assertEquals(
+                $val['nodisplay'] ?? false,
+                $filtered[$key]['nodisplay'] ?? false,
+                "Option $key nodisplay should be unchanged with empty exclusions"
+            );
+        }
+    }
+
+    public function testGetActionsForNumericDatatypeIncludesComparisonOperators(): void
+    {
+        $this->login();
+
+        $actions = SearchOption::getActionsFor(\Computer::class, 2);
+
+        $this->assertArrayHasKey('morethan', $actions);
+        $this->assertArrayHasKey('lessthan', $actions);
+        $this->assertArrayHasKey('morethanorequal', $actions);
+        $this->assertArrayHasKey('lessthanorequal', $actions);
+        $this->assertSame(__('greater than'), $actions['morethan']);
+        $this->assertSame(__('less than'), $actions['lessthan']);
+        $this->assertSame(__('greater than or equal to'), $actions['morethanorequal']);
+        $this->assertSame(__('less than or equal to'), $actions['lessthanorequal']);
+    }
+
+    public static function userJoinConditionProvider(): iterable
+    {
+        yield [\Ticket::class, 25]; // followups description
+        yield [\Ticket::class, 26]; // tasks description
+        yield [\KnowbaseItem::class, 89]; // is favorite
+        yield [\SavedSearch::class, 11]; // default
+    }
+
+    #[DataProvider('userJoinConditionProvider')]
+    public function testUserJoinConditionWithoutLoggedInUser(string $itemtype, int $option_id): void
+    {
+        // Search options may be built, then cached, while no user is logged in (e.g. in a CLI context)
+        $this->assertFalse(\Session::getLoginUserID());
+        SearchOption::clearSearchOptionCache($itemtype);
+        try {
+            $options = SearchOption::getOptionsForItemtype($itemtype);
+        } finally {
+            SearchOption::clearSearchOptionCache($itemtype);
+        }
+
+        $users_ids = [];
+        array_walk_recursive(
+            $options[$option_id]['joinparams']['condition'],
+            static function ($value, $key) use (&$users_ids) {
+                if ($key === 'NEWTABLE.users_id') {
+                    $users_ids[] = $value;
+                }
+            }
+        );
+
+        // `false` would be compared as an empty string to the integer `users_id` field
+        $this->assertSame([0], $users_ids);
+    }
 }

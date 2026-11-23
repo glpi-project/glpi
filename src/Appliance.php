@@ -55,9 +55,9 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
-    public static $rightname                   = 'appliance';
-    protected $usenotepad               = true;
+    public bool $dohistory                   = true;
+    public static string $rightname                   = 'appliance';
+    protected bool $usenotepad               = true;
 
     public function getCloneRelations(): array
     {
@@ -185,6 +185,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
             'field'         => 'name',
             'name'          => User::getTypeName(1),
             'datatype'      => 'dropdown',
+            'right'         => 'all',
         ];
 
         $tab[] = [
@@ -513,8 +514,8 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
 
         if ($isadmin) {
             $prefix                    = 'Appliance_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'add']    = "<i class='ti ti-package'></i>" . _sx('button', 'Add an item');
-            $actions[$prefix . 'remove'] = "<i class='ti ti-package-off'></i>" . _sx('button', 'Remove an item');
+            $actions[$prefix . 'add']    = "<i class='ti ti-package' aria-hidden='true'></i>" . _sx('button', 'Add an item');
+            $actions[$prefix . 'remove'] = "<i class='ti ti-package-off' aria-hidden='true'></i>" . _sx('button', 'Remove an item');
         }
 
         KnowbaseItem_Item::getMassiveActionsForItemtype($actions, self::class, false, $checkitem);
@@ -548,16 +549,16 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
                     $input = [
                         'appliances_id'   => $input['appliances_id'],
                         'items_id'        => $id,
-                        'itemtype'        => $item->getType(),
+                        'itemtype'        => $item::class,
                     ];
-                    if ($appli_item->can(-1, UPDATE, $input)) {
+                    if ($appli_item->can(-1, CREATE, $input)) {
                         if ($appli_item->add($input)) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                     }
                 }
 

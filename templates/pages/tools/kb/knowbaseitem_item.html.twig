@@ -32,31 +32,46 @@
 
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
-<form method="post" action="{{ 'KnowbaseItem_Item'|itemtype_form_path }}">
-    {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
-    {% if get_class(item) == 'KnowbaseItem' %}
+{% set from_kbarticle = get_class(item) == 'KnowbaseItem' %}
+
+<form
+    {% if from_kbarticle %}
+        class="kb-link-item-form"
+        data-glpi-kb-link-item-form
+        data-glpi-kb-id="{{ item.getID() }}"
+    {% else %}
+        method="post" action="{{ 'KnowbaseItem_Item'|itemtype_form_path }}" class="kb-link-item-form"
+    {% endif %}
+>
+    {% if from_kbarticle %}
         {{ inputs.hidden('knowbaseitems_id', item.getID()) }}
     {% else %}
         {{ inputs.hidden('items_id', item.getID()) }}
         {{ inputs.hidden('itemtype', get_class(item)) }}
     {% endif %}
-    <div class="row align-items-center mb-2 ms-3">
-        {% if get_class(item) == 'KnowbaseItem' %}
-            <label class="col-auto col-form-label">{{ __('Add a linked item') }}</label>
-            <div class="col-12 col-sm-8 col-md-3 mb-2 mb-md-0">
-                {% do call('KnowbaseItem_Item::dropdownAllTypes', [item, 'items_id', used_knowbase_items]) %}
-            </div>
-        {% else %}
-            <div class="col-12 col-sm-8 col-md-3 mb-2 mb-md-0">
-                {{ 'KnowbaseItem'|itemtype_dropdown({
-                    'entity': item.getEntityID(),
-                    'used': used_knowbase_items,
-                    'condition': visibility_condition
-                }) }}
-            </div>
-        {% endif %}
-        <div class="col-auto mt-2 mt-md-0">
-            {{ inputs.submit('add', _x('button', 'Add'), 1, {'class': 'btn btn-primary', 'icon': 'ti ti-link'}) }}
+
+    {% if from_kbarticle %}
+        <label class="form-label">{{ __('Add a linked item') }}</label>
+        <div class="kb-link-item-dropdowns">
+            {% do call('KnowbaseItem_Item::dropdownAllTypes', [item, 'items_id', used_items]) %}
         </div>
+        <div class="invalid-feedback d-block" role="alert" data-glpi-kb-link-item-error></div>
+    {% else %}
+        {{ 'KnowbaseItem'|itemtype_dropdown({
+            'entity': item.getEntityID(),
+            'used': used_knowbase_items,
+            'condition': visibility_condition
+        }) }}
+    {% endif %}
+
+    <div class="kb-link-item-footer {{ not from_kbarticle ? 'border-0' : '' }}">
+        {% if from_kbarticle %}
+            <button
+                class="btn btn-ghost-secondary me-2"
+                type="button"
+                data-bs-dismiss="modal"
+            >{{ __('Cancel') }}</button>
+        {% endif %}
+        {{ inputs.submit('add', _x('button', 'Add'), 1, {'class': 'btn btn-primary', 'icon': 'ti ti-link'}) }}
     </div>
 </form>

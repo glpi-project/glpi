@@ -35,7 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinitionManager;
-use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Features\Clonable;
 use Glpi\Plugin\Hooks;
 
@@ -52,7 +52,7 @@ class Rule extends CommonDBTM
     /** @use Clonable<static> */
     use Clonable;
 
-    public $dohistory             = true;
+    public bool $dohistory             = true;
 
     // Specific ones
     /**
@@ -61,47 +61,41 @@ class Rule extends CommonDBTM
      * FIXME: should probably not be nullable
      * @var ?array
      */
-    public $actions               = [];
+    public ?array $actions               = [];
     /**
      * Criteria affected to this rule
      *
-     * @var array
      */
-    public $criterias             = [];
+    public array $criterias             = [];
 
     /**
      * preview context ?
      *
-     * @var bool
      */
-    protected $is_preview = false;
+    protected bool $is_preview = false;
 
     /**
      * Restrict matching to self::AND_MATCHING or self::OR_MATCHING: specify value to activate
      *
      * @var self::*_MATCHING|false
      */
-    public $restrict_matching     = false;
-    /** @var string */
-    protected $rules_id_field     = 'rules_id';
+    public string|int|bool $restrict_matching     = false;
+    protected string $rules_id_field     = 'rules_id';
     /**
      * @var class-string<RuleAction>
      */
-    protected $ruleactionclass    = RuleAction::class;
+    protected string $ruleactionclass    = RuleAction::class;
     /**
      * @var class-string<RuleCriteria>
      */
-    protected $rulecriteriaclass  = RuleCriteria::class;
+    protected string $rulecriteriaclass  = RuleCriteria::class;
 
-    /** @var bool */
-    public $specific_parameters   = false;
+    public bool $specific_parameters   = false;
 
-    /** @var array */
-    public $regex_results         = [];
-    /** @var array */
-    public $criterias_results     = [];
+    public array $regex_results         = [];
+    public array $criterias_results     = [];
 
-    public static $rightname             = 'config';
+    public static string $rightname             = 'config';
 
     public const RULE_NOT_IN_CACHE       = -1;
     public const RULE_WILDCARD           = '*';
@@ -244,13 +238,13 @@ class Rule extends CommonDBTM
         $menu = [];
 
         if (
-            Session::haveRight("rule_ldap", READ)
-            || Session::haveRight("rule_import", READ)
-            || Session::haveRight("rule_location", READ)
-            || Session::haveRight("rule_ticket", READ)
-            || Session::haveRight("rule_change", READ)
-            || Session::haveRight("rule_softwarecategories", READ)
-            || Session::haveRight("rule_mailcollector", READ)
+            Session::haveRight(RuleRight::$rightname, READ)
+            || Session::haveRight(RuleImportAsset::$rightname, READ)
+            || Session::haveRight(RuleLocation::$rightname, READ)
+            || Session::haveRight(RuleTicket::$rightname, READ)
+            || Session::haveRight(RuleChange::$rightname, READ)
+            || Session::haveRight(RuleSoftwareCategory::$rightname, READ)
+            || Session::haveRight(RuleMailCollector::$rightname, READ)
         ) {
             $menu['rule']['title'] = static::getTypeName(Session::getPluralNumber());
             $menu['rule']['page']  = static::getSearchURL(false);
@@ -287,7 +281,7 @@ class Rule extends CommonDBTM
             $menu['rule']['options'][Transfer::class]['page']            = "/front/transfer.php";
             $menu['rule']['options'][Transfer::class]['links']['search'] = "/front/transfer.php";
 
-            if (Session::haveRightsOr("transfer", [CREATE, UPDATE])) {
+            if (Session::haveRightsOr(Transfer::$rightname, [CREATE, UPDATE])) {
                 $menu['rule']['options'][Transfer::class]['links']['transfer_list']
                                                                  = "/front/transfer.action.php";
                 $menu['rule']['options'][Transfer::class]['links']['add'] = Transfer::getFormURL(false);
@@ -295,9 +289,9 @@ class Rule extends CommonDBTM
         }
 
         if (
-            Session::haveRight("rule_dictionnary_dropdown", READ)
-            || Session::haveRight("rule_dictionnary_software", READ)
-            || Session::haveRight("rule_dictionnary_printer", READ)
+            Session::haveRight(RuleDictionnaryDropdown::$rightname, READ)
+            || Session::haveRight(RuleDictionnarySoftware::$rightname, READ)
+            || Session::haveRight(RuleDictionnaryPrinter::$rightname, READ)
         ) {
             $menu['dictionnary']['title']    = _n('Dictionary', 'Dictionaries', Session::getPluralNumber());
             $menu['dictionnary']['shortcut'] = '';
@@ -652,10 +646,10 @@ class Rule extends CommonDBTM
             unset($actions[MassiveAction::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list']);
         }
         if ($isadmin) {
-            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule'] = "<i class='ti ti-arrows-vertical'></i>"
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule'] = "<i class='ti ti-arrows-vertical' aria-hidden='true'></i>"
                 . __s('Move');
         }
-        $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'export'] = "<i class='ti ti-file-download'></i>"
+        $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'export'] = "<i class='ti ti-file-download' aria-hidden='true'></i>"
             . _sx('button', 'Export');
 
         return $actions;
@@ -699,9 +693,21 @@ class Rule extends CommonDBTM
         switch ($ma->getAction()) {
             case 'export':
                 if (count($ids)) {
-                    $_SESSION['exportitems'] = $ids;
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
-                    $ma->setRedirect('rule.backup.php?action=download&itemtype=' . $item::class);
+                    $_SESSION['exportitems'] = [];
+                    foreach ($ids as $id) {
+                        if (!$item->can($id, READ)) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
+
+                        $_SESSION['exportitems'][$id] = $id;
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
+                    }
+
+                    if ($_SESSION['exportitems'] !== []) {
+                        $ma->setRedirect('rule.backup.php?action=download&itemtype=' . $item::class);
+                    }
                 }
                 break;
 
@@ -710,24 +716,30 @@ class Rule extends CommonDBTM
                 $collectionname = $input['rule_class_name'] . 'Collection';
                 $rulecollection = getItemForItemtype($collectionname);
                 if (!($rulecollection instanceof RuleCollection)) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                     $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                 } elseif ($rulecollection->canUpdate()) {
                     foreach ($ids as $id) {
+                        if (!$item->can($id, UPDATE)) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
+
                         if ($item->getFromDB($id)) {
                             if ($rulecollection->moveRule($id, $input['ranking'], $input['move_type'])) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                         }
                     }
                 } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                 }
                 break;
@@ -923,6 +935,7 @@ class Rule extends CommonDBTM
             $add_buttons = [
                 [
                     'text' => _x('button', 'Test'),
+                    'icon' => 'ti ti-stethoscope',
                     'type' => 'button',
                     'onclick' => "$('#ruletestmodal').modal('show');",
                 ],
@@ -1098,7 +1111,7 @@ class Rule extends CommonDBTM
                 <div id="viewaction{{ rules_id }}{{ rand }}"></div>
                 {% if can_add_new_action %}
                     <div class="center mt-1 mb-3">
-                        <button type="button" name="add_action" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ btn_label }}</span></button>
+                        <button type="button" name="add_action" class="btn btn-primary"><i class="ti ti-plus" aria-hidden="true"></i><span>{{ btn_label }}</span></button>
                         <script>
                             $('button[name="add_action"]').on('click', () => {
                                 $('#viewaction{{ rules_id }}{{ rand }}').load('{{ path('ajax/viewsubitem.php')|e('js') }}', {{ ajax_params|json_encode|raw }});
@@ -1147,7 +1160,6 @@ TWIG, $twig_params);
             'entries' => $entries,
             'row_class' => 'cursor-pointer',
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => $massiveactionparams,
         ]);
@@ -1166,7 +1178,7 @@ TWIG, $twig_params);
                             $('#viewaction{$rules_id}{$rand}').load(CFG_GLPI.root_doc + '/ajax/viewsubitem.php',{
                                 type: '" . jsescape($this->ruleactionclass) . "',
                                 parenttype: '" . jsescape($rule_class) . "',
-                                rules_id: $rules_id,
+                                {$this->rules_id_field}: $rules_id,
                                 id: action_id
                             });
                         }
@@ -1218,7 +1230,7 @@ TWIG, $twig_params);
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div id="viewcriteria{{ rules_id }}{{ rand }}"></div>
                 <div class="center mt-1 mb-3">
-                    <button type="button" name="add_criterion" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ btn_label }}</span></button>
+                    <button type="button" name="add_criterion" class="btn btn-primary"><i class="ti ti-plus" aria-hidden="true"></i><span>{{ btn_label }}</span></button>
                     <script>
                         $('button[name="add_criterion"]').on('click', () => {
                             $('#viewcriteria{{ rules_id }}{{ rand }}').load('{{ path('ajax/viewsubitem.php')|e('js') }}', {{ ajax_params|json_encode|raw }});
@@ -1264,7 +1276,6 @@ TWIG, $twig_params);
             'entries' => $entries,
             'row_class' => 'cursor-pointer',
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => $massiveactionparams,
         ]);
@@ -1283,7 +1294,7 @@ TWIG, $twig_params);
                             $('#viewcriteria{$rules_id}{$rand}').load(CFG_GLPI.root_doc + '/ajax/viewsubitem.php',{
                                 type: '" . jsescape($this->rulecriteriaclass) . "',
                                 parenttype: '" . jsescape($rule_class) . "',
-                                rules_id: $rules_id,
+                                {$this->rules_id_field}: $rules_id,
                                 id: criteria_id
                             });
                         }
@@ -1955,7 +1966,7 @@ TWIG, $twig_params);
             foreach ($RuleCriterias->getRuleCriterias($this->fields['id']) as $RuleCriteria) {
                 $to_display = $this->getMinimalCriteria($RuleCriteria->fields);
                 $data['criteria'] .= '<span class="glpi-badge mb-1">'
-                    . implode('<i class="ti ti-caret-right-filled mx-1"></i>', array_map('htmlescape', $to_display))
+                    . implode('<i class="ti ti-caret-right-filled mx-1" aria-hidden="true"></i>', array_map('htmlescape', $to_display))
                     . '</span><br />';
             }
         }
@@ -1967,14 +1978,14 @@ TWIG, $twig_params);
             foreach ($RuleAction->getRuleActions($this->fields['id']) as $RuleAction) {
                 $to_display = $this->getMinimalAction($RuleAction->fields);
                 $data['actions'] .= '<span class="glpi-badge mb-1">'
-                    . implode('<i class="ti ti-caret-right-filled mx-1"></i>', array_map('htmlescape', $to_display))
+                    . implode('<i class="ti ti-caret-right-filled mx-1" aria-hidden="true"></i>', array_map('htmlescape', $to_display))
                     . '</span><br />';
             }
         }
 
         $active = $this->fields['is_active'];
         $data['is_active'] = sprintf(
-            '<i class="ti ti-circle-filled %s" title="%s"></i>',
+            '<i class="ti ti-circle-filled %1$s" title="%2$s" aria-hidden="true"></i><span class="visually-hidden">%2$s</span>',
             $active ? 'text-success' : 'text-danger',
             $active ? __s('Rule is active') : __s('Rule is inactive'),
         );
@@ -1991,7 +2002,7 @@ TWIG, $twig_params);
         }
 
         if ($can_edit) {
-            $data['sort'] = "<i class='ti ti-grip-horizontal grip-rule cursor-grab'></i>";
+            $data['sort'] = "<i class='ti ti-grip-horizontal grip-rule cursor-grab' aria-hidden='true'></i>";
         }
 
         return $data;
@@ -2166,7 +2177,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => false,
         ]);
 
@@ -2234,7 +2244,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => false,
         ]);
     }
@@ -2374,7 +2383,7 @@ TWIG, $twig_params);
                         return (($tmp == '') ? NOT_AVAILABLE : $tmp);
 
                     case "dropdown_users":
-                        return getUserName($pattern);
+                        return getUserName($pattern ?? 0);
 
                     case "dropdown_assets_itemtype":
                     case "dropdown_tracking_itemtype":
@@ -2930,7 +2939,7 @@ TWIG, $twig_params);
         global $PLUGIN_HOOKS;
 
         if (empty($itemtype)) {
-            $itemtype = static::getType();
+            $itemtype = static::class;
         }
 
         //Aggregate all plugins criteria for this rules engine
@@ -2991,7 +3000,7 @@ TWIG, $twig_params);
                 static::getTable(),
             ],
             'WHERE'  => [
-                getTableForItemType($this->ruleactionclass) . "." . $this->rules_id_field   => new QueryExpression(DBmysql::quoteName(static::getTable() . '.id')),
+                getTableForItemType($this->ruleactionclass) . "." . $this->rules_id_field   => new QueryIdentifier(static::getTable() . '.id'),
                 static::getTable() . '.sub_type'                                           => static::class,
 
             ],
@@ -3029,7 +3038,7 @@ TWIG, ['label' => $this->getTitle()]);
             $this->showForm(0, [
                 'no_header' => true,
                 'short'     => true,
-                'entities_id' => $item->getField('id'),
+                'entities_id' => $item->getID(),
                 'params' => [
                     'formfooter' => false,
                 ],
@@ -3039,7 +3048,7 @@ TWIG, ['label' => $this->getTitle()]);
         // Get all rules and actions
         $crit = [
             'field' => getForeignKeyFieldForTable($item->getTable()),
-            'value' => $item->getField('id'),
+            'value' => $item->getID(),
         ];
 
         $rules = $this->getRulesForCriteria($crit);
@@ -3076,7 +3085,6 @@ TWIG, ['label' => $this->getTitle()]);
             'entries' => $entries,
             'row_class' => 'cursor-pointer',
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -3184,7 +3192,7 @@ TWIG, ['label' => $this->getTitle()]);
                     $valfield => $item->input['_replace_by'],
                 ],
                 [
-                    $valfield   => $item->getField('id'),
+                    $valfield   => $item->getID(),
                     $fieldfield => ['LIKE', $field],
                 ]
             );
@@ -3193,7 +3201,7 @@ TWIG, ['label' => $this->getTitle()]);
                 'SELECT' => [$fieldid],
                 'FROM'   => $table,
                 'WHERE'  => [
-                    $valfield   => $item->getField('id'),
+                    $valfield   => $item->getID(),
                     $fieldfield => ['LIKE', $field],
                 ],
             ]);
@@ -3203,7 +3211,14 @@ TWIG, ['label' => $this->getTitle()]);
 
                 foreach ($iterator as $data) {
                     $input['id'] = $data[$fieldid];
-                    $ruleitem->update($input);
+                    // Update the rule through its concrete class, otherwise the history entry
+                    // would be attached to the `Rule` itemtype and would therefore not be
+                    // visible in the history tab of the rule.
+                    $updated_item = $ruleitem;
+                    if ($ruleitem::getTable() === self::getTable()) {
+                        $updated_item = self::getRuleObjectByID($data[$fieldid]) ?? $ruleitem;
+                    }
+                    $updated_item->update($input);
                 }
                 Session::addMessageAfterRedirect(
                     __s('Rules using the object have been disabled.'),
@@ -3295,7 +3310,7 @@ TWIG, ['label' => $this->getTitle()]);
                             $nb = countElementsInTable(
                                 ['glpi_rules', 'glpi_ruleactions'],
                                 [
-                                    'glpi_ruleactions.rules_id'   => new QueryExpression(DBmysql::quoteName('glpi_rules.id')),
+                                    'glpi_ruleactions.rules_id'   => new QueryIdentifier('glpi_rules.id'),
                                     'glpi_rules.sub_type'         => $types,
                                     'glpi_ruleactions.field'      => 'entities_id',
                                     'glpi_ruleactions.value'      => $item->getID(),
@@ -3306,11 +3321,21 @@ TWIG, ['label' => $this->getTitle()]);
                     return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
 
                 case SLA::class:
-                case OLA::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             'glpi_ruleactions',
                             ['field' => $item::getFieldNames($item->fields['type'])[1],
+                                'value' => $item->getID(),
+                            ]
+                        );
+                    }
+                    return self::createTabEntry(self::getTypeName($nb), $nb, $item::class);
+
+                case OLA::class:
+                    if ($_SESSION['glpishow_count_on_tabs']) {
+                        $nb = countElementsInTable(
+                            'glpi_ruleactions',
+                            [   'field' => 'olas_id',
                                 'value' => $item->getID(),
                             ]
                         );
@@ -3336,13 +3361,13 @@ TWIG, ['label' => $this->getTitle()]);
                         $ong[1] = self::createTabEntry(
                             RuleCriteria::getTypeName(Session::getPluralNumber()),
                             $nbcriteria,
-                            $item::getType(),
+                            $item::class,
                             RuleCriteria::getIcon()
                         );
                         $ong[2] = self::createTabEntry(
                             RuleAction::getTypeName(Session::getPluralNumber()),
                             $nbaction,
-                            $item::getType(),
+                            $item::class,
                             RuleAction::getIcon()
                         );
                         return $ong;
@@ -3415,6 +3440,32 @@ TWIG, ['label' => $this->getTitle()]);
     public static function canPurge(): bool
     {
         return static::canUpdate();
+    }
+
+    public function canViewItem(): bool
+    {
+        return $this->isOfCurrentType() && parent::canViewItem();
+    }
+
+    public function canUpdateItem(): bool
+    {
+        return $this->isOfCurrentType() && parent::canUpdateItem();
+    }
+
+    public function canPurgeItem(): bool
+    {
+        return $this->isOfCurrentType() && parent::canPurgeItem();
+    }
+
+    /**
+     * Rules of all types share the same table, but each type has its own rights.
+     * A loaded rule must therefore be of the type it is accessed through.
+     */
+    private function isOfCurrentType(): bool
+    {
+        return static::class === self::class
+            || !isset($this->fields['sub_type'])
+            || $this->fields['sub_type'] === static::class;
     }
 
     public static function getIcon()
@@ -3541,7 +3592,7 @@ TWIG, ['label' => $this->getTitle()]);
             );
         }
         foreach ($xml->xpath($xpath) as $rulexml) {
-            if ((string) $rulexml->sub_type !== self::getType()) {
+            if ((string) $rulexml->sub_type !== static::class) {
                 trigger_error(
                     sprintf(
                         'Unexpected rule type %s for rule `%s`.',
@@ -3577,7 +3628,7 @@ TWIG, ['label' => $this->getTitle()]);
 
             $rule_input = [
                 'entities_id'  => 0, // Always add default rules to root entity
-                'sub_type'     => self::getType(),
+                'sub_type'     => static::class,
                 'ranking'      => (int) $rulexml->ranking + $ranking_increment,
                 'name'         => (string) $rulexml->name,
                 'description'  => (string) $rulexml->description,

@@ -50,6 +50,7 @@ use Generator;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Features\AssignableItem;
 use Glpi\Features\Clonable;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Socket;
 use Glpi\Tests\DbTestCase;
 use Group;
@@ -64,6 +65,7 @@ use Phone;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Printer;
 use Profile;
+use Profile_User;
 use Project;
 use ProjectTask;
 use Session;
@@ -103,6 +105,16 @@ class DropdownTest extends DbTestCase
         $this->assertStringContainsString("name='language' id='dropdown_language1234", $out);
         $this->assertStringContainsString("value='cs_CZ' selected", $out);
         $this->assertStringContainsString("value='fr_FR'", $out);
+    }
+
+    public function testShowTemplateSelection()
+    {
+        $out = Dropdown::show('Group', [
+            'display'           => false,
+            'multiple'          => true,
+            'templateSelection' => 'templateGroupSelection',
+        ]);
+        $this->assertStringContainsString('templateSelection: templateGroupSelection,', $out);
     }
 
     public static function dataTestImport()
@@ -164,6 +176,23 @@ class DropdownTest extends DbTestCase
         } else {
             $this->assertLessThanOrEqual(0, (int) $id);
         }
+    }
+
+    public function testImportFindsLegacyEncodedValue(): void
+    {
+        global $DB;
+
+        // Simulate GLPI 10.0.x encoded data
+        $manufacturer = $this->createItem(\Manufacturer::class, ['name' => __FUNCTION__ . ' AT&#38;T']);
+        $DB->setMustUnsanitizeData(true);
+
+        $count_before = countElementsInTable(\Manufacturer::getTable());
+
+        $this->assertSame(
+            $manufacturer->getID(),
+            (int) Dropdown::import(\Manufacturer::class, ['name' => __FUNCTION__ . ' AT&T'])
+        );
+        $this->assertSame($count_before, countElementsInTable(\Manufacturer::getTable()));
     }
 
     public function testGetDropdownNameAndComment()
@@ -796,19 +825,20 @@ HTML;
                     'itemtype'              => TaskCategory::class,
                     'searchText'            => 'subcat',
                     'toadd'                 => [
-                        'key'  => 'value',
-                        'key2' => "value with unescaped \t and escaped \\t",
+                        'key'  => 'subcat value',
+                        'key2' => "subcat value with unescaped \t and escaped \\t",
+                        'key3' => 'not matching the search',
                     ],
                 ],
                 'expected'  => [
                     'results' => [
                         [
                             'id'     => 'key',
-                            'text'   => 'value',
+                            'text'   => 'subcat value',
                         ],
                         [
                             'id'     => 'key2',
-                            'text'   => "value with unescaped \t and escaped \\t",
+                            'text'   => "subcat value with unescaped \t and escaped \\t",
                         ],
                         [
                             'text'      => 'Root entity',
@@ -1221,6 +1251,57 @@ HTML;
         }
 
         $this->assertSame($expected, $result);
+    }
+
+    public static function getDropdownValueToAddWithSearchTextProvider(): iterable
+    {
+        $toadd = [
+            -1 => Dropdown::EMPTY_VALUE,
+            -2 => 'Inheritance of the parent entity',
+            -3 => 'Special VALUE',
+        ];
+
+        foreach ([Entity::class, Location::class, Computer::class] as $itemtype) {
+            yield "$itemtype - no search" => [$itemtype, $toadd, '', [-1, -2, -3]];
+            yield "$itemtype - search matching no added value" => [$itemtype, $toadd, '_test', []];
+            yield "$itemtype - search is case insensitive" => [$itemtype, $toadd, 'special value', [-3]];
+            yield "$itemtype - search contains" => [$itemtype, $toadd, 'parent', [-2]];
+            yield "$itemtype - search starts with" => [$itemtype, $toadd, '^inheritance', [-2]];
+            yield "$itemtype - search starts with, not matching" => [$itemtype, $toadd, '^parent', []];
+            yield "$itemtype - search ends with" => [$itemtype, $toadd, 'value$', [-3]];
+            yield "$itemtype - search with regex chars" => [$itemtype, $toadd, '-----', [-1]];
+            yield "$itemtype - search is accent insensitive" => [$itemtype, [-4 => 'Toutes les catégories'], 'categorie', [-4]];
+        }
+    }
+
+    #[DataProvider('getDropdownValueToAddWithSearchTextProvider')]
+    public function testGetDropdownValueFiltersToAddWithSearchText(
+        string $itemtype,
+        array $toadd,
+        string $search_text,
+        array $expected_toadd_ids
+    ): void {
+        $this->login();
+
+        $params = [
+            'itemtype'            => $itemtype,
+            'display_emptychoice' => 0,
+            'searchText'          => $search_text,
+            'toadd'               => $toadd,
+        ];
+        $params['_idor_token'] = $this->generateIdor($params);
+
+        $result = Dropdown::getDropdownValue($params, false);
+
+        // Added values are listed at the top level, before the items
+        $toadd_ids = array_values(array_filter(
+            array_column($result['results'], 'id'),
+            static fn($id) => array_key_exists($id, $toadd)
+        ));
+        $this->assertSame($expected_toadd_ids, $toadd_ids);
+        if ($expected_toadd_ids !== []) {
+            $this->assertSame($expected_toadd_ids[0], $result['results'][0]['id']);
+        }
     }
 
     public static function getDropdownConnectProvider()
@@ -2161,6 +2242,38 @@ HTML;
         }
     }
 
+    public function testDeviceTypesAndModelsAreRegisteredAsStandardDropdowns(): void
+    {
+        $this->login();
+
+        $groups = Dropdown::getStandardDropdownItemTypes(false);
+
+        $type_key = _n('Type', 'Types', Session::getPluralNumber());
+        $model_key = _n('Model', 'Models', Session::getPluralNumber());
+
+        $this->assertArrayHasKey($type_key, $groups);
+        $this->assertArrayHasKey($model_key, $groups);
+
+        $type_group = $groups[$type_key];
+        $model_group = $groups[$model_key];
+
+        $device_itemtypes = array_merge(...array_values(Dropdown::getDeviceItemTypes(false)));
+
+        $this->assertNotEmpty($device_itemtypes);
+
+        foreach (array_keys($device_itemtypes) as $device_class) {
+            $type_class = $device_class . 'Type';
+            if (class_exists($type_class)) {
+                $this->assertArrayHasKey($type_class, $type_group, "$type_class should be a registered standard dropdown");
+            }
+
+            $model_class = $device_class . 'Model';
+            if (class_exists($model_class)) {
+                $this->assertArrayHasKey($model_class, $model_group, "$model_class should be a registered standard dropdown");
+            }
+        }
+    }
+
     public function testClone()
     {
         $this->login();
@@ -2515,7 +2628,7 @@ HTML;
                 $dd,
                 'filterDisplayWith',
                 new User(),
-                ['id', 'firstname', 'password', 'personal_token', 'api_token', 'cookie_token', 'password_forget_token']
+                ['id', 'firstname', 'password', 'personal_token', 'api_token', 'password_forget_token']
             )
         );
 
@@ -2527,7 +2640,7 @@ HTML;
                 $dd,
                 'filterDisplayWith',
                 new User(),
-                ['id', 'firstname', 'password', 'personal_token', 'api_token', 'cookie_token', 'password_forget_token']
+                ['id', 'firstname', 'password', 'personal_token', 'api_token', 'password_forget_token']
             )
         );
 
@@ -2539,7 +2652,7 @@ HTML;
                 $dd,
                 'filterDisplayWith',
                 new User(),
-                ['id', 'firstname', 'password', 'personal_token', 'api_token', 'cookie_token', 'password_forget_token']
+                ['id', 'firstname', 'password', 'personal_token', 'api_token', 'password_forget_token']
             )
         );
     }
@@ -2582,6 +2695,104 @@ HTML;
         $this->assertCount(1, array_filter($results['results'][0]['children'], function ($result) use ($inactive_supplier) {
             return $result['id'] === Supplier::class . '_' . $inactive_supplier->getID();
         }));
+    }
+
+    /**
+     * Test that `getDropdownActors` uses the `is_notif_enable_default` config of the item's entity,
+     * not the one of the session's active entity.
+     *
+     * @return void
+     */
+    public function testGetDropdownActorsUsesItemEntityNotifDefault()
+    {
+        $this->login();
+        $_SESSION['glpiactive_entity'] = 0; // root entity: different from the item's entities below
+
+        $root_id = getItemByTypeName('Entity', 'Root entity', true);
+
+        $notif_entity = $this->createItem(Entity::class, [
+            'name'                   => __FUNCTION__ . '_notif',
+            'entities_id'            => $root_id,
+            'is_notif_enable_default' => 1,
+        ]);
+        $no_notif_entity = $this->createItem(Entity::class, [
+            'name'                   => __FUNCTION__ . '_no_notif',
+            'entities_id'            => $root_id,
+            'is_notif_enable_default' => 0,
+        ]);
+
+        // A user with a default email, visible in the dropdown
+        $user = $this->createItem(User::class, [
+            'name'        => __FUNCTION__,
+            '_useremails' => [
+                -1 => 'user-default-email@example.com',
+            ],
+            '_default_email' => -1,
+        ]);
+        $this->createItem(Profile_User::class, [
+            'users_id'     => $user->getID(),
+            'profiles_id'  => getItemByTypeName(Profile::class, 'Technician', true),
+            'entities_id'  => $root_id,
+            'is_recursive' => 1,
+        ]);
+
+        // A supplier with an email, visible in the assignee dropdown
+        $supplier = $this->createItem(Supplier::class, [
+            'name'        => __FUNCTION__ . '_supplier',
+            'email'       => 'supplier-default-email@example.com',
+            'is_active'   => 1,
+            'entities_id' => $root_id,
+            'is_recursive' => 1,
+        ]);
+
+        $base_post = [
+            'itemtype'           => Ticket::class,
+            'actortype'          => 'requester',
+            'returned_itemtypes' => [User::class],
+            'searchText'         => '',
+        ];
+
+        $results = Dropdown::getDropdownActors($base_post + [
+            'item'        => ['entities_id' => $notif_entity->getID()],
+            '_idor_token' => Session::getNewIDORToken(Ticket::class, $base_post),
+        ], false);
+        $this->assertNotEmpty($results['results']);
+        $user_result = array_filter($results['results'], static fn($r) => $r['id'] === 'User_' . $user->getID());
+        $this->assertNotEmpty($user_result);
+        $this->assertSame(1, (int) reset($user_result)['use_notification']);
+
+        $results = Dropdown::getDropdownActors($base_post + [
+            'item'        => ['entities_id' => $no_notif_entity->getID()],
+            '_idor_token' => Session::getNewIDORToken(Ticket::class, $base_post),
+        ], false);
+        $this->assertNotEmpty($results['results']);
+        $user_result = array_filter($results['results'], static fn($r) => $r['id'] === 'User_' . $user->getID());
+        $this->assertNotEmpty($user_result);
+        $this->assertSame(0, (int) reset($user_result)['use_notification']);
+
+        // Same behavior for suppliers (assignee dropdown): use_notification follows the item's entity
+        $assign_post = [
+            'itemtype'           => Ticket::class,
+            'actortype'          => 'assign',
+            'returned_itemtypes' => [Supplier::class],
+            'searchText'         => '',
+        ];
+
+        $results = Dropdown::getDropdownActors($assign_post + [
+            'item'        => ['entities_id' => $notif_entity->getID()],
+            '_idor_token' => Session::getNewIDORToken(Ticket::class, $assign_post),
+        ], false);
+        $supplier_result = array_filter($results['results'][0]['children'] ?? [], static fn($r) => $r['id'] === 'Supplier_' . $supplier->getID());
+        $this->assertNotEmpty($supplier_result);
+        $this->assertSame(1, (int) reset($supplier_result)['use_notification']);
+
+        $results = Dropdown::getDropdownActors($assign_post + [
+            'item'        => ['entities_id' => $no_notif_entity->getID()],
+            '_idor_token' => Session::getNewIDORToken(Ticket::class, $assign_post),
+        ], false);
+        $supplier_result = array_filter($results['results'][0]['children'] ?? [], static fn($r) => $r['id'] === 'Supplier_' . $supplier->getID());
+        $this->assertNotEmpty($supplier_result);
+        $this->assertSame(0, (int) reset($supplier_result)['use_notification']);
     }
 
     public function testGetDeviceItemTypes()
@@ -2633,11 +2844,71 @@ HTML;
         }
     }
 
-    public function testGetLanguages()
+    public static function getDurationDropdownProvider(): iterable
+    {
+        yield 'step 5' => [5, [10, 15, 20, 25, 30, 595], [11]];
+        yield 'step 15' => [15, [15, 30, 45, 60, 585], [10, 20]];
+        yield 'step 30' => [30, [30, 60, 90, 570], [10, 15, 20, 45]];
+        yield 'step 60' => [60, [60, 120, 540], [10, 30, 90]];
+    }
+
+    #[DataProvider('getDurationDropdownProvider')]
+    public function testGetDurationDropdownUsesTimeStep(int $step, array $expected, array $unexpected): void
     {
         global $CFG_GLPI;
+        $CFG_GLPI['time_step'] = $step;
 
-        $this->assertCount(count($CFG_GLPI['languages']), Dropdown::getLanguages());
+        $values = Dropdown::getDurationDropdown();
+
+        // 1 to 9 minutes are always available, whatever the step
+        for ($i = 1; $i <= 9; $i++) {
+            $this->assertArrayHasKey($i * MINUTE_TIMESTAMP, $values);
+        }
+        foreach ($expected as $minutes) {
+            $this->assertArrayHasKey($minutes * MINUTE_TIMESTAMP, $values);
+        }
+        foreach ($unexpected as $minutes) {
+            $this->assertArrayNotHasKey($minutes * MINUTE_TIMESTAMP, $values);
+        }
+        $this->assertSame('0h09', $values[9 * MINUTE_TIMESTAMP]);
+        $this->assertSame('10h00', $values[10 * HOUR_TIMESTAMP]);
+        $this->assertSame('5 days', $values[5 * DAY_TIMESTAMP]);
+    }
+
+    public function testGetDurationDropdownKeepsCurrentValue(): void
+    {
+        global $CFG_GLPI;
+        $CFG_GLPI['time_step'] = 30;
+
+        // Duration saved with a previous step must remain selectable
+        $values = Dropdown::getDurationDropdown(45 * MINUTE_TIMESTAMP);
+        $this->assertSame('0h45', $values[45 * MINUTE_TIMESTAMP]);
+        $keys = array_keys($values);
+        $this->assertSame($keys, array_values(array_unique($keys)));
+        $sorted = $keys;
+        sort($sorted);
+        $this->assertSame($sorted, $keys);
+
+        // Value matching an existing entry is not duplicated nor relabelled
+        $this->assertSame(Dropdown::getDurationDropdown(), Dropdown::getDurationDropdown(HOUR_TIMESTAMP));
+    }
+
+    public function testGetDurationDropdownAcceptsFieldValues(): void
+    {
+        global $CFG_GLPI;
+        $CFG_GLPI['time_step'] = 30;
+
+        // Values are passed as raw DB fields from the task form
+        $default = Dropdown::getDurationDropdown();
+        $this->assertSame($default, Dropdown::getDurationDropdown(''));
+        $this->assertSame($default, Dropdown::getDurationDropdown(null));
+        $this->assertSame($default, Dropdown::getDurationDropdown('0'));
+        $this->assertSame('0h45', Dropdown::getDurationDropdown('2700')[45 * MINUTE_TIMESTAMP]);
+    }
+
+    public function testGetLanguages()
+    {
+        $this->assertCount(count(LanguageRegistry::all()), Dropdown::getLanguages());
     }
 
     public function testGetDropdownMyDevices()
@@ -3173,5 +3444,104 @@ HTML;
 
         $this->assertContains($computer_with_contact_id, $ids);
         $this->assertNotContains($other_computer_id, $ids);
+    }
+
+    public function testGetDropdownMyDevicesCustomAsset(): void
+    {
+        $this->login();
+
+        $custom_asset = getItemByTypeName('Glpi\\CustomAsset\\Test01Asset', 'TestA');
+        $custom_asset = $this->updateItem(
+            'Glpi\\CustomAsset\\Test01Asset',
+            $custom_asset->getID(),
+            [
+                'users_id' => Session::getLoginUserID(),
+            ]
+        );
+
+        // Ensure user has permission to see the asset and has permission to link that type of custom asset to tickets
+        $_SESSION["glpiactiveprofile"]["asset_test01"] = 3871;
+        $_SESSION["glpiactiveprofile"]["helpdesk_item_type"][] = 'Glpi\\CustomAsset\\Test01Asset';
+
+        // Check dropdown results
+        $results = Dropdown::getDropdownMyDevices([
+            'entity_restrict' => $_SESSION["glpiactiveentities"],
+        ], false)['results'];
+        $has_match = false;
+        foreach ($results as $result) {
+            if ($result['text'] === 'My Test01') {
+                foreach ($result['children'] as $child_result) {
+                    if ($child_result['text'] === 'TestA') {
+                        $has_match = true;
+                    }
+                }
+            }
+        }
+        $this->assertTrue($has_match);
+    }
+
+    public function testGetDropdownConnectRespectsAssignedRight(): void
+    {
+        $this->login();
+        $entities_id = $this->getTestRootEntity(true);
+        $this->createItem(Monitor::class, [
+            'name'          => 'Connect monitor assigned to me',
+            'entities_id'   => $entities_id,
+            'users_id_tech' => Session::getLoginUserID(),
+        ]);
+        $this->createItem(Monitor::class, [
+            'name'          => 'Connect monitor of someone else',
+            'entities_id'   => $entities_id,
+            'users_id_tech' => getItemByTypeName(User::class, 'tech', true),
+        ]);
+
+        // The user can only see the monitors assigned to him
+        $_SESSION['glpiactiveprofile'][Monitor::$rightname] = READ_ASSIGNED;
+
+        $post = [
+            'fromtype'        => Computer::class,
+            'itemtype'        => Monitor::class,
+            'entity_restrict' => $entities_id,
+            'searchText'      => 'Connect monitor',
+            '_idor_token'     => Session::getNewIDORToken(Monitor::class, ['entity_restrict' => $entities_id]),
+        ];
+        $result = Dropdown::getDropdownConnect($post, false);
+
+        $names = [];
+        foreach ($result['results'] as $entry) {
+            foreach ($entry['children'] ?? [$entry] as $child) {
+                $names[] = $child['text'];
+            }
+        }
+        $this->assertContains('Connect monitor assigned to me', $names);
+        $this->assertNotContains('Connect monitor of someone else', $names);
+    }
+
+    public function testShowSelectItemFromItemtypesWithDefaultItemtype(): void
+    {
+        $this->login();
+
+        $params = [
+            'itemtypes' => [Ticket::class, Computer::class],
+            'display'   => false,
+        ];
+
+        // The dropdown of the items of the default itemtype is requested on load
+        $output = Dropdown::showSelectItemFromItemtypes($params + ['default_itemtype' => Ticket::class]);
+        $this->assertStringContainsString("trigger('setValue', 'Ticket')", $output);
+        $this->assertSame(2, substr_count($output, 'dropdownAllItems.php'));
+
+        // There is no dropdown to request without a default itemtype: the only reference
+        // to the endpoint is the one used when an itemtype is selected.
+        foreach (['', 0] as $empty_itemtype) {
+            $output = Dropdown::showSelectItemFromItemtypes($params + ['default_itemtype' => $empty_itemtype]);
+            $this->assertStringNotContainsString("trigger('setValue'", $output);
+            $this->assertSame(1, substr_count($output, 'dropdownAllItems.php'));
+        }
+
+        // Same without the option
+        $output = Dropdown::showSelectItemFromItemtypes($params);
+        $this->assertStringNotContainsString("trigger('setValue'", $output);
+        $this->assertSame(1, substr_count($output, 'dropdownAllItems.php'));
     }
 }

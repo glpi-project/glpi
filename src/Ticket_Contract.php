@@ -37,13 +37,13 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Ticket_Contract extends CommonDBRelation
 {
-    public static $itemtype_1 = Ticket::class;
-    public static $items_id_1 = 'tickets_id';
+    public static ?string $itemtype_1 = Ticket::class;
+    public static ?string $items_id_1 = 'tickets_id';
 
-    public static $itemtype_2 = Contract::class;
-    public static $items_id_2 = 'contracts_id';
-    public static $checkItem_2_Rights = self::HAVE_VIEW_RIGHT_ON_ITEM;
-    public static $check_entity_coherency = false;
+    public static ?string $itemtype_2 = Contract::class;
+    public static ?string $items_id_2 = 'contracts_id';
+    public static int $checkItem_2_Rights = self::HAVE_VIEW_RIGHT_ON_ITEM;
+    public static bool $check_entity_coherency = false;
 
     public static function getTypeName($nb = 0)
     {
@@ -95,7 +95,7 @@ class Ticket_Contract extends CommonDBRelation
         /** @var class-string<Ticket|Contract> $linked_itemtype */
         $twig_params['linked_itemtype'] = $linked_itemtype;
 
-        $ID = $item->getField('id');
+        $ID = $item->getID();
         $twig_params['id'] = $ID;
 
         if (!static::canView() || !$item->can($ID, READ)) {
@@ -122,7 +122,6 @@ class Ticket_Contract extends CommonDBRelation
                     <form method="post" action="{{ 'Ticket_Contract'|itemtype_form_path }}">
                         <div class="d-flex">
                             <input type="hidden" name="{{ item_a_fkey }}" value="{{ id }}">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             {{ fields.dropdownField(linked_itemtype, linked_itemtype|itemtype_foreign_key, 0, null, {
                                 used: used,
                                 displaywith: ['id'],
@@ -130,7 +129,7 @@ class Ticket_Contract extends CommonDBRelation
                                 nochecklimit: true
                             }) }}
                             {% set btn %}
-                                <button type="submit" class="btn btn-primary" name="add"><i class="ti ti-link me-1"></i>{{ btn_label }}</button>
+                                <button type="submit" class="btn btn-primary" name="add"><i class="ti ti-link me-1" aria-hidden="true"></i>{{ btn_label }}</button>
                             {% endset %}
                             {{ fields.htmlField('', btn, null) }}
                         </div>
@@ -212,7 +211,6 @@ TWIG, $twig_params);
             'formatters' => $formatters,
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

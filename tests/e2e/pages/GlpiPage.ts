@@ -69,9 +69,9 @@ export class GlpiPage
         this.page = page;
 
         // Define locators
-        this.user_menu             = this.getLink('User menu');
+        this.user_menu             = page.getByRole('button', { name: 'User menu' }).filter({ visible: true });
         this.logout_link           = this.getLink('Logout');
-        this.change_profile_button = this.getButton('Change profile');
+        this.change_profile_button = page.getByRole('button', { name: 'Change profile' }).filter({ visible: true });
         this.history_rows          = page.getByRole('row');
         this.dashboards_widgets    = page.getByTestId("dashboard-widget");
 
@@ -85,7 +85,7 @@ export class GlpiPage
         this.sidebar_menu_toggles = page.getByTestId('sidebar-menu-toggle');
         this.user_menu_dropdown   = page.getByTestId('user-menu-dropdown').filter({ visible: true });
         this.entity_menu_toggle   = page.getByRole('link', { name: 'Select the desired entity' });
-        this.entity_menu_dropdown = page.getByTestId('entity-menu-dropdown').filter({ visible: true });
+        this.entity_menu_dropdown = page.getByRole('dialog', { name: 'Select the desired entity' }).filter({ visible: true });
         this.about_link           = page.getByTestId('about-link').filter({ visible: true });
 
         // Notes tab locators
@@ -109,14 +109,17 @@ export class GlpiPage
         const simple_dropdown = this.page
             .getByRole('listbox')
             .getByRole('option', {'name': value, exact: exact})
+            .first()
         ;
         const simple_dropdown_with_prefix = this.page
             .getByRole('listbox')
             .getByRole('option', {'name': `»${value}`, exact: exact})
+            .first()
         ;
         const dropdown_with_groups = this.page
             .getByRole('listbox')
             .getByRole('listitem', {'name': value, exact: exact})
+            .first()
         ;
 
         await simple_dropdown
@@ -125,6 +128,37 @@ export class GlpiPage
             .click()
         ;
         await expect(dropdown).toContainText(value);
+    }
+
+    public async doSearchAndSelectHighlightedDropdownValue(
+        dropdown: Locator,
+        search: string,
+        expected_value: string = search,
+    ): Promise<void> {
+        const search_response = this.page.waitForResponse((response) =>
+            response.url().includes('/ajax/getDropdownValue.php')
+            && response.request().postDataJSON()?.searchText === search
+        );
+
+        await dropdown.click();
+        const listbox = this.page.getByRole('listbox');
+        await expect(listbox).toBeVisible();
+        await this.page.keyboard.type(search);
+        await search_response;
+
+        // We have no control on select2 selectors
+        // eslint-disable-next-line playwright/no-raw-locators
+        await expect(listbox.getByRole('option', { name: 'Searching…' })).toHaveCount(0);
+
+        // Values of the tree dropdowns are prefixed by a "»"
+        await expect(
+            listbox.getByRole('option', { name: expected_value, exact: true })
+                .or(listbox.getByRole('option', { name: `»${expected_value}`, exact: true }))
+        ).toBeVisible();
+        await expect(
+            listbox.getByRole('option', { name: '-----', exact: true })
+        ).toHaveCount(0);
+        await this.page.keyboard.press('Enter');
     }
 
     public async doSetDropdownValue(
@@ -140,12 +174,22 @@ export class GlpiPage
             .getByRole('listbox')
             .getByRole('option', {'name': value, exact: exact})
         ;
+        // Tree dropdowns (e.g. entities) prefix hierarchical options with "»",
+        // which Select2 4.1.0 exposes in the option accessible name.
+        const simple_dropdown_with_prefix = this.page
+            .getByRole('listbox')
+            .getByRole('option', {'name': `»${value}`, exact: exact})
+        ;
         const dropdown_with_groups = this.page
             .getByRole('listbox')
             .getByRole('listitem', {'name': value, exact: exact})
         ;
 
-        await simple_dropdown.or(dropdown_with_groups).click();
+        await simple_dropdown
+            .or(simple_dropdown_with_prefix)
+            .or(dropdown_with_groups)
+            .click()
+        ;
 
         if (check_value) {
             await expect(dropdown).toContainText(value);
@@ -156,11 +200,8 @@ export class GlpiPage
         dropdown: Locator,
         value: string,
     ): Promise<void> {
-        // We have no control on select2 selectors
-        // eslint-disable-next-line playwright/no-raw-locators
-        await dropdown.getByText(value)
-            .locator('..')
-            .locator('.select2-selection__choice__remove')
+        await dropdown.getByTitle(value)
+            .getByRole('button', {name: /remove item/i})
             .click()
         ;
     }
@@ -203,16 +244,17 @@ export class GlpiPage
 
     public async doSearchForEntity(entity_name: string): Promise<void>
     {
-        await this.getTextbox("Search entity").fill(entity_name);
-        await this.getButton("Search").click();
+        await this.getTextbox("Search entities").fill(entity_name);
     }
 
     public async doSwitchToEntityWithRecursion(
         entity_name: string
     ): Promise<void> {
-        await this.getButton(
-            `Select ${entity_name} entity with all its sub entities`
-        ).click();
+        // eslint-disable-next-line playwright/no-raw-locators
+        await this.getButton(entity_name).locator('//ancestor::li').getByRole('button', {
+            name: 'Select this entity and all its children',
+            includeHidden: true, // Button is hidden in the accessibility tree because it is replaced by keyboard controls.
+        }).click();
     }
 
     public async doSwitchToEntityWithoutRecursion(
@@ -290,11 +332,14 @@ export class GlpiPage
      * Select2's container is the span right after the select.
      * The interactive element is the combobox inside the container.
      */
-    public getDropdownByLabel(label: string, base?: Locator): Locator
-    {
+    public getDropdownByLabel(
+        label: string,
+        base?: Locator,
+        exact: boolean = true,
+    ): Locator {
         // eslint-disable-next-line playwright/no-raw-locators
         return (base ?? this.page)
-            .getByLabel(label, {exact: true})
+            .getByLabel(label, {exact: exact})
             .locator('+ span')
             .getByRole('combobox')
         ;
@@ -321,11 +366,14 @@ export class GlpiPage
      * TinyMCE's container is the div right after the textarea.
      * The interactive element is the body of the iframe.
      */
-    public getRichTextByLabel(label: string, base?: Locator): Locator
-    {
+    public getRichTextByLabel(
+        label: string,
+        base?: Locator,
+        exact: boolean = false,
+    ): Locator {
         // eslint-disable-next-line playwright/no-raw-locators
         return (base ?? this.page)
-            .getByLabel(label)
+            .getByLabel(label, {exact: exact})
             .locator('+ div')
             .locator('iframe:visible')
             .contentFrame()
@@ -336,11 +384,18 @@ export class GlpiPage
     /**
      * Initialize a rich text editor by clicking on it, then return its body locator.
      */
-    public async initRichTextByLabel(label: string, base?: Locator): Promise<Locator>
-    {
+    public async initRichTextByLabel(
+        label: string,
+        base?: Locator,
+        exact: boolean = false,
+    ): Promise<Locator> {
         // eslint-disable-next-line playwright/no-raw-locators
-        await (base ?? this.page).getByLabel(label).locator('+ div').click();
-        return this.getRichTextByLabel(label, base);
+        await (base ?? this.page)
+            .getByLabel(label, {exact: exact})
+            .locator('+ div')
+            .click()
+        ;
+        return this.getRichTextByLabel(label, base, exact);
     }
 
     /**
@@ -452,9 +507,19 @@ export class GlpiPage
         ;
     }
 
+    public getDialog(text: string): Locator
+    {
+        return this.page.getByRole('dialog')
+            .filter({
+                visible: true,
+                hasText: text,
+            })
+        ;
+    }
+
     public getEntityFromTree(name: string): Locator
     {
-        return this.page.getByRole('gridcell', {
+        return this.page.getByRole('button', {
             name: name,
         }).filter({ visible: true });
     }

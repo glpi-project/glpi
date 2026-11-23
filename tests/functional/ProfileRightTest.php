@@ -81,4 +81,49 @@ class ProfileRightTest extends DbTestCase
         // Check that the last_rights_update field is not null
         $this->assertNotNull($profile->fields['last_rights_update']);
     }
+
+    public function testCannotGrantRightsNotHeld()
+    {
+        $this->login();
+
+        // Delegated profile manager: `profile` READ+UPDATE+CREATE, nothing on `config`, READ on `ticket`.
+        $_SESSION['glpiactiveprofile']['config']  = 0;
+        $_SESSION['glpiactiveprofile']['profile'] = READ | UPDATE | CREATE;
+        $_SESSION['glpiactiveprofile']['ticket']  = READ;
+
+        $profile = new \Profile();
+        $profiles_id = $profile->add(['name' => __FUNCTION__, 'interface' => 'central', 'config' => READ | UPDATE]);
+        $this->assertGreaterThan(0, $profiles_id);
+        $this->hasSessionMessages(ERROR, ['You cannot grant rights that you do not have.']);
+        $this->assertSame(0, \ProfileRight::getProfileRights($profiles_id, ['config'])['config']);
+
+        // Update: `config` is refused, an held right is granted.
+        $this->assertTrue($profile->update([
+            'id'      => $profiles_id,
+            '_config' => [READ . '_0' => 1, UPDATE . '_0' => 1],
+            '_ticket' => [READ . '_0' => 1],
+        ]));
+        $this->hasSessionMessages(ERROR, ['You cannot grant rights that you do not have.']);
+        $rights = \ProfileRight::getProfileRights($profiles_id, ['config', 'ticket']);
+        $this->assertSame(0, $rights['config']);
+        $this->assertSame(READ, $rights['ticket']);
+
+        // Direct ProfileRight writes (e.g. from the API) are filtered the same way.
+        $right = new \ProfileRight();
+        $this->assertTrue($right->getFromDBByCrit(['profiles_id' => $profiles_id, 'name' => 'config']));
+        $this->assertTrue($right->update(['id' => $right->getID(), 'rights' => READ | UPDATE]));
+        $this->hasSessionMessages(ERROR, ['You cannot grant rights that you do not have.']);
+        $this->assertSame(0, \ProfileRight::getProfileRights($profiles_id, ['config'])['config']);
+
+        // A right entry can't be moved to another profile.
+        $super_admin = getItemByTypeName('Profile', 'Super-Admin', true);
+        $this->assertTrue($right->getFromDBByCrit(['profiles_id' => $super_admin, 'name' => 'config']));
+        $right->update(['id' => $right->getID(), 'profiles_id' => $profiles_id]);
+        $this->assertTrue($right->getFromDB($right->getID()));
+        $this->assertSame($super_admin, $right->fields['profiles_id']);
+
+        // Rights already held by the edited profile are kept, even if the current user lacks them.
+        $this->assertTrue($right->update(['id' => $right->getID(), 'rights' => READ | UPDATE]));
+        $this->assertSame(READ | UPDATE, \ProfileRight::getProfileRights($super_admin, ['config'])['config']);
+    }
 }

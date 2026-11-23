@@ -234,7 +234,7 @@ class HTMLSearchOutput extends AbstractSearchOutput
             'showmassiveactions'  => ($params['showmassiveactions'] ?? $search['showmassiveactions'] ?? true)
                 && $data['display_type'] != Search::GLOBAL_SEARCH
                 && (
-                    $itemtype == AllAssets::getType()
+                    $itemtype == AllAssets::class
                     || count(MassiveAction::getAllMassiveActions($item, $is_deleted))
                 ),
             'massiveactionparams' => $data['search']['massiveactionparams'] + [
@@ -242,12 +242,14 @@ class HTMLSearchOutput extends AbstractSearchOutput
                 'is_deleted'    => $is_deleted,
                 'container'     => "massform" . \str_replace('\\', '', $itemtype) . $rand,
             ],
-            'can_config'          => Session::haveRightsOr('search_config', [
+            'can_config'          => Session::haveRightsOr(DisplayPreference::$rightname, [
                 DisplayPreference::PERSONAL,
                 DisplayPreference::GENERAL,
             ]),
             'may_be_deleted'      => $item instanceof CommonDBTM && $item->maybeDeleted() && !$item->useDeletedToLockIfDynamic(),
-            'may_be_located'      => $item instanceof CommonDBTM && $item->maybeLocated(),
+            'may_be_located'      => $item instanceof CommonDBTM
+                && $item->maybeLocated()
+                && (bool) ($_SESSION['glpiactiveprofile']['show_map'] ?? true),
             'may_be_browsed'      => $item !== null && Toolbox::hasTrait($item, TreeBrowse::class),
             'may_be_unpublished'  => $itemtype == 'KnowbaseItem' && $item->canUpdate(),
             'original_params'     => $params,

@@ -40,6 +40,7 @@ $config = new Configuration();
 return $config
     ->addPathsToScan([
         'ajax',
+        'dependency_injection',
         'front',
         'inc',
         'install',
@@ -59,12 +60,12 @@ return $config
     ->ignoreErrorsOnExtension('ext-ldap', [ErrorType::SHADOW_DEPENDENCY])
     ->ignoreErrorsOnExtension('ext-sodium', [ErrorType::SHADOW_DEPENDENCY])
     ->ignoreErrorsOnExtension('ext-zend-opcache', [ErrorType::SHADOW_DEPENDENCY])
+    ->ignoreErrorsOnExtension('ext-redis', [ErrorType::SHADOW_DEPENDENCY])
     ->ignoreErrorsOnPackage('paragonie/sodium_compat', [ErrorType::UNUSED_DEPENDENCY])
 
     // Only loaded in a conditional block that checks if the environment is dev
     ->ignoreErrorsOnPackages([
         'symfony/debug-bundle',
-        'symfony/twig-bundle',
         'symfony/web-profiler-bundle',
     ], [ErrorType::DEV_DEPENDENCY_IN_PROD])
 
@@ -79,8 +80,8 @@ return $config
         'symfony/css-selector', // Required by web tests based on the `FrontBaseClass` class
         'symfony/polyfill-ctype',
         'symfony/polyfill-iconv',
-        'symfony/polyfill-php83',
         'symfony/polyfill-php84',
+        'symfony/polyfill-php85',
         'symfony/property-access',
         'symfony/polyfill-mbstring',
     ], [ErrorType::UNUSED_DEPENDENCY])

@@ -107,14 +107,17 @@ test('TODO List', async ({ profile, page, api }) => {
 
 test('Search for Solution', async ({ profile, page, api }) => {
     await profile.set(Profiles.SuperAdmin);
+    const rand = randomUUID().replaceAll('-', '');
     const ticket_id = await api.createItem('Ticket', {
-        name: 'Test search solution',
-        content: 'Test search solution',
+        name: rand,
+        content: rand,
         entities_id: getWorkerEntityId(),
     });
+    const kb_name = `KB title ${rand}`;
+    const kb_content = `KB content ${rand}`;
     await api.createItem('KnowbaseItem', {
-        name: 'Test search solution',
-        answer: 'Test search solution kb answer',
+        name: kb_name,
+        answer: kb_content,
     });
 
     const ticket = new TicketPage(page);
@@ -125,17 +128,16 @@ test('Search for Solution', async ({ profile, page, api }) => {
     await page.getByRole('listitem', { name: 'Add a solution' }).click();
     await ticket.getButton('Search in the knowledge base').click();
 
-
     // Search for solution modal should be open with one result
     const kb_modal = page.getByRole('dialog', { name: 'Search in the knowledge base' });
     await expect(kb_modal).toBeVisible();
-    await expect(kb_modal.getByLabel('Search…')).toHaveValue('Test search solution');
+    await expect(kb_modal.getByLabel('Search…')).toHaveValue(rand);
     await expect(kb_modal.getByRole('listitem').first()).toBeVisible();
 
     // View KB entry
-    await kb_modal.getByTitle('Preview').first().click();
-    await expect(kb_modal.getByText('Subject')).toBeVisible();
-    await expect(kb_modal.getByText('Content', { exact: true })).toBeVisible();
+    await kb_modal.getByTitle('Preview').click();
+    await expect(kb_modal.getByText(kb_name)).toBeVisible();
+    await expect(kb_modal.getByText(kb_content, {exact: true}).filter({visible: true})).toBeAttached();
     await expect(kb_modal.getByRole('listitem')).toHaveCount(0);
 
     // Go back to search and use the KB entry
@@ -159,12 +161,13 @@ test('Search for Solution', async ({ profile, page, api }) => {
     // Search for solution modal should be open with one result
     const kb_modal2 = page.getByRole('dialog', { name: 'Search in the knowledge base' });
     await expect(kb_modal2).toBeVisible();
-    await expect(kb_modal2.getByLabel('Search…')).toHaveValue('Test search solution');
+    await expect(kb_modal2.getByLabel('Search…')).toHaveValue(rand);
     await expect(kb_modal2.getByRole('listitem').first()).toBeVisible();
 
     // View KB entry
-    await kb_modal2.getByTitle('Preview').first().click();
-    await expect(kb_modal2.getByText('Subject')).toBeVisible();
+    await kb_modal2.getByTitle('Preview').click();
+    await expect(kb_modal2.getByText(kb_name)).toBeVisible();
+    await expect(kb_modal2.getByText(kb_content, {exact: true}).filter({visible: true})).toBeAttached();
     await expect(kb_modal2.getByRole('listitem')).toHaveCount(0);
 
     // Go back to search and use the KB entry
@@ -177,6 +180,38 @@ test('Search for Solution', async ({ profile, page, api }) => {
     const followup_block = page.getByTestId('new-ITILFollowup-block');
     const followup_rich_text = ticket.getRichTextByLabel('Followup', followup_block);
     await expect(followup_rich_text).not.toBeEmpty();
+});
+
+test('KB search result actions stay reachable with unbreakable preview content', async ({ profile, page, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const name = `KB unbreakable preview ${randomUUID()}`;
+    const ticket_id = await api.createItem('Ticket', {
+        name: name,
+        content: name,
+        entities_id: getWorkerEntityId(),
+    });
+    // Blockquote content is converted with non-breaking spaces in the text preview
+    const long_text = 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. '.repeat(3);
+    await api.createItem('KnowbaseItem', {
+        name: name,
+        answer: `<p>Intro</p><blockquote><p>${long_text}</p></blockquote><p>${'x'.repeat(400)}</p>`,
+    });
+
+    const ticket = new TicketPage(page);
+    await ticket.goto(ticket_id);
+    await ticket.getButton('Answer').click();
+    await ticket.getButton('Search in the knowledge base').click();
+
+    const kb_modal = page.getByRole('dialog', { name: 'Search in the knowledge base' });
+    const result = kb_modal.getByRole('listitem').filter({ hasText: name });
+    await expect(result).toBeVisible();
+    await expect(result.getByTitle('Use this entry')).toBeInViewport();
+    await expect(result.getByTitle('Preview')).toBeInViewport();
+
+    await result.getByTitle('Use this entry').click();
+    await expect(kb_modal).not.toBeAttached();
+    const followup_block = page.getByTestId('new-ITILFollowup-block');
+    await expect(ticket.getRichTextByLabel('Followup', followup_block)).toContainText('Intro');
 });
 
 test('Validation step template without validation step set', async ({ profile, page, api }) => {
@@ -497,6 +532,37 @@ test('Priority recalculates when urgency or impact changes', async ({ profile, p
     await expect(ticket.getDropdownByLabel('Priority')).toContainText('Very high');
 });
 
+test('Open category dropdown is not orphaned when type change reloads it', async ({ profile, page, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const ticket_id = await api.createItem('Ticket', {
+        name: 'Test category reload',
+        content: 'Test category reload',
+        type: 1,
+        entities_id: getWorkerEntityId(),
+    });
+
+    const ticket = new TicketPage(page);
+    await ticket.goto(ticket_id);
+
+    // Hold the category reload until the category dropdown is open
+    let release_reload!: () => void;
+    const reload_held = new Promise<void>((resolve) => { release_reload = resolve; });
+    await page.route('**/ajax/dropdownTicketCategories.php', async (route) => {
+        await reload_held;
+        await route.continue();
+    });
+
+    await ticket.doSetDropdownValue(ticket.getDropdownByLabel('Type'), 'Request');
+    await ticket.getDropdownByLabel('Category').click();
+    await expect(page.getByRole('listbox')).toBeVisible();
+
+    const reload_response = page.waitForResponse('**/ajax/dropdownTicketCategories.php');
+    release_reload();
+    await reload_response;
+
+    await expect(page.getByRole('listbox')).toBeHidden();
+});
+
 test('Add followup', async ({ profile, page, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const ticket_id = await api.createItem('Ticket', {
@@ -559,4 +625,56 @@ test('Add task', async ({ profile, page, api }) => {
     await expect(last_task.getByText('Test task content')).toBeVisible();
     await expect(last_task.getByRole('checkbox', { name: 'Done' })).toBeChecked();
     await expect(last_task.getByText('1 hours 30 minutes 0 seconds')).toBeVisible();
+});
+
+test.describe('Mandatory technician field', () => {
+    test.afterEach(async ({ profile, api }) => {
+        // Ensure the worker entity's default template is reset, as it is shared with other tests
+        await profile.set(Profiles.SuperAdmin);
+        await api.updateItem('Entity', getWorkerEntityId(), {
+            tickettemplates_id: 0,
+        });
+    });
+
+    test('Mandatory technician field shows an error instead of silently failing', async ({ profile, page, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const rand = randomUUID();
+
+        const template_id = await api.createItem('TicketTemplate', {
+            name: `test mandatory technician ${rand}`,
+            entities_id: getWorkerEntityId(),
+        });
+        // num: 5 => '_users_id_assign' (see ITILTemplate::getAllowedFields())
+        await api.createItem('TicketTemplateMandatoryField', {
+            tickettemplates_id: template_id,
+            num: 5,
+        });
+
+        await api.updateItem('Entity', getWorkerEntityId(), {
+            tickettemplates_id: template_id,
+        });
+
+        const ticket = new TicketPage(page);
+        await ticket.gotoCreationPage();
+
+        // Remove auto-assigned technician
+        const assign_dropdown = ticket.getDropdownByLabel('Assigned to *');
+        // eslint-disable-next-line playwright/no-raw-locators -- select2 remove button has no accessible role/label
+        await assign_dropdown.locator('.select2-selection__choice__remove').click();
+
+        await ticket.getButton('Add').click();
+
+        const error_alert = ticket.getAlert('Mandatory fields are not filled');
+        await expect(error_alert).toBeVisible();
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php$/);
+        await error_alert.getByRole('button', { name: 'Close' }).click();
+
+        const add_response = page.waitForResponse(
+            (resp) => resp.url().includes('/front/ticket.form.php') && resp.request().method() === 'POST'
+        );
+        await ticket.getButton('Add').click();
+        await add_response;
+
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
+    });
 });

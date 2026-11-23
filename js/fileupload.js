@@ -248,7 +248,7 @@ const setRichTextEditorContent = function(editor_id, content) {
         });
         // force trigger of event handlers that will save editor contents
         // and remove "required" state
-        editor.fire('keyup');
+        editor.dispatch('keyup');
     }
 };
 

@@ -43,7 +43,7 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
 {
     use FilterableTrait;
 
-    public static $rightname = 'defaultfilter';
+    public static string $rightname = 'defaultfilter';
 
     public function getItemtypeToFilter(): string
     {

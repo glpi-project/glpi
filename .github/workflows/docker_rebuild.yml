@@ -1,5 +1,8 @@
 name: "Docker nightly and security rebuild"
 
+env:
+  SUPPORTED_VERSIONS: "12.0, 11.0"
+
 permissions:
   contents: "read"
 
@@ -19,9 +22,6 @@ on:
         type: boolean
         default: false
 
-env:
-  SUPPORTED_VERSIONS: "11.0, 10.0"
-
 jobs:
   resolve:
     name: "Resolve build matrix"
@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: "Resolve versions and build matrix"
         id: "resolve"
-        uses: "actions/github-script@v9"
+        uses: "actions/github-script@v9.0.0"
         with:
           script: |
             const isSchedule = context.eventName === 'schedule';
@@ -89,7 +89,6 @@ jobs:
                     'glpi-version': latestVersionTag,
                     'image-tag': '',
                     'no-cache': true,
-                    'use-legacy-marketplace-path': Number(latestVersionTag.split('.')[0]) < 11,
                   });
                 } else {
                   core.warning(`No stable releases found for supported version: ${supportedVersion}`);
@@ -103,7 +102,6 @@ jobs:
                   'glpi-version': 'main',
                   'image-tag': 'dev-nightly',
                   'no-cache': false,
-                  'use-legacy-marketplace-path': false,
                 },
                 ...supportedVersions.map(supportedVersion => {
                   const major = supportedVersion.split('.')[0];
@@ -111,7 +109,6 @@ jobs:
                     'glpi-version': `${supportedVersion}/bugfixes`,
                     'image-tag': `${supportedVersion}-nightly`,
                     'no-cache': false,
-                    'use-legacy-marketplace-path': Number(major) < 11,
                   };
                 })
               );
@@ -148,7 +145,7 @@ jobs:
       GHCR_ACCESS_TOKEN: ${{ secrets.GHCR_ACCESS_TOKEN }}
     with:
       push: true
+      glpi-repo: ${{ vars.GLPI_REPO || 'glpi-project/glpi' }}
       glpi-version: ${{ matrix.glpi-version }}
       image-tag: ${{ matrix.image-tag }}
       no-cache: ${{ matrix.no-cache }}
-      use-legacy-marketplace-path: ${{ matrix.use-legacy-marketplace-path }}

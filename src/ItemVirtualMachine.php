@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Exception\TooManyResultsException;
 
 use function Safe\preg_match;
@@ -48,9 +49,9 @@ use function Safe\preg_replace;
 class ItemVirtualMachine extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype = 'itemtype';
-    public static $items_id = 'items_id';
-    public $dohistory       = true;
+    public static string $itemtype = 'itemtype';
+    public static string $items_id = 'items_id';
+    public bool $dohistory       = true;
 
 
     public static function getTypeName($nb = 0)
@@ -78,7 +79,7 @@ class ItemVirtualMachine extends CommonDBChild
 
         if (
             !$withtemplate
-            && in_array($item::getType(), $CFG_GLPI['itemvirtualmachines_types'])
+            && in_array($item::class, $CFG_GLPI['itemvirtualmachines_types'])
             && $item::canView()
         ) {
             $nb = 0;
@@ -86,13 +87,13 @@ class ItemVirtualMachine extends CommonDBChild
                 $nb = countElementsInTable(
                     self::getTable(),
                     [
-                        'itemtype' => $item->getType(),
+                        'itemtype' => $item::class,
                         'items_id' => $item->getID(),
                         'is_deleted' => 0,
                     ]
                 );
             }
-            return self::createTabEntry(self::getTypeName(), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(), $nb, $item::class);
         }
         return '';
     }
@@ -182,7 +183,7 @@ class ItemVirtualMachine extends CommonDBChild
 
         $ID = $asset->fields['id'];
 
-        if (!in_array($asset->getType(), $CFG_GLPI['itemvirtualmachines_types']) || !$asset->getFromDB($ID) || !$asset->can($ID, READ)) {
+        if (!in_array($asset::class, $CFG_GLPI['itemvirtualmachines_types']) || !$asset->getFromDB($ID) || !$asset->can($ID, READ)) {
             return;
         }
 
@@ -191,12 +192,12 @@ class ItemVirtualMachine extends CommonDBChild
                 self::getTable(),
                 [
                     'RAW' => [
-                        (string) QueryFunction::lower('uuid') => self::getUUIDRestrictCriteria($asset->fields['uuid']),
+                        (string) QueryFunction::lower(new QueryIdentifier('uuid')) => self::getUUIDRestrictCriteria($asset->fields['uuid']),
                     ],
                 ]
             );
 
-            if (!empty($hosts)) {
+            if ($hosts !== []) {
                 echo '<h3 class="text-start">' . __s('List of hosts') . '</h3>';
                 $computer = new Computer();
                 $entries = [];
@@ -232,7 +233,6 @@ class ItemVirtualMachine extends CommonDBChild
                     ],
                     'entries' => $entries,
                     'total_number' => count($entries),
-                    'filtered_number' => count($entries),
                 ]);
             }
         }
@@ -250,7 +250,7 @@ class ItemVirtualMachine extends CommonDBChild
     {
 
         $ID = $asset->fields['id'];
-        $itemtype = $asset->getType();
+        $itemtype = $asset::class;
 
         if (!$asset->getFromDB($ID) || !$asset->can($ID, READ)) {
             return;
@@ -342,7 +342,6 @@ class ItemVirtualMachine extends CommonDBChild
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
         ]);
     }
 
@@ -418,7 +417,7 @@ class ItemVirtualMachine extends CommonDBChild
             'FROM'   => $itemtype::getTable(),
             'WHERE'  => [
                 'RAW' => [
-                    (string) QueryFunction::lower('uuid')  => self::getUUIDRestrictCriteria($fields['uuid']),
+                    (string) QueryFunction::lower(new QueryIdentifier('uuid'))  => self::getUUIDRestrictCriteria($fields['uuid']),
                 ],
             ],
         ]);

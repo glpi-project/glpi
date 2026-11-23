@@ -47,11 +47,11 @@ class Group extends CommonTreeDropdown
     /** @use Clonable<static> */
     use Clonable;
 
-    public $dohistory       = true;
+    public bool $dohistory       = true;
 
-    public static $rightname       = 'group';
+    public static string $rightname       = 'group';
 
-    protected $usenotepad  = true;
+    protected bool $usenotepad  = true;
 
 
     public function getCloneRelations(): array
@@ -71,7 +71,7 @@ class Group extends CommonTreeDropdown
 
     public static function getAdditionalMenuOptions()
     {
-        if (Session::haveRight('user', User::UPDATEAUTHENT)) {
+        if (Session::haveRight(User::$rightname, User::UPDATEAUTHENT)) {
             return [
                 'ldap' => [
                     'title' => AuthLDAP::getTypeName(Session::getPluralNumber()),
@@ -136,18 +136,18 @@ class Group extends CommonTreeDropdown
                     }
                     $ong[4] = self::createTabEntry(__('Child groups'), $nb, $item::class);
 
-                    if ($item->getField('is_itemgroup')) {
+                    if ($item->fields['is_itemgroup']) {
                         $count = countElementsInTable(Group_Item::getTable(), ['groups_id' => $item->getID(), 'type' => Group_Item::GROUP_TYPE_NORMAL]);
                         $ong[1] = self::createTabEntry(__('Used items'), $count, $item::class, 'ti ti-package');
                     }
-                    if ($item->getField('is_assign')) {
+                    if ($item->fields['is_assign']) {
                         $count = countElementsInTable(Group_Item::getTable(), ['groups_id' => $item->getID(), 'type' => Group_Item::GROUP_TYPE_TECH]);
                         $ong[2] = self::createTabEntry(__('Managed items'), $count, $item::class, 'ti ti-package');
                     }
                     if (
-                        $item->getField('is_usergroup')
+                        $item->fields['is_usergroup']
                         && self::canUpdate()
-                        && Session::haveRight("user", User::UPDATEAUTHENT)
+                        && Session::haveRight(User::$rightname, User::UPDATEAUTHENT)
                         && AuthLDAP::useAuthLdap()
                     ) {
                         $ong[3] = self::createTabEntry(__('LDAP directory link'), 0, $item::class, 'ti ti-login');
@@ -236,10 +236,10 @@ class Group extends CommonTreeDropdown
         $links = [];
         if (
             AuthLDAP::useAuthLdap()
-            && Session::haveRight("user", User::IMPORTEXTAUTHUSERS)
+            && Session::haveRight(User::$rightname, User::IMPORTEXTAUTHUSERS)
             && static::canUpdate()
         ) {
-            $links['<i class="ti ti-settings"></i><span>' . __s('LDAP directory link') . '</span>'] = "/front/ldap.group.php";
+            $links['<i class="ti ti-settings" aria-hidden="true"></i><span>' . __s('LDAP directory link') . '</span>'] = "/front/ldap.group.php";
         }
         return $links;
     }
@@ -250,13 +250,13 @@ class Group extends CommonTreeDropdown
         $actions = parent::getSpecificMassiveActions($checkitem);
         if ($isadmin) {
             $prefix                            = 'Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'add']            = "<i class='ti ti-user-plus'></i>"
+            $actions[$prefix . 'add']            = "<i class='ti ti-user-plus' aria-hidden='true'></i>"
                                               . _sx('button', 'Add a user');
-            $actions[$prefix . 'add_supervisor'] = "<i class='ti ti-user-star'></i>"
+            $actions[$prefix . 'add_supervisor'] = "<i class='ti ti-user-star' aria-hidden='true'></i>"
                                               . _sx('button', 'Add a manager');
-            $actions[$prefix . 'add_delegatee']  = "<i class='fas fa-user-check'></i>"
+            $actions[$prefix . 'add_delegatee']  = "<i class='fas fa-user-check' aria-hidden='true'></i>"
                                               . _sx('button', 'Add a delegatee');
-            $actions[$prefix . 'remove']         = "<i class='ti ti-user-minus'></i>"
+            $actions[$prefix . 'remove']         = "<i class='ti ti-user-minus' aria-hidden='true'></i>"
                                               . _sx('button', 'Remove a user');
         }
 
@@ -315,18 +315,18 @@ class Group extends CommonTreeDropdown
                                     $input["field"] => $input["groups_id"],
                                 ])
                             ) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     }
                 } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                 }
                 return;
@@ -499,7 +499,7 @@ class Group extends CommonTreeDropdown
         if (
             !$this->fields['is_usergroup']
             || !$this->can($this->getID(), UPDATE)
-            || !Session::haveRight("user", User::UPDATEAUTHENT)
+            || !Session::haveRight(User::$rightname, User::UPDATEAUTHENT)
             || !AuthLDAP::useAuthLdap()
         ) {
             return;
@@ -520,7 +520,7 @@ class Group extends CommonTreeDropdown
      **/
     public function showSecurityForm($ID)
     {
-        $canedit = $this->can($this->getID(), UPDATE) && Session::haveRight("user", User::UPDATEAUTHENT);
+        $canedit = $this->can($this->getID(), UPDATE) && Session::haveRight(User::$rightname, User::UPDATEAUTHENT);
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
             'canedit' => $canedit,
             'item'   => $this,
@@ -746,16 +746,16 @@ class Group extends CommonTreeDropdown
                 'name'     => $item->getLink(['comments' => true]),
                 'entity'   => $entity_names[$item->getEntityID()],
             ];
-            if ($item->canViewItem() && self::canUpdate()) {
+            if ($item->can($item->getID(), READ)) {
                 // Show massive actions if there is at least one viewable/updatable item.
                 $show_massive_actions = true;
             } else {
                 // This row cannot have massive actions due to lack of rights.
-                $entry['skip_ma'] = true;
+                $entry['showmassiveactions'] = false;
             }
 
             $assignees = [];
-            if ($grps = $item->getField($tech ? 'groups_id_tech' : 'groups_id')) {
+            if ($grps = $item->fields[$tech ? 'groups_id_tech' : 'groups_id']) {
                 foreach ($grps as $grp) {
                     if (!isset($group_links[$grp]) && $group->getFromDB($grp)) {
                         $group_links[$grp] = $group->getLink(['comments' => true]);
@@ -763,7 +763,7 @@ class Group extends CommonTreeDropdown
                     $assignees[] = $group_links[$grp] ?? '';
                 }
             }
-            if ($usr = $item->getField($tech ? 'users_id_tech' : 'users_id')) {
+            if ($usr = $item->fields[$tech ? 'users_id_tech' : 'users_id']) {
                 if (!isset($user_links[$usr]) && $tuser->getFromDB($usr)) {
                     $user_links[$usr] = $tuser->getLink(['comments' => true]);
                 }
@@ -802,7 +802,6 @@ class Group extends CommonTreeDropdown
             ],
             'entries' => $entries,
             'total_number' => $nb,
-            'filtered_number' => $nb,
             'showmassiveactions' => self::canUpdate() && $show_massive_actions,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -898,6 +897,50 @@ class Group extends CommonTreeDropdown
         return parent::getRawCompleteName();
     }
 
+    /**
+     * Memoized results of getGroupsAncestorsIds(), cleared on any group hierarchy
+     * change via resetGroupsAncestorsCache() (see updateLastGroupChange()).
+     *
+     * @var array<string, int[]>
+     */
+    private static array $groups_ancestors_cache = [];
+
+    /**
+     * Add the ancestors (parent groups) of the given groups to the list.
+     * Used so that visibility granted to a group also applies to members of its sub-groups.
+     *
+     * @param int[] $groups_id
+     *
+     * @return ($groups_id is non-empty-array ? non-empty-array<int> : array<int>)
+     */
+    public static function getGroupsAncestorsIds(array $groups_id): array
+    {
+        if ($groups_id === []) {
+            return $groups_id;
+        }
+
+        // getAncestorsOf() only caches lookups for a single ID; memoize here to
+        // avoid a fresh, uncached query on every call (e.g. once per item in a list).
+        sort($groups_id);
+        $ckey = implode(',', $groups_id);
+        if (!isset(self::$groups_ancestors_cache[$ckey])) {
+            self::$groups_ancestors_cache[$ckey] = array_unique(array_merge(
+                $groups_id,
+                getAncestorsOf(self::getTable(), $groups_id)
+            ));
+        }
+
+        return self::$groups_ancestors_cache[$ckey];
+    }
+
+    /**
+     * Clear the memoized ancestors computed by getGroupsAncestorsIds().
+     */
+    public static function resetGroupsAncestorsCache(): void
+    {
+        self::$groups_ancestors_cache = [];
+    }
+
     public static function getAnonymizedName(?int $entities_id = null): ?string
     {
         switch (Entity::getAnonymizeConfig($entities_id)) {
@@ -929,7 +972,7 @@ class Group extends CommonTreeDropdown
     {
         if ($enable_anonymization && Session::getCurrentInterface() === 'helpdesk' && ($anon = static::getAnonymizedName()) !== null) {
             // if anonymized name active, return only the anonymized name
-            return $anon;
+            return htmlescape($anon);
         }
 
         return $this->getLink($options);
@@ -984,10 +1027,17 @@ class Group extends CommonTreeDropdown
     {
         global $GLPI_CACHE;
         $GLPI_CACHE->set('last_group_change', $_SESSION['glpi_currenttime']);
+        self::resetGroupsAncestorsCache();
 
         // Reload groups immediatly
         if (Session::getLoginUserID()) {
             Session::loadGroups();
         }
+    }
+
+    #[Override]
+    public static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
     }
 }

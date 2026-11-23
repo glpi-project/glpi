@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Override;
@@ -70,6 +71,7 @@ class VisibilityConditionHandler implements ConditionHandlerInterface
         mixed $a,
         ValueOperator $operator,
         mixed $b,
+        ?JsonFieldInterface $config,
     ): bool {
         $is_visible = (bool) $a;
 

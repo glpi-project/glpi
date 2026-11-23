@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Override;
@@ -73,17 +74,25 @@ final class ItemAsTextConditionHandler implements ConditionHandlerInterface
         mixed $a,
         ValueOperator $operator,
         mixed $b,
+        ?JsonFieldInterface $config,
     ): bool {
         // $a is the submitted answer
-        if (!is_array($a) || !isset($a['items_id'])) {
+        if (!is_array($a) || !isset($a['items_ids'])) {
             return false;
         }
 
-        $item = $this->itemtype::getById($a['items_id']);
-        if (!$item) {
+        $names = [];
+        foreach ((array) $a['items_ids'] as $items_id) {
+            $item = $this->itemtype::getById((int) $items_id);
+            if ($item) {
+                $names[] = $item->getName(['complete' => true]);
+            }
+        }
+
+        if ($names === []) {
             return false;
         }
-        $a = $item->getName();
+        $a = implode(', ', $names);
 
         // Normalize values
         $a = strtolower(strval($a));

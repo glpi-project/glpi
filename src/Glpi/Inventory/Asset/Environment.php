@@ -65,7 +65,7 @@ final class Environment extends InventoryAsset
             'FROM'   => Item_Environment::getTable(),
             'WHERE'  => [
                 'items_id' => $this->item->fields['id'],
-                'itemtype' => $this->item->getType(),
+                'itemtype' => $this->item::class,
             ],
         ]);
         foreach ($iterator as $data) {
@@ -87,10 +87,9 @@ final class Environment extends InventoryAsset
 
         $value = $this->data;
         foreach ($value as $key => $val) {
-            $db_elt = [];
-            foreach (['cmd', 'pid'] as $field) {
-                $db_elt[$field] = (property_exists($val, $field) ? strtolower($val->$field) : null);
-            }
+            $db_elt = [
+                'key' => property_exists($val, 'key') ? strtolower($val->key) : null,
+            ];
 
             foreach ($db_itemEnvs as $keydb => $arraydb) {
                 unset($arraydb['is_dynamic']);
@@ -119,7 +118,7 @@ final class Environment extends InventoryAsset
             foreach ($value as $val) {
                 $input = (array) $val + [
                     'items_id'     => $this->item->fields['id'],
-                    'itemtype'     => $this->item->getType(),
+                    'itemtype'     => $this->item::class,
                 ];
 
                 $itemEnv->add($input);

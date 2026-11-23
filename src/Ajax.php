@@ -193,8 +193,7 @@ class Ajax
                             <h3 class="modal-title">' . htmlescape($param['title']) . '</h3>
                         </div>
                         <div class="modal-body">
-                            <iframe id="iframe' . htmlescape($domid) . '" class="iframe hidden"
-                                width="100%" height="400" frameborder="0">
+                            <iframe id="iframe' . htmlescape($domid) . '" class="iframe hidden" data-testid="modal-iframe">
                             </iframe>
                         </div>
                     </div>
@@ -408,12 +407,16 @@ HTML;
             }
             echo $html_tabs;
             echo "</ul>";
-            echo "<select class='form-select border-2 rounded-0 rounded-top d-md-none mb-2' id='" . htmlescape($tabdiv_id) . "-select'>$html_sele</select>";
+            echo "<select class='form-select border-2 rounded-0 rounded-top d-md-none mb-2'"
+                . " id='" . htmlescape($tabdiv_id) . "-select'"
+                . " aria-label='" . __s('Select a tab') . "'>$html_sele</select>";
 
             echo "<div class='tab-content p-2 flex-grow-1 card $border' style='min-height: 150px'>";
             foreach ($tabs as $val) {
                 $id = str_replace('\\', '_', $val['id']);
-                echo "<div data-glpi-tab-content class='tab-pane fade' role='tabpanel' id='" . htmlescape($id) . "'></div>";
+                // Without this, Bootstrap keeps the initial pane transparent for 155 ms, then fades it in.
+                $pane_state = $id === $active_id ? ' show active' : '';
+                echo "<div data-glpi-tab-content class='tab-pane fade{$pane_state}' role='tabpanel' id='" . htmlescape($id) . "'></div>";
             }
             echo  "</div>"; // .tab-content
             echo "</div>"; // .container-fluid
@@ -509,11 +512,11 @@ HTML;
                if ($(this).attr('data-show-all-tabs') === 'true') {
                   loadAllTabs();
                   // show all tabs by adding active and show classes to all tabs
-                  $('#$tabdiv_id').parent().find('.tab-pane').addClass('active show').removeClass('fade');
+                  $('#$tabdiv_id').parent().find('[data-glpi-tab-content].tab-pane').addClass('active show').removeClass('fade');
                } else {
                   // Remove active and show classes from all tabs except the one that is clicked
                   let clicked_tab = $(this).attr('data-bs-target');
-                  $('#$tabdiv_id').parent().find('.tab-pane:not(' + clicked_tab + ')').removeClass('active show');
+                  $('#$tabdiv_id').parent().find('[data-glpi-tab-content].tab-pane:not(' + clicked_tab + ')').removeClass('active show');
                   loadTabContents($(this), false, !first_load);
                }
             });
@@ -715,14 +718,14 @@ JS;
         // Old scheme
         if (
             isset($options["update_item"])
-            && (is_array($options["update_item"]) || ((string) $options["update_item"] !== ''))
+            && (is_array($options["update_item"]) || ((string) $options["update_item"]) !== '')
         ) {
             $field     = "update_item";
         }
         // New scheme
         if (
             isset($options["toupdate"])
-            && (is_array($options["toupdate"]) || ((string) $options["toupdate"] !== ''))
+            && (is_array($options["toupdate"]) || ((string) $options["toupdate"]) !== '')
         ) {
             $field     = "toupdate";
         }
@@ -789,7 +792,8 @@ JS;
         $display = true
     ) {
 
-        $out = sprintf('$("#%s").load("%s"', jsescape($toupdate), jsescape($url));
+        $out = sprintf('try { $("#%s").find(".select2-hidden-accessible").select2("destroy"); } catch(e) {}', jsescape($toupdate));
+        $out .= sprintf('$("#%s").load("%s"', jsescape($toupdate), jsescape($url));
         if (count($parameters)) {
             $out .= ",{";
             $first = true;

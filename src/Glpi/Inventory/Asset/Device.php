@@ -35,7 +35,9 @@
 
 namespace Glpi\Inventory\Asset;
 
+use DeviceFirmware;
 use Glpi\Inventory\Conf;
+use Item_DeviceFirmware;
 use Item_Devices;
 use stdClass;
 
@@ -61,7 +63,7 @@ abstract class Device extends InventoryAsset
             'FROM'      => $itemdevicetable,
             'WHERE'     => [
                 "$itemdevicetable.items_id"     => $this->item->fields['id'],
-                "$itemdevicetable.itemtype"     => $this->item->getType(),
+                "$itemdevicetable.itemtype"     => $this->item::class,
             ],
         ]);
 
@@ -76,7 +78,7 @@ abstract class Device extends InventoryAsset
     {
         global $DB;
 
-        $devicetypes = Item_Devices::getItemAffinities($this->item->getType());
+        $devicetypes = Item_Devices::getItemAffinities($this->item::class);
 
         $itemdevicetype = $this->getItemtype();
         if (in_array($itemdevicetype, $devicetypes)) {
@@ -91,6 +93,11 @@ abstract class Device extends InventoryAsset
             $fk              = getForeignKeyFieldForTable($devicetable);
 
             $existing = $this->getExisting($itemdevicetable, $fk);
+            $supports_firmware = in_array(
+                Item_DeviceFirmware::class,
+                Item_Devices::getItemAffinities($itemdevice::class),
+                true
+            );
 
             foreach ($value as $val) {
                 if (!isset($val->designation) || $val->designation == '') {
@@ -104,8 +111,16 @@ abstract class Device extends InventoryAsset
                     $val->date = date('Y-m-d', strtotime($val->date));
                 }
 
+                $device_value = clone $val;
+                if (
+                    property_exists($device_value, 'firmware')
+                    && $supports_firmware
+                ) {
+                    unset($device_value->firmware);
+                }
+
                 //create device or get existing device ID
-                $device_input = $this->handleInput($val, $device);
+                $device_input = $this->handleInput($device_value, $device);
                 $device_criteria = $device->getImportCriteria();
                 foreach (array_keys($device_criteria) as $device_criterion) {
                     if (!isset($device_input[$device_criterion]) && \isForeignKeyField($device_criterion)) {
@@ -117,7 +132,7 @@ abstract class Device extends InventoryAsset
                 $i_criteria = $itemdevice->getImportCriteria();
                 $fk_input = [
                     $fk                  => $device_id,
-                    'itemtype'           => $this->item->getType(),
+                    'itemtype'           => $this->item::class,
                     'items_id'           => $this->item->fields['id'],
                     'is_dynamic'         => 1,
                 ];
@@ -167,10 +182,10 @@ abstract class Device extends InventoryAsset
                         $itemdevice_data = [
                             'id'                 => $existing_item['id'],
                             $fk                  => $device_id,
-                            'itemtype'           => $this->item->getType(),
+                            'itemtype'           => $this->item::class,
                             'items_id'           => $this->item->fields['id'],
                             'is_dynamic'         => 1,
-                        ] + $this->handleInput($val, $itemdevice);
+                        ] + $this->handleInput($device_value, $itemdevice);
                         $itemdevice->update($itemdevice_data, true);
                         unset($existing[$device_id][$key]);
                         break;
@@ -181,13 +196,15 @@ abstract class Device extends InventoryAsset
                     $itemdevice->getEmpty();
                     $itemdevice_data = [
                         $fk => $device_id,
-                        'itemtype' => $this->item->getType(),
+                        'itemtype' => $this->item::class,
                         'items_id' => $this->item->fields['id'],
                         'is_dynamic' => 1,
-                    ] + $this->handleInput($val, $itemdevice);
+                    ] + $this->handleInput($device_value, $itemdevice);
                     $itemdevice->add($itemdevice_data, [], !$this->item->isNewItem()); //log only if mainitem is not new
                     $this->itemdeviceAdded($itemdevice, $val);
                 }
+
+                $this->itemdeviceHandled($itemdevice, $val, $device_input, $supports_firmware);
 
                 if (count($existing[$device_id] ?? []) == 0) {
                     unset($existing[$device_id]);
@@ -216,12 +233,93 @@ abstract class Device extends InventoryAsset
         //to be overridden
     }
 
+    /**
+     * Handle data that depends on the resulting component instance.
+     *
+     * @param Item_Devices        $itemdevice
+     * @param object              $val
+     * @param array<string,mixed> $device_input
+     * @param bool                $supports_firmware
+     *
+     * @return void
+     */
+    protected function itemdeviceHandled(
+        Item_Devices $itemdevice,
+        object $val,
+        array $device_input,
+        bool $supports_firmware
+    ): void {
+        if (
+            !$supports_firmware
+            || !property_exists($val, 'firmware')
+        ) {
+            return;
+        }
+
+        $item_firmware = new Item_DeviceFirmware();
+        $existing_links = $item_firmware->find([
+            'itemtype'   => $itemdevice::class,
+            'items_id'   => $itemdevice->getID(),
+            'is_dynamic' => 1,
+            'is_deleted' => 0,
+        ]);
+
+        $version = trim((string) $val->firmware);
+        if ($version === '') {
+            foreach ($existing_links as $existing_link) {
+                $item_firmware->delete(
+                    ['id' => $existing_link['id']],
+                    true,
+                    !$this->item->isNewItem()
+                );
+            }
+            return;
+        }
+
+        $firmware = new DeviceFirmware();
+        $firmware_id = $firmware->import([
+            'designation'            => $device_input['designation'] ?? $itemdevice->getTypeName(1),
+            'devicefirmwaretypes_id' => 0,
+            'manufacturers_id'       => (int) ($device_input['manufacturers_id'] ?? 0),
+            'version'                => $version,
+            'entities_id'            => $itemdevice->getEntityID(),
+            'with_history'           => false,
+        ]);
+        if (!$firmware_id) {
+            return;
+        }
+
+        $existing_link = array_shift($existing_links);
+        if ($existing_link === null) {
+            $item_firmware->add([
+                'itemtype'           => $itemdevice::class,
+                'items_id'           => $itemdevice->getID(),
+                'devicefirmwares_id' => $firmware_id,
+                'is_dynamic'         => 1,
+            ], [], !$this->item->isNewItem());
+        } elseif ($existing_link['devicefirmwares_id'] != $firmware_id) {
+            $item_firmware->update([
+                'id'                 => $existing_link['id'],
+                'devicefirmwares_id' => $firmware_id,
+            ], true);
+        }
+
+        // Only one firmware value can be reported for a component by an inventory.
+        foreach ($existing_links as $extra_link) {
+            $item_firmware->delete(
+                ['id' => $extra_link['id']],
+                true,
+                !$this->item->isNewItem()
+            );
+        }
+    }
+
     public function checkConf(Conf $conf): bool
     {
         global $CFG_GLPI;
         /** @var class-string<Item_Devices> $item_device */
         $item_device = $this->getItemtype();
         $affinities = $item_device::itemAffinity();
-        return in_array('*', $affinities) || in_array($this->item->getType(), $item_device::itemAffinity());
+        return in_array('*', $affinities) || in_array($this->item::class, $item_device::itemAffinity());
     }
 }

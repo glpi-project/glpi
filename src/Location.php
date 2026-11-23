@@ -47,10 +47,10 @@ class Location extends CommonTreeDropdown
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory          = true;
-    public $can_be_translated  = true;
+    public bool $dohistory          = true;
+    public bool $can_be_translated  = true;
 
-    public static $rightname          = 'location';
+    public static string $rightname          = 'location';
 
 
     public function getAdditionalFields()
@@ -581,7 +581,6 @@ class Location extends CommonTreeDropdown
             ],
             'entries' => $entries,
             'total_number' => $number,
-            'filtered_number' => $number,
             'showmassiveactions' => false,
         ]);
 

@@ -44,13 +44,13 @@ class SoftwareVersion extends CommonDBChild implements StateInterface
     use Glpi\Features\State;
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     // From CommonDBChild
-    public static $itemtype = Software::class;
-    public static $items_id  = 'softwares_id';
+    public static string $itemtype = Software::class;
+    public static string $items_id  = 'softwares_id';
 
-    protected $displaylist = false;
+    protected bool $displaylist = false;
 
 
     public static function getTypeName($nb = 0)
@@ -353,7 +353,6 @@ TWIG, $twig_params);
             'footer_class' => 'fw-bold',
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

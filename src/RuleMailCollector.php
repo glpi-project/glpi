@@ -37,7 +37,7 @@
 class RuleMailCollector extends Rule
 {
     // From Rule
-    public static $rightname = 'rule_mailcollector';
+    public static string $rightname = 'rule_mailcollector';
 
     public function getTitle()
     {
@@ -270,7 +270,7 @@ class RuleMailCollector extends Rule
                                                 $user = new User();
                                                 $user->getFromDB($params['_users_id_requester']);
 
-                                                $tmpid = $user->getField('entities_id');
+                                                $tmpid = $user->fields['entities_id'];
 
                                                 // Retrieve all the entities (pref could be set on a child)
                                                 $entities

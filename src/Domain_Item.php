@@ -35,15 +35,16 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 class Domain_Item extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = Domain::class;
-    public static $items_id_1 = 'domains_id';
+    public static ?string $itemtype_1 = Domain::class;
+    public static ?string $items_id_1 = 'domains_id';
 
-    public static $itemtype_2 = 'itemtype';
-    public static $items_id_2 = 'items_id';
+    public static ?string $itemtype_2 = 'itemtype';
+    public static ?string $items_id_2 = 'items_id';
 
     public static function getTypeName($nb = 0)
     {
@@ -59,8 +60,9 @@ class Domain_Item extends CommonDBRelation
     {
         $temp = new self();
         $temp->deleteByCriteria(
-            ['itemtype' => $item->getType(),
-                'items_id' => $item->getField('id'),
+            [
+                'itemtype' => $item::class,
+                'items_id' => $item->getID(),
             ]
         );
     }
@@ -76,18 +78,18 @@ class Domain_Item extends CommonDBRelation
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForDomain($item);
             }
-            return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
+            return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), $nb, $item::class, 'ti ti-package');
         }
 
         if (
             $item instanceof DomainRelation || (in_array($item::class, Domain::getTypes(true), true)
-                && Session::haveRight('domain', READ))
+                && Session::haveRight(Domain::$rightname, READ))
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForItem($item);
             }
-            return self::createTabEntry(Domain::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(Domain::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -244,7 +246,6 @@ class Domain_Item extends CommonDBRelation
                 <div class="mb-3">
                     <form name="domain_form{{ rand }}" id="domain_form{{ rand }}" method="post"
                           action="{{ 'Domain'|itemtype_form_path }}" data-submit-once>
-                        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                         {{ inputs.hidden('domains_id', domain.getID()) }}
 
                         <div class="d-flex">
@@ -371,7 +372,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -400,7 +400,7 @@ TWIG, $twig_params);
                 'glpi_domains.name AS assocName',
                 'glpi_domains.*',
                 QueryFunction::groupConcat(
-                    expression: Group_Item::getTable() . '.groups_id',
+                    expression: new QueryIdentifier(Group_Item::getTable() . '.groups_id'),
                     separator: ',',
                     alias: 'groups_id_tech',
                 ),
@@ -476,9 +476,7 @@ TWIG, $twig_params);
     {
         global $DB;
 
-        $ID = $item->getField('id');
-
-        if ($item->isNewID($ID) || !Session::haveRight('domain', READ)) {
+        if ($item->isNewItem() || !Session::haveRight(Domain::$rightname, READ)) {
             return false;
         }
 
@@ -552,7 +550,6 @@ TWIG, $twig_params);
                 <div class="mb-3">
                     <form name="domain_form{{ rand }}" id="domain_form{{ rand }}" method="post"
                           action="{{ 'Domain'|itemtype_form_path }}" data-submit-once>
-                        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                         {{ inputs.hidden('entities_id', entity) }}
                         {{ inputs.hidden('is_recursive', is_recursive ? '1' : '0') }}
                         {{ inputs.hidden('itemtype', item.getType()) }}
@@ -565,9 +562,11 @@ TWIG, $twig_params);
                             {% set domain_dropdown = call('Domain::dropdownDomains', [{
                                 entity: entities,
                                 used: used,
-                                display: false
+                                display: false,
+                                rand: rand
                             }]) %}
                             {{ fields.htmlField('', domain_dropdown, 'Domain'|itemtype_name, {
+                                id: 'dropdown_domains_id' ~ rand,
                                 helper: helper
                             }) }}
                             {{ fields.dropdownField('DomainRelation', 'domainrelations_id', constant('DomainRelation::BELONGS'), 'DomainRelation'|itemtype_name, {
@@ -637,7 +636,7 @@ TWIG, $twig_params);
                 'name'     => $link,
                 'entities_id' => $entity_names[$data['entity']] ?? '',
                 'groups_id_tech' => implode("\n", $entry_groups),
-                'users_id_tech' => $user_names[$data['users_id_tech']] ?? '',
+                'users_id_tech' => $user_names[$data['users_id_tech']] ?: '',
                 'domaintypes_id' => $type_names[$data['domaintypes_id']] ?? '',
                 'domainrelations_id' => $relation_names[$data['domainrelations_id']] ?? '',
                 'date_creation' => $data["date_creation"],
@@ -677,7 +676,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit && ($withtemplate < 2),
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

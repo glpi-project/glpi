@@ -38,9 +38,9 @@
  **/
 class Fieldblacklist extends CommonDropdown
 {
-    public static $rightname         = 'config';
+    public static string $rightname         = 'config';
 
-    public $can_be_translated = false;
+    public bool $can_be_translated = false;
 
 
     public static function getTypeName($nb = 0)
@@ -58,8 +58,6 @@ class Fieldblacklist extends CommonDropdown
     {
         return static::canUpdate();
     }
-
-
 
     public function getAdditionalFields()
     {

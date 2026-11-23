@@ -1,0 +1,13 @@
+diff --git a/src/Highlighter/Highlighter.php b/src/Highlighter/Highlighter.php
+index b8b7aee..e2424d4 100644
+--- a/src/Highlighter/Highlighter.php
++++ b/src/Highlighter/Highlighter.php
+@@ -131,7 +131,7 @@ private static function collateLines(array $highlights): array
+         $urls = [];
+         foreach ($highlights as $highlight) {
+             $url = $highlight->span->getSourceUrl() ?? new \stdClass();
+-            $key = $url instanceof UriInterface ? $url->toString() : spl_object_hash($url);
++            $key = $url instanceof UriInterface ? $url->toString() : (string) spl_object_id($url);
+             $highlightsByUrl[$key][] = $highlight;
+             $urls[$key] = $url;
+         }

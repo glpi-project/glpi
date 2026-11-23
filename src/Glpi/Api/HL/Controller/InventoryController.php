@@ -53,7 +53,7 @@ use function Safe\file_get_contents;
 #[Route(path: '/Inventory', priority: 1, tags: ['Inventory'])]
 final class InventoryController extends AbstractController
 {
-    protected static function getRawKnownSchemas(): array
+    protected static function getRawKnownSchemas(string $api_version): array
     {
         return [
             'Agent' => [

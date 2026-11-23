@@ -105,6 +105,11 @@ class MailCollectorTest extends DbTestCase
             ], [
                 'raw'       => str_repeat('A', 300),
                 'expected'  => str_repeat('A', 255),
+            ], [
+                // Subject containing invalid UTF-8 sequences, that would be rejected by the DB server.
+                // See https://github.com/glpi-project/glpi/issues/25325
+                'raw'       => "Probl\xE8me sur l'imprimante",
+                'expected'  => "Problème sur l'imprimante",
             ],
         ];
     }
@@ -415,6 +420,7 @@ class MailCollectorTest extends DbTestCase
         $root_ent_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
         $ticket_id = getItemByTypeName('Ticket', '_ticket01', true);
+        $padded_ticket_id = sprintf('%07d', $ticket_id);
         $ticket_notif = new NotificationTargetTicket($root_ent_id, 'test_event', getItemByTypeName('Ticket', '_ticket01'));
 
         $soft_id   = getItemByTypeName('SoftwareLicense', '_test_softlic_1', true);
@@ -628,6 +634,42 @@ class MailCollectorTest extends DbTestCase
                 'expected_items_id' => null,
                 'accepted'          => false,
             ],
+            // Subject fallback - single GLPI tag, foreign `[Ticket#...]` (no space) ignored
+            [
+                'headers'           => [
+                    'subject' => "Re: [GLPI #{$padded_ticket_id}] [Ticket#2026072803024161] Foo",
+                ],
+                'expected_itemtype' => Ticket::class,
+                'expected_items_id' => $ticket_id,
+                'accepted'          => true,
+            ],
+            // Subject fallback - a too-short foreign `[Case #4711]` reference is ignored (< 7 digits)
+            [
+                'headers'           => [
+                    'subject' => "[Case #4711] Re: [GLPI #{$padded_ticket_id}] Foo",
+                ],
+                'expected_itemtype' => Ticket::class,
+                'expected_items_id' => $ticket_id,
+                'accepted'          => true,
+            ],
+            // Subject fallback - multiple matches: the configured tag (GLPI) wins over a foreign one
+            [
+                'headers'           => [
+                    'subject' => "[Foreign #1234567] Re: [GLPI #{$padded_ticket_id}] Foo",
+                ],
+                'expected_itemtype' => Ticket::class,
+                'expected_items_id' => $ticket_id,
+                'accepted'          => true,
+            ],
+            // Subject fallback - multiple matches, none with a known tag: falls back to the last one
+            [
+                'headers'           => [
+                    'subject' => "[Foreign #7777777] Re: [Unknown #{$padded_ticket_id}] Foo",
+                ],
+                'expected_itemtype' => Ticket::class,
+                'expected_items_id' => $ticket_id,
+                'accepted'          => true,
+            ],
         ];
     }
 
@@ -805,6 +847,12 @@ class MailCollectorTest extends DbTestCase
             $msg
         );
 
+        // No message should be left in the mailbox: even the messages that cannot be imported have
+        // to be moved out of the inbox, otherwise they would be fetched again on every collect, and
+        // would prevent other collectors to be processed.
+        // See https://github.com/glpi-project/glpi/issues/25325
+        $this->assertSame(0, $this->collector->getTotalMails());
+
         // Check not imported emails
         $not_imported_specs = [
             [
@@ -916,6 +964,8 @@ class MailCollectorTest extends DbTestCase
                     '47 - Missing charset parameter',
                     '49 - Message with invalid CC email address',
                     '53 - Large HTML Email Test',
+                    '54 - Invalid charset',
+                    '55 - Invalid UTF-8 body',
                     $long_subject_expected,
                 ],
             ],
@@ -1050,6 +1100,20 @@ PLAINTEXT,
 <span lang="HE" style="font-family:&quot;Arial&quot;,sans-serif">בדיקה של מייל עם עברית ואנגלית</span></p>
 </div>
 PLAINTEXT,
+            // Email declaring an invalid charset (54-invalid-charset.eml).
+            // The declared charset is not a charset name at all, contents encoding has to be detected.
+            '54 - Invalid charset' => <<<HTML
+<p>This message declares an invalid charset: café and pièces jointes.</p>
+HTML,
+            // Email declaring the UTF-8 charset but containing invalid UTF-8 sequences
+            // (55-invalid-utf8-body.eml).
+            // Contents encoding has to be detected, otherwise the ticket creation would fail on
+            // DB servers that reject invalid UTF-8 sequences, and the message would stay in the
+            // mailbox, blocking the whole mailgate crontask on every run.
+            // See https://github.com/glpi-project/glpi/issues/25325
+            '55 - Invalid UTF-8 body' => <<<HTML
+<p>This message declares the UTF-8 charset but contains invalid bytes: café and pièces jointes.</p>
+HTML,
         ];
 
         foreach ($actors_specs as $actor_specs) {
@@ -1238,6 +1302,23 @@ PLAINTEXT,
                 sprintf("Followup not found:\n> %s", $expected_followup['content'])
             );
         }
+    }
+
+    public function testAddItemFromMessageCatchesInsertFailure(): void
+    {
+        $collector = new \MailCollector();
+
+        $item = new class extends \CommonDBTM {
+            public function add(array $input, $options = [], $history = true)
+            {
+                throw new \RuntimeException('Simulated DB insert failure');
+            }
+        };
+
+        $result = $this->callPrivateMethod($collector, 'addItemFromMessage', $item, []);
+
+        $this->assertFalse($result);
+        $this->hasPhpLogRecordThatContains('Simulated DB insert failure', LogLevel::ERROR);
     }
 
     public static function mailServerProtocolsProvider()
@@ -1576,8 +1657,7 @@ PLAINTEXT,
         $png_sha1 = sha1_file($png_file);
 
         // Create blacklisted documents with matching SHA1
-        $doc = $this->createItem(
-            \Document::class,
+        $doc = $this->createDocumentWithFilename(
             [
                 'entities_id' => 0,
                 'name' => 'Blacklisted PNG Document',
@@ -1721,5 +1801,95 @@ PLAINTEXT,
             $extracted_content,
             'Extracted EML attachment must use CRLF line endings as required by RFC 2822'
         );
+    }
+
+    /**
+     * See https://github.com/glpi-project/glpi/issues/20892
+     * The "To" header value used for rule criteria matching must contain every
+     * recipient, not just the first one, otherwise a "contains" criterion fails
+     * to match when the targeted address is not listed first.
+     */
+    public function testGetHeadersToContainsAllRecipients()
+    {
+        $raw = implode("\r\n", [
+            'From: sender@example.com',
+            'To: First Recipient <first@glpi-project.org>, Second Recipient <second@glpi-project.org>',
+            'Subject: Multiple recipients',
+            'Date: ' . date('r'),
+            'Message-ID: <multi-to-test@glpi-project.org>',
+            '',
+            'Body',
+            '',
+        ]);
+
+        $message = new Message(['raw' => $raw]);
+        $collector = new \MailCollector();
+        $headers = $collector->getHeaders($message);
+
+        $this->assertStringContainsString('first@glpi-project.org', $headers['to']);
+        $this->assertStringContainsString('second@glpi-project.org', $headers['to']);
+        $this->assertSame(
+            ['first@glpi-project.org', 'second@glpi-project.org'],
+            $headers['tos']
+        );
+    }
+
+    public static function decodedContentProvider(): iterable
+    {
+        // Charset handled by mbstring.
+        yield 'mbstring charset' => [
+            'charset'  => 'iso-8859-1',
+            'contents' => "Caf\xE9",
+            'expected' => 'Café',
+        ];
+
+        // Charset only handled by iconv.
+        yield 'iconv charset' => [
+            'charset'  => 'iso-8859-8-i',
+            'contents' => "\xE1\xE3\xE9\xF7\xE4",
+            'expected' => 'בדיקה',
+        ];
+
+        // Charset that is not a valid charset name at all, contents encoding has to be detected.
+        // See https://github.com/glpi-project/glpi/issues/25190
+        yield 'invalid charset with ISO-8859-1 contents' => [
+            'charset'  => 'text/html',
+            'contents' => "Caf\xE9",
+            'expected' => 'Café',
+        ];
+        yield 'invalid charset with UTF-8 contents' => [
+            'charset'  => 'text/html',
+            'contents' => 'Café',
+            'expected' => 'Café',
+        ];
+
+        // Charset declared as UTF-8, but contents are not encoded in UTF-8.
+        // Invalid sequences would be rejected by the DB server, contents encoding has to be detected.
+        // See https://github.com/glpi-project/glpi/issues/25325
+        yield 'UTF-8 charset with invalid UTF-8 contents' => [
+            'charset'  => 'utf-8',
+            'contents' => "Caf\xE9",
+            'expected' => 'Café',
+        ];
+    }
+
+    #[DataProvider('decodedContentProvider')]
+    public function testGetDecodedContent(string $charset, string $contents, string $expected): void
+    {
+        $raw = implode("\r\n", [
+            'From: sender@example.com',
+            'To: receiver@glpi-project.org',
+            'Subject: Charset handling',
+            'MIME-Version: 1.0',
+            sprintf('Content-Type: text/plain; charset="%s"', $charset),
+            'Content-Transfer-Encoding: 8bit',
+            '',
+            $contents,
+            '',
+        ]);
+
+        $collector = new \MailCollector();
+
+        $this->assertSame($expected, trim($collector->getDecodedContent(new Message(['raw' => $raw]))));
     }
 }

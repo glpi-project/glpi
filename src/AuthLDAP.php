@@ -83,48 +83,6 @@ class AuthLDAP extends CommonDBTM
     /** OID for the LDAP_MATCHING_RULE_IN_CHAIN extended match rule (AD nested groups). */
     public const MATCHING_RULE_IN_CHAIN_OID = '1.2.840.113556.1.4.1941';
 
-    /**
-     * Deleted user strategy: preserve user.
-     * @var int
-     * @deprecated
-     */
-    public const DELETED_USER_PRESERVE = 0;
-
-    /**
-     * Deleted user strategy: put user in trashbin.
-     * @var int
-     * @deprecated
-     */
-    public const DELETED_USER_DELETE = 1;
-
-    /**
-     * Deleted user strategy: withdraw dynamic authorizations and groups.
-     * @var int
-     * @deprecated
-     */
-    public const DELETED_USER_WITHDRAWDYNINFO = 2;
-
-    /**
-     * Deleted user strategy: disable user.
-     * @var int
-     * @deprecated
-     */
-    public const DELETED_USER_DISABLE = 3;
-
-    /**
-     * Deleted user strategy: disable user and withdraw dynamic authorizations and groups.
-     * @var int
-     * @deprecated
-     */
-    public const DELETED_USER_DISABLEANDWITHDRAWDYNINFO = 4;
-
-    /**
-     * Deleted user strategy: disable user and withdraw groups.
-     * @var int
-     * @deprecated
-     */
-    public const DELETED_USER_DISABLEANDDELETEGROUPS = 5;
-
     // Deleted user strategies for user
     public const DELETED_USER_ACTION_USER_DO_NOTHING = 0;
     public const DELETED_USER_ACTION_USER_DISABLE = 1;
@@ -174,34 +132,37 @@ class AuthLDAP extends CommonDBTM
     ];
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     /**
      * connection caching stuff
-     * @var array
      */
-    public static $conn_cache = [];
+    public static array $conn_cache = [];
 
-    public static $undisclosedFields = [
+    public static array $undisclosedFields = [
         'rootdn_passwd',
     ];
 
     /**
      * Message of last error occurred during connection.
-     * @var ?string
      */
     private static ?string $last_error = null;
     /**
      * Numero of last error occurred during connection.
-     * @var ?int
      */
     private static ?int $last_errno = null;
 
     public static function getTypeName($nb = 0)
     {
         return _n('LDAP directory', 'LDAP directories', $nb);
+    }
+
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
     }
 
     public static function getSectorizedDetails(): array
@@ -415,10 +376,10 @@ class AuthLDAP extends CommonDBTM
             case 'import_group':
                 $group = new Group();
                 if (
-                    !Session::haveRight("user", User::UPDATEAUTHENT)
+                    !Session::haveRight(User::$rightname, User::UPDATEAUTHENT)
                     || !$group->canGlobal(UPDATE)
                 ) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     return;
                 }
@@ -448,9 +409,9 @@ class AuthLDAP extends CommonDBTM
                             'type'         => $input['ldap_import_type'][$id],
                         ];
                         if (self::ldapImportGroup($group_dn, $options)) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION, htmlescape($group_dn)));
                         }
                     }
@@ -461,8 +422,8 @@ class AuthLDAP extends CommonDBTM
 
             case 'import':
             case 'sync':
-                if (!Session::haveRight("user", User::IMPORTEXTAUTHUSERS)) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                if (!Session::haveRight(User::$rightname, User::IMPORTEXTAUTHUSERS)) {
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     return;
                 }
@@ -480,9 +441,9 @@ class AuthLDAP extends CommonDBTM
                             true
                         )
                     ) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION, htmlescape($id)));
                     }
                 }
@@ -546,7 +507,7 @@ class AuthLDAP extends CommonDBTM
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div class="text-center alert alert-danger">
-                    <i class="ti ti-alert-triangle alert-icon"></i>
+                    <i class="ti ti-alert-triangle alert-icon" aria-hidden="true"></i>
                     <div class="alert-text">
                         {{ missing_ext }}
                         <br>
@@ -667,7 +628,6 @@ TWIG, ['authldaps_id' => $ID]);
                 ],
                 'entries' => $entries,
                 'total_number' => count($entries),
-                'filtered_number' => count($entries),
                 'showmassiveactions' => true,
                 'massiveactionparams' => [
                     'num_displayed' => count($entries),
@@ -1634,7 +1594,7 @@ TWIG, ['authldaps_id' => $ID]);
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div class="mb-3">
                     <div class="alert alert-warning" role="alert">
-                        <i class="alert-icon ti ti-alert-triangle"></i>
+                        <i class="alert-icon ti ti-alert-triangle" aria-hidden="true"></i>
                         <div class="alert-title">{{ warning }}</div>
                         <span class="text-secondary">{{ warning_long }}</span>
                 </div>
@@ -1649,6 +1609,8 @@ TWIG, $twig_params);
      */
     public static function showLdapUsers()
     {
+        global $CFG_GLPI;
+
         $values = array_replace([
             'order' => 'DESC',
             'start' => 0,
@@ -1719,6 +1681,7 @@ TWIG, $twig_params);
             'is_tab' => false,
             'nofilter' => true,
             'nosort' => true,
+            'href' => $CFG_GLPI['root_doc'] . '/front/ldap.import.php',
             'start' => $values['start'],
             'limit' => $_SESSION['glpilist_limit'],
             // preserve all existing parameters in the URL except start and order which are managed by the datatable component
@@ -1730,7 +1693,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => $total_results,
-            'filtered_number' => $total_results,
             'showmassiveactions' => true,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -1760,6 +1722,8 @@ TWIG, $twig_params);
      * @param array    $user_infos    user information
      * @param array    $ldap_users    ldap users
      * @param object   $config_ldap   ldap configuration
+     * @param array<mixed>|null $ldap_users_by_dn LDAP users indexed by DN
+     * @param-out array<mixed>|null $ldap_users_by_dn
      *
      * @return bool
      */
@@ -1771,7 +1735,8 @@ TWIG, $twig_params);
         &$limitexceeded,
         &$user_infos,
         &$ldap_users,
-        $config_ldap
+        $config_ldap,
+        &$ldap_users_by_dn = null
     ) {
 
         // If paged results cannot be used (PHP < 5.4)
@@ -1885,15 +1850,11 @@ TWIG, $twig_params);
                         $ldap_users[$uid] = $uid;
                     } else {
                         //If ldap synchronisation
-                        if (isset($info[$ligne]['modifytimestamp'])) {
-                            $ldap_users[$uid] = self::ldapStamp2UnixStamp(
-                                $info[$ligne]['modifytimestamp'][0],
-                                $config_ldap->fields['time_offset']
-                            );
-                        } else {
-                            $ldap_users[$uid] = '';
-                        }
+                        $ldap_users[$uid] = $user_infos[$uid]["timestamp"];
                         $user_infos[$uid]["name"] = $info[$ligne][$login_field][0];
+                        if ($ldap_users_by_dn !== null) {
+                            $ldap_users_by_dn[$info[$ligne]['dn']] ??= $user_infos[$uid];
+                        }
                     }
                 }
             }
@@ -1942,9 +1903,10 @@ TWIG, $twig_params);
             //}
         }
 
-        $ldap_users    = [];
-        $user_infos    = [];
-        $limitexceeded = false;
+        $ldap_users       = [];
+        $ldap_users_by_dn = [];
+        $user_infos       = [];
+        $limitexceeded    = false;
 
         // we prevent some delay...
         if (!$res) {
@@ -1989,7 +1951,8 @@ TWIG, $twig_params);
                 $limitexceeded,
                 $user_infos,
                 $ldap_users,
-                $config_ldap
+                $config_ldap,
+                $ldap_users_by_dn
             );
             if (!$result) {
                 return false;
@@ -2023,7 +1986,7 @@ TWIG, $twig_params);
             } else {
                 //Ldap synchronisation : look if the user exists in the directory
                 //and compares the modifications dates (ldap and glpi db)
-                $userfound = self::dnExistsInLdap($user_infos, $user['user_dn']);
+                $userfound = $ldap_users_by_dn[$user['user_dn']] ?? false;
                 if (!empty($ldap_users[$user[$field_for_db]]) || $userfound) {
                     // userfound seems that user dn is present in GLPI DB but do not correspond to an GLPI user
                     // -> renaming case
@@ -2037,7 +2000,9 @@ TWIG, $twig_params);
                         }
                         $glpi_users[] = ['id'         => $user['id'],
                             'user'       => $userfound['name'],
-                            $field_for_sync => ($userfound[$config_ldap->fields['sync_field']] ?? 'NULL'),
+                            $field_for_sync => $config_ldap->isSyncFieldEnabled()
+                                ? ($userfound[$config_ldap->fields['sync_field']] ?? 'NULL')
+                                : 'NULL',
                             'timestamp'  => $user_infos[$userfound[$field_for_sync]]['timestamp'],
                             'date_sync'  => $tmpuser->fields['date_sync'],
                             'dn'         => $user['user_dn'],
@@ -2241,7 +2206,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => $total_results,
-            'filtered_number' => $total_results,
             'showmassiveactions' => true,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -2642,6 +2606,8 @@ TWIG, $twig_params);
      * @param bool $display display message information on redirect (false by default)
      * @param bool $batch_mode True when called from a loop importing/syncing many users
      *                         (massive action or CLI sync), enabling the per-group query cache.
+     * @param bool $refused    Set to true when the user has been found in the directory
+     *                         but GLPI refused to add or update it.
      *
      * @return array|bool  with state, else false
      * @throws SodiumException
@@ -2651,9 +2617,12 @@ TWIG, $twig_params);
         $action,
         $ldap_server,
         $display = false,
-        bool $batch_mode = false
+        bool $batch_mode = false,
+        bool &$refused = false
     ) {
         global $DB;
+
+        $refused = false;
 
         $config_ldap = new self();
         $res         = $config_ldap->getFromDB($ldap_server);
@@ -2759,7 +2728,12 @@ TWIG, $twig_params);
                                 $input['add'] = 1;
                             }
 
-                            $user->fields["id"] = $user->add($input);
+                            $new_id = $user->add($input);
+                            if ($new_id === false) {
+                                $refused = true;
+                                return false;
+                            }
+                            $user->fields["id"] = $new_id;
                             return ['action' => self::USER_IMPORTED,
                                 'id'     => $user->fields["id"],
                             ];
@@ -2774,7 +2748,10 @@ TWIG, $twig_params);
                         if ($display) {
                             $input['update'] = 1;
                         }
-                        $user->update($input);
+                        if (!$user->update($input)) {
+                            $refused = true;
+                            return false;
+                        }
                         return ['action' => self::USER_SYNCHRONIZED,
                             'id'     => $input['id'],
                         ];
@@ -3219,9 +3196,15 @@ TWIG, $twig_params);
                     //we're looking for a user login
                     $params['identifier_field']   = $ldap_method['login_field'];
                     $params['user_field']         = 'name';
-                    $result = self::ldapImportUserByServerId($params, 0, $ldap_method["id"], true);
+                    $refused = false;
+                    $result = self::ldapImportUserByServerId($params, 0, $ldap_method["id"], true, false, $refused);
                     if ($result !== false) {
                         return $result;
+                    }
+                    if ($refused) {
+                        // The user exists in this directory but has been refused,
+                        // the reason has already been displayed.
+                        return false;
                     }
                 }
             }
@@ -3276,6 +3259,7 @@ TWIG, $twig_params);
 
         if ($user_dn) {
             $auth->auth_succeded            = true;
+            $auth->setAuthType(Auth::LDAP);
             // try by login+auth_id and next by dn
             if (
                 $auth->user->getFromDBbyNameAndAuth($login, Auth::LDAP, $ldap_method['id'])
@@ -3457,7 +3441,14 @@ TWIG, $twig_params);
 
         // Try a search to find the DN
         $filter_value = $values['user_params']['value'];
-        if ($values['login_field'] === 'objectguid' && self::isValidGuid($filter_value)) {
+        // Binary GUID attributes must be sent to the LDAP server as hex-escaped
+        // bytes, not as a canonical GUID string, or the search returns nothing.
+        // Attribute names are case-insensitive (RFC 4512).
+        $guid_fields = ['objectguid', 'ms-ds-consistencyguid'];
+        if (
+            in_array(strtolower($values['login_field']), $guid_fields, true)
+            && self::isValidGuid($filter_value)
+        ) {
             $filter_value = self::guidToHex($filter_value);
         } else {
             $filter_value = ldap_escape($filter_value, '', LDAP_ESCAPE_FILTER);
@@ -4219,21 +4210,24 @@ TWIG, $twig_params);
                 $value = $infos[$field];
             }
         }
-        if ($field !== 'objectguid') {
+        // Binary GUID attributes are returned as a string in canonical form.
+        // Attribute names are case-insensitive (RFC 4512).
+        $guid_fields = ['objectguid', 'ms-ds-consistencyguid'];
+        if (!in_array(strtolower($field), $guid_fields, true)) {
             return $value;
         }
 
-        // handle special objectguid from AD directories
+        // Convert the binary GUID to its string form. If the bytes are not a
+        // valid GUID, keep the raw value.
         try {
-            // prevent double encoding
+            // Skip if the value is already a GUID string.
             if (!self::isValidGuid($value)) {
                 $value = self::guidToString($value);
                 if (!self::isValidGuid($value)) {
-                    throw new RuntimeException('Not an objectguid!');
+                    throw new RuntimeException('Not a valid GUID!');
                 }
             }
         } catch (Throwable $e) {
-            // well... this is not an objectguid apparently
             $value = $infos[$field];
         }
 
@@ -4309,6 +4303,35 @@ TWIG, $twig_params);
     public static function isValidGuid($guid_str)
     {
         return (bool) preg_match('/^([0-9a-fA-F]){8}(-([0-9a-fA-F]){4}){3}-([0-9a-fA-F]){12}$/', $guid_str);
+    }
+
+    /**
+     * Format a raw LDAP attribute value for display, converting binary GUID
+     * attributes to their canonical string form and any other non-UTF-8
+     * binary value to its uppercase hexadecimal representation.
+     *
+     * @param string $key   LDAP attribute name
+     * @param string $value Raw attribute value
+     *
+     * @return string
+     */
+    public static function formatValueForDisplay(string $key, string $value): string
+    {
+        $guid_fields = ['objectguid', 'ms-ds-consistencyguid'];
+        $is_guid_field = in_array(strtolower($key), $guid_fields, true);
+
+        if ($is_guid_field && !self::isValidGuid($value)) {
+            $guid = self::guidToString($value);
+            if (self::isValidGuid($guid)) {
+                $value = $guid;
+            }
+        }
+
+        if (!mb_check_encoding($value, 'UTF-8')) {
+            return strtoupper(bin2hex($value));
+        }
+
+        return $value;
     }
 
     /**

@@ -41,13 +41,13 @@ use Glpi\Application\View\TemplateRenderer;
 class Certificate_Item extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = Certificate::class;
-    public static $items_id_1    = 'certificates_id';
-    public static $take_entity_1 = false;
+    public static ?string $itemtype_1 = Certificate::class;
+    public static ?string $items_id_1    = 'certificates_id';
+    public static bool $take_entity_1 = false;
 
-    public static $itemtype_2    = 'itemtype';
-    public static $items_id_2    = 'items_id';
-    public static $take_entity_2 = true;
+    public static ?string $itemtype_2    = 'itemtype';
+    public static ?string $items_id_2    = 'items_id';
+    public static bool $take_entity_2 = true;
 
     /**
      * @since 9.2
@@ -69,8 +69,9 @@ class Certificate_Item extends CommonDBRelation
     public static function cleanForItem(CommonDBTM $item)
     {
         $temp = new self();
-        $temp->deleteByCriteria(['itemtype' => $item->getType(),
-            'items_id' => $item->getField('id'),
+        $temp->deleteByCriteria([
+            'itemtype' => $item::class,
+            'items_id' => $item->getID(),
         ]);
     }
 
@@ -82,16 +83,16 @@ class Certificate_Item extends CommonDBRelation
 
         if (!$withtemplate) {
             if (
-                $item->getType() == 'Certificate'
+                $item instanceof Certificate
                 && count(Certificate::getTypes(false))
             ) {
                 $nb = 0;
                 if ($_SESSION['glpishow_count_on_tabs']) {
                     $nb = self::countForMainItem($item);
                 }
-                return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
+                return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), $nb, $item::class, 'ti ti-package');
             } elseif (
-                in_array($item->getType(), Certificate::getTypes(true))
+                in_array($item::class, Certificate::getTypes(true))
                 && Certificate::canView()
             ) {
                 if ($_SESSION['glpishow_count_on_tabs']) {
@@ -115,7 +116,7 @@ class Certificate_Item extends CommonDBRelation
 
         if ($item instanceof Certificate) {
             self::showForCertificate($item);
-        } elseif (in_array($item->getType(), Certificate::getTypes(true))) {
+        } elseif (in_array($item::class, Certificate::getTypes(true))) {
             self::showForItem($item);
         }
         return true;
@@ -283,7 +284,6 @@ class Certificate_Item extends CommonDBRelation
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -305,7 +305,7 @@ class Certificate_Item extends CommonDBRelation
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
 
-        $ID = $item->getField('id');
+        $ID = $item->getID();
 
         if (
             $item->isNewID($ID)
@@ -416,7 +416,6 @@ class Certificate_Item extends CommonDBRelation
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit && $withtemplate < 2,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

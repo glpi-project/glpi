@@ -34,15 +34,19 @@
 
 namespace tests\units\Glpi\Features;
 
-use Domain;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Features\AssignableItem;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Glpi\Asset\ProviderTrait;
+use Group;
 use Group_Item;
 use PHPUnit\Framework\Attributes\DataProvider;
+use tests\units\TicketTest;
 
 class AssignableItemTest extends DbTestCase
 {
+    use ProviderTrait;
+
     public static function itemtypeProvider(): iterable
     {
         global $CFG_GLPI;
@@ -126,6 +130,60 @@ class AssignableItemTest extends DbTestCase
         $this->assertTrue($updated);
         $this->assertEqualsCanonicalizing([1, 2], $item_2->fields['groups_id']);
         $this->assertEqualsCanonicalizing([4, 5], $item_2->fields['groups_id_tech']);
+    }
+
+    /**
+     * Assigning a group to an asset does not preserve previous associated groups (when previous groups_id not passed in input)
+     *
+     * Scenario :
+     * - create an asset associated with a group
+     * - update the asset to associate with another group (without first group in input)
+     * -> only last group is associated
+     *
+     *  Notice behavior is not always the same, for ticket, previous group is preserved.
+     * @see TicketTest::testAssignGroup()
+     */
+    #[DataProvider('assignableAssetsItemtypeProvider')]
+    public function testAssignGroupRemovePreviousData(string $class): void
+    {
+        $this->login();
+
+        // --- arrange - create 2 groups
+        $group_1 = $this->createItem(Group::class, $this->getMinimalCreationInput(Group::class));
+        $group_2 = $this->createItem(Group::class, $this->getMinimalCreationInput(Group::class));
+
+        $tested_fields = ['groups_id_tech', 'groups_id'];
+
+        foreach ($tested_fields as $field) {
+
+            // --- arrange - create item
+            $asset = $this->createItem(
+                $class,
+                [
+                    $field => [$group_1->getID()],
+                ] + $this->getMinimalCreationInput($class),
+            );
+
+            // --- act - update asset
+            $this->updateItem(
+                $class,
+                $asset->getID(),
+                [$field => [$group_2->getID()]] + $this->getMinimalCreationInput($class),
+            );
+
+            // --- assert - check that the asset has the tech groups assigned
+            $this->assertEquals(
+                1,
+                countElementsInTable(
+                    Group_Item::getTable(),
+                    [
+                        'groups_id' => [$group_2->getID()],
+                        'items_id' => $asset->getID(),
+                        'itemtype' => $asset::class,
+                    ]
+                )
+            );
+        }
     }
 
     /**
@@ -352,5 +410,90 @@ class AssignableItemTest extends DbTestCase
             [[new QueryExpression('1')]],
             array_values($class::getAssignableVisiblityCriteria())
         );
+    }
+
+    /**
+     * canViewItem()/canUpdateItem() must not trigger a PHP warning when called
+     * outside of a classic user login, e.g. during agent inventory processing,
+     * where only `glpiinventoryuserrunning` is set in the session (`glpiID` is not).
+     *
+     * @param class-string<AssignableItem> $class
+     */
+    #[DataProvider('itemtypeProvider')]
+    public function testCanViewUpdateItemDuringInventory(string $class): void
+    {
+        $this->login();
+        $input = $this->getMinimalCreationInput($class);
+        $item = $this->createItem(
+            $class,
+            $input + [$class::getNameField() => __FUNCTION__]
+        );
+        $entities_id = $item->fields['entities_id'];
+
+        // Simulate the session state set during an agent inventory request:
+        // no classic user login, only the inventory pseudo-user and the
+        // item's entity are set. `glpiID` is deliberately left unset.
+        $this->logOut();
+        $_SESSION['glpiinventoryuserrunning'] = 'inventory';
+        $_SESSION['glpiactiveentities'] = [$entities_id];
+
+        // No explicit assertion is needed here: GLPITestCase::tearDown() fails
+        // the test if any PHP warning/notice was logged while calling these.
+        $item->canViewItem();
+        $item->canUpdateItem();
+    }
+
+    /**
+     * Items owned by one of the user groups must remain visible in lists
+     * when the profile has both READ_ASSIGNED and READ_OWNED rights.
+     *
+     * @param class-string<AssignableItem> $class
+     */
+    #[DataProvider('itemtypeProvider')]
+    public function testGetAssignableVisiblityCriteriaWithAssignedAndOwnedRights(string $class): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $group = $this->createItem(Group::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->createItem(\Group_User::class, [
+            'users_id'  => \Session::getLoginUserID(),
+            'groups_id' => $group->getID(),
+        ]);
+
+        $input = $this->getMinimalCreationInput($class);
+        $owned_item = $this->createItem(
+            $class,
+            $input + [$class::getNameField() => __FUNCTION__ . ' owned', 'groups_id' => [$group->getID()]]
+        );
+        $assigned_item = $this->createItem(
+            $class,
+            $input + [$class::getNameField() => __FUNCTION__ . ' assigned', 'groups_id_tech' => [$group->getID()]]
+        );
+        $other_item = $this->createItem(
+            $class,
+            $input + [$class::getNameField() => __FUNCTION__ . ' other']
+        );
+
+        $_SESSION['glpigroups'] = [$group->getID()];
+        $_SESSION['glpiactiveprofile'][$class::$rightname] = READ_ASSIGNED | READ_OWNED;
+
+        $visible_ids = array_column(
+            iterator_to_array($DB->request([
+                'SELECT' => ['id'],
+                'FROM'   => $class::getTable(),
+                'WHERE'  => [
+                    'id' => [$owned_item->getID(), $assigned_item->getID(), $other_item->getID()],
+                ] + $class::getAssignableVisiblityCriteria(),
+            ])),
+            'id'
+        );
+        sort($visible_ids);
+
+        $this->assertEquals([$owned_item->getID(), $assigned_item->getID()], $visible_ids);
     }
 }

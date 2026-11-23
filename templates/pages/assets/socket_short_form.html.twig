@@ -40,7 +40,6 @@
             {{ inputs.hidden('items_id', _add_fromitem['_from_items_id']) }}
             {{ inputs.hidden('itemtype', _add_fromitem['_from_itemtype']) }}
         {% endif %}
-        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
         <div>
             {{ fields.sliderField('_add_multiple', 0, __('Add several sockets')) }}
             <script>

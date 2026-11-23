@@ -46,6 +46,11 @@ use function Safe\json_encode;
 
 final class Profile
 {
+    /**
+     * Maximum length, in bytes, of a bound value kept for debug display.
+     */
+    private const MAX_PARAM_LENGTH = 2048;
+
     private string $id;
 
     private ?string $parent_id;
@@ -64,8 +69,7 @@ final class Profile
 
     private static ?self $current = null;
 
-    /** @var bool */
-    private $disabled = false;
+    private bool $disabled = false;
 
     public function __construct(string $id, ?string $parent_id)
     {
@@ -156,33 +160,92 @@ final class Profile
     }
 
     /**
+     * Make a bound value safe to JSON encode.
+     *
+     * The whole debug info is JSON encoded, and a single value that is not valid UTF-8 makes
+     * that encoding fail: the AJAX endpoint throws, and the toolbar bootstrap in the page
+     * emits broken JavaScript. Since the client cannot recover from a failed encoding, binary
+     * and oversized values are replaced here, before they are stored.
+     *
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    private function sanitizeBoundValue(mixed $value): mixed
+    {
+        if (!is_string($value)) {
+            return $value;
+        }
+        if (!mb_check_encoding($value, 'UTF-8')) {
+            return sprintf('<binary: %d bytes>', strlen($value));
+        }
+        if (strlen($value) > self::MAX_PARAM_LENGTH) {
+            return mb_strcut($value, 0, self::MAX_PARAM_LENGTH)
+                . sprintf('… <truncated, %d bytes>', strlen($value));
+        }
+        return $value;
+    }
+
+    /**
      * @param string $query
+     * @param ?array<int|string, mixed> $params
      * @param float $time
      * @param int $rows
      * @param string $errors
      * @param string $warnings
      *
-     * @return void
+     * @return ?int Number of the registered query, null if the profile is disabled
      */
-    public function addSQLQueryData(string $query, float $time, int $rows = 0, string $errors = '', string $warnings = '')
+    public function addSQLQueryData(string $query, ?array $params, float $time, int $rows = 0, string $errors = '', string $warnings = ''): ?int
     {
+        global $DB;
+
         if ($this->disabled) {
-            return;
+            return null;
         }
         if (!array_key_exists('sql', $this->additional_info)) {
             $this->additional_info['sql'] = [
                 'queries' => [],
             ];
         }
+
+        //interpolate from the sanitized values, so that a binary value cannot make the whole
+        //debug info unencodable while still leaving the query readable
+        if ($params !== null) {
+            $params = array_map($this->sanitizeBoundValue(...), $params);
+        }
+
         $next_num = count($this->additional_info['sql']['queries'] ?? []);
         $this->additional_info['sql']['queries'][] = [
             'num' => $next_num,
-            'query' => $query,
+            'query' => $DB->interpolateParams($query, $params),
+            'raw_query' => $query,
+            'params' => $params,
             'time' => $time,
             'rows' => $rows,
             'errors' => $errors,
             'warnings' => $warnings,
         ];
+
+        return $next_num;
+    }
+
+    /**
+     * Add warnings to a SQL query that was registered using self::addSQLQueryData().
+     *
+     * @param int $num Number of the query, as returned by self::addSQLQueryData()
+     * @param string $warnings
+     *
+     * @return void
+     */
+    public function addSQLQueryWarnings(int $num, string $warnings): void
+    {
+        if ($this->disabled || !isset($this->additional_info['sql']['queries'][$num])) {
+            return;
+        }
+
+        $query_warnings = &$this->additional_info['sql']['queries'][$num]['warnings'];
+        $query_warnings = trim($query_warnings . "\n" . $warnings);
     }
 
     public function getDebugInfo(): array

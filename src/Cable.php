@@ -53,8 +53,8 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
     use Glpi\Features\State;
 
     // From CommonDBTM
-    public $dohistory         = true;
-    public static $rightname         = 'cable_management';
+    public bool $dohistory         = true;
+    public static string $rightname         = 'cable_management';
 
     public static function getTypeName($nb = 0)
     {
@@ -111,7 +111,7 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
         $links = [];
         if (static::canView()) {
             $insts = "<i class=\"fas fa-ethernet pointer\" title=\"" . htmlescape(Socket::getTypeName(Session::getPluralNumber()))
-            . "\"></i><span class=\"sr-only\">" . htmlescape(Socket::getTypeName(Session::getPluralNumber())) . "</span>";
+            . "\" aria-hidden=\"true\"></i><span class=\"visually-hidden\">" . htmlescape(Socket::getTypeName(Session::getPluralNumber())) . "</span>";
             $links[$insts] = Socket::getSearchURL(false);
         }
         if (count($links)) {

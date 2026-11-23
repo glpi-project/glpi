@@ -136,6 +136,70 @@ class ToolboxTest extends DbTestCase
         $this->assertLessThanOrEqual(255, strlen($expected));
     }
 
+    /** A CR/LF in the filename must not break Content-Disposition, and nosniff must be sent. */
+    public function testGetFileAsResponseSanitizesFilename()
+    {
+        $path = GLPI_DOC_DIR . '/_test_disposition_' . uniqid() . '.html';
+        file_put_contents($path, '<!DOCTYPE html><script>alert(document.domain)</script>');
+
+        try {
+            $response = \Toolbox::getFileAsResponse($path, "evil\r\n.html", 'text/html');
+
+            $disposition = $response->headers->get('Content-Disposition');
+            $this->assertNotNull($disposition);
+            $this->assertStringNotContainsString("\r", $disposition);
+            $this->assertStringNotContainsString("\n", $disposition);
+            $this->assertStringContainsString('attachment', $disposition);
+            $this->assertStringContainsString('evil.html', $disposition);
+            $this->assertSame('nosniff', $response->headers->get('X-Content-Type-Options'));
+        } finally {
+            unlink($path);
+        }
+    }
+
+    public static function mimeTypeProvider(): iterable
+    {
+        yield ['image/png', 'image/png', true];
+        yield ['IMAGE/PNG', 'image/png', true];
+        yield ['application/pdf', 'application/pdf', true];
+        yield ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', false];
+
+        // Parameters would bypass the `image/svg+xml` inline check
+        yield ['image/svg+xml', 'image/svg+xml', false];
+        yield ['image/svg+xml;charset=utf-8', 'image/svg+xml', false];
+        yield [' Image/SVG+XML ; charset=utf-8', 'image/svg+xml', false];
+
+        // Header injection
+        yield ["image/png\r\nContent-Disposition: inline", 'application/octet-stream', false];
+        yield ["text/html\x00", 'text/html', false];
+
+        // Invalid values
+        yield ['', 'application/octet-stream', false];
+        yield ['html', 'application/octet-stream', false];
+        yield ['image/', 'application/octet-stream', false];
+        yield ['image/png/x', 'application/octet-stream', false];
+    }
+
+    /** A mime stored before it was filtered must not be sent as is, nor change the inline decision. */
+    #[DataProvider('mimeTypeProvider')]
+    public function testGetFileAsResponseNormalizesMime(string $mime, string $expected_mime, bool $inline): void
+    {
+        $path = GLPI_DOC_DIR . '/_test_mime_' . uniqid() . '.svg';
+        file_put_contents($path, '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(document.domain)</script></svg>');
+
+        try {
+            $response = \Toolbox::getFileAsResponse($path, 'file.svg', $mime);
+
+            $this->assertSame($expected_mime, $response->headers->get('Content-Type'));
+            $this->assertSame(
+                !$inline,
+                str_contains($response->headers->get('Content-Disposition'), 'attachment')
+            );
+        } finally {
+            unlink($path);
+        }
+    }
+
     public static function dataGetSize()
     {
         return [
@@ -165,7 +229,7 @@ class ToolboxTest extends DbTestCase
 
         // Test REMOTE_ADDR
         $_SERVER['REMOTE_ADDR'] = '123.123.123.123';
-        $ip = \Toolbox::getRemoteIpAddress();
+        $ip = @\Toolbox::getRemoteIpAddress();
         $this->assertEquals('123.123.123.123', $ip);
 
         // Restore values
@@ -450,22 +514,6 @@ class ToolboxTest extends DbTestCase
         $this->assertSame($upper, \Toolbox::strtoupper($lower));
     }
 
-    public static function utfProvider()
-    {
-        return [
-            ['a simple string', true],
-            ['caractère', true],
-            [mb_convert_encoding('caractère', 'ISO-8859-15'), false],
-            [mb_convert_encoding('simple string', 'ISO-8859-15'), true],
-        ];
-    }
-
-    #[DataProvider('utfProvider')]
-    public function testSeems_utf8($string, $utf)
-    {
-        $this->assertSame($utf, @\Toolbox::seems_utf8($string));
-    }
-
     public function testSaveAndDeletePicture()
     {
         // Save an image twice
@@ -491,6 +539,11 @@ class ToolboxTest extends DbTestCase
         // Save and delete nonexistent files
         $this->assertFalse(\Toolbox::savePicture('notafile.jpg'));
         $this->assertFalse(\Toolbox::deletePicture('notafile.jpg'));
+
+        // Save with a prefix (special chars in prefix are replaced by `_`)
+        copy(__DIR__ . '/../../public/pics/add_dropdown.png', $test_file); // saved image will be removed from FS
+        $prefixed_pict = \Toolbox::savePicture($test_file, 'azerty_abcd/+~1234|]');
+        $this->assertMatchesRegularExpression('#^\w{2}/azerty_abcd_1234_\w+\.png#', $prefixed_pict);
     }
 
     public static function getPictureUrlProvider()
@@ -579,14 +632,12 @@ class ToolboxTest extends DbTestCase
         $img_tag = uniqid('', true);
 
         // Create document in DB
-        $document = new \Document();
-        $doc_id = $document->add([
+        $doc_id = $this->createDocumentWithFilename([
             'name'     => 'basic document',
             'filename' => 'img.png',
             'mime'     => 'image/png',
             'tag'      => $img_tag,
-        ]);
-        $this->assertGreaterThan(0, (int) $doc_id);
+        ])->getID();
 
         $content_text   = '<img id="' . $img_tag . '" width="10" height="10" />';
         $expected_url   = str_replace('{docid}', $doc_id, $expected_url);
@@ -636,14 +687,12 @@ class ToolboxTest extends DbTestCase
         $img_tag = uniqid('', true);
 
         // Create document in DB
-        $document = new \Document();
-        $doc_id = $document->add([
+        $doc_id = $this->createDocumentWithFilename([
             'name'     => 'basic document',
             'filename' => 'img.png',
             'mime'     => 'image/png',
             'tag'      => $img_tag,
-        ]);
-        $this->assertGreaterThan(0, (int) $doc_id);
+        ])->getID();
 
         $content_text   = '<img id="' . $img_tag . '" width="10" height="10" />';
         $expected_url   = str_replace('{docid}', $doc_id, $expected_url);
@@ -671,32 +720,26 @@ class ToolboxTest extends DbTestCase
         $item->fields['id'] = mt_rand(1, 50);
 
         // Create multiple documents in DB
-        $document = new \Document();
-        $doc_id_1 = $document->add([
+        $doc_id_1 = $this->createDocumentWithFilename([
             'name'     => 'document 1',
             'filename' => 'img1.png',
             'mime'     => 'image/png',
             'tag'      => $img_tag_1,
-        ]);
-        $this->assertGreaterThan(0, (int) $doc_id_1);
+        ])->getID();
 
-        $document = new \Document();
-        $doc_id_2 = $document->add([
+        $doc_id_2 = $this->createDocumentWithFilename([
             'name'     => 'document 2',
             'filename' => 'img2.png',
             'mime'     => 'image/png',
             'tag'      => $img_tag_2,
-        ]);
-        $this->assertGreaterThan(0, (int) $doc_id_2);
+        ])->getID();
 
-        $document = new \Document();
-        $doc_id_3 = $document->add([
+        $doc_id_3 = $this->createDocumentWithFilename([
             'name'     => 'document 3',
             'filename' => 'img3.png',
             'mime'     => 'image/png',
             'tag'      => $img_tag_3,
-        ]);
-        $this->assertGreaterThan(0, (int) $doc_id_3);
+        ])->getID();
 
         $doc_data = [
             $doc_id_1 => ['tag' => $img_tag_1],
@@ -732,23 +775,19 @@ class ToolboxTest extends DbTestCase
         $item->fields['id'] = mt_rand(1, 50);
 
         // Create multiple documents in DB
-        $document = new \Document();
-        $doc_id_1 = $document->add([
+        $doc_id_1 = $this->createDocumentWithFilename([
             'name'     => 'duplicated document 1',
             'filename' => 'img.png',
             'mime'     => 'image/png',
             'tag'      => $img_tag,
-        ]);
-        $this->assertGreaterThan(0, (int) $doc_id_1);
+        ])->getID();
 
-        $document = new \Document();
-        $doc_id_2 = $document->add([
+        $doc_id_2 = $this->createDocumentWithFilename([
             'name'     => 'duplicated document 2',
             'filename' => 'img.png',
             'mime'     => 'image/png',
             'tag'      => $img_tag,
-        ]);
-        $this->assertGreaterThan(0, (int) $doc_id_2);
+        ])->getID();
 
         $content_text    = '<img id="' . $img_tag . '" width="10" height="10" />';
         $expected_url_1    = '/front/document.send.php?docid=' . $doc_id_1;
@@ -782,14 +821,12 @@ class ToolboxTest extends DbTestCase
         $item->fields['id'] = mt_rand(1, 50);
 
         // Create multiple documents in DB
-        $document = new \Document();
-        $doc_id = $document->add([
+        $doc_id = $this->createDocumentWithFilename([
             'name'     => 'img 1',
             'filename' => 'img.png',
             'mime'     => 'image/png',
             'tag'      => $img_tag,
-        ]);
-        $this->assertGreaterThan(0, (int) $doc_id);
+        ])->getID();
 
         $content_text     = '<img id="' . $img_tag . '" width="10" height="10" />';
         $content_text    .= $content_text;
@@ -813,24 +850,18 @@ class ToolboxTest extends DbTestCase
         $item = new Ticket();
         $item->fields['id'] = mt_rand(1, 50);
 
-        $document_1 = $this->createItem(
-            \Document::class,
-            [
-                'name'     => 'basic document',
-                'filename' => 'img.png',
-                'mime'     => 'image/png',
-                'tag'      => $img_1_tag,
-            ]
-        );
-        $document_2 = $this->createItem(
-            \Document::class,
-            [
-                'name'     => 'another document',
-                'filename' => 'img2.png',
-                'mime'     => 'image/png',
-                'tag'      => $img_2_tag,
-            ]
-        );
+        $document_1 = $this->createDocumentWithFilename([
+            'name'     => 'basic document',
+            'filename' => 'img.png',
+            'mime'     => 'image/png',
+            'tag'      => $img_1_tag,
+        ]);
+        $document_2 = $this->createDocumentWithFilename([
+            'name'     => 'another document',
+            'filename' => 'img2.png',
+            'mime'     => 'image/png',
+            'tag'      => $img_2_tag,
+        ]);
 
         $expected_url_1 = 'http://localhost/test/1';
         $content_text   = <<<HTML
@@ -1542,95 +1573,6 @@ HTML;
     {
         $result = \Toolbox::getMioSizeFromString($size);
         $this->assertEquals($expected, $result);
-    }
-
-    public static function safeUrlProvider(): iterable
-    {
-        // Invalid URLs are refused
-        yield [
-            'url'      => '',
-            'expected' => false,
-        ];
-        yield [
-            'url'      => ' ',
-            'expected' => false,
-        ];
-
-        // Invalid schemes are refused
-        yield [
-            'url'      => 'file://tmp/test',
-            'expected' => false,
-        ];
-        yield [
-            'url'      => 'test://localhost/',
-            'expected' => false,
-        ];
-
-        // Local file are refused
-        yield [
-            'url'      => '//tmp/test',
-            'expected' => false,
-        ];
-
-        // http, https and feed URLs are accepted, unless they contains a user or non default port information
-        foreach (['http', 'https', 'feed'] as $scheme) {
-            foreach (['', '/', '/path/to/resource.php'] as $path) {
-                yield [
-                    'url'      => sprintf('%s://localhost%s', $scheme, $path),
-                    'expected' => true,
-                ];
-                yield [
-                    'url'      => sprintf('%s://localhost:8080%s', $scheme, $path),
-                    'expected' => false,
-                ];
-                yield [
-                    'url'      => sprintf('%s://test@localhost%s', $scheme, $path),
-                    'expected' => false,
-                ];
-                yield [
-                    'url'      => sprintf('%s://test:pass@localhost%s', $scheme, $path),
-                    'expected' => false,
-                ];
-            }
-        }
-
-        // Extra slashes are detected and refused
-        yield [
-            'url'      => 'http:////evil:evil@evil.com',
-            'expected' => false,
-        ];
-
-        // Custom allowlist with multiple entries
-        $custom_allowlist = [
-            '|^https://\w+:[^/]+@calendar.mydomain.tld/|',
-            '|//intra.mydomain.tld/|',
-        ];
-        yield [
-            'url'       => 'https://calendar.external.tld/',
-            'expected'  => false,
-            'allowlist' => $custom_allowlist,
-        ];
-        yield [
-            'url'       => 'https://user:pass@calendar.mydomain.tld/',
-            'expected'  => true, // validates first item of allowlist
-            'allowlist' => $custom_allowlist,
-        ];
-        yield [
-            'url'       => 'http://intra.mydomain.tld/news.feed.php',
-            'expected'  => true, // validates second item of allowlist
-            'allowlist' => $custom_allowlist,
-        ];
-    }
-
-
-    #[DataProvider('safeUrlProvider')]
-    public function testIsUrlSafe(string $url, bool $expected, ?array $allowlist = null): void
-    {
-        $params = [$url];
-        if ($allowlist !== null) {
-            $params[] = $allowlist;
-        }
-        $this->assertSame($expected, call_user_func_array('Toolbox::isUrlSafe', $params));
     }
 
 

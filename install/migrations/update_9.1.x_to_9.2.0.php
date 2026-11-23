@@ -33,6 +33,7 @@
  */
 
 use Glpi\DBAL\QueryExpression;
+use Glpi\Exception\Database\QueryException;
 
 /**
  * Update from 9.1 to 9.2
@@ -103,7 +104,7 @@ function update91xto920()
                 'completename' =>  new QueryExpression(DBmysql::quoteName("name")),
                 'is_recursive' => "1",
             ],
-            [true]
+            [new QueryExpression('true')]
         );
     }
 
@@ -653,7 +654,7 @@ function update91xto920()
             [
                 'completename' => new QueryExpression(DBmysql::quoteName("name")),
             ],
-            [true]
+            [new QueryExpression('true')]
         );
     }
 
@@ -1161,7 +1162,7 @@ function update91xto920()
         $DB->buildUpdate(
             "glpi_queuednotifications",
             ['mode' => Notification_NotificationTemplate::MODE_MAIL],
-            [true]
+            [new QueryExpression('true')]
         ),
         "9.2 set default mode in queue"
     );
@@ -2288,15 +2289,20 @@ Regards,',
     ];
     foreach ($tables as $table => $fields) {
         $add = true;
-        $result = $DB->doQuery("SHOW INDEX FROM `$table` WHERE Key_name='unicity'");
-        if ($result && $DB->numrows($result)) {
-            $row = $DB->fetchAssoc($result);
-            if ($row['Non_unique'] == 1) {
-                $migration->dropKey($table, 'unicity');
-                $migration->migrationOneTable($table);
-            } else {
-                $add = false;
+
+        try {
+            $result = $DB->doQuery("SHOW INDEX FROM `$table` WHERE Key_name='unicity'");
+            if ($DB->numrows($result)) {
+                $row = $DB->fetchAssoc($result);
+                if ($row['Non_unique'] == 1) {
+                    $migration->dropKey($table, 'unicity');
+                    $migration->migrationOneTable($table);
+                } else {
+                    $add = false;
+                }
             }
+        } catch (QueryException) {
+            //do nothing
         }
 
         if ($add) {

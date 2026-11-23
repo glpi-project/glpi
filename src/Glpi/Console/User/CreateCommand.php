@@ -51,7 +51,7 @@ class CreateCommand extends AbstractUserCommand
         $this->addOption('password', 'p', InputOption::VALUE_OPTIONAL, __('Password'));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): ?int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $user_input = ['name' => $input->getArgument('username')];
 

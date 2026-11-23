@@ -40,7 +40,7 @@ use function Safe\preg_match;
  **/
 class DocumentType extends CommonDropdown
 {
-    public static $rightname      = 'typedoc';
+    public static string $rightname      = 'typedoc';
 
     private static ?string $uploadable_patterns = null;
 
@@ -178,9 +178,10 @@ class DocumentType extends CommonDropdown
         $p = array_merge($p, $options);
 
         $display = "&nbsp;";
-        $display .= "<a href='#' data-bs-toggle='modal' data-bs-target='#documenttypelist_" . htmlescape($p['rand']) . "' class='fa fa-info pointer' title='" . __s('Help') . "' >";
-        $display .= "<span class='sr-only'>" . __s('Help') . "></span>";
-        $display .= "</a>";
+        $display .= "<button type='button' data-bs-toggle='modal' data-bs-target='#documenttypelist_" . htmlescape($p['rand']) . "' class='btn btn-link p-0 align-baseline' title='" . __s('Help') . "'>";
+        $display .= "<i class='fa fa-info' aria-hidden='true'></i>";
+        $display .= "<span class='visually-hidden'>" . __s('Help') . "</span>";
+        $display .= "</button>";
         $display .= Ajax::createIframeModalWindow(
             "documenttypelist_{$p['rand']}",
             $CFG_GLPI["root_doc"] . "/front/documenttype.list.php",

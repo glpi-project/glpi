@@ -53,7 +53,7 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface, ProvideTra
 {
     use TileRightTrait;
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     public const PAGE_SERVICE_CATALOG = 'service_catalog';
     public const PAGE_FAQ = 'faq';
@@ -108,7 +108,7 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface, ProvideTra
     #[Override]
     public function getIllustration(): string
     {
-        return $this->fields['illustration'] ?? IllustrationManager::DEFAULT_ILLUSTRATION;
+        return ($this->fields['illustration'] ?? '') ?: IllustrationManager::DEFAULT_ILLUSTRATION;
     }
 
     #[Override]
@@ -228,7 +228,7 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface, ProvideTra
     public function listTranslationsHandlers(): array
     {
         $handlers = [];
-        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $key = sprintf('%s_%d', self::class, $this->getID());
         $category_name = sprintf('%s: %s', $this->getLabel(), $this->fields['title'] ?? NOT_AVAILABLE);
         if (!empty($this->fields['title'])) {
             $handlers[$key][] = new TranslationHandler(

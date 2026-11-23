@@ -57,7 +57,7 @@ use function Safe\strtotime;
 
 class ReportController extends AbstractController
 {
-    protected static function getRawKnownSchemas(): array
+    protected static function getRawKnownSchemas(string $api_version): array
     {
         return [
             'StatReport' => [
@@ -867,13 +867,13 @@ class ReportController extends AbstractController
             $result = [];
             if (isset($item['itemtype'])) {
                 $result['item'] = [
-                    'itemtype' => $param_item::getType(),
+                    'itemtype' => $param_item::class,
                     'id' => $item['id'],
                     'name' => Dropdown::getDropdownName($item['itemtype']::getTable(), $item['id'], false, true, true, ''),
                 ];
             } else {
                 $result['item'] = [
-                    'itemtype' => $param_item::getType(),
+                    'itemtype' => $param_item::class,
                     'id' => $item['id'],
                     'name' => $item['link'],
                 ];

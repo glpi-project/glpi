@@ -44,7 +44,7 @@ use Session;
 
 final class FormTranslation extends ItemTranslation
 {
-    public static $rightname = 'form';
+    public static string $rightname = 'form';
 
     #[Override]
     public static function getTypeName($nb = 0)
@@ -82,7 +82,7 @@ final class FormTranslation extends ItemTranslation
                 $count = countDistinctElementsInTable(
                     static::getTable(),
                     'language',
-                    ['items_id' => $item->getID(), 'itemtype' => $item->getType()]
+                    ['items_id' => $item->getID(), 'itemtype' => $item::class]
                 );
             }
 

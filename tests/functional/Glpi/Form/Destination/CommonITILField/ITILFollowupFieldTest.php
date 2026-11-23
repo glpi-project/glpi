@@ -34,17 +34,29 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use Glpi\Form\AnswersHandler\AnswersHandler;
+use CommonITILObject;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ITILFollowupField;
 use Glpi\Form\Destination\CommonITILField\ITILFollowupFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILFollowupFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\RequesterField;
+use Glpi\Form\Destination\CommonITILField\RequesterFieldConfig;
+use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
+use Glpi\Form\Destination\CommonITILField\StatusField;
 use Glpi\Form\Form;
+use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Form\Tag\AnswerTagProvider;
+use Glpi\Form\Tag\QuestionTagProvider;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use ITILFollowup;
 use ITILFollowupTemplate;
+use Symfony\Component\DomCrawler\Crawler;
 use Ticket;
+use User;
 
 final class ITILFollowupFieldTest extends DbTestCase
 {
@@ -87,11 +99,190 @@ final class ITILFollowupFieldTest extends DbTestCase
         );
     }
 
+    public function testFormTagsAreResolvedInSpecificContent(): void
+    {
+        $form = $this->createForm(
+            (new FormBuilder())->addQuestion("First name", QuestionTypeShortText::class)
+        );
+        $question = Question::getById($this->getQuestionId($form, "First name"));
+        $question_tag = (new QuestionTagProvider())->getTagForQuestion($question);
+        $answer_tag = (new AnswerTagProvider())->getTagForQuestion($question);
+        $specific_content = new ITILFollowupFieldConfig(
+            strategy: ITILFollowupFieldStrategy::SPECIFIC_CONTENT,
+            specific_content: "<p>ENTREE VALIDEE</p><p>{$question_tag->html}: {$answer_tag->html}</p>",
+        );
+
+        $this->sendFormAndAssertITILFollowup(
+            form: $form,
+            config: $specific_content,
+            expected_itilfollowups: ['ENTREE VALIDEEFirst name: John'],
+            answers: ['First name' => 'John'],
+        );
+    }
+
+    public function testFollowupIsNotCreatedForEmptySpecificContent(): void
+    {
+        $form = $this->createAndGetFormWithMultipleDropdownItemQuestions();
+        $specific_content = new ITILFollowupFieldConfig(
+            strategy: ITILFollowupFieldStrategy::SPECIFIC_CONTENT,
+            specific_content: '',
+        );
+
+        $this->sendFormAndAssertITILFollowup(
+            form: $form,
+            config: $specific_content,
+            expected_itilfollowups: []
+        );
+    }
+
+    public function testFollowupIsNotCreatedWhenSpecificContentIsEmptyOnceTagsAreResolved(): void
+    {
+        $form = $this->createForm(
+            (new FormBuilder())->addQuestion("Comment", QuestionTypeShortText::class)
+        );
+        $question = Question::getById($this->getQuestionId($form, "Comment"));
+        $answer_tag = (new AnswerTagProvider())->getTagForQuestion($question);
+        $specific_content = new ITILFollowupFieldConfig(
+            strategy: ITILFollowupFieldStrategy::SPECIFIC_CONTENT,
+            specific_content: $answer_tag->html,
+        );
+
+        // The optional question is not answered
+        $this->sendFormAndAssertITILFollowup(
+            form: $form,
+            config: $specific_content,
+            expected_itilfollowups: []
+        );
+    }
+
+    public function testFollowupIsNotCreatedForBlankSpecificContent(): void
+    {
+        $form = $this->createAndGetFormWithMultipleDropdownItemQuestions();
+        $specific_content = new ITILFollowupFieldConfig(
+            strategy: ITILFollowupFieldStrategy::SPECIFIC_CONTENT,
+            specific_content: '<p>&nbsp;</p>',
+        );
+
+        $this->sendFormAndAssertITILFollowup(
+            form: $form,
+            config: $specific_content,
+            expected_itilfollowups: []
+        );
+    }
+
+    public function testSpecificContentFollowupDoesNotReopenTicket(): void
+    {
+        // The form filler is the requester, its followups usually reopen the ticket
+        $this->login();
+        $ticket = $this->sendFormAndAssertITILFollowup(
+            form: $this->createAndGetFormWithMultipleDropdownItemQuestions(),
+            config: new ITILFollowupFieldConfig(
+                strategy: ITILFollowupFieldStrategy::SPECIFIC_CONTENT,
+                specific_content: '<p>ENTREE VALIDEE</p>',
+            ),
+            expected_itilfollowups: ['ENTREE VALIDEE'],
+            other_fields_config: [
+                StatusField::getKey() => new SimpleValueConfig((string) CommonITILObject::CLOSED),
+            ],
+        );
+
+        $this->assertEquals(CommonITILObject::CLOSED, Ticket::getById($ticket->getID())->fields['status']);
+    }
+
+    public function testSpecificContentFollowupDoesNotTakeTicketIntoAccount(): void
+    {
+        // The form is filled on behalf of another user by someone that can
+        // add followups, its followups usually take the ticket into account
+        $this->login();
+        $ticket = $this->sendFormAndAssertITILFollowup(
+            form: $this->createAndGetFormWithMultipleDropdownItemQuestions(),
+            config: new ITILFollowupFieldConfig(
+                strategy: ITILFollowupFieldStrategy::SPECIFIC_CONTENT,
+                specific_content: '<p>ENTREE VALIDEE</p>',
+            ),
+            expected_itilfollowups: ['ENTREE VALIDEE'],
+            other_fields_config: [
+                RequesterField::getKey() => new RequesterFieldConfig(
+                    strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
+                    specific_itilactors_ids: [
+                        User::getForeignKeyField() . '-' . getItemByTypeName(User::class, 'normal', true),
+                    ],
+                ),
+            ],
+        );
+
+        $this->assertNull(Ticket::getById($ticket->getID())->fields['takeintoaccountdate']);
+    }
+
+    public function testOnlySpecificContentIsUsedWhenSpecificContentStrategyIsSelected(): void
+    {
+        $template = $this->createITILFollowupTemplate('Followup template 1');
+        $form = $this->createAndGetFormWithMultipleDropdownItemQuestions();
+        $config = new ITILFollowupFieldConfig(
+            strategy: ITILFollowupFieldStrategy::SPECIFIC_CONTENT,
+            specific_itilfollowuptemplates_ids: [$template->getID()],
+            specific_content: '<p>ENTREE VALIDEE</p>',
+        );
+
+        $this->sendFormAndAssertITILFollowup(
+            form: $form,
+            config: $config,
+            expected_itilfollowups: ['ENTREE VALIDEE']
+        );
+    }
+
+    public function testOnlyTemplatesAreUsedWhenSpecificValuesStrategyIsSelected(): void
+    {
+        $template = $this->createITILFollowupTemplate('Followup template 1');
+        $form = $this->createAndGetFormWithMultipleDropdownItemQuestions();
+        $config = new ITILFollowupFieldConfig(
+            strategy: ITILFollowupFieldStrategy::SPECIFIC_VALUES,
+            specific_itilfollowuptemplates_ids: [$template->getID()],
+            specific_content: '<p>ENTREE VALIDEE</p>',
+        );
+
+        $this->sendFormAndAssertITILFollowup(
+            form: $form,
+            config: $config,
+            expected_itilfollowups: ['Followup template 1']
+        );
+    }
+
+    public function testSpecificContentIsRenderedInRichTextEditorWithFormTags(): void
+    {
+        $this->login();
+        $form = $this->createAndGetFormWithMultipleDropdownItemQuestions();
+        $destination = current($form->getDestinations());
+        $config = new ITILFollowupFieldConfig(
+            strategy: ITILFollowupFieldStrategy::SPECIFIC_CONTENT,
+            specific_content: '<p>ENTREE VALIDEE</p>',
+        );
+
+        $field = new ITILFollowupField();
+        $html = $field->renderConfigForm(
+            $form,
+            $destination,
+            $config,
+            'config[' . ITILFollowupField::getKey() . ']',
+            ['is_horizontal' => false, 'rand' => 42],
+        );
+
+        $textarea = (new Crawler($html))->filter(
+            '[data-glpi-itildestination-field-config-display-condition="specific_content"] '
+            . 'textarea[name="config[' . ITILFollowupField::getKey() . '][value]"]'
+        );
+        $this->assertCount(1, $textarea);
+        $this->assertStringContainsString('ENTREE VALIDEE', $textarea->text());
+        $this->assertStringContainsString('GLPI.RichText.FormTags', $html);
+    }
+
     private function sendFormAndAssertITILFollowup(
         Form $form,
         ITILFollowupFieldConfig $config,
-        array $expected_itilfollowups
-    ): void {
+        array $expected_itilfollowups,
+        array $answers = [],
+        array $other_fields_config = [],
+    ): Ticket {
         // Insert config
         $destinations = $form->getDestinations();
         $this->assertCount(1, $destinations);
@@ -99,22 +290,14 @@ final class ITILFollowupFieldTest extends DbTestCase
         $this->updateItem(
             $destination::getType(),
             $destination->getId(),
-            ['config' => [ITILFollowupField::getKey() => $config->jsonSerialize()]],
+            ['config' => array_map(
+                fn(JsonFieldInterface $field_config) => $field_config->jsonSerialize(),
+                [ITILFollowupField::getKey() => $config] + $other_fields_config,
+            )],
             ["config"],
         );
 
-        // Submit form
-        $answers_handler = AnswersHandler::getInstance();
-        $answers = $answers_handler->saveAnswers(
-            $form,
-            [],
-            getItemByTypeName(\User::class, TU_USER, true)
-        );
-
-        // Get created ticket
-        $created_items = $answers->getCreatedItems();
-        $this->assertCount(1, $created_items);
-        $ticket = current($created_items);
+        $ticket = $this->sendFormAndGetCreatedTicket($form, $answers);
 
         // Check ITILFollowup
         $this->assertEquals(
@@ -143,6 +326,8 @@ final class ITILFollowupFieldTest extends DbTestCase
             ),
             array_values($expected_itilfollowups)
         );
+
+        return $ticket;
     }
 
     private function createAndGetFormWithMultipleDropdownItemQuestions(): Form

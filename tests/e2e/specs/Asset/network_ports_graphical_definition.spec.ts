@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+import type { Locator } from '@playwright/test';
 import { test, expect } from '../../fixtures/glpi_fixture';
 import { NetworkEquipmentModelPage } from '../../pages/NetworkEquipmentModelPage';
 import { Profiles } from '../../utils/Profiles';
@@ -94,6 +95,115 @@ test.describe('Network ports graphical definition', () => {
 
         // Verify that the interface is reset to initial state
         await expect(model_page.ports_count_input).toBeVisible();
+    });
+
+    test('should keep a saved port aligned when the stencil canvas resizes', async ({ page, profile, api }) => {
+        await page.setViewportSize({ width: 1600, height: 900 });
+        await profile.set(Profiles.SuperAdmin);
+
+        const model_id = await api.createItem('NetworkEquipmentModel', {
+            name: 'Test Network Equipment Model with a wide stencil',
+        });
+        const model_page = new NetworkEquipmentModelPage(page);
+        await model_page.goto(model_id);
+        await model_page.doUploadFrontImage('uploads/wide-network-stencil.png');
+        await model_page.doSaveForm();
+
+        await model_page.goto(model_id, STENCIL_TAB);
+        await model_page.doSetPortCount(1);
+
+        const canvas = page.locator('cropper-canvas');
+        const image = canvas.locator('cropper-image');
+        const zone = page.locator('.defined-zone[data-zone-index="1"]');
+        const port = { x: 0.7, y: 0.25, width: 0.12, height: 0.5 };
+
+        const expect_image_to_fit = async () => {
+            await expect.poll(async () => {
+                const [canvas_box, image_box] = await Promise.all([canvas.boundingBox(), image.boundingBox()]);
+                if (!canvas_box || !image_box) {
+                    return Infinity;
+                }
+                return Math.max(
+                    Math.abs(image_box.x - canvas_box.x),
+                    Math.abs(image_box.width - canvas_box.width),
+                    Math.abs(image_box.y + image_box.height / 2 - (canvas_box.y + canvas_box.height / 2)),
+                    image_box.height - canvas_box.height,
+                );
+            }).toBeLessThan(1);
+        };
+
+        const expect_port_position = async (marker: Locator) => {
+            await expect(marker).toBeVisible();
+            await expect.poll(async () => {
+                const [image_box, marker_box] = await Promise.all([image.boundingBox(), marker.boundingBox()]);
+                if (!image_box || !marker_box) {
+                    return Infinity;
+                }
+                return Math.max(
+                    Math.abs(marker_box.x - image_box.x - port.x * image_box.width),
+                    Math.abs(marker_box.y - image_box.y - port.y * image_box.height),
+                    Math.abs(marker_box.width - port.width * image_box.width),
+                    Math.abs(marker_box.height - port.height * image_box.height),
+                );
+            }).toBeLessThan(2);
+        };
+
+        await expect_image_to_fit();
+        const [canvas_box, image_box] = await Promise.all([canvas.boundingBox(), image.boundingBox()]);
+        if (!canvas_box || !image_box) {
+            throw new Error('Expected a visible stencil canvas and image');
+        }
+        expect(canvas_box.width).toBeGreaterThan(800);
+
+        const [save_response] = await Promise.all([
+            page.waitForResponse((response) => new URL(response.url()).pathname.endsWith('/ajax/stencil.php')
+                && response.request().method() === 'POST'),
+            model_page.doConfigurePort(
+                '1',
+                Math.round(image_box.x - canvas_box.x + port.x * image_box.width),
+                Math.round(image_box.y - canvas_box.y + port.y * image_box.height),
+                Math.round(port.width * image_box.width),
+                Math.round(port.height * image_box.height),
+            ),
+        ]);
+        expect(save_response.ok()).toBe(true);
+
+        await page.reload();
+        await expect_image_to_fit();
+        await expect_port_position(zone);
+
+        await page.setViewportSize({ width: 900, height: 900 });
+        await expect.poll(async () => (await canvas.boundingBox())?.width ?? Infinity).toBeLessThan(canvas_box.width);
+        await expect_image_to_fit();
+        await expect_port_position(zone);
+
+        const selection = canvas.locator('cropper-selection');
+        await model_page.getPortButton('1').click();
+        await expect_image_to_fit();
+        await expect_port_position(selection);
+
+        const source_image = page.locator('.stencil-image');
+        const picture_url = await source_image.evaluate((element: HTMLImageElement) => element.src);
+        let allow_image_load!: () => void;
+        const wait_to_load_image = new Promise<void>((resolve) => {
+            allow_image_load = resolve;
+        });
+        await page.route((url) => url.href === picture_url, async (route) => {
+            await wait_to_load_image;
+            await route.continue();
+        });
+
+        try {
+            await page.reload({ waitUntil: 'domcontentloaded' });
+            await model_page.getPortButton('1').click();
+            await expect(model_page.getButton('Save port data')).toBeVisible();
+            expect(await source_image.evaluate((element: HTMLImageElement) => element.complete)).toBe(false);
+        } finally {
+            allow_image_load();
+        }
+
+        await expect_image_to_fit();
+        await expect_port_position(selection);
     });
 
     test('should view defined ports', async ({ page, profile, api }) => {

@@ -40,7 +40,7 @@ use Item_DeviceSoundCard;
 
 class SoundCard extends Device
 {
-    protected $ignored = ['controllers' => null];
+    protected array $ignored = ['controllers' => null];
 
     public function prepare(): array
     {

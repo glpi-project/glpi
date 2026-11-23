@@ -30,11 +30,10 @@
  * ---------------------------------------------------------------------
  */
 
-require('@jest/globals');
-const rack = require('/js/rack.js');
+import * as rack from '/js/rack.js';
 
 describe('Rack', () => {
-    it('getHpos', () => {
+    it('getHpos', async () => {
         expect(rack.getHpos(0, false, true)).toBe(0);
         expect(rack.getHpos(0, false, false)).toBe(0);
         expect(rack.getHpos(9, false, false)).toBe(0);

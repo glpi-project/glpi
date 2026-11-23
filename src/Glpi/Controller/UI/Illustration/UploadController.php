@@ -71,7 +71,11 @@ final class UploadController extends AbstractController
             throw new BadRequestHttpException();
         }
 
-        $this->illustration_manager->saveCustomIllustration($file_name, $file_path);
-        return new JsonResponse(['file' => $file_name]);
+        // Never reuse the client-supplied filename as id: it would let a same-named re-upload overwrite this one at the same cached URL.
+        $extension = pathinfo($file_name, PATHINFO_EXTENSION);
+        $illustration_id = uniqid('', true) . ($extension !== '' ? ".$extension" : '');
+
+        $this->illustration_manager->saveCustomIllustration($illustration_id, $file_path);
+        return new JsonResponse(['file' => $illustration_id]);
     }
 }

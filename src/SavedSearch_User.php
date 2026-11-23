@@ -35,13 +35,13 @@
 
 class SavedSearch_User extends CommonDBRelation
 {
-    public $auto_message_on_action = false;
+    public bool $auto_message_on_action = false;
 
-    public static $itemtype_1 = SavedSearch::class;
-    public static $items_id_1          = 'savedsearches_id';
+    public static ?string $itemtype_1 = SavedSearch::class;
+    public static ?string $items_id_1          = 'savedsearches_id';
 
-    public static $itemtype_2 = User::class;
-    public static $items_id_2          = 'users_id';
+    public static ?string $itemtype_2 = User::class;
+    public static ?string $items_id_2          = 'users_id';
 
 
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
@@ -52,9 +52,9 @@ class SavedSearch_User extends CommonDBRelation
         switch ($field) {
             case 'users_id':
                 if (!empty($values[$field])) {
-                    return "<span class='ti ti-star-filled bookmark_default'><span class='sr-only'>" . __s('Yes') . "</span></span>";
+                    return "<span class='ti ti-star-filled bookmark_default'><span class='visually-hidden'>" . __s('Yes') . "</span></span>";
                 } else {
-                    return "<span class='ti ti-star-filled bookmark_record'><span class='sr-only'>" . __s('No') . "</span></span>";
+                    return "<span class='ti ti-star bookmark_record'><span class='visually-hidden'>" . __s('No') . "</span></span>";
                 }
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);

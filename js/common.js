@@ -284,18 +284,15 @@ function showHideDiv(id, img_name = '', img_src_close = '', img_src_open = '') {
  * @todo Remove - Not useful and only used by templates/components/search/controls.html.twig and that doesn't even use the img params so it is litterally just changing an input's value between 0 and 1...
 **/
 function toogle(id, img_name, img_src_yes, img_src_no) {
-
-    if (document.getElementById) { // DOM3 = IE5, NS6
-        if (document.getElementById(id).value == '0') {
-            document.getElementById(id).value = '1';
-            if (img_name !== '') {
-                document[img_name].src=img_src_yes;
-            }
-        } else {
-            document.getElementById(id).value = '0';
-            if (img_name !== '') {
-                document[img_name].src=img_src_no;
-            }
+    if (document.getElementById(id).value == '0') {
+        document.getElementById(id).value = '1';
+        if (img_name !== '') {
+            document[img_name].src=img_src_yes;
+        }
+    } else {
+        document.getElementById(id).value = '0';
+        if (img_name !== '') {
+            document[img_name].src=img_src_no;
         }
     }
 }
@@ -511,9 +508,6 @@ if ($(window).width() <= 700) {
     };
 }
 
-/**
- * @todo Remove? The 'fold_menu' field/$_SESSION['glpifold_menu'] seem unused.
- */
 var switchFoldMenu = function() {
     $.ajax({
         url: CFG_GLPI.root_doc + '/ajax/switchfoldmenu.php',
@@ -535,6 +529,15 @@ var switchFoldMenu = function() {
                         $('#navbar-menu .nav-link.active + .dropdown-menu').addClass('show');
                     }
                 }
+
+                // Once collapsed the button only shows a chevron, a CSS pseudo-element that is not
+                // exposed to assistive technologies: its hidden label is the only name it has, and
+                // both that label and its state have to be maintained here.
+                var reduce_menu = $('.reduce-menu');
+                reduce_menu.attr('aria-expanded', collapsed ? 'false' : 'true');
+                reduce_menu.find('.visually-hidden').text(
+                    reduce_menu.attr(collapsed ? 'data-expand-label' : 'data-collapse-label')
+                );
             }
         }
     });
@@ -542,7 +545,7 @@ var switchFoldMenu = function() {
 
 $(function() {
     //TODO Remove. Only applies to legacy tables using .tab_cadre_fixehov class
-    $("body").delegate('td','mouseover mouseleave', function(e) {
+    $("body").delegate('.tab_cadre_fixehov td','mouseover mouseleave', function(e) {
         var col = $(this).closest('tr').children().index($(this));
         var tr = $(this).closest('tr');
         if (!$(this).closest('tr').hasClass('noHover')) {
@@ -564,7 +567,6 @@ $(function() {
         }
     });
 
-    //TODO remove? See comment for switchFoldMenu()
     $('.reduce-menu').on('click', function(event) {
         event.preventDefault();
         event.stopPropagation();
@@ -911,6 +913,30 @@ var templateSelection = function (selection) {
     }
     var _elt = $('<span></span>');
     _elt.html(_.escape(text));
+
+    // Fix tooltip RTL rendering issue by using First Strong Isolate
+    selection.title = '\u2068' + text + '\u2069';
+
+    return _elt;
+};
+
+window.glpiGroupCommentPopovers = window.glpiGroupCommentPopovers || {};
+var templateGroupSelection = function (selection) {
+    var _elt = templateSelection(selection);
+
+    if (selection.element && selection.id) {
+        var select_id = selection.element.parentElement.id;
+        import('/js/modules/Form/ItemtypeCommentPopover.js').then((m) => {
+            if (!window.glpiGroupCommentPopovers[select_id]) {
+                window.glpiGroupCommentPopovers[select_id] = new m.default(
+                    $('#' + CSS.escape(select_id)).parent(),
+                    ['.group-info-card']
+                );
+            }
+            window.glpiGroupCommentPopovers[select_id].attachTo(_elt, 'Group', selection.id);
+        });
+    }
+
     return _elt;
 };
 
@@ -967,7 +993,10 @@ var templateItilStatus = function(option) {
             break;
     }
 
-    return $(`<span><i class="itilstatus ${classes}"></i> ${_.escape(option.text)}</span>`);
+    // Fix tooltip RTL rendering issue by using First Strong Isolate
+    option.title = '\u2068' + option.text + '\u2069';
+
+    return $(`<span><i class="itilstatus ${classes}" aria-hidden="true"></i> ${_.escape(option.text)}</span>`);
 };
 
 var templateValidation = function(option) {
@@ -991,7 +1020,10 @@ var templateValidation = function(option) {
             break;
     }
 
-    return $(`<span><i class="validationstatus ${classes}"></i> ${_.escape(option.text)}</span>`);
+    // Fix tooltip RTL rendering issue by using First Strong Isolate
+    option.title = '\u2068' + option.text + '\u2069';
+
+    return $(`<span><i class="validationstatus ${classes}" aria-hidden="true"></i> ${_.escape(option.text)}</span>`);
 };
 
 var templateItilPriority = function(option) {
@@ -1005,8 +1037,11 @@ var templateItilPriority = function(option) {
     var color_badge = "";
 
     if (priority_color.length > 0) {
-        color_badge += `<i class='ti ti-circle-filled' style='color: ${_.escape(priority_color)}'></i>`;
+        color_badge += `<i class='ti ti-circle-filled' style='color: ${_.escape(priority_color)}' aria-hidden='true'></i>`;
     }
+
+    // Fix tooltip RTL rendering issue by using First Strong Isolate
+    option.title = '\u2068' + option.text + '\u2069';
 
     return $(`<span>${color_badge}&nbsp;${_.escape(option.text)}</span>`);
 };
@@ -1036,7 +1071,7 @@ var getTextWithoutDiacriticalMarks = function (text) {
  * @return {string}
  */
 var escapeMarkupText = function (text) {
-    // TODO in GLPI 11.1: console.warn('`escapeMarkupText()` is deprecated, use `_.escape()` instead.');
+    console.warn('`escapeMarkupText()` is deprecated, use `_.escape()` instead.');
 
     if (typeof(text) !== 'string') {
         return text;
@@ -1244,6 +1279,9 @@ function updateItemOnEvent(dropdown_ids, target, url, params = {}, events = ['ch
                             resolved_params[k] = v;
                         }
                     });
+                    if ($.fn.select2) {
+                        $(target).find('.select2-hidden-accessible').select2('destroy');
+                    }
                     $(target).load(url, resolved_params);
                 };
                 if (conditional && (min_size_condition || force_load_condition)) {
@@ -1300,27 +1338,30 @@ function initTooltips(container) {
     );
 }
 
-/*
- * Sends the CSRF token in ajax POST requests headers.
- */
-$(document).ajaxSend(
-    function(event, xhr, settings) {
-        if (settings.type !== 'POST') {
-            return;
-        }
-
-        xhr.setRequestHeader('X-Glpi-Csrf-Token', getAjaxCsrfToken());
+// Tooltip ARIA pattern: dismiss the focused element's tooltip on Escape.
+document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") {
+        return;
     }
-);
+    const active = document.activeElement;
+    if (active === null || typeof bootstrap === "undefined") {
+        return;
+    }
+    const instance = bootstrap.Tooltip.getInstance(active);
+    if (instance !== null) {
+        instance.hide();
+    }
+});
 
 /**
  * Returns CSRF token that can be used for AJAX requests.
  *
- * @returns {string|null}
+ * @deprecated
+ * @returns {string}
  */
 function getAjaxCsrfToken() {
-    const meta  = document.querySelector('meta[property="glpi:csrf_token"]');
-    return meta !== null ? meta.getAttribute('content') : null;
+    console.warn('Csrf protection is now handled without tokens.');
+    return "";
 }
 
 // init tooltips
@@ -1512,7 +1553,10 @@ $(() => {
     // General "copy to clipboard" handler.
     // TODO: refactorate existing code to use this unique handler.
     $(document).on('click', '[data-glpi-clipboard-text]', function() {
-        const text = $(this).data('glpi-clipboard-text');
+        // Read the attribute instead of `.data()`: the value may be updated
+        // dynamically (jQuery caches its data store on first read) and must not
+        // be type-casted (`.data()` would turn a numeric value into a Number).
+        const text = $(this).attr('data-glpi-clipboard-text');
         if (navigator.clipboard === undefined) {
             // The clipboard is not available in non secure environements.
             // See: https://developer.mozilla.org/en-US/docs/Web/API/Clipboard
@@ -1561,8 +1605,38 @@ $(document.body).on('shown.bs.tab', 'a[data-bs-toggle="tab"]', (e) => {
 });
 
 /**
+ * Toggles a disclosable password field between its hidden and revealed states.
+ * The button's label changes between show/hide so it can be operated with the
+ * keyboard and announces the action it will perform next.
+ * @param {HTMLButtonElement} button The toggle button that was activated
+ * @param {string} item The ID of the field to reveal/hide
+ */
+function toggleDisclosablePasswordField(button, item) {
+    const field = document.getElementById(item);
+    if (field === null) {
+        return;
+    }
+
+    const reveal = field.type === "password";
+    field.type = reveal ? "text" : "password";
+
+    const label = reveal ? button.dataset.hideLabel : button.dataset.showLabel;
+    if (label !== undefined) {
+        button.setAttribute("aria-label", label);
+        button.setAttribute("title", label);
+    }
+
+    const icon = button.querySelector("i.disclose");
+    if (icon !== null) {
+        icon.classList.toggle("ti-eye", !reveal);
+        icon.classList.toggle("ti-eye-off", reveal);
+    }
+}
+
+/**
  * Converts a disclosable password field to a normal text field
  * @param {string} item The ID of the field to be shown
+ * @deprecated 12.0 Use {@link toggleDisclosablePasswordField} instead. Kept for backward compatibility.
  */
 function showDisclosablePasswordField(item) {
     $("#" + CSS.escape(item)).prop("type", "text");
@@ -1571,6 +1645,7 @@ function showDisclosablePasswordField(item) {
 /**
  * Converts a normal text field to a password field
  * @param {string} item The ID of the field to be hidden
+ * @deprecated 12.0 Use {@link toggleDisclosablePasswordField} instead. Kept for backward compatibility.
  */
 function hideDisclosablePasswordField(item) {
     $("#" + CSS.escape(item)).prop("type", "password");
@@ -1581,18 +1656,23 @@ function hideDisclosablePasswordField(item) {
  * @param {string} item The ID of the field to be copied
  */
 function copyDisclosablePasswordFieldToClipboard(item) {
-    const is_password_input = $("#" + CSS.escape(item)).prop("type") === "password";
-    if (is_password_input) {
-        showDisclosablePasswordField(item);
+    const field = document.getElementById(item);
+    if (field === null) {
+        return;
     }
-    $("#" + CSS.escape(item)).select();
+
+    const is_password_input = field.type === "password";
+    if (is_password_input) {
+        field.type = "text";
+    }
+    field.select();
     try {
         document.execCommand("copy");
     } catch {
-        alert("Copy to clipboard failed'");
+        alert("Copy to clipboard failed");
     }
     if (is_password_input) {
-        hideDisclosablePasswordField(item);
+        field.type = "password";
     }
 }
 
@@ -1616,7 +1696,7 @@ function initSortableTable(element_id) {
         const sort_icon = col.find('i');
         if (sort_icon.length === 0) {
             // Add sort icon
-            col.eq(0).append(`<i class="ti ti-caret-${new_order}-filled"></i>`);
+            col.eq(0).append(`<i class="ti ti-caret-${new_order}-filled" aria-hidden="true"></i>`);
         } else {
             sort_icon.addClass(new_order === 'up' ? 'ti-caret-up-filled' : 'ti-caret-down-filled');
         }
@@ -1713,7 +1793,7 @@ function setupAjaxDropdown(config) {
     const field_id = CSS.escape(config.field_id);
 
     const select2_el = $('#' + field_id).select2({
-        containerCssClass: config.container_css_class,
+        selectionCssClass: config.container_css_class,
         width: config.width,
         multiple: config.multiple,
         placeholder: config.placeholder,
@@ -1726,7 +1806,7 @@ function setupAjaxDropdown(config) {
             url: config.url,
             dataType: 'json',
             type: 'POST',
-            delay: 250,
+            delay: 500,
             data: function (params) {
                 query = params;
                 var data = $.extend({}, config.params, {
@@ -1809,6 +1889,16 @@ function setupAjaxDropdown(config) {
         const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-${CSS.escape(e.target.id)}-results']`);
         if (search_input) {
             search_input.focus();
+        }
+    });
+
+    $('#' + field_id).on('select2:selecting', function (e) {
+        if (e?.params?.args?.data) {
+            const data = e.params.args.data;
+            const option = this.querySelector(`option[value="${CSS.escape(String(data.id))}"]`);
+            if (option) {
+                option.text = data.text;
+            }
         }
     });
 
@@ -1907,9 +1997,18 @@ function setupAdaptDropdown(config)
         },
         templateResult: config.templateresult,
         templateSelection: config.templateselection,
+        allowClear: !!config.allowclear,
     };
     if (config.placeholder !== undefined && config.placeholder !== '') {
         options.placeholder = config.placeholder;
+    }
+    if (config.allowclear && $('#' + field_id + ' option[value=""]').length === 0) {
+        const $select = $('#' + field_id);
+        const hasSelected = $select.find('option[selected]').length > 0;
+        $select.prepend('<option value=""></option>');
+        if (!hasSelected) {
+            $select.val('');
+        }
     }
     const select2_el = $('#' + field_id).select2(options);
 
@@ -2003,6 +2102,7 @@ function setupFileUpload(config) {
                 $('#progress' + CSS.escape(config.rand_id) + ' .uploadbar')
                     .text(progress + '%')
                     .css('width', progress + '%')
+                    .attr('aria-valuenow', progress)
                     .show();
             }
         });
@@ -2036,19 +2136,17 @@ window.displaySessionMessages = () => {
 
 // Add/remove a special data attribute to bootstrap's modals when they are
 // displayed/hidden.
-// This is needed for e2e testing as bootstrap have some compatibility issues
-// with cypress.
-// See https://github.com/cypress-io/cypress/issues/25202.
+// This is used by the e2e tests to wait for the end of the modal animations.
 document.addEventListener('shown.bs.modal', (e) => {
     const modal = e.target.closest('.modal');
     if (modal) {
-        modal.setAttribute('data-cy-shown', 'true');
+        modal.setAttribute('data-glpi-modal-shown', 'true');
     }
 });
 document.addEventListener('hidden.bs.modal', (e) => {
     const modal = e.target.closest('.modal');
     if (modal) {
-        modal.setAttribute('data-cy-shown', 'false');
+        modal.setAttribute('data-glpi-modal-shown', 'false');
     }
 });
 

@@ -1,10 +1,11 @@
 services:
   app:
-    container_name: "glpi-app"
     build:
       context: ".docker/app"
       args:
         PHP_VERSION: "8.4"
+        HOST_USER_ID: "${HOST_USER_ID:-1000}"
+        HOST_GROUP_ID: "${HOST_GROUP_ID:-1000}"
     restart: "unless-stopped"
     volumes:
       - ".:/var/www/glpi:rw"
@@ -15,14 +16,10 @@ services:
       - "9637:9637"
     depends_on:
       - db
-    environment:
-      # By default the testing env is exposed under the 8080 internal port
-      CYPRESS_BASE_URL: http://localhost:8080
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
   db:
-    container_name: "glpi-db"
     image: "mariadb:11.8"
     restart: "unless-stopped"
     volumes:
@@ -37,7 +34,6 @@ services:
       - "3306"
 
   mailpit:
-    container_name: "glpi-mailpit"
     image: "axllent/mailpit"
     restart: "unless-stopped"
     expose:
@@ -46,7 +42,6 @@ services:
       - "8025:8025"
 
   dbgate:
-    container_name: "glpi-dbgate"
     image: "dbgate/dbgate:latest"
     restart: "unless-stopped"
     ports:
@@ -61,9 +56,35 @@ services:
       PORT_glpi: 3306
       ENGINE_glpi: "mysql@dbgate-plugin-mysql"
 
+  # OpenID OAuth server
+  # Opt-in: `docker compose --profile keycloak up -d keycloak`.
+  # Same host:9090 as in-container port so the OIDC issuer is identical whether
+  # reached from the browser (needs `127.0.0.1 keycloak.glpi.local` in /etc/hosts) or from
+  # the app container (compose DNS alias). See .docker/keycloak/README.md.
+  keycloak:
+    image: "quay.io/keycloak/keycloak:26.0"
+    profiles: ["keycloak"]
+    restart: "unless-stopped"
+    command: ["start-dev", "--import-realm", "--http-port=9090"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: "admin"
+      KC_BOOTSTRAP_ADMIN_PASSWORD: "admin"
+      KC_HOSTNAME: "http://keycloak.glpi.local:9090"
+      KC_HTTP_ENABLED: "true"
+      KC_HEALTH_ENABLED: "true"
+    ports:
+      - "9090:9090"
+    # Network alias so the app container resolves the same hostname as the browser,
+    # keeping the OIDC issuer identical on both sides.
+    networks:
+      default:
+        aliases:
+          - "keycloak.glpi.local"
+    volumes:
+      - "./.docker/keycloak/realm-glpi.json:/opt/keycloak/data/import/realm-glpi.json:ro"
+
   # To create a preconfigured LDAP object in GLPI, run `make console c='tools:generate_dev_ldap'`
   openldap:
-    container_name: "glpi-openldap"
     image: "osixia/openldap:latest"
     restart: "unless-stopped"
     environment:

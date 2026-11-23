@@ -36,26 +36,17 @@ import { Profiles } from "../../utils/Profiles";
 import { getWorkerUserId } from '../../utils/WorkerEntities';
 import { GlpiPage } from "../../pages/GlpiPage";
 import { FormPage } from "../../pages/FormPage";
-import { CsrfExtractor } from '../../utils/CsrfExtractor';
 
 async function setUserLanguage(
     page: Page,
     language: string
 ): Promise<void> {
     const user_id = getWorkerUserId();
-
-    // Fetch a fresh page via page.request to get a valid CSRF token
-    // page.request shares cookies with the browser page
-    const response = await page.request.get('/front/preference.php');
-    const body = await response.text();
-    const csrf_token = new CsrfExtractor().extractToken(body);
-
     await page.request.post('/front/preference.php', {
         form: {
             id: String(user_id),
             language: language,
             update: 'Update',
-            _glpi_csrf_token: csrf_token,
         },
     });
 }

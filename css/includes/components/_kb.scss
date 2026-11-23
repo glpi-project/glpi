@@ -1,0 +1,1767 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+.article-container {
+    max-width: 1320px !important;
+
+    hr {
+        border: none;
+        border-top: 1px solid var(--tblr-border-color);
+        margin: 1.5rem 0;
+        opacity: 1;
+    }
+}
+
+// Shared by the editor's <span> and the read view's <mark>: neutralize Tabler's
+// `mark` styling, which reaches only the latter.
+.kb-comment-highlight {
+    padding: 0;
+    color: inherit;
+    background-color: transparent;
+    text-decoration: underline;
+    text-decoration-color: var(--tblr-warning);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+    cursor: pointer;
+
+    // Hover is JS-driven: a passage is one element per text node it crosses.
+    // A focused thread points at its passage the same way hovering does.
+    &.kb-comment-highlight--hovered,
+    &.kb-comment-highlight--focused {
+        text-decoration-thickness: 3px;
+        background-color: var(--tblr-warning-bg-subtle);
+    }
+
+    // Distinct from the --hovered wash, so selecting text stays tellable from
+    // merely hovering it.
+    &::selection {
+        background-color: rgb(var(--tblr-warning-rgb), 0.4);
+    }
+}
+
+// Shared by editor and read view so a saved article renders as edited.
+.kb-editor-wrapper .ProseMirror table,
+.article-container table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+    margin-bottom: 0.75rem;
+
+    // Without its own border, the table-collapse perimeter falls back to
+    // currentColor instead of the translucent cell border color below.
+    border: 1px solid var(--tblr-border-color-translucent);
+
+    td,
+    th {
+        border: 1px solid var(--tblr-border-color-translucent);
+        padding: 0.5rem;
+        min-width: 100px;
+
+        // Keep read-view cell height in sync with the editor's `p` spacing.
+        p {
+            margin-block-end: 0.75rem;
+        }
+    }
+
+    th {
+        background: var(--tblr-bg-surface-secondary);
+        font-weight: 600;
+    }
+}
+
+.kb-sidepanel {
+    background-color: var(--tblr-card-cap-bg);
+    border-inline-start: 1px solid var(--tblr-border-color);
+    height: calc(100vh - 150px);
+
+    // Mirror .kb-article's transition so the pair always sums to the row width;
+    // `clip` contains the content mid-animation without making this a scroller.
+    overflow-x: clip;
+    transition:
+        width 0.35s ease-in-out,
+        padding 0.35s ease-in-out;
+
+    .steps-vertical {
+        position: relative;
+        inset-inline-start: -1.5rem;
+        width: calc(100% + 3rem);
+        margin-inline-start: 0;
+        padding-inline-end: 1.25rem;
+        border-inline-start: none;
+    }
+
+    &.closed {
+        border-inline-start: 0;
+        width: 0;
+        overflow: hidden;
+        padding: 0 !important;
+    }
+}
+
+.kb-title-editable {
+    transition: background-color 0.2s ease;
+    border-radius: 4px;
+
+    &.is-editing {
+        outline: none;
+        padding: 2px 6px;
+        margin: 0 -6px;
+
+        &:focus {
+            background-color: rgb(var(--tblr-primary-rgb) / 4%);
+        }
+
+        &:empty::before {
+            content: attr(data-placeholder);
+            color: var(--tblr-muted);
+            pointer-events: none;
+        }
+    }
+}
+
+.kb-illustration-preview {
+    border: 1px solid transparent;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+
+    // Spacing only in edit mode, where the preview is a real <button>.
+    // Offset the padding with a matching negative margin so surrounding
+    // content keeps its position when switching between view and edit mode.
+    &:is(button) {
+        padding: 0.25rem;
+        margin: -0.25rem;
+
+        &:hover {
+            border-color: var(--tblr-border-color);
+            box-shadow: var(--tblr-box-shadow-input);
+        }
+    }
+}
+
+body.in_modal .kb-article {
+    max-height: none;
+    overflow: visible;
+}
+
+.kb-article {
+    position: relative;
+    max-height: calc(100vh - 150px);
+    overflow: auto;
+    transition: width 0.35s ease-in-out;
+}
+
+[data-glpi-knowbase-side-panel-offcanvas] {
+    width: min(400px, 85vw);
+
+    .steps-vertical {
+        --tblr-steps-padding: 1.5rem;
+
+        margin-inline-start: 0;
+    }
+}
+
+// KB Documents footer section
+
+.kb-documents-footer {
+    scroll-margin-top: 1rem;
+}
+
+// Document badge styling (matches mockup)
+.kb-item-badge {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    background-color: var(--tblr-bg-surface-secondary);
+    color: var(--tblr-body-color);
+    border: 1px solid var(--tblr-border-color);
+    transition: all 0.2s ease;
+
+    a {
+        color: inherit;
+    }
+
+    .kb-unlink-item {
+        &:hover {
+            color: var(--tblr-danger) !important;
+        }
+    }
+
+    &:focus-within {
+        .kb-unlink-item {
+            opacity: 1;
+        }
+    }
+
+    &:hover {
+        border-color: var(--tblr-secondary);
+    }
+}
+
+// Sub-articles tab: one navigation row per child article
+.kb-child-articles {
+    .kb-child-article {
+        padding: 0.25rem 0;
+
+        // No color here: it would override the anchor's text-hover-link
+        a:hover .text-truncate {
+            text-decoration: underline;
+        }
+    }
+
+    // Fixed slot so titles stay aligned whether or not the child has an illustration
+    .kb-child-article-icon {
+        flex: 0 0 20px;
+        height: 20px;
+    }
+}
+
+// KB revision diff - inline highlights
+.kb-article--diff-mode {
+    ins.diffins {
+        background-color: rgb(var(--tblr-success-rgb), 0.25);
+        text-decoration: none;
+    }
+
+    del.diffdel {
+        background-color: rgb(var(--tblr-danger-rgb), 0.25);
+        text-decoration: line-through;
+    }
+
+    ins.diffmod {
+        background-color: rgb(var(--tblr-success-rgb), 0.25);
+        text-decoration: none;
+    }
+
+    del.diffmod {
+        background-color: rgb(var(--tblr-danger-rgb), 0.25);
+        text-decoration: line-through;
+    }
+}
+
+[data-glpi-revisions] > .list-group-item {
+    border: none;
+
+    &.active:not(:hover, .kb-revision--selected) {
+        background-color: transparent;
+    }
+}
+
+// KB revision comparison - side panel state
+.kb-sidepanel [data-glpi-current-version],
+.kb-sidepanel [data-glpi-revision-id],
+.kb-sidepanel [data-glpi-translation-revision-id],
+.kb-sidepanel [data-glpi-current-translation-language] {
+    cursor: pointer;
+    transition:
+        background-color 0.15s ease,
+        box-shadow 0.15s ease;
+
+    &.active {
+        border: none;
+
+        &:not(:hover) {
+            background-color: unset;
+        }
+    }
+
+    &.kb-revision--selected {
+        background-color: color-mix(
+            in srgb,
+            var(--tblr-primary),
+            transparent 90%
+        );
+        box-shadow: inset -3px 0 0 var(--tblr-primary);
+    }
+}
+
+// Related item badge styling
+.kb-related-item-badge {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    border: 1px solid var(--tblr-border-color);
+    transition: all 0.2s ease;
+
+    &:hover {
+        background-color: var(--tblr-primary) !important;
+        color: var(--tblr-bg-surface) !important;
+        border-color: var(--tblr-primary);
+        box-shadow: 0 2px 4px
+            color-mix(in srgb, var(--tblr-primary), transparent 80%);
+
+        i {
+            color: var(--tblr-bg-surface) !important;
+        }
+    }
+}
+
+// KB permission visibility fields (AJAX-loaded from visibility.php)
+.kb-permission-visibility {
+    // Override the inline d-flex from visibility.php to stack fields
+    > .d-flex {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    // Override the legacy table from subvisibility.php
+    .tab_format {
+        width: 100%;
+
+        td {
+            padding: 0.25rem 0.375rem;
+            white-space: nowrap;
+        }
+    }
+}
+
+// KB modal tabs navigation
+.kb-modal-nav {
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--tblr-border-color);
+
+    .nav-link:hover,
+    .nav-link:focus {
+        background-color: transparent !important;
+    }
+}
+
+// Select2 hides the native <select>; restyle its wrapper to show .is-invalid
+#kb-modal-link-pane select.is-invalid + .select2-container .select2-selection {
+    border-color: var(--tblr-form-invalid-border-color);
+}
+
+// KB documents footer tabs navigation
+#kb-documents {
+    // Draw a continuous light gray line under the whole tab row so it reads as
+    // a standard tab layout; the active/hover tab underline sits on top of it.
+    .nav-underline {
+        border-bottom: 1px solid var(--tblr-border-color);
+    }
+
+    .nav-link {
+        // Overlap the container line so the active/hover underline replaces it
+        // instead of stacking just above it.
+        margin-bottom: -1px;
+        color: var(--glpi-tabs-fg);
+
+        &:hover,
+        &:focus {
+            background-color: transparent !important;
+        }
+    }
+}
+
+// KB comment thread reply trigger
+.kb-comment-thread {
+    transition: opacity 0.15s ease-in-out;
+
+    .kb-reply-trigger {
+        transition: opacity 0.15s ease-in-out;
+    }
+
+    &:hover .kb-reply-trigger {
+        opacity: 1 !important;
+    }
+}
+
+// Recede the others rather than decorate the focused thread.
+[data-glpi-comments].kb-comments--has-focus
+    .kb-comment-thread:not(.kb-comment-thread--focused) {
+    opacity: 0.35;
+
+    // A receded thread stays readable.
+    &:hover,
+    &:focus-within {
+        opacity: 1;
+    }
+}
+
+// One line: the passage itself is one click away in the article.
+.kb-comment-anchor-quote {
+    /* stylelint-disable-next-line value-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+    display: -webkit-box;
+    /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+    -webkit-line-clamp: 1;
+    /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+
+    // Blockquote's block padding widens the clip box, bleeding an extra line.
+    padding-block: 0;
+}
+
+// The preview is the last chance to read the selection back before storing it.
+.kb-comment-anchor-quote--preview {
+    /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+    -webkit-line-clamp: 3;
+}
+
+.kb-comment-anchor-quote--context {
+    font-size: 0.75rem;
+    font-style: italic;
+    line-height: 16px;
+
+    &::before {
+        content: "\efbe"; // ti-quote
+        margin-inline-end: 6px;
+        font-family: tabler-icons;
+        font-size: 14px;
+        font-style: normal;
+        vertical-align: middle;
+    }
+}
+
+// KB visibility dates
+.kb-schedule-panel {
+    min-width: 280px;
+}
+
+// Handle shared borders for comments in the same thread.
+.kb-comment-card {
+    border-radius: 0 !important;
+    border-bottom-width: 0 !important;
+}
+
+// Re-add top border radius for first comment of a thread
+.kb-comment:first-child {
+    .kb-comment-card {
+        border-top-left-radius: var(--tblr-border-radius) !important;
+        border-top-right-radius: var(--tblr-border-radius) !important;
+    }
+}
+
+// Re-add bottom border radius + border bottom for last comment of a thread.
+// This must only be done if the "reply form" is not displayed.
+.kb-comment-thread:not(.reply-shown) {
+    .kb-comment:nth-last-child(-n + 3) {
+        .kb-comment-card {
+            border-bottom-left-radius: var(--tblr-border-radius) !important;
+            border-bottom-right-radius: var(--tblr-border-radius) !important;
+            border-bottom-width: 1px !important;
+        }
+    }
+}
+
+// Re-add bottom border radius + border bottom for the "reply form".
+.kb-reply-form {
+    .kb-comment-card {
+        border-bottom-left-radius: var(--tblr-border-radius) !important;
+        border-bottom-right-radius: var(--tblr-border-radius) !important;
+        border-bottom-width: 1px !important;
+    }
+}
+
+// Reserve the height that the editor will take once tiptap is mounted, which
+// happens asynchronously. Prevent some height issues on chrome based browsers.
+body.in_modal .kb-editor-reserved {
+    min-height: 200px;
+}
+
+// Tiptap Editor styles for KB articles
+.kb-editor-wrapper {
+    .ProseMirror {
+        outline: none;
+        min-height: 200px;
+
+        &:focus {
+            outline: none;
+        }
+
+        // Placeholder
+        p.is-empty::before {
+            content: attr(data-placeholder);
+            float: inline-start;
+            color: var(--tblr-muted);
+            pointer-events: none;
+            height: 0;
+        }
+
+        // Suggestion placeholder when typing slash command
+        .suggestion.is-empty::after {
+            content: var(--suggestion-placeholder);
+            color: var(--tblr-muted);
+            pointer-events: none;
+            margin-inline-start: 0.25rem;
+            font-style: italic;
+        }
+
+        // Typography
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            margin-block: 1.5rem 0.75rem;
+
+            &:first-child {
+                margin-block-start: 0;
+            }
+        }
+
+        p {
+            margin-block-end: 0.75rem;
+        }
+
+        ul,
+        ol {
+            padding-inline-start: 1.5rem;
+            margin-block-end: 0.75rem;
+        }
+
+        blockquote {
+            border-inline-start: 3px solid var(--tblr-border-color);
+            padding-inline-start: 1rem;
+            margin-inline-start: 0;
+            margin-block-end: 0.75rem;
+            color: var(--tblr-muted);
+        }
+
+        code {
+            background: var(--tblr-bg-surface-secondary);
+            padding: 0.125rem 0.25rem;
+            border-radius: var(--tblr-border-radius-sm);
+            font-size: 0.875em;
+        }
+
+        pre {
+            background: var(--tblr-bg-surface-secondary);
+            padding: 1rem;
+            border-radius: var(--tblr-border-radius);
+            margin-bottom: 0.75rem;
+            overflow-x: auto;
+
+            code {
+                background: none;
+                padding: 0;
+            }
+        }
+
+        // Editor-only: cells are the positioning context for grips + resize handle.
+        table {
+            td,
+            th {
+                position: relative;
+            }
+        }
+
+        // prosemirror-tables: horizontal scroll for wide tables
+        .tableWrapper {
+            overflow-x: auto;
+            padding: 40px 16px 16px 40px; // grip gutters (top/left larger for the bars + insertion dots)
+        }
+
+        // Table grips: inert <a> hosts, visible shape drawn by ::after.
+        .table-grip-column,
+        .table-grip-row,
+        .table-grip,
+        .table-col-add,
+        .table-row-add {
+            position: absolute;
+            z-index: 15;
+            opacity: 0;
+            transition: opacity 0.12s ease;
+
+            &::after {
+                content: "";
+                position: absolute;
+                cursor: pointer;
+            }
+        }
+
+        .tableWrapper:hover {
+            .table-grip-column,
+            .table-grip-row,
+            .table-grip,
+            .table-col-add,
+            .table-row-add {
+                opacity: 1;
+            }
+        }
+
+        .table-grip-column.selected,
+        .table-grip-row.selected,
+        .table-grip.selected {
+            opacity: 1;
+        }
+
+        // Hide "+" inserts while the delete menu is open so they don't crowd the "−".
+        &.kb-table-menu-open {
+            .table-col-add,
+            .table-row-add {
+                opacity: 0 !important;
+                pointer-events: none;
+            }
+        }
+
+        // Zero-area host stretched along the cell edge so a %-sized ::after fits it.
+        .table-grip-column,
+        .table-col-add {
+            inset-block-start: 0;
+            inset-inline-start: 0;
+            width: 100%;
+            height: 0;
+        }
+
+        .table-grip-row,
+        .table-row-add {
+            inset-block-start: 0;
+            inset-inline-start: 0;
+            width: 0;
+            height: 100%;
+        }
+
+        .table-grip {
+            inset-block-start: 0;
+            inset-inline-start: 0;
+        }
+
+        // Selection grips: thin bars (column = top edge, row = left edge).
+        .table-grip-column,
+        .table-grip-row {
+            &::after {
+                background: rgb(var(--tblr-body-color-rgb), 0.4);
+            }
+
+            &.is-hovered::after {
+                background: var(--tblr-blue);
+            }
+
+            &.selected::after {
+                background: var(--tblr-blue);
+            }
+        }
+
+        .table-grip-column::after {
+            inset-block-start: 2px;
+            inset-inline-start: 0;
+            width: 100%;
+            height: 7px;
+            border-radius: 3px;
+        }
+
+        .table-grip-row::after {
+            inset-inline-start: 2px;
+            inset-block-start: 0;
+            width: 7px;
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        // Real 16px hit box in the gutter (shared geometry above makes it 0-thick).
+        .table-grip-column {
+            inset-block-start: -16px;
+            height: 16px;
+        }
+
+        .table-grip-row {
+            inset-inline-start: -16px;
+            width: 16px;
+        }
+
+        // Corner grip: round dot that selects the whole table.
+        .table-grip::after {
+            inset-block-start: -18px;
+            inset-inline-start: -18px;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: rgb(var(--tblr-body-color-rgb), 0.4);
+        }
+
+        .table-grip.is-hovered::after {
+            background: var(--tblr-blue);
+        }
+
+        .table-grip.selected::after {
+            background: var(--tblr-blue);
+        }
+
+        // ti-circle-plus glyph in a larger transparent hit area; blue on hover.
+        .table-col-add,
+        .table-row-add {
+            &::after {
+                content: "\ea69";
+                width: 22px;
+                height: 22px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: tabler-icons !important;
+                font-size: 18px;
+                line-height: 1;
+                color: rgb(var(--tblr-body-color-rgb), 0.4);
+            }
+
+            &.is-hovered::after {
+                color: var(--tblr-blue);
+            }
+        }
+
+        // 38px out so the 22px hit area clears the grip bar's hover zone.
+        .table-col-add::after {
+            inset-block-start: -38px;
+            inset-inline-start: calc(100% - 11px);
+        }
+
+        .table-col-add.first::after {
+            inset-inline-start: -11px;
+        }
+
+        // Row insertion: on the row's trailing boundary (top edge first).
+        .table-row-add::after {
+            inset-inline-start: -38px;
+            inset-block-start: calc(100% - 11px);
+        }
+
+        .table-row-add.first::after {
+            inset-block-start: -11px;
+        }
+
+        // Insertion guide; length from --kb-table-h/-w to avoid a stray scrollbar.
+        .table-col-add::before,
+        .table-row-add::before {
+            content: "";
+            position: absolute;
+            background: var(--tblr-blue);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .table-col-add.is-hovered::before,
+        .table-row-add.is-hovered::before {
+            opacity: 1;
+        }
+
+        // 3px to cover the collapsed table border so it doesn't peek past.
+        .table-col-add::before {
+            inset-block-start: 0;
+            inset-inline-start: 100%;
+            width: 3px;
+            height: var(--kb-table-h, 0);
+        }
+
+        .table-col-add.first::before {
+            inset-inline-start: -2px;
+        }
+
+        .table-row-add::before {
+            inset-block-start: 100%;
+            inset-inline-start: 0;
+            width: var(--kb-table-w, 0);
+            height: 3px;
+        }
+
+        .table-row-add.first::before {
+            inset-block-start: -2px;
+        }
+
+        // prosemirror-tables selection highlight; background-clip works around a Firefox border-paint bug.
+        .selectedCell {
+            background-color: rgb(var(--tblr-blue-rgb), 0.15);
+            background-clip: padding-box;
+        }
+
+        // prosemirror-tables: visible column resize handle on the cell's trailing edge
+        .column-resize-handle {
+            position: absolute;
+            inset-inline-end: -1px;
+            inset-block-start: 0;
+            inset-block-end: -1px;
+            width: 2px;
+            z-index: 20;
+            pointer-events: none;
+            background: var(--tblr-blue);
+        }
+
+        &.resize-cursor {
+            cursor: col-resize;
+        }
+
+        // Images
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--tblr-border-radius);
+
+            &.ProseMirror-selectednode {
+                outline: 2px solid var(--tblr-primary);
+            }
+        }
+
+        // Links
+        a {
+            color: var(--tblr-primary);
+            text-decoration: underline;
+
+            &:hover {
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+// Read-only after Save: drop the gutter/grips so the table matches the read view.
+.kb-editor-wrapper:not(.is-editing) .ProseMirror {
+    .tableWrapper {
+        padding: 0;
+    }
+
+    .table-grip-column,
+    .table-grip-row,
+    .table-grip,
+    .table-col-add,
+    .table-row-add {
+        display: none;
+    }
+}
+
+// Slash commands menu
+.slash-menu {
+    background: var(--tblr-bg-surface);
+    border: 1px solid var(--tblr-border-color);
+    border-radius: var(--tblr-border-radius);
+    box-shadow: var(--tblr-box-shadow);
+    padding: 0.5rem;
+    min-width: 200px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1050;
+
+    .slash-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        border: none;
+        background: none;
+        text-align: left;
+        cursor: pointer;
+        border-radius: var(--tblr-border-radius);
+        color: var(--tblr-body-color);
+        font-size: 0.875rem;
+
+        i {
+            font-size: 1rem;
+            opacity: 0.7;
+        }
+
+        &:hover,
+        &.is-selected {
+            background: var(--tblr-bg-surface-secondary);
+        }
+    }
+
+    .slash-menu-empty {
+        padding: 0.5rem 0.75rem;
+        color: var(--tblr-muted);
+        font-size: 0.875rem;
+    }
+}
+
+// Bubble menu (text selection toolbar)
+.bubble-menu {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+    background: var(--tblr-bg-surface);
+    border: 1px solid var(--tblr-border-color);
+    border-radius: var(--tblr-border-radius);
+    box-shadow: var(--tblr-box-shadow);
+    padding: 0.25rem;
+    z-index: 1060;
+
+    .bubble-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        padding: 0;
+        border: none;
+        background: none;
+        cursor: pointer;
+        border-radius: var(--tblr-border-radius-sm);
+        color: var(--tblr-body-color);
+
+        i {
+            font-size: 1rem;
+        }
+
+        &:hover {
+            background: var(--tblr-bg-surface-secondary);
+        }
+
+        &:disabled {
+            cursor: not-allowed;
+            opacity: 0.4;
+
+            &:hover {
+                background: none;
+            }
+        }
+
+        &.is-active {
+            background: var(--tblr-primary);
+            color: var(--tblr-primary-fg);
+        }
+    }
+
+    .bubble-menu-divider {
+        width: 1px;
+        height: 1.25rem;
+        background: var(--tblr-border-color);
+        margin: 0 0.25rem;
+    }
+}
+
+// Single labelled action, so it grows past the icon-only 2rem square.
+.kb-read-mode-comment-bubble .bubble-menu-btn {
+    width: auto;
+    gap: 0.375rem;
+    padding: 0 0.5rem;
+}
+
+// Grip-triggered table delete control
+.kb-table-menu {
+    .kb-table-delete {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        padding: 0;
+        border: none;
+        background: none;
+        cursor: pointer;
+        color: rgb(var(--tblr-body-color-rgb), 0.4);
+
+        &::before {
+            content: "\ea68";
+            font-family: tabler-icons !important;
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        &:hover {
+            color: var(--tblr-red);
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+}
+
+// KB link item modal form
+.kb-link-item-form {
+    .kb-link-item-dropdowns {
+        display: flex;
+        gap: 0.5rem;
+        align-items: start;
+
+        br {
+            display: none;
+        }
+
+        // Override inline style="width: 80%" set by PHP/select2
+        select,
+        .select2-container {
+            width: 100% !important;
+        }
+
+        > .select2-container,
+        > span[id^="show_items_id"] {
+            flex: 1;
+            min-width: 0;
+        }
+    }
+
+    // Mimic modal-footer: break out of modal-body padding
+    .kb-link-item-footer {
+        display: flex;
+        justify-content: flex-end;
+        margin: var(--tblr-modal-padding) calc(-1 * var(--tblr-modal-padding))
+            calc(-1 * var(--tblr-modal-padding));
+        padding: 0.75rem var(--tblr-modal-padding);
+        border-top: var(--tblr-border-width) solid var(--tblr-border-color);
+    }
+}
+
+// Drop Zone for document upload
+.kb-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    padding: 1.5rem;
+    border: 2px dashed var(--tblr-border-color);
+    border-radius: 0.5rem;
+    background-color: var(--tblr-bg-surface);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover,
+    &.dragging {
+        border-color: var(--tblr-primary);
+        background-color: rgb(var(--tblr-primary-rgb) / 5%);
+
+        .kb-dropzone-icon {
+            color: var(--tblr-primary);
+            transform: translateY(-4px);
+        }
+    }
+}
+
+.kb-dropzone-content {
+    text-align: center;
+}
+
+.kb-dropzone-icon {
+    font-size: 2.5rem;
+    color: var(--tblr-secondary);
+    margin-bottom: 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.kb-dropzone-title {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.kb-dropzone-hint {
+    font-size: 0.8125rem;
+    margin-bottom: 0;
+}
+
+// File Preview List
+.kb-file-preview {
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.kb-file-item {
+    background-color: var(--tblr-bg-surface);
+
+    &:hover {
+        background-color: var(--tblr-bg-surface-secondary);
+    }
+
+    .kb-file-remove {
+        opacity: 0.5;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    .min-width-0 {
+        min-width: 0;
+    }
+}
+
+// Upload progress bar
+.kb-upload-progress {
+    height: 4px;
+    background-color: var(--tblr-border-color);
+    border-radius: 2px;
+    overflow: hidden;
+
+    .kb-upload-progress-bar {
+        height: 100%;
+        background-color: var(--tblr-primary);
+        transition: width 0.3s ease;
+    }
+}
+
+// Shared shell for the editor dialogs (link, video, image)
+.editor-dialog-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgb(0 0 0 / 50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1060;
+}
+
+.editor-dialog {
+    background: var(--tblr-bg-surface);
+    border-radius: var(--tblr-border-radius-lg);
+    box-shadow: var(--tblr-box-shadow-lg);
+    width: 500px;
+    max-width: 90vw;
+}
+
+.editor-dialog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--tblr-border-color);
+    font-weight: 600;
+    font-size: 1rem;
+
+    .editor-dialog-close {
+        border: none;
+        background: none;
+        cursor: pointer;
+        padding: 0.25rem;
+        color: var(--tblr-secondary);
+        font-size: 1.1rem;
+
+        &:hover {
+            color: var(--tblr-body-color);
+        }
+    }
+}
+
+.editor-dialog-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.editor-dialog-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--tblr-secondary);
+    }
+}
+
+.image-size-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+
+    .editor-dialog-field {
+        flex: 1;
+    }
+
+    .image-size-lock {
+        border: 1px solid var(--tblr-border-color);
+        background: var(--tblr-bg-surface);
+        border-radius: var(--tblr-border-radius);
+        padding: 0.375rem 0.5rem;
+        cursor: pointer;
+        margin-bottom: 1px;
+        color: var(--tblr-secondary);
+
+        &.is-locked {
+            color: var(--tblr-primary);
+        }
+
+        &:hover {
+            background: var(--tblr-bg-surface-secondary);
+        }
+    }
+}
+
+.editor-dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--tblr-border-color);
+}
+
+// Video embed — responsive 16:9 wrapper around the provider iframe
+.video-embed-wrapper {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    max-width: 720px;
+    margin: 1rem auto;
+
+    > iframe,
+    > video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        border-radius: var(--tblr-border-radius);
+    }
+
+    > video {
+        // Letterbox the video inside the 16/9 frame instead of stretching it.
+        object-fit: contain;
+        background: #000;
+    }
+
+    &.ProseMirror-selectednode {
+        outline: 2px solid var(--tblr-primary);
+        outline-offset: 2px;
+        border-radius: var(--tblr-border-radius);
+    }
+}
+
+.video-embed-edit-placeholder {
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    max-width: 720px;
+    margin: 1rem auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--tblr-bg-surface-secondary);
+    border: 1px dashed var(--tblr-border-color);
+    border-radius: var(--tblr-border-radius);
+    color: var(--tblr-secondary);
+    cursor: grab;
+
+    &.ProseMirror-selectednode {
+        border-color: var(--tblr-primary);
+        outline: 2px solid var(--tblr-primary);
+        outline-offset: -2px;
+    }
+
+    .video-embed-placeholder-inner {
+        text-align: center;
+        pointer-events: none;
+    }
+
+    .video-embed-placeholder-icon {
+        font-size: 3rem;
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+
+    .video-embed-placeholder-label {
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+}
+
+.visibility-type-col .select2-selection {
+    // Merge borders with dropdown to its right
+    border-start-end-radius: 0 !important;
+    border-end-end-radius: 0 !important;
+}
+
+.visibility-item-col .select2-selection {
+    // Merge borders with dropdown to its left
+    border-start-start-radius: 0 !important;
+    border-end-start-radius: 0 !important;
+}
+
+// Keep in sync with aria-valuemin on the resize handle (aside.html.twig).
+$kb-aside-min-width: 300px;
+
+[data-main-page-aside="knowbaseitem"] {
+    // Resizable from the edge handle, up to half of the row; the article column takes the rest.
+    // max-width repeats the width so the collapse transition has a value to animate from.
+    --kb-aside-size: clamp(
+        #{$kb-aside-min-width},
+        var(--kb-aside-width, #{$kb-aside-min-width}),
+        50%
+    );
+
+    flex: 0 0 auto;
+    width: var(--kb-aside-size);
+    max-width: var(--kb-aside-size);
+    background-color: var(--tblr-bg-surface);
+
+    .node,
+    .article {
+        list-style: none;
+    }
+
+    // Article line: title link truncates, kebab menu sits at the end.
+    .article {
+        .article-line > a {
+            // Required so `text-truncate` shrinks below its content in the flex row.
+            min-width: 0;
+        }
+
+        // Kebab menu: revealed on hover/focus (or while its dropdown is open) to
+        // keep the tree uncluttered while staying keyboard reachable.
+        .dropdown {
+            opacity: 0;
+
+            [data-glpi-kb-dots] {
+                font-size: 1.25rem;
+                line-height: 1;
+            }
+        }
+
+        // Scoped to `.article-line` (the row itself, not `&` = `.article`):
+        // an article can now nest child articles inside its own `<li>`
+        // (recursive tree), and `.article-line` never contains that nested
+        // `<ul>`, so this cannot bleed hover/focus into a descendant row's
+        // kebab menu.
+        .article-line:hover .dropdown,
+        .article-line:focus-within .dropdown,
+        .dropdown:has([aria-expanded="true"]) {
+            opacity: 1;
+        }
+    }
+
+    // Collapsed category: hide children and rotate chevron
+    .node[data-glpi-kb-aside-category-collapsed] {
+        > ul {
+            display: none;
+        }
+
+        [data-glpi-kb-aside-category-toggle] .ti-chevron-down {
+            transform: rotate(-90deg);
+        }
+    }
+
+    // Current article: highlighted with primary color to identify it in the
+    // tree, in the favorites and in the search results (`> a`).
+    [data-glpi-kb-article-current] {
+        > .article-line > a,
+        > a {
+            color: color-mix(
+                in srgb,
+                transparent,
+                var(--tblr-link-hover-color) var(--tblr-link-opacity, 100%)
+            ) !important;
+        }
+    }
+
+    // Current article entry when it is not yet a favorite: hidden until the user favorites it.
+    [data-glpi-kb-favorite-current="pending"] {
+        display: none;
+    }
+
+    // Favorites section hidden when there are no favorites to display (set server-side or by JS).
+    [data-glpi-kb-aside-favorites][data-glpi-kb-aside-favorites-hidden] {
+        display: none;
+    }
+
+    // Header border hidden when the favorites section is empty (set server-side or by JS).
+    [data-glpi-kb-aside-header][data-glpi-kb-aside-header-no-border] {
+        border-bottom: 0;
+    }
+
+    // The tree and the favorites, kept in place while the search results stand
+    // in for them.
+    [data-glpi-kb-search-hidden] {
+        display: none;
+    }
+
+    // Header border, dropped for as long as the favorites are standing aside.
+    [data-glpi-kb-aside-header][data-glpi-kb-aside-header-search-no-border] {
+        border-bottom: 0;
+    }
+
+    // Clear button: interactive only when active (has text to clear).
+    [data-glpi-kb-aside-search-clear]:not([disabled]) {
+        pointer-events: auto;
+        cursor: pointer;
+    }
+
+    // "+" button to create an article in a category, revealed on row
+    // hover/focus. visibility:hidden (not opacity:0) keeps it out of the tab
+    // order and unclickable until shown.
+    [data-glpi-kb-aside-category-add] {
+        visibility: hidden;
+    }
+
+    [data-glpi-kb-aside-category-header]:hover
+        [data-glpi-kb-aside-category-add],
+    [data-glpi-kb-aside-category-header]:focus-within
+        [data-glpi-kb-aside-category-add] {
+        visibility: visible;
+    }
+
+    @media (hover: none) {
+        [data-glpi-kb-aside-category-add] {
+            visibility: visible;
+        }
+    }
+
+    // Favorites keep their natural height, but never at the expense of the
+    // list below them now that the aside is bounded.
+    [data-glpi-kb-aside-favorites] {
+        min-height: 0;
+        overflow-y: auto;
+    }
+
+    // The tree pane takes what the header leaves and scrolls as a whole, so the
+    // scrollbar sits on the card edge instead of inside whichever list is
+    // standing in it.
+    [data-glpi-kb-aside-tree] {
+        min-height: 0;
+        overflow-y: auto;
+    }
+
+    // KB aside tree hierarchy connector lines
+    .kb-tree {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        // Exclude the kebab menu's own <ul class="dropdown-menu"> so the tree
+        // connectors and list spacing never bleed into the actions dropdown.
+        ul:not(.dropdown-menu) {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+
+            > li {
+                position: relative;
+                padding-bottom: 0;
+                margin-bottom: 0;
+
+                // Contains the row's own bottom margin, which would otherwise collapse
+                // through the (possibly empty) child <ul> and land between the items,
+                // out of reach of the connector below. Skipped on search-hidden rows:
+                // this selector outranks their `display: none` and would unhide them.
+                &:not([data-glpi-kb-search-hidden]) {
+                    display: flow-root;
+                }
+            }
+
+            // The root article's children read as its siblings.
+            &:not([data-glpi-kb-root-children]) {
+                padding-inline-start: 1.5rem;
+
+                > li {
+                    // L-shaped connector: starts $gap below the top edge so the
+                    // vertical segment never "touches" the line above it.
+                    &::before {
+                        $gap: 0.25rem;
+
+                        content: "";
+                        position: absolute;
+                        inset-inline-start: -1rem;
+                        inset-block-start: 0;
+                        width: calc(
+                            1rem - #{$gap}
+                        ); // leave a small gap before the content
+
+                        height: 0.825rem; // half of the 20px illustration = 10px
+                        border-inline-start: 1px solid var(--tblr-border-color);
+                        border-block-end: 1px solid var(--tblr-border-color);
+                    }
+
+                    // Vertical run down to the next sibling.
+                    &:not(:last-child)::after {
+                        content: "";
+                        position: absolute;
+                        inset-inline-start: -1rem;
+                        inset-block-start: 0.825rem;
+                        inset-block-end: 0;
+                        width: 1px;
+                        background-color: var(--tblr-border-color);
+                    }
+                }
+            }
+        }
+    }
+
+    // Search results: a flat list of rows replacing the tree, each one showing
+    // the beginning of the article's content.
+    .kb-search-results {
+        list-style: none;
+        margin: 0;
+
+        > .article > .article-line > a {
+            display: block;
+            padding: 0.25rem 0.375rem;
+            border-radius: var(--tblr-border-radius);
+
+            &:hover,
+            &:focus-visible {
+                background-color: var(--tblr-bg-surface-secondary);
+            }
+        }
+
+        // Required so `text-truncate` shrinks the title below its content.
+        [data-glpi-kb-article-title] {
+            min-width: 0;
+        }
+
+        // Three lines of content, whatever the width of the aside.
+        [data-glpi-kb-search-result-excerpt] {
+            /* stylelint-disable-next-line value-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+            display: -webkit-box;
+            /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+            -webkit-line-clamp: 3;
+            /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            overflow-wrap: anywhere;
+        }
+    }
+
+    // The next page is loaded as this row comes into view.
+    [data-glpi-kb-aside-search-load-more] {
+        list-style: none;
+        padding: 0.5rem 0.375rem;
+    }
+}
+
+[data-main-page-aside="knowbaseitem"] {
+    // Animate max-width so open and close both glide; JS gate skips the on-load snap.
+    &.kb-aside-animated {
+        transition: max-width 0.35s ease-in-out;
+    }
+
+    // The width must follow the pointer, not glide behind it.
+    &[data-glpi-kb-aside-resizing] {
+        transition: none;
+    }
+
+    .kb-aside-resizer {
+        display: none;
+    }
+
+    // Layout in CSS, not `.d-flex`: its `!important` would beat the collapsed `display: none`.
+    [data-glpi-kb-aside-body] {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    // Rail launcher, shown only when collapsed.
+    .kb-aside-rail {
+        display: none;
+        flex-direction: column;
+    }
+
+    // Both toggle buttons: bare icons, no hover fill; keyboard focus keeps a ring.
+    [data-glpi-kb-aside-collapse],
+    [data-glpi-kb-aside-expand] {
+        width: 1.75rem;
+        height: 1.75rem;
+        min-width: 0;
+        min-height: 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+        color: var(--tblr-secondary);
+
+        &:hover,
+        &:focus,
+        &:active {
+            background: transparent;
+            box-shadow: none;
+            color: var(--tblr-body-color);
+        }
+
+        &:focus-visible {
+            box-shadow: 0 0 0 0.2rem rgb(var(--tblr-secondary-rgb), 0.35);
+        }
+    }
+
+    // Right-align the collapse icon with the search field's right border.
+    [data-glpi-kb-aside-collapse] {
+        justify-content: flex-end;
+    }
+
+    @media (min-width: 992px) {
+        // Taken out of the flow so it follows the main article height, itself
+        // floored at the viewport by Tabler's .page/.page-body flex chain.
+        [data-glpi-kb-aside-body] {
+            position: absolute;
+            inset: 0;
+        }
+
+        // Drag handle straddling the inline-end edge, hidden while collapsed.
+        &:not([data-glpi-kb-aside-collapsed]) .kb-aside-resizer {
+            display: block;
+            position: absolute;
+            inset-block: 0;
+            inset-inline-end: -3px;
+            width: 6px;
+            z-index: 1;
+            cursor: col-resize;
+            touch-action: none;
+            outline: none;
+        }
+
+        // A 2px line shows on hover, focus and drag.
+        .kb-aside-resizer:hover,
+        .kb-aside-resizer:focus-visible,
+        &[data-glpi-kb-aside-resizing] .kb-aside-resizer {
+            background: linear-gradient(
+                    var(--tblr-primary),
+                    var(--tblr-primary)
+                )
+                center / 2px 100% no-repeat;
+        }
+
+        // Collapse via max-width + overflow:hidden (zeroes the flex min so the column shrinks to the rail).
+        &[data-glpi-kb-aside-collapsed] {
+            max-width: 2.75rem;
+            overflow: hidden;
+
+            [data-glpi-kb-aside-body] {
+                display: none;
+            }
+
+            .kb-aside-rail {
+                display: flex;
+            }
+        }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    [data-main-page-aside="knowbaseitem"].kb-aside-animated {
+        transition: none;
+    }
+}
+
+@media (max-width: 991.98px) {
+    [data-main-page-aside="knowbaseitem"] {
+        // Shrink to the rail; the body floats over content as an overlay.
+        width: 2.75rem;
+        overflow: visible;
+
+        .kb-aside-rail {
+            display: flex;
+        }
+
+        [data-glpi-kb-aside-body] {
+            position: fixed;
+            inset-block: 0;
+            inset-inline-start: 0;
+            width: min(320px, 85vw);
+            background-color: var(--tblr-card-cap-bg);
+            border-inline-end: 1px solid var(--tblr-border-color);
+            transform: translateX(-100%);
+
+            // visibility (not opacity) keeps the closed overlay out of the tab order.
+            visibility: hidden;
+            transition:
+                transform 0.3s ease,
+                visibility 0.3s ease;
+            overflow-y: auto;
+            z-index: 1045;
+        }
+
+        &[data-glpi-kb-aside-open] [data-glpi-kb-aside-body] {
+            transform: translateX(0);
+            visibility: visible;
+        }
+    }
+
+    .kb-aside-backdrop {
+        position: fixed;
+        inset: 0;
+        background-color: rgb(0 0 0 / 40%);
+        z-index: 1044;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    [data-main-page-aside="knowbaseitem"] [data-glpi-kb-aside-body] {
+        transition: none;
+    }
+}
+
+// KB aside: drag and drop reparenting.
+.kb-drag-ghost {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1080;
+    max-width: 240px;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--tblr-border-radius);
+    background: var(--tblr-bg-surface);
+    border: 1px solid var(--tblr-border-color);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+    font-size: 0.875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+}
+
+body.kb-drag-active {
+    cursor: grabbing;
+    user-select: none;
+}
+
+body.kb-drag-refused {
+    cursor: no-drop;
+
+    .kb-drag-ghost {
+        opacity: 0.5;
+    }
+}
+
+[data-glpi-kb-aside-tree] {
+    // Containing block for the insertion line.
+    position: relative;
+
+    [data-glpi-kb-drag-source] > .article-line {
+        opacity: 0.4;
+    }
+
+    // `outline-offset` gives the ring its breathing room without taking layout
+    // space, so the tree never shifts as the target changes.
+    [data-glpi-kb-drop-target] > .article-line {
+        outline: 2px solid var(--tblr-blue);
+        outline-offset: 4px;
+        border-radius: var(--tblr-border-radius);
+    }
+}
+
+.kb-drag-insert {
+    position: absolute;
+    height: 2px;
+    background: var(--tblr-blue);
+    border-radius: 1px;
+    pointer-events: none;
+
+    // Head dot: keeps a 2px rule legible.
+    &::before {
+        content: "";
+        position: absolute;
+        inset-block-start: -2px;
+        inset-inline-start: -3px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: inherit;
+    }
+}

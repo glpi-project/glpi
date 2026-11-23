@@ -35,11 +35,12 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 /// Class DeviceProcessor
 class DeviceProcessor extends CommonDevice
 {
-    protected static $forward_entity_to = ['Item_DeviceProcessor', 'Infocom'];
+    protected static array $forward_entity_to = ['Item_DeviceProcessor', 'Infocom'];
 
     public static function getTypeName($nb = 0)
     {
@@ -249,8 +250,8 @@ class DeviceProcessor extends CommonDevice
             'datatype'           => 'number',
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
-            'computation'        => QueryFunction::sum('TABLE.nbcores') . ' * ' . QueryFunction::count(
-                expression: 'TABLE.id',
+            'computation'        => QueryFunction::sum(new QueryIdentifier('TABLE.nbcores')) . ' * ' . QueryFunction::count(
+                expression: new QueryIdentifier('TABLE.id'),
                 distinct: true
             ) . ' / ' . QueryFunction::count(new QueryExpression('*')),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
@@ -266,8 +267,8 @@ class DeviceProcessor extends CommonDevice
             'datatype'           => 'number',
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
-            'computation'        => QueryFunction::sum('TABLE.nbthreads') . ' * ' . QueryFunction::count(
-                expression: 'TABLE.id',
+            'computation'        => QueryFunction::sum(new QueryIdentifier('TABLE.nbthreads')) . ' * ' . QueryFunction::count(
+                expression: new QueryIdentifier('TABLE.id'),
                 distinct: true
             ) . ' / ' . QueryFunction::count(new QueryExpression('*')),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
@@ -284,7 +285,7 @@ class DeviceProcessor extends CommonDevice
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
             'computation'        => QueryFunction::count(
-                expression: 'TABLE.id',
+                expression: new QueryIdentifier('TABLE.id'),
                 distinct: true
             ),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
@@ -302,8 +303,8 @@ class DeviceProcessor extends CommonDevice
             'width'              => 100,
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
-            'computation'        => QueryFunction::sum('TABLE.frequency') . ' / ' . QueryFunction::count(
-                expression: 'TABLE.id',
+            'computation'        => QueryFunction::sum(new QueryIdentifier('TABLE.frequency')) . ' / ' . QueryFunction::count(
+                expression: new QueryIdentifier('TABLE.id'),
             ),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];

@@ -65,6 +65,8 @@ test('Can delete a note', async ({ page, profile, api }) => {
         'name': `Entity ${crypto.randomUUID()}`,
         'entities_id': getWorkerEntityId(),
     });
+    api.refreshSession(); // API session must be refreshed to get access to the entity
+
     await api.createItem('Notepad', {
         'itemtype': 'Entity',
         'items_id': id,
@@ -89,6 +91,8 @@ test('Can edit a note', async ({ page, profile, api }) => {
         'name': `Entity ${crypto.randomUUID()}`,
         'entities_id': getWorkerEntityId(),
     });
+    api.refreshSession(); // API session must be refreshed to get access to the entity
+
     await api.createItem('Notepad', {
         'itemtype': 'Entity',
         'items_id': id,
@@ -113,6 +117,8 @@ test('Can add a file to a note', async ({ page, profile, api }) => {
         'name': `Entity ${crypto.randomUUID()}`,
         'entities_id': getWorkerEntityId(),
     });
+    api.refreshSession(); // API session must be refreshed to get access to the entity
+
     await api.createItem('Notepad', {
         'itemtype': 'Entity',
         'items_id': id,
@@ -141,12 +147,15 @@ test('Can view note on ticket', async ({ page, profile, api }) => {
         'name': entity_name,
         'entities_id': getWorkerEntityId(),
     });
+    api.refreshSession(); // API session must be refreshed to get access to the entity
+
     await api.createItem('Notepad', {
         'itemtype': 'Entity',
         'items_id': entities_id,
         'content': 'My note',
         'visible_from_ticket': true,
     });
+
     await entity_page.goto(entities_id, EntityPageTabs.Notes);
     await expect(entity_page.notes).toHaveCount(1);
     await entity_page.doAddFileToNote(0, "uploads/bar.txt");

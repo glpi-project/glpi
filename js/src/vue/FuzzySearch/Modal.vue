@@ -1,5 +1,5 @@
 <script setup>
-    /* global hotkeys, fuzzy */
+    /* global fuzzy */
     import {computed, ref, watch} from "vue";
 
     let shortcut = `<kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>G</kbd>`;
@@ -13,13 +13,22 @@
     const input_text = ref(null);
     const all_menus = ref([]);
 
+    // Highlight markers are inserted in the raw title and replaced by HTML tags after escaping,
+    // to prevent them from being inserted inside an HTML entity (e.g. `&<b>g</b>t;`)
+    const highlight_pre = '\u0002';
+    const highlight_post = '\u0003';
     const results = computed(() => {
         return fuzzy.filter(input_text.value, all_menus.value, {
-            pre: '<b>',
-            post: '</b>',
+            pre: highlight_pre,
+            post: highlight_post,
             extract: (el) => {
                 return el.title;
             }
+        }).map((result) => {
+            result.string = _.escape(result.string)
+                .replaceAll(highlight_pre, '<b>')
+                .replaceAll(highlight_post, '</b>');
+            return result;
         });
     });
     // Allow using arrow keys to navigate results and make the li active
@@ -100,14 +109,14 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
-                        <i class="ti ti-arrow-big-right me-2"></i>
+                        <i class="ti ti-arrow-big-right me-2" aria-hidden="true"></i>
                         {{ header_message }}
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-info d-flex" role="alert">
-                        <i class="ti ti-alert-circle-filled fa-2x me-2"></i>
+                        <i class="ti ti-alert-circle-filled fa-2x me-2" aria-hidden="true"></i>
                         <p v-html="shortcut_message"></p>
                     </div>
                     <div role="search">

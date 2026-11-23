@@ -37,7 +37,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 
-Session::checkRight("datacenter", READ);
+Session::checkRight(Rack::$rightname, READ);
 
 if (empty($_GET["id"])) {
     $_GET["id"] = "";

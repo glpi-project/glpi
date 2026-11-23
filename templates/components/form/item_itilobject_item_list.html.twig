@@ -54,7 +54,7 @@
     {% set values = [] %}
 
     {% for data in iterator %}
-        {% set values = values|merge({(values|length) : {'id' : item.getID(), 'item_id' : data["id"], 'itemtype' : itemtype_1, 'associated_elements' : ''}}) %}
+        {% set values = values|merge({(values|length) : {'id' : data["id"], 'item_id' : data["id"], 'itemtype' : itemtype_1, 'associated_elements' : ''}}) %}
     {% endfor %}
 
     {% set common_columns = call(itemtype_1 ~ '::getCommonDatatableColumns', []) %}
@@ -81,7 +81,7 @@
         {% set values = [] %}
 
         {% for data in iterator2 %}
-            {% set values = values|merge({(values|length) : {'id' : item.getID(), 'item_id' : data["id"], 'itemtype' : itemtype_1, 'associated_elements' : ''}}) %}
+            {% set values = values|merge({(values|length) : {'id' : data["id"], 'item_id' : data["id"], 'itemtype' : itemtype_1, 'associated_elements' : ''}}) %}
         {% endfor %}
 
         {% set common_columns = call(itemtype_1 ~ '::getCommonDatatableColumns', []) %}
@@ -93,7 +93,7 @@
             'nosort': true,
             'entries': entries2,
             'total_number': entries2|length,
-            'showmassiveactions': canedit,
+            'showmassiveactions': canedit|default(false),
         } %}
         {% set merged_params = datatable_params|merge(common_columns) %}
 

@@ -38,10 +38,10 @@
  **/
 class Item_DeviceHardDrive extends Item_Devices
 {
-    public static $itemtype_2 = DeviceHardDrive::class;
-    public static $items_id_2 = 'deviceharddrives_id';
+    public static ?string $itemtype_2 = DeviceHardDrive::class;
+    public static ?string $items_id_2 = 'deviceharddrives_id';
 
-    protected static $notable = false;
+    protected static bool $notable = false;
 
     public static function getSpecificities($specif = '')
     {

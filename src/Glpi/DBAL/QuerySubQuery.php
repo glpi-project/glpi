@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -81,6 +80,14 @@ class QuerySubQuery extends AbstractQuery
             $sql .= ' AS ' . $DB->quoteName($this->alias);
         }
         return $sql;
+    }
+
+    /**
+     * @return array<int, mixed>
+     */
+    public function getParams(): array
+    {
+        return $this->dbiterator->getValues();
     }
 
     public function __toString()

@@ -36,6 +36,7 @@ namespace tests\units\Glpi\System\Requirement;
 
 use Glpi\System\Requirement\PhpSupportedVersion;
 use Glpi\Tests\GLPITestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class PhpSupportedVersionTest extends GLPITestCase
@@ -161,6 +162,7 @@ class PhpSupportedVersionTest extends GLPITestCase
         ];
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('versionProvider')]
     public function testCheck(string $phpversion, bool $validated, array $messages): void
     {

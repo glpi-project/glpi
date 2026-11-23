@@ -38,7 +38,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 use Glpi\Event;
 
 Session::checkCentralAccess();
-Session::checkRightsOr('reservation', [CREATE, UPDATE, DELETE, PURGE]);
+Session::checkRightsOr(Reservation::$rightname, [CREATE, UPDATE, DELETE, PURGE]);
 
 if (!isset($_GET["id"])) {
     $_GET["id"] = '';

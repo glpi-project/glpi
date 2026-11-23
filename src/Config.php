@@ -37,12 +37,13 @@ use Glpi\Api\HL\Router;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
+use Glpi\Config\ConfigContainer;
 use Glpi\Config\ProxyExclusion;
 use Glpi\Config\ProxyExclusions;
 use Glpi\Dashboard\Grid;
-use Glpi\Event;
 use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\Kernel\Kernel;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Mail\SMTP\OauthConfig;
 use Glpi\Plugin\Hooks;
 use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
@@ -81,15 +82,15 @@ class Config extends CommonDBTM
     public const TIMELINE_ABSOLUTE_DATE = 1;
 
     // From CommonGLPI
-    protected $displaylist         = false;
+    protected bool $displaylist         = false;
 
     // From CommonDBTM
-    public $auto_message_on_action = false;
-    public $showdebug              = true;
+    public bool $auto_message_on_action = false;
+    public bool $showdebug              = true;
 
-    public static $rightname              = 'config';
+    public static string $rightname              = 'config';
 
-    public static $undisclosedFields      = [
+    public static array $undisclosedFields      = [
         'proxy_passwd',
         'smtp_passwd',
         'smtp_oauth_client_id',
@@ -100,14 +101,10 @@ class Config extends CommonDBTM
         'ldap_pass', // this one should not exist anymore, but may be present when admin restored config dump after migration
     ];
 
-    /** @var string[] */
-    public static $saferUndisclosedFields = ['admin_email', 'replyto_email'];
-
     /**
      * Indicates whether the GLPI configuration has been loaded.
-     * @var bool
      */
-    private static $loaded = false;
+    private static bool $loaded = false;
 
     public static function getTypeName($nb = 0)
     {
@@ -186,7 +183,6 @@ class Config extends CommonDBTM
         if (!empty($input['config_context'])) {
             $config_context = $input['config_context'];
             unset($input['id']);
-            unset($input['_glpi_csrf_token']);
             unset($input['_update']);
             unset($input['config_context']);
             if (
@@ -229,19 +225,19 @@ class Config extends CommonDBTM
             $input['proxy_passwd'] = '';
         }
 
-        // Manage DB Slave process
-        if (isset($input['_dbslave_status'])) {
-            $already_active = DBConnection::isDBSlaveActive();
+        // Manage DB replica process
+        if (isset($input['_dbreplica_status'])) {
+            $already_active = DBConnection::isDBReplicaActive();
 
-            if ($input['_dbslave_status']) {
+            if ($input['_dbreplica_status']) {
                 DBConnection::changeCronTaskStatus(true);
 
                 if (!$already_active) {
-                    // Activate Slave from the "system" tab
-                    DBConnection::createDBSlaveConfig();
+                    // Activate replica from the "system" tab
+                    DBConnection::createDBReplicaConfig();
                 } elseif (isset($input["_dbreplicate_dbhost"])) {
                     // Change parameter from the "replicate" tab
-                    DBConnection::saveDBSlaveConf(
+                    DBConnection::saveDBReplicaConf(
                         $input["_dbreplicate_dbhost"],
                         $input["_dbreplicate_dbuser"],
                         $input["_dbreplicate_dbpassword"],
@@ -250,8 +246,8 @@ class Config extends CommonDBTM
                 }
             }
 
-            if (!$input['_dbslave_status'] && $already_active) {
-                DBConnection::deleteDBSlaveConfig();
+            if (!$input['_dbreplica_status'] && $already_active) {
+                DBConnection::deleteDBReplicaConfig();
                 DBConnection::changeCronTaskStatus(false);
             }
         }
@@ -315,7 +311,6 @@ class Config extends CommonDBTM
 
         // Beware : with new management system, we must update each value
         unset($input['id']);
-        unset($input['_glpi_csrf_token']);
         unset($input['_update']);
 
         // Add skipMaintenance if maintenance mode update
@@ -380,7 +375,7 @@ class Config extends CommonDBTM
 
         // Prevent some input values to be saved in DB
         $values_to_filter = [
-            '_dbslave_status',
+            '_dbreplica_status',
             '_dbreplicate_dbhost',
             '_dbreplicate_dbuser',
             '_dbreplicate_dbpassword',
@@ -539,7 +534,6 @@ class Config extends CommonDBTM
 
         $twig = TemplateRenderer::getInstance();
         $twig->display('pages/setup/authentication/setup.html.twig', [
-            'token'                                    => Session::getNewCSRFToken(),
             'user_restored_ldap_choices'               => AuthLDAP::getLdapRestoredUserActionOptions(),
             'gmt_values'                               => Dropdown::getGMTValues(),
             'user_deleted_ldap_user_choices'           => AuthLDAP::getLdapDeletedUserActionOptions_User(),
@@ -550,11 +544,11 @@ class Config extends CommonDBTM
 
 
     /**
-     * Print the config form for slave DB
+     * Print the config form for replica DB
      *
      * @return void
-     **/
-    public function showFormDBSlave()
+     */
+    private function showFormDBReplica(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -562,15 +556,15 @@ class Config extends CommonDBTM
             return;
         }
 
-        $DBslave = DBConnection::getDBSlaveConf();
+        $DBReplica = DBConnection::getDBReplicaConf();
         $replica_config = [
-            'host' => is_array($DBslave->dbhost) ? implode(' ', $DBslave->dbhost) : $DBslave->dbhost,
-            'default' => $DBslave->dbdefault,
-            'user' => $DBslave->dbuser,
-            'password' => rawurldecode($DBslave->dbpassword),
+            'host' => is_array($DBReplica->dbhost) ? implode(' ', $DBReplica->dbhost) : $DBReplica->dbhost,
+            'default' => $DBReplica->dbdefault,
+            'user' => $DBReplica->dbuser,
+            'password' => rawurldecode($DBReplica->dbpassword),
         ];
 
-        $hosts = is_array($DBslave->dbhost) ? $DBslave->dbhost : [$DBslave->dbhost];
+        $hosts = is_array($DBReplica->dbhost) ? $DBReplica->dbhost : [$DBReplica->dbhost];
         $replication_delay = [];
         foreach (array_keys($hosts) as $host_num) {
             $replication_delay[$host_num] = DBConnection::getReplicateDelay($host_num);
@@ -604,10 +598,8 @@ class Config extends CommonDBTM
 
         // Options just for new API
         $api_versions = Router::getAPIVersions();
-        $legacy_version = array_filter($api_versions, static fn($version) => $version['api_version'] === '1');
-        $legacy_version = reset($legacy_version);
-        $current_version = array_filter($api_versions, static fn($version) => $version['version'] === Router::API_VERSION);
-        $current_version = reset($current_version);
+        $legacy_version = array_values(array_filter($api_versions, static fn($version) => $version['api_version'] === '1'))[0];
+        $current_version = array_values(array_filter($api_versions, static fn($version) => $version['version'] === Router::API_VERSION))[0];
         $getting_started_doc = $current_version['endpoint'] . '/getting-started';
         $endpoint_doc = $current_version['endpoint'] . '/doc';
 
@@ -681,7 +673,7 @@ class Config extends CommonDBTM
         $url       = Toolbox::getItemTypeFormURL(self::class);
 
         $canedit = static::canUpdate();
-        $canedituser = Session::haveRight('personalization', UPDATE);
+        $canedituser = Session::haveRight(Profile::HELPDESK_RIGHT_PERSONALIZATION, UPDATE);
         if (array_key_exists('last_login', $data)) {
             $userpref = true;
             if ($data["id"] === Session::getLoginUserID()) {
@@ -959,35 +951,32 @@ class Config extends CommonDBTM
      **/
     public static function getLanguage($lang)
     {
-        global $CFG_GLPI;
-
         // Alternative language code: en-EN --> en_EN
         $altLang = str_replace("-", "_", $lang);
 
-        // Search in order : ID or extjs dico or tinymce dico / native lang / english name
-        //                   / extjs dico / tinymce dico
-        // ID  or extjs dico or tinymce dico
-        foreach ($CFG_GLPI["languages"] as $ID => $language) {
+        // Search in order : ID or jquery dico or js dico / native lang / english name
+        // ID or jquery dico or js dico
+        foreach (LanguageRegistry::all() as $ID => $language) {
             if (
                 (strcasecmp($lang, $ID) == 0)
                 || (strcasecmp($altLang, $ID) == 0)
-                || (strcasecmp($lang, $language[2]) == 0)
-                || (strcasecmp($lang, $language[3]) == 0)
+                || (strcasecmp($lang, $language->jquery_code) == 0)
+                || (strcasecmp($lang, $language->js_code) == 0)
             ) {
                 return $ID;
             }
         }
 
         // native lang
-        foreach ($CFG_GLPI["languages"] as $ID => $language) {
-            if (strcasecmp($lang, $language[0]) == 0) {
+        foreach (LanguageRegistry::all() as $ID => $language) {
+            if (strcasecmp($lang, $language->native_name) == 0) {
                 return $ID;
             }
         }
 
         // english lang name
-        foreach ($CFG_GLPI["languages"] as $ID => $language) {
-            if (strcasecmp($lang, $language[4]) == 0) {
+        foreach (LanguageRegistry::all() as $ID => $language) {
+            if (strcasecmp($lang, $language->english_name) == 0) {
                 return $ID;
             }
         }
@@ -1004,7 +993,7 @@ class Config extends CommonDBTM
     {
         Toolbox::deprecated(
             message: "This method will be removed in the next version",
-            version: "11.1.0"
+            version: "12.0.0"
         );
         $unicity = new FieldUnicity();
         $unicity->showForm(1);
@@ -1031,31 +1020,29 @@ class Config extends CommonDBTM
                 $tabs = [
                     1 => self::createTabEntry(__('General setup')),  // Display
                     2 => self::createTabEntry(__('Default values')), // Prefs
-                    3 => self::createTabEntry(_n('Asset', 'Assets', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-package'),
-                    4 => self::createTabEntry(__('Assistance'), 0, $item::getType(), 'ti ti-headset'),
-                    12 => self::createTabEntry(__('Management'), 0, $item::getType(), 'ti ti-wallet'),
+                    3 => self::createTabEntry(_n('Asset', 'Assets', Session::getPluralNumber()), 0, $item::class, 'ti ti-package'),
+                    4 => self::createTabEntry(__('Assistance'), 0, $item::class, 'ti ti-headset'),
+                    12 => self::createTabEntry(__('Management'), 0, $item::class, 'ti ti-wallet'),
                 ];
                 if (Config::canUpdate()) {
-                    $tabs[9]  = self::createTabEntry(__('Logs purge'), 0, $item::getType(), Event::getIcon());
                     $tabs[5]  = self::createTabEntry(__('System'));
-                    $tabs[10] = self::createTabEntry(__('Security'), 0, $item::getType(), 'ti ti-shield-lock');
-                    $tabs[7]  = self::createTabEntry(__('Performance'), 0, $item::getType(), 'ti ti-dashboard');
-                    $tabs[8]  = self::createTabEntry(__('API'), 0, $item::getType(), 'ti ti-api-app');
-                    $tabs[11] = self::createTabEntry(Impact::getTypeName(), 0, $item::getType(), Impact::getIcon());
+                    $tabs[7]  = self::createTabEntry(__('Performance'), 0, $item::class, 'ti ti-dashboard');
+                    $tabs[8]  = self::createTabEntry(__('API'), 0, $item::class, 'ti ti-api-app');
+                    $tabs[11] = self::createTabEntry(Impact::getTypeName(), 0, $item::class, Impact::getIcon());
                 }
 
                 if (
-                    DBConnection::isDBSlaveActive()
+                    DBConnection::isDBReplicaActive()
                     && Config::canUpdate()
                 ) {
-                    $tabs[6]  = self::createTabEntry(_n('SQL replica', 'SQL replicas', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-database');  // Slave
+                    $tabs[6]  = self::createTabEntry(_n('SQL replica', 'SQL replicas', Session::getPluralNumber()), 0, $item::class, 'ti ti-database');  // replica
                 }
                 return $tabs;
 
             case 'GLPINetwork':
-                return self::createTabEntry(GLPINetwork::getTypeName(), 0, $item::getType(), GLPINetwork::getIcon());
+                return self::createTabEntry(GLPINetwork::getTypeName(), 0, $item::class, GLPINetwork::getIcon());
 
-            case Impact::getType():
+            case Impact::class:
                 return self::createTabEntry(Impact::getTypeName());
         }
         return '';
@@ -1064,6 +1051,7 @@ class Config extends CommonDBTM
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        /** @var ConfigContainer $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($item instanceof Preference) {
@@ -1084,7 +1072,9 @@ class Config extends CommonDBTM
                     break;
 
                 case 2:
-                    $item->showFormUserPrefs($CFG_GLPI);
+                    // Pass a plain-array copy: showFormUserPrefs() runs native
+                    // array functions on its argument (e.g. array_key_exists()).
+                    $item->showFormUserPrefs($CFG_GLPI->getArrayCopy());
                     break;
 
                 case 3:
@@ -1100,7 +1090,7 @@ class Config extends CommonDBTM
                     break;
 
                 case 6:
-                    $item->showFormDBSlave();
+                    $item->showFormDBReplica();
                     break;
 
                 case 7:
@@ -1109,14 +1099,6 @@ class Config extends CommonDBTM
 
                 case 8:
                     $item->showFormAPI();
-                    break;
-
-                case 9:
-                    $item->showFormLogs();
-                    break;
-
-                case 10:
-                    $item->showFormSecurity();
                     break;
 
                 case 11:
@@ -1200,9 +1182,9 @@ class Config extends CommonDBTM
         $server  = preg_match('/-MariaDB/', $raw) ? 'MariaDB' : 'MySQL';
         $version = preg_replace('/^((\d+\.?)+).*$/', '$1', $raw);
 
-        // MySQL >= 8.0 || MariaDB >= 10.6
+        // MySQL >= 8.0 || MariaDB >= 10.11
         $is_supported = $server === 'MariaDB'
-            ? version_compare($version, '10.6', '>=')
+            ? version_compare($version, '10.11', '>=')
             : version_compare($version, '8.0', '>=');
 
         return [$version => $is_supported];
@@ -1423,7 +1405,10 @@ class Config extends CommonDBTM
             $values[$row['name']] = $row['value'];
         }
 
-        $CFG_GLPI = array_merge($CFG_GLPI, $values);
+        // Merge per key to preserve the ConfigContainer object backing $CFG_GLPI.
+        foreach ($values as $name => $value) {
+            $CFG_GLPI[$name] = $value;
+        }
 
         if (isset($CFG_GLPI['priority_matrix'])) {
             $CFG_GLPI['priority_matrix'] = importArrayFromDB($CFG_GLPI['priority_matrix']);
@@ -1507,7 +1492,7 @@ class Config extends CommonDBTM
 
         $glpikey = new GLPIKey();
 
-        $config = new self();
+        $config = new static();
         foreach ($values as $name => $value) {
             // Encrypt config values according to list declared to GLPIKey service
             if (!empty($value) && $glpikey->isConfigSecured($context, $name)) {
@@ -1627,26 +1612,6 @@ class Config extends CommonDBTM
     }
 
     /**
-     * Logs purge form
-     *
-     * @since 9.3
-     *
-     * @return void|bool (display) Returns false if there is a rights error.
-     */
-    public function showFormLogs()
-    {
-        global $CFG_GLPI;
-
-        if (!static::canUpdate()) {
-            return false;
-        }
-        TemplateRenderer::getInstance()->display('pages/setup/general/logs_setup.html.twig', [
-            'config' => $CFG_GLPI,
-            'canedit' => static::canUpdate(),
-        ]);
-    }
-
-    /**
      * Show intervals for logs purge
      *
      * @since 9.3
@@ -1685,27 +1650,6 @@ class Config extends CommonDBTM
         $out .= "</div>";
 
         echo $out;
-    }
-
-    /**
-     * Security policy form
-     *
-     * @since 9.5.0
-     *
-     * @return void|bool (display) Returns false if there is a rights error.
-     */
-    public function showFormSecurity()
-    {
-        global $CFG_GLPI;
-
-        if (!Config::canUpdate()) {
-            return false;
-        }
-
-        TemplateRenderer::getInstance()->display('pages/setup/general/security_setup.html.twig', [
-            'canedit' => Session::haveRight(self::$rightname, UPDATE),
-            'config'  => $CFG_GLPI,
-        ]);
     }
 
     /**
@@ -1750,7 +1694,7 @@ class Config extends CommonDBTM
 
     public function getLogTypeID()
     {
-        return [$this->getType(), 1];
+        return [static::class, 1];
     }
 
     public function post_addItem()
@@ -1873,22 +1817,12 @@ class Config extends CommonDBTM
      */
     public static function getSafeConfig($safer = false)
     {
+        Toolbox::deprecated('Use $CFG_GLPI->getSafeConfig() instead.', true, '11.0');
+
+        /** @var ConfigContainer $CFG_GLPI */
         global $CFG_GLPI;
 
-        $excludedKeys = array_flip(self::$undisclosedFields);
-        $safe_config  = array_diff_key($CFG_GLPI, $excludedKeys);
-
-        if ($safer) {
-            $excludedKeys = array_flip(self::$saferUndisclosedFields);
-            $safe_config = array_diff_key($safe_config, $excludedKeys);
-        }
-
-        // override with session values
-        foreach ($safe_config as $key => &$value) {
-            $value = $_SESSION['glpi' . $key] ?? $value;
-        }
-
-        return $safe_config;
+        return $CFG_GLPI->getSafeConfig((bool) $safer);
     }
 
 
@@ -2142,5 +2076,11 @@ class Config extends CommonDBTM
     {
         global $CFG_GLPI;
         return (bool) ($CFG_GLPI['enable_hlapi'] ?? 0);
+    }
+
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
     }
 }

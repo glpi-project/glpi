@@ -119,4 +119,119 @@ class GroupFilterTest extends DbTestCase
             )
         );
     }
+
+    public function testITILGroupFiltersWithMultipleGroups()
+    {
+        /** @var \DBmysql */
+        global $DB;
+
+        $groups_id_1 = getItemByTypeName(Group::class, '_test_group_1', true);
+        $groups_id_2 = getItemByTypeName(Group::class, '_test_group_2', true);
+
+        $ticket_1 = $this->createItem(Ticket::class, [
+            'name' => __FUNCTION__ . '_1',
+            'content' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            '_groups_id_requester' => $groups_id_1,
+        ]);
+        $ticket_2 = $this->createItem(Ticket::class, [
+            'name' => __FUNCTION__ . '_2',
+            'content' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            '_groups_id_requester' => $groups_id_2,
+        ]);
+
+        $common_criteria = [
+            'SELECT' => ['glpi_tickets.id AS tickets_id'],
+            'FROM' => Ticket::getTable(),
+        ];
+        $found = array_column(
+            iterator_to_array(
+                $DB->request(
+                    $common_criteria
+                    + GroupRequesterFilter::getCriteria('glpi_tickets', [$groups_id_1, $groups_id_2])
+                )
+            ),
+            'tickets_id'
+        );
+        $this->assertContains($ticket_1->getID(), $found);
+        $this->assertContains($ticket_2->getID(), $found);
+    }
+
+    public function testAssetGroupFiltersWithMultipleGroups()
+    {
+        /** @var \DBmysql */
+        global $DB;
+
+        $groups_id_1 = getItemByTypeName(Group::class, '_test_group_1', true);
+        $groups_id_2 = getItemByTypeName(Group::class, '_test_group_2', true);
+
+        $computer_1 = $this->createItem(Computer::class, [
+            'name' => __FUNCTION__ . '_1',
+            'entities_id' => $this->getTestRootEntity(true),
+            'groups_id' => $groups_id_1,
+        ], ['groups_id']);
+        $computer_2 = $this->createItem(Computer::class, [
+            'name' => __FUNCTION__ . '_2',
+            'entities_id' => $this->getTestRootEntity(true),
+            'groups_id' => $groups_id_2,
+        ], ['groups_id']);
+
+        $common_criteria = [
+            'SELECT' => ['glpi_computers.id AS computers_id'],
+            'FROM' => Computer::getTable(),
+        ];
+        $found = array_column(
+            iterator_to_array(
+                $DB->request(
+                    $common_criteria
+                    + GroupRequesterFilter::getCriteria('glpi_computers', [$groups_id_1, $groups_id_2])
+                )
+            ),
+            'computers_id'
+        );
+        $this->assertContains($computer_1->getID(), $found);
+        $this->assertContains($computer_2->getID(), $found);
+    }
+
+    public function testGetCriteriaEmptyValues()
+    {
+        $this->assertSame([], GroupRequesterFilter::getCriteria('glpi_tickets', []));
+        $this->assertSame([], GroupRequesterFilter::getCriteria('glpi_tickets', 0));
+        $this->assertSame([], GroupRequesterFilter::getCriteria('glpi_tickets', ''));
+        $this->assertSame([], GroupRequesterFilter::getCriteria('glpi_computers', [0, '']));
+    }
+
+    public function testGetSearchCriteriaSingleAndMultiple()
+    {
+        $groups_id_1 = getItemByTypeName(Group::class, '_test_group_1', true);
+        $groups_id_2 = getItemByTypeName(Group::class, '_test_group_2', true);
+
+        $single = GroupRequesterFilter::getSearchCriteria('glpi_tickets', $groups_id_1);
+        $this->assertCount(1, $single);
+        $this->assertSame($groups_id_1, $single[0]['value']);
+        $this->assertSame('equals', $single[0]['searchtype']);
+        $this->assertArrayNotHasKey('criteria', $single[0]);
+
+        $single_from_array = GroupRequesterFilter::getSearchCriteria('glpi_tickets', [$groups_id_1]);
+        $this->assertCount(1, $single_from_array);
+        $this->assertSame($groups_id_1, $single_from_array[0]['value']);
+        $this->assertArrayNotHasKey('criteria', $single_from_array[0]);
+
+        $multi = GroupRequesterFilter::getSearchCriteria('glpi_tickets', [$groups_id_1, $groups_id_2]);
+        $this->assertCount(1, $multi);
+        $this->assertArrayHasKey('criteria', $multi[0]);
+        $this->assertCount(2, $multi[0]['criteria']);
+        $this->assertSame('AND', $multi[0]['criteria'][0]['link']);
+        $this->assertSame($groups_id_1, $multi[0]['criteria'][0]['value']);
+        $this->assertSame('OR', $multi[0]['criteria'][1]['link']);
+        $this->assertSame($groups_id_2, $multi[0]['criteria'][1]['value']);
+    }
+
+    public function testGetSearchCriteriaEmptyValues()
+    {
+        $this->assertSame([], GroupRequesterFilter::getSearchCriteria('glpi_tickets', []));
+        $this->assertSame([], GroupRequesterFilter::getSearchCriteria('glpi_tickets', 0));
+        $this->assertSame([], GroupRequesterFilter::getSearchCriteria('glpi_tickets', ''));
+    }
 }

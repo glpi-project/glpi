@@ -164,15 +164,15 @@ switch ($_SERVER['REQUEST_METHOD']) {
         $context_id = 0;
         if (
             $impact_item->fields["impactcontexts_id"] == 0
-            || $impact_item->fields["is_slave"] == 1
+            || $impact_item->fields["is_dependent"] == 1
         ) {
-            // There is no context OR we are slave to another context -> let's
+            // There is no context OR we are dependent to another context -> let's
             // create a new one
             $context_id = $context_em->add($context_data);
 
             // Set the context_id to be updated
             $data['items'][$start_node_impact_item_id]['impactcontexts_id'] = $context_id;
-            $data['items'][$start_node_impact_item_id]['is_slave'] = 0;
+            $data['items'][$start_node_impact_item_id]['is_dependent'] = 0;
         } else {
             // Update existing context
             $context_id = $impact_item->fields["impactcontexts_id"];
@@ -210,6 +210,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         }
 
         // Save impact compound delta
+        $compounds_mapping = [];
         $em = new ImpactCompound();
         foreach ($data['compounds'] as $id => $compound) {
             // Extract action
@@ -219,6 +220,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
             switch ($action) {
                 case DELTA_ACTION_ADD:
                     $newCompoundID = $em->add($compound);
+
+                    // Map temporary frontend IDs to their database IDs.
+                    $compounds_mapping[$id] = $newCompoundID;
 
                     // Update id reference in impactitem
                     // This is needed because some nodes might have this compound
@@ -259,10 +263,10 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     if ($id !== $start_node_impact_item_id) {
                         $em->getFromDB($id);
 
-                        // If this node has no context -> make it a slave
+                        // If this node has no context -> make it a dependent
                         if ($em->fields['impactcontexts_id'] == 0) {
                             $impactItem['impactcontexts_id'] = $context_id;
-                            $impactItem['is_slave'] = 1;
+                            $impactItem['is_dependent'] = 1;
                         }
                     }
 
@@ -271,6 +275,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
             }
         }
 
-        header('Content-Type: application/javascript');
+        header('Content-Type: application/json');
+        echo json_encode(['compounds_mapping' => $compounds_mapping]);
         break;
 }

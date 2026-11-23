@@ -2683,6 +2683,165 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertTrue($networkPort_NetworkPort->getFromDBForNetworkPort($networkPort->fields['id']));
     }
 
+    /**
+     * A connection on a port that reports several MAC addresses, one of them
+     * being related to a Phone, must be handled as a hub connection.
+     *
+     * @see https://github.com/glpi-project/glpi/pull/25507
+     */
+    public function testSwitchMacConnectionWithPhone()
+    {
+        //router with a CDP connection to a SIP phone, reported as unmanaged
+        $cdp_source = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <ID>0</ID>
+        <IPS>
+          <IP>10.0.0.1</IP>
+        </IPS>
+        <MAC>6c:99:de:ad:be:ef</MAC>
+        <MANUFACTURER>Cisco</MANUFACTURER>
+        <MODEL>WS-C3850-24P</MODEL>
+        <NAME>router-pr-sample</NAME>
+        <SERIAL>THIS1234567Z</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>WAN PORT</IFDESCR>
+              <IP>10.100.100.200</IP>
+              <MODEL>T23G</MODEL>
+              <SYSMAC>80:5e:de:ad:be:ef</SYSMAC>
+              <SYSNAME>T23G805EDEADBEEF</SYSNAME>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFDESCR>GigabitEthernet1/0/15</IFDESCR>
+          <IFNAME>Gi1/0/15</IFNAME>
+          <IFNUMBER>17</IFNUMBER>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>6c:99:de:ad:be:ef</MAC>
+          <TRUNK>0</TRUNK>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>7.3</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        //same router, but the port now reports 2 MAC addresses: the phone one,
+        //and another one unknown from GLPI.
+        $macs_source = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <ID>0</ID>
+        <IPS>
+          <IP>10.0.0.1</IP>
+        </IPS>
+        <MAC>6c:99:de:ad:be:ef</MAC>
+        <MANUFACTURER>Cisco</MANUFACTURER>
+        <MODEL>WS-C3850-24P</MODEL>
+        <NAME>router-pr-sample</NAME>
+        <SERIAL>THIS1234567Z</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>80:5e:de:ad:be:ef</MAC>
+              <MAC>c0:c0:de:ad:be:ef</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFDESCR>GigabitEthernet1/0/15</IFDESCR>
+          <IFNAME>Gi1/0/15</IFNAME>
+          <IFNUMBER>17</IFNUMBER>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>6c:99:de:ad:be:ef</MAC>
+          <TRUNK>0</TRUNK>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>7.3</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        $networkPort             = new \NetworkPort();
+        $networkPort_NetworkPort = new \NetworkPort_NetworkPort();
+        $unmanaged               = new \Unmanaged();
+        $phone                   = new \Phone();
+
+        $entity = new \Entity();
+        $this->assertTrue($entity->getFromDB(0));
+        $this->assertTrue($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]));
+
+        //first inventory: the phone is discovered as an unmanaged device
+        $converter = new Converter();
+        $data = json_decode($converter->convert($cdp_source));
+        $inventory = new Inventory($data);
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
+
+        $this->assertSame(1, countElementsInTable($unmanaged->getTable()));
+        $this->assertTrue($unmanaged->getFromDBByCrit(['name' => 'T23G805EDEADBEEF']));
+        $this->assertSame(1, countElementsInTable($networkPort_NetworkPort->getTable()));
+
+        //convert the unmanaged device to a phone
+        $phones_id = $unmanaged->convert($unmanaged->fields['id'], \Phone::class);
+        $this->assertGreaterThan(0, $phones_id);
+        $this->assertTrue($phone->getFromDB($phones_id));
+        $this->assertSame(0, countElementsInTable($unmanaged->getTable()));
+        $this->assertTrue($networkPort->getFromDBByCrit([
+            'itemtype' => \Phone::class,
+            'items_id' => $phones_id,
+        ]));
+        $phone_ports_id = $networkPort->fields['id'];
+
+        //second inventory: 2 MAC addresses on the same port, one of them being
+        //the phone one; a hub must be created and both devices connected to it.
+        $converter = new Converter();
+        $data = json_decode($converter->convert($macs_source));
+        $inventory = new Inventory($data);
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
+
+        //the hub, plus the unmanaged device for the unknown MAC address
+        $this->assertSame(2, countElementsInTable($unmanaged->getTable()));
+        $this->assertSame(1, countElementsInTable($unmanaged->getTable(), ['hub' => 1]));
+
+        //router port, phone port and unknown device port are connected to the hub
+        $this->assertSame(3, countElementsInTable($networkPort_NetworkPort->getTable()));
+
+        $this->assertTrue($networkPort->getFromDBByCrit([
+            'itemtype' => \NetworkEquipment::class,
+            'name'     => 'Gi1/0/15',
+        ]));
+        $this->assertTrue($networkPort->isHubConnected($networkPort->fields['id']));
+        $this->assertTrue($networkPort->isHubConnected($phone_ports_id));
+
+        $this->assertTrue($networkPort->getFromDBByCrit(['mac' => 'c0:c0:de:ad:be:ef']));
+        $this->assertTrue($networkPort->isHubConnected($networkPort->fields['id']));
+    }
+
     public static function prepareConnectionsProvider()
     {
         return [

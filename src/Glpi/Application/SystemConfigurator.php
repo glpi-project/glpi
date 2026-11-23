@@ -34,6 +34,8 @@
 
 namespace Glpi\Application;
 
+use Agent;
+use Auth;
 use Glpi\Altcha\AltchaManager;
 use Glpi\Error\ErrorHandler;
 use Glpi\Log\AccessLogHandler;
@@ -123,33 +125,21 @@ final class SystemConfigurator
 
                 // Security constants
                 'GLPI_ALLOW_IFRAME_IN_RICH_TEXT' => false,
-                'GLPI_SERVERSIDE_URL_ALLOWLIST'  => [
-                    // allowlist (regex format) of URL that can be fetched from server side (used for RSS feeds and external calendars, among others)
-                    // URL will be considered as safe as long as it matches at least one entry of the allowlist
+                'GLPI_SERVERSIDE_URL_ALLOWED_PRIVATE_NETWORKS_CONTEXTS' => [
+                    // By default, GLPI does not allow URLs to be requested server-side if they are targetting a private network.
+                    // To enable private network request for specific contexts, add them here.
 
-                    // Based on https://github.com/symfony/symfony/blob/7.3/src/Symfony/Component/Validator/Constraints/UrlValidator.php
-                    '~^
-                        (http|https|feed)://                                                # protocol
-                        (
-                            (?:
-                                (?:xn--[a-z0-9-]++\.)*+xn--[a-z0-9-]++                      # a domain name using punycode
-                                    |
-                                (?:[\pL\pN\pS\pM\-\_]++\.)+[\pL\pN\pM]++                    # a multi-level domain name
-                                    |
-                                [a-z0-9\-\_]++                                              # a single-level domain name
-                            )\.?
-                                |                                                           # or
-                            \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}                              # an IP address
-                                |                                                           # or
-                            \[
-                                (?:(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){6})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:::(?:(?:(?:[0-9a-f]{1,4})):){5})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:[0-9a-f]{1,4})))?::(?:(?:(?:[0-9a-f]{1,4})):){4})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,1}(?:(?:[0-9a-f]{1,4})))?::(?:(?:(?:[0-9a-f]{1,4})):){3})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,2}(?:(?:[0-9a-f]{1,4})))?::(?:(?:(?:[0-9a-f]{1,4})):){2})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,3}(?:(?:[0-9a-f]{1,4})))?::(?:(?:[0-9a-f]{1,4})):)(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,4}(?:(?:[0-9a-f]{1,4})))?::)(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,5}(?:(?:[0-9a-f]{1,4})))?::)(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,6}(?:(?:[0-9a-f]{1,4})))?::))))
-                            \]                                                              # an IPv6 address
-                        )
-                        (?:/ (?:[\pL\pN\pS\pM\-._\~!$&\'()*+,;=:@]|%[0-9A-Fa-f]{2})* )*     # a path
-                        (?:\? (?:[\pL\pN\-._\~!$&\'\[\]()*+,;=:@/?]|%[0-9A-Fa-f]{2})* )?    # a query (optional)
-                    $~ixuD',
+                    Agent::class, // Requests to inventory agents (expected to be made on subnets)
+                    Auth::class,  // Requests to remote authentication endpoints (expected to be safe since they are configured by administrators)
+
+                    // GLPINetwork::class, // Requests to GLPI Network / Github endpoints
+                    // Planning::class,    // Requests to external calendars
+                    // RSSFeed::class,     // Requests to external RSS feeds
+                    // Webhook::class,     // Requests to webhooks endpoints
                 ],
                 'GLPI_DISALLOWED_UPLOADS_PATTERN' => '/\.(php\d*|phar)$/i', // Prevent upload of any PHP file / PHP archive; can be set to an empty value to allow every files
+                'GLPI_TRUSTED_REVERSE_PROXIES' => [], // List of known/trusted reverse proxies IPs or CIDR ranges (used for correct client IP detection)
+                'GLPI_REVERSE_PROXY_HEADERS' => ['X-Forwarded-For'], // Headers to trust when sent by a trusted reverse proxy (`Forwarded`, `X-Forwarded-For`, `X-Forwarded-Host`, `X-Forwarded-Proto`, `X-Forwarded-Port` or `X-Forwarded-Prefix`)
 
                 // Constants related to GLPI Project / GLPI Network external services
                 'GLPI_TELEMETRY_URI'                => 'https://telemetry.glpi-project.org', // Telemetry project URL
@@ -168,6 +158,7 @@ final class SystemConfigurator
 
                 // Constants dedicated to developers
                 'GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE' => '1', // '1' to disable ONLY_FULL_GROUP_BY 'sql_mode'
+                'GLPI_DISABLE_REAUTH'                      => false, // Will be removed in glpi 12.x, do not rely on it.
                 'GLPI_LOG_LVL'                             => LogLevel::WARNING,
                 'GLPI_SKIP_UPDATES'                        => false, // `true` to bypass minor versions DB updates
                 'GLPI_STRICT_ENV'                          => false, // `true` to make environment more strict (strict variables in twig templates, etc)
@@ -183,7 +174,7 @@ final class SystemConfigurator
 
                 // Altcha
                 'GLPI_ALTCHA_MODE'                => AltchaManager::DEFAULT_MODE,
-                'GLPI_ALTCHA_MAX_NUMBER'          => AltchaManager::DEFAULT_COMPLEXITY,
+                'GLPI_ALTCHA_COST'                => AltchaManager::DEFAULT_COMPLEXITY,
                 'GLPI_ALTCHA_EXPIRATION_INTERVAL' => AltchaManager::DEFAULT_EXPIRATION_INTERVAL,
             ],
         ];
@@ -344,7 +335,9 @@ final class SystemConfigurator
         // Force session cookie name.
         // The cookie name contains the root dir + HTTP host + HTTP port to ensure that it is unique
         // for every GLPI instance, enven if they are served by the same server (mostly for dev envs).
-        session_name('glpi_' . \hash('sha512', $this->root_dir . ($_SERVER['HTTP_HOST'] ?? '') . ($_SERVER['SERVER_PORT'] ?? '')));
+        // It also contains the GLPI version, to prevent reusing a session created by another GLPI version
+        // (e.g. a session opened on a previous install served from the same path).
+        session_name('glpi_' . \hash('sha512', $this->root_dir . ($_SERVER['HTTP_HOST'] ?? '') . ($_SERVER['SERVER_PORT'] ?? '') . GLPI_VERSION));
     }
 
     private function initLogger(): void
@@ -366,13 +359,6 @@ final class SystemConfigurator
 
     private function checkForObsoleteConstants(): void
     {
-        if (defined('GLPI_USE_CSRF_CHECK')) {
-            trigger_error(
-                'The `GLPI_USE_CSRF_CHECK` constant is now ignored for security reasons.',
-                E_USER_WARNING
-            );
-        }
-
         if (defined('PLUGINS_DIRECTORIES')) {
             trigger_error(
                 'The `PLUGINS_DIRECTORIES` constant is deprecated. Use the `GLPI_PLUGINS_DIRECTORIES` constant instead.',

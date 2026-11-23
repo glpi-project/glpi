@@ -1,0 +1,84 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# @prop color 'primary'|'secondary'|'success'|'danger'|'warning'|'info'|'light'|'dark' Contextual color #}
+{# @prop dismissible boolean Display a dismiss button #}
+{# @prop heading string|null Optional alert title #}
+{# @prop content string Alert content, can be overriden with a block #}
+{# @prop icon string CSS icon class. If empty resolves automatically from color #}
+{# @prop important boolean Renders the alert with a solid background #}
+{# @prop link_url string|null URL of an optional action link #}
+{# @prop link_text string|null Label of the action link, defaults to link_url #}
+{# @prop link_blank boolean Open the action link in a new tab #}
+
+{# @block icon Main icon #}
+{# @block heading Alert heading/title #}
+{# @block content Alert message #}
+{# @block action Trailing action link area #}
+{# @block close Dismiss section #}
+
+<div {{ attributes.defaults({class: this.classes, role: 'alert'}) }}>
+    {%- block icon -%}
+        <div>
+            <i class="{{ this.resolvedIcon }} fs-2x alert-icon" aria-hidden="true"></i>
+        </div>
+    {%- endblock -%}
+
+    <div class="flex-grow-1">
+        {%- block heading -%}
+            {%- if heading is not null and heading is not empty -%}
+                <h4 class="alert-heading">{{ heading }}</h4>
+            {%- endif -%}
+        {%- endblock -%}
+
+        {%- block content -%}
+            {%- if content is not empty -%}
+                <div class="alert-description">{{ content }}</div>
+            {%- endif -%}
+        {%- endblock -%}
+    </div>
+
+    {%- block action -%}
+        {%- if link_url -%}
+            <a class="alert-link"
+               href="{{ link_url }}"
+               target="{{ link_blank ? '_blank' : '_self' }}"
+            >{{ link_text ? link_text : link_url }}</a>
+        {%- endif -%}
+    {%- endblock -%}
+
+    {%- if dismissible -%}
+        {%- block close -%}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ __('Close') }}"></button>
+        {%- endblock -%}
+    {%- endif -%}
+</div>

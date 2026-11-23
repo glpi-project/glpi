@@ -35,8 +35,8 @@
 
 class RuleDictionnaryPrinterTypeCollection extends RuleDictionnaryDropdownCollection
 {
-    public $item_table  = "glpi_printertypes";
-    public $menu_option = "type.printer";
+    public string $item_table  = "glpi_printertypes";
+    public string $menu_option = "type.printer";
 
     public function getTitle()
     {

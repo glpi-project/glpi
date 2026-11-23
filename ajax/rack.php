@@ -41,7 +41,7 @@ use function Safe\json_encode;
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-if (!Session::haveRight('datacenter', UPDATE)) {
+if (!Session::haveRight(Rack::$rightname, UPDATE)) {
     throw new AccessDeniedHttpException();
 }
 if (!isset($_REQUEST['action'])) {
@@ -60,7 +60,7 @@ if (($_GET['action'] ?? null) === 'show_pdu_form') {
     PDU_Rack::showFirstForm($rack_id);
 } elseif (($_GET['action'] ?? null) === 'show_rack_form' && isset($_GET['racks_id'])) {
     $rack = new Rack();
-    if (isset($_GET['room']) && Rack::isNewID((int) $_GET['racks_id']) && $rack->can(-1, CREATE)) {
+    if (isset($_GET['room']) && Rack::isNewID((int) $_GET['racks_id']) && $rack->canGlobal(CREATE)) {
         $room = new DCRoom();
         if ($room->can((int) $_GET['room'], READ)) {
             $rack->showForm(-1, [

@@ -35,8 +35,8 @@
 
 class RuleDictionnaryNetworkEquipmentModelCollection extends RuleDictionnaryDropdownCollection
 {
-    public $item_table  = "glpi_networkequipmentmodels";
-    public $menu_option = "model.networking";
+    public string $item_table  = "glpi_networkequipmentmodels";
+    public string $menu_option = "model.networking";
 
     public function getTitle()
     {

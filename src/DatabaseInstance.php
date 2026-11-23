@@ -51,10 +51,10 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
-    public static $rightname            = 'database';
-    protected $usenotepad               = true;
-    protected static $forward_entity_to = ['Database'];
+    public bool $dohistory                   = true;
+    public static string $rightname            = 'database';
+    protected bool $usenotepad               = true;
+    protected static array $forward_entity_to = ['Database'];
 
     public function getCloneRelations(): array
     {
@@ -136,7 +136,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         TemplateRenderer::getInstance()->display('pages/management/databaseinstance.html.twig', [
             'item' => $this,
             'params' => [
-                'canedit' => $this->canUpdateItem(),
+                'canedit' => $this->can($this->getID(), UPDATE),
             ],
         ]);
 
@@ -412,13 +412,13 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         if (
             ($item instanceof CommonDBTM)
             && self::canView()
-            && in_array($item->getType(), self::getTypes(true))
+            && in_array($item::class, self::getTypes(true))
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = countElementsInTable(self::getTable(), ['itemtype' => $item->getType(), 'items_id' => $item->fields['id']]);
+                $nb = countElementsInTable(self::getTable(), ['itemtype' => $item::class, 'items_id' => $item->fields['id']]);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -429,9 +429,9 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
             return false;
         }
 
-        switch ($item->getType()) {
+        switch ($item::class) {
             default:
-                if (in_array($item->getType(), self::getTypes())) {
+                if (in_array($item::class, self::getTypes())) {
                     self::showInstances($item, $withtemplate);
                 }
         }
@@ -448,11 +448,33 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
     {
         global $DB;
 
+        $canedit = $item->can($item->getID(), UPDATE);
+
+        if ($canedit && $withtemplate != 2) {
+            TemplateRenderer::getInstance()->display('components/form/link_existing_or_new.html.twig', [
+                'rand'            => mt_rand(),
+                'link_itemtype'   => self::class,
+                'generic_source'  => true,
+                'source_itemtype' => $item::class,
+                'source_items_id' => $item->fields['id'],
+                'target_itemtype' => self::class,
+                'form_label'      => '',
+                'dropdown_options' => [
+                    'condition'   => [
+                        'is_deleted' => 0,
+                        'items_id'   => 0,
+                    ],
+                    'entity'      => $item->getEntityID(),
+                    'entity_sons' => $item->isRecursive(),
+                ],
+            ]);
+        }
+
         $instances = $DB->request([
             'SELECT' => 'id',
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'itemtype' => $item->getType(),
+                'itemtype' => $item::class,
                 'items_id' => $item->fields['id'],
             ],
         ]);
@@ -501,8 +523,48 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
             'entries' => $entries,
             'total_number' => count($entries),
             'filtered_number' => count($entries),
-            'showmassiveactions' => false,
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'container'     => 'mass' . self::class . mt_rand(),
+                'specific_actions' => [
+                    self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'dissociate' => _x('button', 'Delete permanently the relation with selected elements'),
+                ],
+            ],
         ]);
+    }
+
+    /**
+     * @param MassiveAction $ma
+     * @param CommonDBTM    $item
+     * @param int[]         $ids
+     */
+    public static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids)
+    {
+        switch ($ma->getAction()) {
+            case 'dissociate':
+                $db_instance = new self();
+                foreach ($ids as $id) {
+                    if ($db_instance->getFromDB($id)) {
+                        if ($db_instance->can($id, UPDATE)) {
+                            if ($db_instance->update(['id' => $id, 'items_id' => 0, 'itemtype' => ''])) {
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
+                            } else {
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                                $ma->addMessage($db_instance->getErrorMessage(ERROR_ON_ACTION));
+                            }
+                        } else {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($db_instance->getErrorMessage(ERROR_RIGHT));
+                        }
+                    } else {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($db_instance->getErrorMessage(ERROR_NOT_FOUND));
+                    }
+                }
+                return;
+        }
+        parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
     public static function getIcon()

@@ -37,6 +37,7 @@
  * @since 9.5
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 
 use function Safe\json_encode;
@@ -79,6 +80,9 @@ $parent = new $parents_itemtype();
 if (!$parent->getFromDB($parents_id)) {
     throw new BadRequestHttpException("Unable to load parent item: $parents_itemtype $parents_id");
 }
+if (!$parent->can($parents_id, READ)) {
+    throw new AccessDeniedHttpException();
+}
 
 // Render template content using twig
 $template->fields['content'] = $template->getRenderedContent($parent);
@@ -94,7 +98,7 @@ if ($template->fields['requesttypes_id']) {
         ])
     ) {
         $template->fields['requesttypes_name'] = Dropdown::getDropdownName(
-            getTableForItemType(RequestType::getType()),
+            getTableForItemType(RequestType::class),
             $template->fields['requesttypes_id'],
             false,
             true,

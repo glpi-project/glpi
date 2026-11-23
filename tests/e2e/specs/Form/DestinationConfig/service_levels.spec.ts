@@ -91,12 +91,17 @@ for (const sl_type of service_level_types) {
                 entities_id: getWorkerEntityId(),
                 is_recursive: 1,
             });
+            const group_id = await api.createItem('Group', {
+                name: `Group - ${unique}`,
+                is_assign: 1,
+            });
             await api.createItem(sl_type.item_class, {
                 name: sl_name,
                 type: sl_type.type_int,
                 number_time: 1,
                 definition_time: 'hour',
                 slms_id: slm_id,
+                groups_id: group_id,
             });
 
             await form_page.gotoDestinationTab(info.getId());
@@ -142,7 +147,8 @@ for (const sl_type of service_level_types) {
             // Fill form
             await page.getByRole('textbox', { name: 'My test question' }).fill('My test answer');
             await form_page.getButton('Submit').click();
-            await page.getByRole('link', { name: 'My test form' }).click();
+            // Check that the user is redirected to the created ticket
+            await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
 
             // Check ticket values
             const service_levels = form_page.getRegion('Service levels');

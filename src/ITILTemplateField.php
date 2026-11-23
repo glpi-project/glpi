@@ -48,9 +48,9 @@ abstract class ITILTemplateField extends CommonDBChild
     /**
      * @var class-string<ITILTemplate>
      */
-    public static $itemtype; //to be filled in subclass
+    public static string $itemtype; //to be filled in subclass
 
-    public static $items_id; //to be filled in subclass
+    public static string $items_id; //to be filled in subclass
 
     /**
      * @var class-string<CommonITILObject>
@@ -60,7 +60,7 @@ abstract class ITILTemplateField extends CommonDBChild
     private array $all_fields;
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public static function getMultiplePredefinedValues(): array
     {
@@ -259,7 +259,6 @@ abstract class ITILTemplateField extends CommonDBChild
                         <div class="alert alert-info">{{ task_order_label }}</div>
                     {% endif %}
                     <form name="itiltemplatehidden_form{{ rand }}" method="post" action="{{ form_url }}" data-submit-once>
-                        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                         {{ inputs.hidden(items_id_field, id) }}
                         <div class="d-flex justify-content-center flex-wrap">
                             {{ fields.dropdownArrayField('num', 0, fields, null, {
@@ -294,7 +293,6 @@ TWIG, $twig_params);
             'entries' => $entries,
             'formatters' => ['value' => 'raw_html'],
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], $numrows),

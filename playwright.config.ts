@@ -40,6 +40,26 @@ config({path: './tests/e2e/.env.local', quiet: true});
 config({path: './tests/e2e/.env', quiet: true});
 
 /**
+ * Specs that match this pattern change global data (global configuration,
+ * maintenance mode, display preferences of the global view, ...).
+ * They can't run beside another test, thus they are excluded from the projects
+ * defined here and are executed by the `playwright.isolated.config.ts`
+ * configuration file instead.
+ */
+export const ISOLATED_GLOB = '**/*.spec.isolated.ts';
+
+/**
+ * Browser and viewport shared by all our projects.
+ */
+export const DESKTOP_CHROME_USE = {
+    ...devices['Desktop Chrome'],
+    viewport: {
+        width: 1920,
+        height: 1080,
+    },
+};
+
+/**
  * Playwright configuration file
  *
  * See:
@@ -108,13 +128,8 @@ export default defineConfig({
     projects: [
         {
             name: 'chromium',
-            use: {
-                ...devices['Desktop Chrome'],
-                viewport: {
-                    width: 1920,
-                    height: 1080,
-                },
-            },
+            testIgnore: ISOLATED_GLOB,
+            use: DESKTOP_CHROME_USE,
         },
         // Dynamically create a project for each plugin that contains Playwright specs.
         ...globSync('plugins/*/tests/e2e/**/*.spec.ts')
@@ -123,13 +138,8 @@ export default defineConfig({
             .map((plugin) => ({
                 name: `plugin:${plugin}`,
                 testDir: `./plugins/${plugin}/tests/e2e/specs`,
-                use: {
-                    ...devices['Desktop Chrome'],
-                    viewport: {
-                        width: 1920,
-                        height: 1080,
-                    },
-                },
+                testIgnore: ISOLATED_GLOB,
+                use: DESKTOP_CHROME_USE,
             })),
     ],
 });

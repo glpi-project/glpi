@@ -37,7 +37,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 
-Session::checkRight("config", UPDATE);
+Session::checkRight(Config::$rightname, UPDATE);
 $notificationajax = new NotificationAjaxSetting();
 
 if (!empty($_POST["test_ajax_send"])) {

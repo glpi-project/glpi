@@ -154,9 +154,11 @@ class DropdownTest extends DbTestCase
 
         $dropdown = $this->createItem($classname_1, ['name' => 'new dropdown']);
 
-        $this->expectExceptionMessage('Definition cannot be changed.');
+        // The item of another definition cannot be loaded, so it cannot be updated
         $dropdown_2 = new $classname_2();
-        $dropdown_2->update(['id' => $dropdown->getID(), 'name' => 'updated']);
+        $this->assertFalse($dropdown_2->update(['id' => $dropdown->getID(), 'name' => 'updated']));
+        $this->assertTrue($dropdown->getFromDB($dropdown->getID()));
+        $this->assertSame('new dropdown', $dropdown->fields['name']);
     }
 
     public function testSearchOptionsUnicity(): void
@@ -177,5 +179,39 @@ class DropdownTest extends DbTestCase
             'is_active' => 0,
         ]);
         $this->assertFalse((new ($definition->getDropdownClassName()))::canView());
+    }
+
+    public function testCannotLoadItemOfAnotherDefinition(): void
+    {
+        $foo_classname = $this->initDropdownDefinition()->getDropdownClassName();
+        $bar_classname = $this->initDropdownDefinition()->getDropdownClassName();
+
+        $bar_dropdown = $this->createItem($bar_classname, ['name' => 'Bar dropdown']);
+
+        // Definitions share the same table, an item must only be loaded by the class of its definition
+        $foo_dropdown = new $foo_classname();
+        $this->assertFalse($foo_dropdown->getFromDB($bar_dropdown->getID()));
+        $this->assertSame([], $foo_dropdown->fields);
+
+        $this->assertTrue((new $bar_classname())->getFromDB($bar_dropdown->getID()));
+    }
+
+    public function testFindIdIsRestrictedToDefinition(): void
+    {
+        $foo_classname = $this->initDropdownDefinition()->getDropdownClassName();
+        $bar_classname = $this->initDropdownDefinition()->getDropdownClassName();
+
+        $foo_dropdown = $this->createItem($foo_classname, ['name' => 'Blue']);
+
+        // Searched by name, or by complete name
+        foreach ([['name' => 'Blue'], ['completename' => 'Blue']] as $input) {
+            $this->assertEquals(-1, (new $bar_classname())->findID($input));
+            $this->assertEquals($foo_dropdown->getID(), (new $foo_classname())->findID($input));
+        }
+
+        // The dropdown of another definition is not reused, a new one is created
+        $bar_dropdown_id = (new $bar_classname())->import(['name' => 'Blue']);
+        $this->assertGreaterThan(0, $bar_dropdown_id);
+        $this->assertNotEquals($foo_dropdown->getID(), $bar_dropdown_id);
     }
 }

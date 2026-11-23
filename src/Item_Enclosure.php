@@ -37,13 +37,10 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Item_Enclosure extends CommonDBRelation
 {
-    public static $itemtype_1 = Enclosure::class;
-    public static $items_id_1 = 'enclosures_id';
-    public static $itemtype_2 = 'itemtype';
-    public static $items_id_2 = 'items_id';
-    public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
-    public static $mustBeAttached_1 = false; // FIXME It make no sense for an enclosure item to not be attached to an Enclosure.
-    public static $mustBeAttached_2 = false; // FIXME It make no sense for an enclosure item to not be attached to an Item.
+    public static ?string $itemtype_1 = Enclosure::class;
+    public static ?string $items_id_1 = 'enclosures_id';
+    public static ?string $itemtype_2 = 'itemtype';
+    public static ?string $items_id_2 = 'items_id';
 
     public static function getTypeName($nb = 0)
     {
@@ -61,7 +58,7 @@ class Item_Enclosure extends CommonDBRelation
         if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = self::countForMainItem($item);
         }
-        return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+        return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
@@ -117,7 +114,18 @@ class Item_Enclosure extends CommonDBRelation
         $entries = [];
         foreach ($items as $row) {
             $item = getItemForItemtype($row['itemtype']);
-            $item->getFromDB($row['items_id']);
+            if (
+                !$item instanceof CommonDBTM
+                || !$item->getFromDB($row['items_id'])
+                || !$item->can($row['items_id'], READ)
+            ) {
+                $entries[] = [
+                    'item'     => __('You are not allowed to view this item'),
+                    'position' => $row['position'],
+                    'skip_ma'  => true,
+                ];
+                continue;
+            }
             $entries[] = [
                 'itemtype' => static::class,
                 'id'       => $row['id'],
@@ -138,7 +146,6 @@ class Item_Enclosure extends CommonDBRelation
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),

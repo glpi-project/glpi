@@ -36,7 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\Parameters\CommonITILObjectParameters;
 use Glpi\ContentTemplates\Parameters\ProblemParameters;
-use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\RichText\RichText;
 use Glpi\Search\DefaultSearchRequestInterface;
 
@@ -46,16 +46,16 @@ use Glpi\Search\DefaultSearchRequestInterface;
 class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 {
     // From CommonDBTM
-    public $dohistory = true;
-    protected static $forward_entity_to = ['ProblemCost'];
+    public bool $dohistory = true;
+    protected static array $forward_entity_to = ['ProblemCost'];
 
     // From CommonITIL
-    public $userlinkclass        = 'Problem_User';
-    public $grouplinkclass       = 'Group_Problem';
-    public $supplierlinkclass    = 'Problem_Supplier';
+    public string $userlinkclass        = 'Problem_User';
+    public string $grouplinkclass       = 'Group_Problem';
+    public string $supplierlinkclass    = 'Problem_Supplier';
 
-    public static $rightname            = 'problem';
-    protected $usenotepad        = true;
+    public static string $rightname            = 'problem';
+    protected bool $usenotepad        = true;
 
 
     public const MATRIX_FIELD         = 'priority_matrix';
@@ -143,7 +143,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      */
     public function canReopen()
     {
-        return Session::haveRight('followup', CREATE)
+        return Session::haveRight(ITILFollowup::$rightname, CREATE)
              && in_array($this->fields["status"], static::getClosedStatusArray())
              && ($this->isAllowedStatus($this->fields['status'], self::INCOMING)
                  || $this->isAllowedStatus($this->fields['status'], self::ASSIGNED));
@@ -182,14 +182,14 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         $nb = countElementsInTable(
                             ['glpi_problems', 'glpi_problems_users'],
                             [
-                                'glpi_problems_users.problems_id'  => new QueryExpression(DBmysql::quoteName('glpi_problems.id')),
+                                'glpi_problems_users.problems_id'  => new QueryIdentifier('glpi_problems.id'),
                                 'glpi_problems_users.users_id'    => $item->getID(),
                                 'glpi_problems_users.type'        => CommonITILActor::REQUESTER,
                                 'glpi_problems.is_deleted'        => 0,
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
                     }
-                    return self::createTabEntry(__('Created problems'), $nb, $item::getType());
+                    return self::createTabEntry(__('Created problems'), $nb, $item::class);
 
                 case Group::class:
                     $nb = 0;
@@ -197,14 +197,14 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         $nb = countElementsInTable(
                             ['glpi_problems', 'glpi_groups_problems'],
                             [
-                                'glpi_groups_problems.problems_id' => new QueryExpression(DBmysql::quoteName('glpi_problems.id')),
+                                'glpi_groups_problems.problems_id' => new QueryIdentifier('glpi_problems.id'),
                                 'glpi_groups_problems.groups_id'  => $item->getID(),
                                 'glpi_groups_problems.type'       => CommonITILActor::REQUESTER,
                                 'glpi_problems.is_deleted'        => 0,
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
                     }
-                    return self::createTabEntry(__('Created problems'), $nb, $item::getType());
+                    return self::createTabEntry(__('Created problems'), $nb, $item::class);
             }
         }
         return '';
@@ -437,7 +437,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
         if (Session::getCurrentInterface() === 'central') {
             if (Item_Problem::canCreate()) {
                 $actions['Item_Problem' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
-                = "<i class='ti ti-plus'></i>"
+                = "<i class='ti ti-plus' aria-hidden='true'></i>"
                  . _sx('button', 'Add an item');
             }
 
@@ -582,7 +582,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
             ],
         ];
 
-        if (Session::haveRight('change', READ)) {
+        if (Session::haveRight(Change::$rightname, READ)) {
             $tab = array_merge($tab, Change::rawSearchOptionsToAdd(self::class));
         }
 
@@ -1055,11 +1055,11 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         ) {
                             foreach ($problem->users[CommonITILActor::REQUESTER] as $d) {
                                 if ($d["users_id"] > 0) {
-                                    $name = '<i class="fs-4 ti ti-user text-muted me-1"></i>'
+                                    $name = '<i class="fs-4 ti ti-user text-muted me-1" aria-hidden="true"></i>'
                                         . htmlescape(getUserName($d["users_id"]));
                                     $requesters[] = $name;
                                 } else {
-                                    $requesters[] = '<i class="fs-4 ti ti-mail text-muted me-1"></i>'
+                                    $requesters[] = '<i class="fs-4 ti ti-mail text-muted me-1" aria-hidden="true"></i>'
                                         . htmlescape($d['alternative_email']);
                                 }
                             }
@@ -1070,7 +1070,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                             && count($problem->groups[CommonITILActor::REQUESTER])
                         ) {
                             foreach ($problem->groups[CommonITILActor::REQUESTER] as $d) {
-                                $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1"></i>'
+                                $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1" aria-hidden="true"></i>'
                                     . htmlescape(Dropdown::getDropdownName("glpi_groups", $d["groups_id"]));
                             }
                         }
@@ -1416,14 +1416,14 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
             default:
                 $restrict['glpi_items_problems.items_id'] = $item->getID();
-                $restrict['glpi_items_problems.itemtype'] = $item->getType();
+                $restrict['glpi_items_problems.itemtype'] = $item::class;
                 // you can only see your tickets
                 if (!Session::haveRight(self::$rightname, self::READALL)) {
                     $or = [
                         'glpi_problems.users_id_recipient'   => Session::getLoginUserID(),
                         [
                             'AND' => [
-                                'glpi_problems_users.problems_id'  => 'glpi_problems.id',
+                                'glpi_problems_users.problems_id'  => new QueryIdentifier('glpi_problems.id'),
                                 'glpi_problems_users.users_id'    => Session::getLoginUserID(),
                             ],
                         ],

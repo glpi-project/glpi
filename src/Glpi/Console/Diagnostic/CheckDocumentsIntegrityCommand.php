@@ -57,7 +57,7 @@ final class CheckDocumentsIntegrityCommand extends AbstractCommand
         $this->setDescription(__("Validate files integrity for GLPI's documents."));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // Get all documents
         $data = $this->getDocuments();

@@ -41,6 +41,8 @@ use Glpi\Asset\CustomFieldType\RawType;
 use Glpi\Asset\CustomFieldType\TypeInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
+use Glpi\Locale\LanguageRegistry;
 use InvalidArgumentException;
 use RuntimeException;
 use Session;
@@ -51,10 +53,10 @@ use function Safe\preg_match;
 
 final class CustomFieldDefinition extends CommonDBChild
 {
-    public static $itemtype = AssetDefinition::class;
-    public static $items_id = 'assets_assetdefinitions_id';
+    public static string $itemtype = AssetDefinition::class;
+    public static string $items_id = 'assets_assetdefinitions_id';
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     public static function getTypeName($nb = 0)
     {
@@ -121,7 +123,7 @@ final class CustomFieldDefinition extends CommonDBChild
 
         $DB->update('glpi_assets_assets', [
             'custom_fields' => QueryFunction::jsonRemove([
-                'custom_fields',
+                new QueryIdentifier('custom_fields'),
                 new QueryExpression($DB::quoteValue('$."' . $this->fields['id'] . '"')),
             ]),
         ], [
@@ -378,8 +380,6 @@ final class CustomFieldDefinition extends CommonDBChild
      */
     protected function validateTranslationsArray(mixed $translations): bool
     {
-        global $CFG_GLPI;
-
         if (!is_array($translations)) {
             return false;
         }
@@ -388,7 +388,7 @@ final class CustomFieldDefinition extends CommonDBChild
 
         // Array keys must be valid language codes
         foreach (array_keys($translations) as $language) {
-            if (!array_key_exists($language, $CFG_GLPI['languages'])) {
+            if (!LanguageRegistry::has($language)) {
                 $is_valid = false;
                 break;
             }

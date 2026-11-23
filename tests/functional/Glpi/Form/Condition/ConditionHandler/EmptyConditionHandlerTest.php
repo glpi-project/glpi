@@ -84,7 +84,7 @@ final class EmptyConditionHandlerTest extends AbstractConditionHandlerTest
                     itemtype: Software::class,
                 ),
                 'empty_answer'     => (new QuestionTypeItemDefaultValueConfig())->jsonSerialize(),
-                'not_empty_answer' => (new QuestionTypeItemDefaultValueConfig(1))->jsonSerialize(),
+                'not_empty_answer' => (new QuestionTypeItemDefaultValueConfig([1]))->jsonSerialize(),
             ],
             "QuestionTypeLongText" => [
                 'type'             => QuestionTypeLongText::class,
@@ -252,7 +252,7 @@ final class EmptyConditionHandlerTest extends AbstractConditionHandlerTest
                     itemtype: Location::class,
                 ),
                 'empty_answer'     => (new QuestionTypeItemDefaultValueConfig())->jsonSerialize(),
-                'not_empty_answer' => (new QuestionTypeItemDefaultValueConfig(1))->jsonSerialize(),
+                'not_empty_answer' => (new QuestionTypeItemDefaultValueConfig([1]))->jsonSerialize(),
             ],
         ];
 
@@ -284,6 +284,40 @@ final class EmptyConditionHandlerTest extends AbstractConditionHandlerTest
                 'question_extra_data' => $extra_data,
             ];
         }
+
+        // A value of 0 (or "0") is a real answer and must not be treated as empty.
+        yield "A number answered with 0 is not empty" => [
+            'question_type'       => QuestionTypeNumber::class,
+            'condition_operator'  => ValueOperator::EMPTY,
+            'condition_value'     => null,
+            'submitted_answer'    => 0,
+            'expected_result'     => false,
+            'question_extra_data' => null,
+        ];
+        yield "A number answered with 0 matches not empty" => [
+            'question_type'       => QuestionTypeNumber::class,
+            'condition_operator'  => ValueOperator::NOT_EMPTY,
+            'condition_value'     => null,
+            'submitted_answer'    => 0,
+            'expected_result'     => true,
+            'question_extra_data' => null,
+        ];
+        yield 'A short text answered with "0" is not empty' => [
+            'question_type'       => QuestionTypeShortText::class,
+            'condition_operator'  => ValueOperator::EMPTY,
+            'condition_value'     => null,
+            'submitted_answer'    => "0",
+            'expected_result'     => false,
+            'question_extra_data' => null,
+        ];
+        yield 'A short text answered with "0" matches not empty' => [
+            'question_type'       => QuestionTypeShortText::class,
+            'condition_operator'  => ValueOperator::NOT_EMPTY,
+            'condition_value'     => null,
+            'submitted_answer'    => "0",
+            'expected_result'     => true,
+            'question_extra_data' => null,
+        ];
     }
 
     public function testAllQuestionTypesAreTested(): void

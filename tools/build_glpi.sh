@@ -84,7 +84,6 @@ dev_nodes=(
     "docker-compose.yaml"
     "eslint.config.mjs"
     "js"
-    "jsconfig.json"
     "locales/glpi.pot"
     "Makefile"
     "node_modules"
@@ -94,7 +93,9 @@ dev_nodes=(
     "phpstan.neon.dist"
     "phpunit.xml.dist"
     "playwright.config.ts"
+    "playwright.isolated.config.ts"
     "PluginsMakefile.mk"
+    "PluginsPhpCsFixer.php"
     "PluginsRector.php"
     "psalm.xml"
     "rector.php"
@@ -104,14 +105,18 @@ dev_nodes=(
     "tsconfig.json"
     "vendor/glpi-project/inventory_format/examples"
     "vendor/glpi-project/inventory_format/source_files"
+    "vitest.config.ts"
 )
 for node in "${dev_nodes[@]}"
 do
     rm -rf $WORKING_DIR/$node
 done
 
+echo "Clearing Symfony cache compiled with dev dependencies..."
+rm -rf $WORKING_DIR/files/_cache/*
+
 echo "Generating file manifest..."
-$WORKING_DIR/bin/console build:generate_code_manifest -a crc32c
+GLPI_ENVIRONMENT_TYPE=production $WORKING_DIR/bin/console build:generate_code_manifest -a crc32c
 
 echo "Removing user generated files..."
 # Remove user generated files (i.e. cache and log from CLI commands ran during release)

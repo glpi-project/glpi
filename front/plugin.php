@@ -38,7 +38,7 @@ use Glpi\Marketplace\View;
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-Session::checkRight("config", UPDATE);
+(new Config())->checkGlobal(UPDATE);
 
 // This has to be called before search process is called, in order to add
 // "new" plugins in DB to be able to display them.
@@ -57,7 +57,7 @@ Search::show('Plugin');
 echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
     <div class="text-center my-2">
         <a href="https://plugins.glpi-project.org" class="btn btn-primary" role="button">
-            <i class="ti ti-eye"></i>
+            <i class="ti ti-eye" aria-hidden="true"></i>
             <span>{{ label }}</span>
         </a>
     </div>

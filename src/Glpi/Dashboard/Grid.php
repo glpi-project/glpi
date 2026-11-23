@@ -37,6 +37,7 @@ namespace Glpi\Dashboard;
 
 use Config;
 use Dropdown;
+use Entity;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
@@ -45,6 +46,8 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Plugin\Hooks;
 use Html;
 use Item_Devices;
+use Location;
+use Manufacturer;
 use Plugin;
 use Profile;
 use Ramsey\Uuid\Uuid;
@@ -52,35 +55,34 @@ use ReflectionClass;
 use Reminder;
 use Session;
 use ShareDashboardDropdown;
+use State;
 use Telemetry;
 use Throwable;
 use Ticket;
 use Toolbox;
 
+use function Safe\ini_get;
+use function Safe\json_decode;
 use function Safe\json_encode;
 use function Safe\preg_replace;
 
 class Grid
 {
-    /** @var int */
-    protected $cell_margin     = 3;
-    /** @var int */
-    protected $grid_cols       = 26;
-    /** @var int */
-    protected $grid_rows       = 24;
-    /** @var string */
-    protected $current         = "";
-    /** @var Dashboard|null */
-    protected $dashboard       = null;
-    /** @var array */
-    protected $items           = [];
-    /** @var string */
-    protected $context            = '';
+    protected int $cell_margin     = 3;
+    protected int $grid_cols       = 26;
+    protected int $grid_rows       = 24;
+    protected string $current         = "";
+    protected Dashboard $dashboard;
+    protected array $items           = [];
+    protected string $context            = '';
+    /** @var array<string, array<string, array<string, mixed>>> Card catalog already built by this instance, by cache key. */
+    private array $all_cards = [];
 
-    /** @var bool */
-    public static $embed              = false;
-    /** @var array */
-    public static $all_dashboards     = [];
+    /** Number of parallel requests that load the cards of a dashboard: two of the six HTTP/1.1 connections stay free for the page. */
+    private const CARDS_BATCHES = 4;
+
+    public static bool $embed              = false;
+    public static array $all_dashboards     = [];
 
     public function __construct(string $dashboard_key = "central", int $grid_cols = 26, int $grid_rows = 24, string $context = 'core')
     {
@@ -121,11 +123,10 @@ class Grid
      *
      * @return bool
      */
-    public static function loadAllDashboards(bool $force = true): bool
+    public static function loadAllDashboards(bool $force = false): bool
     {
         if (
-            !is_array(self::$all_dashboards)
-            || count(self::$all_dashboards) === 0
+            count(self::$all_dashboards) === 0
             || $force
         ) {
             self::$all_dashboards = Dashboard::getAll($force, !self::$embed, '');
@@ -138,8 +139,8 @@ class Grid
     /**
      * Init dashboards cards
      * A define.php constant (GLPI_AJAX_DASHBOARD) exists to control how the cards should be loaded
-     *  - if true: load all cards in seperate ajax request
-     *    pros: slow cards wont impact the others
+     *  - if true: load all cards in separate ajax request
+     *    pros: slow cards won't impact the others
      * - else: load all cards in a single ajax request
      *    pros: less strain for the server
      *
@@ -236,13 +237,7 @@ HTML;
     {
         self::loadAllDashboards();
 
-        $dashboard = new Dashboard($key);
-        $dashboard->load();
-        // check global (admin) right
-        if (Dashboard::canView() && !$dashboard->isPrivate()) {
-            return true;
-        }
-
+        // The dashboards in the static property are filtered for the current user
         return isset(self::$all_dashboards[$key]);
     }
 
@@ -254,17 +249,24 @@ HTML;
      */
     public function show(bool $mini = false, ?string $token = null)
     {
-        global $GLPI_CACHE;
-
         $rand = mt_rand();
-
-        if (!self::$embed && !$this->dashboard->canViewCurrent()) {
-            return;
-        }
 
         self::loadAllDashboards();
 
+        $can_view_current = isset(self::$all_dashboards[$this->dashboard->getKey()]);
+        if (!self::$embed && !$can_view_current) {
+            return;
+        }
+
         $this->restoreLastDashboard();
+
+        // Load known database values into $this->dashboard properties to prevent
+        // it from being loaded again when used by other methods
+        if ($can_view_current) {
+            $this->dashboard->fields = self::$all_dashboards[$this->dashboard->getKey()];
+            $this->dashboard->setItems(self::$all_dashboards[$this->dashboard->getKey()]['items'] ?? []);
+            $this->dashboard->setRights(self::$all_dashboards[$this->dashboard->getKey()]['rights'] ?? []);
+        }
 
         if ($mini) {
             $this->cell_margin = 3;
@@ -275,10 +277,10 @@ HTML;
 
         $nb_dashboards = count(self::$all_dashboards);
 
-        $can_view_all  = Session::haveRight('dashboard', READ) || self::$embed;
-        $can_create    = Session::haveRight('dashboard', CREATE);
-        $can_edit      = Session::haveRight('dashboard', UPDATE) && $nb_dashboards;
-        $can_purge     = Session::haveRight('dashboard', PURGE) && $nb_dashboards;
+        $can_view_all  = Session::haveRight(Dashboard::$rightname, READ) || self::$embed;
+        $can_create    = Session::haveRight(Dashboard::$rightname, CREATE);
+        $can_edit      = Session::haveRight(Dashboard::$rightname, UPDATE) && $nb_dashboards;
+        $can_purge     = Session::haveRight(Dashboard::$rightname, PURGE) && $nb_dashboards;
         $can_clone     = $can_create && $nb_dashboards;
 
         // prepare html for add controls
@@ -308,7 +310,8 @@ HTML;
         $save_label       = _sx('button', "Save");
         $reset_label      = __s("Reset dashboard to default");
 
-        $gridstack_items = $this->getGridItemsHtml(!$mini);
+        // Same items as the `get_dashboard_items` action: the script loads their content without fetching them again.
+        $gridstack_items = $this->getGridItemsHtml();
 
         $dropdown_dashboards = "";
         if ($nb_dashboards) {
@@ -332,7 +335,7 @@ HTML;
 
         if (!self::$embed) {
             if (!$mini && $can_create) {
-                $l_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-plus fs-toggle add-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='$add_dash_label'></i>";
+                $l_tb_icons .= "<button type='button' class='btn btn-sm btn-icon btn-ghost-secondary fs-toggle add-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='$add_dash_label'><i class='ti ti-plus' aria-hidden='true'></i></button>";
             }
             if (!$mini && $can_clone) {
                 $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-copy fs-toggle clone-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='$clone_label'></i>";
@@ -342,10 +345,10 @@ HTML;
                 $rename = "<div class='edit-dashboard-properties'>
                <input type='text' class='dashboard-name form-control' value='{$dashboard_title}' size='1'>
                <button class='btn btn-ghost-secondary btn-icon btn-sm fs-2 ms-1 save-dashboard-name' data-bs-toggle='tooltip' data-bs-placement='bottom' title='{$save_label}'>
-                   <i class='ti ti-device-floppy' ></i>
+                   <i class='ti ti-device-floppy' aria-hidden='true' ></i>
                </button>
                <button class='btn btn-ghost-danger btn-icon btn-sm fs-2 ms-1 reset-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='{$reset_label}'>
-                   <i class='ti ti-refresh' ></i>
+                   <i class='ti ti-refresh' aria-hidden='true' ></i>
                </button>
                <span class='display-message'></span>
             </div>";
@@ -354,7 +357,7 @@ HTML;
                 $rename = <<<HTML
                     <div class='edit-dashboard-properties'>
                         <button class='btn btn-ghost-danger btn-icon btn-sm fs-2 ms-1 reset-dashboard' title='{$reset_label}'>
-                           <i class='ti ti-refresh' ></i>
+                           <i class='ti ti-refresh' aria-hidden='true' ></i>
                        </button>
                     </div>
 HTML;
@@ -388,7 +391,7 @@ HTML;
                     <div class="toolbar left-toolbar mb-3 position-relative">
                         <div class='edit-dashboard-properties'>
                             <button class='btn btn-ghost-danger btn-sm ms-1 reset-dashboard'>
-                               <i class='ti ti-refresh' ></i>
+                               <i class='ti ti-refresh' aria-hidden='true' ></i>
                                {$reset_label}
                            </button>
                         </div>
@@ -437,12 +440,12 @@ HTML;
                 <div class='placeholder_info {{ is_placeholder ? "" : "d-none" }}' style="background-color: transparent; color: var(--tblr-body-color); font-size: var(--tblr-body-font-size)">
                     <div class="alert alert-info">
                         <div class="d-flex">
-                            <i class="ti ti-info-circle fs-2x me-3"></i>
+                            <i class="ti ti-info-circle fs-2x me-3" aria-hidden="true"></i>
                             <div>
                                 <h4 class="alert-title">{{ messages['placeholder_main'] }}</h4>
                                 <div class="mt-2">
                                     <button class="btn btn-info btn-sm disable-dashboard-demo me-2 {{ can_disable_demo ? '' : 'd-none' }}" type="button">
-                                        <i class="ti ti-presentation-off"></i>
+                                        <i class="ti ti-presentation-off" aria-hidden="true"></i>
                                         <span>{{ messages['disable_demo_msg'] }}</span>
                                     </button>
                                     <script>
@@ -462,10 +465,65 @@ HTML;
 TWIG, $params);
         }
 
+        // The displayed dashboard is not `$this->dashboard` when the last one viewed on this page was restored.
+        $saved_filters = self::$embed || !$can_view_current
+            ? null
+            : json_decode(Filter::getForDashboard((int) (self::$all_dashboards[$this->current]['id'] ?? 0)), true);
+
+        // A debug session keeps one request per card, each with its own profile.
+        $batches = self::$embed || !GLPI_AJAX_DASHBOARD || $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE
+            ? 0
+            : self::CARDS_BATCHES;
+
+        // Requests the page sends for its cards as soon as the grid is parsed, before its scripts are loaded.
+        $early_cards_script = '';
+        if ($batches > 0) {
+            $early_cards_config = json_encode([
+                'rand'      => $rand,
+                'dashboard' => $this->current,
+                'filters'   => $saved_filters,
+                'batches'   => $batches,
+                'url'       => Html::getPrefixedUrl('/Dashboard/Cards'),
+            ], JSON_HEX_TAG | JSON_HEX_AMP);
+            $early_cards_script = Html::scriptBlock("(() => {\n    const config = {$early_cards_config};\n" . <<<'JAVASCRIPT'
+    const filters = config.filters === null || Array.isArray(config.filters) ? {} : config.filters;
+    const cards   = [...document.querySelectorAll('#grid-stack-' + config.rand + ' .grid-stack-item:not(.lock-bottom)')].map((item) => {
+        const args = JSON.parse(item.dataset.cardOptions || '{}');
+        args.gridstack_id  = item.getAttribute('gs-id');
+        args.apply_filters = filters;
+        return {gridstack_id: args.gridstack_id, card_id: args.card_id || args.gridstack_id, args: args};
+    });
+    if (cards.length === 0) {
+        return;
+    }
+
+    // Same groups as `GLPIDashboard.splitCardsInBatches()`: number widgets first, dealt in turn.
+    const is_number = (card) => ['bigNumber', 'summaryNumbers', 'multipleNumber'].includes(card.args.widgettype);
+    const sorted    = [...cards.filter(is_number), ...cards.filter((card) => !is_number(card))];
+    const batches   = Array.from({length: Math.min(config.batches, sorted.length)}, () => []);
+    sorted.forEach((card, i) => batches[i % batches.length].push(card));
+
+    // `GLPIDashboard.getCardsAjax()` reads the responses, once its module is loaded.
+    window.glpi_dashboard_early_cards ??= {};
+    window.glpi_dashboard_early_cards[config.rand] = batches.map((batch) => {
+        const response = fetch(config.url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
+            body: JSON.stringify({dashboard: config.dashboard, cards: batch}),
+        });
+        // A failure is handled by the reader of the response.
+        response.catch(() => {});
+        return {dashboard: config.dashboard, ids: batch.map((card) => card.gridstack_id), response: response};
+    });
+})();
+JAVASCRIPT);
+        }
+
         $ajax_cards = GLPI_AJAX_DASHBOARD;
         $cache_key  = sha1($_SESSION['glpiactiveentities_string'] ?? "");
 
         $twig_params = [
+            'early_cards_script' => $early_cards_script,
             'mini' => $mini,
             'embed_class' => $embed_class,
             'mini_class' => $mini_class,
@@ -480,11 +538,13 @@ TWIG, $params);
             'js_params' => [
                 'mini'          => $mini,
                 'current'       => $this->current,
+                'filters'       => $saved_filters,
                 'cols'          => $this->grid_cols,
                 'rows'          => $this->grid_rows,
                 'cell_margin'   => $this->cell_margin,
                 'rand'          => $rand,
                 'ajax_cards'    => $ajax_cards,
+                'batches'       => $batches,
                 'all_cards'     => $cards,
                 'all_widgets'   => $all_widgets,
                 'context'       => $this->context,
@@ -516,6 +576,7 @@ TWIG, $params);
                     {{ gridstack_items|raw }}
                 </div>
             </div>
+            {{ early_cards_script|raw }}
             {% if mini %}
                     </div>
                 </div>
@@ -620,7 +681,7 @@ TWIG, $twig_params);
 
         // Restore user preference defaults wiped by session_start() (mirrors PostBootListener).
         foreach ($CFG_GLPI['user_pref_field'] as $field) {
-            if (array_key_exists($field, $CFG_GLPI)) {
+            if (isset($CFG_GLPI[$field])) {
                 $_SESSION["glpi$field"] = $CFG_GLPI[$field];
             }
         }
@@ -700,6 +761,18 @@ TWIG, $twig_params);
             throw new AccessDeniedHttpException();
         }
 
+        if (
+            session_status() === PHP_SESSION_ACTIVE
+            || filter_var(ini_get('session.use_cookies'), FILTER_VALIDATE_BOOLEAN)
+        ) {
+            // The embed session must be built in the isolated context of a stateless request
+            // (see `SessionManager::isResourceStateless()`), never on top of the session
+            // of the current visitor, as it would replace their identity and rights.
+            // Session cookies are disabled for stateless requests, so a cookie-enabled
+            // context means that `Session::start()` could resume the visitor session.
+            throw new AccessDeniedHttpException();
+        }
+
         self::$embed = true;
         $this->initEmbedSession($params);
     }
@@ -715,7 +788,7 @@ TWIG, $twig_params);
      */
     public function embed(array $params)
     {
-        Toolbox::deprecated(version: '11.1.0');
+        Toolbox::deprecated(version: '12.0.0');
 
         // show embedded dashboard
         $this->initEmbed($params);
@@ -785,6 +858,12 @@ TWIG, $twig_params);
         );
         if (hash_equals($token, (string) $params['token'])) {
             return true;
+        }
+
+        // The legacy token binds no identity: honor it only when the request carries no
+        // users_id/profiles_id, else its holder could impersonate any user (e.g. Super-Admin).
+        if ((int) $params['users_id'] !== 0 || (int) $params['profiles_id'] !== 0) {
+            return false;
         }
 
         $legacy_token = self::getLegacyToken(
@@ -1131,7 +1210,7 @@ HTML;
         echo "</div>";
 
         echo "<a href='#' class='btn btn-primary save_rights'>
-         <i class='ti ti-device-floppy'></i>
+         <i class='ti ti-device-floppy' aria-hidden='true'></i>
          <span>" . __s("Save") . "</span>
       </a>";
 
@@ -1155,17 +1234,21 @@ HTML;
     {
         global $GLPI_CACHE;
 
+        if (\is_array($card_options['args'] ?? null)) {
+            $card_options['args'] = Item::cleanCardOptions($card_options['args']);
+        }
+
         $start = microtime(true);
 
         $force = ($card_options['args']['force'] ?? $card_options['force'] ?? false);
 
         // retrieve card
         $notfound_html = "<div class='empty-card card-warning '>
-         <i class='ti ti-alert-triangle'></i>"
+         <i class='ti ti-alert-triangle' aria-hidden='true'></i>"
          . __s('empty card!') . "
       </div>";
         $render_error_html = "<div class='empty-card card-error '>
-         <i class='ti ti-alert-triangle'></i>"
+         <i class='ti ti-alert-triangle' aria-hidden='true'></i>"
          . __s('Error rendering card!')
             . "</br>"
             . \htmlescape($card_id)
@@ -1257,6 +1340,12 @@ HTML;
             if ($html === '') {
                 return $notfound_html;
             }
+        } catch (AccessDeniedHttpException $e) {
+            // Rights denial is not an application error, do not log it
+            $html = "<div class='empty-card card-warning '>
+         <i class='ti ti-lock' aria-hidden='true'></i>"
+         . \htmlescape($e->getMessageToDisplay() ?? __("You don't have permission to perform this action.")) . "
+      </div>";
         } catch (Throwable $e) {
             $html = $render_error_html;
             // Log the error message without exiting
@@ -1383,8 +1472,14 @@ HTML;
     {
         global $CFG_GLPI, $GLPI_CACHE;
 
+        $cache_key = self::getAllDashboardCardsCacheKey();
+        if (!$force && isset($this->all_cards[$cache_key])) {
+            // The plugins hook is costly: a request that renders several cards must not run it for each of them.
+            return $this->all_cards[$cache_key];
+        }
+
         Profiler::getInstance()->start(__METHOD__);
-        $cards = $GLPI_CACHE->get(self::getAllDashboardCardsCacheKey());
+        $cards = $GLPI_CACHE->get($cache_key);
 
         if ($cards === null || $force) {
             $cards = [];
@@ -1447,12 +1542,27 @@ HTML;
             // add multiple width for Assets itemtypes grouped by their foreign keys
             $assets = array_merge($CFG_GLPI['asset_types'], ['Software']);
             foreach ($assets as $itemtype) {
-                $fk_itemtypes = [
-                    'State',
-                    'Entity',
-                    'Manufacturer',
-                    'Location',
-                ];
+                $item = getItemForItemtype($itemtype);
+                if ($item === false) {
+                    continue;
+                }
+                $fk_itemtypes = [];
+
+                if ($item->isField(State::getForeignKeyField())) {
+                    $fk_itemtypes[] = State::class;
+                }
+
+                if ($item->isField(Entity::getForeignKeyField())) {
+                    $fk_itemtypes[] = Entity::class;
+                }
+
+                if ($item->isField(Manufacturer::getForeignKeyField())) {
+                    $fk_itemtypes[] = Manufacturer::class;
+                }
+
+                if ($item->isField(Location::getForeignKeyField())) {
+                    $fk_itemtypes[] = Location::class;
+                }
 
                 if (class_exists($itemtype . 'Type')) {
                     $fk_itemtypes[] = $itemtype . 'Type';
@@ -1470,7 +1580,7 @@ HTML;
 
                     $cards["count_" . $itemtype . "_" . $fk_itemtype] = [
                         'widgettype' => ['summaryNumbers', 'multipleNumber', 'pie', 'donut', 'halfpie', 'halfdonut', 'bar', 'hbar'],
-                        'itemtype'   => "\\Computer",
+                        'itemtype'   => $itemtype,
                         'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
                         'label'      => $label,
                         'provider'   => "Glpi\\Dashboard\\Provider::multipleNumber" . $itemtype . "By" . $fk_itemtype,
@@ -1548,6 +1658,15 @@ HTML;
                 'group'      => __('Assistance'),
                 'label'      => __("Tickets status by month"),
                 'provider'   => "Glpi\\Dashboard\\Provider::getTicketsStatus",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["ticket_by_category_and_entity"] = [
+                'widgettype' => ['hBars', 'stackedHBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by category and entity"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByCategoryAndEntity",
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
@@ -1629,6 +1748,42 @@ HTML;
                 ];
             }
 
+            $cards["report_ticket_by_status"] = [
+                'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by status"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByStatus",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["report_computers_by_os"] = [
+                'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Computer",
+                'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
+                'label'      => __("Number of computers by operating system"),
+                'provider'   => "Glpi\\Dashboard\\Provider::computersByOperatingSystem",
+                'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
+            ];
+
+            $cards["report_computers_by_age"] = [
+                'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Computer",
+                'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
+                'label'      => __("Number of computers by age"),
+                'provider'   => "Glpi\\Dashboard\\Provider::computersByAge",
+                'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
+            ];
+
+            $cards["report_ticket_by_group_and_status"] = [
+                'widgettype' => ['hBars', 'stackedHBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of opened and solved tickets by group"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByGroupAndStatus",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
             $cards["RemindersList"] = [
                 'widgettype' => ["articleList"],
                 'label'      => sprintf(__('List of %s'), Reminder::getTypeName(Session::getPluralNumber())),
@@ -1648,7 +1803,7 @@ HTML;
 
             if (!Environment::get()->shouldExpectResourcesToChange()) {
                 // Do not cache dashboard cards on `development` envs
-                $GLPI_CACHE->set(self::getAllDashboardCardsCacheKey(), $cards);
+                $GLPI_CACHE->set($cache_key, $cards);
             }
         }
 
@@ -1657,6 +1812,8 @@ HTML;
             $cards = array_merge($cards, $more_cards);
         }
         Profiler::getInstance()->stop(__METHOD__);
+
+        $this->all_cards[$cache_key] = $cards;
 
         return $cards;
     }

@@ -40,9 +40,12 @@ use Glpi\Error\ErrorHandler;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Inventory;
 use Glpi\Plugin\Hooks;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Psr7\Response;
+use Glpi\Toolbox\HttpClient;
+use Glpi\Toolbox\IPUtilities;
 use Safe\DateTime;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 use function Safe\json_decode;
 use function Safe\json_encode;
@@ -63,17 +66,19 @@ class Agent extends CommonDBTM
     /** @var string */
     public const ACTION_INVENTORY = 'inventory';
 
-    /** @var bool */
-    public $dohistory = true;
+    public bool $dohistory = true;
 
-    /** @var string */
-    public static $rightname = 'agent';
+    public static string $rightname = 'agent';
     //static $rightname = 'inventory';
 
-    /** @var bool */
-    private static $found_address = false;
+    /**
+     * Addresses that successfully answered, indexed by agent ID.
+     *
+     * @var array<int, string>
+     */
+    private static array $found_addresses = [];
 
-    public $history_blacklist = ['last_contact'];
+    public array $history_blacklist = ['last_contact'];
 
     public static function getTypeName($nb = 0)
     {
@@ -449,18 +454,7 @@ class Agent extends CommonDBTM
             $input['use_module_collect_data']         = in_array("collect", $metadata['enabled-tasks']) ? 1 : 0;
         }
 
-        $remote_ip = "";
-        if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            //Managing IP through a PROXY
-            $remote_ip = explode(', ', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
-        } elseif (isset($_SERVER['HTTP_X_REAL_IP'])) {
-            //try with X-Real-IP
-            $remote_ip = $_SERVER['HTTP_X_REAL_IP'];
-        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
-            //then get connected IP
-            $remote_ip = $_SERVER['REMOTE_ADDR'];
-        }
-
+        $remote_ip = IPUtilities::getClientIP() ?? '';
         $remote_ip = new IPAddress($remote_ip);
         if ($remote_ip->is_valid()) {
             $input['remote_addr'] = $remote_ip->getTextual();
@@ -583,7 +577,7 @@ class Agent extends CommonDBTM
                 'SELECT' => ['ips.name', 'ips.version'],
                 'FROM'   => NetworkPort::getTable() . ' AS netports',
                 'WHERE'  => [
-                    'netports.itemtype'  => $item->getType(),
+                    'netports.itemtype'  => $item::class,
                     'netports.items_id'  => $item->getID(),
                     'NOT'       => [
                         'OR'  => [
@@ -603,7 +597,7 @@ class Agent extends CommonDBTM
                             'netnames'  => 'items_id',
                             'netports'  => 'id', [
                                 'AND' => [
-                                    'netnames.itemtype'  => NetworkPort::getType(),
+                                    'netnames.itemtype'  => NetworkPort::class,
                                 ],
                             ],
                         ],
@@ -613,7 +607,7 @@ class Agent extends CommonDBTM
                             'ips'       => 'items_id',
                             'netnames'  => 'id', [
                                 'AND' => [
-                                    'ips.itemtype' => NetworkName::getType(),
+                                    'ips.itemtype' => NetworkName::class,
                                 ],
                             ],
                         ],
@@ -636,7 +630,7 @@ class Agent extends CommonDBTM
                 'SELECT' => ['d.name'],
                 'FROM'   => Domain_Item::getTable(),
                 'WHERE'  => [
-                    'itemtype'  => $item->getType(),
+                    'itemtype'  => $item::class,
                     'items_id'  => $item->getID(),
                 ],
                 'INNER JOIN'   => [
@@ -691,14 +685,13 @@ class Agent extends CommonDBTM
      *
      * @param string $endpoint Endpoint to reach
      *
-     * @return Response
+     * @return ResponseInterface
      */
-    public function requestAgent($endpoint): Response
+    public function requestAgent($endpoint): ResponseInterface
     {
-        global $CFG_GLPI;
-
-        if (self::$found_address !== false) {
-            $addresses = [self::$found_address];
+        $agents_id = (int) $this->getID();
+        if (isset(self::$found_addresses[$agents_id])) {
+            $addresses = [self::$found_addresses[$agents_id]];
         } else {
             $addresses = $this->getAgentURLs();
         }
@@ -706,21 +699,17 @@ class Agent extends CommonDBTM
         $exception = null;
         $response = null;
         foreach ($addresses as $address) {
-            $options = [
-                'base_uri'        => $address,
-            ];
-
-            if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
-                $options['proxy_excluded'] = true;
-            }
-
-            // init guzzle client with base options
-            $httpClient = Toolbox::getGuzzleClient($options);
             try {
-                $response = $httpClient->request('GET', $endpoint, []);
-                self::$found_address = $address;
+                $httpClient = new HttpClient(
+                    context: self::class,
+                    options: [
+                        'base_uri' => $address,
+                    ]
+                );
+                $response = $httpClient->get($endpoint, []);
+                self::$found_addresses[$agents_id] = $address;
                 break;
-            } catch (Throwable $exception) {
+            } catch (ExceptionInterface $exception) {
                 // many addresses will be incorrect
             }
         }
@@ -744,7 +733,7 @@ class Agent extends CommonDBTM
         try {
             $response = $this->requestAgent('status');
             return $this->handleAgentResponse($response, self::ACTION_STATUS);
-        } catch (ClientException $e) {
+        } catch (ClientExceptionInterface $e) {
             ErrorHandler::logCaughtException($e);
             // not authorized
             return ['answer' => __('Not allowed')];
@@ -763,9 +752,9 @@ class Agent extends CommonDBTM
     {
         // must return json
         try {
-            $this->requestAgent('now');
-            return $this->handleAgentResponse(new Response(), self::ACTION_INVENTORY);
-        } catch (ClientException $e) {
+            $response = $this->requestAgent('now');
+            return $this->handleAgentResponse($response, self::ACTION_INVENTORY);
+        } catch (ClientExceptionInterface $e) {
             ErrorHandler::logCaughtException($e);
             // not authorized
             return ['answer' => __('Not allowed')];
@@ -778,16 +767,16 @@ class Agent extends CommonDBTM
     /**
      * Handle agent response and returns an array to be serialized as json
      *
-     * @param Response $response Response
-     * @param string   $request  Request type (either status or now)
+     * @param ResponseInterface $response Response
+     * @param string            $request  Request type (either status or now)
      *
      * @return array{answer: string}
      */
-    private function handleAgentResponse(Response $response, $request): array
+    private function handleAgentResponse(ResponseInterface $response, $request): array
     {
         $data = [];
 
-        $raw_content = (string) $response->getBody();
+        $raw_content = $response->getContent();
 
         switch ($request) {
             case self::ACTION_STATUS:
@@ -927,7 +916,7 @@ class Agent extends CommonDBTM
             $plugin_actions = $PLUGIN_HOOKS[Hooks::STALE_AGENT_CONFIG] ?? [];
             /**
              * @var string $plugin
-             * @phpstan-var array{label: string, item_action: boolean, render_callback: callable, action_callback: callable}[] $actions
+             * @phpstan-var array{label: string, item_action: bool, render_callback: callable, action_callback: callable}[] $actions
              */
             foreach ($plugin_actions as $plugin => $actions) {
                 if (is_array($actions) && Plugin::isPluginActive($plugin)) {

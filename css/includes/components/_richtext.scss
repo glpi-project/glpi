@@ -50,8 +50,8 @@ body.mce-content-body {
     }
 }
 
-#page .tox .tox-statusbar {
-    border-top: transparent;
+.tox-statusbar {
+    border-top: transparent !important;
     justify-content: flex-end;
 }
 
@@ -76,6 +76,11 @@ body.mce-content-body {
 
     img {
         max-width: 100%;
+
+        // Gallery thumbnails have both dimensions: keep their ratio when `max-width` reduces the width
+        &[itemprop="thumbnail"] {
+            height: auto;
+        }
     }
 
     table {
@@ -102,6 +107,23 @@ body.mce-content-body {
 
     h1, h2, h3, h4, h5, h6 {
         margin-bottom: 0.5rem;
+    }
+}
+
+// Prevent pasted inline positioning from escaping timeline items and overlaying the page.
+.itil-timeline .rich_text_container {
+    [style*="position"],
+    [class*="position-"],
+    [class*="fixed-"],
+    [class*="sticky-"] {
+        position: static !important;
+    }
+
+    [style*="transform"],
+    [style*="translate"],
+    [class*="translate-"] {
+        transform: none !important;
+        translate: none !important;
     }
 }
 

@@ -40,7 +40,6 @@
          <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
             <div class="row flex-row align-items-start flex-grow-1">
                <div class="row flex-row">
-                  {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                   {{ inputs.hidden('notifications_id', notification.fields['id']) }}
                   {{ inputs.hidden('itemtype', notification.fields['itemtype']) }}
                   {{ fields.dropdownArrayField('_targets', null, all_targets, _n('Recipient', 'Recipients', get_plural_number()), {

@@ -1,0 +1,184 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import "pages/tools/kb/_article_row.html.twig" as macros %}
+{% import "pages/tools/kb/_actions_menu.html.twig" as actions_menu %}
+
+{% set hide_favorites = not has_other_favorites and not current_is_favorite %}
+
+{% if show_actions %}
+    {{ actions_menu.render_actions_menu_placeholder() }}
+{% endif %}
+
+{# Apply the persisted collapsed state and width before first paint to avoid a flash of the open aside. #}
+<script>
+    (() => {
+        try {
+            const aside = document.currentScript.closest('[data-main-page-aside="knowbaseitem"]');
+            if (!aside) {
+                return;
+            }
+            if (localStorage.getItem('glpi-kb-aside-collapsed') === '1') {
+                aside.setAttribute('data-glpi-kb-aside-collapsed', '');
+            }
+            const width = parseInt(localStorage.getItem('glpi-kb-aside-width'), 10);
+            if (width > 0) {
+                aside.style.setProperty('--kb-aside-width', `${width}px`);
+            }
+        } catch (e) { /* localStorage unavailable */ }
+    })();
+</script>
+
+{# Desktop drag handle, see GlpiKnowbaseAsideController#initResize(). #}
+<div
+    class="kb-aside-resizer"
+    data-glpi-kb-aside-resizer
+    role="separator"
+    tabindex="0"
+    aria-orientation="vertical"
+    aria-controls="kb-aside-body"
+    aria-label="{{ __('Resize articles list') }}"
+    aria-valuemin="300"{# keep in sync with $kb-aside-min-width in _kb.scss #}
+    title="{{ __('Drag to resize, double-click to reset') }}"
+></div>
+
+<div class="kb-aside-rail align-items-center pt-2" data-glpi-kb-aside-rail>
+    <button
+        type="button"
+        class="btn btn-icon btn-ghost-secondary"
+        data-glpi-kb-aside-expand
+        aria-controls="kb-aside-body"
+        aria-label="{{ __('Show articles list') }}"
+        title="{{ __('Show articles list') }}"
+        data-bs-toggle="tooltip"
+        data-bs-placement="right"
+    >
+        <i class="ti ti-layout-sidebar-left-expand" aria-hidden="true"></i>
+    </button>
+</div>
+
+<div id="kb-aside-body" data-glpi-kb-aside-body>
+
+<div class="card-header flex-column align-items-start" data-glpi-kb-aside-header {{ hide_favorites ? 'data-glpi-kb-aside-header-no-border' : '' }}>
+    <div class="d-flex align-items-center w-100 mb-3">
+        <h3 class="card-title fw-bold mb-0 flex-grow-1">{{ __("Articles") }}</h3>
+        <button
+            type="button"
+            class="btn btn-icon btn-ghost-secondary"
+            data-glpi-kb-aside-collapse
+            aria-controls="kb-aside-body"
+            aria-expanded="true"
+            aria-label="{{ __('Collapse articles list') }}"
+            title="{{ __('Collapse articles list') }}"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+        >
+            <i class="ti ti-layout-sidebar-left-collapse" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div class="input-icon mb-2">
+        <input
+            type="text"
+            value=""
+            class="form-control pe-none"
+            placeholder="{{ __('Search...') }}"
+            aria-label="{{ __('Search articles') }}"
+            data-glpi-kb-aside-search-input
+        >
+        <button
+            class="input-icon-addon border-0 bg-transparent"
+            data-glpi-kb-aside-search-clear
+            disabled="true"
+            aria-label="{{ __('Clear search') }}"
+        >
+            <span class="ti ti-search" data-glpi-kb-aside-search-icon aria-hidden="true"></span>
+        </button>
+    </div>
+</div>
+
+<div
+    class="card-body flex-grow-0"
+    data-glpi-kb-aside-favorites
+    data-testid="kb-aside-favorites"
+    {{ hide_favorites ? 'data-glpi-kb-aside-favorites-hidden' : '' }}
+>
+    <h4 class="card-title fw-bold fs-4">
+        <i class="ti ti-star-filled me-1 fs-5 text-yellow" aria-hidden="true"></i>
+        {{ __("Favorites") }}
+    </h4>
+        <ul class="kb-tree ps-0" aria-label="{{ __('Favorite articles') }}">
+            {% for article in favorites %}
+                {% if article.is_current %}
+                    {{ macros.render_article(
+                        article,
+                        false,
+                        show_actions,
+                        current_is_favorite ? 'active' : 'pending',
+                    ) }}
+                {% else %}
+                    {{ macros.render_article(article, false, show_actions) }}
+                {% endif %}
+            {% endfor %}
+        </ul>
+</div>
+
+<div
+    class="card-body"
+    data-glpi-kb-aside-tree
+    data-glpi-kb-root-id="{{ root_id }}"
+    data-testid="aside-tree"
+>
+    {{ include('pages/tools/kb/aside_tree.html.twig') }}
+    <p class="text-muted" data-glpi-kb-aside-no-results hidden>
+        {{ __("No articles found.") }}
+    </p>
+</div>
+
+</div>
+
+{# Static import: evaluated before DOMContentLoaded, so the server-rendered toggles never predate their listeners. #}
+<script type="module">
+    import { GlpiKnowbaseAsideController } from "/js/modules/Knowbase/AsideController.js";
+
+    const aside = document.querySelector('[data-main-page-aside="knowbaseitem"]');
+    new GlpiKnowbaseAsideController(aside);
+    {# Without the update right every move would be refused server-side. Loaded
+     # dynamically: a drag cannot start before the user moves the pointer, so
+     # this one has no server-rendered state to reach in time. #}
+    {% if can_update %}
+        const { GlpiKnowbaseAsideDragController } = await import(
+            "/js/modules/Knowbase/AsideDragController.js"
+        );
+        new GlpiKnowbaseAsideDragController(aside);
+    {% endif %}
+</script>

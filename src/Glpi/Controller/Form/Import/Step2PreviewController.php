@@ -89,7 +89,7 @@ final class Step2PreviewController extends AbstractController
 
         return $this->render("pages/admin/form/import/step2_preview.html.twig", [
             'title'        => __("Preview import"),
-            'menu'         => ['admin', Form::getType()],
+            'menu'         => ['admin', Form::class],
             'preview'      => $previewResult,
             'json'         => $json,
             'replacements' => $replacements,

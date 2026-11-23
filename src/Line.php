@@ -49,10 +49,10 @@ class Line extends CommonDBTM implements AssignableItemInterface, StateInterface
     use AssignableItem;
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    public static $rightname                   = 'line';
-    protected $usenotepad               = true;
+    public static string $rightname                   = 'line';
+    protected bool $usenotepad               = true;
 
 
     public static function getTypeName($nb = 0)
@@ -256,7 +256,7 @@ class Line extends CommonDBTM implements AssignableItemInterface, StateInterface
 
         $action_prefix = 'Item_Line' . MassiveAction::CLASS_ACTION_SEPARATOR;
         if (in_array($itemtype, $CFG_GLPI['line_types'], true)) {
-            $actions[$action_prefix . 'add']    = "<i class='" . htmlescape(self::getIcon()) . "'></i>"
+            $actions[$action_prefix . 'add']    = "<i class='" . htmlescape(self::getIcon()) . "' aria-hidden='true'></i>"
                 . _sx('button', 'Add a phone line');
             $actions[$action_prefix . 'remove'] = _sx('button', 'Remove a phone line');
         }

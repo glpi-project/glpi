@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\RichText\RichText;
 
 /**
@@ -42,10 +43,10 @@ use Glpi\RichText\RichText;
 class NotificationTemplateTranslation extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype = NotificationTemplate::class;
-    public static $items_id  = 'notificationtemplates_id';
+    public static string $itemtype = NotificationTemplate::class;
+    public static string $items_id  = 'notificationtemplates_id';
 
-    public $dohistory = true;
+    public bool $dohistory = true;
 
 
     #[Override]
@@ -77,10 +78,8 @@ class NotificationTemplateTranslation extends CommonDBChild
     #[Override]
     protected function computeFriendlyName()
     {
-        global $CFG_GLPI;
-
-        if ($this->getField('language') !== '') {
-            return $CFG_GLPI['languages'][$this->getField('language')][0];
+        if ($this->fields['language'] !== '') {
+            return LanguageRegistry::get($this->fields['language'])->native_name;
         }
         return __('Default translation');
     }
@@ -105,7 +104,7 @@ class NotificationTemplateTranslation extends CommonDBChild
         $notificationtemplates_id = $options['notificationtemplates_id'] ?? -1;
 
         if ($this->getFromDB($ID)) {
-            $notificationtemplates_id = $this->getField('notificationtemplates_id');
+            $notificationtemplates_id = $this->fields['notificationtemplates_id'];
         }
         $template = new NotificationTemplate();
         $template->getFromDB($notificationtemplates_id);
@@ -113,7 +112,7 @@ class NotificationTemplateTranslation extends CommonDBChild
         $used_languages = self::getAllUsedLanguages($notificationtemplates_id);
         // Remove current language
         if (!$this->isNewItem()) {
-            $used_languages = array_diff($used_languages, [$this->getField('language')]);
+            $used_languages = array_diff($used_languages, [$this->fields['language']]);
         }
 
         TemplateRenderer::getInstance()->display('pages/setup/notification/translation.html.twig', [
@@ -132,9 +131,9 @@ class NotificationTemplateTranslation extends CommonDBChild
      */
     public function showSummary(NotificationTemplate $template, $options = [])
     {
-        global $CFG_GLPI, $DB;
+        global $DB;
 
-        $nID     = $template->getField('id');
+        $nID     = $template->getID();
         $canedit = Config::canUpdate();
 
         if ($canedit) {
@@ -159,7 +158,7 @@ TWIG, $twig_params);
         ) {
             if ($this->getFromDB($data['id'])) {
                 $href = self::getFormURL() . "?id=" . $data['id'] . "&notificationtemplates_id=" . $nID;
-                $lang = $data['language'] !== '' ? $CFG_GLPI['languages'][$data['language']][0] : __('Default translation');
+                $lang = $data['language'] !== '' ? LanguageRegistry::get($data['language'])->native_name : __('Default translation');
 
                 $entries[] = [
                     'itemtype' => self::class,
@@ -181,7 +180,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

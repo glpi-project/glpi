@@ -62,13 +62,12 @@ abstract class AbstractTileController extends AbstractController
         $linked_item = getItemForItemtype($linked_itemtype);
         if (
             !$linked_item instanceof LinkableToTilesInterface
-            || !$linked_item instanceof CommonDBTM
             || !$linked_item->getFromDB($linked_items_id)
         ) {
             // Invalid database data
             throw new RuntimeException();
         }
-        if (!$linked_item::canUpdate() || !$linked_item->canUpdateItem()) {
+        if (!$linked_item->can($linked_item->getID(), UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 
@@ -82,7 +81,7 @@ abstract class AbstractTileController extends AbstractController
         if (!$linked_entity->getFromDB($linked_entity_id)) {
             throw new BadRequestHttpException();
         }
-        if (!$linked_entity::canUpdate() || !$linked_entity->canUpdateItem()) {
+        if (!$linked_entity->can($linked_entity->getID(), UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 
@@ -96,12 +95,11 @@ abstract class AbstractTileController extends AbstractController
         $linked_item = getItemForItemtype($linked_itemtype);
         if (
             !$linked_item instanceof LinkableToTilesInterface
-            || !$linked_item instanceof CommonDBTM
             || !$linked_item->getFromDB($linked_items_id)
         ) {
             throw new BadRequestHttpException();
         }
-        if (!$linked_item::canUpdate() || !$linked_item->canUpdateItem()) {
+        if (!$linked_item->can($linked_item->getID(), UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 
@@ -115,7 +113,6 @@ abstract class AbstractTileController extends AbstractController
         $tile = getItemForItemtype($tile_itemtype);
         if (
             !$tile instanceof TileInterface
-            || !$tile instanceof CommonDBTM
             || !$tile->getFromDB($tile_id)
         ) {
             throw new BadRequestHttpException();

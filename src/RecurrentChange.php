@@ -38,7 +38,7 @@ class RecurrentChange extends CommonITILRecurrent
     /**
      * @var string Right managements
      */
-    public static $rightname = 'recurrentchange';
+    public static string $rightname = 'recurrentchange';
 
     public static function getTypeName($nb = 0)
     {

@@ -36,7 +36,7 @@
  */
 
 /**
- * @FIXME Merge this class with GLPIUploadHandler in GLPI 11.0.
+ * @FIXME Merge this class with GLPIUploadHandler.
  *        It has been added in GLPI 10.0.10 to ensure that removal of `blueimp/jquery-file-upload` library would not
  *        result in any BC-break for plugins.
  */
@@ -77,16 +77,14 @@ use function Safe\unlink;
 
 class UploadHandler
 {
-    /** @var array */
-    protected $options;
+    protected array $options;
 
     /**
      * PHP File Upload error message codes:
      * https://php.net/manual/en/features.file-upload.errors.php
      *
-     * @var array
      */
-    protected $error_messages = [
+    protected array $error_messages = [
         1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
         2 => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
         3 => 'The uploaded file was only partially uploaded',
@@ -112,10 +110,8 @@ class UploadHandler
     public const IMAGETYPE_JPEG = 'image/jpeg';
     public const IMAGETYPE_PNG = 'image/png';
 
-    /** @var array */
-    protected $image_objects = [];
-    /** @var array */
-    protected $response = [];
+    protected array $image_objects = [];
+    protected array $response = [];
 
     /**
      * @param ?array $options
@@ -409,7 +405,7 @@ class UploadHandler
     protected function is_valid_file_object($file_name)
     {
         $file_path = $this->get_upload_path($file_name);
-        if ((string) $file_name !== '' && $file_name[0] !== '.' && is_file($file_path)) {
+        if ($file_name !== '' && $file_name[0] !== '.' && is_file($file_path)) {
             return true;
         }
         return false;
@@ -1727,7 +1723,6 @@ class UploadHandler
      */
     public function head()
     {
-        $this->header('Pragma: no-cache');
         $this->header('Cache-Control: no-store, no-cache, must-revalidate');
         $this->header('Content-Disposition: inline; filename="files.json"');
         // Prevent Internet Explorer from MIME-sniffing the content-type:
@@ -1835,7 +1830,7 @@ class UploadHandler
         $response = [];
         foreach ($file_names as $file_name) {
             $file_path = $this->get_upload_path($file_name);
-            $success = (string) $file_name !== '' && $file_name[0] !== '.' && is_file($file_path) && \unlink($file_path); //@phpstan-ignore theCodingMachineSafe.function
+            $success = $file_name !== '' && $file_name[0] !== '.' && is_file($file_path) && \unlink($file_path); //@phpstan-ignore theCodingMachineSafe.function
             if ($success) {
                 foreach ($this->options['image_versions'] as $version => $options) {
                     if (!empty($version)) {

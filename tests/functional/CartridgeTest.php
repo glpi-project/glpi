@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
+use Log;
 
 /* Test for inc/cartridge.class.php */
 
@@ -77,6 +78,20 @@ class CartridgeTest extends DbTestCase
 
         //install
         $this->assertTrue($cartridge->install($pid, $ciid));
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                'glpi_logs',
+                [
+                    'items_id' => $ciid,
+                    'itemtype' => \CartridgeItem::class,
+                    'itemtype_link' => \Cartridge::class,
+                    'linked_action' => Log::HISTORY_UPDATE_SUBITEM,
+                    'old_value' => '',
+                    'new_value' => sprintf(__('Install the cartridge %1$s on printer : %2$s'), $cid, $pid),
+                ]
+            )
+        );
         //check install
         $this->assertTrue($cartridge->getFromDB($cid));
         $this->assertSame($pid, $cartridge->fields['printers_id']);
@@ -89,7 +104,40 @@ class CartridgeTest extends DbTestCase
         $this->assertSame(1, $cartridge->getUsedNumber($ciid));
         $this->assertSame(1, $cartridge->getTotalNumberForPrinter($pid));
 
+        //backtostock
+        $this->assertTrue($cartridge->backToStock(['id' => $cid]));
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                'glpi_logs',
+                [
+                    'items_id' => $ciid,
+                    'itemtype' => \CartridgeItem::class,
+                    'itemtype_link' => \Cartridge::class,
+                    'linked_action' => Log::HISTORY_UPDATE_SUBITEM,
+                    'old_value' => '',
+                    'new_value' => sprintf(__('Cartridge (%1$s): back to stock'), $cid),
+                ]
+            )
+        );
+        //reinstall
+        $this->assertTrue($cartridge->install($pid, $ciid));
+
         $this->assertTrue($cartridge->uninstall($cid));
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                'glpi_logs',
+                [
+                    'items_id' => $ciid,
+                    'itemtype' => \CartridgeItem::class,
+                    'itemtype_link' => \Cartridge::class,
+                    'linked_action' => Log::HISTORY_UPDATE_SUBITEM,
+                    'old_value' => '',
+                    'new_value' => sprintf(__('Uninstall the cartridge %1$s for end life'), $cid),
+                ]
+            )
+        );
         //this is not possible... But don't know if this is expected
         //$this->assertTrue($cartridge->install($pid, $ciid));
         //check uninstall

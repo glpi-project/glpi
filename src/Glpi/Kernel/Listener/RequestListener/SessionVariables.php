@@ -73,33 +73,33 @@ final class SessionVariables implements EventSubscriberInterface
         if ($request->query->has('forcetab')) {
             $itemtype = URL::extractItemtypeFromUrlPath($request->getPathInfo());
             if ($itemtype !== null) {
-                Session::setActiveTab($itemtype, $request->get('forcetab'));
+                Session::setActiveTab($itemtype, $request->query->get('forcetab'));
             }
         }
 
         // Manage tabs
-        if ($request->get('glpi_tab') && $request->get('itemtype')) {
-            Session::setActiveTab($request->get('itemtype'), $request->get('glpi_tab'));
+        if ($request->query->get('glpi_tab') && $request->query->get('itemtype')) {
+            Session::setActiveTab($request->query->get('itemtype'), $request->query->get('glpi_tab'));
         }
 
         // Override list-limit if choosen
-        if ($request->get('glpilist_limit')) {
-            $_SESSION['glpilist_limit'] = $request->get('glpilist_limit');
+        if ($request->query->get('glpilist_limit')) {
+            $_SESSION['glpilist_limit'] = $request->query->get('glpilist_limit');
         }
 
         // Manage forced profile / entity.
         // This feature permits to craft custom links from an external app/notification that forces a specific profile
         // and/or a specific entity to be loaded.
         // see #10074
-        $forced_profile = $request->get('force_profile');
-        $forced_entity  = $request->get('force_entity');
+        $forced_profile = $request->query->get('force_profile');
+        $forced_entity  = $request->query->get('force_entity');
         $check_entities = true;
         if (
             $forced_profile !== null
             && ($_SESSION['glpiactiveprofile']['id'] ?? -1) != $forced_profile
             && isset($_SESSION['glpiprofiles'][$forced_profile])
         ) {
-            Session::changeProfile($forced_profile);
+            Session::changeProfile((int) $forced_profile);
         }
         if (
             $forced_entity !== null

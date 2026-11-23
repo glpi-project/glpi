@@ -53,6 +53,7 @@ use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Debug\Profiler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Features\TreeBrowseInterface;
+use Glpi\Form\Form;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\Input\SearchInputInterface;
@@ -100,6 +101,12 @@ use function Safe\preg_match;
  */
 final class SearchEngine
 {
+    /**
+     * Indicates whether the search results anchor, targeted by the "Go to search results" skip link,
+     * has already been rendered (it must be unique in the page).
+     */
+    private static bool $is_search_results_anchor_rendered = false;
+
     /**
      * @param int $output_type
      * @param array $data
@@ -185,9 +192,13 @@ final class SearchEngine
             }
         }
 
+        if ($item instanceof CommonITILObject && Form::canView()) {
+            $linked[] = Form::class;
+        }
+
         // Add entity meta if needed
         if ($item->isField('entities_id') && !($item instanceof Entity)) {
-            $linked[] = Entity::getType();
+            $linked[] = Entity::class;
         }
 
         return array_unique($linked);
@@ -399,7 +410,7 @@ final class SearchEngine
         // Instanciate an object to access method
         $data['item'] = null;
 
-        if ($itemtype != AllAssets::getType()) {
+        if ($itemtype != AllAssets::class) {
             $data['item'] = getItemForItemtype($itemtype);
         }
 
@@ -482,7 +493,7 @@ final class SearchEngine
 
                         if (
                             isset($criterion['value'])
-                            && ((string) $criterion['value'] !== '')
+                            && ((string) $criterion['value']) !== ''
                         ) {
                             $data['search']['no_search'] = false;
                         }
@@ -547,6 +558,7 @@ final class SearchEngine
     /**
      * @param bool $only_not
      * @return array
+     * FIXME: maybe try to use Operator enum
      */
     public static function getLogicalOperators($only_not = false): array
     {
@@ -631,7 +643,10 @@ final class SearchEngine
         TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
             'itemtype' => $itemtype,
         ]);
-        echo "<div class='col search-container' data-glpi-search-container>";
+        // Only the first search of the page is targeted by the "Go to search results" skip link
+        $anchor_id = self::$is_search_results_anchor_rendered ? '' : " id='search-results'";
+        self::$is_search_results_anchor_rendered = true;
+        echo "<div class='col search-container'{$anchor_id} data-glpi-search-container data-testid='search-container' tabindex='-1'>";
 
         $output = self::getOutputForLegacyKey($params['display_type'], $params);
         if ($output instanceof HTMLSearchOutput) {

@@ -30,7 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-require('@jest/globals');
 const fs = require('fs');
 const path = require('path');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');

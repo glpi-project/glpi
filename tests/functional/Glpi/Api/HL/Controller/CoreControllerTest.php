@@ -385,6 +385,129 @@ class CoreControllerTest extends HLAPITestCase
         });
     }
 
+    public function testAuthorizePreservesPkceParamsOnLoginRedirect(): void
+    {
+        // Create an OAuth client using the authorization code grant
+        $client = $this->createItem(\OAuthClient::class, [
+            'name' => __FUNCTION__,
+            'is_active' => 1,
+            'is_confidential' => 1,
+            'grants' => ['authorization_code'],
+        ]);
+
+        // No session is authenticated
+        $request = new Request('GET', '/authorize');
+        $request = $request->withQueryParams([
+            'response_type'         => 'code',
+            'client_id'             => $client->fields['identifier'],
+            'redirect_uri'          => '/api.php/oauth2/redirection',
+            'scope'                 => 'user',
+            'state'                 => 'xyzABC123',
+            'code_challenge'        => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cU',
+            'code_challenge_method' => 'S256',
+        ]);
+
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(302, $status))
+                ->headers(function ($headers) {
+                    $location = $headers['Location'];
+                    $this->assertStringContainsString('redirect=', $location);
+                    $redirect_target = urldecode(explode('redirect=', $location, 2)[1]);
+                    $this->assertStringContainsString('code_challenge=', $redirect_target);
+                    $this->assertStringContainsString('code_challenge_method=', $redirect_target);
+                    $this->assertStringContainsString('state=', $redirect_target);
+                });
+        }, false);
+    }
+
+    public function testAccessTokenRecordsUserAgent(): void
+    {
+        global $DB;
+
+        $user_agent = 'Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0';
+        $previous_user_agent = $_SERVER['HTTP_USER_AGENT'] ?? null;
+        $_SERVER['HTTP_USER_AGENT'] = $user_agent;
+        try {
+            $this->login();
+        } finally {
+            if ($previous_user_agent === null) {
+                unset($_SERVER['HTTP_USER_AGENT']);
+            } else {
+                $_SERVER['HTTP_USER_AGENT'] = $previous_user_agent;
+            }
+        }
+
+        $token = $DB->request([
+            'SELECT' => ['user_agent'],
+            'FROM' => 'glpi_oauth_access_tokens',
+            'WHERE' => ['client' => TU_OAUTH_CLIENT_ID],
+            'ORDER' => ['date_expiration DESC'],
+            'LIMIT' => 1,
+        ])->current();
+        $this->assertEquals($user_agent, $token['user_agent']);
+    }
+
+    public function testAuthorizeConsentRequiresSameOriginPost(): void
+    {
+        $client = $this->createItem(\OAuthClient::class, [
+            'name' => __FUNCTION__,
+            'is_active' => 1,
+            'is_confidential' => 1,
+            'grants' => ['authorization_code'],
+        ]);
+        $this->loginWeb();
+
+        $build_request = function (string $method, array $parameters, array $query = [], array $headers = []) use ($client): Request {
+            $request = (new Request($method, '/authorize', $headers))->withQueryParams([
+                'response_type' => 'code',
+                'client_id'     => $client->fields['identifier'],
+                'redirect_uri'  => '/api.php/oauth2/redirection',
+                'scope'         => 'user',
+            ] + $query);
+            // The router seeds the parameters from $_REQUEST, query string included
+            foreach ($query as $name => $value) {
+                $request->setParameter($name, $value);
+            }
+            foreach ($parameters as $name => $value) {
+                $request->setParameter($name, $value);
+            }
+            return $request;
+        };
+
+        // A GET carrying the decision only displays the consent form
+        $this->api->call($build_request('GET', ['accept' => '1'], [], ['Sec-Fetch-Site' => 'cross-site']), function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->headers(fn($headers) => $this->assertArrayNotHasKey('Location', $headers));
+        }, false);
+
+        // A POST coming from another site is refused
+        $this->api->call($build_request('POST', ['accept' => ''], [], ['Sec-Fetch-Site' => 'cross-site']), function ($call) {
+            $call->response->isAccessDenied();
+        }, false);
+        $this->api->call($build_request('POST', ['accept' => ''], [], ['Origin' => 'https://attacker.example', 'Host' => 'glpi.example']), function ($call) {
+            $call->response->isAccessDenied();
+        }, false);
+
+        // A decision passed in the query string is ignored: clicking "Deny" on a crafted URL does not approve
+        $this->api->call($build_request('POST', ['deny' => ''], ['accept' => '1'], ['Sec-Fetch-Site' => 'same-origin']), function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(302, $status))
+                ->headers(function ($headers) {
+                    $this->assertStringContainsString('error=access_denied', $headers['Location']);
+                    $this->assertStringNotContainsString('code=', $headers['Location']);
+                });
+        }, false);
+
+        // A same-origin POST issues the code
+        $this->api->call($build_request('POST', ['accept' => ''], [], ['Sec-Fetch-Site' => 'same-origin']), function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(302, $status))
+                ->headers(fn($headers) => $this->assertStringContainsString('code=', $headers['Location']));
+        }, false);
+    }
+
     public function testStatusScope()
     {
         $this->login(api_options: ['scope' => 'api']);

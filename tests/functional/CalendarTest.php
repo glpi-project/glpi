@@ -129,16 +129,6 @@ class CalendarTest extends DbTestCase
                 'end'    => '2019-01-01 00:00:00',
                 'value'  => 0,
             ], [
-                'start'  => '2019-01-01 07:00:00',
-                'end'    => '2019-01-01 09:00:00',
-                'value'  => HOUR_TIMESTAMP * 2,
-                'days'   => true,
-            ], [
-                'start'  => '2019-01-01 00:00:00',
-                'end'    => '2019-01-08 00:00:00',
-                'value'  => WEEK_TIMESTAMP,
-                'days'   => true,
-            ], [
                 // Regression for the ticket-reopen `DatetimeException`: when a date
                 // bound is the `'NULL'` SQL sentinel or empty, the method must return
                 // 0 instead of throwing through `Safe\strtotime()`.
@@ -158,7 +148,7 @@ class CalendarTest extends DbTestCase
     }
 
     #[DataProvider('activeProvider')]
-    public function testGetActiveTimeBetween($start, $end, $value, $days = false)
+    public function testGetActiveTimeBetween($start, $end, $value)
     {
         $calendar = new \Calendar();
         $this->assertTrue($calendar->getFromDB(1)); //get default calendar
@@ -168,7 +158,6 @@ class CalendarTest extends DbTestCase
             $calendar->getActiveTimeBetween(
                 $start,
                 $end,
-                $days
             )
         );
     }

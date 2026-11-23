@@ -35,7 +35,7 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-Session::checkRightsOr('search_config', [DisplayPreference::PERSONAL,
+Session::checkRightsOr(DisplayPreference::$rightname, [DisplayPreference::PERSONAL,
     DisplayPreference::GENERAL,
 ]);
 

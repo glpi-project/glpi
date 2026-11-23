@@ -41,10 +41,10 @@
 class TicketCost extends CommonITILCost
 {
     // From CommonDBChild
-    public static $itemtype = Ticket::class;
-    public static $items_id  = 'tickets_id';
+    public static string $itemtype = Ticket::class;
+    public static string $items_id  = 'tickets_id';
 
-    public static $rightname        = 'ticketcost';
+    public static string $rightname        = 'ticketcost';
 
     public function post_updateItem($history = true)
     {
@@ -83,7 +83,7 @@ class TicketCost extends CommonITILCost
     public function updateTCOItem(string $itemtype, int $items_id): void
     {
         $item = getItemForItemtype($itemtype);
-        if ($item && $item->getFromDB($items_id)) {
+        if ($item && $item->isField('ticket_tco') && $item->getFromDB($items_id)) {
             $item->update([
                 'id' => $items_id,
                 'ticket_tco' => Ticket::computeTco($item),

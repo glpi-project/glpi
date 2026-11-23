@@ -50,7 +50,7 @@ class UninstallCommand extends AbstractPluginCommand
         $this->setDescription('Run plugin(s) uninstallation script');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln(
             '<error>' . __("This action will permanently delete data") . '</error>',
@@ -121,7 +121,7 @@ class UninstallCommand extends AbstractPluginCommand
     protected function getDirectoryChoiceChoices()
     {
         $choices = [];
-        $plugin_iterator = $this->db->request(
+        $plugin_iterator = $this->getDb()->request(
             [
                 'FROM'  => Plugin::getTable(),
                 'WHERE' => [

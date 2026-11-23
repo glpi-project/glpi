@@ -45,13 +45,12 @@ use Glpi\Search\SearchOption;
  **/
 class Lockedfield extends CommonDBTM
 {
-    /** @var CommonDBTM */
-    private $item;
+    private CommonDBTM $item;
 
     // From CommonDBTM
-    public $dohistory                   = false;
+    public bool $dohistory                   = false;
 
-    public static $rightname                   = 'locked_field';
+    public static string $rightname                   = 'locked_field';
 
     public static function getTypeName($nb = 0)
     {
@@ -334,7 +333,7 @@ class Lockedfield extends CommonDBTM
         return $DB->delete(
             $this->getTable(),
             [
-                'itemtype'  => $this->item->getType(),
+                'itemtype'  => $this->item::class,
                 'items_id'  => $this->item->fields['id'],
             ]
         );
@@ -477,7 +476,10 @@ class Lockedfield extends CommonDBTM
             'uuid',
             'comment',
         ];
-        $itemtypes = $CFG_GLPI['inventory_types'] + $CFG_GLPI['inventory_lockable_objects'];
+        $itemtypes = array_values(array_unique(array_merge(
+            $CFG_GLPI['inventory_types'],
+            $CFG_GLPI['inventory_lockable_objects']
+        )));
 
         if ($specific_itemtype !== null && in_array($specific_itemtype, $itemtypes)) {
             $itemtypes = [$specific_itemtype];

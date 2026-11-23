@@ -36,11 +36,9 @@
 
 namespace Glpi\Inventory;
 
-use Agent;
-use CommonDBTM;
+use Blacklist;
 use CommonDevice;
 use CommonGLPI;
-use Computer;
 use ComputerType;
 use Config;
 use DeviceBattery;
@@ -55,15 +53,14 @@ use DeviceProcessor;
 use DeviceSimcard;
 use DeviceSoundCard;
 use Dropdown;
-use Entity;
 use finfo;
 use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\StateInterface;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\ArrayNormalizer;
+use Glpi\Toolbox\FileInfo;
 use GLPIKey;
-use Html;
 use Item_Disk;
 use Item_Environment;
 use Item_Process;
@@ -72,13 +69,15 @@ use ItemVirtualMachine;
 use Monitor;
 use NetworkPort;
 use NetworkPortType;
+use OAuthClient;
+use Override;
+use PDU;
 use Peripheral;
 use Plugin;
 use Printer;
 use Rule;
 use Session;
 use Software;
-use State;
 use Throwable;
 use Toolbox;
 use Unmanaged;
@@ -97,6 +96,7 @@ use function Safe\simplexml_load_string;
  * @property int $import_antivirus
  * @property int $import_registry
  * @property int $import_process
+ * @property int $import_pdu
  * @property int $import_vm
  * @property int $import_monitor_on_partial_sn
  * @property int $import_unmanaged
@@ -140,11 +140,13 @@ class Conf extends CommonGLPI
 
     public const STALE_AGENT_ACTION_TRASHBIN = 2;
 
+    public const NO_AUTH = 'none';
+
     public const CLIENT_CREDENTIALS = 'client_credentials';
 
     public const BASIC_AUTH = 'basic_auth';
 
-    public static $rightname = 'inventory';
+    public static string $rightname = 'inventory';
 
     public const IMPORTFROMFILE     = 1024;
     public const UPDATECONFIG       = 2048;
@@ -178,35 +180,61 @@ class Conf extends CommonGLPI
     /**
      * Import inventory files
      *
-     * @param array{filename: string, filepath: string} $files Files to import
+     * @param FileInfo[]|array<string, string> $files Files to import. Passing an array of
+     *                                                `filename => filepath` is deprecated since 12.0.0,
+     *                                                use an array of {@see FileInfo} instead.
      *
-     * @return array{}|array{filename: array{success: bool, message: string, asset: CommonDBTM}}
+     * @return array<string, ImportResult> Results indexed by file name
      */
     public function importFiles($files): array
     {
         $result = [];
 
-        foreach ($files as $filename => $filepath) {
+        foreach ($files as $key => $file) {
+            if ($file instanceof FileInfo) {
+                $filename = $file->getFilename();
+                $filepath = $file->getFilepath();
+            } else {
+                // deprecated v12.0.0
+                Toolbox::deprecated(
+                    'Passing an array of "filename => filepath" to Conf::importFiles() is deprecated. '
+                    . 'Use an array of ' . FileInfo::class . ' instead.'
+                );
+                $filename = $key;
+                $filepath = $file;
+            }
+
             if (UnifiedArchive::canOpen($filepath) && $archive = UnifiedArchive::open($filepath)) {
                 $unarchived_files = $archive->getFiles();
                 foreach ($unarchived_files as $inventory_file) {
+                    $entry_name = $filename . '/' . basename($inventory_file);
                     if ($this->isInventoryFile($inventory_file)) {
                         $contents = $archive->getFileContent($inventory_file);
-                        $result[$filename . '/' . basename($inventory_file)] = $this->importContentFile(null, $contents);
+                        $result[$entry_name] = $this->importContentFile($entry_name, null, $contents);
+                    } else {
+                        $result[$entry_name] = new ImportResult(
+                            filename: $inventory_file,
+                            success: false,
+                            message: sprintf(
+                                __('File `%s` has not been imported.') . ' (%s)',
+                                $entry_name,
+                                sprintf('`%s` format is not supported', pathinfo($inventory_file, PATHINFO_EXTENSION))
+                            ),
+                        );
                     }
                 }
             } elseif ($this->isInventoryFile($filename)) {
-                $result[$filename] = $this->importContentFile($filepath, file_get_contents($filepath));
+                $result[$filename] = $this->importContentFile($filename, $filepath, file_get_contents($filepath));
             } else {
-                $result[$filename] = [
-                    'success' => false,
-                    'message' => sprintf(
-                        __('File has not been imported: `%s`.'),
+                $result[$filename] = new ImportResult(
+                    filename: $filename,
+                    success: false,
+                    message: sprintf(
+                        __('File `%s` has not been imported.') . ' (%s)',
+                        $filename,
                         sprintf('`%s` format is not supported', pathinfo($filename, PATHINFO_EXTENSION))
                     ),
-                    'items'   => [],
-                    'request' => null,
-                ];
+                );
             }
         }
 
@@ -228,20 +256,18 @@ class Conf extends CommonGLPI
     /**
      * Import contents of a file
      *
+     * @param string  $filename          File name (used to label the result)
      * @param ?string $path              File path
      * @param string  $contents          File contents
      *
-     * @return array{success: bool, message: ?string, items: CommonDBTM[], request: Request}
+     * @return ImportResult
      */
-    protected function importContentFile($path, $contents): array
+    protected function importContentFile($filename, $path, $contents): ImportResult
     {
         $inventory_request = new Request();
-        $result = [
-            'success' => false,
-            'message' => null,
-            'items'   => [],
-            'request' => null,
-        ];
+        $success = false;
+        $message = null;
+        $items = [];
 
         try {
             $finfo = new finfo(FILEINFO_MIME_TYPE);
@@ -264,24 +290,25 @@ class Conf extends CommonGLPI
                     $response = $xml->ERROR;
                 }
                 $response = str_replace('&nbsp;', ' ', $response);
-                $result['message'] = sprintf(__('File has not been imported: `%s`.'), $response);
+                $message = sprintf(__('File has not been imported: `%s`.'), $response);
             } else {
-                $result = [
-                    'success' => true,
-                    'message' => __('File has been successfully imported.'),
-                    'items'   => $inventory_request->getInventory()->getItems(),
-                ];
+                $success = true;
+                $message = __('File has been successfully imported.');
+                $items   = $inventory_request->getInventory()->getItems();
             }
         } catch (Throwable $e) {
-            $result = [
-                'success' => false,
-                'message' => sprintf(__('An error occurs during import: `%s`.'), $e->getMessage()),
-                'items'   => $inventory_request->getInventory()->getItems(),
-            ];
+            $success = false;
+            $message = sprintf(__('An error occurs during import: `%s`.'), $e->getMessage());
+            $items   = $inventory_request->getInventory()->getItems();
         }
 
-        $result['request'] = $inventory_request;
-        return $result;
+        return new ImportResult(
+            filename: $filename,
+            success: $success,
+            message: $message,
+            items: $items,
+            request: $inventory_request,
+        );
     }
 
     /**
@@ -315,7 +342,7 @@ class Conf extends CommonGLPI
         if ($item instanceof self) {
             $tabs = [];
             if (Session::haveRight(self::$rightname, self::UPDATECONFIG)) {
-                $tabs[1] = self::createTabEntry(__('Configuration'), 0, $item::getType());
+                $tabs[1] = self::createTabEntry(__('Configuration'), 0, $item::class);
             }
             if ($item->enabled_inventory && Session::haveRight(self::$rightname, self::IMPORTFROMFILE)) {
                 $tabs[2] = self::createTabEntry(__('Import from file'), icon: 'ti ti-upload');
@@ -327,7 +354,7 @@ class Conf extends CommonGLPI
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item->getType() == self::class) {
+        if ($item instanceof self) {
             /** @var self $item */
             switch ($tabnum) {
                 case 1:
@@ -354,757 +381,136 @@ class Conf extends CommonGLPI
     {
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
-        $config = Config::getConfigurationValues('inventory');
+        $config  = Config::getConfigurationValues('inventory');
         $canedit = Config::canUpdate();
-        $rand = mt_rand();
+        $plural  = Session::getPluralNumber();
 
-        if ($canedit) {
-            echo "<form name='form' action='" . htmlescape($CFG_GLPI['root_doc']) . "/Inventory/Configuration/Store' method='post'>";
+        // Boolean import options (field name => label)
+        $import_toggles = [
+            'import_volume'            => Item_Disk::getTypeName($plural),
+            'component_networkdrive'   => __('Network drives'),
+            'component_removablemedia' => __('Removable drives'),
+            'import_software'          => Software::getTypeName($plural),
+            'import_monitor'           => Monitor::getTypeName($plural),
+            'import_printer'           => Printer::getTypeName($plural),
+            'import_peripheral'        => Peripheral::getTypeName($plural),
+            'import_antivirus'         => ItemAntivirus::getTypeName($plural),
+            'import_process'           => Item_Process::getTypeName($plural),
+            'import_env'               => Item_Environment::getTypeName($plural),
+            'import_unmanaged'         => Unmanaged::getTypeName($plural),
+            'import_pdu'               => PDU::getTypeName($plural),
+        ];
+
+        // Boolean component options (field name => label)
+        $component_toggles = [
+            'component_processor'          => DeviceProcessor::getTypeName($plural),
+            'component_harddrive'          => DeviceHardDrive::getTypeName($plural),
+            'component_memory'             => DeviceMemory::getTypeName($plural),
+            'component_soundcard'          => DeviceSoundCard::getTypeName($plural),
+            'component_networkcard'        => DeviceNetworkCard::getTypeName($plural),
+            'component_networkcardvirtual' => __('Virtual network cards'),
+            'component_graphiccard'        => DeviceGraphicCard::getTypeName($plural),
+            'component_simcard'            => DeviceSimcard::getTypeName($plural),
+            'component_drive'              => DeviceDrive::getTypeName($plural),
+            'component_powersupply'        => DevicePowerSupply::getTypeName($plural),
+            'component_control'            => DeviceControl::getTypeName($plural),
+            'component_battery'            => DeviceBattery::getTypeName($plural),
+        ];
+
+        // Authorization header options
+        $auth_required_options = [
+            ''                       => Dropdown::EMPTY_VALUE,
+            self::CLIENT_CREDENTIALS => __('OAuth - Client credentials'),
+            self::BASIC_AUTH         => __('Basic Authentication'),
+            self::NO_AUTH            => __('None (not recommended)'),
+        ];
+
+        // Currently selected stale agents actions
+        $action = self::getDefaults()['stale_agents_action'];
+        if (isset($config['stale_agents_action'])) {
+            $action = $config['stale_agents_action'];
         }
 
-        echo "<div class='center spaced' id='tabsbody'>";
-        echo "<table class='tab_cadre_fixe'>";
+        $stale_state_condition = [];
+        foreach ($CFG_GLPI['inventory_types'] as $inv_type) {
+            $inv_item = getItemForItemtype($inv_type);
+            if ($inv_item instanceof StateInterface) {
+                $stale_state_condition[] = $inv_item->getStateVisibilityCriteria();
+            }
+        }
 
-        echo "<tr>";
+        // Fields provided by plugins through the stale agent config hook
+        $plugin_fields = [];
+        $plugin_actions = $PLUGIN_HOOKS[Hooks::STALE_AGENT_CONFIG] ?? [];
+        /**
+         * @var string $plugin
+         * @phpstan-var array{label: string, item_action: bool, render_callback: callable, action_callback: callable}[] $actions
+         */
+        foreach ($plugin_actions as $plugin => $actions) {
+            if (is_array($actions) && Plugin::isPluginActive($plugin)) {
+                foreach ($actions as $action_def) {
+                    if (!is_callable($action_def['render_callback'] ?? null)) {
+                        trigger_error(
+                            sprintf('Invalid plugin "%s" render callback for "%s" hook.', $plugin, Hooks::STALE_AGENT_CONFIG),
+                            E_USER_WARNING
+                        );
+                        continue;
+                    }
+                    $field = $action_def['render_callback']($config);
+                    if (!empty($field)) {
+                        $plugin_fields[] = [
+                            'label' => $action_def['label'] ?? '',
+                            'html'  => $field, // trusted HTML provided by the plugin
+                        ];
+                    }
+                }
+            }
+        }
 
-        echo "<th>";
-        echo "<label for='enabled_inventory'>";
-        echo __s('Enable inventory');
-        echo "</label>";
-        echo "</th>";
-        echo "<td colspan='3'>";
-        echo '<div class="row">';
-        echo '<div class="col-md-auto d-flex align-items-center">';
-        Html::showCheckbox([
-            'name'      => 'enabled_inventory',
-            'id'        => 'enabled_inventory',
-            'checked'   => $config['enabled_inventory'],
+        // Links to related configuration screens
+        $related_configs = [
+            [
+                'url'   => Rule::getSearchURL(),
+                'label' => Rule::getTypeName($plural),
+                'icon'  => Rule::getIcon(),
+            ],
+            [
+                'url'   => NetworkPortType::getSearchURL(),
+                'label' => NetworkPortType::getTypeName($plural),
+                'icon'  => NetworkPort::getIcon(),
+            ],
+            [
+                'url'   => Blacklist::getSearchURL(),
+                'label' => Blacklist::getTypeName($plural),
+                'icon'  => Blacklist::getIcon(),
+            ],
+        ];
+
+        TemplateRenderer::getInstance()->display('pages/admin/inventory/conf/config_form.html.twig', [
+            'canedit'                         => $canedit,
+            'config'                          => $config,
+            'form_path'                       => $CFG_GLPI['root_doc'] . '/Inventory/Configuration/Store',
+            'basic_auth_password'             => (new GLPIKey())->decrypt($config['basic_auth_password'] ?? ''),
+            'auth_required_options'           => $auth_required_options,
+            'import_toggles'                  => $import_toggles,
+            'component_toggles'               => $component_toggles,
+            'stale_agents_actions'            => self::getStaleAgentActions(),
+            'stale_agents_action_values'      => importArrayFromDB($action),
+            'stale_state_condition'                 => $stale_state_condition,
+            'stale_agents_status_value'             => $config['stale_agents_status'] ?? 0,
+            'stale_agents_status_condition_value'   => importArrayFromDB($config['stale_agents_status_condition'] ?? json_encode(['all'])),
+            'plugin_fields'                   => $plugin_fields,
+            'related_configs'                 => $related_configs,
+            'oauth_client_form_url'           => OAuthClient::getFormURL(),
+            'vm_section_title'                => ItemVirtualMachine::getTypeName($plural),
+            'vm_type_label'                   => ComputerType::getTypeName(1),
+            'components_section_title'         => CommonDevice::getTypeName($plural),
+            'CLIENT_CREDENTIALS'              => self::CLIENT_CREDENTIALS,
+            'BASIC_AUTH'                      => self::BASIC_AUTH,
+            'NO_AUTH'                         => self::NO_AUTH,
+            'STALE_AGENT_ACTION_STATUS'       => self::STALE_AGENT_ACTION_STATUS,
         ]);
-        echo '</div>';
-        echo '<div class="col">';
-        if ($config['enabled_inventory'] == false) {
-            echo "<div class='alert alert-info d-flex align-items-center m-0' role='alert'>";
-            echo "<span class='ms-2'>";
-            echo "<i class='ti ti-info-circle'> </i> &nbsp;";
-            echo __s("The inventory is disabled, remember to activate it if necessary");
-            echo "</span>";
-            echo "</div>";
-        } else {
-            echo '</div>';
-            echo '</div>';
-            echo "</td>";
-            echo "</tr>";
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo "<i class='ti ti-cloud-lock me-2'></i>";
-            echo "<label for='auth'>" . __s('Authorization header') . "</label>";
-            echo "</td>";
-            echo "<td>";
-            Dropdown::showFromArray('auth_required', [
-                'none' => __('None'),
-                self::CLIENT_CREDENTIALS => __s('OAuth - Client credentials'),
-                self::BASIC_AUTH => __s('Basic Authentication'),
-            ], [
-                'value' => $config['auth_required'] ?? 'none',
-            ]);
-            echo "</td></tr>";
-            echo "<tr class='tab_bg_1' id='basic_auth_login_row'>";
-            echo "<td>";
-            echo "<i class='ti ti-abc me-2'></i>";
-            echo "<label for='basic_auth_login'>" . __s('Login') . "</label>";
-            echo "<span class='required'>*</span>";
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            echo Html::input("basic_auth_login", [
-                "value" => $config["basic_auth_login"] ?? '',
-            ]);
-            echo "</td>";
-            echo "</tr>";
-            echo "<tr class='tab_bg_1' id='basic_auth_password_row'>";
-            echo "<td>";
-            echo "<i class='ti ti-password me-2'></i>";
-            echo "<label for='basic_auth_password'>" . __s('Password') . "</label>";
-            echo "<span class='required'>*</span>";
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            echo Html::input("basic_auth_password", [
-                "value" => (new GLPIKey())->decrypt($config['basic_auth_password'] ?? ''),
-                "type" => "password",
-            ]);
-            echo "</td>";
-            echo "</tr>";
-            echo Html::scriptBlock("
-                function toggleDisplayLoginInputs(select) {
-                    let displayedInputs = false;
-                    const selectedValue = $(select).val();
-                    if (selectedValue == '" . self::BASIC_AUTH . "') {
-                        displayedInputs = true;
-                    }
-                    $('#basic_auth_login_row').toggle(displayedInputs);
-                    $('#basic_auth_password_row').toggle(displayedInputs);
-                }
 
-                const selectAuthHeader = $(`select[name='auth_required']`);
-                selectAuthHeader.change(function() {
-                    toggleDisplayLoginInputs(this);
-                });
-
-                toggleDisplayLoginInputs(selectAuthHeader);
-            ");
-            echo "<tr>";
-            echo "<th colspan='4'>";
-            echo __s('Import options');
-            echo "</th>";
-            echo "</tr>";
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo "<label for='import_volume'>";
-            echo Item_Disk::createTabEntry(Item_Disk::getTypeName(Session::getPluralNumber()), 0, Item_Disk::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td width='360'>";
-            Html::showCheckbox([
-                'name'      => 'import_volume',
-                'id'        => 'import_volume',
-                'checked'   => $config['import_volume'],
-            ]);
-            echo "</td>";
-
-            echo "<td>";
-            echo "<label for='component_networkdrive'>";
-            echo DeviceDrive::createTabEntry(__('Network drives'), 0, DeviceDrive::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'component_networkdrive',
-                'id'        => 'component_networkdrive',
-                'checked'   => $config['component_networkdrive'],
-            ]);
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo "<label for='component_drive'>";
-            echo DeviceDrive::createTabEntry(__('Removable drives'), 0, DeviceDrive::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'component_removablemedia',
-                'id'        => 'component_removablemedia',
-                'checked'   => $config['component_removablemedia'],
-            ]);
-            echo "</td>";
-
-            echo "<td>";
-            echo "<label for='import_software'>";
-            echo Software::createTabEntry(Software::getTypeName(Session::getPluralNumber()), 0, Software::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'import_software',
-                'id'        => 'import_software',
-                'checked'   => $config['import_software'],
-            ]);
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo "<label for='import_monitor'>";
-            echo Monitor::createTabEntry(Monitor::getTypeName(Session::getPluralNumber()), 0, Monitor::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'import_monitor',
-                'id'        => 'import_monitor',
-                'checked'   => $config['import_monitor'],
-            ]);
-            echo "</td>";
-
-            echo "</td>";
-            echo "<td>";
-            echo "<label for='import_printer'>";
-            echo Printer::createTabEntry(Printer::getTypeName(Session::getPluralNumber()), 0, Printer::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'import_printer',
-                'id'        => 'import_printer',
-                'checked'   => $config['import_printer'],
-            ]);
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo "<label for='import_peripheral'>";
-            echo Peripheral::createTabEntry(Peripheral::getTypeName(Session::getPluralNumber()), 0, Peripheral::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'import_peripheral',
-                'id'        => 'import_peripheral',
-                'checked'   => $config['import_peripheral'],
-            ]);
-            echo "</td>";
-
-            echo "</td>";
-            echo "<td>";
-            echo "<label for='import_antivirus'>";
-            echo ItemAntivirus::createTabEntry(ItemAntivirus::getTypeName(Session::getPluralNumber()), 0, ItemAntivirus::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'import_antivirus',
-                'id'        => 'import_antivirus',
-                'checked'   => $config['import_antivirus'],
-            ]);
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo "<label for='import_process'>";
-            echo Item_Process::createTabEntry(Item_Process::getTypeName(Session::getPluralNumber()), 0, Item_Process::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td width='360'>";
-            Html::showCheckbox([
-                'name'      => 'import_process',
-                'id'        => 'import_process',
-                'checked'   => $config['import_process'],
-            ]);
-            echo "</td>";
-            echo "<td>";
-            echo "<label for='import_env'>";
-            echo Item_Environment::createTabEntry(Item_Environment::getTypeName(Session::getPluralNumber()), 0, Item_Environment::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td width='360'>";
-            Html::showCheckbox([
-                'name'      => 'import_env',
-                'id'        => 'import_env',
-                'checked'   => $config['import_env'],
-            ]);
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo "<label for='import_unmanaged'>";
-            echo Unmanaged::createTabEntry(Unmanaged::getTypeName(Session::getPluralNumber()), 0, Unmanaged::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'import_unmanaged',
-                'id'        => 'import_unmanaged',
-                'checked'   => $config['import_unmanaged'] ?? 1,
-            ]);
-            echo "</td>";
-
-            echo "</td>";
-            echo "<td>";
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo "<label for='dropdown_states_id_default$rand'>";
-            echo State::createTabEntry(__('Default status'), 0, State::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-
-            Dropdown::show(
-                'State',
-                [
-                    'name'   => 'states_id_default',
-                    'id'     => 'states_id_default',
-                    'value'  => $config['states_id_default'],
-                    'toadd'  => ['-1' => __('Do not change')],
-                    'rand' => $rand,
-                ]
-            );
-            echo "</td>";
-
-            echo "<td><label for='dropdown_inventory_frequency$rand'>";
-            echo self::createTabEntry(__('Inventory frequency (in hours)'), 0, self::getType());
-            echo "</label></td><td>";
-            Dropdown::showNumber(
-                "inventory_frequency",
-                [
-                    'value' => $config['inventory_frequency'],
-                    'min' => 1,
-                    'max' => 240,
-                    'rand' => $rand,
-                ]
-            );
-
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-
-            echo "<td>";
-            echo "<label for='dropdown_entities_id_default$rand'>";
-            echo Entity::createTabEntry(__('Default entity'), 0, Entity::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-
-            Dropdown::show(
-                'Entity',
-                [
-                    'name'   => 'entities_id_default',
-                    'id'     => 'entities_id_default',
-                    'value'  => $config['entities_id_default'] ?? 0,
-                    'rand' => $rand,
-                ]
-            );
-            echo "</td>";
-
-            echo "<td>";
-            echo "<label for='import_monitor_on_partial_sn'>";
-            echo Monitor::createTabEntry(__('Import monitor on serial partial match'), 0, Monitor::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'import_monitor_on_partial_sn',
-                'id'        => 'import_monitor_on_partial_sn',
-                'checked'   => $config['import_monitor_on_partial_sn'],
-            ]);
-
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<th colspan='4'>";
-            echo __s('Related configurations');
-            echo "</th>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td colspan='2'>";
-            echo sprintf(
-                '<a href="%s">%s</a>',
-                htmlescape(Rule::getSearchURL()),
-                Rule::createTabEntry(Rule::getTypeName(Session::getPluralNumber()), 0, Rule::getType())
-            );
-            echo "</td>";
-            echo "<td colspan='2'>";
-
-            echo sprintf(
-                '<a href="%s">%s</a>',
-                htmlescape(NetworkPortType::getSearchURL()),
-                NetworkPort::createTabEntry(NetworkPortType::getTypeName(), 0, NetworkPort::getType())
-            );
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<th colspan='4'>";
-            echo htmlescape(ItemVirtualMachine::getTypeName(Session::getPluralNumber()));
-            echo "</th>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo "<label for='import_vm'>";
-            echo ItemVirtualMachine::createTabEntry(__('Import virtual machines'), 0, ItemVirtualMachine::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'import_vm',
-                'id'        => 'import_vm',
-                'checked'   => $config['import_vm'],
-            ]);
-            echo "</td>";
-            echo "<td>";
-            echo "<label for='dropdown_vm_type$rand'>";
-            echo ComputerType::createTabEntry(ComputerType::getTypeName(1), 0, ComputerType::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Dropdown::show(
-                'ComputerType',
-                [
-                    'name'   => 'vm_type',
-                    'id'     => 'vm_type',
-                    'value'  => $config['vm_type'],
-                    'rand' => $rand,
-                ]
-            );
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo "<label for='vm_as_computer'>";
-            echo Computer::createTabEntry(__('Create computer for virtual machines'), 0, Computer::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'vm_as_computer',
-                'id'        => 'vm_as_computer',
-                'checked'   => $config['vm_as_computer'],
-            ]);
-            echo "</td>";
-            echo "<td>";
-            echo "<label for='vm_components'>";
-            echo ItemVirtualMachine::createTabEntry(__('Create components for virtual machines'), 0, ItemVirtualMachine::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'vm_components',
-                'id'        => 'vm_components',
-                'checked'   => $config['vm_components'],
-            ]);
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td colspan='4' style='text-align:right;'>";
-            echo "<span class='red'>" . __s('Will attempt to create components from VM information sent from host, do not use if you plan to inventory any VM directly!') . "</span>";
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<th colspan='4'>";
-            echo htmlescape(CommonDevice::getTypeName(Session::getPluralNumber()));
-            echo "</th>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo "<label for='component_processor'>";
-            echo DeviceProcessor::createTabEntry(DeviceProcessor::getTypeName(Session::getPluralNumber()), 0, DeviceProcessor::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'component_processor',
-                'id'        => 'component_processor',
-                'checked'   => $config['component_processor'],
-            ]);
-            echo "</td>";
-
-            echo "<td>";
-            echo "<label for='component_harddrive'>";
-            echo DeviceHardDrive::createTabEntry(DeviceHardDrive::getTypeName(Session::getPluralNumber()), 0, DeviceHardDrive::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'component_harddrive',
-                'id'        => 'component_harddrive',
-                'checked'   => $config['component_harddrive'],
-            ]);
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo "<label for='component_memory'>";
-            echo DeviceMemory::createTabEntry(DeviceMemory::getTypeName(Session::getPluralNumber()), 0, DeviceMemory::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'component_memory',
-                'id'        => 'component_memory',
-                'checked'   => $config['component_memory'],
-            ]);
-            echo "</td>";
-
-            echo "<td>";
-            echo "<label for='component_soundcard'>";
-            echo DeviceSoundCard::createTabEntry(DeviceSoundCard::getTypeName(Session::getPluralNumber()), 0, DeviceSoundCard::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'component_soundcard',
-                'id'        => 'component_soundcard',
-                'checked'   => $config['component_soundcard'],
-            ]);
-
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo "<label for='component_networkcard'>";
-            echo DeviceNetworkCard::createTabEntry(DeviceNetworkCard::getTypeName(Session::getPluralNumber()), 0, DeviceNetworkCard::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'component_networkcard',
-                'id'        => 'component_networkcard',
-                'checked'   => $config['component_networkcard'],
-            ]);
-            echo "</td>";
-
-            echo "<td>";
-            echo "<label for='component_networkcardvirtual'>";
-            echo DeviceNetworkCard::createTabEntry(__('Virtual network cards'), 0, DeviceNetworkCard::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'component_networkcardvirtual',
-                'id'        => 'component_networkcardvirtual',
-                'checked'   => $config['component_networkcardvirtual'],
-            ]);
-
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo "<label for='component_graphiccard'>";
-            echo DeviceGraphicCard::createTabEntry(DeviceGraphicCard::getTypeName(Session::getPluralNumber()), 0, DeviceGraphicCard::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'component_graphiccard',
-                'id'        => 'component_graphiccard',
-                'checked'   => $config['component_graphiccard'],
-            ]);
-            echo "</td>";
-
-            echo "<td>";
-            echo "<label for='component_simcard'>";
-            echo DeviceSimcard::createTabEntry(DeviceSimcard::getTypeName(Session::getPluralNumber()), 0, DeviceSimcard::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'component_simcard',
-                'id'        => 'component_simcard',
-                'checked'   => $config['component_simcard'],
-            ]);
-            echo "</td>";
-
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo "<label for='component_drive'>";
-            echo DeviceDrive::createTabEntry(DeviceDrive::getTypeName(Session::getPluralNumber()), 0, DeviceDrive::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'component_drive',
-                'id'        => 'component_drive',
-                'checked'   => $config['component_drive'],
-            ]);
-            echo "</td>";
-
-            echo "<td>";
-            echo "<label for='component_powersupply'>";
-            echo DevicePowerSupply::createTabEntry(DevicePowerSupply::getTypeName(Session::getPluralNumber()), 0, DevicePowerSupply::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'component_powersupply',
-                'id'        => 'component_powersupply',
-                'checked'   => $config['component_powersupply'],
-            ]);
-            echo "</td>";
-
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo "<label for='component_control'>";
-            echo DeviceControl::createTabEntry(DeviceControl::getTypeName(Session::getPluralNumber()), 0, DeviceControl::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'component_control',
-                'id'        => 'component_control',
-                'checked'   => $config['component_control'],
-            ]);
-            echo "</td>";
-
-            echo "</td>";
-            echo "<td>";
-            echo "<label for='component_battery'>";
-            echo DeviceBattery::createTabEntry(DeviceBattery::getTypeName(Session::getPluralNumber()), 0, DeviceBattery::getType());
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            Html::showCheckbox([
-                'name'      => 'component_battery',
-                'id'        => 'component_battery',
-                'checked'   => $config['component_battery'],
-            ]);
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<th colspan=4 >" . __s('Agent cleanup') . "</th></tr>";
-            echo "<tr class='tab_bg_1'><td><label for='dropdown_stale_agents_delay$rand'>";
-            echo Agent::createTabEntry(__('Update agents who have not contacted the server for (in days)'), 0, Agent::getType());
-            echo "</label></td><td width='20%'>";
-            Dropdown::showNumber(
-                'stale_agents_delay',
-                [
-                    'value' => $config['stale_agents_delay'] ?? 0,
-                    'min'   => 1,
-                    'max'   => 1000,
-                    'toadd' => ['0' => __('Disabled')],
-                    'rand'  => $rand,
-                ]
-            );
-            echo "</td><td><label for='dropdown_stale_agents_action$rand'>";
-            echo Agent::createTabEntry(_n('Action', 'Actions', 1), 0, Agent::getType());
-            echo "</label></td><td width='20%'>";
-            //action
-            $action = self::getDefaults()['stale_agents_action'];
-            if (isset($config['stale_agents_action'])) {
-                $action = $config['stale_agents_action'];
-            }
-            Dropdown::showFromArray(
-                'stale_agents_action',
-                self::getStaleAgentActions(),
-                [
-                    'values' => importArrayFromDB($action),
-                    'on_change' => 'changestatus();',
-                    'multiple' => true,
-                    'rand' => $rand,
-                ]
-            );
-            //if action == action_status => show blocation else hide blocaction
-            echo Html::scriptBlock("
-                function changestatus() {
-                    const display = $('#dropdown_stale_agents_action$rand').val().includes('" . self::STALE_AGENT_ACTION_STATUS . "') ;
-                    $('#bloc_status_action1').toggle(display);
-                    $('#bloc_status_action2').toggle(display);
-                }
-                changestatus();
-            ");
-            echo "</td>";
-            echo "</tr>";
-            //blocaction with status
-            echo "<tr class='tab_bg_1' style='display:none' id='bloc_status_action1'><td colspan=2></td>";
-            echo "<td>";
-            echo State::createTabEntry(__('If the asset status is'), 0, State::getType());
-            echo "</td>";
-            echo "<td width='20%'>";
-            $condition = [];
-            foreach ($CFG_GLPI['inventory_types'] as $inv_type) {
-                $inv_item = getItemForItemtype($inv_type);
-                if ($inv_item instanceof StateInterface) {
-                    $condition[] = $inv_item->getStateVisibilityCriteria();
-                }
-            }
-
-            State::dropdown(
-                [
-                    'name'      => 'stale_agents_status_condition[]',
-                    'value'     => importArrayFromDB($config['stale_agents_status_condition'] ?? json_encode(['all'])),
-                    'multiple'  => true,
-                    'toadd'     => ['all' => __('All')],
-                    'condition' => $condition,
-                ]
-            );
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1' style='display:none' id='bloc_status_action2'><td colspan=2></td>";
-            echo "<td>";
-            echo State::createTabEntry(__('Status to apply'), 0, State::getType());
-            echo "</td>";
-            echo "<td width='20%'>";
-            State::dropdown(
-                [
-                    'name'      => 'stale_agents_status',
-                    'value'     => $config['stale_agents_status'],
-                    'entity'    => $_SESSION['glpiactive_entity'],
-                    'toadd'     => [-1 => __('No change')],
-                    'condition' => $condition,
-                ]
-            );
-            echo "</td>";
-            echo "</tr>";
-
-            $plugin_actions = $PLUGIN_HOOKS[Hooks::STALE_AGENT_CONFIG] ?? [];
-            $odd = true;
-            $in_row = true;
-            /**
-             * @var string $plugin
-             * @phpstan-var array{label: string, item_action: boolean, render_callback: callable, action_callback: callable}[] $actions
-             */
-            foreach ($plugin_actions as $plugin => $actions) {
-                if (is_array($actions) && Plugin::isPluginActive($plugin)) {
-                    foreach ($actions as $action) {
-                        if (!is_callable($action['render_callback'] ?? null)) {
-                            trigger_error(
-                                sprintf('Invalid plugin "%s" render callback for "%s" hook.', $plugin, Hooks::STALE_AGENT_CONFIG),
-                                E_USER_WARNING
-                            );
-                            continue;
-                        }
-
-                        if ($odd) {
-                            echo "<tr class='tab_bg_1'>";
-                        }
-                        $field = $action['render_callback']($config);
-                        if (!empty($field)) {
-                            echo "<td>";
-                            echo htmlescape($action['label'] ?? '');
-                            echo "</td>";
-                            echo "<td width='20%'>";
-                            echo $field; // $field is expected to be a safe HTML string provided by the plugin
-                            echo "</td>";
-
-                            if (!$odd) {
-                                echo "</tr>";
-                                $in_row = false;
-                            }
-                            $odd = !$odd;
-                        }
-                    }
-                }
-            }
-            if ($in_row) {
-                echo "</tr>";
-            }
-        }
-
-        if ($canedit) {
-            echo "<tr class='tab_bg_2'>";
-            echo "<td colspan='7' class='center'>";
-            echo "<button type='submit' name='update' class='btn btn-primary'>";
-            echo "<i class='ti ti-device-floppy me-1'></i>";
-            echo _sx('button', 'Save');
-            echo "</button>";
-            echo "</td></tr>";
-        }
-
-        echo "</table></div>";
-        Html::closeForm();
         return true;
     }
 
@@ -1122,7 +528,6 @@ class Conf extends CommonGLPI
         }
 
         $defaults = self::getDefaults();
-        unset($values['_glpi_csrf_token']);
 
         $ext_configs = array_filter($values, static fn($k, $v) => str_starts_with($v, '_'), ARRAY_FILTER_USE_BOTH);
 
@@ -1147,6 +552,24 @@ class Conf extends CommonGLPI
         ) {
             // keep only the "All" value
             $values['stale_agents_status_condition'] = ['all'];
+        }
+
+        $enabled_inventory = (int) ($values['enabled_inventory'] ?? $defaults['enabled_inventory']) === 1;
+        if ($enabled_inventory) {
+            $allowed_auth_required = [
+                self::CLIENT_CREDENTIALS,
+                self::BASIC_AUTH,
+                self::NO_AUTH,
+            ];
+            $auth_required = $values['auth_required'] ?? null;
+            if (!is_string($auth_required) || !in_array($auth_required, $allowed_auth_required, true)) {
+                Session::addMessageAfterRedirect(
+                    __s('Inventory is enabled. Please select a valid authorization header method.'),
+                    false,
+                    ERROR
+                );
+                return false;
+            }
         }
 
         if (isset($values['auth_required']) && $values['auth_required'] === Conf::BASIC_AUTH) {
@@ -1275,7 +698,8 @@ class Conf extends CommonGLPI
             'import_volume'                  => 1,
             'import_antivirus'               => 1,
             'import_registry'                => 1,
-            'import_process'                 => 1,
+            'import_process'                 => 0,
+            'import_pdu'                     => 1,
             'import_vm'                      => 1,
             'import_monitor_on_partial_sn'   => 0,
             'import_unmanaged'               => 1,
@@ -1309,7 +733,7 @@ class Conf extends CommonGLPI
             'stale_agents_status'            => 0,
             'stale_agents_status_condition'  => exportArrayToDB(['all']),
             'import_env'                     => 0,
-            'auth_required'                  => 'none',
+            'auth_required'                  => '',
             'basic_auth_login'               => '',
             'basic_auth_password'            => '',
         ];
@@ -1322,4 +746,11 @@ class Conf extends CommonGLPI
     {
         return "ti ti-adjustments";
     }
+
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
+    }
+
 }

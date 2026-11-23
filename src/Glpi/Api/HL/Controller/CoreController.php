@@ -46,12 +46,15 @@ use Glpi\Api\HL\RouteVersion;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Error\ErrorHandler;
+use Glpi\Http\CsrfChecker;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\OAuth\Server;
 use Glpi\System\Status\StatusChecker;
 use Glpi\Toolbox\MarkdownRenderer;
+use Glpi\UI\ThemeManager;
 use Html;
 use JsonException;
 use Laminas\I18n\Translator\TextDomain;
@@ -76,7 +79,7 @@ use function Safe\strtotime;
 
 final class CoreController extends AbstractController
 {
-    public static function getRawKnownSchemas(): array
+    public static function getRawKnownSchemas(string $api_version): array
     {
         $transfer_keep_option = [
             'type' => Doc\Schema::TYPE_INTEGER,
@@ -326,7 +329,11 @@ EOT,
     {
         global $CFG_GLPI;
 
-        $swagger_content = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>GLPI API Documentation</title>';
+        $swagger_content = '<!DOCTYPE html><html lang="en"';
+        if (ThemeManager::getInstance()->getCurrentTheme()->isDarkTheme()) {
+            $swagger_content .= ' class="dark-mode"';
+        }
+        $swagger_content .= '><head><meta charset="UTF-8"><title>GLPI API Documentation</title>';
         $swagger_content .= Html::script('/lib/swagger-ui.js');
         $swagger_content .= Html::css('/lib/swagger-ui.css');
         $favicon = Html::getPrefixedUrl('/pics/favicon.ico');
@@ -507,7 +514,7 @@ HTML;
             $response_headers['Access-Control-Allow-Headers'] = [
                 'Content-Type', 'Authorization', 'Origin', 'Accept',
                 'GLPI-API-Version', 'GLPI-Profile', 'GLPI-Entity', 'GLPI-Entity-Recursive',
-                'X-Debug-Mode',
+                'X-Debug-Mode', 'X-Requested-With', 'Accept-Language', 'Accept-Encoding', 'User-Agent',
             ];
             if (Environment::get()->shouldEnableExtraDevAndDebugTools()) {
                 $response_headers['Access-Control-Allow-Headers'][] = 'XDEBUG_TRIGGER';
@@ -666,6 +673,13 @@ HTML;
                     'response_type' => 'code',
                     'redirect_uri'  => $auth_request->getRedirectUri(),
                 ];
+                if ($auth_request->getCodeChallenge() !== null) {
+                    $redirect_params['code_challenge'] = $auth_request->getCodeChallenge();
+                    $redirect_params['code_challenge_method'] = $auth_request->getCodeChallengeMethod();
+                }
+                if ($auth_request->getState() !== null) {
+                    $redirect_params['state'] = $auth_request->getState();
+                }
                 $redirect_uri = $CFG_GLPI['url_base']
                     . '/api.php/v2'
                     . $this->getAPIPathForRouteFunction(self::class, 'authorize')
@@ -676,7 +690,13 @@ HTML;
             $user = new \Glpi\OAuth\User();
             $user->setIdentifier($user_id);
             $auth_request->setUser($user);
-            if (!$request->hasParameter('accept') && !$request->hasParameter('deny')) {
+            // Request parameters merge the query string and the body: only what the form posted counts,
+            // otherwise a URL carrying `accept` would turn a click on "Deny" into an approval.
+            $posted = array_diff_key($request->getParameters(), $request->getQueryParams());
+            $has_decision = array_key_exists('accept', $posted) || array_key_exists('deny', $posted);
+            // The consent decision is only accepted from the form POST. A decision passed in a GET
+            // query string would let any third-party page approve the client on behalf of the user.
+            if (!$has_decision || $request->getMethod() !== 'POST') {
                 // Display the authorization page
                 $glpi_user = new User();
                 $glpi_user->getFromDB($user_id);
@@ -689,7 +709,25 @@ HTML;
                 return new Response(200, ['Content-Type' => 'text/html'], $authorize_form);
             }
 
-            $auth_request->setAuthorizationApproved($request->hasParameter('accept'));
+            // API routes are stateless and skipped by the global CSRF check, so it is done here.
+            $server_var = [
+                'REQUEST_METHOD'      => $request->getMethod(),
+            ];
+            if ($request->hasHeader('Sec-Fetch-Site')) {
+                $server_var['HTTP_SEC_FETCH_SITE'] = $request->getHeaderLine('Sec-Fetch-Site');
+            }
+            if ($request->hasHeader('Origin')) {
+                $server_var['HTTP_ORIGIN'] = $request->getHeaderLine('Origin');
+            }
+            if ($request->hasHeader('Host')) {
+                $server_var['HTTP_HOST'] = $request->getHeaderLine('Host');
+            }
+            $symfony_request = new \Symfony\Component\HttpFoundation\Request(server: $server_var);
+            if ((new CsrfChecker())->isRequestSafeFromCSRF($symfony_request) === false) {
+                return self::getAccessDeniedErrorResponse();
+            }
+
+            $auth_request->setAuthorizationApproved(array_key_exists('accept', $posted));
             /** @var Response $response */
             $response = Server::getAuthorizationServer()->completeAuthorizationRequest($auth_request, new Response());
             return $response;
@@ -722,7 +760,16 @@ HTML;
     #[RouteVersion(introduced: '2.0')]
     public function swaggerOAuthRedirect(Request $request): Response
     {
-        $content = file_get_contents(GLPI_ROOT . '/public/lib/swagger-ui-dist/oauth2-redirect.html');
+        $js_path = \htmlescape(Html::getPrefixedUrl('/lib/swagger-ui-dist/oauth2-redirect.js'));
+        $content = <<<HTML
+<html lang="en-US">
+<head>
+<script src="$js_path"></script>
+</head>
+<body>
+</body>
+</html>
+HTML;
         return new Response(200, ['Content-Type' => 'text/html'], $content);
     }
 
@@ -768,7 +815,7 @@ HTML;
     )]
     public function statusAllServices(Request $request): Response
     {
-        $show_all = Session::haveRight('config', READ);
+        $show_all = Session::haveRight(\Config::$rightname, READ);
         $data = StatusChecker::getServiceStatus(null, !$show_all);
         return new JSONResponse($data);
     }
@@ -795,7 +842,7 @@ HTML;
     )]
     public function statusByService(Request $request): Response
     {
-        $show_all = Session::haveRight('config', READ);
+        $show_all = Session::haveRight(\Config::$rightname, READ);
         $service = $request->getAttribute('service');
         $service = strtolower($service);
 
@@ -887,42 +934,7 @@ HTML;
     )]
     public function getSessionEntityTree(Request $request): JSONResponse
     {
-        $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
-        $entitiestree = [];
-        foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
-            $default_entity_id = $default_entity['id'];
-            $entitytree = $default_entity['is_recursive'] ? Entity::getEntityTree($default_entity_id) : [$default_entity['id'] => $default_entity];
-
-            $adapt_tree = static function (&$entities) use (&$adapt_tree) {
-                foreach ($entities as $entities_id => &$entity) {
-                    $entity['key'] = $entities_id;
-                    $entity['label'] = $entity['name'];
-                    $entity['tree'] ??= [];
-                    $entity['children'] = array_values($adapt_tree($entity['tree']));
-                    unset($entity['name'], $entity['tree']);
-                }
-                unset($entity);
-                return $entities;
-            };
-            $adapt_tree($entitytree);
-
-            $entitiestree = array_merge($entitiestree, $entitytree);
-        }
-        $select_tree = static function (&$entities) use (&$select_tree, $ancestors) {
-            foreach ($entities as &$entity) {
-                if (isset($ancestors[$entity['key']])) {
-                    $entity['expanded'] = 'true';
-                }
-                if ($entity['key'] == $_SESSION['glpiactive_entity']) {
-                    $entity['selected'] = 'true';
-                }
-                if (isset($entity['children'])) {
-                    $select_tree($entity['children']);
-                }
-            }
-        };
-        $select_tree($entitiestree);
-        return new JSONResponse($entitiestree);
+        return new JSONResponse(Entity::getEntitySelectorTree());
     }
 
     #[Route(path: '/locales', methods: ['GET'], tags: ['Localization'])]
@@ -941,7 +953,7 @@ HTML;
     )]
     public function getLocales(Request $request): Response
     {
-        global $TRANSLATE, $CFG_GLPI;
+        global $TRANSLATE;
 
         $messages = $TRANSLATE->getAllMessages($_GET['domain']);
         if (!($messages instanceof TextDomain)) {
@@ -960,7 +972,7 @@ HTML;
         $po_file = GLPI_ROOT . '/locales/' . preg_replace(
             '/\.mo$/',
             '.po',
-            $CFG_GLPI['languages'][$_SESSION['glpilanguage']][1]
+            LanguageRegistry::get($_SESSION['glpilanguage'])->mo_file
         );
         $po_file_handle = fopen(
             $po_file,

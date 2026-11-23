@@ -43,11 +43,9 @@ use User;
 
 class LogCsvExport implements ExportToCsvInterface
 {
-    /** @var CommonDBTM */
-    protected $item;
+    protected CommonDBTM $item;
 
-    /** @var array */
-    protected $filter;
+    protected array $filter;
 
     public function __construct(CommonDBTM $item, array $filter)
     {

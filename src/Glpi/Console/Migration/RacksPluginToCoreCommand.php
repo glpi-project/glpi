@@ -136,23 +136,20 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Datacenter on which rooms will be created.
      *
-     * @var int
      */
-    private $datacenter_id;
+    private ?int $datacenter_id = null;
 
     /**
      * Room on which racks will be placed if no corresponding room found.
      *
-     * @var int
      */
-    private $fallback_room_id;
+    private ?int $fallback_room_id = null;
 
     /**
      * Imported elements mapping.
      *
-     * @var array
      */
-    private $elements_mapping;
+    private array $elements_mapping;
 
     protected function configure()
     {
@@ -203,7 +200,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $this->elements_mapping = []; // Clear elements mapping
@@ -365,7 +362,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
         ];
         $missing_tables = false;
         foreach ($rack_tables as $table) {
-            if (!$this->db->tableExists($table)) {
+            if (!$this->getDb()->tableExists($table)) {
                 $this->output->writeln(
                     '<error>' . sprintf(__('Racks plugin table "%s" is missing.'), $table) . '</error>',
                     OutputInterface::VERBOSITY_QUIET
@@ -406,7 +403,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
         ];
 
         foreach ($core_tables as $table) {
-            $result = $this->db->delete($table, [1]);
+            $result = $this->getDb()->delete($table, [1]);
 
             if (!$result) {
                 throw new RuntimeException(
@@ -505,7 +502,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
             OutputInterface::VERBOSITY_VERBOSE
         );
 
-        $othermodels_iterator = $this->db->request(
+        $othermodels_iterator = $this->getDb()->request(
             [
                 'FROM' => 'glpi_plugin_racks_othermodels',
             ]
@@ -622,7 +619,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
                     OutputInterface::VERBOSITY_NORMAL
                 );
 
-                $otheritems_iterator = $this->db->request(
+                $otheritems_iterator = $this->getDb()->request(
                     [
                         'FROM'  => 'glpi_plugin_racks_others',
                         'WHERE' => [
@@ -702,7 +699,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $specs_iterator = $this->db->request(
+        $specs_iterator = $this->getDb()->request(
             [
                 'FROM'  => 'glpi_plugin_racks_itemspecifications',
                 'ORDER' => 'id ASC',
@@ -796,7 +793,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $models_iterator = $this->db->request(
+        $models_iterator = $this->getDb()->request(
             [
                 'FROM' => 'glpi_plugin_racks_rackmodels',
             ]
@@ -875,7 +872,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $types_iterator = $this->db->request(
+        $types_iterator = $this->getDb()->request(
             [
                 'FROM' => 'glpi_plugin_racks_racktypes',
             ]
@@ -956,7 +953,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $states_iterator = $this->db->request(
+        $states_iterator = $this->getDb()->request(
             [
                 'FROM' => 'glpi_plugin_racks_rackstates',
             ]
@@ -1038,7 +1035,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $rooms_iterator = $this->db->request(
+        $rooms_iterator = $this->getDb()->request(
             [
                 'FROM' => 'glpi_plugin_racks_roomlocations',
             ]
@@ -1121,7 +1118,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $racks_iterator = $this->db->request(
+        $racks_iterator = $this->getDb()->request(
             [
                 'FROM' => 'glpi_plugin_racks_racks',
             ]
@@ -1248,7 +1245,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $items_iterator = $this->db->request(
+        $items_iterator = $this->getDb()->request(
             [
                 'FROM'  => 'glpi_plugin_racks_racks_items',
                 'ORDER' => 'id',
@@ -1288,7 +1285,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 }
 
                 $item_input = [
-                    'itemtype' => $item->getType(),
+                    'itemtype' => $item::class,
                     'items_id' => $item->fields['id'],
                 ];
 
@@ -1308,7 +1305,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 }
 
                 $required_units = 1;
-                $modeltype = $item->getType() . 'Model';
+                $modeltype = $item::class . 'Model';
                 if (class_exists($modeltype)) {
                     $model_fkey = getForeignKeyFieldForTable($modeltype::getTable());
                     if (
@@ -1438,19 +1435,17 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 'vis_rows'       => 10,
             ];
 
-            if (
-                !($room_id = $room->getFromDBByCrit($room_fields))
-                && !($room_id = $room->add($room_fields))
-            ) {
+            if ($room->getFromDBByCrit($room_fields)) {
+                $room_id = $room->fields['id'];
+            } elseif (!($room_id = $room->add($room_fields))) {
                 $this->outputImportError(__('Unable to create default room.'));
-
                 $room_id = 0;
             }
 
             $this->fallback_room_id = $room_id;
         }
 
-        return $this->fallback_room_id;
+        return $this->fallback_room_id ?? 0;
     }
 
     /**

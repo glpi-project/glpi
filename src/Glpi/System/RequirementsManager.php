@@ -48,6 +48,7 @@ use Glpi\System\Requirement\LogsWriteAccess;
 use Glpi\System\Requirement\MemoryLimit;
 use Glpi\System\Requirement\PhpSupportedVersion;
 use Glpi\System\Requirement\PhpVersion;
+use Glpi\System\Requirement\SecurityKeysAccess;
 use Glpi\System\Requirement\SeLinux;
 use Glpi\System\Requirement\SessionsConfiguration;
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
@@ -142,8 +143,7 @@ class RequirementsManager
             $requirements[] = new DbEngine($db);
         }
 
-        global $PHPLOGGER;
-        $requirements[] = new LogsWriteAccess($PHPLOGGER);
+        $requirements[] = new LogsWriteAccess(GLPI_LOG_DIR);
 
         $requirements[] = new DirectoriesWriteAccess(
             __('Permissions for GLPI data directories'),
@@ -154,6 +154,8 @@ class RequirementsManager
                 }
             )
         );
+
+        $requirements[] = new SecurityKeysAccess();
 
         $requirements[] = new SeLinux();
 

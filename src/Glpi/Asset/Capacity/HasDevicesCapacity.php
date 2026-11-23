@@ -139,7 +139,7 @@ class HasDevicesCapacity extends AbstractCapacity
         foreach (Item_Devices::getDeviceTypes() as $item_device_class) {
             // see `Item_Devices::itemAffinity()`
             $key = str_replace('_', '', strtolower($item_device_class)) . '_types';
-            if (array_key_exists($key, $CFG_GLPI)) {
+            if (isset($CFG_GLPI[$key])) {
                 $this->registerToTypeConfig($key, $classname);
             }
         }
@@ -175,7 +175,7 @@ class HasDevicesCapacity extends AbstractCapacity
         foreach (Item_Devices::getDeviceTypes() as $item_device_class) {
             // see `Item_Devices::itemAffinity()`
             $key = str_replace('_', '', strtolower($item_device_class)) . '_types';
-            if (array_key_exists($key, $CFG_GLPI)) {
+            if (isset($CFG_GLPI[$key])) {
                 $this->unregisterFromTypeConfig($key, $classname);
             }
         }

@@ -49,7 +49,6 @@ use Glpi\UI\IllustrationManager;
 use Ramsey\Uuid\Uuid;
 
 use function Safe\preg_match;
-use function Safe\preg_replace;
 use function Safe\realpath;
 
 /**
@@ -64,11 +63,11 @@ class Entity extends CommonTreeDropdown implements
     use Clonable;
     use MapGeolocation;
 
-    public $must_be_replace             = true;
-    public $dohistory                   = true;
+    public bool $must_be_replace             = true;
+    public bool $dohistory                   = true;
 
-    public static $rightname            = 'entity';
-    protected $usenotepad               = true;
+    public static string $rightname            = 'entity';
+    protected bool $usenotepad               = true;
 
     public const READHELPDESK       = 1024;
     public const UPDATEHELPDESK     = 2048;
@@ -319,25 +318,25 @@ class Entity extends CommonTreeDropdown implements
     public function canCreateItem(): bool
     {
         // Check the parent
-        return Session::haveRecursiveAccessToEntity($this->getField('entities_id'));
+        return Session::haveRecursiveAccessToEntity($this->fields['entities_id']);
     }
 
     public static function canUpdate(): bool
     {
         return (Session::haveRightsOr(self::$rightname, [UPDATE, self::UPDATEHELPDESK])
-              || Session::haveRight('notification', UPDATE));
+              || Session::haveRight(Notification::$rightname, UPDATE));
     }
 
     public function canUpdateItem(): bool
     {
         // Check the current entity
-        return Session::haveAccessToEntity($this->getField('id'));
+        return Session::haveAccessToEntity($this->getID());
     }
 
     public function canViewItem(): bool
     {
         // Check the current entity
-        return Session::haveAccessToEntity($this->getField('id'));
+        return Session::haveAccessToEntity($this->getID());
     }
 
     public static function isNewID($ID): bool
@@ -646,6 +645,16 @@ class Entity extends CommonTreeDropdown implements
             if (array_key_exists($max_key, $input) && empty($input[$max_key])) {
                 unset($input[$max_key]);
             }
+
+            // `inquest_default_rate` and `inquest_mandatory_comment` are integer columns; an empty submitted value would break the SQL update.
+            $default_rate_key = 'inquest_default_rate' . $suffix;
+            if (array_key_exists($default_rate_key, $input) && $input[$default_rate_key] === '') {
+                $input[$default_rate_key] = 0;
+            }
+            $mandatory_comment_key = 'inquest_mandatory_comment' . $suffix;
+            if (array_key_exists($mandatory_comment_key, $input) && $input[$mandatory_comment_key] === '') {
+                $input[$mandatory_comment_key] = 0;
+            }
         }
 
         return $input;
@@ -821,6 +830,15 @@ class Entity extends CommonTreeDropdown implements
         $_SESSION['glpiactiveentities_string']              .= ",'" . $this->fields['id'] . "'";
         // Root entity cannot be deleted, so if we added an entity this means GLPI is now multi-entity
         $_SESSION['glpi_multientitiesmode'] = 1;
+
+        Session::clearEntitiesCountCache();
+    }
+
+    public function post_purgeItem()
+    {
+        parent::post_purgeItem();
+
+        Session::clearEntitiesCountCache();
     }
 
     public function post_updateItem($history = true)
@@ -1719,7 +1737,7 @@ class Entity extends CommonTreeDropdown implements
         // root entity first
         $ent = new self();
         if ($ent->getFromDB(0)) {  // always exists
-            $val = $ent->getField($field);
+            $val = $ent->fields[$field];
             if ($val > 0) {
                 $entities[0] = $val;
             }
@@ -1755,8 +1773,7 @@ class Entity extends CommonTreeDropdown implements
 
     public static function showStandardOptions(Entity $entity): bool
     {
-        $ID = $entity->getField('id');
-        if (!$entity->can($ID, READ)) {
+        if (!$entity->can($entity->getID(), READ)) {
             return false;
         }
         TemplateRenderer::getInstance()->display('pages/admin/entity/address.html.twig', [
@@ -1770,8 +1787,7 @@ class Entity extends CommonTreeDropdown implements
 
     public static function showAdvancedOptions(Entity $entity): bool
     {
-        $ID          = $entity->getField('id');
-        if (!$entity->can($ID, READ)) {
+        if (!$entity->can($entity->getID(), READ)) {
             return false;
         }
         TemplateRenderer::getInstance()->display('pages/admin/entity/advanced.html.twig', [
@@ -1786,7 +1802,7 @@ class Entity extends CommonTreeDropdown implements
 
     public static function showInventoryOptions(Entity $entity): bool
     {
-        $ID = $entity->getField('id');
+        $ID = $entity->getID();
         if (!$entity->can($ID, READ)) {
             return false;
         }
@@ -1875,7 +1891,7 @@ class Entity extends CommonTreeDropdown implements
     public static function showNotificationOptions(Entity $entity): bool
     {
 
-        $ID = $entity->getField('id');
+        $ID = $entity->getID();
         if (
             !$entity->can($ID, READ)
             || !Notification::canView()
@@ -1920,7 +1936,7 @@ class Entity extends CommonTreeDropdown implements
             'approval_reminder_repeat_interval' => $entity->getInheritedValueBadge('approval_reminder_repeat_interval'),
         ];
         if ($entity->fields['delay_send_emails'] == self::CONFIG_PARENT) {
-            $tid = self::getUsedConfig('delay_send_emails', $entity->getField('entities_id'));
+            $tid = self::getUsedConfig('delay_send_emails', $entity->fields['entities_id']);
             $inheritance_labels['delay_send_emails'] = self::inheritedValue(
                 $entity->getValueToDisplay('delay_send_emails', $tid, ['html' => true]),
                 false,
@@ -1928,7 +1944,7 @@ class Entity extends CommonTreeDropdown implements
             );
         }
         if ($entity->fields['is_notif_enable_default'] == self::CONFIG_PARENT) {
-            $tid = self::getUsedConfig('is_notif_enable_default', $entity->getField('entities_id'));
+            $tid = self::getUsedConfig('is_notif_enable_default', $entity->fields['entities_id']);
             $inheritance_labels['is_notif_enable_default'] = self::inheritedValue(
                 self::getSpecificValueToDisplay('is_notif_enable_default', $tid),
                 false,
@@ -1962,7 +1978,7 @@ class Entity extends CommonTreeDropdown implements
 
     public static function showUiCustomizationOptions(Entity $entity): bool
     {
-        $ID = $entity->getField('id');
+        $ID = $entity->getID();
         if (!$entity->can($ID, READ) || !Session::haveRight(Config::$rightname, UPDATE)) {
             return false;
         }
@@ -2009,7 +2025,7 @@ class Entity extends CommonTreeDropdown implements
 
     public static function showSecurityOptions(Entity $entity): bool
     {
-        $ID = $entity->getField('id');
+        $ID = $entity->getID();
         if (!$entity->can($ID, READ)) {
             return false;
         }
@@ -2130,7 +2146,7 @@ class Entity extends CommonTreeDropdown implements
 
         if (
             $entity->getFromDB($entities_id)
-            && ($entity->getField('authldaps_id') > 0)
+            && ($entity->fields['authldaps_id'] > 0)
         ) {
             return true;
         }
@@ -2146,7 +2162,7 @@ class Entity extends CommonTreeDropdown implements
 
     public static function showHelpdeskOptions(Entity $entity): bool
     {
-        $ID = $entity->getField('id');
+        $ID = $entity->getID();
         if (
             !$entity->can($ID, READ)
             || !Session::haveRightsOr(
@@ -2297,13 +2313,13 @@ class Entity extends CommonTreeDropdown implements
      **/
     public static function generateLinkSatisfaction($item)
     {
-        $config_suffix = $item instanceof Ticket ? '' : ('_' . strtolower($item::getType()));
+        $config_suffix = $item instanceof Ticket ? '' : ('_' . strtolower($item::class));
         $url = self::getUsedConfig('inquest_config' . $config_suffix, $item->fields['entities_id'], 'inquest_URL' . $config_suffix);
 
-        $tag_prefix = strtoupper($item::getType());
+        $tag_prefix = strtoupper($item::class);
 
         if (strstr($url, "[ITEMTYPE]")) {
-            $url = str_replace("[ITEMTYPE]", $item::getType(), $url);
+            $url = str_replace("[ITEMTYPE]", $item::class, $url);
         }
         if (strstr($url, "[ITEMTYPE_NAME]")) {
             $url = str_replace("[ITEMTYPE_NAME]", $item::getTypeName(1), $url);
@@ -2970,7 +2986,7 @@ class Entity extends CommonTreeDropdown implements
         $out = "<div class='badge bg-azure-lt m-1 py-1 " . ($inline ? "inline" : "") . "'
                    title='" . __s("Value inherited from a parent entity") . "'
                    data-bs-toggle='tooltip'>
-         <i class='ti ti-corner-right-down me-1'></i>
+         <i class='ti ti-corner-right-down me-1' aria-hidden='true'></i>
          $value
       </div>";
 
@@ -3104,7 +3120,7 @@ class Entity extends CommonTreeDropdown implements
             $title = implode(' > ', $names);
         }
         $breadcrumbs = implode(
-            '<i class="ti ti-caret-right-filled mx-1"></i>',
+            '<i class="ti ti-caret-right-filled mx-1" aria-hidden="true"></i>',
             array_map(
                 static fn(string $name) => '<span class="text-nowrap">' . htmlescape($name) . '</span>',
                 $names
@@ -3151,14 +3167,14 @@ class Entity extends CommonTreeDropdown implements
         $title       = htmlescape(implode(' > ', $names));
         $last_name   = array_pop($names);
         $breadcrumbs = implode(
-            '<i class="ti ti-caret-right-filled mx-1"></i>',
+            '<i class="ti ti-caret-right-filled mx-1" aria-hidden="true"></i>',
             array_map(
                 static fn(string $name) => '<span class="text-nowrap text-muted">' . htmlescape($name) . '</span>',
                 $names
             )
         );
 
-        $last_url  = '<i class="ti ti-caret-right-filled mx-1"></i>' . '<a href="' . $entity->getLinkURL() . '" title="' . $title . '">' . htmlescape($last_name) . '</a>';
+        $last_url  = '<i class="ti ti-caret-right-filled mx-1" aria-hidden="true"></i>' . '<a href="' . $entity->getLinkURL() . '" title="' . $title . '">' . htmlescape($last_name) . '</a>';
 
         return '<span class="glpi-badge" title="' . $title . '">' . $breadcrumbs . $last_url . '</span>';
     }
@@ -3232,63 +3248,39 @@ class Entity extends CommonTreeDropdown implements
     }
 
     /**
-     * @param int $rand
      * @return array
      */
-    public static function getEntitySelectorTree($rand = 0): array
+    public static function getEntitySelectorTree(): array
     {
-        $twig = TemplateRenderer::getInstance();
-
-        $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
-
         Profiler::getInstance()->start('Generate entity tree');
+        $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
         $entitiestree = [];
         foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
             $default_entity_id = $default_entity['id'];
-            $entitytree = $default_entity['is_recursive'] ? self::getEntityTree($default_entity_id) : [$default_entity['id'] => $default_entity];
+            $entitytree = $default_entity['is_recursive'] ? Entity::getEntityTree($default_entity_id) : [$default_entity['id'] => $default_entity];
 
-            $adapt_tree = static function (&$entities) use (&$adapt_tree, $twig, $rand) {
+            $adapt_tree = static function (&$entities) use (&$adapt_tree) {
                 foreach ($entities as $entities_id => &$entity) {
-                    $entity['key']   = $entities_id;
-
-                    if (isset($entity['tree']) && count($entity['tree']) > 0) {
-                        $entity['folder'] = true;
-                        $is_recursive = true;
-
-                        $children = $adapt_tree($entity['tree']);
-                        $entity['children'] = array_values($children);
-                    } else {
-                        $is_recursive = false;
-                    }
-
-                    $title = $twig->render('layout/parts/profile_selector_form.html.twig', [
-                        'id' => $entities_id,
-                        'name' => $entity['name'],
-                        'is_recursive' => $is_recursive,
-                        'rand' => $rand,
-                    ]);
-                    $title = preg_replace('/\s+/', ' ', $title); // compact spaces to reduce output size
-                    $entity['title'] = $title;
+                    $entity['key'] = $entities_id;
+                    $entity['label'] = $entity['name'];
+                    $entity['tree'] ??= [];
+                    $entity['children'] = array_values($adapt_tree($entity['tree']));
+                    unset($entity['name'], $entity['tree']);
                 }
-
                 unset($entity);
-
                 return $entities;
             };
             $adapt_tree($entitytree);
 
             $entitiestree = array_merge($entitiestree, $entitytree);
         }
-        Profiler::getInstance()->stop('Generate entity tree');
-
-        /* scans the tree to select the active entity */
         $select_tree = static function (&$entities) use (&$select_tree, $ancestors) {
             foreach ($entities as &$entity) {
                 if (isset($ancestors[$entity['key']])) {
-                    $entity['expanded'] = 'true';
+                    $entity['expanded'] = true;
                 }
-                if ($entity['key'] == $_SESSION['glpiactive_entity']) {
-                    $entity['selected'] = 'true';
+                if ((int) $entity['key'] === (int) $_SESSION['glpiactive_entity']) {
+                    $entity['selected'] = true;
                 }
                 if (isset($entity['children'])) {
                     $select_tree($entity['children']);
@@ -3309,8 +3301,7 @@ class Entity extends CommonTreeDropdown implements
             // Is not root entity
             $this->getId() !== 0
             // Editable
-            && static::canUpdate()
-            && $this->canUpdateItem()
+            && $this->can($this->getID(), UPDATE)
             // Has no tiles
             && count($tiles_manager->getTilesForItem($this)) === 0
         ) {
@@ -3498,7 +3489,7 @@ class Entity extends CommonTreeDropdown implements
     public function listTranslationsHandlers(): array
     {
         $handlers = [];
-        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $key = sprintf('%s_%d', static::class, $this->getID());
         $category_name = sprintf('%s: %s', self::getTypeName(), $this->getName());
         if ($this->fields['custom_helpdesk_home_title'] != self::CONFIG_PARENT) {
             $handlers[$key][] = new TranslationHandler(

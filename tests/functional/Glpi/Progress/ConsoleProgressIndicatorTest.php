@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Log;
 use Glpi\Message\MessageType;
 use Glpi\Progress\ConsoleProgressIndicator;
 use Glpi\Tests\GLPITestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\ConsoleSectionOutput;
@@ -97,6 +98,7 @@ class ConsoleProgressIndicatorTest extends GLPITestCase
         }
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('messageProvider')]
     public function testMessageOuput(
         int $verbosity,

@@ -38,7 +38,7 @@ use function Safe\preg_match;
 abstract class RuleCommonITILObjectCollection extends RuleCollection
 {
     // From RuleCollection
-    public $use_output_rule_process_as_next_input   = true;
+    public bool $use_output_rule_process_as_next_input   = true;
 
     /**
      * @param int $entity (default 0)
@@ -114,6 +114,9 @@ abstract class RuleCommonITILObjectCollection extends RuleCollection
             if ($itilcategory) {
                 $input['itilcategories_id_code'] = $itilcategory->fields['code'];
             }
+        } elseif (isset($input['itilcategories_id'])) {
+            // Category was cleared by a previous rule, do not keep a stale code
+            unset($input['itilcategories_id_code']);
         }
 
         return $input;

@@ -46,7 +46,13 @@ global $CFG_GLPI;
 $rr = new Reservation();
 
 if (Session::getCurrentInterface() == "helpdesk") {
-    Html::helpHeader(__('Simplified interface'));
+    Html::helpHeader(
+        sprintf(
+            '%s - %s',
+            Reservation::getTypeName(Session::getPluralNumber()),
+            __('Simplified interface')
+        )
+    );
 } else {
     Html::header(Reservation::getTypeName(Session::getPluralNumber()), '', "tools", "reservationitem");
 }
@@ -95,18 +101,25 @@ if (isset($_POST["update"])) {
     $_POST['begin']   = $_POST['resa']["begin"];
     $_POST['end']     = $_POST['resa']["end"];
     if ($rr->update($_POST)) {
-        Event::log(
-            $_POST["id"],
-            "reservation",
-            4,
-            "inventory",
-            //TRANS: %s is the user login
-            sprintf(
-                __('%1$s updates the reservation for item %2$s'),
-                $_SESSION["glpiname"],
-                $_POST['_item']
-            )
-        );
+        $rri = new ReservationItem();
+        $rri->getFromDB($_POST['_item']);
+        $item = getItemForItemtype($rri->fields["itemtype"]);
+        if ($item && $item->getFromDB($rri->fields["items_id"])) {
+            Event::log(
+                $_POST["id"],
+                "reservation",
+                4,
+                "inventory",
+                //TRANS: %s is the user login
+                sprintf(
+                    __('%1$s updates reservation %2$s for %3$s %4$s'),
+                    $_SESSION["glpiname"],
+                    $_POST['id'],
+                    $item::getTypeName(1),
+                    $item->getNameID(['forceid' => true])
+                )
+            );
+        }
     }
     $fn_redirect_back();
 } elseif (isset($_POST["purge"])) {
@@ -114,18 +127,25 @@ if (isset($_POST["update"])) {
 
     $reservationitems_id = key($_POST["items"]);
     if ($rr->delete($_POST, true)) {
-        Event::log(
-            $_POST["id"],
-            "reservation",
-            4,
-            "inventory",
-            //TRANS: %s is the user login
-            sprintf(
-                __('%1$s purges the reservation for item %2$s'),
-                $_SESSION["glpiname"],
-                $reservationitems_id
-            )
-        );
+        $rri = new ReservationItem();
+        $rri->getFromDB($reservationitems_id);
+        $item = getItemForItemtype($rri->fields["itemtype"]);
+        if ($item && $item->getFromDB($rri->fields["items_id"])) {
+            Event::log(
+                $_POST["id"],
+                "reservation",
+                4,
+                "inventory",
+                //TRANS: %s is the user login
+                sprintf(
+                    __('%1$s purges reservation %2$s for %3$s %4$s'),
+                    $_SESSION["glpiname"],
+                    $_POST['id'],
+                    $item::getTypeName(1),
+                    $item->getNameID(['forceid' => true])
+                )
+            );
+        }
     }
 
     $fn_redirect_back((new DateTime($rr->fields["begin"]))->format('Y-m-d'));

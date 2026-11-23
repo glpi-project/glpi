@@ -39,7 +39,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 global $DB;
 
-Session::checkRight("link", READ);
+Session::checkRight(Link::$rightname, READ);
 
 if (isset($_GET["lID"])) {
     $iterator = $DB->request([
@@ -80,7 +80,6 @@ if (isset($_GET["lID"])) {
                 $mime = "application/scriptfile";
 
                 header("Content-type: " . $mime);
-                header('Pragma: no-cache');
                 header('Expires: 0');
 
                 // May have several values due to network datas : use only first one

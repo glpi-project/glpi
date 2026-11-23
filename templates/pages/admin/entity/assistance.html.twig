@@ -109,7 +109,7 @@
     {{ fields.smallTitle(__('Automatic closing configuration')) }}
     {% if closeticket_disabled or purgeticket_disabled %}
         <div class="alert alert-info">
-            <i class="ti ti-info-circle"></i>
+            <i class="ti ti-info-circle" aria-hidden="true"></i>
             <div>
                 {{ closeticket_disabled ? __('Close ticket action is disabled.') : '' }}
                 {{ purgeticket_disabled ? __('Purge ticket action is disabled.') : '' }}

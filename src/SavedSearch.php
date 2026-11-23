@@ -42,7 +42,6 @@ use Glpi\Toolbox\ArrayNormalizer;
 use Safe\DateTime;
 
 use function Safe\parse_url;
-use function Safe\preg_replace;
 
 /**
  * Saved searches class
@@ -54,7 +53,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /** @use Clonable<static> */
     use Clonable;
 
-    public static $rightname               = 'bookmark_public';
+    public static string $rightname               = 'bookmark_public';
 
     public const SEARCH = 1; //SEARCH SYSTEM bookmark
     public const URI    = 2;
@@ -79,6 +78,27 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return ['tools', self::class];
     }
 
+    /**
+     * `is_private` no longer grants any right in `CommonDBTM::can()`, but a user must keep full
+     * access to their own private searches, whatever their `bookmark_public` right.
+     */
+    public function can($ID, int $right, ?array &$input = null, null &$reauth_needed = null): bool
+    {
+        if (parent::can($ID, $right, $input, $reauth_needed)) {
+            return true;
+        }
+
+        $loaded = static::isNewID($ID) || (!$this->isNewItem() && $this->fields['id'] == $ID);
+        $users_id = Session::getLoginUserID();
+
+        return !$reauth_needed
+            && in_array($right, [READ, UPDATE, DELETE, PURGE, CREATE], true)
+            && $loaded
+            && (bool) ($this->fields['is_private'] ?? false)
+            && $users_id !== false
+            && (int) ($this->fields['users_id'] ?? 0) === (int) $users_id;
+    }
+
     public function canUpdateItem(): bool
     {
         return Session::haveRight(self::$rightname, UPDATE)
@@ -98,17 +118,17 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'unset_default']
-                     = "<i class='ti ti-star'></i>" . __s('Unset as default');
+                     = "<i class='ti ti-star' aria-hidden='true'></i>" . __s('Unset as default');
         $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_count_method']
-                     = "<i class='ti ti-adjustments-alt'></i>" . __s('Change count method');
+                     = "<i class='ti ti-adjustments-alt' aria-hidden='true'></i>" . __s('Change count method');
         if (Session::haveRight(self::$rightname, UPDATE)) {
             // Everyone can create/update a private search but only users with permission to update can change visibility to public
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_visibility']
-                = "<i class='ti ti-eye-search'></i>" . __s('Change visibility');
+                = "<i class='ti ti-eye-search' aria-hidden='true'></i>" . __s('Change visibility');
         }
-        if (Session::haveRight('transfer', READ)) {
+        if (Session::haveRight(Transfer::$rightname, READ)) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_entity']
-                     = "<i class='ti ti-corner-right-up'></i>" . __s('Change entity');
+                     = "<i class='ti ti-corner-right-up' aria-hidden='true'></i>" . __s('Change entity');
         }
         return $actions;
     }
@@ -164,17 +184,17 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                         if ($saved_search->can($id, UPDATE)) {
                             $success = (new SavedSearch_User())->deleteByCriteria(['savedsearches_id' => $id]);
                             if ($success) {
-                                $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($saved_search::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($saved_search::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($saved_search->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($saved_search::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($saved_search->getErrorMessage(ERROR_RIGHT));
                         }
                     } else {
-                        $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($saved_search::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($saved_search->getErrorMessage(ERROR_NOT_FOUND));
                     }
                 }
@@ -190,17 +210,17 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                                 'do_count' => $input['do_count'],
                             ]);
                             if ($success) {
-                                $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($saved_search::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($saved_search::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($saved_search->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($saved_search::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($saved_search->getErrorMessage(ERROR_RIGHT));
                         }
                     } else {
-                        $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($saved_search::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($saved_search->getErrorMessage(ERROR_NOT_FOUND));
                     }
                 }
@@ -217,17 +237,17 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                                 'is_recursive' => $input['is_recursive'],
                             ]);
                             if ($success) {
-                                $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($saved_search::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($saved_search::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($saved_search->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($saved_search::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($saved_search->getErrorMessage(ERROR_RIGHT));
                         }
                     } else {
-                        $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($saved_search::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($saved_search->getErrorMessage(ERROR_NOT_FOUND));
                     }
                 }
@@ -244,17 +264,17 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                                 'is_private' => $input['is_private'],
                             ]);
                             if ($success) {
-                                $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($saved_search::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($saved_search::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($saved_search->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($saved_search::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($saved_search->getErrorMessage(ERROR_RIGHT));
                         }
                     } else {
-                        $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($saved_search::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($saved_search->getErrorMessage(ERROR_NOT_FOUND));
                     }
                 }
@@ -267,7 +287,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     {
 
         if ($this->fields['is_private'] == 1) {
-            return (Session::haveRight('config', UPDATE)
+            return (Session::haveRight(Config::$rightname, UPDATE)
                  || $this->fields['users_id'] == Session::getLoginUserID());
         }
         return parent::canCreateItem();
@@ -279,10 +299,19 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return true;
     }
 
+    public static function getMenuContent()
+    {
+        // canView() is always true, so the menu entry must rely on the profile right.
+        if (!Session::haveRight(self::$rightname, READ)) {
+            return [];
+        }
+        return parent::getMenuContent();
+    }
+
     public function canViewItem(): bool
     {
         if ($this->fields['is_private'] == 1) {
-            return (Session::haveRight('config', READ)
+            return (Session::haveRight(Config::$rightname, READ)
                  || $this->fields['users_id'] == Session::getLoginUserID());
         }
         return parent::canViewItem();
@@ -358,7 +387,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             'massiveaction' => false,
             'joinparams'    => [
                 'jointype'  => 'child',
-                'condition' => ['NEWTABLE.users_id' => Session::getLoginUserID()],
+                'condition' => ['NEWTABLE.users_id' => (int) Session::getLoginUserID()],
             ],
             'datatype'      => 'specific',
             'searchtype'    => [
@@ -476,16 +505,22 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
     public function showForm($ID, array $options = [])
     {
-        if (empty($this->fields) && $ID > 0) {
+        if ($ID > 0) {
             $this->getFromDB($ID);
         }
         // If this form is used to edit a saved search from the search screen
         $is_ajax = $options['ajax'] ?? false;
-        if ($is_ajax && $this->getID() > 0) {
-            // Allow an extra option to save as a new search instead of editing the current one
-            $options['addbuttons'] = ["add" => __("Save as a new search")];
-            // Do not allow delete from this modal
-            $options['candel'] = false;
+        if ($is_ajax) {
+            if ($this->isNewItem()) {
+                // FIXME: Cannot rely on `canCreate()` for simplified interface,
+                // the `canCreate()` method should probably fixed to handle this.
+                $options['canedit'] = $this->canCreateItem();
+            } else {
+                // Allow an extra option to save as a new search instead of editing the current one
+                $options['addbuttons'] = ["add" => __("Save as a new search")];
+                // Do not allow delete from this modal
+                $options['candel'] = false;
+            }
         }
 
         TemplateRenderer::getInstance()->display('pages/tools/savedsearch/form.html.twig', [
@@ -514,7 +549,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     'delete_search_count',
                     'delete_search_count2',
                     'start',
-                    '_glpi_csrf_token',
                 ];
                 foreach ($fields_toclean as $field) {
                     if (isset($query_tab[$field])) {
@@ -669,7 +703,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     {
         global $DB;
 
-        if (Session::haveRight('config', UPDATE)) {
+        if (Session::haveRight(Config::$rightname, UPDATE)) {
             return $DB->delete(
                 'glpi_savedsearches_users',
                 [
@@ -749,7 +783,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
                 if ($error) {
                     $info_message = __s('A fatal error occurred while executing this saved search. It is not able to be used.');
-                    $count = "<span class='ti ti-alert-triangle-filled' title='$info_message'></span>";
+                    $count = "<span class='ti ti-alert-triangle-filled' title='$info_message' aria-hidden='true'></span>"
+                        . "<span class='visually-hidden'>$info_message</span>";
                 } elseif (isset($search_data['data']['totalcount'])) {
                     $count = $search_data['data']['totalcount'];
                 } else {
@@ -757,7 +792,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                                 ? __s('Count for this saved search has been disabled.')
                                 : __s('Counting this saved search would take too long, it has been skipped.');
                     // no count, just inform the user
-                    $count = "<span class='ti ti-info-circle' title='$info_message'></span>";
+                    $count = "<span class='ti ti-info-circle' title='$info_message' aria-hidden='true'></span>"
+                        . "<span class='visually-hidden'>$info_message</span>";
                 }
 
                 $data['count'] = $count;
@@ -1042,7 +1078,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $cron_status = 0;
 
         if ($CFG_GLPI['show_count_on_tabs'] != -1) {
-            $lastdate = new DateTime($task->getField('lastrun'));
+            $lastdate = new DateTime($task->fields['lastrun']);
             $lastdate->sub(new DateInterval('P7D'));
 
             $iterator = $DB->request(['FROM'   => self::getTable(),
@@ -1136,16 +1172,16 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             $search = new Search();
             //Do the same as self::getParameters() but getFromDB is useless
             $query_tab = [];
-            parse_str($this->getField('query'), $query_tab);
+            parse_str($this->fields['query'], $query_tab);
 
-            $params = class_exists($this->getField('itemtype')) ? $query_tab : null;
+            $params = class_exists($this->fields['itemtype']) ? $query_tab : null;
 
             if (!$params) {
                 throw new RuntimeException('Saved search #' . $this->getID() . ' seems to be broken!');
             } else {
                 $params['silent_validation'] = true;
                 $data                   = $search->prepareDatasForSearch(
-                    $this->getField('itemtype'),
+                    $this->fields['itemtype'],
                     $params
                 );
                 // force saved search ID to indicate to Search to save execution time
@@ -1171,10 +1207,12 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $notif->getFromDBByCrit(['event' => 'alert_' . $this->getID()]);
 
         if ($notif->isNewItem()) {
-            $notif->check(-1, CREATE);
+            $notif->checkGlobal(CREATE);
             $notif->add(['name'            => SavedSearch::getTypeName(1) . ' ' . $this->getName(),
-                'entities_id'     => $_SESSION["glpidefault_entity"],
-                'itemtype'        => SavedSearch_Alert::getType(),
+                // Fall back to the saved search entity when there is no default
+                // entity, so the insertion does not fail on the NOT NULL column.
+                'entities_id'     => $_SESSION["glpidefault_entity"] ?? $this->fields['entities_id'],
+                'itemtype'        => SavedSearch_Alert::class,
                 'event'           => 'alert_' . $this->getID(),
                 'is_active'       => 0,
                 'date_creation' => date('Y-m-d H:i:s'),
@@ -1182,31 +1220,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
             Session::addMessageAfterRedirect(__s('Notification has been created!'), false, INFO);
         }
-    }
-
-    /**
-     * Return visibility SQL restriction to add
-     *
-     * @return string restrict to add
-     **/
-    public static function addVisibilityRestrict()
-    {
-        //not deprecated because used in Search
-        if (Session::haveRight('config', UPDATE)) {
-            return '';
-        }
-
-        //get and clean criteria
-        $criteria = self::getVisibilityCriteria();
-        unset($criteria['LEFT JOIN']);
-        $criteria['FROM'] = self::getTable();
-
-        $it = new DBmysqlIterator(null);
-        $it->buildQuery($criteria);
-        $sql = $it->getSql();
-        $sql = preg_replace('/.*WHERE /', '', $sql);
-
-        return $sql;
     }
 
     private static function getVisibilityCriteriaForMine(): array
@@ -1241,7 +1254,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {
-        if (Session::haveRight('config', UPDATE)) {
+        if (Session::haveRight(Config::$rightname, UPDATE)) {
             return ['WHERE' => []];
         }
 

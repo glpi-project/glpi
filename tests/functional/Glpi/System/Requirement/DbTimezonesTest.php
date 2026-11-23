@@ -36,9 +36,11 @@ namespace tests\units\Glpi\System\Requirement;
 
 use Glpi\System\Requirement\DbTimezones;
 use Glpi\Tests\GLPITestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 class DbTimezonesTest extends GLPITestCase
 {
+    #[AllowMockObjectsWithoutExpectations]
     public function testCheckWithTimezonenameEmptyList()
     {
         $db = $this->getMockBuilder(\DB::class)
@@ -55,6 +57,7 @@ class DbTimezonesTest extends GLPITestCase
         );
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testCheckWithAvailableData()
     {
         $db = $this->getMockBuilder(\DB::class)

@@ -35,11 +35,58 @@
 namespace tests\units;
 
 use Glpi\Tests\CommonITILRecurrentTest;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 class TicketRecurrentTest extends CommonITILRecurrentTest
 {
     protected function getChildClass()
     {
         return \TicketRecurrent::class;
+    }
+
+    #[AllowMockObjectsWithoutExpectations()]
+    public function testTicketPerItemUsesTheSameOpeningDate(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $template = $this->createItem(\TicketTemplate::class, [
+            'name' => $this->getUniqueString(),
+        ]);
+        $recurrent = $this->createItem(\TicketRecurrent::class, [
+            'name'               => $this->getUniqueString(),
+            'tickettemplates_id' => $template->getID(),
+            'begin_date'         => '2020-01-01 00:00:00',
+            'end_date'           => null,
+            'periodicity'        => DAY_TIMESTAMP,
+            'create_before'      => 0,
+            'calendars_id'       => 0,
+            'is_active'          => 1,
+            'ticket_per_item'    => 1,
+            'entities_id'        => $this->getTestRootEntity(true),
+        ]);
+        foreach ([1, 2] as $i) {
+            $computer = $this->createItem(\Computer::class, [
+                'name'        => $this->getUniqueString(),
+                'entities_id' => $this->getTestRootEntity(true),
+            ]);
+            $this->createItem(\Item_TicketRecurrent::class, [
+                'ticketrecurrents_id' => $recurrent->getID(),
+                'itemtype'            => \Computer::class,
+                'items_id'            => $computer->getID(),
+            ]);
+        }
+
+        $DB->update(\TicketRecurrent::getTable(), ['next_creation_date' => '2020-01-01 00:00:00'], ['id' => $recurrent->getID()]);
+
+        \CommonITILRecurrentCron::cronRecurrentItems($this->createMock(\CronTask::class));
+
+        $dates = array_column(iterator_to_array($DB->request([
+            'SELECT' => 'date',
+            'FROM'   => \Ticket::getTable(),
+            'WHERE'  => ['tickettemplates_id' => $template->getID()],
+        ])), 'date');
+        $this->assertSame(['2020-01-01 00:00:00', '2020-01-01 00:00:00'], $dates);
     }
 }

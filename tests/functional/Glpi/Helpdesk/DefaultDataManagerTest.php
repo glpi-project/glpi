@@ -45,6 +45,7 @@ use Glpi\Form\FormTranslation;
 use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Helpdesk\Tile\Item_Tile;
 use Glpi\Helpdesk\Tile\TileInterface;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Session\SessionInfo;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormTesterTrait;
@@ -179,11 +180,11 @@ final class DefaultDataManagerTest extends DbTestCase
             'Description' => 'My ticket content',
             'Category' => [
                 'itemtype' => ITILCategory::class,
-                'items_id' => $category->getID(),
+                'items_ids' => [$category->getID()],
             ],
             'Location' => [
                 'itemtype' => Location::class,
-                'items_id' => $location->getID(),
+                'items_ids' => [$location->getID()],
             ],
             'Urgency' => 5, // Very high
             'Observers' => [
@@ -246,8 +247,6 @@ final class DefaultDataManagerTest extends DbTestCase
     #[DataProvider('provideFormTranslationsProvider')]
     public function testFormTranslations(string $form_name): void
     {
-        global $CFG_GLPI;
-
         $this->login();
 
         // Arrange: Get default incident form
@@ -265,7 +264,7 @@ final class DefaultDataManagerTest extends DbTestCase
         $crawler = new Crawler($content);
 
         // Assert: the translations languages table is not empty
-        foreach (array_keys($CFG_GLPI['languages']) as $language) {
+        foreach (array_keys(LanguageRegistry::all()) as $language) {
             $nodes = $crawler->filter(sprintf('#form-translation-modal-%s', $language));
             $this->assertCount(1, $nodes, sprintf("Translation modal for language '%s' should be present", $language));
         }
@@ -325,11 +324,11 @@ final class DefaultDataManagerTest extends DbTestCase
             'Description' => 'My ticket content',
             'Category' => [
                 'itemtype' => ITILCategory::class,
-                'items_id' => $category->getID(),
+                'items_ids' => [$category->getID()],
             ],
             'Location' => [
                 'itemtype' => Location::class,
-                'items_id' => $location->getID(),
+                'items_ids' => [$location->getID()],
             ],
             'Urgency' => 5, // Very high
             'Observers' => [
@@ -343,9 +342,10 @@ final class DefaultDataManagerTest extends DbTestCase
             ],
             'Attachments' => [$prefix . 'foo.txt'],
         ], [
-            'filename' => [$prefix . 'foo.txt'],
-            'prefix'   => [$prefix],
-            'tag'      => [$uuid],
+            'filename'    => [$prefix . 'foo.txt'],
+            'prefix'      => [$prefix],
+            'tag'         => [$uuid],
+            'question_id' => [$this->getQuestionId($form, 'Attachments')],
         ]);
 
         // Assert: check the created ticket properties

@@ -57,8 +57,7 @@ use function Safe\preg_match;
  **/
 class Widget
 {
-    /** @var int */
-    public static $animation_duration = 1000; // in millseconds
+    public static int $animation_duration = 1000; // in millseconds
 
     /**
      * Get toolbox options for ECharts, with colors adapted to the widget palette.
@@ -435,7 +434,7 @@ class Widget
                data-bs-toggle="tooltip" data-bs-placement="top" title="{$alt}">
                 <span class="content">$formatted_number</span>
                 <div class="label">{$label}</div>
-                <i class="main-icon {$icon}"></i>
+                <i class="main-icon {$icon}" aria-hidden="true"></i>
             </a>
 HTML;
 
@@ -536,7 +535,7 @@ HTML;
             $numbers_html .= <<<HTML
                 <a {$href} class="line line-{$i}">
                     <span class="content" {$color}>$formatted_number</span>
-                    <i class="icon {$icon}" {$color2}></i>
+                    <i class="icon {$icon}" {$color2} aria-hidden="true"></i>
                     <span class="label" {$color2}>{$label}</span>
                 </a>
 HTML;
@@ -547,7 +546,7 @@ HTML;
         if ($nodata) {
             $numbers_html = "<span class='line empty-card no-data'>
                <span class='content'>
-                  <i class='icon ti ti-alert-triangle'></i>
+                  <i class='icon ti ti-alert-triangle' aria-hidden='true'></i>
                </span>
                <span class='label'>" . __s('No data found') . "</span>
             <span>";
@@ -612,7 +611,7 @@ HTML;
                     </div>
                 </div>
                 <span class="main-label">{$label}</span>
-                <i class="main-icon {$icon}" style="color: {$fg_color}"></i>
+                <i class="main-icon {$icon}" style="color: {$fg_color}" aria-hidden="true"></i>
             </div>
 HTML;
 
@@ -719,7 +718,7 @@ HTML;
             <div class="card g-chart {$class}" id="{$chart_id}" data-testid="dashboard-widget">
                 <div class="chart ct-chart">{$no_data_html}</div>
                 <span class="main-label">{$label}</span>
-                <i class="main-icon {$icon}"></i>
+                <i class="main-icon {$icon}" aria-hidden="true"></i>
             </div>
 HTML;
 
@@ -1111,14 +1110,20 @@ TWIG, $twig_params);
         } else {
             if ($p['distributed']) {
                 array_splice($series, $nb_labels);
+                $series = [
+                    [
+                        'data' => $series,
+                    ],
+                ];
             } else {
+                // $series is already wrapped as [[...]] by the caller (single non-distributed serie)
                 array_splice($series[0], 0, -$nb_labels);
+                $series = [
+                    [
+                        'data' => $series[0],
+                    ],
+                ];
             }
-            $series = [
-                [
-                    'data' => $series,
-                ],
-            ];
         }
 
         $nb_series = count($series);
@@ -1208,7 +1213,7 @@ TWIG, $twig_params);
             <div class="card g-chart $class" id="{$chart_id}" data-testid="dashboard-widget">
                 <div class="chart ct-chart">$no_data_html</div>
                 <span class="main-label">{$label}</span>
-                <i class="main-icon {$icon}"></i>
+                <i class="main-icon {$icon}" aria-hidden="true"></i>
             </div>
 HTML;
 
@@ -1302,9 +1307,13 @@ HTML;
                                 'color': (param) => palette[param.dataIndex % palette.length]
                             }
                         }
+                        // Hide labels with a value of zero to avoid overlapping values
                         serie['label'] = {
                             ...serie['label'],
-                            'formatter': (param) => param.data.value == 0 ? '' : param.data.value
+                            'formatter': (param) => {
+                                const raw_value = (param.data !== null && typeof param.data === 'object') ? param.data.value : param.data;
+                                return raw_value == 0 ? '' : raw_value;
+                            }
                         };
                     });
                     if ({{ horizontal ? 'true' : 'false' }}) {
@@ -1579,7 +1588,7 @@ TWIG, $twig_params);
             <div class="card g-chart $class" id="{$chart_id}" data-testid="dashboard-widget">
                 <div class="chart ct-chart"></div>
                 <span class="main-label">{$label}</span>
-                <i class="main-icon {$icon}"></i>
+                <i class="main-icon {$icon}" aria-hidden="true"></i>
             </div>
 HTML;
 
@@ -1753,7 +1762,7 @@ HTML;
         ];
         $p = array_merge($default, $params);
 
-        $id = "search-table-" . $p['rand'];
+        $id = "search-table-" . Html::sanitizeDomId($p['rand']);
 
         $color = new Color($p['color']);
         $is_light = $color->isLight();
@@ -1816,7 +1825,7 @@ HTML;
                 <span class="main-label">
                     <a {$href}>{$label}</a>
                 </span>
-                <i class="main-icon {$icon}"></i>
+                <i class="main-icon {$icon}" aria-hidden="true"></i>
             </div>
 HTML;
 
@@ -1878,7 +1887,7 @@ HTML;
                 : "";
 
             $author = strlen($entry['author'])
-                ? "<i class='ti ti-user'></i>&nbsp;" . \htmlescape($entry['author'])
+                ? "<i class='ti ti-user' aria-hidden='true'></i>&nbsp;" . \htmlescape($entry['author'])
                 : "";
 
             $content_size = strlen($entry['content']);
@@ -1909,7 +1918,7 @@ HTML;
             $list_html = "
                 <span class='line empty-card no-data'>
                     <span class='content'>
-                        <i class='icon ti ti-alert-triangle'></i>
+                        <i class='icon ti ti-alert-triangle' aria-hidden='true'></i>
                     </span>
                     <span class='label'>" . __s('No data found') . "</span>
                 <span>
@@ -1917,7 +1926,7 @@ HTML;
         }
 
         $view_all = strlen($p['url'])
-            ? "<a href='" . \htmlescape($p['url']) . "'><i class='ti ti-eye' title='" . __s("See all") . "'></i></a>"
+            ? "<a href='" . \htmlescape($p['url']) . "' title='" . __s("See all") . "'><i class='ti ti-eye' aria-hidden='true'></i></a>"
             : "";
 
         $rand = (int) $p['rand'];
@@ -1949,7 +1958,7 @@ HTML;
                     {$label}
                     $view_all
                 </span>
-                <i class="main-icon {$icon}" style="color: {$fg_color}"></i>
+                <i class="main-icon {$icon}" style="color: {$fg_color}" aria-hidden="true"></i>
             </div>
 HTML;
 

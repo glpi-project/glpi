@@ -37,6 +37,7 @@
  * @since 9.1
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 
 use function Safe\json_encode;
@@ -85,6 +86,9 @@ if ($parents_itemtype !== '') {
                 )
             );
         }
+        if (!$parent->can($parents_id, READ)) {
+            throw new AccessDeniedHttpException();
+        }
         $template->fields['content'] = $template->getRenderedContent($parent);
     }
 }
@@ -93,7 +97,7 @@ if ($parents_itemtype !== '') {
 //need when template is used and when GLPI preselected type if defined
 $template->fields['taskcategories_name'] = "";
 if ($template->fields['taskcategories_id']) {
-    $entityRestrict = getEntitiesRestrictCriteria(getTableForItemType(TaskCategory::getType()), "", $parent?->fields['entities_id'] ?? null, true);
+    $entityRestrict = getEntitiesRestrictCriteria(getTableForItemType(TaskCategory::class), "", $parent->fields['entities_id'] ?? null, true);
 
     $taskcategory = new TaskCategory();
     if (
@@ -102,7 +106,7 @@ if ($template->fields['taskcategories_id']) {
         ] + $entityRestrict)
     ) {
         $template->fields['taskcategories_name'] = Dropdown::getDropdownName(
-            getTableForItemType(TaskCategory::getType()),
+            getTableForItemType(TaskCategory::class),
             $template->fields['taskcategories_id'],
             false,
             true,
@@ -130,6 +134,12 @@ if ($template->fields['groups_id_tech'] == 0) {
 
 if ($template->fields['users_id_tech'] == -1) {
     $template->fields['users_id_tech'] = Session::getLoginUserID();
+}
+
+// Send the duration label, the value may be missing from the dropdown
+if ($template->fields['actiontime'] > 0) {
+    $actiontime = (int) $template->fields['actiontime'];
+    $template->fields['actiontime_label'] = Dropdown::getDurationDropdown($actiontime)[$actiontime];
 }
 
 // Return json response with the template fields

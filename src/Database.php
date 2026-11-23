@@ -41,13 +41,13 @@ use Glpi\Application\View\TemplateRenderer;
 class Database extends CommonDBChild
 {
     // From CommonDBTM
-    public $auto_message_on_action = true;
-    public static $rightname       = 'database';
-    public static $mustBeAttached  = false;
+    public bool $auto_message_on_action = true;
+    public static string $rightname       = 'database';
+    public static bool $mustBeAttached  = false;
 
     // From CommonDBChild
-    public static $itemtype = DatabaseInstance::class;
-    public static $items_id = 'databaseinstances_id';
+    public static string $itemtype = DatabaseInstance::class;
+    public static string $items_id = 'databaseinstances_id';
 
     public static function getTypeName($nb = 0)
     {
@@ -215,22 +215,33 @@ class Database extends CommonDBChild
         ];
 
         $tab[] = [
-            'id'                 => '12',
-            'table'              => Computer::getTable(),
-            'field'              => 'name',
-            'datatype'           => 'itemlink',
-            'linkfield'          => 'items_id',
-            'name'               => Computer::getTypeName(0),
-            'forcegroupby'       => true,
-            'usehaving'          => true,
+            'id'                 => '14',
+            'table'              => DatabaseInstance::getTable(),
+            'field'              => 'itemtype',
+            'name'               => _n('Associated item type', 'Associated item types', 1),
+            'datatype'           => 'itemtypename',
+            'nosearch'           => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'beforejoin'         => [
-                    'table'              => DatabaseInstance::getTable(),
-                    'joinparams'         => [
-                        'jointype'           => 'item_itemtype',
-                        'specific_itemtype'  => 'Computer',
-                    ],
+                'table'              => DatabaseInstance::getTable(),
+                'joinparams'         => [
+                    'jointype'           => 'itemtypeonly',
+                ],
+            ],
+        ];
+
+        $tab[] = [
+            'id'                 => '12',
+            'table'              => DatabaseInstance::getTable(),
+            'field'              => 'items_id',
+            'name'               => _n('Associated item', 'Associated items', 1),
+            'nosearch'           => true,
+            'massiveaction'      => false,
+            'additionalfields'   => ['itemtype'],
+            'joinparams'         => [
+                'table'              => DatabaseInstance::getTable(),
+                'joinparams'         => [
+                    'jointype'           => 'item_itemtype',
                 ],
             ],
         ];
@@ -428,7 +439,7 @@ class Database extends CommonDBChild
             )
         );
 
-        if (empty($databases)) {
+        if ($databases === []) {
             echo "<tr><th>" . __s('No database') . "</th></tr>";
         } else {
             echo "<tr class='noHover'><th colspan='10'>" . htmlescape(self::getTypeName(Session::getPluralNumber())) . "</th></tr>";
@@ -477,8 +488,9 @@ class Database extends CommonDBChild
         $links = [];
         $label = htmlescape(DatabaseInstance::getTypeName(Session::getPluralNumber()));
         if (static::canView()) {
-            $insts = "<i class=\"ti ti-database-import\" title=\"$label\""
-            . "></i><span class='d-none d-xxl-block'>$label</span>";
+            $insts = "<i class=\"ti ti-database-import\" title=\"$label\" aria-hidden='true'></i>"
+            . "<span class='d-none d-xxl-block' aria-hidden='true'>$label</span>"
+            . "<span class='visually-hidden'>$label</span>";
             $links[$insts] = DatabaseInstance::getSearchURL(false);
         }
         if (count($links)) {

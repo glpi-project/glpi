@@ -208,7 +208,7 @@ export class GlpiFormRendererController
 
                 // Find the input field within the question
                 let has_input_field = true;
-                const inputFields = question.find('input:not([type=hidden]):not([data-uploader-name]):not(.select2-search__field), select, textarea');
+                const inputFields = question.find('input:not([type=hidden]):not([data-uploader-name]):not(.select2-search__field), select, textarea:not(.select2-search__field)');
                 if (!inputFields.length) {
                     has_input_field = false;
                 }
@@ -279,6 +279,7 @@ export class GlpiFormRendererController
      */
     async #submitForm() {
         const submit = $(this.#target).find('button[data-glpi-form-renderer-action=submit]');
+        let is_redirecting = false;
 
         // Form will be sumitted using an AJAX request instead
         try {
@@ -295,19 +296,42 @@ export class GlpiFormRendererController
                 return;
             }
 
+            // If enabled, hint the user that he need to complete the altcha
+            // challenge before submitting the form
+            const altcha = this.#target.querySelector('altcha-widget');
+            if (altcha) {
+                const checkbox = altcha.querySelector('input[type=checkbox]');
+                if (!checkbox.reportValidity()) {
+                    this.#enableActions();
+                    return;
+                }
+            }
+
             // Submit form using AJAX
             const response = await $.post({
                 url: $(this.#target).prop("action"),
                 data: $(this.#target).serialize(),
             });
 
-            // Show toast with link to answers set
-            glpi_toast_info(
-                __("Item successfully created: %s").replace(
-                    "%s",
-                    response.links_to_created_items.join(", ")
-                )
-            );
+            // Redirect to the created item if requested by the user preferences
+            if (response.redirect_url) {
+                // Keep actions disabled until the browser leaves the page to
+                // prevent another submission.
+                is_redirecting = true;
+                window.location.href = response.redirect_url;
+                return;
+            }
+
+            // Show toast with links to created items, if any (none may be
+            // created, e.g. when no destination creation condition matched)
+            if (response.has_created_items) {
+                glpi_toast_info(
+                    __("Item successfully created: %s").replace(
+                        "%s",
+                        response.links_to_created_items.join(", ")
+                    )
+                );
+            }
 
             // Show final confirmation step
             $(this.#target)
@@ -352,8 +376,10 @@ export class GlpiFormRendererController
 
             glpi_toast_error(errorMessage);
         } finally {
-            this.#enableActions();
-            submit.removeClass('btn-loading');
+            if (!is_redirecting) {
+                this.#enableActions();
+                submit.removeClass('btn-loading');
+            }
         }
     }
 

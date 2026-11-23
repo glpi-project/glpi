@@ -169,11 +169,33 @@ class ErrorControllerTest extends DbTestCase
         $this->assertStringContainsString(sprintf('<title>%s - GLPI</title>', \htmlspecialchars($expected_title)), $content);
         $this->assertStringContainsString(\htmlspecialchars($expected_message), $content);
 
-        // Validates that response contains a valid page (doctype + <html><head>.*</head><body>.*</body></html>)
-        $this->assertMatchesRegularExpression(
-            '#^\s*<!DOCTYPE html>\s*<html( [^>]*)?>\s*<head( [^>]*)?>.*</head>\s*<body( [^>]*)?>.*</body>\s*</html>\s*$#s',
-            $content
+        // force backtrack limit value, to prevent regex match failure
+        $this->assertNotFalse(\ini_set('pcre.backtrack_limit', 10000000));
+
+        // Validates that response contains a valid page (doctype + <html><head>…</head><body>…</body></html>).
+        // The check is split into three anchored fragments instead of a single regex spanning the whole
+        // document. A quantifier traversing the body (greedy `.*` *or* lazy `.*?`) costs steps proportional to
+        // the body length and exhausts the PCRE backtrack limit on large pages (e.g. debug mode renders a full
+        // stack trace) — which is why the failures were random and depended on page size. Searching for small
+        // anchored fragments does not backtrack across the body, so it is unaffected by the page size.
+        $this->assertSame(
+            1,
+            \preg_match('#^\s*<!DOCTYPE html>\s*<html( [^>]*)?>\s*<head( [^>]*)?>#s', $content, $head_match, PREG_OFFSET_CAPTURE),
+            'Response does not start with a valid doctype / <html> / <head>.'
         );
+        $this->assertSame(
+            1,
+            \preg_match('#</head>\s*<body( [^>]*)?>#s', $content, $body_match, PREG_OFFSET_CAPTURE),
+            'Response does not contain a valid </head> / <body> transition.'
+        );
+        $this->assertSame(
+            1,
+            \preg_match('#</body>\s*</html>\s*$#s', $content, $end_match, PREG_OFFSET_CAPTURE),
+            'Response does not end with a valid </body> / </html>.'
+        );
+        // Ensure the fragments appear in the expected order.
+        $this->assertGreaterThan($head_match[0][1], $body_match[0][1]);
+        $this->assertGreaterThan($body_match[0][1], $end_match[0][1]);
 
         if ($debug_mode) {
             $this->assertStringContainsString('<pre data-testid="stack-trace">', $content);

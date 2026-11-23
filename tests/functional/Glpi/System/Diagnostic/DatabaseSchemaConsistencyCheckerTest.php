@@ -99,4 +99,49 @@ SQL,
 
         $this->assertEquals($expected_missing, $missing_fields);
     }
+
+    public static function invalidFieldsTypesProvider(): iterable
+    {
+        yield [
+            'create_table_sql' => <<<SQL
+CREATE TABLE `%s` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `itemtype` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+            'expected_invalid' => [],
+        ];
+        yield [
+            'create_table_sql' => <<<SQL
+CREATE TABLE `%s` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `itemtype` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+            'expected_invalid' => [
+                'itemtype' => 'varchar(255)',
+            ],
+        ];
+    }
+
+    #[DataProvider('invalidFieldsTypesProvider')]
+    public function testGetInvalidFieldsTypes(
+        string $create_table_sql,
+        array $expected_invalid
+    ) {
+        global $DB;
+
+        $table_name = sprintf('glpitests_%s', uniqid());
+
+        $instance = new DatabaseSchemaConsistencyChecker($DB);
+        $DB->doQuery(sprintf($create_table_sql, $table_name));
+        $invalid_fields = $instance->getInvalidFieldsTypes($table_name);
+        $DB->doQuery(sprintf('DROP TABLE `%s`', $table_name));
+
+        $this->assertEquals($expected_invalid, $invalid_fields);
+    }
 }

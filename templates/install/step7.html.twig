@@ -30,8 +30,6 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/form/fields_macros.html.twig' as fields %}
-
 <h2>{{ __("One last thing before starting") }}</h2>
 
 <p>
@@ -43,10 +41,9 @@
    <p>
    <button type="submit" name="submit" class="btn btn-primary">
       {{ __("Continue") }}
-      <i class="ti ti-chevron-right ms-1"></i>
+      <i class="ti ti-chevron-right ms-1" aria-hidden="true"></i>
    </button>
    </p>
 
    <input type='hidden' name='install' value='Etape_6'>
-   {{ fields.csrfField() }}
 </form>

@@ -539,7 +539,7 @@ class Update
     {
         global $CFG_GLPI;
 
-        if (!array_key_exists('dbversion', $CFG_GLPI)) {
+        if (!isset($CFG_GLPI['dbversion'])) {
             return false; // Considered as outdated if installed version is unknown.
         }
 

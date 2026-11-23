@@ -50,7 +50,7 @@ define('FIXTURE_DIR', __DIR__ . "/../tests/fixtures");
 require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
 (new ResourcesChecker(dirname(__DIR__)))->checkResources();
 
-global $GLPI_CACHE;
+global $GLPI_CACHE, $kernel;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -76,6 +76,10 @@ if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FIL
     // Use "in-memory" cache for other tests
     $GLPI_CACHE = new SimpleCache(new ArrayAdapter());
 }
+
+// Translations cache is persisted on disk and may contain stale data from a previous run.
+(new CacheManager())->getTranslationsCacheInstance()->clear();
+Session::loadLanguage();
 
 loadDataset();
 

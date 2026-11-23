@@ -46,20 +46,24 @@ use Change;
 use CommonDBTM;
 use CommonDevice;
 use CommonITILObject;
-use Config;
 use Contract;
 use Document;
+use Document_Item;
 use Dropdown;
+use Entity;
 use Glpi\Api\Deprecated\DeprecatedInterface;
 use Glpi\Api\HL\Router;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Config\ConfigContainer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\Search\SearchOption;
+use Glpi\Toolbox\IPUtilities;
 use Glpi\Toolbox\MarkdownRenderer;
 use GLPIKey;
 use Html;
@@ -95,35 +99,20 @@ use function Safe\session_write_close;
 abstract class API
 {
     // permit writing to $_SESSION
-    /** @var bool  */
-    protected $session_write = false;
-    /** @var string  */
-
-    public static $api_url = "";
-    /** @var string  */
-    public static $content_type = "application/json";
-    /** @var string  */
-    protected $format          = "json";
-    /** @var string  */
-    protected $iptxt           = "";
-    /** @var string  */
-    protected $ipnum           = "";
-    /** @var array  */
-    protected $app_tokens      = [];
-    /** @var int  */
-    protected $apiclients_id   = 0;
-    /** @var ?DeprecatedInterface  */
-    protected $deprecated_item = null;
-    /** @var string */
-    protected $request_uri;
-    /** @var array */
-    protected $url_elements;
-    /** @var string */
-    protected $verb;
-    /** @var array */
-    protected $parameters;
-    /** @var bool */
-    protected $debug = false;
+    protected bool $session_write = false;
+    public static string $api_url = "";
+    public static string $content_type = "application/json";
+    protected string $format          = "json";
+    protected string $iptxt           = "";
+    protected string $ipnum           = "";
+    protected array $app_tokens      = [];
+    protected int $apiclients_id   = 0;
+    protected ?DeprecatedInterface $deprecated_item = null;
+    protected string $request_uri;
+    protected array $url_elements;
+    protected string $verb;
+    protected array $parameters;
+    protected bool $debug = false;
 
     /**
      * @param int $nb Unused value
@@ -203,7 +192,7 @@ abstract class API
         }
 
         // retrieve ip of client
-        $this->iptxt = Toolbox::getRemoteIpAddress();
+        $this->iptxt = IPUtilities::getClientIP() ?? '';
         $this->ipnum = (!str_contains($this->iptxt, ':') ? ip2long($this->iptxt) : '');
 
         // check ip access
@@ -613,7 +602,10 @@ abstract class API
      */
     protected function getGlpiConfig()
     {
-        return ['cfg_glpi' => Config::getSafeConfig()];
+        /** @var ConfigContainer $CFG_GLPI */
+        global $CFG_GLPI;
+
+        return ['cfg_glpi' => $CFG_GLPI->getSafeConfig()];
     }
 
 
@@ -690,12 +682,12 @@ abstract class API
             && in_array($itemtype, Item_Devices::getConcernedItems())
         ) {
             $all_devices = [];
-            foreach (Item_Devices::getItemAffinities($item->getType()) as $device_type) {
+            foreach (Item_Devices::getItemAffinities($item::class) as $device_type) {
                 $found_devices = getAllDataFromTable(
                     $device_type::getTable(),
                     [
                         'items_id'     => $item->getID(),
-                        'itemtype'     => $item->getType(),
+                        'itemtype'     => $item::class,
                         'is_deleted'   => 0,
                     ],
                     true
@@ -707,7 +699,7 @@ abstract class API
                     unset($device['is_deleted']);
                 }
 
-                if (!empty($found_devices)) {
+                if ($found_devices !== []) {
                     $all_devices[$device_type] = $found_devices;
                 }
             }
@@ -927,6 +919,7 @@ abstract class API
                         'timeline_position' => ['>', CommonITILObject::NO_TIMELINE], // skip inlined images
                     ];
                 }
+                $doc_criteria = [...$doc_criteria, ...Document_Item::getPrivacyRestrictionCriteria()];
                 $doc_iterator = $DB->request([
                     'SELECT'    => [
                         'glpi_documents_items.id AS assocID',
@@ -1022,8 +1015,12 @@ abstract class API
                     'glpi_changes_items.itemtype' => $itemtype,
                 ] + getEntitiesRestrictCriteria(Change::getTable());
                 $iterator = $DB->request($criteria);
+                $change = new Change();
                 foreach ($iterator as $data) {
-                    $fields['_changes'][] = $data;
+                    // Keep only the changes the user is allowed to see
+                    if ($change->getFromDB($data['id']) && $change->canViewItem()) {
+                        $fields['_changes'][] = $data;
+                    }
                 }
             }
         }
@@ -1054,7 +1051,7 @@ abstract class API
                     "glpi_logs",
                     [
                         'items_id'  => $item->getID(),
-                        'itemtype'  => $item->getType(),
+                        'itemtype'  => $item::class,
                     ]
                 );
             }
@@ -1301,7 +1298,7 @@ abstract class API
             foreach ($search_values as $filter_field => $filter_value) {
                 if (!$DB->fieldExists($table, $filter_field)) {
                     $this->returnError(
-                        sprintf(__('Field %s is not valid for %s item.'), $filter_field, $item->getType()),
+                        sprintf(__('Field %s is not valid for %s item.'), $filter_field, $item::class),
                         400,
                         "ERROR_FIELD_NOT_FOUND"
                     );
@@ -1313,7 +1310,7 @@ abstract class API
         }
 
         // filter with entity
-        if ($item->getType() == 'Entity') {
+        if ($item instanceof Entity) {
             $criteria['WHERE'][] = getEntitiesRestrictCriteria($itemtype::getTable());
         } elseif (
             $item->isEntityAssign()
@@ -1613,7 +1610,8 @@ abstract class API
      *        Each criterion object must provide :
      *           - link: (optional for 1st element) logical operator in [AND, OR, AND NOT, AND NOT].
      *           - field: id of searchoptions.
-     *           - searchtype: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
+     *           - searchtype: type of search in [contains, equals, notequals, lessthan, morethan,
+     *                         lessthanorequal, morethanorequal, under, notunder].
      *           - value : value to search.
      *    - 'metacriteria' (optional): array of metacriterion object to filter search.
      *                                  Optional.
@@ -1623,7 +1621,8 @@ abstract class API
      *            - link: logical operator in [AND, OR, AND NOT, AND NOT]. Mandatory
      *            - itemtype: second itemtype to link.
      *            - field: id of searchoptions.
-     *            - searchtype: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
+     *            - searchtype: type of search in [contains, equals, notequals, lessthan, morethan,
+     *                          lessthanorequal, morethanorequal, under, notunder].
      *            - value : value to search.
      *    - 'sort' :  id of searchoption to sort by (default 1). Optional.
      *    - 'order' : ASC - Ascending sort / DESC Descending sort (default ASC). Optional.
@@ -1813,6 +1812,10 @@ abstract class API
                     $tmp_fields = [$col_ref_field => $current_values];
                     if (array_key_exists('additionalfields', $col['searchopt'])) {
                         foreach ($col['searchopt']['additionalfields'] as $field_name) {
+                            // The search engine removes the `TABLE.` prefix from the column alias
+                            if (str_starts_with($field_name, 'TABLE.')) {
+                                $field_name = substr($field_name, strlen('TABLE.'));
+                            }
                             $field_value_key = 'ITEM_' . $col['itemtype'] . '_' . $col['id'] . '_' . $field_name;
                             $tmp_fields[$field_name] = $raw[$field_value_key];
                         }
@@ -1832,7 +1835,7 @@ abstract class API
             }
 
             // if all asset, provide type in returned data
-            if ($itemtype == AllAssets::getType()) {
+            if ($itemtype == AllAssets::class) {
                 $current_line['id']       = $raw['id'];
                 $current_line['itemtype'] = $raw['TYPE'];
             }
@@ -2588,7 +2591,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
             if (is_array($value)) {
                 $value = self::parseDropdowns($value, $params);
             }
-            if (is_integer($key)) {
+            if (is_int($key)) {
                 continue;
             }
             if (isForeignKeyField($key)) {
@@ -2611,7 +2614,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
                 }
 
                 if (
-                    is_integer($value)
+                    is_int($value)
                     && ($value > 0 || ($key === 'entities_id' && $value >= 0))
                 ) {
                     $tablename = getTableNameForForeignKeyField($key);
@@ -3041,9 +3044,9 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
                         // append network name
                         $concat_expr = QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
-                                'ipadr.id',
+                                new QueryIdentifier('ipadr.id'),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                'ipadr.name',
+                                new QueryIdentifier('ipadr.name'),
                             ]),
                             separator: Search::LONGSEP,
                             alias: 'ipadresses'
@@ -3324,7 +3327,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
     {
         // Return massive actions for a given item
         $actions = MassiveAction::getAllMassiveActions(
-            $item::getType(),
+            $item::class,
             $item->isDeleted(),
             $item,
             $item->getID()

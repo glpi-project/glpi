@@ -47,74 +47,68 @@ abstract class CommonDBRelation extends CommonDBConnexity
     // Item 1 information
     // * definition
     /** @var null|string|class-string<CommonDBTM> $itemtype_1 TODO: remove null */
-    public static $itemtype_1; // Type ref or field name (must start with itemtype)
-    /** @var ?string $items_id_1 */
-    public static $items_id_1; // Field name
+    public static ?string $itemtype_1 = null; // Type ref or field name (must start with itemtype)
+    public static ?string $items_id_1 = null; // Field name
     /** @var bool If entity must be taken from item 1 */
-    public static $take_entity_1          = true;
+    public static bool $take_entity_1          = true;
     // * rights
     /** @var CommonDBConnexity::DONT_CHECK_ITEM_RIGHTS|CommonDBConnexity::HAVE_VIEW_RIGHT_ON_ITEM|CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM */
-    public static $checkItem_1_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
+    public static int $checkItem_1_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
     /** @var bool If item 1 must be attached to the relation */
-    public static $mustBeAttached_1       = true;
+    public static bool $mustBeAttached_1       = true;
     // * log
     /** @var bool If historical logs must be done for item 1 */
-    public static $logs_for_item_1        = true;
+    public static bool $logs_for_item_1        = true;
     /** @var Log::HISTORY_* The historical log entry action type to use for add actions */
-    public static $log_history_1_add      = Log::HISTORY_ADD_RELATION;
+    public static int $log_history_1_add      = Log::HISTORY_ADD_RELATION;
     /** @var Log::HISTORY_* The historical log entry action type to use for update actions */
-    public static $log_history_1_update   = Log::HISTORY_UPDATE_RELATION;
+    public static int $log_history_1_update   = Log::HISTORY_UPDATE_RELATION;
     /** @var Log::HISTORY_* The historical log entry action type to use for delete actions */
-    public static $log_history_1_delete   = Log::HISTORY_DEL_RELATION;
+    public static int $log_history_1_delete   = Log::HISTORY_DEL_RELATION;
     /** @var Log::HISTORY_* The historical log entry action type to use for lock actions */
-    public static $log_history_1_lock     = Log::HISTORY_LOCK_RELATION;
+    public static int $log_history_1_lock     = Log::HISTORY_LOCK_RELATION;
     /** @var Log::HISTORY_* The historical log entry action type to use for unlock actions */
-    public static $log_history_1_unlock   = Log::HISTORY_UNLOCK_RELATION;
+    public static int $log_history_1_unlock   = Log::HISTORY_UNLOCK_RELATION;
 
     // Item 2 information
     // * definition
     /** @var null|string|class-string<CommonDBTM> $itemtype_2 TODO: remove null */
-    public static $itemtype_2; // Type ref or field name (must start with itemtype)
-    /** @var ?string $items_id_2 */
-    public static $items_id_2; // Field name
+    public static ?string $itemtype_2 = null; // Type ref or field name (must start with itemtype)
+    public static ?string $items_id_2 = null; // Field name
     /** @var bool If entity must be taken from item 2 */
-    public static $take_entity_2          = false;
+    public static bool $take_entity_2          = false;
     // * rights
     /** @var CommonDBConnexity::DONT_CHECK_ITEM_RIGHTS|CommonDBConnexity::HAVE_VIEW_RIGHT_ON_ITEM|CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM */
-    public static $checkItem_2_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
+    public static int $checkItem_2_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
     /** @var bool If item 2 must be attached to the relation */
-    public static $mustBeAttached_2       = true;
+    public static bool $mustBeAttached_2       = true;
     // * log
     /** @var bool If historical logs must be done for item 2 */
-    public static $logs_for_item_2        = true;
+    public static bool $logs_for_item_2        = true;
     /** @var Log::HISTORY_* The historical log entry action type to use for add actions */
-    public static $log_history_2_add      = Log::HISTORY_ADD_RELATION;
+    public static int $log_history_2_add      = Log::HISTORY_ADD_RELATION;
     /** @var Log::HISTORY_* The historical log entry action type to use for update actions */
-    public static $log_history_2_update   = Log::HISTORY_UPDATE_RELATION;
+    public static int $log_history_2_update   = Log::HISTORY_UPDATE_RELATION;
     /** @var Log::HISTORY_* The historical log entry action type to use for delete actions */
-    public static $log_history_2_delete   = Log::HISTORY_DEL_RELATION;
+    public static int $log_history_2_delete   = Log::HISTORY_DEL_RELATION;
     /** @var Log::HISTORY_* The historical log entry action type to use for lock actions */
-    public static $log_history_2_lock     = Log::HISTORY_LOCK_RELATION;
+    public static int $log_history_2_lock     = Log::HISTORY_LOCK_RELATION;
     /** @var Log::HISTORY_* The historical log entry action type to use for unlock actions */
-    public static $log_history_2_unlock   = Log::HISTORY_UNLOCK_RELATION;
+    public static int $log_history_2_unlock   = Log::HISTORY_UNLOCK_RELATION;
 
     // Relation between items to check
     /// If both items must be checked for rights (default is only one)
-    /** @var bool */
-    public static $checkAlwaysBothItems   = false;
+    public static bool $checkAlwaysBothItems   = false;
     /// If both items must be in viewable each other entities
-    /** @var bool */
-    public static $check_entity_coherency = true;
+    public static bool $check_entity_coherency = true;
 
-    /** @var bool */
-    public $no_form_page                  = true;
+    public bool $no_form_page                  = true;
 
     /**
      * Search option number to use in parent item log.
      * Value is defined during logging process and unset after it.
-     * @var int
      */
-    protected $_force_log_option = 0;
+    protected int $_force_log_option = 0;
 
     /**
      * Get request criteria to search for an item
@@ -209,7 +203,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      **/
     public static function getOpposite(CommonDBTM $item, &$relations_id = null)
     {
-        return static::getOppositeByTypeAndID($item->getType(), $item->getID(), $relations_id);
+        return static::getOppositeByTypeAndID($item::class, $item->getID(), $relations_id);
     }
 
 
@@ -327,14 +321,14 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
         // Check item 1 type
         if (preg_match('/^itemtype/', static::$itemtype_1)) {
-            $wheres[static::$itemtype_1] = $item1->getType();
+            $wheres[static::$itemtype_1] = $item1::class;
         } elseif (!is_a($item1, static::$itemtype_1)) {
             return false;
         }
 
         // Check item 1 type
         if (preg_match('/^itemtype/', static::$itemtype_2)) {
-            $wheres[static::$itemtype_2] = $item2->getType();
+            $wheres[static::$itemtype_2] = $item2::class;
         } elseif (!is_a($item2, static::$itemtype_2)) {
             return false;
         }
@@ -430,59 +424,63 @@ abstract class CommonDBRelation extends CommonDBConnexity
      **/
     public static function canRelation($method, $forceCheckBoth = false)
     {
+        // When both sides require the requested right on target item, the right on one side and the view right
+        // on the other side are enough. Otherwise, each side must pass its own check.
+        $OneWriteIsEnough
+            = !$forceCheckBoth
+            && static::HAVE_SAME_RIGHT_ON_ITEM === static::$checkItem_1_Rights
+            && static::HAVE_SAME_RIGHT_ON_ITEM === static::$checkItem_2_Rights
+        ;
 
-        $can1 = static::canConnexity(
-            $method,
-            static::$checkItem_1_Rights,
-            static::$itemtype_1,
-            static::$items_id_1
-        );
-        $can2 = static::canConnexity(
-            $method,
-            static::$checkItem_2_Rights,
-            static::$itemtype_2,
-            static::$items_id_2
-        );
+        $itemtype1 = static::$itemtype_1 !== null && is_a(static::$itemtype_1, CommonDBTM::class, true) ? static::$itemtype_1 : null;
+        $itemtype2 = static::$itemtype_2 !== null && is_a(static::$itemtype_2, CommonDBTM::class, true) ? static::$itemtype_2 : null;
 
-        /// Check only one if SAME RIGHT for both items and not force checkBoth
-        if (
-            ((static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights)
-            && (static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights))
-            && !$forceCheckBoth
-        ) {
-            if ($can1) {
-                // Can view the second one ?
-                if (
-                    !static::canConnexity(
-                        $method,
-                        static::HAVE_VIEW_RIGHT_ON_ITEM,
-                        static::$itemtype_2,
-                        static::$items_id_2
-                    )
-                ) {
-                    return false;
-                }
-                return true;
-            } elseif ($can2) {
-                // Can view the first one ?
-                if (
-                    !static::canConnexity(
-                        $method,
-                        static::HAVE_VIEW_RIGHT_ON_ITEM,
-                        static::$itemtype_1,
-                        static::$items_id_1
-                    )
-                ) {
-                    return false;
-                }
-                return true;
-            } else {
-                // No item have right
-                return false;
-            }
+        $can1 = match (static::$checkItem_1_Rights) {
+            static::DONT_CHECK_ITEM_RIGHTS  => true,
+            static::HAVE_VIEW_RIGHT_ON_ITEM => $itemtype1 === null || $itemtype1::canView(),
+            static::HAVE_SAME_RIGHT_ON_ITEM => $itemtype1 === null || $itemtype1::$method(),
+            default                         => throw new LogicException('Unexpected `static::$checkItem_1_Rights` value.'),
+        };
+        $can2 = match (static::$checkItem_2_Rights) {
+            static::DONT_CHECK_ITEM_RIGHTS  => true,
+            static::HAVE_VIEW_RIGHT_ON_ITEM => $itemtype2 === null || $itemtype2::canView(),
+            static::HAVE_SAME_RIGHT_ON_ITEM => $itemtype2 === null || $itemtype2::$method(),
+            default                         => throw new LogicException('Unexpected `static::$checkItem_2_Rights` value.'),
+        };
+
+        if ($can1 === false && $can2 === false) {
+            // Both sides failed to validate the requested right.
+            return false;
         }
 
-        return ($can1 && $can2);
+        if ($OneWriteIsEnough === false && ($can1 === false || $can2 === false)) {
+            // Both sides requires the requested right, but one side does not validate it.
+            return false;
+        }
+
+        $view1 = match (static::$checkItem_1_Rights) {
+            static::DONT_CHECK_ITEM_RIGHTS  => true,
+            static::HAVE_VIEW_RIGHT_ON_ITEM => $can1, // already computed
+            static::HAVE_SAME_RIGHT_ON_ITEM => $itemtype1 === null || $itemtype1::canView(),
+            default                         => throw new LogicException('Unexpected `static::$checkItem_1_Rights` value.'),
+        };
+        $view2 = match (static::$checkItem_2_Rights) {
+            static::DONT_CHECK_ITEM_RIGHTS  => true,
+            static::HAVE_VIEW_RIGHT_ON_ITEM => $can2, // already computed
+            static::HAVE_SAME_RIGHT_ON_ITEM => $itemtype2 === null || $itemtype2::canView(),
+            default                         => throw new LogicException('Unexpected `static::$checkItem_2_Rights` value.'),
+        };
+
+        if (
+            ($can1 === true && $view2 === false)
+            || ($can2 === true && $view1 === false)
+        ) {
+            // One side requires the requested right while the other side must just be viewable.
+            // This condition is not met.
+            return false;
+        }
+
+        return true;
     }
 
 
@@ -498,117 +496,121 @@ abstract class CommonDBRelation extends CommonDBConnexity
      **/
     public function canRelationItem($method, $methodNotItem, $check_entity = true, $forceCheckBoth = false)
     {
+        // When both sides require the requested right on target item, the right on one side and the view right
+        // on the other side are enough. Otherwise, each side must pass its own check.
+        $OneWriteIsEnough
+            = !$forceCheckBoth
+            && static::HAVE_SAME_RIGHT_ON_ITEM === static::$checkItem_1_Rights
+            && static::HAVE_SAME_RIGHT_ON_ITEM === static::$checkItem_2_Rights
+        ;
 
-        $OneWriteIsEnough = (!$forceCheckBoth
-                           && ((static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights)
-                               || (static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights)));
-
-        $view1 = false;
-        $view2 = false;
-
-        try {
-            $item1 = null;
-            $can1  = $this->canConnexityItem(
-                $method,
-                $methodNotItem,
-                static::$checkItem_1_Rights,
-                static::$itemtype_1,
-                static::$items_id_1,
-                $item1
-            );
-            if ($OneWriteIsEnough) {
-                $view1 = $this->canConnexityItem(
-                    $method,
-                    $methodNotItem,
-                    static::HAVE_VIEW_RIGHT_ON_ITEM,
-                    static::$itemtype_1,
-                    static::$items_id_1,
-                    $item1
-                );
-            }
-        } catch (CommonDBConnexityItemNotFound $e) {
-            if (static::$mustBeAttached_1 && !$this->isAttach1Valid($this->fields)) {
-                return false;
-            }
-            $can1         = true;
-            $view1        = true;
-            $check_entity = false; // If no item, then, we cannot check entities
+        $item1 = static::$itemtype_1 !== null && static::$items_id_1 !== null
+            ? $this->getConnexityItem(static::$itemtype_1, static::$items_id_1)
+            : false;
+        if (
+            $item1 === false
+            && static::$mustBeAttached_1
+            && $this->isAttach1Valid($this->fields) === false
+        ) {
+            return false;
         }
 
-        try {
-            $item2 = null;
-            $can2  = $this->canConnexityItem(
-                $method,
-                $methodNotItem,
-                static::$checkItem_2_Rights,
-                static::$itemtype_2,
-                static::$items_id_2,
-                $item2
-            );
-            if ($OneWriteIsEnough) {
-                $view2 = $this->canConnexityItem(
-                    $method,
-                    $methodNotItem,
-                    static::HAVE_VIEW_RIGHT_ON_ITEM,
-                    static::$itemtype_2,
-                    static::$items_id_2,
-                    $item2
-                );
-            }
-        } catch (CommonDBConnexityItemNotFound $e) {
-            if (static::$mustBeAttached_2 && !$this->isAttach2Valid($this->fields)) {
-                return false;
-            }
-            $can2         = true;
-            $view2        = true;
-            $check_entity = false; // If no item, then, we cannot check entities
+        $item2 = static::$itemtype_2 !== null && static::$items_id_2 !== null
+            ? $this->getConnexityItem(static::$itemtype_2, static::$items_id_2)
+            : false;
+        if (
+            $item2 === false
+            && static::$mustBeAttached_2
+            && !$this->isAttach2Valid($this->fields)
+        ) {
+            return false;
         }
 
-        if ($OneWriteIsEnough) {
-            if (
-                (!$can1 && !$can2)
-                || ($can1 && !$view2)
-                || ($can2 && !$view1)
-            ) {
-                return false;
-            }
-        } else {
-            if (!$can1 || !$can2) {
-                return false;
-            }
+        $can1 = match (static::$checkItem_1_Rights) {
+            static::DONT_CHECK_ITEM_RIGHTS  => true,
+            static::HAVE_VIEW_RIGHT_ON_ITEM => $item1 === false || $item1->canView() && $item1->canViewItem(),
+            static::HAVE_SAME_RIGHT_ON_ITEM => $item1 === false || $item1->$methodNotItem() && $item1->$method(),
+            default                         => throw new LogicException('Unexpected `static::$checkItem_1_Rights` value.'),
+        };
+        $can2 = match (static::$checkItem_2_Rights) {
+            static::DONT_CHECK_ITEM_RIGHTS  => true,
+            static::HAVE_VIEW_RIGHT_ON_ITEM => $item2 === false || $item2->canView() && $item2->canViewItem(),
+            static::HAVE_SAME_RIGHT_ON_ITEM => $item2 === false || $item2->$methodNotItem() && $item2->$method(),
+            default                         => throw new LogicException('Unexpected `static::$checkItem_2_Rights` value.'),
+        };
+
+        if ($can1 === false && $can2 === false) {
+            // Both sides failed to validate the requested right.
+            return false;
+        }
+
+        if ($OneWriteIsEnough === false && ($can1 === false || $can2 === false)) {
+            // Both sides requires the requested right, but one side does not validate it.
+            return false;
+        }
+
+        if (
+            ($can1 === true && $item2 === false)
+            || ($can2 === true && $item1 === false)
+        ) {
+            // One side validates the requested right while the other side is unset.
+            // There is nothing more to check.
+            return true;
+        }
+
+        if (
+            $can1 === false
+            && static::$checkItem_1_Rights === static::HAVE_SAME_RIGHT_ON_ITEM
+            && $OneWriteIsEnough
+            && $can2 === true
+        ) {
+            $can1 = $item1 === false || $item1->canView() && $item1->canViewItem();
+        }
+        if (
+            $can2 === false
+            && static::$checkItem_2_Rights === static::HAVE_SAME_RIGHT_ON_ITEM
+            && $OneWriteIsEnough
+            && $can1 === true
+        ) {
+            $can2 = $item2 === false || $item2->canView() && $item2->canViewItem();
+        }
+
+        if ($can1 === false || $can2 === false) {
+            // One side cannot validate the requested right nor the view right.
+            return false;
         }
 
         // Check coherency of entities
-        if ($check_entity && static::$check_entity_coherency) {
-            // If one of both extremity is not valid => not allowed !
-            // (default is only to check on create and update not for view and delete)
-            if (
-                (!$item1 instanceof CommonDBTM)
-                || (!$item2 instanceof CommonDBTM)
-            ) {
-                return false;
-            }
-            if ($item1->isEntityAssign() && $item2->isEntityAssign()) {
-                $entity1 = $item1->getEntityID();
-                $entity2 = $item2->getEntityID();
+        if (
+            $check_entity
+            && static::$check_entity_coherency
+            && $item1 !== false
+            && $item2 !== false
+            && $item1->isEntityAssign()
+            && $item2->isEntityAssign()
+        ) {
+            $entity1 = $item1->getEntityID();
+            $entity2 = $item2->getEntityID();
 
-                if ($entity1 == $entity2) {
-                    return true;
-                }
-                if (
-                    ($item1->isRecursive())
-                    && in_array($entity1, getAncestorsOf("glpi_entities", $entity2))
-                ) {
-                    return true;
-                }
-                if (
-                    ($item2->isRecursive())
-                    && in_array($entity2, getAncestorsOf("glpi_entities", $entity1))
-                ) {
-                    return true;
-                }
-                return false;
+            if ($entity1 == $entity2) {
+                return true;
             }
+
+            if (
+                $item1->isRecursive()
+                && in_array($entity1, getAncestorsOf("glpi_entities", $entity2))
+            ) {
+                return true;
+            }
+
+            if (
+                $item2->isRecursive()
+                && in_array($entity2, getAncestorsOf("glpi_entities", $entity1))
+            ) {
+                return true;
+            }
+
+            return false;
         }
 
         return true;
@@ -851,9 +853,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 ];
                 Log::history(
                     $item1->getID(),
-                    $item1->getType(),
+                    $item1::class,
                     $changes,
-                    $item2->getType(),
+                    $item2::class,
                     static::$log_history_1_add
                 );
             }
@@ -866,9 +868,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 ];
                 Log::history(
                     $item2->getID(),
-                    $item2->getType(),
+                    $item2::class,
                     $changes,
-                    $item1->getType(),
+                    $item1::class,
                     static::$log_history_2_add
                 );
             }
@@ -1049,9 +1051,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
                     Log::history(
                         $item1->getID(),
-                        $item1->getType(),
+                        $item1::class,
                         $changes,
-                        $item2->getType(),
+                        $item2::class,
                         static::$log_history_1_lock
                     );
                 }
@@ -1067,9 +1069,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     ];
                     Log::history(
                         $item2->getID(),
-                        $item2->getType(),
+                        $item2::class,
                         $changes,
-                        $item1->getType(),
+                        $item1::class,
                         static::$log_history_2_lock
                     );
                 }
@@ -1107,9 +1109,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     ];
                     Log::history(
                         $item1->getID(),
-                        $item1->getType(),
+                        $item1::class,
                         $changes,
-                        $item2->getType(),
+                        $item2::class,
                         static::$log_history_1_unlock
                     );
                 }
@@ -1125,9 +1127,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     ];
                     Log::history(
                         $item2->getID(),
-                        $item2->getType(),
+                        $item2::class,
                         $changes,
-                        $item1->getType(),
+                        $item1::class,
                         static::$log_history_2_unlock
                     );
                 }
@@ -1161,9 +1163,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 ];
                 Log::history(
                     $item1->getID(),
-                    $item1->getType(),
+                    $item1::class,
                     $changes,
-                    $item2->getType(),
+                    $item2::class,
                     static::$log_history_1_delete
                 );
             }
@@ -1179,9 +1181,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 ];
                 Log::history(
                     $item2->getID(),
-                    $item2->getType(),
+                    $item2::class,
                     $changes,
-                    $item1->getType(),
+                    $item1::class,
                     static::$log_history_2_delete
                 );
             }
@@ -1258,7 +1260,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $item = $father->getItem();
         }
 
-        $criteria = self::getSQLCriteriaToSearchForItem($item->getType(), $item->getID());
+        $criteria = self::getSQLCriteriaToSearchForItem($item::class, $item->getID());
         if ($criteria !== null) {
             $relation = new static();
             $iterator = $DB->request($criteria);
@@ -1567,7 +1569,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
         // If the fields provided by showMassiveActionsSubForm are not valid then quit !
         if (!isset($item_number)) {
-            $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+            $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
             $ma->addMessage($link->getErrorMessage(ERROR_NOT_FOUND));
             return;
         }
@@ -1585,7 +1587,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
 
         if (preg_match('/^itemtype/', $itemtype)) {
-            $input2[$itemtype] = $item->getType();
+            $input2[$itemtype] = $item::class;
         }
 
         // Get the peer from the $input2 and the name of its fields
@@ -1594,7 +1596,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         // $peer not valid => not in DB or try to remove all at once !
         if (!($peer instanceof CommonDBTM) || $peer->isNewItem()) {
             if ((isset($input2[$peers_id])) && ($input2[$peers_id] > 0)) {
-                $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                 if ($peer instanceof CommonDBTM) {
                     $ma->addMessage($peer->getErrorMessage(ERROR_NOT_FOUND));
                 } else {
@@ -1625,13 +1627,13 @@ abstract class CommonDBRelation extends CommonDBConnexity
             case 'add':
                 // remove all at once only available for remove !
                 if (!$peer) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                     $ma->addMessage($link->getErrorMessage(ERROR_ON_ACTION));
                     return;
                 }
                 foreach ($ids as $key) {
                     if (!$item->getFromDB($key)) {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                         continue;
                     }
@@ -1640,13 +1642,13 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     if ($specificities['can_link_several_times']) {
                         if ($link->can(-1, CREATE, $input2)) {
                             if ($link->add($input2)) {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                 $ma->addMessage($link->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($link->getErrorMessage(ERROR_RIGHT));
                         }
                     } else {
@@ -1654,27 +1656,27 @@ abstract class CommonDBRelation extends CommonDBConnexity
                         if (!$link->getFromDBForItems($item_1, $item_2)) {
                             if (
                                 ($specificities['check_both_items_if_same_type'])
-                                && ($item_1->getType() == $item_2->getType())
+                                && ($item_1 instanceof $item_2) //@phpstan-ignore instanceof.invalidExprType ($item_1 and $item_2 may be false, that's an error to manage properly)
                             ) {
                                 $link->getFromDBForItems($item_2, $item_1);
                             }
                         }
                         if (!$link->isNewItem()) {
                             if (!$specificities['update_if_different']) {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                 $ma->addMessage($link->getErrorMessage(ERROR_ALREADY_DEFINED));
                                 continue;
                             }
                             $input2[static::getIndexName()] = $link->getID();
                             if ($link->can($link->getID(), UPDATE, $input2)) {
                                 if ($link->update($input2)) {
-                                    $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                                    $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                                 } else {
-                                    $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                    $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                     $ma->addMessage($link->getErrorMessage(ERROR_ON_ACTION));
                                 }
                             } else {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
                                 $ma->addMessage($link->getErrorMessage(ERROR_RIGHT));
                             }
                             // if index defined, then cannot not add any other link due to index unicity
@@ -1682,13 +1684,13 @@ abstract class CommonDBRelation extends CommonDBConnexity
                         } else {
                             if ($link->can(-1, CREATE, $input2)) {
                                 if ($link->add($input2)) {
-                                    $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                                    $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                                 } else {
-                                    $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                    $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                     $ma->addMessage($link->getErrorMessage(ERROR_ON_ACTION));
                                 }
                             } else {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
                                 $ma->addMessage($link->getErrorMessage(ERROR_RIGHT));
                             }
                         }
@@ -1700,10 +1702,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 foreach ($ids as $key) {
                     // First, get the query to find all occurences of the link item<=>key
                     if (!$peer) {
-                        $criteria = static::getSQLCriteriaToSearchForItem($item->getType(), $key);
+                        $criteria = static::getSQLCriteriaToSearchForItem($item::class, $key);
                     } else {
                         if (!$item->getFromDB($key)) {
-                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                             continue;
                         }
@@ -1713,25 +1715,25 @@ abstract class CommonDBRelation extends CommonDBConnexity
                             static::$items_id_2  => $item_2->getID(),
                         ];
                         if (preg_match('/^itemtype/', static::$itemtype_1)) {
-                            $WHERE[static::$itemtype_1] = $item_1->getType();
+                            $WHERE[static::$itemtype_1] = $item_1::class;
                         }
                         if (preg_match('/^itemtype/', static::$itemtype_2)) {
-                            $WHERE[static::$itemtype_2] = $item_2->getType();
+                            $WHERE[static::$itemtype_2] = $item_2::class;
                         }
 
                         if (
                             ($specificities['check_both_items_if_same_type'])
-                            && ($item_1->getType() == $item_2->getType())
+                            && ($item_1 instanceof $item_2) //@phpstan-ignore instanceof.invalidExprType ($item_1 and $item_2 may be false, that's an error to manage properly)
                         ) {
                             $ORWHERE = [
                                 static::$items_id_1 => $item_2->getID(),
                                 static::$items_id_2 => $item_2->getID(),
                             ];
                             if (preg_match('/^itemtype/', static::$itemtype_1)) {
-                                $ORWHERE[static::$itemtype_1] = $item_2->getType();
+                                $ORWHERE[static::$itemtype_1] = $item_2::class;
                             }
                             if (preg_match('/^itemtype/', static::$itemtype_2)) {
-                                $ORWHERE[static::$itemtype_2] = $item_2->getType();
+                                $ORWHERE[static::$itemtype_2] = $item_2::class;
                             }
                             $WHERE = [
                                 'OR' => [
@@ -1750,7 +1752,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     $request        = $DB->request($criteria);
                     $number_results = count($request);
                     if ($number_results == 0) {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                         $ma->addMessage($link->getErrorMessage(ERROR_NOT_FOUND));
                         continue;
                     }
@@ -1771,12 +1773,12 @@ abstract class CommonDBRelation extends CommonDBConnexity
                         }
                     }
                     if ($ok == $number_results) {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                     } else {
                         if ($noright > 0) {
-                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
                         } elseif ($ko > 0) {
-                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                         }
                     }
                 }
@@ -1805,7 +1807,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $noent = true;
         }
 
-        $inverse = $item->getType() == static::$itemtype_1 || static::$itemtype_1 === 'itemtype';
+        $inverse = $item::class === static::$itemtype_1 || static::$itemtype_1 === 'itemtype';
 
         $link_type  = static::$itemtype_1;
         $link_id    = static::$items_id_1;
@@ -1817,7 +1819,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 throw new RuntimeException(
                     sprintf(
                         'Cannot use getListForItemParams() for a %s',
-                        $item->getType()
+                        $item::class
                     )
                 );
             }
@@ -1856,10 +1858,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
 
         if ($DB->fieldExists(static::getTable(), 'itemtype')) {
-            $params['WHERE'][static::getTable() . '.itemtype'] = $item->getType();
+            $params['WHERE'][static::getTable() . '.itemtype'] = $item::class;
         }
 
-        if ($noent === false && $link->isEntityAssign() && $link_type != Entity::getType()) {
+        if ($noent === false && $link->isEntityAssign() && $link_type != Entity::class) {
             $params['SELECT'][] = 'glpi_entities.id AS entity';
             $params['INNER JOIN']['glpi_entities'] = [
                 'FKEY'   => [
@@ -2019,7 +2021,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $params['WHERE'][$item->getTable() . '.is_template'] = 0;
         }
 
-        if ($noent === false && $item->isEntityAssign() && $itemtype != Entity::getType()) {
+        if ($noent === false && $item->isEntityAssign() && $itemtype != Entity::class) {
             $params['SELECT'][] = 'glpi_entities.id AS entity';
             $params['LEFT JOIN']['glpi_entities'] = [
                 'FKEY'   => [
@@ -2265,7 +2267,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
 
         if (!is_a($itemtype, CommonDBTM::class, true)) {
-            throw new RuntimeException('Unable to get itemtype from relation input.');
+            // If the polymorphic relation does not provide a valid value,
+            // then we consider the relation field value is empty.
+            return true;
         }
 
         return $itemtype::isNewID($value);

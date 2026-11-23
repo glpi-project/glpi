@@ -1,0 +1,182 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set has_entries = entries|length > 0 %}
+
+{# Status label #}
+<h3 class="mb-2 fs-4" data-testid="permissions-status">
+    {{ __('Can be viewed by:') }}
+</h3>
+
+{# Permissions list #}
+<ul class="list-group list-group-flush" data-testid="permissions-list" data-glpi-permissions-list>
+    {% if not has_entries %}
+        <div class="text-secondary py-1" data-testid="empty-permissions">
+            {{ __('This article is not yet visible to anyone.') }}
+        </div>
+    {% endif %}
+
+    {% for entry in entries %}
+        {{ include('pages/tools/kb/permission_entry.html.twig', {
+            entry: entry,
+            can_edit: can_edit,
+        }, with_context = false) }}
+    {% endfor %}
+</ul>
+
+{# Add target form #}
+{% if can_edit %}
+    <div class="mt-4">
+        <form method="post" action="{{ 'KnowbaseItem'|itemtype_form_path }}">
+            <input type="hidden" name="knowbaseitems_id" value="{{ id }}">
+            {% set add_label = __('Add access for') %}
+            <div class="row g-3" id="kb-permissions-form-{{ rand }}" data-testid="publish-form">
+                {# Row 1: type + item dropdowns + Entity child entities inline #}
+                <div class="col-12">
+                    <div class="row g-2 align-items-end">
+                        <div class="col">
+                            <label class="form-label">{{ add_label }}</label>
+                            <div class="input-group">
+                                <div class="flex-grow-1 visibility-type-col" id="visibility-type-col{{ rand }}">
+                                    {% do call('Dropdown::showItemTypes', ['_type', ['Entity', 'Group', 'Profile', 'User'], {
+                                        'rand': rand,
+                                        'value': '',
+                                        'emptylabel': __('Select a type...'),
+                                        'aria_label': add_label,
+                                        'width': '100%',
+                                    }]) %}
+                                </div>
+                                <div class="flex-grow-1 d-none visibility-item-col" id="visibility{{ rand }}" style="min-width: 0; flex-basis: 0;"></div>
+                            </div>
+                        </div>
+                        <div class="col-auto d-none" id="visibility-recursive{{ rand }}" data-testid="child-entities-label">
+                            <label
+                                class="form-label"
+                                for="dropdown_is_recursive{{ rand }}"
+                            >{{ __('Child entities') }}</label>
+                            {% do call('Dropdown::showYesNo', ['is_recursive', 1, -1, {
+                                rand: rand,
+                            }]) %}
+                        </div>
+                    </div>
+                </div>
+                {# Advanced options #}
+                <div id="visibility-advanced{{ rand }}" class="col-12 d-none">
+                    <div id="visibility-advanced-content{{ rand }}" class="row g-3 kb-permission-visibility" data-testid="advanced-content"></div>
+                </div>
+                {# Toggle + Submit #}
+                <div class="col-12 d-flex justify-content-between align-items-center">
+                    <button type="button"
+                        id="visibility-advanced-toggle{{ rand }}"
+                        class="btn btn-sm btn-link text-start p-0 d-none"
+                    >
+                        <i class="ti ti-settings me-1" aria-hidden="true"></i>{{ __('Show advanced options') }}
+                    </button>
+                    <div class="ms-auto">
+                        <button type="submit"
+                                id="visibility-submit-btn{{ rand }}"
+                                name="addvisibility"
+                                class="btn btn-primary d-none">
+                            <i class="ti ti-plus me-1" aria-hidden="true"></i>{{ _x('button', 'Add') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <script type="module">
+                (async () => {
+                    const { GlpiKnowbasePermissionsFormController } = await import(
+                        "/js/modules/Knowbase/PermissionsFormController.js"
+                    );
+                    new GlpiKnowbasePermissionsFormController(
+                        document.getElementById('kb-permissions-form-{{ rand|e('js') }}'),
+                        '{{ rand|e('js') }}',
+                        {{ visiblity_dropdown_params|json_encode|raw }},
+                    );
+                })();
+            </script>
+        </form>
+    </div>
+{% endif %}
+
+{% if can_edit %}
+<script>
+    (() => {
+        const list = document.querySelector('[data-glpi-permissions-list]');
+        if (!list) {
+            return;
+        }
+
+        list.addEventListener('click', async (e) => {
+            const btn = e.target.closest('[data-glpi-permission-delete]');
+            if (!btn) {
+                return;
+            }
+
+            const row = btn.closest('[data-glpi-permission-id]');
+            const permission_id = row.dataset.glpiPermissionId;
+            const itemtype = row.dataset.glpiPermissionItemtype;
+
+            {% if not is_owner %}
+                const confirmed = await glpi_confirm_danger({
+                    title: '{{ __("Delete target")|e("js") }}',
+                    message: '{{ __("Caution! You are not the author of this item. Deleting targets can result in loss of access.")|e("js") }}',
+                    confirm_label: '{{ __("Delete")|e("js") }}',
+                });
+                if (!confirmed) {
+                    return;
+                }
+            {% endif %}
+
+            try {
+                const response = await fetch(
+                    `${CFG_GLPI.root_doc}/Knowbase/KnowbaseItem/Permission/${itemtype}/${permission_id}`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error();
+                }
+
+                row.remove();
+            } catch {
+                glpi_toast_error('{{ __("An error occurred while deleting the permission.")|e("js") }}');
+            }
+        });
+    })();
+</script>
+{% endif %}

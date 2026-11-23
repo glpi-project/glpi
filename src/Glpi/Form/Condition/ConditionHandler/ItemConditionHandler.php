@@ -36,11 +36,13 @@ namespace Glpi\Form\Condition\ConditionHandler;
 
 use CommonDBTM;
 use CommonTreeDropdown;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Exception\TooManyResultsException;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Migration\ConditionHandlerDataConverterInterface;
 use Glpi\Form\Migration\FallbackToAnotherOperatorException;
+use Glpi\Form\Migration\UnresolvedConditionValueException;
 use Override;
 
 use function Safe\json_decode;
@@ -49,18 +51,29 @@ final class ItemConditionHandler implements ConditionHandlerInterface, Condition
 {
     use ArrayConditionHandlerTrait;
 
-    /** @param class-string<CommonDBTM> $itemtype */
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param bool $is_multiple_items Whether the condition handler should handle multiple items
+     */
     public function __construct(
         private string $itemtype,
+        private bool $is_multiple_items = false,
     ) {}
 
     #[Override]
     public function getSupportedValueOperators(): array
     {
-        return [
+        $operators = [
             ValueOperator::EQUALS,
             ValueOperator::NOT_EQUALS,
         ];
+
+        if ($this->is_multiple_items) {
+            $operators[] = ValueOperator::CONTAINS;
+            $operators[] = ValueOperator::NOT_CONTAINS;
+        }
+
+        return $operators;
     }
 
     #[Override]
@@ -72,7 +85,7 @@ final class ItemConditionHandler implements ConditionHandlerInterface, Condition
     #[Override]
     public function getTemplateParameters(ConditionData $condition): array
     {
-        return ['itemtype' => $this->itemtype];
+        return ['itemtype' => $this->itemtype, 'is_multiple_items' => $this->is_multiple_items];
     }
 
     #[Override]
@@ -80,6 +93,7 @@ final class ItemConditionHandler implements ConditionHandlerInterface, Condition
         mixed $a,
         ValueOperator $operator,
         mixed $b,
+        ?JsonFieldInterface $config,
     ): bool {
         // During form rendering, applyValueOperator is called to compute questions visibility
         // Default value is used as value
@@ -90,7 +104,21 @@ final class ItemConditionHandler implements ConditionHandlerInterface, Condition
             $a['itemtype'] = $this->itemtype;
         }
 
-        return $this->applyArrayValueOperator($a, $operator, $b);
+        // Itemtype must match before comparing ids
+        $a_itemtype = is_array($a) ? ($a['itemtype'] ?? null) : null;
+        $b_itemtype = is_array($b) ? ($b['itemtype'] ?? null) : null;
+        if ($a_itemtype !== $b_itemtype) {
+            return match ($operator) {
+                ValueOperator::NOT_EQUALS, ValueOperator::NOT_CONTAINS => true,
+                default => false,
+            };
+        }
+
+        // Extract and normalize items_ids from both sides for comparison
+        $a_ids = is_array($a) ? array_values((array) ($a['items_ids'] ?? [])) : [];
+        $b_ids = is_array($b) ? array_values((array) ($b['items_ids'] ?? [])) : [];
+
+        return $this->applyArrayValueOperator($a_ids, $operator, $b_ids);
     }
 
     #[Override]
@@ -109,7 +137,7 @@ final class ItemConditionHandler implements ConditionHandlerInterface, Condition
                 if ($item->getFromDBByCrit([$nameField => $value])) {
                     return [
                         'itemtype' => $this->itemtype,
-                        'items_id' => $item->getID(),
+                        'items_ids' => [$item->getID()],
                     ];
                 }
             }
@@ -130,6 +158,6 @@ final class ItemConditionHandler implements ConditionHandlerInterface, Condition
             throw $fallback;
         }
 
-        return 0;
+        throw new UnresolvedConditionValueException();
     }
 }

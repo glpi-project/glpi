@@ -35,9 +35,8 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-Session::checkRight("config", UPDATE);
-
 $config = new Config();
+$config->checkGlobal(UPDATE);
 
 Html::header(
     __('External authentication sources'),

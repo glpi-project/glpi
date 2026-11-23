@@ -64,6 +64,8 @@ use Session;
 use Ticket;
 use User;
 
+use function Safe\json_decode;
+
 /**
  * Object representing a search option.
  *
@@ -79,7 +81,6 @@ final class SearchOption implements ArrayAccess
      * @var array{id: int, name: string, field: string, table: string}
      */
     private array $search_opt_array;
-    /** @var array */
     private static array $search_options_cache = [];
 
     public function __construct(array $search_opt_array)
@@ -95,7 +96,7 @@ final class SearchOption implements ArrayAccess
     {
         $result = [];
         foreach ($search_options as $search_option) {
-            if (is_a($search_option, self::class)) {
+            if ($search_option instanceof self) {
                 // Already wrapped, nothing to do
                 $result[] = $search_option;
             }
@@ -151,7 +152,7 @@ final class SearchOption implements ArrayAccess
      *
      * @return array The reference to the array of search options for the given item type
      **/
-    public static function getOptionsForItemtype($itemtype, $withplugins = true): array
+    public static function getOptionsForItemtype($itemtype, $withplugins = true, bool $apply_profile_restrictions = true): array
     {
         global $CFG_GLPI;
 
@@ -159,7 +160,11 @@ final class SearchOption implements ArrayAccess
 
         $cache_key = $itemtype . '_' . ($withplugins ? 1 : 0);
         if (isset(self::$search_options_cache[$cache_key])) {
-            return self::$search_options_cache[$cache_key];
+            $options = self::$search_options_cache[$cache_key];
+            if ($apply_profile_restrictions) {
+                self::applyProfileRestrictions($itemtype, $options);
+            }
+            return $options;
         }
 
         $fn_append_options = static function ($new_options) use (&$search, $itemtype) {
@@ -203,7 +208,7 @@ final class SearchOption implements ArrayAccess
                 $fn_append_options(NetworkPort::getSearchOptionsToAdd('networkport_types'));
                 break;
 
-            case AllAssets::getType():
+            case AllAssets::class:
                 $search[$itemtype]['common']            = __('Characteristics');
 
                 $search[$itemtype][1]['table']          = 'asset_types';
@@ -326,42 +331,42 @@ final class SearchOption implements ArrayAccess
 
         if (
             in_array($itemtype, $CFG_GLPI["networkport_types"])
-            || ($itemtype == AllAssets::getType())
+            || ($itemtype == AllAssets::class)
         ) {
             $fn_append_options(NetworkPort::getSearchOptionsToAdd($itemtype));
         }
 
         if (
             in_array($itemtype, $CFG_GLPI["contract_types"])
-            || ($itemtype == AllAssets::getType())
+            || ($itemtype == AllAssets::class)
         ) {
             $fn_append_options(Contract::getSearchOptionsToAdd());
         }
 
         if (
             Document::canApplyOn($itemtype)
-            || ($itemtype == AllAssets::getType())
+            || ($itemtype == AllAssets::class)
         ) {
             $fn_append_options(Document::getSearchOptionsToAdd());
         }
 
         if (
             Infocom::canApplyOn($itemtype)
-            || ($itemtype == AllAssets::getType())
+            || ($itemtype == AllAssets::class)
         ) {
             $fn_append_options(Infocom::getSearchOptionsToAdd($itemtype));
         }
 
         if (
             in_array($itemtype, $CFG_GLPI["domain_types"])
-            || ($itemtype == AllAssets::getType())
+            || ($itemtype == AllAssets::class)
         ) {
             $fn_append_options(Domain::getSearchOptionsToAdd($itemtype));
         }
 
         if (
             in_array($itemtype, $CFG_GLPI["appliance_types"])
-            || ($itemtype == AllAssets::getType())
+            || ($itemtype == AllAssets::class)
         ) {
             $fn_append_options(Appliance::getSearchOptionsToAdd($itemtype));
         }
@@ -428,7 +433,43 @@ final class SearchOption implements ArrayAccess
         }
 
         self::$search_options_cache[$cache_key] = $search[$itemtype];
-        return $search[$itemtype];
+        $options = $search[$itemtype];
+        if ($apply_profile_restrictions) {
+            self::applyProfileRestrictions($itemtype, $options);
+        }
+        return $options;
+    }
+
+    /**
+     * @param string $itemtype
+     * @param array<int|string, mixed> $options Options array (modified in place)
+     */
+    private static function applyProfileRestrictions(string $itemtype, array &$options): void
+    {
+        if (Session::isCron()) {
+            return;
+        }
+
+        $all_excluded = $_SESSION['glpiactiveprofile']['excluded_searchoptions'] ?? null;
+        if (empty($all_excluded)) {
+            return;
+        }
+
+        if (!is_array($all_excluded)) {
+            $all_excluded = json_decode($all_excluded, true) ?? [];
+        }
+
+        $excluded = $all_excluded[$itemtype] ?? [];
+        if (empty($excluded)) {
+            return;
+        }
+
+        foreach ($excluded as $num) {
+            if (isset($options[$num]) && is_array($options[$num])) {
+                $options[$num]['nosearch'] = true;
+                $options[$num]['nodisplay'] = true;
+            }
+        }
     }
 
     /**
@@ -529,12 +570,16 @@ final class SearchOption implements ArrayAccess
                     case "integer":
                     case 'decimal':
                         $opt = [
-                            'contains'    => __('contains'),
-                            'notcontains' => __('not contains'),
-                            'equals'      => __('is'),
-                            'notequals'   => __('is not'),
-                            'empty'       => __('is empty'),
-                            'searchopt'   => $searchopt[$field_num],
+                            'contains'        => __('contains'),
+                            'notcontains'     => __('not contains'),
+                            'equals'          => __('is'),
+                            'notequals'       => __('is not'),
+                            'morethan'        => __('greater than'),
+                            'lessthan'        => __('less than'),
+                            'morethanorequal' => __('greater than or equal to'),
+                            'lessthanorequal' => __('less than or equal to'),
+                            'empty'           => __('is empty'),
+                            'searchopt'       => $searchopt[$field_num],
                         ];
                         // No is / isnot if no limits defined
                         if (
@@ -711,7 +756,7 @@ final class SearchOption implements ArrayAccess
         }
 
         if ($itemtype == Computer::class) {
-            if (!Session::haveRight('networking', $action)) {
+            if (!Session::haveRight(NetworkPort::$rightname, $action)) {
                 $itemstodel = NetworkPort::getSearchOptionsToAdd($itemtype);
                 $todel      = array_merge($todel, array_keys($itemstodel));
             }
@@ -744,7 +789,7 @@ final class SearchOption implements ArrayAccess
         $item   = null;
         $entity_check = true;
 
-        if ($itemtype !== AllAssets::getType()) {
+        if ($itemtype !== AllAssets::class) {
             $item = getItemForItemtype($itemtype);
             $entity_check = $item->isEntityAssign();
 
@@ -780,7 +825,7 @@ final class SearchOption implements ArrayAccess
         }
 
         if (isset($params['as_map']) && (int) $params['as_map'] === 1) {
-            if ($itemtype !== AllAssets::getType()) {
+            if ($itemtype !== AllAssets::class) {
                 // Add location name when map mode
                 $loc_opt = self::getOptionNumber($itemtype, 'completename', 'Location');
                 if ($loc_opt > 0) {
@@ -799,7 +844,7 @@ final class SearchOption implements ArrayAccess
                 || ($item && $item->maybeRecursive())
                 || isset($_SESSION['glpiactiveentities']) && (count($_SESSION["glpiactiveentities"]) > 1))
         ) {
-            if ($itemtype !== AllAssets::getType()) {
+            if ($itemtype !== AllAssets::class) {
                 $entity_opt = self::getOptionNumber($itemtype, 'completename', 'Entity');
                 if ($entity_opt > 0) {
                     $toview[] = $entity_opt;

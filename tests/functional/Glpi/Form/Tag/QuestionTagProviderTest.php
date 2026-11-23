@@ -34,7 +34,12 @@
 
 namespace tests\units\Glpi\Form\Tag;
 
+use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Condition\LogicOperator;
+use Glpi\Form\Condition\Type;
+use Glpi\Form\Condition\ValueOperator;
+use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
@@ -43,6 +48,7 @@ use Glpi\Form\Tag\Tag;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use User;
 
 final class QuestionTagProviderTest extends DbTestCase
 {
@@ -86,19 +92,68 @@ final class QuestionTagProviderTest extends DbTestCase
     public function testGetTagContentForValueUsingFormWithFirstAndLastNameQuestions(): void
     {
         $form = $this->getFormWithFirstAndLastNameQuestions();
+        $answers_set = $this->sendFormAndGetAnswerSet($form, [
+            'First name' => 'John',
+            'Last name'  => 'Doe',
+        ]);
         $this->checkGetTagContentForValue(
             $this->getQuestionId($form, 'First name'),
-            'First name'
+            'First name',
+            $answers_set,
         );
         $this->checkGetTagContentForValue(
             $this->getQuestionId($form, 'Last name'),
-            'Last name'
+            'Last name',
+            $answers_set,
+        );
+    }
+
+    public function testGetTagContentForValueUsingHiddenQuestion(): void
+    {
+        $builder = new FormBuilder();
+        $builder->addQuestion("Request type", QuestionTypeShortText::class);
+        $builder->addQuestion("Access request", QuestionTypeShortText::class);
+        $builder->setQuestionVisibility("Access request", VisibilityStrategy::VISIBLE_IF, [
+            [
+                'logic_operator' => LogicOperator::AND,
+                'item_name'      => "Request type",
+                'item_type'      => Type::QUESTION,
+                'value_operator' => ValueOperator::EQUALS,
+                'value'          => "access",
+            ],
+        ]);
+        $form = $this->createForm($builder);
+
+        // Hidden question: its answer is removed before being saved, as done
+        // by the submit controller.
+        $answers = AnswersHandler::getInstance()->removeUnusedAnswers($form, [
+            $this->getQuestionId($form, 'Request type')   => 'other',
+            $this->getQuestionId($form, 'Access request') => 'some value',
+        ]);
+        $answers_set = AnswersHandler::getInstance()->saveAnswers(
+            $form,
+            $answers,
+            getItemByTypeName(User::class, TU_USER, true),
+        );
+
+        $this->checkGetTagContentForValue(
+            $this->getQuestionId($form, 'Request type'),
+            'Request type',
+            $answers_set,
+        );
+        $this->checkGetTagContentForValue(
+            $this->getQuestionId($form, 'Access request'),
+            '',
+            $answers_set,
         );
     }
 
     public function testGetTagContentForValueUsingTranslation(): void
     {
         $form = $this->getFormWithFirstAndLastNameQuestions();
+        $answers_set = $this->sendFormAndGetAnswerSet($form, [
+            'First name' => 'John',
+        ]);
         $question = Question::getById($this->getQuestionId($form, 'First name'));
         $this->addTranslationToForm(
             $question,
@@ -112,13 +167,15 @@ final class QuestionTagProviderTest extends DbTestCase
             $_SESSION['glpilanguage'] = 'fr_FR';
             $this->checkGetTagContentForValue(
                 $this->getQuestionId($form, 'First name'),
-                'Prénom'
+                'Prénom',
+                $answers_set,
             );
 
             $_SESSION['glpilanguage'] = 'de_DE'; // No translation, falls back to original
             $this->checkGetTagContentForValue(
                 $this->getQuestionId($form, 'First name'),
-                'First name'
+                'First name',
+                $answers_set,
             );
         } finally {
             $_SESSION['glpilanguage'] = $original_language;
@@ -127,13 +184,14 @@ final class QuestionTagProviderTest extends DbTestCase
 
     private function checkGetTagContentForValue(
         string $value,
-        string $expected_content
+        string $expected_content,
+        AnswersSet $answers_set = new AnswersSet(),
     ): void {
         $tag_provider = new QuestionTagProvider();
 
         $computed_content = $tag_provider->getTagContentForValue(
             $value,
-            new AnswersSet(), // Answers don't (yet) matter for this provider.
+            $answers_set,
         );
         $this->assertEquals($expected_content, $computed_content);
     }

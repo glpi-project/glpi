@@ -59,7 +59,7 @@ class NetworkPortAlias extends NetworkPortInstantiation
         ) {
             $networkPort = new NetworkPort();
             if ($networkPort->getFromDB($input['networkports_id_alias'])) {
-                $input['mac']            = $networkPort->getField('mac');
+                $input['mac']            = $networkPort->fields['mac'];
             }
         }
 

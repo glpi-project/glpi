@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -60,12 +59,15 @@ class StateFilter extends AbstractFilter
     public static function getCriteria(string $table, $value): array
     {
         $criteria = [];
+        $states_ids = self::normalizeIntValues($value);
 
-        if ((int) $value > 0) {
-            $criteria["WHERE"] = [
-                "$table.states_id" => (int) $value,
-            ];
+        if (count($states_ids) === 0) {
+            return $criteria;
         }
+
+        $criteria["WHERE"] = [
+            "$table.states_id" => count($states_ids) === 1 ? $states_ids[0] : $states_ids,
+        ];
 
         return $criteria;
     }
@@ -73,13 +75,34 @@ class StateFilter extends AbstractFilter
     public static function getSearchCriteria(string $table, $value): array
     {
         $criteria = [];
+        $states_ids = self::normalizeIntValues($value);
 
-        if ((int) $value > 0) {
+        if (count($states_ids) === 0) {
+            return $criteria;
+        }
+
+        $so_id = self::getSearchOptionID($table, 'states_id', 'glpi_states');
+
+        if (count($states_ids) === 1) {
             $criteria[] = [
                 'link'       => 'AND',
-                'field'      => self::getSearchOptionID($table, 'states_id', 'glpi_states'),
+                'field'      => $so_id,
                 'searchtype' => 'equals',
-                'value'      => (int) $value,
+                'value'      => $states_ids[0],
+            ];
+        } else {
+            $sub = [];
+            foreach ($states_ids as $i => $states_id) {
+                $sub[] = [
+                    'link'       => $i === 0 ? 'AND' : 'OR',
+                    'field'      => $so_id,
+                    'searchtype' => 'equals',
+                    'value'      => $states_id,
+                ];
+            }
+            $criteria[] = [
+                'link'     => 'AND',
+                'criteria' => $sub,
             ];
         }
 
@@ -88,10 +111,10 @@ class StateFilter extends AbstractFilter
 
     public static function getHtml($value): string
     {
-        return self::displayList(
+        return self::displayMultipleList(
             self::getName(),
-            is_string($value) ? $value : "",
-            'state',
+            self::normalizeIntValues($value),
+            self::getId(),
             State::class
         );
     }

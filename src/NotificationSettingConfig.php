@@ -40,12 +40,9 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class NotificationSettingConfig extends CommonDBTM
 {
-    /**
-     * @var string
-     */
-    public $table           = 'glpi_configs';
-    protected $displaylist  = false;
-    public static $rightname       = 'config';
+    public string $table           = 'glpi_configs';
+    protected bool $displaylist  = false;
+    public static string $rightname       = 'config';
 
     #[Override]
     public function update(array $input, $history = true, $options = [])
@@ -117,7 +114,7 @@ class NotificationSettingConfig extends CommonDBTM
             [
                 'use_notifications' => (bool) $CFG_GLPI['use_notifications'],
                 'has_active_mode'   => Notification_NotificationTemplate::hasActiveMode(),
-                'can_update_config' => Session::haveRight("config", UPDATE) > 0,
+                'can_update_config' => Session::haveRight(Config::$rightname, UPDATE) > 0,
                 'modes'             => $modes,
             ]
         );

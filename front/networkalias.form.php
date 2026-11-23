@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
     if ($newID = $alias->add($_POST)) {
         Event::log(
             $newID,
-            $alias->getType(),
+            $alias::class,
             4,
             "setup",
             sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
@@ -87,7 +87,7 @@ if (isset($_POST["add"])) {
 
     Event::log(
         $_POST["id"],
-        $alias->getType(),
+        $alias::class,
         4,
         "setup",
         //TRANS: %s is the user login
@@ -101,7 +101,7 @@ if (isset($_GET['_in_modal'])) {
     $alias->showForm($_GET["id"], $_GET);
     Html::popFooter();
 } else {
-    Session::checkRight("internet", UPDATE);
+    Session::checkRight(NetworkName::$rightname, UPDATE);
 
     $menus = ['assets'];
     NetworkAlias::displayFullPageForItem($_GET["id"], $menus, $_GET);

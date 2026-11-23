@@ -36,15 +36,20 @@ namespace Glpi\Kernel;
 
 use Glpi\Application\Environment;
 use Glpi\Application\SystemConfigurator;
+use Glpi\DependencyInjection\Compiler\RemoveUnwantedTwigExtensionsPass;
 use Override;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Symfony\Bundle\DebugBundle\DebugBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -53,6 +58,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
+use Symfony\UX\TwigComponent\TwigComponentBundle;
 use Throwable;
 
 final class Kernel extends BaseKernel
@@ -81,11 +87,6 @@ final class Kernel extends BaseKernel
             // Reserved for dev/test environments as it consumes many disk I/O.
             debug: $env->shouldExpectResourcesToChange(),
         );
-    }
-
-    public function __destruct()
-    {
-        $this->triggerGlobalsDeprecation();
     }
 
     /**
@@ -149,12 +150,13 @@ final class Kernel extends BaseKernel
         $bundles = [];
 
         $bundles[] = new FrameworkBundle();
+        $bundles[] = new TwigBundle();
+        $bundles[] = new TwigComponentBundle();
 
         if (Environment::get()->shouldEnableExtraDevAndDebugTools()) {
             $dev_bundles_classes = [
                 WebProfilerBundle::class,
                 DebugBundle::class,
-                TwigBundle::class,
             ];
             foreach ($dev_bundles_classes as $bundle_class) {
                 if (\class_exists($bundle_class)) {
@@ -173,16 +175,27 @@ final class Kernel extends BaseKernel
 
         parent::boot();
 
-        // Define synthetic logger service
-        $this->container->set('logger', $this->logger);
+        $container = $this->container;
+
+        if (!($container instanceof ContainerInterface)) {
+            throw new RuntimeException('Services container is expected to be set.');
+        }
+
+        $container->set('logger', $this->logger); // Define synthetic logger service
 
         if (!$already_booted && !$this->in_reboot) {
-            $this->container->get('event_dispatcher')->dispatch(new PostBootEvent());
+            $event_dispatcher = $container->get('event_dispatcher');
+
+            if (!($event_dispatcher instanceof EventDispatcherInterface)) {
+                throw new RuntimeException('Event dispatcher service is expected to be registered in the services container.');
+            }
+
+            $event_dispatcher->dispatch(new PostBootEvent());
         }
     }
 
     #[Override()]
-    public function reboot(?string $warmupDir)
+    public function reboot(?string $warmupDir): void
     {
         $this->in_reboot = true;
 
@@ -224,12 +237,29 @@ final class Kernel extends BaseKernel
         return parent::buildContainer();
     }
 
+    #[Override()]
+    protected function build(ContainerBuilder $container): void
+    {
+        parent::build($container);
+
+        // Must run AFTER Symfony\Bundle\TwigBundle\DependencyInjection\Compiler\ExtensionPass,
+        // which is registered at TYPE_BEFORE_OPTIMIZATION with priority 10
+        // In Symfony\Bundle\TwigBundle\TwigBundle
+        $container->addCompilerPass(
+            new RemoveUnwantedTwigExtensionsPass(),
+            PassConfig::TYPE_BEFORE_OPTIMIZATION,
+            9
+        );
+    }
+
     protected function configureContainer(ContainerConfigurator $container): void
     {
         $projectDir = $this->getProjectDir();
 
-        $container->import($projectDir . '/dependency_injection/services.php', 'php');
         $container->import($projectDir . '/dependency_injection/framework.php', 'php');
+        $container->import($projectDir . '/dependency_injection/services.php', 'php');
+        $container->import($projectDir . '/dependency_injection/twig.php', 'php');
+        $container->import($projectDir . '/dependency_injection/twig_component.php', 'php');
         $container->import($projectDir . '/dependency_injection/web_profiler.php', 'php');
     }
 
@@ -241,82 +271,6 @@ final class Kernel extends BaseKernel
         // Env-specific route files.
         if (\is_file($path = $this->getProjectDir() . '/routes/' . $this->environment . '.php')) {
             (require $path)($routes->withPath($path), $this);
-        }
-    }
-
-    private function triggerGlobalsDeprecation(): void
-    {
-        if (in_array($this->getProjectDir() . '/inc/includes.php', get_included_files(), true)) {
-            // The following deprecations/warnings are already triggered in `inc/includes.php`.
-            return;
-        }
-
-        /**
-         * @var mixed|null $AJAX_INCLUDE
-         */
-        global $AJAX_INCLUDE;
-        if (isset($AJAX_INCLUDE)) {
-            trigger_error(
-                'The global `$AJAX_INCLUDE` variable has no effect anymore.',
-                E_USER_WARNING
-            );
-        }
-
-        /**
-         * @var mixed|null $SECURITY_STRATEGY
-         */
-        global $SECURITY_STRATEGY;
-        if (isset($SECURITY_STRATEGY)) {
-            trigger_error(
-                'The global `$SECURITY_STRATEGY` variable has no effect anymore.',
-                E_USER_WARNING
-            );
-        }
-
-        /**
-         * @var mixed|null $USEDBREPLICATE
-         * @var mixed|null $DBCONNECTION_REQUIRED
-         */
-        global $USEDBREPLICATE, $DBCONNECTION_REQUIRED;
-        if (isset($USEDBREPLICATE) || isset($DBCONNECTION_REQUIRED)) {
-            trigger_error(
-                'The global `$USEDBREPLICATE` and `$DBCONNECTION_REQUIRED` variables has no effect anymore. Use "DBConnection::getReadConnection()" to get the most apporpriate connection for read only operations.',
-                E_USER_WARNING
-            );
-        }
-
-        /**
-         * @var mixed|null $PLUGINS_EXCLUDED
-         * @var mixed|null $PLUGINS_INCLUDED
-         */
-        global $PLUGINS_EXCLUDED, $PLUGINS_INCLUDED;
-        if (isset($PLUGINS_EXCLUDED) || isset($PLUGINS_INCLUDED)) {
-            trigger_error(
-                'The global `$PLUGINS_EXCLUDED` and `$PLUGINS_INCLUDED` variables has no effect anymore.',
-                E_USER_WARNING
-            );
-        }
-
-        /**
-         * @var mixed|null $skip_db_check
-         */
-        global $skip_db_check;
-        if (isset($skip_db_check)) {
-            trigger_error(
-                'The global `$skip_db_check` variable has no effect anymore.',
-                E_USER_WARNING
-            );
-        }
-
-        /**
-         * @var mixed|null $dont_check_maintenance_mode
-         */
-        global $dont_check_maintenance_mode;
-        if (isset($dont_check_maintenance_mode)) {
-            trigger_error(
-                'The global `$dont_check_maintenance_mode` variable has no effect anymore.',
-                E_USER_WARNING
-            );
         }
     }
 
@@ -335,9 +289,17 @@ final class Kernel extends BaseKernel
         try {
             $response->send();
         } catch (Throwable $exception) {
-            $event = new ExceptionEvent($this, $request, self::MAIN_REQUEST, $exception);
+            $dispatcher = $this->container?->get('event_dispatcher');
 
-            $dispatcher = $this->container->get('event_dispatcher');
+            if (!($dispatcher instanceof EventDispatcherInterface)) {
+                throw new RuntimeException(
+                    'Event dispatcher service is expected to be registered in the services container.',
+                    $exception->getCode(),
+                    $exception
+                );
+            }
+
+            $event = new ExceptionEvent($this, $request, self::MAIN_REQUEST, $exception);
             $dispatcher->dispatch($event, KernelEvents::EXCEPTION);
 
             if ($event->hasResponse()) {

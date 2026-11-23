@@ -49,7 +49,7 @@ global $CFG_GLPI;
 
 Html::header(__('Statistics'), '', "helpdesk", "stat");
 
-Session::checkRight("statistic", READ);
+Session::checkRight(Stat::$rightname, READ);
 
 
 $_GET["showgraph"] = (int) ($_GET["showgraph"] ?? 0);

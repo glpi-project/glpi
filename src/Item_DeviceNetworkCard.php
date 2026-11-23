@@ -43,10 +43,10 @@
  **/
 class Item_DeviceNetworkCard extends Item_Devices
 {
-    public static $itemtype_2 = DeviceNetworkCard::class;
-    public static $items_id_2 = 'devicenetworkcards_id';
+    public static ?string $itemtype_2 = DeviceNetworkCard::class;
+    public static ?string $items_id_2 = 'devicenetworkcards_id';
 
-    protected static $notable = false;
+    protected static bool $notable = false;
 
 
     public static function getSpecificities($specif = '')

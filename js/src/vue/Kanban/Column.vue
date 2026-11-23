@@ -208,7 +208,7 @@
                                     <li class="dropdown-trigger dropdown-item">
                                         <div class="dropdown dropend">
                                             <a href="#" class="w-100" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                                                <i class="ti ti-list"></i>{{ __('Bulk add') }}
+                                                <i class="ti ti-list" aria-hidden="true"></i>{{ __('Bulk add') }}
                                             </a>
                                             <ul id="kanban-bulk-add-dropdown" class="dropdown-menu" role="menu">
                                                 <li :id="`kanban-bulk-add-${itemtype}`" class="dropdown-item cursor-pointer"
@@ -222,7 +222,7 @@
                                     <li class="kanban-remove dropdown-item cursor-pointer" v-if="!column_data['_protected']"
                                         @click="emit('kanban:column_hide')">
                                         <span>
-                                            <i class="ti ti-trash"></i>{{ __('Delete') }}
+                                            <i class="ti ti-trash" aria-hidden="true"></i>{{ __('Delete') }}
                                         </span>
                                     </li>
                                 </ul>

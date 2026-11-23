@@ -47,9 +47,8 @@ class RuleMatchedLog extends CommonDBTM
     /**
      * The right name for this class
      *
-     * @var string
      */
-    public static $rightname = 'inventory';
+    public static string $rightname = 'inventory';
 
     public static function getTypeName($nb = 0)
     {
@@ -73,8 +72,8 @@ class RuleMatchedLog extends CommonDBTM
         return countElementsInTable(
             self::getTable(),
             [
-                'itemtype' => $item->getType(),
-                'items_id' => $item->getField('id'),
+                'itemtype' => $item::class,
+                'items_id' => $item->getID(),
             ]
         );
     }

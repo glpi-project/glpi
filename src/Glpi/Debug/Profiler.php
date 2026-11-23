@@ -44,10 +44,9 @@ use Session;
 final class Profiler
 {
     /** @var ProfilerSection[] */
-    private $current_sections = [];
+    private array $current_sections = [];
 
-    /** @var bool */
-    private $disabled = false;
+    private bool $disabled = false;
 
     public const CATEGORY_BOOT = 'boot';
     public const CATEGORY_CORE = 'core';
@@ -58,8 +57,7 @@ final class Profiler
     public const CATEGORY_CUSTOMOBJECTS = 'customobjects';
     public const CATEGORY_HLAPI = 'hlapi';
 
-    /** @var ?self */
-    private static $instance;
+    private static ?self $instance = null;
 
     public static function getInstance(): self
     {

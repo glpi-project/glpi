@@ -67,6 +67,10 @@ class IllustrationExtension extends AbstractExtension
                 'countIcons',
                 [$this->illustration_manager, 'countIcons'],
             ),
+            new TwigFunction(
+                'getIconTitle',
+                [$this->illustration_manager, 'getIconTitle'],
+            ),
         ];
     }
 

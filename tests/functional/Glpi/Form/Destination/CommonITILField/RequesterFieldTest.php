@@ -144,10 +144,31 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             answers: [],
             expected_actors: [
                 [
-                    'items_id' => $auth->getUser()->getID(),
-                    'itemtype' => User::class,
-                    // Make sure notifications are enabled
+                    'items_id'         => $auth->getUser()->getID(),
+                    'itemtype'         => User::class,
                     'use_notification' => 1,
+                ],
+            ]
+        );
+
+        // User with notifications explicitly disabled: use_notification must be 0
+        $user_no_notif = $this->createItem(User::class, [
+            'name'                    => 'testRequesterFormFiller NoNotif',
+            'password'                => 'testRequesterFormFiller NoNotif',
+            'password2'               => 'testRequesterFormFiller NoNotif',
+            'is_notif_enable_default' => 0,
+        ], ['password', 'password2']);
+
+        $this->login($user_no_notif->fields['name'], $user_no_notif->fields['name']);
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $form_filler_config,
+            answers: [],
+            expected_actors: [
+                [
+                    'items_id'         => $user_no_notif->getID(),
+                    'itemtype'         => User::class,
+                    'use_notification' => 0,
                 ],
             ]
         );
@@ -197,6 +218,7 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             [
                 'itemtype'          => User::class,
                 'items_id'          => $post_only_id,
+                'use_notification'  => 1,
             ],
             $actors[0]
         );
@@ -356,11 +378,11 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             "Requester email 2" => 'test2@test.test',
             "User question 1" => [
                 'itemtype' => User::class,
-                'items_id' => $user1->getID(),
+                'items_ids' => [$user1->getID()],
             ],
             "User question 2" => [
                 'itemtype' => User::class,
-                'items_id' => $user2->getID(),
+                'items_ids' => [$user2->getID()],
             ],
         ];
 
@@ -576,6 +598,33 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             expected_actors: [['items_id' => 0, 'alternative_email' => 'test2@test.test']]
         );
 
+        // First actor question is filled, but the last one is left empty. The
+        // empty answer must be ignored so the last *valid* answer (the first
+        // question) is used.
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $last_valid_answer_config,
+            answers: [
+                "Requester 1" => [
+                    User::getForeignKeyField() . '-' . $user1->getID(),
+                ],
+                "Requester 2" => [], // empty answer
+            ],
+            expected_actors: [['items_id' => $user1->getID()]]
+        );
+
+        // Same scenario with email questions: the last email answer is empty,
+        // so the previous valid email answer must be used.
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $last_valid_answer_config,
+            answers: [
+                "Requester email 1" => 'test1@test.test',
+                "Requester email 2" => '', // empty answer
+            ],
+            expected_actors: [['items_id' => 0, 'alternative_email' => 'test1@test.test']]
+        );
+
         // No answers, fallback to default value
         $this->sendFormAndAssertTicketActors(
             form: $form,
@@ -627,6 +676,55 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             ),
             answers: [],
             expected_actors: [['items_id' => $user1->getID()], ['items_id' => $user2->getID()], ['items_id' => $group->getID()]]
+        );
+    }
+
+    public function testTicketIsCreatedWhenStoredStrategyIsUnknown(): void
+    {
+        // Login is required to assign actors
+        $this->login();
+
+        $form = $this->createAndGetFormWithMultipleActorsQuestions();
+        $destinations = $form->getDestinations();
+        $this->assertCount(1, $destinations);
+        $destination = current($destinations);
+
+        // Simulate a destination whose requester strategy was stored as the
+        // empty value of the strategy dropdown. The update is done directly in
+        // database to bypass `prepareInput`, which now rejects such a value.
+        global $DB;
+        $this->assertTrue($DB->update(
+            $destination::getTable(),
+            [
+                'config' => json_encode([
+                    RequesterField::getKey() => [
+                        ITILActorFieldConfig::STRATEGIES => ['0'],
+                        ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS => null,
+                        ITILActorFieldConfig::SPECIFIC_QUESTION_IDS => null,
+                    ],
+                ]),
+            ],
+            ['id' => $destination->getID()]
+        ));
+
+        // Submit form
+        $answers_handler = AnswersHandler::getInstance();
+        $answers_set = $answers_handler->saveAnswers(
+            $form,
+            [],
+            getItemByTypeName(User::class, TU_USER, true)
+        );
+
+        // The ticket must still be created, with the form filler as requester.
+        $created_items = $answers_set->getCreatedItems();
+        $this->assertCount(1, $created_items);
+        /** @var Ticket $ticket */
+        $ticket = current($created_items);
+        $actors = $ticket->getActorsForType(CommonITILActor::REQUESTER);
+        $this->assertCount(1, $actors);
+        $this->assertEquals(
+            getItemByTypeName(User::class, TU_USER, true),
+            $actors[0]['items_id']
         );
     }
 

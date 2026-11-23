@@ -133,6 +133,12 @@ class NotificationEventMailing extends NotificationEventAbstract
         $transport = Transport::fromDsn(GLPIMailer::buildDsn(true));
 
         foreach ($data as $row) {
+            if ((bool) $row['is_body_encrypted']) {
+                $glpi_key = new GLPIKey();
+                $row['body_text'] = $glpi_key->decrypt($row['body_text']);
+                $row['body_html'] = $glpi_key->decrypt($row['body_html']);
+            }
+
             //make sure mailer is reset on each mail
             $mmail = self::$mailer ?? new GLPIMailer($transport);
             $mail = $mmail->getEmail();
@@ -141,7 +147,7 @@ class NotificationEventMailing extends NotificationEventAbstract
 
             try {
                 $headers = importArrayFromDB($current->fields['headers']);
-                if (is_array($headers) && count($headers)) {
+                if (count($headers)) {
                     foreach ($headers as $key => $val) {
                         $mail->getHeaders()->addTextHeader($key, $val);
                     }
@@ -302,9 +308,12 @@ class NotificationEventMailing extends NotificationEventAbstract
                     }
 
                     // manage inline images (and not added as documents in object)
+                    // The str_contains() check avoids running the regex on the
+                    // whole body when there is no inline document reference.
                     $matches = [];
                     if (
-                        preg_match_all(
+                        str_contains($current->fields['body_html'], 'document.send.php')
+                        && preg_match_all(
                             "/<img[^>]*src=(\"|')[^\"']*document\.send\.php\?docid(?:=|&#61;)([0-9]+)[^\"']*(\"|')[^<]*>/",
                             $current->fields['body_html'],
                             $matches
@@ -417,13 +426,13 @@ class NotificationEventMailing extends NotificationEventAbstract
 
                 self::attachDocuments($mail, $documents_to_attach);
 
-                $recipient = $current->getField('recipient');
+                $recipient = $current->fields['recipient'];
                 if (defined('GLPI_FORCE_MAIL')) {
                     Toolbox::deprecated('Usage of the `GLPI_FORCE_MAIL` constant is deprecated. Please use a mail catcher service instead.');
                     //force recipient to configured email address
                     $recipient = GLPI_FORCE_MAIL;
                     //add original email address to message body
-                    $text = sprintf(__('Original email address was %1$s'), $current->getField('recipient'));
+                    $text = sprintf(__('Original email address was %1$s'), $current->fields['recipient']);
                     $mail->text($mail->getTextBody() . "\n" . $text);
                     if ($is_html) {
                         $mail->html($mail->getHtmlBody() . "<br/>" . htmlescape($text));
@@ -437,6 +446,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                 }
             } catch (Throwable $e) {
                 self::handleFailedSend($current, $e->getMessage());
+                continue;
             }
 
             if (!$mmail->send()) {

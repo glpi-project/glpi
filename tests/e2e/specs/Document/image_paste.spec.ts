@@ -62,7 +62,6 @@ test('pasted image is uploaded as document, not stored as base64', async ({ page
     await expect(add_button).toBeEnabled();
     await add_button.click();
     await page.waitForURL(/ticket\.form\.php/);
-    await expect(page.getByRole('alert')).toBeVisible();
 
     const followups = await api.getSubItems('Ticket', ticket_id, 'ITILFollowup');
     const last_followup = followups[followups.length - 1];

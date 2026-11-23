@@ -39,28 +39,31 @@ use CommonDBChild;
 use Glpi\Dashboard\Filters\{
     DatesFilter,
     DatesModFilter,
+    EntityFilter,
     GroupRequesterFilter,
     GroupTechFilter,
     ItilCategoryFilter,
     LocationFilter,
     ManufacturerFilter,
     RequestTypeFilter,
+    SlaFilter,
     StateFilter,
+    TicketStatusFilter,
     TicketTypeFilter,
-    UserTechFilter
+    UserAssignedFilter,
+    UserTechFilter,
 };
 use Glpi\Plugin\Hooks;
 use Plugin;
 use Session;
-use Toolbox;
 
 /**
  * Filter class
  **/
 class Filter extends CommonDBChild
 {
-    public static $itemtype = Dashboard::class;
-    public static $items_id = 'dashboards_dashboards_id';
+    public static string $itemtype = Dashboard::class;
+    public static string $items_id = 'dashboards_dashboards_id';
 
     /**
      * Return IDs of filters that can be applied to given table.
@@ -104,15 +107,19 @@ class Filter extends CommonDBChild
         $filters = [
             DatesFilter::class,
             DatesModFilter::class,
+            EntityFilter::class,
             ItilCategoryFilter::class,
             LocationFilter::class,
             ManufacturerFilter::class,
             RequestTypeFilter::class,
+            SlaFilter::class,
             StateFilter::class,
             TicketTypeFilter::class,
             GroupRequesterFilter::class,
             GroupTechFilter::class,
             UserTechFilter::class,
+            UserAssignedFilter::class,
+            TicketStatusFilter::class,
         ];
 
         foreach (($PLUGIN_HOOKS[Hooks::DASHBOARD_FILTERS] ?? []) as $plugin => $hook_filters) {
@@ -141,21 +148,6 @@ class Filter extends CommonDBChild
         }
 
         return $filters;
-    }
-
-    /**
-     * Return all available filters.
-     * Keys are filters ids, values are filters labels.
-     *
-     * @return array of filters
-     *
-     * @deprecated 11.0.0.
-     */
-    public static function getAll(): array
-    {
-        Toolbox::deprecated();
-
-        return self::getFilterChoices();
     }
 
     /**

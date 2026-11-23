@@ -34,17 +34,18 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
 
 class RuleDictionnarySoftwareCollection extends RuleCollection
 {
     // From RuleCollection
 
-    public $stop_on_first_match = true;
-    public $can_replay_rules    = true;
-    public $menu_type           = 'dictionnary';
-    public $menu_option         = 'software';
+    public bool $stop_on_first_match = true;
+    public bool $can_replay_rules    = true;
+    public string $menu_type           = 'dictionnary';
+    public string $menu_option         = 'software';
 
-    public static $rightname           = 'rule_dictionnary_software';
+    public static string $rightname           = 'rule_dictionnary_software';
 
     public function getTitle()
     {
@@ -79,11 +80,13 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
-            {% import 'components/alerts_macros.html.twig' as alerts %}
             <form name="testrule_form" id="softdictionnary_confirmation" method="post" action="{{ target }}">
                 <div class="card">
                     <div class="card-body">
-                        {{ alerts.alert_warning(warning_title, warning_message) }}
+                        <twig:Alert:Warning
+                            :heading="warning_title"
+                            :content="warning_message"
+                        />
                         <div>
                             {{ fields.dropdownField('Manufacturer', 'manufacturer', 0, manufacturer_label, {
                                 emptylabel: emptylabel,
@@ -92,7 +95,6 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
                     </div>
                     <div class="card-footer d-flex flex-row-reverse">
                         <input type="hidden" name="replay_confirm" value="replay_confirm">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <button type="submit" name="replay_rule" class="btn btn-primary">{{ btn_label }}</button>
                     </div>
                 </div>
@@ -483,7 +485,7 @@ TWIG, $twig_params);
                                 'gcs_2'                       => 'items_id',
                                 $item_softwareversion_table   => 'items_id', [
                                     'AND' => [
-                                        'gcs_2.itemtype' => $item_softwareversion_table . '.itemtype',
+                                        'gcs_2.itemtype' => new QueryExpression(DBmysql::quoteName($item_softwareversion_table . '.itemtype')),
                                     ],
                                 ],
                             ],

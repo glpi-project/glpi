@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 /**
  * ProjectTask_Ticket Class
@@ -46,11 +47,11 @@ use Glpi\DBAL\QueryFunction;
 class ProjectTask_Ticket extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = ProjectTask::class;
-    public static $items_id_1   = 'projecttasks_id';
+    public static ?string $itemtype_1 = ProjectTask::class;
+    public static ?string $items_id_1   = 'projecttasks_id';
 
-    public static $itemtype_2 = Ticket::class;
-    public static $items_id_2   = 'tickets_id';
+    public static ?string $itemtype_2 = Ticket::class;
+    public static ?string $items_id_2   = 'tickets_id';
 
     public function getForbiddenStandardMassiveAction()
     {
@@ -130,7 +131,7 @@ class ProjectTask_Ticket extends CommonDBRelation
         $iterator = $DB->request([
             'SELECT'    => [
                 QueryFunction::sum(
-                    expression: 'glpi_tickets.actiontime',
+                    expression: new QueryIdentifier('glpi_tickets.actiontime'),
                     alias: 'duration'
                 ),
             ],
@@ -157,7 +158,7 @@ class ProjectTask_Ticket extends CommonDBRelation
      **/
     public static function showForProjectTask(ProjectTask $projecttask)
     {
-        $ID = $projecttask->getField('id');
+        $ID = $projecttask->getID();
         if (!$projecttask->can($ID, READ)) {
             return false;
         }
@@ -222,7 +223,6 @@ class ProjectTask_Ticket extends CommonDBRelation
             'formatters' => $formatters,
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -241,7 +241,7 @@ class ProjectTask_Ticket extends CommonDBRelation
     {
         global $CFG_GLPI, $DB;
 
-        $ID = $ticket->getField('id');
+        $ID = $ticket->getID();
         if (!$ticket->can($ID, READ)) {
             return false;
         }
@@ -460,7 +460,6 @@ class ProjectTask_Ticket extends CommonDBRelation
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

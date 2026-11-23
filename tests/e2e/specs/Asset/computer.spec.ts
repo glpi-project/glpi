@@ -108,7 +108,7 @@ test('Create ITIL objects from computer', async ({ page, profile, api }) => {
     await page.getByRole('tabpanel').getByText('New Problem for this item').click();
     await page.getByLabel('Title').fill('Test problem');
     await glpi_page.getRichTextByLabel('Description').fill('Problem content');
-    await page.getByRole('button', { name: 'Add' }).click();
+    await page.getByRole('button', { name: 'Add', exact: true }).click();
     await page.waitForLoadState('load');
     await computer_page.goto(computer_id, 'Item_Problem$1');
     await expect(page.getByRole('tabpanel').getByRole('link', { name: 'Test problem' })).toBeVisible();
@@ -118,7 +118,7 @@ test('Create ITIL objects from computer', async ({ page, profile, api }) => {
     await page.getByRole('tabpanel').getByText('New Change for this item').click();
     await page.getByLabel('Title').fill('Test change');
     await glpi_page.getRichTextByLabel('Description').fill('Change content');
-    await page.getByRole('button', { name: 'Add' }).click();
+    await page.getByRole('button', { name: 'Add', exact: true }).click();
     await page.waitForLoadState('load');
     await computer_page.goto(computer_id, 'Change_Item$1');
     await expect(page.getByRole('tabpanel').getByRole('link', { name: 'Test change' })).toBeVisible();
@@ -128,7 +128,7 @@ test('Create ITIL objects from computer', async ({ page, profile, api }) => {
     await page.getByRole('tabpanel').getByText('New Ticket for this item').click();
     await page.getByLabel('Title').fill('Test ticket');
     await glpi_page.getRichTextByLabel('Description').fill('Ticket content');
-    await page.getByRole('button', { name: 'Add' }).click();
+    await page.getByRole('button', { name: 'Add', exact: true }).click();
     await page.waitForLoadState('load');
     await computer_page.goto(computer_id, 'Item_Ticket$1');
     await expect(page.getByRole('tabpanel').getByRole('link', { name: 'Test ticket' })).toBeVisible();

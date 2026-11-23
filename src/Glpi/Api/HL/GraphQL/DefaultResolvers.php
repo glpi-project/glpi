@@ -37,20 +37,27 @@ namespace Glpi\Api\HL\GraphQL;
 use CommonDBTM;
 use DBConnection;
 use Glpi\Api\HL\APIException;
-use Glpi\Api\HL\OpenAPIGenerator;
+use Glpi\Api\HL\Doc\Schema;
+use Glpi\Api\HL\GraphQL\Error\FieldAccessDeniedError;
+use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\RightConditionNotMetException;
 use Glpi\Api\HL\RSQL\RSQLException;
+use Glpi\Api\HL\Schemas;
 use Glpi\Api\HL\Search;
 use Glpi\Api\HL\Search\SearchContext;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profiler;
 use GraphQL\Deferred;
 use GraphQL\Error\Error;
+use GraphQL\Language\AST\FieldNode;
+use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\ResolveInfo;
 use stdClass;
 
 use function Safe\json_decode;
+use function Safe\preg_replace;
 
 /**
  * Default GraphQL field resolvers that use the OpenAPI schema to fetch data from the database.
@@ -75,7 +82,7 @@ class DefaultResolvers
      */
     private function getSchemaForObjectName(string $name): ?array
     {
-        return OpenAPIGenerator::getComponentSchemas($this->api_version)[$name] ?? null;
+        return Schemas::getInstance($this->api_version)->getSchema($name);
     }
 
     /**
@@ -117,24 +124,30 @@ class DefaultResolvers
     /**
      * @param mixed $source
      * @param array<string, mixed> $args
-     * @param object $context
+     * @param stdClass $context
      * @param ResolveInfo $info
      * @return array<string, mixed>|Deferred|null
      */
-    public function resolveObjectField(mixed $source, array $args, object $context, ResolveInfo $info): array|Deferred|null
+    public function resolveObjectField(mixed $source, array $args, stdClass $context, ResolveInfo $info): array|Deferred|null
     {
         $fields_requested = array_keys($info->getFieldSelection(1));
         $field_name = $info->fieldName;
-        $id = $source[$field_name . chr(0x1F) . 'id'] ?? null;
+        if ($info->returnType instanceof NamedType) {
+            $return_schema = $this->getSchemaForObjectName($info->returnType->name());
+            if ($return_schema === null) {
+                $return_schema = $this->getSchemaForObjectName($info->parentType->name);
+            }
+        } else {
+            $return_schema = $this->getSchemaForObjectName($info->parentType->name);
+        }
+
+        $id = $source[$field_name . chr(0x1F) . 'id'] ?? $source[$field_name]['id'] ?? null;
+
         if (!is_numeric($id)) {
             //See State Visibilities for example why this can happen
-            $parent_schema = $this->getSchemaForObjectName($info->parentType->name);
-            if ($parent_schema === null) {
-                // no parent schema, return as is and let GraphQL handle it
-                return $source[$field_name] ?? null;
-            }
+            $return_schema = $this->getSchemaForObjectName($info->parentType->name);
             $joined_values = [];
-            if (!array_key_exists('x-itemtype', $parent_schema['properties'][$field_name])) {
+            if (!isset($return_schema['properties'][$field_name]['x-itemtype'])) {
                 foreach ($source as $source_field_name => $source_field_value) {
                     if (str_contains($source_field_name, $field_name . chr(0x1F))) {
                         $leaf = explode(chr(0x1F), $source_field_name)[1];
@@ -144,12 +157,24 @@ class DefaultResolvers
             }
             return $joined_values ?: null;
         }
+
+        if ($return_schema !== null) {
+            $field_schema = $return_schema['properties'][$field_name] ?? null;
+
+            if ($field_schema !== null && !$this->isResourceBackedSchema($field_schema)) {
+                return $this->resolveEmbeddedObjectField($source, $field_name, $field_schema);
+            }
+        }
+
         $id = (int) $id;
 
         [$schema_name, $schema] = $this->getSchemaNameAndSchemaForField($field_name, $info);
         if ($schema === null) {
             throw new Error('Unable to resolve field "' . $field_name . '": schema not found');
         }
+
+        $fields_requested = $this->getValidFieldSelection($schema, $fields_requested, $info, $context);
+
         $needed = $this->object_cache->getNeeded($schema_name, [$id], $fields_requested);
         if ($needed === []) {
             // Object is already cached with all requested fields
@@ -158,23 +183,23 @@ class DefaultResolvers
         $fields_requested = $needed[$id];
 
         $this->object_cache->add($schema_name, $id, $fields_requested);
-        return new Deferred(function () use ($schema_name, $schema, $id, &$args) {
-            Profiler::getInstance()->start('GraphQL2::resolveObjectField::deferred::' . $schema_name, Profiler::CATEGORY_HLAPI);
+        return new Deferred(function () use ($schema_name, $schema, $id, &$args, $info) {
+            Profiler::getInstance()->start('GraphQL::resolveObjectField::deferred::' . $schema_name, Profiler::CATEGORY_HLAPI);
             $to_load = $this->object_cache->getPending($schema_name);
             if ($to_load === []) {
                 $r = $this->object_cache->get($schema_name, $id)?->data;
-                Profiler::getInstance()->stop('GraphQL2::resolveObjectField::deferred::' . $schema_name);
+                Profiler::getInstance()->stop('GraphQL::resolveObjectField::deferred::' . $schema_name);
                 return $r;
             }
 
             $args['id'] = $to_load['id'];
-            $it = $this->db->request($this->getCriteriaForObject($schema, $to_load['fields'], $args));
+            $it = $this->db->request($this->getCriteriaForObject($schema, $to_load['fields'], $args, $info));
             foreach ($it as $data) {
                 $this->object_cache->set($schema_name, $data['id'], $data);
             }
 
             $r = $this->object_cache->get($schema_name, $id)?->data;
-            Profiler::getInstance()->stop('GraphQL2::resolveObjectField::deferred::' . $schema_name);
+            Profiler::getInstance()->stop('GraphQL::resolveObjectField::deferred::' . $schema_name);
             return $r;
         });
     }
@@ -206,12 +231,14 @@ class DefaultResolvers
             return $source[$field_name];
         }
 
+        $fields_requested = $this->getValidFieldSelection($schema, $fields_requested, $info, $context);
+
         foreach ($ids as $id) {
             $this->object_cache->add($schema_name, (int) $id, $fields_requested);
         }
 
         $executor = function () use (&$context, $source, $schema_name, $schema, $ids, &$args, $info) {
-            Profiler::getInstance()->start('GraphQL2::resolveListField::executor::' . $schema_name, Profiler::CATEGORY_HLAPI);
+            Profiler::getInstance()->start('GraphQL::resolveListField::executor::' . $schema_name, Profiler::CATEGORY_HLAPI);
             $to_load = $this->object_cache->getPending($schema_name);
             if ($to_load === []) {
                 $results = [];
@@ -221,7 +248,7 @@ class DefaultResolvers
                         $results[] = $cached_object->data;
                     }
                 }
-                Profiler::getInstance()->stop('GraphQL2::resolveListField::executor::' . $schema_name);
+                Profiler::getInstance()->stop('GraphQL::resolveListField::executor::' . $schema_name);
                 return $results;
             }
             if ($source !== null) {
@@ -229,7 +256,7 @@ class DefaultResolvers
             } else {
                 $ids = [];
             }
-            $criteria = $this->getCriteriaForObject($schema, $to_load['fields'], $args);
+            $criteria = $this->getCriteriaForObject($schema, $to_load['fields'], $args, $info);
             $it = $this->db->request($criteria);
             foreach ($it as $data) {
                 // decode all array fields so that parsing can continue as expected
@@ -270,7 +297,7 @@ class DefaultResolvers
                     $results[] = $cached_object->data;
                 }
             }
-            Profiler::getInstance()->stop('GraphQL2::resolveListField::executor::' . $schema_name);
+            Profiler::getInstance()->stop('GraphQL::resolveListField::executor::' . $schema_name);
             return $results;
         };
 
@@ -283,11 +310,11 @@ class DefaultResolvers
     /**
      * @param mixed $source
      * @param array<string, mixed> $args
-     * @param object $context
+     * @param stdClass $context
      * @param ResolveInfo $info
      * @return mixed
      */
-    public function resolveScalarField(mixed $source, array $args, object $context, ResolveInfo $info): mixed
+    public function resolveScalarField(mixed $source, array $args, stdClass $context, ResolveInfo $info): mixed
     {
         $field_name = $info->fieldName;
         $parent_schema = $this->getSchemaForObjectName($info->parentType->name);
@@ -307,23 +334,87 @@ class DefaultResolvers
             return null;
         }
 
+        if ($parent_schema['properties'][$field_name]['type'] === Schema::TYPE_BOOLEAN) {
+            return (bool) (is_string($source[$field_name]) ? trim(preg_replace('/[[:cntrl:]]/', '', $source[$field_name])) : $source[$field_name]);
+        }
+
         // other formats already handled by GraphQL type system
         return $source[$field_name];
+    }
+
+    /**
+     * Returns the requested field name for a given field and path.
+     * This may be the real field name, or an alias.
+     * @param string $field_name The real field name.
+     * @param ResolveInfo $info
+     * @return string
+     */
+    private function getRequestedFieldName(string $field_name, ResolveInfo $info): string
+    {
+        $requested_field_name = $field_name;
+
+        $root_field_node = $info->fieldNodes[0];
+        if (isset($root_field_node->selectionSet)) {
+            foreach ($root_field_node->selectionSet->selections as $selection) {
+                if ($selection instanceof FieldNode && $selection->name->value === $field_name) {
+                    $requested_field_name = $selection->alias->value ?? $field_name;
+                    break;
+                }
+            }
+        }
+
+        return $requested_field_name;
+    }
+
+    /**
+     * Checks the requested fields against the schema, applying any field-level read permission checks and removing any fields that the user does not have permission to view.
+     * As the field selection in the GraphQL resolve info is not changed, only the fetching of data will be blocked.
+     * The fields will still be present in the GraphQL response, but will be null if the user does not have permission to view them.
+     * Instead, an error will be added to the context for each field that the user does not have permission to view to inform the user of the issue.
+     * @param array<string, mixed> $schema
+     * @param string[] $requested_fields
+     * @param stdClass $context
+     * @return string[]
+     */
+    private function getValidFieldSelection(array $schema, array $requested_fields, ResolveInfo $info, stdClass $context): array
+    {
+        $valid_fields = [];
+
+        foreach ($requested_fields as $field) {
+            if (!array_key_exists($field, $schema['properties'])) {
+                continue;
+            }
+            if (isset($schema['properties'][$field]['x-rights-conditions']['read'])) {
+                $check_result = $schema['properties'][$field]['x-rights-conditions']['read']();
+                if (is_array($check_result)) {
+                    throw new \LogicException('SQL condition field right checks are not currently supported.');
+                }
+                if ((bool) $check_result === false) {
+                    $context->field_errors ??= [];
+                    $requested_field_name = $this->getRequestedFieldName($field, $info);
+                    $context->field_errors[] = new FieldAccessDeniedError(nodes: $info->fieldNodes, path: [...$info->path, $requested_field_name]);
+                    continue;
+                }
+            }
+            $valid_fields[] = $field;
+        }
+        return $valid_fields;
     }
 
     /**
      * @param array<string, mixed> $schema
      * @param string[] $field_selection
      * @param array<string, mixed> $request_params
+     * @param ResolveInfo $info
      * @return array<string, mixed>
      * @throws Error
      * @throws APIException
      * @throws RSQLException
      * @throws RightConditionNotMetException
      */
-    private function getCriteriaForObject(array $schema, array $field_selection, array $request_params): array
+    private function getCriteriaForObject(array $schema, array $field_selection, array $request_params, ResolveInfo $info): array
     {
-        Profiler::getInstance()->start('GraphQL2::getCriteriaForObject', Profiler::CATEGORY_HLAPI);
+        Profiler::getInstance()->start('GraphQL::getCriteriaForObject', Profiler::CATEGORY_HLAPI);
         if (!array_key_exists('x-table', $schema) && !array_key_exists('x-itemtype', $schema)) {
             throw new Error("Schema does not define a table or itemtype to query.");
         }
@@ -334,6 +425,7 @@ class DefaultResolvers
             'WHERE' => [],
         ];
 
+        $schema = ResourceAccessor::applyFieldReadRestrictions($schema, true);
         $search = new Search($schema, $request_params);
 
         if (!in_array('id', $field_selection, true)) {
@@ -357,6 +449,10 @@ class DefaultResolvers
         foreach ($field_selection as $field_name) {
             // skip mapped fields unless mapped from themselves
             if (isset($schema['properties'][$field_name]['x-mapper']) && $schema['properties'][$field_name]['x-mapped-from'] !== $field_name) {
+                continue;
+            }
+            // skip fields that have their own resolver
+            if (isset($schema['properties'][$field_name]['x-graphql-resolver'])) {
                 continue;
             }
 
@@ -397,10 +493,14 @@ class DefaultResolvers
         $criteria['GROUPBY'] = ['_.id'];
 
         $search->addVisibilityCriteria($criteria);
-        $search->addReadRestrictCriteria($criteria);
+        try {
+            $search->addReadRestrictCriteria($criteria);
+        } catch (RightConditionNotMetException $e) {
+            throw new Error('Unable to resolve field "' . $info->fieldName . '": schema not found or not viewable');
+        }
         $search->addPaginationCriteria($criteria);
         $search->addSortingCriteria($criteria);
-        Profiler::getInstance()->stop('GraphQL2::getCriteriaForObject');
+        Profiler::getInstance()->stop('GraphQL::getCriteriaForObject');
 
         return $criteria;
     }
@@ -423,7 +523,7 @@ class DefaultResolvers
                 'FROM' => $subquery_criteria,
             ];
         }
-        $count_select = [QueryFunction::count("$table_alias.id", true, 'count')];
+        $count_select = [QueryFunction::count(new QueryIdentifier("$table_alias.id"), true, 'count')];
         $count_criteria['SELECT'] = $count_select;
         return $count_criteria;
     }
@@ -457,6 +557,45 @@ class DefaultResolvers
                 }
             }
         }
-        $context->updateSchema($new_schema);
+        $context->updateSchema(ResourceAccessor::applyFieldReadRestrictions($new_schema, true));
+    }
+
+    /**
+     * Returns true if the provided property is backed by its own resource instead of being derived from the parent schema.
+     * @param array<string, mixed> $property_schema
+     * @return bool
+     */
+    private function isResourceBackedSchema(array $property_schema): bool
+    {
+        return isset($property_schema['x-itemtype']) || isset($property_schema['x-table']) || isset($property_schema['x-join']);
+    }
+
+    /**
+     * @param array<string, mixed> $source
+     * @param string $field_name
+     * @param array<string, mixed> $field_schema
+     * @return array<string, mixed>
+     */
+    private function resolveEmbeddedObjectField(array $source, string $field_name, array $field_schema): array
+    {
+        $result = [];
+        foreach ($field_schema['properties'] as $property_name => $property_schema) {
+            $prop_field = $property_schema['x-field'] ?? $property_name;
+            $is_mapped = $property_schema['x-mapper'] ?? false;
+            if (!$is_mapped) {
+                if (isset($source[$prop_field . chr(0x1F) . 'id'])) {
+                    $result[$property_name] = $source[$prop_field . chr(0x1F) . 'id'];
+                } elseif (isset($source[$prop_field])) {
+                    $result[$property_name] = $source[$prop_field];
+                } else {
+                    $result[$property_name] = null;
+                }
+            } else {
+                $mapped_from = str_replace('.', chr(0x1F), $property_schema['x-mapped-from']);
+                $result[$property_name] = $property_schema['x-mapper']($source[$mapped_from] ?? null);
+            }
+        }
+
+        return $result;
     }
 }
