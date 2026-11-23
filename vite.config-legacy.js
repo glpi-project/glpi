@@ -31,7 +31,6 @@
  */
 
 import {build, defineConfig} from 'vite';
-import {globSync} from "glob";
 import path from "path";
 import fs from "fs";
 import libAssetsPlugin from '@laynezh/vite-plugin-lib-assets';
@@ -115,7 +114,7 @@ const copyFilePlugin = {
             const toDir = to.endsWith('/') ? to : path.dirname(to);
 
             // Copy the file(s) maintaining the directory structure if from contains subdirectories, otherwise copy directly to the target directory
-            const files = globSync(from);
+            const files = fs.globSync(from);
             for (const file of files) {
                 const wildcardIndex = from.indexOf('**');
                 const basePath = wildcardIndex !== -1 ? from.substring(0, wildcardIndex) : path.dirname(from);
@@ -130,17 +129,13 @@ const copyFilePlugin = {
                 fs.copyFileSync(file, targetPath);
             }
         }
-    },
-    closeBundle() {
-        //FIXME This hook should not be needed but Vite currently hangs after the build is technically finished
-        process.exit(0);
     }
 };
 
 function getLegacyEntryPoints() {
     const entryPoints = [];
     for (const ext of ['.js', '.scss']) {
-        const files = globSync(path.resolve(__dirname, 'lib/bundles') + '/!(*.min)' + ext);
+        const files = fs.globSync(path.resolve(__dirname, 'lib/bundles') + '/!(*.min)' + ext);
         for (const file of files) {
             const entry_name = path.basename(file, ext);
             if (entry_name in entryPoints) {
