@@ -149,7 +149,7 @@
     {% if id > 0 %}
         {% for picture in pictures %}
             <div class="cropper-scroll-container mb-2">
-                <div class="cropper-container">
+                <div class="cropper-container" data-testid="stencil-cropper-{{ loop.index0 }}">
                     <img src="{{ picture }}" class="cropper-hidden stencil-image" data-side="{{ loop.index - 1 }}">
                     {% include 'stencil/parts/zones.html.twig' with {
                         'item': item,
