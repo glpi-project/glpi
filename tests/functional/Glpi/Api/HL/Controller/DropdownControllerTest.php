@@ -781,6 +781,14 @@ EOT;
                 });
         });
 
+        // Create another definition to ensure the filter works correctly later
+        $request = new Request('POST', '/Dropdowns/CustomDefinition');
+        $request->setParameter('system_name', 'Size');
+        $request->setParameter('label', 'Size');
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
+        });
+
         $check_content = function (array $content) use ($create_input) {
             foreach ($create_input as $key => $value) {
                 if ($key === 'translations') {
