@@ -34,6 +34,7 @@
 
 namespace Glpi\Controller;
 
+use Glpi\Error\ErrorHandler;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Glpi\System\Status\StatusChecker;
@@ -42,6 +43,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Throwable;
 
 final class StatusController extends AbstractController
 {
@@ -57,7 +59,13 @@ final class StatusController extends AbstractController
 
         // No authentication is required, only public status information is returned
         $service = strtolower($request->query->getString('service', 'all'));
-        $status = StatusChecker::getServiceStatus($service, true);
+        try {
+            $status = StatusChecker::getServiceStatus($service, true);
+        } catch (Throwable $e) {
+            ErrorHandler::logCaughtException($e);
+
+            return new JsonResponse(null, SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
         return new JsonResponse($status);
     }
