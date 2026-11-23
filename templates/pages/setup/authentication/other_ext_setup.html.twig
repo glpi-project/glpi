@@ -43,6 +43,9 @@
                      {{ fields.smallTitle(__('CAS authentication')) }}
                      {% if config['cas_host'] is not empty %}
                         <div class="alert alert-info">{{ _x('authentication', 'Enabled') }}</div>
+                        {% if config['cas_certificate_filepath'] is empty %}
+                            <div class="alert alert-danger">{{ __('No certificate has been configured in the CAS authentication settings. As a result, the authentication flow is not protected against man-in-the-middle attacks, which could allow a malicious actor to bypass authentication with the CAS server.') }}</div>
+                        {% endif %}
                      {% endif %}
                      {{ fields.textField('cas_host', config['cas_host'], __('CAS Host')) }}
                      {{ fields.htmlField('', call('Auth::dropdownCasVersion', [config['cas_version'], {
@@ -50,6 +53,14 @@
                      }]), __('CAS Version')) }}
                      {{ fields.textField('cas_port', config['cas_port'], _n('Port', 'Ports', 1)) }}
                      {{ fields.textField('cas_uri', config['cas_uri'], __('Root directory (optional)')) }}
+                     {{ fields.textField(
+                         'cas_certificate_filepath',
+                         config['cas_certificate_filepath'],
+                         __('CAS certificate file'),
+                        {
+                            'helper': __('Path of the CAS certificate file on the server filesystem.'),
+                        }
+                     ) }}
                      {{ fields.textField('cas_logout', config['cas_logout'], __('Log out fallback URL')) }}
 
                      {{ fields.smallTitle(__('x509 certificate authentication')) }}
