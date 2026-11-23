@@ -59,8 +59,8 @@ const filesToCopy = [
         to: 'public/lib/flatpickr/themes/',
     },
     {
-        from: 'node_modules/select2/dist/i18n/*.js',
-        to: 'public/lib/select2/dist/i18n/',
+        from: 'node_modules/select2/dist/js/i18n/*.js',
+        to: 'public/lib/select2/js/i18n/',
     },
     {
         from: 'node_modules/tinymce/skins/ui/oxide/*.*',
