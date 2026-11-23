@@ -873,6 +873,7 @@ EOT,
                     'x-mapper' => static fn($v) => '/Management/Document/' . $v . '/Download',
                     'readOnly' => true,
                 ],
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User', params: ['x-version-introduced' => '2.4.0']),
                 'timeline_position' => [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_NUMBER,
