@@ -228,12 +228,16 @@ final class ManagementController extends AbstractController
 
         // The eligible itemtypes come from the static configuration rather so the expression doesn't depend on
         // data that could change between requests/queries and is identical for every property using it.
+        /** @var class-string[] $infocom_itemtypes */
         $infocom_itemtypes = array_diff($CFG_GLPI['infocom_types'], $excluded_infocom_types, $cost_itemtypes);
         foreach ($infocom_itemtypes as $itemtype) {
             if (!is_a($itemtype, CommonDBTM::class, true)) {
                 continue;
             }
             $item = getItemForItemtype($itemtype);
+            if (!$item) {
+                continue;
+            }
             $item_table = $itemtype::getTable();
             $criteria = [
                 'SELECT' => [QueryFunction::coalesce([QueryFunction::sum('glpi_infocoms.value'), $zero])],
