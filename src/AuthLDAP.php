@@ -2936,28 +2936,44 @@ TWIG, $twig_params);
         $ldapuri = self::buildUri($host, (int) $port);
 
         if (!empty($tls_certfile)) {
-            if (!Filesystem::isFilepathSafe($tls_certfile)) {
-                trigger_error("TLS certificate path is not safe.", E_USER_WARNING);
-            } elseif (!file_exists($tls_certfile)) {
-                trigger_error("TLS certificate path is not valid.", E_USER_WARNING);
+            if (
+                !Filesystem::isFilepathSafe($tls_certfile)
+                || !is_file($tls_certfile)
+                || !is_readable($tls_certfile)
+            ) {
+                trigger_error("TLS certificate path is incorrect.", E_USER_WARNING);
             } else {
                 try {
                     @ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile);
                 } catch (LdapException $e) {
-                    trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CERTFILE`", E_USER_WARNING);
+                    global $PHPLOGGER;
+                    $PHPLOGGER->error(
+                        'Unable to set LDAP option `LDAP_OPT_X_TLS_CERTFILE`.',
+                        ['exception' => $e]
+                    );
+                    // Unsecure connection, do not try to authenticate.
+                    return false;
                 }
             }
         }
         if (!empty($tls_keyfile)) {
-            if (!Filesystem::isFilepathSafe($tls_keyfile)) {
-                trigger_error("TLS key file path is not safe.", E_USER_WARNING);
-            } elseif (!file_exists($tls_keyfile)) {
-                trigger_error("TLS key file path is not valid.", E_USER_WARNING);
+            if (
+                !Filesystem::isFilepathSafe($tls_keyfile)
+                || !is_file($tls_keyfile)
+                || !is_readable($tls_keyfile)
+            ) {
+                trigger_error("TLS key file path is incorrect.", E_USER_WARNING);
             } else {
                 try {
                     @ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile);
                 } catch (LdapException $e) {
-                    trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_KEYFILE`", E_USER_WARNING);
+                    global $PHPLOGGER;
+                    $PHPLOGGER->error(
+                        'Unable to set LDAP option `LDAP_OPT_X_TLS_KEYFILE`.',
+                        ['exception' => $e]
+                    );
+                    // Unsecure connection, do not try to authenticate.
+                    return false;
                 }
             }
         }
