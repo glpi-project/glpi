@@ -3980,7 +3980,9 @@ TWIG, $twig_params);
             $input["rootdn_passwd"] = (new GLPIKey())->encrypt($input["rootdn_passwd"]);
         }
 
-        $this->checkFilesExist($input);
+        if (!$this->checkFilesExist($input)) {
+            return false;
+        }
 
         return $input;
     }
