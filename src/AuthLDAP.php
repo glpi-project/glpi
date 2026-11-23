@@ -2942,6 +2942,8 @@ TWIG, $twig_params);
                 || !is_readable($tls_certfile)
             ) {
                 trigger_error("TLS certificate path is incorrect.", E_USER_WARNING);
+                // Unsecure connection, do not try to authenticate.
+                return false;
             } else {
                 try {
                     @ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile);
@@ -2963,6 +2965,8 @@ TWIG, $twig_params);
                 || !is_readable($tls_keyfile)
             ) {
                 trigger_error("TLS key file path is incorrect.", E_USER_WARNING);
+                // Unsecure connection, do not try to authenticate.
+                return false;
             } else {
                 try {
                     @ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile);
