@@ -1433,7 +1433,7 @@
                     "type": "number",
                     "readOnly": true
                 },
-                "amount_remaining": {
+                "total_remaining": {
                     "type": "number",
                     "readOnly": true
                 },
