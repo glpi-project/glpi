@@ -107,20 +107,18 @@ const StencilEditor = function (container, rand, zones_definition) {
 
                     new MutationObserver(() => _this.updateZonesPosition())
                         .observe(cr_image, { attributes: true, attributeFilter: ['style'] });
+                    new ResizeObserver(([{ contentRect }]) => {
+                        if (contentRect.width === 0 || contentRect.height === 0) {
+                            return;
+                        }
+                        if (!_this.isEditorActive()) {
+                            cr_image.$center('contain');
+                        }
+                        _this.updateZonesPosition();
+                    }).observe(cropper.container);
                     _this.updateZonesPosition();
                 });
             });
-        });
-
-        window.addEventListener('resize', () => {
-            if (!_this.isEditorActive()) {
-                croppers.forEach((cropper) => {
-                    if (ready_croppers.has(cropper)) {
-                        cropper.getCropperImage().$center('contain');
-                    }
-                });
-            }
-            _this.updateZonesPosition();
         });
 
         // global events

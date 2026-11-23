@@ -177,6 +177,19 @@ test.describe('Network ports graphical definition', () => {
         await expect_image_to_fit();
         await expect_port_position('zone_box');
 
+        // Resize the stencil through layout without changing the viewport.
+        await stencil.evaluate((element) => {
+            element.parentElement?.style.setProperty('width', '800px');
+        });
+        await expect.poll(async () => (await read_layout()).canvas_box.width).toBe(800);
+        await expect_image_to_fit();
+        await expect_port_position('zone_box');
+
+        await stencil.evaluate((element) => {
+            element.parentElement?.style.removeProperty('width');
+        });
+        await expect.poll(async () => (await read_layout()).canvas_box.width).toBeCloseTo(canvas_box.width, 0);
+
         await page.setViewportSize({ width: 900, height: 900 });
         await expect.poll(async () => (await read_layout()).canvas_box.width).toBeLessThan(canvas_box.width);
         await expect_image_to_fit();
