@@ -4424,7 +4424,11 @@ TWIG, $twig_params);
         if (
             isset($input['tls_certfile'])
             && $input['tls_certfile'] !== ''
-            && (!Filesystem::isFilepathSafe($input['tls_certfile']) || !file_exists($input['tls_certfile']))
+            && (
+                !Filesystem::isFilepathSafe($input['tls_certfile'])
+                || !is_file($input['tls_certfile'])
+                || !is_readable($input['tls_certfile'])
+            )
         ) {
             Session::addMessageAfterRedirect(
                 __s('TLS certificate path is incorrect'),
@@ -4437,7 +4441,11 @@ TWIG, $twig_params);
         if (
             isset($input['tls_keyfile'])
             && $input['tls_keyfile'] !== ''
-            && (!Filesystem::isFilepathSafe($input['tls_keyfile']) || !file_exists($input['tls_keyfile']))
+            && (
+                !Filesystem::isFilepathSafe($input['tls_keyfile'])
+                || !is_file($input['tls_keyfile'])
+                || !is_readable($input['tls_keyfile'])
+            )
         ) {
             Session::addMessageAfterRedirect(
                 __s('TLS key file path is incorrect'),

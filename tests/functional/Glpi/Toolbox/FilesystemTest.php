@@ -75,34 +75,32 @@ class FilesystemTest extends GLPITestCase
 
     public static function isFilepathSafeProvider(): iterable
     {
-        // Unix paths and file scheme
-        foreach (['', 'file://'] as $prefix) {
-            yield [
-                'path'                  => $prefix . '/path/to/whatever/file',
-                'restricted_directory'  => null,
-                'is_safe'               => true,
-            ];
-            yield [
-                'path'                  => $prefix . '/path/to/whatever/file',
-                'restricted_directory'  => '/path/to/whatever',
-                'is_safe'               => true,
-            ];
-            yield [
-                'path'                  => $prefix . '/path/to/whatever/file/in/a/subdir',
-                'restricted_directory'  => '/path/to/whatever',
-                'is_safe'               => true,
-            ];
-            yield [
-                'path'                  => $prefix . '/path/to/whatever_file',
-                'restricted_directory'  => '/path/to/whatever',
-                'is_safe'               => false,
-            ];
-            yield [
-                'path'                  => $prefix . '/path/to/whatever/file',
-                'restricted_directory'  => '/safedir',
-                'is_safe'               => false,
-            ];
-        }
+        // Unix paths
+        yield [
+            'path'                  => '/path/to/whatever/file',
+            'restricted_directory'  => null,
+            'is_safe'               => true,
+        ];
+        yield [
+            'path'                  => '/path/to/whatever/file',
+            'restricted_directory'  => '/path/to/whatever',
+            'is_safe'               => true,
+        ];
+        yield [
+            'path'                  => '/path/to/whatever/file/in/a/subdir',
+            'restricted_directory'  => '/path/to/whatever',
+            'is_safe'               => true,
+        ];
+        yield [
+            'path'                  => '/path/to/whatever_file',
+            'restricted_directory'  => '/path/to/whatever',
+            'is_safe'               => false,
+        ];
+        yield [
+            'path'                  => '/path/to/whatever/file',
+            'restricted_directory'  => '/safedir',
+            'is_safe'               => false,
+        ];
 
         // Windows paths (`\` separator)
         yield [
@@ -131,35 +129,8 @@ class FilesystemTest extends GLPITestCase
             'is_safe'               => false,
         ];
 
-        // Windows path on file scheme
-        yield [
-            'path'                  => 'file:///C:/path/to/whatever/file',
-            'restricted_directory'  => null,
-            'is_safe'               => true,
-        ];
-        yield [
-            'path'                  => 'file:///C:/path/to/whatever/file',
-            'restricted_directory'  => 'C:\\path\\to\\whatever',
-            'is_safe'               => true,
-        ];
-        yield [
-            'path'                  => 'file:///C:/path/to/whatever/file/in/a/subdir',
-            'restricted_directory'  => 'C:\\path\\to\\whatever',
-            'is_safe'               => true,
-        ];
-        yield [
-            'path'                  => 'file:///C:/path/to/whatever_file',
-            'restricted_directory'  => 'C:\\path\\to\\whatever',
-            'is_safe'               => false,
-        ];
-        yield [
-            'path'                  => 'file:///C:/path/to/whatever/file',
-            'restricted_directory'  => 'C:\\safedir',
-            'is_safe'               => false,
-        ];
-
         // Streams and remote paths
-        foreach (['ftp', 'http', 'https', 'phar', 'whateverstream'] as $scheme) {
+        foreach (['file', 'ftp', 'http', 'https', 'phar', 'whateverstream'] as $scheme) {
             yield [
                 'path'                  => $scheme . '://path/to/whatever/file',
                 'restricted_directory'  => null,
