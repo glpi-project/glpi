@@ -543,6 +543,7 @@ class DefaultResolvers
     private function getCountCriteriaFromCriteria(array $criteria): array
     {
         $count_criteria = $criteria;
+        unset($count_criteria['START'], $count_criteria['LIMIT']);
         if (!array_key_exists('HAVING', $count_criteria) || empty($count_criteria['HAVING'])) {
             $table_alias = '_';
             unset($count_criteria['GROUPBY'], $count_criteria['ORDERBY']);
