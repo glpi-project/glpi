@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,22 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Export\Result;
+namespace Glpi\ImportExport\Specification;
 
-final class ExportResult
+final class PluginRequirementSpecification
 {
     public function __construct(
-        private string $filename,
-        private string $json_content,
+        public string $key = "",
     ) {}
-
-    public function getFileName(): string
-    {
-        return $this->filename;
-    }
-
-    public function getJsonContent(): string
-    {
-        return $this->json_content;
-    }
 }

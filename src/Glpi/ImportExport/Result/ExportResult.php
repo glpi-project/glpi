@@ -33,33 +33,22 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Export\Result;
+namespace Glpi\ImportExport\Result;
 
-use Glpi\Form\Export\Specification\DataRequirementSpecification;
-
-final class ImportResultIssues
+final class ExportResult
 {
-    /** @var array<int, DataRequirementSpecification[]> $issues */
-    private array $issues = [];
+    public function __construct(
+        private string $filename,
+        private string $json_content,
+    ) {}
 
-    /** @param DataRequirementSpecification[] $issues */
-    public function addIssues(int $id, array $issues): void
+    public function getFileName(): string
     {
-        $this->issues[$id] = $issues;
+        return $this->filename;
     }
 
-    /** @return array<int, DataRequirementSpecification[]> */
-    public function getIssues(): array
+    public function getJsonContent(): string
     {
-        return $this->issues;
-    }
-
-    /**
-     * @deprecated 11.0.14 Use {@see addIssues()}
-     * @param DataRequirementSpecification[] $issues
-     */
-    public function addIssuesForForm(int $form_id, array $issues): void
-    {
-        $this->addIssues($form_id, $issues);
+        return $this->json_content;
     }
 }

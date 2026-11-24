@@ -15200,16 +15200,16 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/EndUserInputNameProvider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Export\\\\Context\\\\DatabaseMapper\\:\\:__construct\\(\\) has parameter \\$entities_restrictions with no value type specified in iterable type array\\.$#',
+	'message' => '#^Method Glpi\\\\ImportExport\\\\Context\\\\DatabaseMapper\\:\\:__construct\\(\\) has parameter \\$entities_restrictions with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Export/Context/DatabaseMapper.php',
+	'path' => __DIR__ . '/src/Glpi/ImportExport/Context/DatabaseMapper.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Export\\\\Context\\\\DatabaseMapper\\:\\:tryTofindOneRowByName\\(\\) return type has no value type specified in iterable type array\\.$#',
+	'message' => '#^Method Glpi\\\\ImportExport\\\\Context\\\\DatabaseMapper\\:\\:tryTofindOneRowByName\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Export/Context/DatabaseMapper.php',
+	'path' => __DIR__ . '/src/Glpi/ImportExport/Context/DatabaseMapper.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\Export\\\\Serializer\\\\DynamicExportDataField\\:\\:__construct\\(\\) has parameter \\$requirements with no value type specified in iterable type array\\.$#',

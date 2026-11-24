@@ -33,15 +33,25 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Export\Result;
+namespace Glpi\ImportExport\Specification;
 
-enum ImportError
+use CommonDBTM;
+use CommonTreeDropdown;
+
+final class DataRequirementSpecification
 {
-    case MISSING_DATA_REQUIREMENT;
-    case MISSING_CUSTOM_TYPE_REQUIREMENT;
-    case MISSING_PLUGIN_REQUIREMENT;
-    /** Unknown type, existing item... */
-    case FATAL_ERROR;
-    /** The item was refused by the target instance. */
-    case INVALID_DATA;
+    public function __construct(
+        public string $itemtype = "",
+        public string $name = "",
+    ) {}
+
+    public static function fromItem(CommonDBTM $item): self
+    {
+        if ($item instanceof CommonTreeDropdown) {
+            $name = $item->getName(['complete' => true]);
+        } else {
+            $name = $item->getName();
+        }
+        return new self($item::class, $name);
+    }
 }

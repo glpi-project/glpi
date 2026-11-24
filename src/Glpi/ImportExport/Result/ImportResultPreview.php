@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Export\Result;
+namespace Glpi\ImportExport\Result;
 
 final class ImportResultPreview
 {

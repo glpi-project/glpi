@@ -41,15 +41,15 @@ use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Destination\FormDestination;
-use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
-use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
+use Glpi\ImportExport\Context\DatabaseMapper;
+use Glpi\ImportExport\Specification\DataRequirementSpecification;
 use InvalidArgumentException;
 use Override;
 

@@ -37,9 +37,9 @@ namespace Glpi\Form\QuestionType;
 
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
-use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Question;
+use Glpi\ImportExport\Context\DatabaseMapper;
 
 /**
  * Interface that must be implemented by all available questions types

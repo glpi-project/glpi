@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,11 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Export\Specification;
+namespace Glpi\ImportExport\Result;
 
-final class CustomTypeRequirementSpecification
+enum ImportError
 {
-    public function __construct(
-        public string $itemtype = "",
-    ) {}
+    case MISSING_DATA_REQUIREMENT;
+    case MISSING_CUSTOM_TYPE_REQUIREMENT;
+    case MISSING_PLUGIN_REQUIREMENT;
+    /** Unknown type, existing item... */
+    case FATAL_ERROR;
+    /** The item was refused by the target instance. */
+    case INVALID_DATA;
 }

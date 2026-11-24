@@ -33,25 +33,33 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Export\Specification;
+namespace Glpi\ImportExport\Result;
 
-use CommonDBTM;
-use CommonTreeDropdown;
+use Glpi\ImportExport\Specification\DataRequirementSpecification;
 
-final class DataRequirementSpecification
+final class ImportResultIssues
 {
-    public function __construct(
-        public string $itemtype = "",
-        public string $name = "",
-    ) {}
+    /** @var array<int, DataRequirementSpecification[]> $issues */
+    private array $issues = [];
 
-    public static function fromItem(CommonDBTM $item): self
+    /** @param DataRequirementSpecification[] $issues */
+    public function addIssues(int $id, array $issues): void
     {
-        if ($item instanceof CommonTreeDropdown) {
-            $name = $item->getName(['complete' => true]);
-        } else {
-            $name = $item->getName();
-        }
-        return new self($item::class, $name);
+        $this->issues[$id] = $issues;
+    }
+
+    /** @return array<int, DataRequirementSpecification[]> */
+    public function getIssues(): array
+    {
+        return $this->issues;
+    }
+
+    /**
+     * @deprecated 11.0.14 Use {@see addIssues()}
+     * @param DataRequirementSpecification[] $issues
+     */
+    public function addIssuesForForm(int $form_id, array $issues): void
+    {
+        $this->addIssues($form_id, $issues);
     }
 }

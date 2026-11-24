@@ -36,11 +36,11 @@
 namespace Glpi\ImportExport;
 
 use CommonDBTM;
-use Glpi\Form\Export\Context\DatabaseMapper;
-use Glpi\Form\Export\Result\ExportResult;
-use Glpi\Form\Export\Result\ImportResult;
-use Glpi\Form\Export\Result\ImportResultIssues;
-use Glpi\Form\Export\Result\ImportResultPreview;
+use Glpi\ImportExport\Context\DatabaseMapper;
+use Glpi\ImportExport\Result\ExportResult;
+use Glpi\ImportExport\Result\ImportResult;
+use Glpi\ImportExport\Result\ImportResultIssues;
+use Glpi\ImportExport\Result\ImportResultPreview;
 
 /**
  * What the import/export wizard needs from a serializer.
