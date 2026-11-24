@@ -483,9 +483,15 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 continue;
             }
 
+            $user = new self();
+            if (!$user->getFromDB($users_id)) {
+                continue;
+            }
+
             $where = [
                 $user_criteria['criteria'] + $item::getSystemSQLCriteria(),
                 getEntitiesRestrictCriteria($table),
+                getEntitiesRestrictCriteria($table, 'entities_id', $user->getEntities()),
             ];
 
             if ($item instanceof AssignableItemInterface) {
