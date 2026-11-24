@@ -68,11 +68,11 @@ class UserTest extends DbTestCase
         $user_id = (int) getItemByTypeName('User', 'normal', true);
         $scope_entity_id = (int) $this->getTestRootEntity(true);
         $group = $this->createItem(
-            \Group::class,
-            ['name' => $this->getUniqueString()] + $this->getMinimalCreationInput(\Group::class)
+            Group::class,
+            ['name' => $this->getUniqueString()] + $this->getMinimalCreationInput(Group::class)
         );
 
-        $group_user = new \Group_User();
+        $group_user = new Group_User();
         $this->assertGreaterThan(
             0,
             (int) $group_user->add([
@@ -88,15 +88,9 @@ class UserTest extends DbTestCase
         $old_show_all_entities = $_SESSION['glpishowallentities'] ?? null;
 
         try {
-            // Explicitly scope the fixture to the test entity and root entity.
+            // Explicitly scope the fixtures to the test entity and root entity.
             $_SESSION['glpiactiveentities'] = [0, $scope_entity_id];
             $_SESSION['glpishowallentities'] = false;
-
-            // Capture the count visible to a viewer with READ_OWNED only.
-            $_SESSION['glpiactiveprofile']['computer'] = READ_OWNED;
-            $visible_used_before = User::countItemsForUser($user_id, false);
-            $visible_managed_before = User::countItemsForUser($user_id, true);
-            $_SESSION['glpiactiveprofile']['computer'] = $old_computer_right;
 
             $used_before = User::countItemsForUser($user_id, false);
             $managed_before = User::countItemsForUser($user_id, true);
@@ -114,30 +108,54 @@ class UserTest extends DbTestCase
                 'groups_id_tech' => [$group->getID()],
             ];
 
-            // One item belongs to the selected entity; the other belongs to root.
+            // Direct user and group assignment: the item must only be counted once.
             $this->createItem(
-                \Computer::class,
-                $computer_data + $this->getMinimalCreationInput(\Computer::class)
-            );
-            $this->createItem(
-                \Computer::class,
-                ['entities_id' => 0] + $computer_data + $this->getMinimalCreationInput(\Computer::class)
+                Computer::class,
+                $computer_data + $this->getMinimalCreationInput(Computer::class)
             );
 
-            // User and group links must not count the same asset twice.
+            // Group-only normal assignment must increase only the used-item count.
+            $this->createItem(
+                Computer::class,
+                [
+                    'users_id'       => 0,
+                    'users_id_tech'  => 0,
+                    'groups_id'      => [$group->getID()],
+                    'groups_id_tech' => [],
+                ] + $this->getMinimalCreationInput(Computer::class)
+            );
+
+            // Group-only technician assignment must increase only the managed-item count.
+            $this->createItem(
+                Computer::class,
+                [
+                    'users_id'       => 0,
+                    'users_id_tech'  => 0,
+                    'groups_id'      => [],
+                    'groups_id_tech' => [$group->getID()],
+                ] + $this->getMinimalCreationInput(Computer::class)
+            );
+
+            // Group-only assignments are included, while direct + group links do not duplicate counts.
             $this->assertSame($used_before + 2, User::countItemsForUser($user_id, false));
             $this->assertSame($managed_before + 2, User::countItemsForUser($user_id, true));
 
             // READ_OWNED must not count assets owned or managed by another user.
             $_SESSION['glpiactiveprofile']['computer'] = READ_OWNED;
-            $this->assertSame($visible_used_before, User::countItemsForUser($user_id, false));
-            $this->assertSame($visible_managed_before, User::countItemsForUser($user_id, true));
+            $this->assertSame($used_before + 1, User::countItemsForUser($user_id, false));
+            $this->assertSame($managed_before + 1, User::countItemsForUser($user_id, true));
             $_SESSION['glpiactiveprofile']['computer'] = $old_computer_right;
 
-            // The root-entity asset must not appear when only the test entity is active.
+            // Add an item in root to check that the target user's entity scope is respected.
+            $this->createItem(
+                Computer::class,
+                ['entities_id' => 0] + $computer_data + $this->getMinimalCreationInput(Computer::class)
+            );
+
+            // The root entity is excluded when only the test entity is active.
             $_SESSION['glpiactiveentities'] = [$scope_entity_id];
-            $this->assertSame($entity_used_before + 1, User::countItemsForUser($user_id, false));
-            $this->assertSame($entity_managed_before + 1, User::countItemsForUser($user_id, true));
+            $this->assertSame($entity_used_before + 2, User::countItemsForUser($user_id, false));
+            $this->assertSame($entity_managed_before + 2, User::countItemsForUser($user_id, true));
         } finally {
             $_SESSION['glpiactiveprofile']['computer'] = $old_computer_right;
             if ($had_active_entities) {
