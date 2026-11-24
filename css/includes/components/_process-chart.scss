@@ -66,8 +66,8 @@
 
     .entry-point, .step {
         position: relative;
-        padding-bottom: 30px;
-        margin-bottom: 15px;
+        padding-block-end: 30px;
+        margin-block-end: 15px;
 
         &::after {
             content: '\10068'; // Tabler icon hex code for arrow
@@ -99,7 +99,7 @@
             text-align: center;
 
             h4 {
-                margin-top: 15px;
+                margin-block-start: 15px;
             }
         }
     }

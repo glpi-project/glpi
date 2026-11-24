@@ -35,7 +35,7 @@
 
     hr {
         border: none;
-        border-top: 1px solid var(--tblr-border-color);
+        border-block-start: 1px solid var(--tblr-border-color);
         margin: 1.5rem 0;
         opacity: 1;
     }
@@ -74,7 +74,7 @@
     border-collapse: collapse;
     table-layout: fixed;
     width: 100%;
-    margin-bottom: 0.75rem;
+    margin-block-end: 0.75rem;
 
     // Without its own border, the table-collapse perimeter falls back to
     // currentColor instead of the translucent cell border color below.
@@ -197,7 +197,7 @@ body.in_modal .kb-article {
 
     :is(h1, h2, h3, h4, h5, h6) {
         position: relative;
-        scroll-margin-top: 1rem;
+        scroll-margin-block-start: 1rem;
     }
 }
 
@@ -310,7 +310,7 @@ body.in_modal .kb-article {
 // KB Documents footer section
 
 .kb-documents-footer {
-    scroll-margin-top: 1rem;
+    scroll-margin-block-start: 1rem;
 }
 
 // Document badge styling (matches mockup)
@@ -465,7 +465,7 @@ body.in_modal .kb-article {
 // KB modal tabs navigation
 .kb-modal-nav {
     gap: 0.5rem;
-    border-bottom: 1px solid var(--tblr-border-color);
+    border-block-end: 1px solid var(--tblr-border-color);
 
     .nav-link:hover,
     .nav-link:focus {
@@ -483,13 +483,13 @@ body.in_modal .kb-article {
     // Draw a continuous light gray line under the whole tab row so it reads as
     // a standard tab layout; the active/hover tab underline sits on top of it.
     .nav-underline {
-        border-bottom: 1px solid var(--tblr-border-color);
+        border-block-end: 1px solid var(--tblr-border-color);
     }
 
     .nav-link {
         // Overlap the container line so the active/hover underline replaces it
         // instead of stacking just above it.
-        margin-bottom: -1px;
+        margin-block-end: -1px;
         color: var(--glpi-tabs-fg);
 
         &:hover,
@@ -568,14 +568,14 @@ body.in_modal .kb-article {
 // Handle shared borders for comments in the same thread.
 .kb-comment-card {
     border-radius: 0 !important;
-    border-bottom-width: 0 !important;
+    border-block-end-width: 0 !important;
 }
 
 // Re-add top border radius for first comment of a thread
 .kb-comment:first-child {
     .kb-comment-card {
-        border-top-left-radius: var(--tblr-border-radius) !important;
-        border-top-right-radius: var(--tblr-border-radius) !important;
+        border-start-start-radius: var(--tblr-border-radius) !important;
+        border-start-end-radius: var(--tblr-border-radius) !important;
     }
 }
 
@@ -584,9 +584,9 @@ body.in_modal .kb-article {
 .kb-comment-thread:not(.reply-shown) {
     .kb-comment:nth-last-child(-n + 3) {
         .kb-comment-card {
-            border-bottom-left-radius: var(--tblr-border-radius) !important;
-            border-bottom-right-radius: var(--tblr-border-radius) !important;
-            border-bottom-width: 1px !important;
+            border-end-start-radius: var(--tblr-border-radius) !important;
+            border-end-end-radius: var(--tblr-border-radius) !important;
+            border-block-end-width: 1px !important;
         }
     }
 }
@@ -594,8 +594,8 @@ body.in_modal .kb-article {
 // Re-add bottom border radius + border bottom for the "reply form".
 .kb-reply-form {
     .kb-comment-card {
-        border-bottom-left-radius: var(--tblr-border-radius) !important;
-        border-bottom-right-radius: var(--tblr-border-radius) !important;
+        border-end-start-radius: var(--tblr-border-radius) !important;
+        border-end-end-radius: var(--tblr-border-radius) !important;
         border-bottom-width: 1px !important;
     }
 }
@@ -677,7 +677,7 @@ body.in_modal .kb-editor-reserved {
             background: var(--tblr-bg-surface-secondary);
             padding: 1rem;
             border-radius: var(--tblr-border-radius);
-            margin-bottom: 0.75rem;
+            margin-block-end: 0.75rem;
             overflow-x: auto;
 
             code {
@@ -1177,10 +1177,11 @@ body.in_modal .kb-editor-reserved {
     .kb-link-item-footer {
         display: flex;
         justify-content: flex-end;
-        margin: var(--tblr-modal-padding) calc(-1 * var(--tblr-modal-padding))
-            calc(-1 * var(--tblr-modal-padding));
+        margin-block-start: var(--tblr-modal-padding);
+        margin-block-end: calc(-1 * var(--tblr-modal-padding));
+        margin-inline: calc(-1 * var(--tblr-modal-padding));
         padding: 0.75rem var(--tblr-modal-padding);
-        border-top: var(--tblr-border-width) solid var(--tblr-border-color);
+        border-block-start: var(--tblr-border-width) solid var(--tblr-border-color);
     }
 }
 
@@ -1217,19 +1218,19 @@ body.in_modal .kb-editor-reserved {
 .kb-dropzone-icon {
     font-size: 2.5rem;
     color: var(--tblr-secondary);
-    margin-bottom: 0.75rem;
+    margin-block-end: 0.75rem;
     transition: all 0.2s ease;
 }
 
 .kb-dropzone-title {
     font-size: 1rem;
     font-weight: 500;
-    margin-bottom: 0.25rem;
+    margin-block-end: 0.25rem;
 }
 
 .kb-dropzone-hint {
     font-size: 0.8125rem;
-    margin-bottom: 0;
+    margin-block-end: 0;
 }
 
 // File Preview List
@@ -1296,7 +1297,7 @@ body.in_modal .kb-editor-reserved {
     align-items: center;
     justify-content: space-between;
     padding: 1rem 1.25rem;
-    border-bottom: 1px solid var(--tblr-border-color);
+    border-block-end: 1px solid var(--tblr-border-color);
     font-weight: 600;
     font-size: 1rem;
 
@@ -1348,7 +1349,7 @@ body.in_modal .kb-editor-reserved {
         border-radius: var(--tblr-border-radius);
         padding: 0.375rem 0.5rem;
         cursor: pointer;
-        margin-bottom: 1px;
+        margin-block-end: 1px;
         color: var(--tblr-secondary);
 
         &.is-locked {
@@ -1366,7 +1367,7 @@ body.in_modal .kb-editor-reserved {
     justify-content: flex-end;
     gap: 0.5rem;
     padding: 1rem 1.25rem;
-    border-top: 1px solid var(--tblr-border-color);
+    border-block-start: 1px solid var(--tblr-border-color);
 }
 
 // Video embed — responsive 16:9 wrapper around the provider iframe
@@ -1428,7 +1429,7 @@ body.in_modal .kb-editor-reserved {
     .video-embed-placeholder-icon {
         font-size: 3rem;
         display: block;
-        margin-bottom: 0.25rem;
+        margin-block-end: 0.25rem;
     }
 
     .video-embed-placeholder-label {
@@ -1537,7 +1538,7 @@ $kb-aside-min-width: 300px;
 
     // Header border hidden when the favorites section is empty (set server-side or by JS).
     [data-glpi-kb-aside-header][data-glpi-kb-aside-header-no-border] {
-        border-bottom: 0;
+        border-block-end: 0;
     }
 
     // The tree and the favorites, kept in place while the search results stand
@@ -1548,7 +1549,7 @@ $kb-aside-min-width: 300px;
 
     // Header border, dropped for as long as the favorites are standing aside.
     [data-glpi-kb-aside-header][data-glpi-kb-aside-header-search-no-border] {
-        border-bottom: 0;
+        border-block-end: 0;
     }
 
     // Clear button: interactive only when active (has text to clear).
@@ -1607,8 +1608,8 @@ $kb-aside-min-width: 300px;
 
             > li {
                 position: relative;
-                padding-bottom: 0;
-                margin-bottom: 0;
+                padding-block-end: 0;
+                margin-block-end: 0;
 
                 // Contains the row's own bottom margin, which would otherwise collapse
                 // through the (possibly empty) child <ul> and land between the items,

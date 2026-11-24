@@ -73,7 +73,7 @@ div.search-input {
         &::before {// Fix for using non-standard placement
             top: 0;
             border-width: 0 (1rem * 0.5) 0.5rem;
-            border-bottom-color: $popover-arrow-outer-color;
+            border-block-end-color: $popover-arrow-outer-color;
         }
     }
 
@@ -102,7 +102,7 @@ div.search-input {
 .form-control.is-valid {
     border-color: var(--tblr-border-color);
     background-image: none;
-    padding-right: initial;
+    padding-inline-end: initial;
 
     &:focus {
         border-color: var(--tblr-border-color);

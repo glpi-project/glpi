@@ -47,8 +47,8 @@
             }
 
             // Update vertical padding to match with the collapsed height state
-            padding-top: 11px !important;
-            padding-bottom: 11px !important;
+            padding-block-start: 11px !important;
+            padding-block-end: 11px !important;
         }
     }
 }
@@ -56,7 +56,7 @@
 [data-glpi-associated-items-specific-values-extra-field] {
     [data-glpi-associated-items-specific-values-extra-field-container] {
         [data-glpi-associated-items-specific-values-extra-field-item] {
-            padding-left: 1px;
+            padding-inline-start: 1px;
 
             >span:last-of-type {
                 flex-grow: 1;
@@ -68,7 +68,7 @@
 
             &:last-of-type {
                 [data-glpi-remove-associated-item-button] {
-                    border-bottom-right-radius: var(--tblr-btn-border-radius) !important;
+                    border-end-end-radius: var(--tblr-btn-border-radius) !important;
                 }
             }
 
@@ -82,8 +82,8 @@
         .input-group[data-glpi-associated-items-specific-values-extra-field-item] {
             >span:first-of-type {
                 .select2-selection {
-                    border-top-right-radius: 0 !important;
-                    border-bottom-right-radius: 0 !important;
+                    border-start-end-radius: 0 !important;
+                    border-end-end-radius: 0 !important;
                 }
             }
 
@@ -97,10 +97,10 @@
 
     [data-glpi-add-associated-item-button] {
         position: relative;
-        margin-left: 1px;
-        margin-top: calc(-1 * var(--tblr-border-width));
-        border-top-left-radius: 0 !important;
-        border-top-right-radius: 0 !important;
+        margin-inline-start: 1px;
+        margin-block-start: calc(-1 * var(--tblr-border-width));
+        border-start-start-radius: 0 !important;
+        border-start-end-radius: 0 !important;
     }
 }
 
@@ -116,8 +116,8 @@
             [data-glpi-itildestination-field-config] {
                 &:not(:has([data-glpi-associated-items-specific-values-extra-field]:not(.d-none))) {
                     .select2-selection {
-                        border-top-right-radius: 0 !important;
-                        border-bottom-right-radius: 0 !important;
+                        border-start-end-radius: 0 !important;
+                        border-end-end-radius: 0 !important;
                     }
                 }
 
@@ -126,7 +126,7 @@
                         >div {
                             &:first-child {
                                 .select2-selection {
-                                    border-top-right-radius: 0 !important;
+                                    border-start-end-radius: 0 !important;
                                 }
                             }
                         }
@@ -152,18 +152,18 @@
                         width: 30%;
 
                         .select2-selection {
-                            border-top-right-radius: 0 !important;
-                            border-bottom-right-radius: 0 !important;
+                            border-start-end-radius: 0 !important;
+                            border-end-end-radius: 0 !important;
                         }
                     }
 
                     &:last-child {
-                        margin-left: calc(-1 * var(--tblr-border-width));
+                        margin-inline-start: calc(-1 * var(--tblr-border-width));
                         width: calc(70% + 1 * var(--tblr-border-width));
 
                         .select2-selection {
-                            border-top-left-radius: 0 !important;
-                            border-bottom-left-radius: 0 !important;
+                            border-start-start-radius: 0 !important;
+                            border-end-start-radius: 0 !important;
                         }
                     }
                 }
@@ -177,20 +177,20 @@
                                 width: 30% !important;
 
                                 .select2-selection {
-                                    border-top-right-radius: 0 !important;
-                                    border-bottom-right-radius: 0 !important;
+                                    border-start-end-radius: 0 !important;
+                                    border-end-end-radius: 0 !important;
                                 }
                             }
 
                             > br ~ span {
-                                margin-left: calc(-1 * var(--tblr-border-width));
+                                margin-inline-start: calc(-1 * var(--tblr-border-width));
                                 width: calc(70% + 1 * var(--tblr-border-width));
                             }
 
                             > span > span.select2-container {
                                 .select2-selection {
-                                    border-top-left-radius: 0 !important;
-                                    border-bottom-left-radius: 0 !important;
+                                    border-start-start-radius: 0 !important;
+                                    border-end-start-radius: 0 !important;
                                 }
                             }
                         }
@@ -204,18 +204,18 @@
                         width: 30%;
 
                         .select2-selection {
-                            border-top-right-radius: 0 !important;
-                            border-bottom-right-radius: 0 !important;
+                            border-start-end-radius: 0 !important;
+                            border-end-end-radius: 0 !important;
                         }
                     }
 
                     &:last-child {
-                        margin-left: calc(-1 * var(--tblr-border-width));
+                        margin-inline-start: calc(-1 * var(--tblr-border-width));
                         width: calc(70% + 1 * var(--tblr-border-width));
 
                         .select2-selection {
-                            border-top-left-radius: 0 !important;
-                            border-bottom-left-radius: 0 !important;
+                            border-start-start-radius: 0 !important;
+                            border-end-start-radius: 0 !important;
                         }
                     }
                 }
@@ -226,8 +226,8 @@
                     >div {
                         &:first-child {
                             .select2-selection {
-                                border-bottom-left-radius: 0 !important;
-                                border-bottom-right-radius: 0 !important;
+                                border-start-start-radius: 0 !important;
+                                border-start-end-radius: 0 !important;
                             }
                         }
                     }
@@ -237,12 +237,12 @@
             &:not(:has([data-glpi-associated-items-specific-values-extra-field]:not(.d-none))) {
                 >div {
                     &[data-glpi-itildestination-field-config-display-condition] {
-                        margin-top: calc(-1 * var(--tblr-border-width));
+                        margin-block-start: calc(-1 * var(--tblr-border-width));
 
                         .select2-selection,
                         .tox.tox-tinymce {
-                            border-top-left-radius: 0 !important;
-                            border-top-right-radius: 0 !important;
+                            border-start-start-radius: 0 !important;
+                            border-start-end-radius: 0 !important;
                         }
 
                         >div:has(.select2-selection) {
@@ -253,7 +253,7 @@
                             }
 
                             &:not(:first-child) {
-                                margin-top: calc(-1 * var(--tblr-border-width));
+                                margin-block-start: calc(-1 * var(--tblr-border-width));
                             }
                         }
                     }
@@ -266,8 +266,8 @@
                     >div {
                         &:first-child {
                             .select2-selection {
-                                border-bottom-left-radius: 0 !important;
-                                border-bottom-right-radius: 0 !important;
+                                border-end-start-radius: 0 !important;
+                                border-end-end-radius: 0 !important;
                             }
                         }
                     }
@@ -280,28 +280,28 @@
 
                     [data-glpi-associated-items-specific-values-extra-field-item] {
                         .select2-selection {
-                            border-bottom-right-radius: 0 !important;
-                            border-top-left-radius: 0 !important;
+                            border-end-end-radius: 0 !important;
+                            border-start-start-radius: 0 !important;
                         }
 
                         &:not(:last-of-type) {
                             .select2-selection {
-                                border-bottom-left-radius: 0 !important;
+                                border-end-start-radius: 0 !important;
                             }
                         }
                     }
                 }
 
                 [data-glpi-associated-items-specific-values-extra-field-item] {
-                    margin-top: calc(-1 * var(--tblr-border-width));
+                    margin-block-start: calc(-1 * var(--tblr-border-width));
                 }
             }
         }
 
         [data-glpi-itildestination-remove-field-config] {
-            border-top-left-radius: 0 !important;
-            border-bottom-left-radius: 0 !important;
-            margin-left: calc(-1 * var(--tblr-border-width));
+            border-start-start-radius: 0 !important;
+            border-end-start-radius: 0 !important;
+            margin-inline-start: calc(-1 * var(--tblr-border-width));
         }
 
         [data-glpi-itildestination-remove-field-config],

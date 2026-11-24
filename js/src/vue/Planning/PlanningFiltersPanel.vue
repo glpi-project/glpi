@@ -91,7 +91,8 @@
     h3 {
         background: var(--glpi-form-header-bg);
         color: var(--glpi-form-header-fg);
-        margin: 2px 0 0 0;
+        margin: 0;
+        margin-block-start: 2px;
         padding: .5em .5em .5em .7em;
         line-height: 1.3;
         font-size: 13px;

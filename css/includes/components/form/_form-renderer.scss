@@ -33,19 +33,19 @@
 
 .form-renderer {
     /* Keep a bit of space at the end */
-    margin-bottom: 200px;
+    margin-block-end: 200px;
 
     /* Remove margin from tinymce generated content last child */
     .form-description, .section-description, .block-description {
         p:last-child {
-            margin-bottom: 0 !important;
+            margin-block-end: 0 !important;
         }
     }
 
     .block-description {
         // Reduce default rich text paragraph margins
         p {
-            margin-bottom: 0.3rem;
+            margin-block-end: 0.3rem;
         }
     }
 
@@ -55,14 +55,14 @@
 
     .only-uploaded-files {
         .fileupload_info {
-            margin-bottom: 0;
+            margin-block-end: 0;
 
             p:first-child {
-                margin-top: 10px;
+                margin-block-start: 10px;
             }
 
             p:last-child {
-                margin-bottom: 0;
+                margin-block-end: 0;
             }
         }
     }
@@ -77,7 +77,7 @@
             // sure it doesn't take space when all the items inside of the row
             // are hidden by the condition engine.
             section:last-of-type {
-                margin-bottom: 1rem;
+                margin-block-end: 1rem;
             }
         }
 
@@ -107,15 +107,15 @@
             &:has(> span.select2-container) {
                 &:not(:first-child) {
                     .select2-selection {
-                        border-top-left-radius: 0 !important;
-                        border-bottom-left-radius: 0 !important;
+                        border-start-start-radius: 0 !important;
+                        border-end-start-radius: 0 !important;
                     }
                 }
 
                 &:not(:last-of-type) {
                     .select2-selection {
-                        border-top-right-radius: 0 !important;
-                        border-bottom-right-radius: 0 !important;
+                        border-start-end-radius: 0 !important;
+                        border-end-end-radius: 0 !important;
                     }
                 }
             }
@@ -124,7 +124,7 @@
 
     // Handle invalid states for specific inputs (select2 and tinymce)
     [data-glpi-form-renderer-question] {
-        scroll-margin-top: calc(var(--glpi-contextbar-height) + 16px);
+        scroll-margin-block-start: calc(var(--glpi-contextbar-height) + 16px);
 
         &:has(select.is-invalid) {
             .select2-container--default .select2-selection {
@@ -149,7 +149,7 @@
             background-color: unset;
             color: var(--tblr-form-invalid-color);
             padding: unset;
-            margin-top: .25rem;
+            margin-block-start: .25rem;
             top: unset;
         }
 
@@ -161,6 +161,6 @@
     }
 
     [data-glpi-form-renderer-section] {
-        scroll-margin-top: calc(var(--glpi-contextbar-height) + 16px);
+        scroll-margin-block-start: calc(var(--glpi-contextbar-height) + 16px);
     }
 }

@@ -46,7 +46,7 @@ body.mce-content-body {
     }
 
     h1, h2, h3, h4, h5, h6 {
-        margin-bottom: 0.5rem;
+        margin-block-end: 0.5rem;
     }
 }
 
@@ -92,7 +92,7 @@ body.mce-content-body {
     a[target="_blank"]::before {
         font-family: tabler-icons, sans-serif;
         content: "\ea99";
-        padding-right: 4px;
+        padding-inline-end: 4px;
     }
 
     .long_text {
@@ -106,7 +106,7 @@ body.mce-content-body {
     }
 
     h1, h2, h3, h4, h5, h6 {
-        margin-bottom: 0.5rem;
+        margin-block-end: 0.5rem;
     }
 }
 

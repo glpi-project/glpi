@@ -64,7 +64,7 @@
 
 <style scoped>
     .fields-sidebar {
-        border-left: 1px solid var(--tblr-border-color);
+        border-inline-start: 1px solid var(--tblr-border-color);
         width: 300px;
         .sortable-field.col-sm-6 {
             width: 100%;

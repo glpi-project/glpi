@@ -44,8 +44,8 @@
     input[type="file"] {
         width: auto;
         max-width: 100%;
-        margin-left: auto;
-        margin-right: auto;
+        margin-inline-start: auto;
+        margin-inline-end: auto;
     }
 }
 
@@ -54,7 +54,7 @@
 }
 
 .fileupload_info {
-    margin-bottom: 10px;
+    margin-block-end: 10px;
 }
 
 .draghover {

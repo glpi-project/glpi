@@ -77,7 +77,7 @@ $break_tablet: 1400px;
     --glpi-dashboard-soft-border: rgb(color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 64%), 0.24);
 
     position: relative;
-    padding-top: $toolbar_height;
+    padding-block-start: $toolbar_height;
 
     // reset font weight from other gridstack usage
     .grid-stack-item-content a {
@@ -85,9 +85,9 @@ $break_tablet: 1400px;
     }
 
     &.mini {
-        padding-top: 0;
+        padding-block-start: 0;
         margin: 0 auto;
-        margin-bottom: -45px !important;
+        margin-block-end: -45px !important;
         z-index: 1;
         box-sizing: content-box;
         container-name: mini-dashboard-grid;
@@ -214,7 +214,7 @@ $break_tablet: 1400px;
             .filters {
                 fieldset.filter {
                     &.filled {
-                        margin-top: 0.5em;
+                        margin-block-start: 0.5em;
                     }
 
                     border-color: #f0f0f0 !important;
@@ -247,8 +247,9 @@ $break_tablet: 1400px;
 
                 .filter-placeholder {
                     border: 2px dashed #509ee3;
-                    padding: 1em 1em 0.8em;
-                    margin-top: 1em;
+                    padding: 1em;
+                    padding-block-end: 0.8em;
+                    margin-block-start: 1em;
                     border-radius: 4px;
                     width: 100px;
                 }
@@ -293,7 +294,7 @@ $break_tablet: 1400px;
             i.far,
             i.fa-regular,
             i.ti {
-                margin-left: 0;
+                margin-inline-start: 0;
                 font-size: 1em;
             }
         }
@@ -317,7 +318,7 @@ $break_tablet: 1400px;
         i.ti {
             padding: 5px 8px;
             border: 2px solid transparent;
-            margin-left: 3px;
+            margin-inline-start: 3px;
 
             @media screen and (max-width: $break_phones) {
                 display: none;
@@ -368,7 +369,7 @@ $break_tablet: 1400px;
         text-align: left;
         height: $filter_height;
         margin: 0 5px 5px 2px;
-        padding-top: 0.5em;
+        padding-block-start: 0.5em;
 
         @media screen and (max-width: $break_phones) {
             height: inherit;
@@ -384,9 +385,13 @@ $break_tablet: 1400px;
 
                 border: 2px solid var(--tblr-border-color);
                 border-radius: 4px;
-                padding: 6px 12px 5px;
+                padding-block-start: 6px;
+                padding-block-end: 5px;
+                padding-inline: 12px;
                 text-align: center;
-                margin: 6px 2px 0;
+                margin-block-start: 6px;
+                margin-block-end: 0;
+                margin-inline: 2px;
                 font-size: 0.8rem;
 
                 legend {
@@ -395,7 +400,7 @@ $break_tablet: 1400px;
                     font-weight: bold;
                     font-size: 12px;
                     float: none;
-                    margin-bottom: 0;
+                    margin-block-end: 0;
                     padding: 0 2px;
                     width: auto;
                 }
@@ -454,7 +459,7 @@ $break_tablet: 1400px;
                         border: none;
                         background-color: transparent;
                         min-height: 24px;
-                        padding-right: 18px;
+                        padding-inline-end: 18px;
 
                         .select2-selection__rendered {
                             padding: 0;
@@ -468,12 +473,14 @@ $break_tablet: 1400px;
                             border: 1px solid var(--tblr-border-color);
                             border-radius: 3px;
                             padding: 0 4px;
-                            margin: 2px 2px 0 0;
+                            margin: 0;
+                            margin-block-start: 2px;
+                            margin-inline-end: 2px;
                         }
 
                         .select2-selection__choice__remove {
                             color: var(--tblr-info);
-                            margin-right: 3px;
+                            margin-inline-end: 3px;
                         }
 
                         .select2-search--inline .select2-search__field {
@@ -561,8 +568,8 @@ $break_tablet: 1400px;
 
                 &.filled {
                     border-color: #509ee3;
-                    margin-top: 0;
-                    padding-top: 0.25em;
+                    margin-block-start: 0;
+                    padding-block-start: 0.25em;
 
                     legend {
                         display: inline-block;
@@ -609,16 +616,19 @@ $break_tablet: 1400px;
             border-radius: 4px;
             display: inline-block;
             vertical-align: top;
-            margin-top: 12px;
+            margin-block-start: 12px;
 
             .add-filter {
-                padding: 8px 10px 9px 12px;
+                padding-block-start: 8px;
+                padding-block-end: 9px;
+                padding-inline-start: 12px;
+                padding-inline-end: 10px;
                 display: none;
                 cursor: pointer;
 
                 .no-filter,
                 .add-filter-lbl {
-                    padding-left: 0.2em;
+                    padding-inline-start: 0.2em;
                     font-style: italic;
                     color: #74838f;
                     font-family: Arial, Helvetica, sans-serif;
@@ -672,7 +682,7 @@ $break_tablet: 1400px;
             max-width: 100%;
 
             .grid-stack-item {
-                margin-bottom: 2px;
+                margin-block-end: 2px;
             }
         }
 
@@ -914,17 +924,17 @@ $break_tablet: 1400px;
 
                     &:not(:first-child) {
                         border: 0;
-                        border-left: 1px solid rgb(125, 125, 125, 20%);
+                        border-inline-start: 1px solid rgb(125, 125, 125, 20%);
                     }
 
                     &:hover {
                         background-color: rgb(125, 125, 125, 10%);
                         cursor: pointer;
                         border-radius: 3px;
-                        border-left-color: transparent;
+                        border-inline-start-color: transparent;
 
                         & + .line {
-                            border-left-color: transparent;
+                            border-inline-start-color: transparent;
                         }
                     }
                 }
@@ -1012,12 +1022,14 @@ $break_tablet: 1400px;
                 display: block;
                 font-weight: bold;
                 font-size: 1.4em;
-                margin: 5px 0 10px;
+                margin-block-start: 5px;
+                margin-block-end: 10px;
+                margin-inline: 0;
             }
 
             .content {
                 display: block;
-                margin-bottom: 3px;
+                margin-block-end: 3px;
                 font-size: 1.2em;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -1213,12 +1225,15 @@ $break_tablet: 1400px;
 
         .ct-legend {
             text-align: left;
-            padding: 10px 0 10px 38px;
+            padding-block-start: 10px;
+            padding-block-end: 10px;
+            padding-inline-start: 38px;
+            padding-inline-end: 0;
 
             li {
                 position: relative;
-                padding-left: 23px;
-                margin-bottom: 3px;
+                padding-inline-start: 23px;
+                margin-block-end: 3px;
             }
 
             li::before {
@@ -1263,16 +1278,16 @@ $break_tablet: 1400px;
             list-style-type: disc;
 
             li {
-                margin-left: 1.5em;
+                margin-inline-start: 1.5em;
             }
         }
 
         h1 {
-            border-bottom: 2px solid currentcolor;
+            border-block-end: 2px solid currentcolor;
         }
 
         h2 {
-            border-bottom: 1px solid currentcolor;
+            border-block-end: 1px solid currentcolor;
         }
 
         img {
@@ -1285,7 +1300,7 @@ $break_tablet: 1400px;
         .table-container {
             overflow: auto;
             max-height: calc(100% - 40px);
-            margin-top: 10px;
+            margin-block-start: 10px;
 
             @include custom-scroll-bar;
 
@@ -1301,7 +1316,7 @@ $break_tablet: 1400px;
                     top: 0;
                     z-index: 10;
                     padding: 5px;
-                    border-bottom: 0;
+                    border-block-end: 0;
                     color: inherit;
                     font-size: inherit;
 
@@ -1312,7 +1327,7 @@ $break_tablet: 1400px;
                 }
 
                 td {
-                    border-bottom: 0;
+                    border-block-end: 0;
                 }
 
                 .tab_bg_1 {
@@ -1370,7 +1385,9 @@ $break_tablet: 1400px;
 
         & + label {
             background: rgba($color: #000, $alpha: 5%);
-            margin: 5px 5px 0 0;
+            margin: 0;
+            margin-block-start: 5px;
+            margin-inline-end: 5px;
             padding: 5px;
             border: 2px solid transparent;
             border-radius: 3px;

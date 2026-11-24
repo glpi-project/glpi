@@ -260,13 +260,13 @@
         padding: 10px 0 3px;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 10%);
         min-height: 50px;
-        margin-top: 10px;
+        margin-block-start: 10px;
         border-radius: 5px;
         min-width: 250px;
 
         input {
             &[type="checkbox"] {
-                margin-right: 5px;
+                margin-inline-end: 5px;
             }
 
             &:not([type="checkbox"]) {
@@ -275,7 +275,9 @@
         }
 
         .kanban-item-subtitle {
-            padding: 5px 10px 0;
+            padding: 0;
+            padding-block-start: 5px;
+            padding-inline-end: 10px;
             font-style: italic;
             font-weight: normal;
         }
@@ -286,11 +288,11 @@
             .kanban-core-content {
                 display: flex;
                 flex-wrap: wrap;
-                margin-top: 10px;
+                margin-block-start: 10px;
             }
 
             .kanban-plugin-content:not(:empty) {
-                margin-top: 10px;
+                margin-block-start: 10px;
             }
 
             .progress {
@@ -300,7 +302,7 @@
 
         .kanban-description-preview {
             padding: 0 10px;
-            margin-top: 10px;
+            margin-block-start: 10px;
             white-space: break-spaces;
             max-height: 3em;
             overflow: hidden;
@@ -336,11 +338,13 @@
                 float: none;
 
                 &:last-of-type {
-                    margin-right: 5px;
+                    margin-inline-end: 5px;
                 }
             }
 
-            padding: 5px 10px 0;
+            padding: 0;
+            padding-block-start: 5px;
+            padding-inline-end: 10px;
             font-weight: 600;
 
             a:hover {
@@ -354,37 +358,37 @@
 
         .kanban-item-team {
             display: flex;
-            padding-bottom: 5px;
-            margin-left: 10px;
-            margin-top: 5px;
+            padding-block-end: 5px;
+            margin-inline-start: 10px;
+            margin-block-start: 5px;
 
             @media (prefers-reduced-motion: no-preference) {
                 &:hover {
-                    margin-right: 0;
+                    margin-inline-end: 0;
 
                     > span {
-                        margin-right: -5px;
+                        margin-inline-end: -5px;
 
                         &:last-of-type {
-                            margin-right: 0;
+                            margin-inline-end: 0;
                         }
                     }
                 }
             }
 
             @media (prefers-reduced-motion) {
-                margin-right: 0;
+                margin-inline-end: 0;
 
                 > span {
-                    margin-right: -10px !important;
+                    margin-inline-end: -10px !important;
                     &:last-of-type {
-                        margin-right: -5px !important;
+                        margin-inline-end: -5px !important;
                     }
                 }
             }
 
             > span {
-                margin-right: -15px;
+                margin-inline-end: -15px;
                 border-radius: 50%;
                 border: 3px solid var(--tblr-card-bg);
                 box-sizing: content-box;
@@ -401,12 +405,13 @@
         }
 
         .kanban-item-due-date {
-            margin: 10px 10px 10px 0;
+            margin: 10px;
+            margin-inline-start: 0;
         }
     }
 
     .kanban-column {
-        margin-right: 16px;
+        margin-inline-end: 16px;
         border-radius: 5px;
         width: 400px;
         flex-direction: column;
@@ -443,13 +448,14 @@
                     .kanban-column-title,
                     .kanban_nb {
                         writing-mode: vertical-lr;
-                        margin-top: 10px;
-                        margin-left: 0;
+                        margin-block-start: 10px;
+                        margin-inline-start: 0;
                         padding: 10px 2px;
                     }
 
                     .kanban-collapse-column {
-                        margin: 0 0 8px;
+                        margin: 0;
+                        margin-block-end: 8px;
                     }
 
                     .kanban-column-toolbar {
@@ -464,7 +470,7 @@
         }
 
         .kanban-column-header {
-            margin-bottom: 5px;
+            margin-block-end: 5px;
 
             button {
                 background-color: inherit;
@@ -506,21 +512,21 @@
             .kanban-column-title {
                 font-size: 1.3em;
                 font-weight: 600;
-                margin-left: 2px;
+                margin-inline-start: 2px;
                 color: inherit !important;
             }
 
             .kanban_nb {
-                margin-left: 10px;
+                margin-inline-start: 10px;
             }
 
             .kanban-column-toolbar {
-                margin-left: auto;
+                margin-inline-start: auto;
                 flex-direction: column;
                 flex: 0 1 auto;
 
                 i {
-                    margin-left: 0.2rem;
+                    margin-inline-start: 0.2rem;
                 }
             }
         }
@@ -534,15 +540,16 @@
             list-style: none;
 
             .kanban-add-form {
-                padding-top: 10px !important;
-                padding-bottom: 10px !important;
+                padding-block: 10px !important;
 
                 input {
-                    margin: 8px 0 0;
+                    margin: 0;
+                    margin-block-start: 8px;
                 }
 
                 textarea {
-                    margin: 8px 0;
+                    margin: 0;
+                    margin-block-start: 8px;
                 }
             }
         }

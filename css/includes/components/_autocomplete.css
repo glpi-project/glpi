@@ -49,7 +49,7 @@
 
 .aa-List {
    list-style: none;
-   padding-left: 0;
+   padding-inline-start: 0;
 }
 
 .aa-List .aa-Item {

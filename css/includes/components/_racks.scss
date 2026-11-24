@@ -113,7 +113,7 @@
 
 #viewgraph table.outbound {
     width: 400px;
-    margin-bottom: 20px;
+    margin-block-end: 20px;
 }
 
 div#viewgraph table.outbound td div {
@@ -256,7 +256,7 @@ ul.indexes {
         }
 
         .grid-stack-item-content {
-            padding-top: 4px;
+            padding-block-start: 4px;
         }
 
         &.lock-bottom {
@@ -428,7 +428,7 @@ ul.indexes {
         }
 
         td {
-            border-left: 1px solid var(--tblr-border-color);
+            border-inline-start: 1px solid var(--tblr-border-color);
 
             div {
                 border: none !important;
@@ -463,12 +463,12 @@ ul.indexes {
 }
 
 .racks_col {
-    margin-left: 2px;
+    margin-inline-start: 2px;
     float: left;
     position: relative;
 
     &:not(:last-child) {
-        margin-right: 40px;
+        margin-inline-end: 40px;
     }
 }
 
@@ -478,7 +478,7 @@ ul.indexes {
     background: var(--tblr-body-bg);
     border: 1px solid var(--tblr-border-color);
     color: var(--tblr-body-color);
-    padding-top: 18px;
+    padding-block-start: 18px;
 }
 
 .racks_col h2 {
@@ -521,7 +521,7 @@ ul.indexes {
     .racks_add {
         .cell_add {
             height: 20px;
-            margin-bottom: 1px;
+            margin-block-end: 1px;
             width: 100%;
         }
     }
@@ -651,7 +651,7 @@ ul.indexes {
 
     label {
         font-weight: bold;
-        margin-right: 3px;
+        margin-inline-end: 3px;
     }
 }
 
@@ -664,7 +664,7 @@ ul.indexes {
 .racks_row ul.indexes li {
     height: 20px;
     width: 20px;
-    margin-bottom: 1px;
+    margin-block-end: 1px;
     box-sizing: border-box;
     line-height: 20px;
 }
@@ -676,7 +676,7 @@ ul.indexes {
     color: var(--tblr-secondary);
     text-align: left;
     font-size: 11px;
-    margin-bottom: 20px;
+    margin-block-end: 20px;
 }
 
 .rack_side_block_content {

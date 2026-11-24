@@ -73,7 +73,9 @@ $break_s_screen: 1400px;
                 border-radius: 3px;
                 border: 1px solid rgb(100, 100, 100, 20%);
                 padding: 5px;
-                margin: 0 3px 3px 0;
+                margin: 0;
+                margin-block-end: 3px;
+                margin-inline-end: 3px;
                 text-align: center;
                 cursor: pointer;
 
@@ -91,7 +93,7 @@ $break_s_screen: 1400px;
     }
 
     .right-panel {
-        padding-left: 5px;
+        padding-inline-start: 5px;
         width: 100%;
 
         .left-panel + & {
@@ -177,7 +179,7 @@ $break_s_screen: 1400px;
 
                 width: calc(25% - #{$margin_width}); // minus margin
                 margin: calc(#{$margin_width} / 2);
-                margin-bottom: 10px;
+                margin-block-end: 10px;
                 border-radius: 2px;
                 background-color: rgb(100, 100, 100, 3%);
                 border: 1px solid rgb(100, 100, 100, 30%);
@@ -200,7 +202,7 @@ $break_s_screen: 1400px;
 
                 .main {
                     display: flex;
-                    padding-bottom: 5px;
+                    padding-block-end: 5px;
 
                     .icon {
                         flex-shrink: 0;
@@ -257,7 +259,7 @@ $break_s_screen: 1400px;
                     .buttons {
                         width: 39px;
                         padding: 5px;
-                        margin-left: auto;
+                        margin-inline-start: auto;
 
                         &:has(> .fa-cog:only-child) {
                             display: block;
@@ -392,7 +394,7 @@ $break_s_screen: 1400px;
                         text-align: left;
 
                         i {
-                            margin-right: 5px;
+                            margin-inline-end: 5px;
                         }
 
                         .authors {
@@ -405,7 +407,7 @@ $break_s_screen: 1400px;
 
                 .misc-right {
                     i {
-                        margin-right: 5px;
+                        margin-inline-end: 5px;
                     }
 
                     .authors {
@@ -441,7 +443,7 @@ $break_s_screen: 1400px;
                     font-weight: bold;
 
                     & + li {
-                        border-left-width: 0;
+                        border-inline-start-width: 0;
                     }
                 }
 
@@ -464,17 +466,17 @@ $break_s_screen: 1400px;
                 }
 
                 &:first-child {
-                    border-top-left-radius: 3px;
-                    border-bottom-left-radius: 3px;
+                    border-start-start-radius: 3px;
+                    border-end-start-radius: 3px;
                 }
 
                 &:last-child {
-                    border-top-right-radius: 3px;
-                    border-bottom-right-radius: 3px;
+                    border-start-end-radius: 3px;
+                    border-end-end-radius: 3px;
                 }
 
                 &:not(:first-child) {
-                    border-left-width: 0;
+                    border-inline-start-width: 0;
                 }
             }
         }
@@ -489,7 +491,7 @@ $break_s_screen: 1400px;
         .plugins {
             .plugin {
                 min-height: 84px;
-                margin-bottom: 5px;
+                margin-block-end: 5px;
                 flex-direction: row;
                 flex-wrap: wrap;
 
@@ -499,8 +501,10 @@ $break_s_screen: 1400px;
 
                     .details {
                         flex: 1;
-                        border-right: 1px solid rgb(100, 100, 100, 30%);
-                        padding: 5px 0 0 10px;
+                        border-inline-end: 1px solid rgb(100, 100, 100, 30%);
+                        padding: 0;
+                        padding-block-start: 5px;
+                        padding-inline-start: 10px;
                         height: 100%;
                         display: flex;
                         flex-direction: column;
@@ -526,10 +530,12 @@ $break_s_screen: 1400px;
                 .footer {
                     background: none;
                     border: none;
-                    margin: -25px 36px 0 0;
+                    margin: 0;
+                    margin-block-start: -25px;
+                    margin-inline-end: 36px;
 
                     .misc-left {
-                        padding-top: 3px;
+                        padding-block-start: 3px;
                     }
                 }
             }

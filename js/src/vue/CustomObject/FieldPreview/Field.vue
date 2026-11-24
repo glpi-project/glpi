@@ -53,7 +53,7 @@
         background-color: var(--tblr-gray-200);
 
         & > .col {
-            border-left: 1px solid var(--tblr-border-color);
+            border-inline-start: 1px solid var(--tblr-border-color);
         }
 
         @media (pointer: fine) {

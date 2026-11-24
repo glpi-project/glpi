@@ -45,7 +45,7 @@
 
 
 [data-glpi-form-editor-horizontal-blocks-container] {
-    margin-bottom: 1rem;
+    margin-block-end: 1rem;
 
     &[data-glpi-form-editor-active-horizontal-blocks] {
         [data-glpi-form-editor-horizontal-blocks] {
@@ -191,7 +191,7 @@
         }
 
         [data-glpi-form-editor-block] {
-            margin-bottom: 0;
+            margin-block-end: 0;
             flex: 1;
 
             &[data-glpi-form-editor-active-question] {
@@ -212,8 +212,8 @@
         }
 
         >[data-glpi-form-editor-horizontal-block-toolbar] {
-            margin-top: auto;
-            margin-bottom: auto;
+            margin-block-start: auto;
+            margin-block-end: auto;
             order: 100;
 
             // Remove hover effect on buttons
@@ -253,7 +253,7 @@
 
             [data-glpi-form-editor-toolbar] {
                 height: unset !important;
-                margin-top: unset !important;
+                margin-block-start: unset !important;
 
                 @include media-breakpoint-down(sm) {
                     flex-direction: column;

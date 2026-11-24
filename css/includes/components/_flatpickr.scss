@@ -53,23 +53,23 @@ body {
     }
 
     .flatpickr-calendar.hasTime .flatpickr-time {
-        border-top: 1px solid var(--glpi-flatpickr-border-color);
+        border-block-start: 1px solid var(--glpi-flatpickr-border-color);
     }
 
     .flatpickr-calendar.arrowTop::before {
-        border-bottom-color: var(--glpi-flatpickr-border-color);
+        border-block-end-color: var(--glpi-flatpickr-border-color);
     }
 
     .flatpickr-calendar.arrowTop::after {
-        border-bottom-color: var(--glpi-flatpickr-bg);
+        border-block-end-color: var(--glpi-flatpickr-bg);
     }
 
     .flatpickr-calendar.arrowBottom::before {
-        border-top-color: var(--glpi-flatpickr-border-color);
+        border-block-start-color: var(--glpi-flatpickr-border-color);
     }
 
     .flatpickr-calendar.arrowBottom::after {
-        border-top-color: var(--glpi-flatpickr-bg);
+        border-block-start-color: var(--glpi-flatpickr-bg);
     }
 
     .flatpickr-months .flatpickr-month {
@@ -103,11 +103,11 @@ body {
     }
 
     .flatpickr-current-month .numInputWrapper span.arrowUp::after {
-        border-bottom-color: var(--glpi-flatpickr-text-color);
+        border-block-end-color: var(--glpi-flatpickr-text-color);
     }
 
     .flatpickr-current-month .numInputWrapper span.arrowDown::after {
-        border-top-color: var(--glpi-flatpickr-text-color);
+        border-block-start-color: var(--glpi-flatpickr-text-color);
     }
 
     .flatpickr-current-month .flatpickr-monthDropdown-months {
@@ -219,11 +219,11 @@ body {
     }
 
     .flatpickr-time .numInputWrapper span.arrowUp::after {
-        border-bottom-color: var(--glpi-flatpickr-text-color);
+        border-block-end-color: var(--glpi-flatpickr-text-color);
     }
 
     .flatpickr-time .numInputWrapper span.arrowDown::after {
-        border-top-color: var(--glpi-flatpickr-text-color);
+        border-block-start-color: var(--glpi-flatpickr-text-color);
     }
 
     .flatpickr-time input {
@@ -243,8 +243,8 @@ body {
     }
 
     .flatpickr input.form-control {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
+        border-start-end-radius: 0;
+        border-end-end-radius: 0;
     }
 }
 /* stylelint-enable property-no-vendor-prefix */

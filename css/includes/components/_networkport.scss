@@ -59,7 +59,7 @@ html[data-glpi-theme-dark="1"] {
     &:target {
         animation: shakeX; // from animate css dependencies
         animation-duration: 2s;
-        scroll-margin-top: 5em;
+        scroll-margin-block-start: 5em;
     }
 
     td {
@@ -98,7 +98,7 @@ html[data-glpi-theme-dark="1"] {
     .aggregated {
         background-color: var(--glpi-aggregated-bg);
         color: var(--glpi-network-color);
-        padding-left: 2em;
+        padding-inline-start: 2em;
     }
 
     .hub {
@@ -107,10 +107,10 @@ html[data-glpi-theme-dark="1"] {
 
         div {
             padding: 0.2em 0.5em;
-            border-bottom: 1px grey solid;
+            border-block-end: 1px grey solid;
 
             &:last-of-type {
-                border-bottom: none;
+                border-block-end: none;
             }
         }
     }

@@ -54,7 +54,7 @@
                 font-size: 1.25rem;
                 font-weight: 600;
                 color: inherit;
-                border-bottom: 1px solid var(--tblr-border-color);
+                border-block-end: 1px solid var(--tblr-border-color);
             }
 
             ul {
@@ -64,7 +64,7 @@
                     a {
                         font-weight: normal;
                         font-size: 1rem;
-                        border-bottom: none;
+                        border-block-end: none;
                         color: inherit;
                    }
                 }
@@ -74,29 +74,31 @@
 
     > ul:nth-child(2) {
         list-style-type: disc;
-        margin-top: 40px;
+        margin-block-start: 40px;
 
         > li {
-            margin-left: 30px;
+            margin-inline-start: 30px;
         }
     }
 
     h2 {
-        margin-top: 70px;
-        border-bottom: 1px solid var(--tblr-border-color);
+        margin-block-start: 70px;
+        border-block-end: 1px solid var(--tblr-border-color);
     }
 
     li {
-        margin-left: 10px;
-        padding: 5px 0 5px 5px;
+        margin-inline-start: 10px;
+        padding-block: 5px;
+        padding-inline-start: 5px;
+        padding-inline-end: 0;
     }
 
     > ul > li > ul > li {
-        border-left: 1px solid var(--tblr-border-color);
+        border-inline-start: 1px solid var(--tblr-border-color);
 
         > ul > li {
             list-style-type: disc;
-            margin-left: 35px;
+            margin-inline-start: 35px;
         }
     }
 
@@ -108,17 +110,17 @@
 
     dt {
         font-weight: bold;
-        margin-top: 20px;
+        margin-block-start: 20px;
     }
 
     dd {
-        margin-left: 20px;
+        margin-inline-start: 20px;
     }
 
     td,
     th {
-        padding-right: 24px;
-        padding-bottom: 8px;
+        padding-inline-end: 24px;
+        padding-block-end: 8px;
         font-size: 12px;
     }
 
@@ -135,7 +137,7 @@
     #footer-login {
         position: unset;
         text-align: center;
-        padding-bottom: 30px;
+        padding-block-end: 30px;
     }
 }
 
@@ -144,10 +146,10 @@
         position: fixed;
         top: 0;
         left: 0;
-        padding-top: 40px;
-        padding-left: 15px;
-        padding-right: 15px;
-        margin-top: 0;
+        padding-block-start: 40px;
+        padding-inline-start: 15px;
+        padding-inline-end: 15px;
+        margin-block-start: 0;
         width: 15rem;
         bottom: 0;
         overflow: auto;
@@ -157,6 +159,6 @@
 @include media-breakpoint-up(sm) {
     .documentation-large {
         // Never smaller than the fixed sidebar width, to avoid overlap.
-        margin-left: max(240px, calc((100% - 1000px) / 2));
+        margin-inline-start: max(240px, calc((100% - 1000px) / 2));
     }
 }

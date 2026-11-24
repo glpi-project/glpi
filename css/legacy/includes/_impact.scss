@@ -65,12 +65,12 @@
 }
 
 #impact_tools {
-   margin-left     : auto;
-   margin-right    : 5px;
-   background-color: white;
-   padding         : 5px;
-   border          : 1px solid lightgray;
-   border-radius   : 2px;
+   margin-inline-start  : auto;
+   margin-inline-end    : 5px;
+   background-color     : white;
+   padding              : 5px;
+   border               : 1px solid lightgray;
+   border-radius        : 2px;
 
    span:hover {
       background-color: lightgray;
@@ -79,7 +79,7 @@
 }
 
 .impact-mb-2 {
-   margin-bottom: 2em;
+   margin-block-end: 2em;
 }
 
 .network-parent {
@@ -159,12 +159,12 @@ i.fa-impact-manipulation {
  */
 
 .cy-context-menus-cxt-menuitem {
-   padding-left: 5px !important;
+   padding-inline-start: 5px !important;
    font-size: 1.15em;
    background-color:white;
 
    i {
-      padding-right: 10px !important;
+      padding-inline-end: 10px !important;
       color: gray;
       max-width: 10px;
    }
@@ -181,12 +181,12 @@ i.fa-impact-manipulation {
  */
 
 .impact-range {
-   height            : 18px;
-   appearance: none;
-   margin            : 10px 0;
-   border-width      : 0 !important;
-   margin-top        : 0 !important;
-   margin-bottom     : 0 !important;
+   height               : 18px;
+   appearance           : none;
+   margin               : 10px 0;
+   border-width         : 0 !important;
+   margin-block-start   : 0 !important;
+   margin-block-end     : 0 !important;
 }
 
 .impact-range:focus {
@@ -212,7 +212,7 @@ i.fa-impact-manipulation {
    background        : #66757F;
    cursor            : pointer;
    appearance        : none;
-   margin-top        : -4px;
+   margin-block-start: -4px;
 }
 
 .impact-range:focus::-webkit-slider-runnable-track {
@@ -248,12 +248,12 @@ i.fa-impact-manipulation {
    align-items: center;
 
    h2 {
-      margin-left: auto;
+      margin-inline-start: auto;
    }
 
    #switchview {
-      margin-left: auto;
-      margin-right: 10px;
+      margin-inline-start: auto;
+      margin-inline-end: 10px;
 
       a {
          font-size: 0.85em !important;
@@ -262,7 +262,7 @@ i.fa-impact-manipulation {
 }
 
 #impact_list_view {
-   margin-top: 2em;
+   margin-block-start: 2em;
    display: flex;
    justify-content: center;
 }
@@ -272,11 +272,11 @@ i.fa-impact-manipulation {
 }
 
 .impact-list-group {
-   margin-bottom: 5em;
+   margin-block-end: 5em;
 }
 
 .impact-left {
-   padding-left: 10px !important;
+   padding-inline-start: 10px !important;
 }
 
 .impact-pointer {
@@ -304,13 +304,13 @@ i.fa-impact-manipulation {
 
 .impact-toggle-subitems-master {
    float: right;
-   padding-right: 5px;
+   padding-inline-end: 5px;
    font-size: 1.15rem;
 }
 
 .impact-toggle-subitems {
    float: right;
-   padding-right: 5px;
+   padding-inline-end: 5px;
    font-size: 1.15rem;
 }
 
@@ -326,8 +326,7 @@ i.fa-impact-manipulation {
    background-color: var(--tblr-bg-surface-tertiary);
    color: inherit;
    z-index         : 1000;
-   border-left     : 1px solid var(--tblr-border-color);
-   border-right    : 1px solid var(--tblr-border-color);
+   border-inline   : 1px solid var(--tblr-border-color);
    display         : flex;
    justify-content: space-between;
 
@@ -362,13 +361,13 @@ i.fa-impact-manipulation {
       }
 
       &.impact-separator {
-         border-top: 2px solid var(--glpi-form-header-border-color);
+         border-block-start: 2px solid var(--glpi-form-header-border-color);
       }
    }
 
    &.impact-side-expanded {
       // width : 250px;
-      border-left: 3px solid var(--tblr-border-color);
+      border-inline-start: 3px solid var(--tblr-border-color);
 
       li {
          text-align: right;
@@ -416,7 +415,7 @@ i.fa-impact-manipulation {
 }
 
 #impact-side-filter-itemtypes {
-   margin-bottom: 1em;
+   margin-block-end: 1em;
 }
 
 .impact-side-search {
@@ -424,13 +423,13 @@ i.fa-impact-manipulation {
 
    i {
       cursor: pointer;
-      margin-right: 5px;
+      margin-inline-end: 5px;
    }
 
    img {
       width: 16px;
       height: 16px;
-      margin-right: 5px;
+      margin-inline-end: 5px;
    }
 
    h4 {
@@ -446,7 +445,7 @@ i.fa-impact-manipulation {
    cursor: pointer;
 
    i {
-      margin-right: 3px;
+      margin-inline-end: 3px;
    }
 }
 
@@ -491,7 +490,7 @@ i.fa-impact-manipulation {
    max-width: 100%; /* Ensure the container respects the sidebar width */
 
    span {
-      margin-left: 4px;
+      margin-inline-start: 4px;
       /* Required for ellipsis in flexbox */
       white-space: nowrap;
       overflow: hidden;
@@ -501,8 +500,7 @@ i.fa-impact-manipulation {
    }
 
    h4 {
-      margin-top: 0;
-      margin-bottom: 0;
+      margin-block: 0;
       display: flex;
       align-items: center;
       width: 100%; /* Forces the flex container to fill the parent width */
@@ -510,7 +508,7 @@ i.fa-impact-manipulation {
 }
 
 .impact-side-search-spinner {
-   margin-top: 10px;
+   margin-block-start: 10px;
    text-align: center;
    display: none;
 }
@@ -520,18 +518,18 @@ i.fa-impact-manipulation {
 }
 
 .impact-checkbox-label {
-   margin-left: 8px;
+   margin-inline-start: 8px;
 }
 
 .impact-side-settings {
    h4 {
       white-space: nowrap;
-      margin-top: 25px;
+      margin-block-start: 25px;
    }
 }
 
 .impact-side-settings-item {
-   margin-bottom: 10px;
+   margin-block-end: 10px;
    white-space: nowrap;
 }
 

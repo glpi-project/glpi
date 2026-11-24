@@ -1452,7 +1452,7 @@
 
         .kanban-toolbar {
             display: flex;
-            margin-bottom: var(--toolbar-margin);
+            margin-block-end: var(--toolbar-margin);
             font-size: 14px;
             padding: var(--toolbar-padding);
 
@@ -1462,7 +1462,8 @@
 
             .fas,
             .fa-solid {
-                margin: auto auto auto 10px;
+                margin: auto;
+                margin-inline-start: 10px;
                 font-size: 1.2em;
                 cursor: pointer;
             }
@@ -1490,10 +1491,10 @@
                 min-width: 100px;
                 text-align: left;
                 list-style: none;
-                padding-left: 0;
+                padding-inline-start: 0;
 
                 li {
-                    margin-top: 2px;
+                    margin-block-start: 2px;
                     position: relative;
 
                     a,
@@ -1514,24 +1515,24 @@
                         display: block;
                         width: max-content;
                         min-width: 100px;// Use outline instead of border on submenus to avoid them being aligned off by one pixel
-                        margin-left: 1px;
+                        margin-inline-start: 1px;
                         list-style: none;
                     }
 
                     i {
-                        margin-right: 1em;
+                        margin-inline-end: 1em;
                     }
                 }
 
                 li:first-of-type {
-                    margin-top: 0;
+                    margin-block-start: 0;
                 }
 
                 li.dropdown-trigger {
                     a::after {
                         content: "\f054";
                         font: var(--fa-font-solid);
-                        padding-left: 10px;
+                        padding-inline-start: 10px;
                     }
                 }
             }
@@ -1547,7 +1548,7 @@
             width: 1em;
             height: 1em;
             display: inline-block;
-            margin-right: 5px;
+            margin-inline-end: 5px;
             vertical-align: middle;
             background-color: var(--status-color);
         }
@@ -1579,7 +1580,7 @@
             }
 
             .member-details > span {
-                margin-right: 2rem;
+                margin-inline-end: 2rem;
             }
         }
     }

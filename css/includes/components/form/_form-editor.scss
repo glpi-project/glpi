@@ -102,7 +102,7 @@
 
     // Revert border radius change from parent div
     .card {
-        border-bottom-left-radius: var(--tblr-border-radius) !important;
+        border-end-start-radius: var(--tblr-border-radius) !important;
     }
 
     [data-fix-dropdown-flex] {
@@ -119,25 +119,25 @@
 
     .only-uploaded-files {
         .fileupload_info {
-            margin-bottom: 0;
+            margin-block-end: 0;
 
             p:first-child {
-                margin-top: 10px;
+                margin-block-start: 10px;
             }
 
             p:last-child {
-                margin-bottom: 0;
+                margin-block-end: 0;
             }
         }
     }
 
     [data-glpi-tinymce-init-on-demand-render] {
-        margin-left: 5px;
+        margin-inline-start: 5px;
     }
 }
 
 .editor-footer {
-    border-top: 1px solid var(--tblr-border-color);
+    border-block-start: 1px solid var(--tblr-border-color);
 }
 
 // Show required mark on mandatory question
@@ -285,7 +285,7 @@
 
 [data-glpi-form-editor-section-blocks] {
     .glpi-form-editor-drag-question-placeholder {
-        margin-bottom: 1rem;
+        margin-block-end: 1rem;
         height: 70px !important;
     }
 }
@@ -293,7 +293,7 @@
 [data-glpi-form-editor-question-drag-merge] {
     .glpi-form-editor-drag-question-placeholder {
         height: 100% !important;
-        margin-left: 0.5rem;
+        margin-inline-start: 0.5rem;
     }
 }
 
@@ -333,7 +333,7 @@
         display: none;
     }
 
-    margin-bottom: 1rem !important;
+    margin-block-end: 1rem !important;
 }
 
 // Hide question badge in section when section is not collapsed
@@ -348,29 +348,29 @@
         .dropdown-border {
             position: relative;
             border: 1px solid var(--tblr-border-color);
-            border-top: 0;
-            border-bottom-left-radius: var(--tblr-border-radius);
-            border-bottom-right-radius: var(--tblr-border-radius);
+            border-block-start: 0;
+            border-end-start-radius: var(--tblr-border-radius);
+            border-end-end-radius: var(--tblr-border-radius);
             padding: 0.5rem;
-            padding-bottom: 0;
+            padding-block-end: 0;
         }
 
         .single-preview-dropdown, .multiple-preview-dropdown {
             .select2-selection {
-                border-bottom-left-radius: unset;
-                border-bottom-right-radius: unset;
+                border-end-start-radius: unset;
+                border-end-end-radius: unset;
             }
         }
 
         div:not([data-glpi-form-editor-selectable-question-options])>[data-glpi-form-selectable-question-option]:last-child {
-            margin-bottom: 0 !important;
+            margin-block-end: 0 !important;
         }
     }
 
     &:not([data-glpi-form-editor-active-question]) {
         [data-glpi-form-editor-selectable-question-options] {
             [data-glpi-form-selectable-question-option]:last-child {
-                margin-bottom: 0 !important;
+                margin-block-end: 0 !important;
             }
         }
     }
@@ -381,8 +381,8 @@
     background-color: var(--tblr-pink-lt) !important;
 
     // Fix some border conflicts with tabler/select2
-    border-top-right-radius: var(--tblr-border-radius) !important;
-    border-bottom-right-radius: var(--tblr-border-radius) !important;
+    border-start-end-radius: var(--tblr-border-radius) !important;
+    border-end-end-radius: var(--tblr-border-radius) !important;
 }
 
 .question-selector .select2-selection {
@@ -390,8 +390,8 @@
     background-color: var(--tblr-indigo-lt) !important;
 
     // Fix some border conflicts with tabler/select2
-    border-top-right-radius: var(--tblr-border-radius) !important;
-    border-bottom-right-radius: var(--tblr-border-radius) !important;
+    border-start-end-radius: var(--tblr-border-radius) !important;
+    border-end-end-radius: var(--tblr-border-radius) !important;
 }
 
 .value-operator-selector .select2-selection {
@@ -399,14 +399,14 @@
     background-color: var(--tblr-teal-lt) !important;
 
     // Fix some border conflicts with tabler/select2
-    border-top-right-radius: var(--tblr-border-radius) !important;
-    border-bottom-right-radius: var(--tblr-border-radius) !important;
+    border-start-end-radius: var(--tblr-border-radius) !important;
+    border-end-end-radius: var(--tblr-border-radius) !important;
 }
 
 input.value-selector {
     // Use extra padding to match height of dropdowns on the same line.
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-block-start: 10px;
+    padding-block-end: 10px;
 }
 
 .value-selector {
@@ -416,8 +416,8 @@ input.value-selector {
 
     .select2-selection {
         // Fix some border conflicts with tabler/select2
-        border-top-right-radius: var(--tblr-border-radius) !important;
-        border-bottom-right-radius: var(--tblr-border-radius) !important;
+        border-start-end-radius: var(--tblr-border-radius) !important;
+        border-end-end-radius: var(--tblr-border-radius) !important;
         border: 0 !important;
         background-color: var(--tblr-yellow-lt) !important;
     }
@@ -436,7 +436,7 @@ input.value-selector {
 }
 
 [data-glpi-form-editor-block] {
-    margin-bottom: 1rem;
+    margin-block-end: 1rem;
 }
 
 .question-type-dropdown-group {
@@ -449,17 +449,17 @@ input.value-selector {
             > div:not(:only-child) {
                 &:first-child {
                     .select2-selection {
-                        border-top-right-radius: 0;
-                        border-bottom-right-radius: 0;
+                        border-start-end-radius: 0;
+                        border-end-end-radius: 0;
                     }
                 }
 
                 &:not(:first-child) {
-                    margin-left: calc(-1 * var(--tblr-border-width));
+                    margin-inline-start: calc(-1 * var(--tblr-border-width));
 
                     .select2-selection {
-                        border-top-left-radius: 0;
-                        border-bottom-left-radius: 0;
+                        border-start-start-radius: 0;
+                        border-end-start-radius: 0;
                     }
                 }
             }
@@ -470,8 +470,8 @@ input.value-selector {
                 &:not(:first-child) {
                     &:not(:last-child) {
                         .select2-selection {
-                            border-top-right-radius: 0;
-                            border-bottom-right-radius: 0;
+                            border-start-end-radius: 0;
+                            border-end-end-radius: 0;
                         }
                     }
                 }
@@ -487,7 +487,7 @@ input.value-selector {
         }
 
         .select2-selection__rendered > span {
-            margin-right: auto;
+            margin-inline-end: auto;
         }
 
         &:not(:has(> :nth-child(2).d-none)),
@@ -495,17 +495,17 @@ input.value-selector {
             > div:not(:only-child) {
                 &:first-child {
                     .select2-selection {
-                        border-bottom-left-radius: 0;
-                        border-bottom-right-radius: 0;
+                        border-end-start-radius: 0;
+                        border-end-end-radius: 0;
                     }
                 }
 
                 &:not(:first-child) {
-                    margin-top: calc(-1 * var(--tblr-border-width));
+                    margin-block-start: calc(-1 * var(--tblr-border-width));
 
                     .select2-selection {
-                        border-top-left-radius: 0;
-                        border-top-right-radius: 0;
+                        border-start-start-radius: 0;
+                        border-start-end-radius: 0;
                     }
                 }
             }
@@ -516,8 +516,8 @@ input.value-selector {
                 &:not(:first-child) {
                     &:not(:last-child) {
                         .select2-selection {
-                            border-bottom-left-radius: 0;
-                            border-bottom-right-radius: 0;
+                            border-end-start-radius: 0;
+                            border-end-end-radius: 0;
                         }
                     }
                 }
@@ -551,12 +551,12 @@ html {
 }
 
 [data-glpi-form-editor-visibility-dropdown-container], [data-glpi-form-editor-validation-dropdown-container] {
-    padding-right: 0.75rem;
+    padding-inline-end: 0.75rem;
 
     &:has([data-glpi-editor-visibility-badge="always_visible"].d-flex,
           [data-glpi-editor-validation-badge="no_validation"].d-flex,
           button[aria-expanded="true"]) {
-        padding-right: 0;
+        padding-inline-end: 0;
 
         [data-glpi-editor-visibility-conditions-count-badge],
         [data-glpi-editor-validation-conditions-count-badge] {
@@ -569,8 +569,8 @@ html {
     .input-group > * {
         &:first-child:has(.select2-selection) {
             .select2-selection {
-                border-top-right-radius: 0 !important;
-                border-bottom-right-radius: 0 !important;
+                border-start-end-radius: 0 !important;
+                border-end-end-radius: 0 !important;
             }
         }
     }
@@ -580,11 +580,11 @@ html {
 [data-glpi-form-editor-form] {
     &:not(:has([data-glpi-form-editor-block], [data-glpi-form-editor-horizontal-blocks-container])) {
         > [data-glpi-form-editor-form-extra-details] {
-            margin-bottom: 0 !important;
+            margin-block-end: 0 !important;
         }
 
         [data-glpi-form-editor-section], [data-glpi-form-editor-section-blocks] {
-            margin-top: 0 !important;
+            margin-block-start: 0 !important;
         }
     }
 }
@@ -607,7 +607,7 @@ div:has(> [data-glpi-form-editor-section-details].d-none) {
 
 [data-glpi-form-editor-question-details] {
     div[data-glpi-tinymce-init-on-demand-render] {
-        margin-left: 5px;
+        margin-inline-start: 5px;
         cursor: text;
     }
 
@@ -615,7 +615,7 @@ div:has(> [data-glpi-form-editor-section-details].d-none) {
     &:has(input[value="Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeLongText"]) {
         [data-glpi-form-editor-question-type-specific] {
             div[data-glpi-tinymce-init-on-demand-render] {
-                margin-left: 0;
+                margin-inline-start: 0;
 
                 // Draw a border around the div to mimic the textarea style
                 min-height: 100px;

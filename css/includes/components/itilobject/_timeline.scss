@@ -35,8 +35,8 @@
     min-width: 65%;
 
     .timeline-header {
-        margin-top: -0.5rem;
-        margin-bottom: 1rem;
+        margin-block-start: -0.5rem;
+        margin-block-end: 1rem;
 
         .timeline-item-buttons {
             .is-private {
@@ -47,9 +47,9 @@
 
     .todo-list-state {
         display: inline-block !important;
-        margin-top: 1.5rem;
-        margin-left: 0.5rem;
-        margin-right: -0.5rem;
+        margin-block-start: 1.5rem;
+        margin-inline-start: 0.5rem;
+        margin-inline-end: -0.5rem;
 
         .task-state-checkbox {
             width: 20px;
@@ -67,7 +67,7 @@
             display: inline-block;
             width: 20px;
             height: 20px;
-            margin-right: 3px;
+            margin-inline-end: 3px;
             background-repeat: no-repeat;
             vertical-align: middle;
 
@@ -109,7 +109,7 @@
         // items, top-right for right-aligned (t-right) ones. Squaring top-left
         // unconditionally left t-right bubbles with two squared top corners.
         &:not(.t-right) {
-            border-top-left-radius: 0;
+            border-start-start-radius: 0;
         }
 
         @include media-breakpoint-up(sm) {
@@ -138,7 +138,7 @@
             }
 
             &.t-right {
-                border-top-right-radius: 0;
+                border-start-end-radius: 0;
 
                 &::before {
                     left: auto;
@@ -294,15 +294,15 @@
     &.ITILSolution {
         .timeline-content {
             &.waiting {
-                border-left-color: rgb(221, 157, 39);
+                border-inline-start-color: rgb(221, 157, 39);
             }
 
             &.accepted {
-                border-left: 1em rgb(52, 143, 52) solid;
+                border-inline-start: 1em rgb(52, 143, 52) solid;
             }
 
             &.refused {
-                border-left: 1em rgb(226, 80, 80) solid;
+                border-inline-start: 1em rgb(226, 80, 80) solid;
             }
         }
     }
@@ -333,13 +333,13 @@
         .content-part {
             flex-direction: row-reverse !important;
             justify-content: flex-end;
-            margin-left: 75px;
-            margin-right: 83px;
+            margin-inline-start: 75px;
+            margin-inline-end: 83px;
 
             .timeline-content {
                 border: 0;
                 box-shadow: none;
-                margin-top: 0 !important;
+                margin-block-start: 0 !important;
                 flex-grow: 0 !important;
                 background: transparent;
 
@@ -349,9 +349,9 @@
                     flex-direction: row-reverse;
 
                     .timeline-header {
-                        margin-left: 1rem;
-                        margin-top: 0;
-                        margin-bottom: 0;
+                        margin-inline-start: 1rem;
+                        margin-block-start: 0;
+                        margin-block-end: 0;
                     }
                 }
             }
@@ -361,13 +361,13 @@
             }
 
             .itil-date-creation {
-                margin-left: 1rem !important;
+                margin-inline-start: 1rem !important;
             }
         }
     }
 
     .timeline-badges {
-        margin-bottom: -0.75rem;
+        margin-block-end: -0.75rem;
 
         .badge {
             @include tabler-badge-fix;
@@ -398,7 +398,7 @@
     .timeline-item {
         &.ITILSolution {
             .timeline-content {
-                border-left: 1px solid transparent;
+                border-inline-start: 1px solid transparent;
             }
         }
     }
@@ -437,7 +437,7 @@
 
 .timeline-todo-list {
     .itil-left-side {
-        padding-right: 0.4rem !important;
+        padding-inline-end: 0.4rem !important;
         transition: none;
 
         .timeline-item {
@@ -472,10 +472,10 @@
 
             &.ITILValidation:not(.expanded) {
                 order: 5;
-                padding-left: 23px;
+                padding-inline-start: 23px;
 
                 & ~ .ITILValidation {
-                    margin-top: 0;
+                    margin-block-start: 0;
                 }
 
                 &.validation-answer,
@@ -502,7 +502,7 @@
                         padding: 0.2rem 0.5rem;
                         font-size: 0.75rem;
                         border-radius: 2px;
-                        margin-bottom: 0.3rem;
+                        margin-block-end: 0.3rem;
 
                         &:not(:hover) {
                             border-color: transparent;
@@ -519,16 +519,16 @@
                 }
             }
 
-            margin-left: 0 !important;
-            margin-right: 0 !important;
-            margin-bottom: 0 !important;
+            margin-inline-start: 0 !important;
+            margin-inline-end: 0 !important;
+            margin-block-end: 0 !important;
             width: 99.9%;
             transition: all 200ms ease;
 
             .todo-list-state {
-                margin-top: .8rem;
+                margin-block-start: .8rem;
                 order: inherit !important;
-                margin-left: 0.5rem !important;
+                margin-inline-start: 0.5rem !important;
             }
 
             .creator,
@@ -542,7 +542,7 @@
 
                 .timeline-item-buttons {
                     flex-direction: column;
-                    margin-top: 1rem;
+                    margin-block-start: 1rem;
 
                     .is-private {
                         display: none;
@@ -560,10 +560,10 @@
                         justify-content: space-between;
 
                         .timeline-header {
-                            margin-bottom: 0;
+                            margin-block-end: 0;
 
                             .timeline-item-buttons {
-                                margin-top: 0;
+                                margin-block-start: 0;
                             }
                         }
 
@@ -622,27 +622,27 @@
 }
 
 ul.legacy-timeline-actions {
-    padding-left: 5px;
+    padding-inline-start: 5px;
     list-style: none;
     display: inline-flex;
-    margin-bottom: 0;
+    margin-block-end: 0;
     position: relative;
     top: -3px;
 
     li {
         display: inline;
-        margin-left: 5px;
+        margin-inline-start: 5px;
         border-radius: 5px;
         padding: 5px;
 
         i {
-            padding-right: 1em;
+            padding-inline-end: 1em;
         }
     }
 }
 
 .hide-form-button-separator {
     .form-button-separator {
-        border-top: 0 !important;
+        border-block-start: 0 !important;
     }
 }

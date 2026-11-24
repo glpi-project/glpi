@@ -79,18 +79,18 @@ which broke styles of btn-group > .btn-check
     .btn:not(:last-child, .dropdown-toggle),
     .btn.dropdown-toggle-split:first-child,
     .btn-group:not(:last-child) > .btn {
-        border-top-right-radius: inherit;
-        border-bottom-right-radius: inherit;
-        border-top-left-radius: 0 !important;
-        border-bottom-left-radius: 0 !important;
+        border-start-end-radius: inherit;
+        border-end-end-radius: inherit;
+        border-start-start-radius: 0 !important;
+        border-end-start-radius: 0 !important;
     }
 
     .btn:nth-child(n+3),
     :not(.btn-check) + .btn,
     .btn-group:not(:first-child) > .btn {
-        border-top-left-radius: inherit;
-        border-bottom-left-radius: inherit;
-        border-top-right-radius: 0 !important;
-        border-bottom-right-radius: 0 !important;
+        border-start-start-radius: inherit;
+        border-end-start-radius: inherit;
+        border-start-end-radius: 0 !important;
+        border-end-end-radius: 0 !important;
     }
 }
