@@ -711,7 +711,6 @@ class UserTest extends DbTestCase
             'api_token'             => \bin2hex(\random_bytes(16)),
             '_reset_api_token'      => true,
             'cookie_token'          => \bin2hex(\random_bytes(16)),
-            'password_forget_token' => \bin2hex(\random_bytes(16)),
             'personal_token'        => \bin2hex(\random_bytes(16)),
             '_reset_personal_token' => true,
             '_useremails'           => ['test1@example.com', 'test2@example.com'],
