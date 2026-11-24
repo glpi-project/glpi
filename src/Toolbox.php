@@ -3087,6 +3087,8 @@ class Toolbox
      * @param string $filename
      *
      * @return string
+     *
+     * @psalm-taint-escape file
      */
     public static function filename($filename): string
     {

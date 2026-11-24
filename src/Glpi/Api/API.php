@@ -92,6 +92,7 @@ use function Safe\json_encode;
 use function Safe\ob_get_clean;
 use function Safe\ob_start;
 use function Safe\preg_match;
+use function Safe\realpath;
 use function Safe\session_destroy;
 use function Safe\session_id;
 use function Safe\session_write_close;
@@ -3191,13 +3192,22 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
 
         if (!empty($user->fields['picture'])) {
             // Send file
-            $file = GLPI_PICTURE_DIR . '/' . $user->fields['picture'];
+            $dir  = realpath(GLPI_PICTURE_DIR);
+            $file = realpath($dir . '/' . $user->fields['picture']);
 
-            Toolbox::getFileAsResponse($file, $user->fields['picture'])->send();
-        } else {
-            // No content
-            http_response_code(204); // @phpstan-ignore glpi.forbidHttpResponseCode (API response is streamed)
+            if (\str_starts_with($file, $dir . DIRECTORY_SEPARATOR)) {
+                /**
+                 * @psalm-taint-escape file (unsecure paths are blocked by the `if` condition)
+                 */
+                $file = $file;
+
+                Toolbox::getFileAsResponse($file, $user->fields['picture'])->send();
+                exit(); // @phpstan-ignore glpi.forbidExit (API response is streamed)
+            }
         }
+
+        // No content
+        http_response_code(204); // @phpstan-ignore glpi.forbidHttpResponseCode (API response is streamed)
         exit(); // @phpstan-ignore glpi.forbidExit (API response is streamed)
     }
 

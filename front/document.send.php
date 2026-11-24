@@ -41,6 +41,7 @@ use Glpi\Exception\Http\HttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Inventory\Conf;
 
+use function Safe\realpath;
 use function Safe\sha1_file;
 
 $doc = new Document();
@@ -89,17 +90,40 @@ if (isset($_GET['docid'])) {
         $expires_headers = false;
         $send = false;
         if ($splitter[0] == "_pictures") {
-            if (Document::isImage(GLPI_PICTURE_DIR . '/' . $splitter[1])) {
+            $dir  = realpath(GLPI_PICTURE_DIR);
+            $file = realpath($dir . '/' . $splitter[1]);
+
+            if (
+                \str_starts_with($file, $dir . DIRECTORY_SEPARATOR)
+                && Document::isImage($file)
+            ) {
+                /**
+                 * @psalm-taint-escape file (unsecure paths are blocked by the `if` condition)
+                 */
+                $file = $file;
+
                 // Can use expires header as picture file path changes when picture changes.
                 $expires_headers = true;
-                $send = GLPI_PICTURE_DIR . '/' . $splitter[1];
+                $send = $file;
             }
         }
 
         if ($splitter[0] == "_inventory" && Session::haveRight(Conf::$rightname, READ)) {
             $iconf = new Conf();
-            if ($iconf->isInventoryFile(GLPI_INVENTORY_DIR . '/' . $splitter[1])) {
-                $send = GLPI_INVENTORY_DIR . '/' . $splitter[1];
+
+            $dir  = realpath(GLPI_INVENTORY_DIR);
+            $file = realpath($dir . '/' . $splitter[1]);
+
+            if (
+                \str_starts_with($file, $dir . DIRECTORY_SEPARATOR)
+                && $iconf->isInventoryFile($file)
+            ) {
+                /**
+                 * @psalm-taint-escape file (unsecure paths are blocked by the `if` condition)
+                 */
+                $file = $file;
+
+                $send = $file;
 
                 $finfo = new finfo(FILEINFO_MIME_TYPE);
                 $mime = ($finfo->file($send));

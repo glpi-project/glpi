@@ -73,7 +73,7 @@ $filepath = $dir . $_GET["name"];
 if (
     (basename($_GET["name"]) != $_GET["name"])
     || (basename($_GET["plugin"]) != $_GET["plugin"])
-    || !str_starts_with(realpath($filepath), realpath(GLPI_PLUGIN_DOC_DIR))
+    || !str_starts_with(realpath($filepath), realpath(GLPI_PLUGIN_DOC_DIR) . DIRECTORY_SEPARATOR)
     || !Document::isImage($filepath)
 ) {
     Event::log(
