@@ -44,6 +44,7 @@ use Glpi\DBAL\QueryValue;
 use Glpi\Exception\AuthenticationFailedException;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Exception\PasswordTooWeakException;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
@@ -482,6 +483,23 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 continue;
             }
 
+            $where = [
+                $user_criteria['criteria'] + $item::getSystemSQLCriteria(),
+                getEntitiesRestrictCriteria($table),
+            ];
+
+            if ($item instanceof AssignableItemInterface) {
+                $where[] = $item::getAssignableVisiblityCriteria();
+            }
+
+            if ($item->maybeTemplate()) {
+                $where[] = ['is_template' => 0];
+            }
+
+            if ($item->maybeDeleted()) {
+                $where[] = ['is_deleted' => 0];
+            }
+
             $query = [
                 'SELECT' => [
                     'COUNT DISTINCT' => "$table.id AS cpt",
@@ -500,16 +518,8 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         ],
                     ],
                 ],
-                'WHERE' => $user_criteria['criteria'] + $item::getSystemSQLCriteria(),
+                'WHERE' => ['AND' => $where],
             ];
-
-            if ($item->maybeTemplate()) {
-                $query['WHERE']['is_template'] = 0;
-            }
-
-            if ($item->maybeDeleted()) {
-                $query['WHERE']['is_deleted'] = 0;
-            }
 
             $count += $DB->request($query)->current()['cpt'];
         }
@@ -5354,31 +5364,6 @@ HTML;
         $criteria = $user_criteria['criteria'];
 
         $number = 0;
-
-        $group_choices = [];
-        foreach (getAllDataFromTable('glpi_groups') as $g_id => $row) {
-            $group_choices[$g_id] = $row['completename'];
-        }
-        asort($group_choices);
-        $criteria = [
-            $field_user => $ID,
-        ];
-        if ($iterator->count() > 0) {
-            $groups_ids = [];
-            foreach ($iterator as $data) {
-                $groups_ids[] = $data['id'];
-                $groups[$data["id"]] = $data["name"];
-            }
-            $criteria = [
-                'OR' => [
-                    $criteria,
-                    [
-                        Group_Item::getTable() . '.groups_id' => $groups_ids,
-                        Group_Item::getTable() . '.type' => $tech ? Group_Item::GROUP_TYPE_TECH : Group_Item::GROUP_TYPE_NORMAL,
-                    ],
-                ],
-            ];
-        }
 
         $is_filtered = count($get_filters) > 0;
 
