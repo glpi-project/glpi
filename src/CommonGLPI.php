@@ -43,6 +43,7 @@ use Glpi\Plugin\Hooks;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Search\FilterableInterface;
 use Glpi\Security\ReAuth\ReAuthManager;
+use Glpi\Toolbox\URL;
 
 use function Safe\parse_url;
 
@@ -963,7 +964,11 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public static function getFormURL($full = true)
     {
-        return Toolbox::getItemTypeFormURL(static::class, $full);
+        return URL::buildGlpiPathUrl(
+            Toolbox::getItemTypeFormURL(static::class, false),
+            [],
+            $full
+        );
     }
 
     /**

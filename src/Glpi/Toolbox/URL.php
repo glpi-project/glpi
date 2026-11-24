@@ -192,4 +192,29 @@ final class URL
     {
         return str_contains($path, "/");
     }
+
+    /**
+     * Build a URL for the given GLPI path.
+     *
+     * @param string $path Resource path, e.g. `/front/computer.form.php`.
+     * @param array<string, string|int|float> $query_params Query params to add to the built URL.
+     * @param bool $absolute Whether the path must be prefixed by the GLPI root path, e.g. `/path/to/glpi/front/computer.form.php`.
+     */
+    public static function buildGlpiPathUrl(string $path, array $query_params = [], bool $absolute = true): string
+    {
+        global $CFG_GLPI;
+
+        if (!str_starts_with($path, '/')) {
+            $path = '/' . $path;
+        }
+
+        if ($absolute) {
+            $path = rtrim($CFG_GLPI['root_doc'] ?? '', '/') . $path;
+        }
+
+        // @phpstan-ignore-next-line cast.string (`parse_url` is expected to return a string when `$component` is passed)
+        $path = (string) parse_url($path, PHP_URL_PATH); // Ensure path cannot be tainted
+
+        return $path . ($query_params === [] ? '' : \http_build_query($query_params, encoding_type: PHP_QUERY_RFC3986));
+    }
 }

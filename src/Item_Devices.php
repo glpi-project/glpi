@@ -37,6 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Features\State;
 use Glpi\Features\StateInterface;
+use Glpi\Toolbox\URL;
 
 /**
  * @since 0.84
@@ -1723,13 +1724,11 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
     public static function getSearchURL($full = true)
     {
-        global $CFG_GLPI;
-
-        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-        $itemtype = static::class;
-        $link = "$dir/front/item_device.php?itemtype=$itemtype";
-
-        return $link;
+        return URL::buildGlpiPathUrl(
+            '/front/item_device.php',
+            ['itemtype' => static::class],
+            $full
+        );
     }
 
 

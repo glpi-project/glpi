@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Features\ParentStatus;
 use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
@@ -56,6 +57,7 @@ use function Safe\getimagesize;
 use function Safe\mkdir;
 use function Safe\opendir;
 use function Safe\preg_match;
+use function Safe\realpath;
 use function Safe\rename;
 use function Safe\session_destroy;
 use function Safe\session_id;
@@ -419,7 +421,18 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      */
     public function getAsResponse(): Response
     {
-        $file = GLPI_DOC_DIR . "/" . $this->fields['filepath'];
+        $dir  = realpath(GLPI_DOC_DIR);
+        $file = realpath($dir . "/" . $this->fields['filepath']);
+
+        if (\str_starts_with($file, $dir . DIRECTORY_SEPARATOR) === false) {
+            throw new AccessDeniedHttpException();
+        }
+
+        /**
+         * @psalm-taint-escape file (unsecure paths are blocked by above lines of code)
+         */
+        $file = $file;
+
         return Toolbox::getFileAsResponse($file, $this->fields['filename'], $this->fields['mime']);
     }
 
@@ -1132,38 +1145,32 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      **/
     public function moveUploadedDocument(array &$input, $filename)
     {
-        if (str_contains($filename, '/') || str_contains($filename, '\\')) {
+        if (!is_dir(GLPI_UPLOAD_DIR)) {
+            Session::addMessageAfterRedirect(__s("Upload directory doesn't exist"), false, ERROR);
+            return false;
+        }
+
+        $dir      = realpath(GLPI_UPLOAD_DIR);
+        $fullpath = realpath(GLPI_UPLOAD_DIR . '/' . $filename);
+
+        if (str_starts_with($fullpath, $dir . DIRECTORY_SEPARATOR) === false) {
             // Filename is not supposed to contains directory separators.
             trigger_error(sprintf('Moving file `%s` is forbidden for security reasons.', $filename), E_USER_WARNING);
             return false;
         }
+
+        /**
+         * @psalm-taint-escape file (unsecure paths are blocked by above lines of code)
+         */
+        $fullpath = $fullpath;
 
         $prefix = '';
         if (isset($input['_prefix_filename'])) {
             $prefix = array_shift($input['_prefix_filename']);
         }
 
-        $fullpath = GLPI_UPLOAD_DIR . "/" . $filename;
         $filesize = filesize($fullpath);
         $filename = str_replace($prefix, '', $filename);
-
-        if (!is_dir(GLPI_UPLOAD_DIR)) {
-            Session::addMessageAfterRedirect(__s("Upload directory doesn't exist"), false, ERROR);
-            return false;
-        }
-
-        if (!is_file($fullpath)) {
-            trigger_error(
-                sprintf('File %s not found.', $fullpath),
-                E_USER_WARNING
-            );
-            Session::addMessageAfterRedirect(
-                htmlescape(sprintf(__('File %s not found.'), $filename)),
-                false,
-                ERROR
-            );
-            return false;
-        }
         $sha1sum  = sha1_file($fullpath);
         $dir      = self::isValidDoc($filename);
         $new_path = self::getUploadFileValidLocationName($dir, $sha1sum);
@@ -1252,37 +1259,32 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      **/
     public static function moveDocument(array &$input, $filename)
     {
-        if (str_contains($filename, '/') || str_contains($filename, '\\')) {
+        if (!is_dir(GLPI_TMP_DIR)) {
+            Session::addMessageAfterRedirect(__s("Temporary directory doesn't exist"), false, ERROR);
+            return false;
+        }
+
+        $dir      = realpath(GLPI_TMP_DIR);
+        $fullpath = realpath(GLPI_TMP_DIR . '/' . $filename);
+
+        if (str_starts_with($fullpath, $dir . DIRECTORY_SEPARATOR) === false) {
             // Filename is not supposed to contains directory separators.
             trigger_error(sprintf('Moving file `%s` is forbidden for security reasons.', $filename), E_USER_WARNING);
             return false;
         }
+
+        /**
+         * @psalm-taint-escape file (unsecure paths are blocked by above lines of code)
+         */
+        $fullpath = $fullpath;
 
         $prefix = '';
         if (isset($input['_prefix_filename'])) {
             $prefix = array_shift($input['_prefix_filename']);
         }
 
-        $fullpath = GLPI_TMP_DIR . "/" . $filename;
         $filesize = filesize($fullpath);
         $filename = str_replace($prefix, '', $filename);
-        if (!is_dir(GLPI_TMP_DIR)) {
-            Session::addMessageAfterRedirect(__s("Temporary directory doesn't exist"), false, ERROR);
-            return false;
-        }
-
-        if (!is_file($fullpath)) {
-            trigger_error(
-                sprintf('File %s not found.', $fullpath),
-                E_USER_WARNING
-            );
-            Session::addMessageAfterRedirect(
-                sprintf(__s('File %s not found.'), $filename),
-                false,
-                ERROR
-            );
-            return false;
-        }
         $sha1sum  = sha1_file($fullpath);
         $dir      = self::isValidDoc($filename);
         $new_path = self::getUploadFileValidLocationName($dir, $sha1sum);

@@ -1105,21 +1105,31 @@ class Toolbox
      */
     public static function getItemTypeFormURL($itemtype, $full = true)
     {
-        global $CFG_GLPI;
-
-        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-
         if ($plug = isPluginItemType($itemtype)) {
-            $dir .= "/plugins/" . strtolower($plug['plugin']);
-            $item = str_replace('\\', '/', strtolower($plug['class']));
-        } else { // Standard case
-            $item = strtolower($itemtype);
-            if (str_starts_with($itemtype, NS_GLPI)) {
-                $item = str_replace('\\', '/', substr($item, \strlen(NS_GLPI)));
-            }
+            return URL::buildGlpiPathUrl(
+                sprintf(
+                    '/plugins/%s/front/%s.form.php',
+                    strtolower($plug['plugin']),
+                    str_replace('\\', '/', strtolower($plug['class']))
+                ),
+                [],
+                $full
+            );
         }
 
-        return "$dir/front/$item.form.php";
+        $item = strtolower($itemtype);
+        if (str_starts_with($itemtype, NS_GLPI)) {
+            $item = str_replace('\\', '/', substr($item, \strlen(NS_GLPI)));
+        }
+
+        return URL::buildGlpiPathUrl(
+            sprintf(
+                '/front/%s.form.php',
+                $item
+            ),
+            [],
+            $full
+        );
     }
 
 
@@ -1133,27 +1143,38 @@ class Toolbox
      */
     public static function getItemTypeSearchURL($itemtype, $full = true)
     {
-        global $CFG_GLPI;
-
-        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-
         if ($plug = isPluginItemType($itemtype)) {
-            $dir .= "/plugins/" . strtolower($plug['plugin']);
-            $item = str_replace('\\', '/', strtolower($plug['class']));
-        } else { // Standard case
-            if ($itemtype == 'Cartridge') {
-                $itemtype = CartridgeItem::class;
-            }
-            if ($itemtype == 'Consumable') {
-                $itemtype = ConsumableItem::class;
-            }
-            $item = strtolower($itemtype);
-            if (str_starts_with($itemtype, NS_GLPI)) {
-                $item = str_replace('\\', '/', substr($item, \strlen(NS_GLPI)));
-            }
+            return URL::buildGlpiPathUrl(
+                sprintf(
+                    '/plugins/%s/front/%s.php',
+                    strtolower($plug['plugin']),
+                    str_replace('\\', '/', strtolower($plug['class']))
+                ),
+                [],
+                $full
+            );
         }
 
-        return "$dir/front/$item.php";
+        if ($itemtype == 'Cartridge') {
+            $itemtype = CartridgeItem::class;
+        }
+        if ($itemtype == 'Consumable') {
+            $itemtype = ConsumableItem::class;
+        }
+
+        $item = strtolower($itemtype);
+        if (str_starts_with($itemtype, NS_GLPI)) {
+            $item = str_replace('\\', '/', substr($item, \strlen(NS_GLPI)));
+        }
+
+        return URL::buildGlpiPathUrl(
+            sprintf(
+                '/front/%s.php',
+                $item
+            ),
+            [],
+            $full
+        );
     }
 
 
@@ -1167,11 +1188,11 @@ class Toolbox
      */
     public static function getItemTypeTabsURL($itemtype, $full = true)
     {
-        global $CFG_GLPI;
-
-        $filename = "/ajax/common.tabs.php";
-
-        return ($full ? $CFG_GLPI['root_doc'] : '') . $filename;
+        return URL::buildGlpiPathUrl(
+            '/ajax/common.tabs.php',
+            [],
+            $full
+        );
     }
 
 
@@ -2415,7 +2436,10 @@ class Toolbox
     public static function cleanTagOrImage($content, array $tags)
     {
         foreach ($tags as $tag) {
-            $content = preg_replace("/<img.*alt=['|\"]" . $tag . "['|\"][^>]*\>/", "<p></p>", $content);
+            /**
+             * @psalm-suppress TaintedInput (false positive)
+             */
+            $content = preg_replace("/<img.*alt=['|\"]" . preg_quote($tag, '/') . "['|\"][^>]*\>/", "<p></p>", $content);
         }
 
         return $content;
@@ -3063,6 +3087,8 @@ class Toolbox
      * @param string $filename
      *
      * @return string
+     *
+     * @psalm-taint-escape file
      */
     public static function filename($filename): string
     {

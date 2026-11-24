@@ -37,6 +37,7 @@ namespace Glpi\Asset;
 use CommonDCModelDropdown;
 use CommonDropdown;
 use Glpi\Asset\Capacity\IsRackableCapacity;
+use Glpi\Toolbox\URL;
 use RuntimeException;
 use Toolbox;
 
@@ -86,12 +87,20 @@ abstract class AssetModel extends CommonDCModelDropdown
 
     public static function getSearchURL($full = true)
     {
-        return Toolbox::getItemTypeSearchURL(self::class, $full) . '?class=' . static::getDefinition()->fields['system_name'];
+        return URL::buildGlpiPathUrl(
+            Toolbox::getItemTypeSearchURL(self::class, false),
+            ['class' => static::getDefinition()->fields['system_name']],
+            $full
+        );
     }
 
     public static function getFormURL($full = true)
     {
-        return Toolbox::getItemTypeFormURL(self::class, $full) . '?class=' . static::getDefinition()->fields['system_name'];
+        return URL::buildGlpiPathUrl(
+            Toolbox::getItemTypeFormURL(self::class, false),
+            ['class' => static::getDefinition()->fields['system_name']],
+            $full
+        );
     }
 
     /**
