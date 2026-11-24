@@ -89,6 +89,8 @@ class Plug extends InventoryAsset
             $number = (int) ($val->number);
             $val->number = $number;
             $val->name = (string) ($val->name ?? $number);
+            // the converter drops an empty CUSTOM_NAME node; a missing value must clear the previously inventoried one
+            $val->custom_name = (string) ($val->custom_name ?? '');
             $found_key = null;
 
             // keep key if exist from DB
