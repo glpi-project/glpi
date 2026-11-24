@@ -101,6 +101,11 @@ class UserTest extends DbTestCase
             $entity_managed_before = User::countItemsForUser($user_id, true);
             $_SESSION['glpiactiveentities'] = [0, $scope_entity_id];
 
+            // Capture the READ_OWNED baseline before creating assets linked only to another user.
+            $_SESSION['glpiactiveprofile']['computer'] = READ_OWNED;
+            $owned_used_before = User::countItemsForUser($user_id, false);
+            $owned_managed_before = User::countItemsForUser($user_id, true);
+
             $computer_data = [
                 'users_id'       => $user_id,
                 'users_id_tech'  => $user_id,
@@ -136,15 +141,14 @@ class UserTest extends DbTestCase
                 ] + $this->getMinimalCreationInput(Computer::class)
             );
 
-            // Group-only assignments are included, while direct + group links do not duplicate counts.
+            // READ_OWNED must not count assets linked only to another user's groups.
+            $this->assertSame($owned_used_before, User::countItemsForUser($user_id, false));
+            $this->assertSame($owned_managed_before, User::countItemsForUser($user_id, true));
+
+            // Group-only assignments are included with full rights, while direct + group links are not duplicated.
+            $_SESSION['glpiactiveprofile']['computer'] = $old_computer_right;
             $this->assertSame($used_before + 2, User::countItemsForUser($user_id, false));
             $this->assertSame($managed_before + 2, User::countItemsForUser($user_id, true));
-
-            // READ_OWNED must not count assets owned or managed by another user.
-            $_SESSION['glpiactiveprofile']['computer'] = READ_OWNED;
-            $this->assertSame($used_before + 1, User::countItemsForUser($user_id, false));
-            $this->assertSame($managed_before + 1, User::countItemsForUser($user_id, true));
-            $_SESSION['glpiactiveprofile']['computer'] = $old_computer_right;
 
             // Add an item in root to check that the target user's entity scope is respected.
             $this->createItem(
