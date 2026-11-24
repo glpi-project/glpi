@@ -66,6 +66,7 @@ class UserTest extends DbTestCase
         $this->login();
 
         $user_id = (int) getItemByTypeName('User', 'normal', true);
+        $scope_entity_id = (int) $this->getTestRootEntity(true);
         $group = $this->createItem(
             \Group::class,
             ['name' => $this->getUniqueString()] + $this->getMinimalCreationInput(\Group::class)
@@ -89,21 +90,52 @@ class UserTest extends DbTestCase
             $_SESSION['glpiactiveprofile']['computer'] = $old_computer_right;
         }
 
+        $had_active_entities = array_key_exists('glpiactiveentities', $_SESSION);
+        $old_active_entities = $_SESSION['glpiactiveentities'] ?? null;
+        $had_show_all_entities = array_key_exists('glpishowallentities', $_SESSION);
+        $old_show_all_entities = $_SESSION['glpishowallentities'] ?? null;
+
+        $_SESSION['glpiactiveentities'] = [$scope_entity_id];
+        $_SESSION['glpishowallentities'] = false;
+        try {
+            $entity_used_before = User::countItemsForUser($user_id, false);
+            $entity_managed_before = User::countItemsForUser($user_id, true);
+        } finally {
+            if ($had_active_entities) {
+                $_SESSION['glpiactiveentities'] = $old_active_entities;
+            } else {
+                unset($_SESSION['glpiactiveentities']);
+            }
+            if ($had_show_all_entities) {
+                $_SESSION['glpishowallentities'] = $old_show_all_entities;
+            } else {
+                unset($_SESSION['glpishowallentities']);
+            }
+        }
+
         $used_before = User::countItemsForUser($user_id, false);
         $managed_before = User::countItemsForUser($user_id, true);
 
+        $computer_data = [
+            'users_id'       => $user_id,
+            'users_id_tech'  => $user_id,
+            'groups_id'      => [$group->getID()],
+            'groups_id_tech' => [$group->getID()],
+        ];
+
+        // One item belongs to the selected entity; the other belongs to a different entity.
         $this->createItem(
             \Computer::class,
-            [
-                'users_id'       => $user_id,
-                'users_id_tech'  => $user_id,
-                'groups_id'      => [$group->getID()],
-                'groups_id_tech' => [$group->getID()],
-            ] + $this->getMinimalCreationInput(\Computer::class)
+            $computer_data + $this->getMinimalCreationInput(\Computer::class)
+        );
+        $this->createItem(
+            \Computer::class,
+            ['entities_id' => 0] + $computer_data + $this->getMinimalCreationInput(\Computer::class)
         );
 
-        $this->assertSame($used_before + 1, User::countItemsForUser($user_id, false));
-        $this->assertSame($managed_before + 1, User::countItemsForUser($user_id, true));
+        // The user and group links must not count the same asset twice.
+        $this->assertSame($used_before + 2, User::countItemsForUser($user_id, false));
+        $this->assertSame($managed_before + 2, User::countItemsForUser($user_id, true));
 
         // A viewer with READ_OWNED must not count another user's assets.
         $_SESSION['glpiactiveprofile']['computer'] = READ_OWNED;
@@ -112,6 +144,25 @@ class UserTest extends DbTestCase
             $this->assertSame($visible_managed_before, User::countItemsForUser($user_id, true));
         } finally {
             $_SESSION['glpiactiveprofile']['computer'] = $old_computer_right;
+        }
+
+        // Entity filtering must exclude assets outside the viewer's active entity.
+        $_SESSION['glpiactiveentities'] = [$scope_entity_id];
+        $_SESSION['glpishowallentities'] = false;
+        try {
+            $this->assertSame($entity_used_before + 1, User::countItemsForUser($user_id, false));
+            $this->assertSame($entity_managed_before + 1, User::countItemsForUser($user_id, true));
+        } finally {
+            if ($had_active_entities) {
+                $_SESSION['glpiactiveentities'] = $old_active_entities;
+            } else {
+                unset($_SESSION['glpiactiveentities']);
+            }
+            if ($had_show_all_entities) {
+                $_SESSION['glpishowallentities'] = $old_show_all_entities;
+            } else {
+                unset($_SESSION['glpishowallentities']);
+            }
         }
     }
 
