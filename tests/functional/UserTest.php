@@ -61,6 +61,57 @@ use function Safe\strtotime;
 
 class UserTest extends DbTestCase
 {
+    public function testCountItemsForUserIncludesGroupItemsOnlyOnceAndRespectsVisibility(): void
+    {
+        $this->login();
+
+        $user_id = (int) getItemByTypeName('User', 'normal', true);
+        $group = $this->createItem(
+            \Group::class,
+            ['name' => $this->getUniqueString()] + $this->getMinimalCreationInput(\Group::class)
+        );
+
+        $group_user = new \Group_User();
+        $this->assertGreaterThan(
+            0,
+            (int) $group_user->add([
+                'groups_id' => $group->getID(),
+                'users_id'  => $user_id,
+            ])
+        );
+
+        $old_computer_right = $_SESSION['glpiactiveprofile']['computer'];
+        $_SESSION['glpiactiveprofile']['computer'] = READ_OWNED;
+        $visible_used_before = User::countItemsForUser($user_id, false);
+        $visible_managed_before = User::countItemsForUser($user_id, true);
+        $_SESSION['glpiactiveprofile']['computer'] = $old_computer_right;
+
+        $used_before = User::countItemsForUser($user_id, false);
+        $managed_before = User::countItemsForUser($user_id, true);
+
+        $this->createItem(
+            \Computer::class,
+            [
+                'users_id'       => $user_id,
+                'users_id_tech'  => $user_id,
+                'groups_id'      => [$group->getID()],
+                'groups_id_tech' => [$group->getID()],
+            ] + $this->getMinimalCreationInput(\Computer::class)
+        );
+
+        $this->assertSame($used_before + 1, User::countItemsForUser($user_id, false));
+        $this->assertSame($managed_before + 1, User::countItemsForUser($user_id, true));
+
+        // A viewer with READ_OWNED must not count another user's assets.
+        $_SESSION['glpiactiveprofile']['computer'] = READ_OWNED;
+        try {
+            $this->assertSame($visible_used_before, User::countItemsForUser($user_id, false));
+            $this->assertSame($visible_managed_before, User::countItemsForUser($user_id, true));
+        } finally {
+            $_SESSION['glpiactiveprofile']['computer'] = $old_computer_right;
+        }
+    }
+
     public function testCheckDefaultPasswordsIsCachedWhilePasswordsDoNotChange(): void
     {
         global $DB, $GLPI_CACHE;
