@@ -90,7 +90,13 @@ class Plug extends InventoryAsset
             $val->number = $number;
             $val->name = (string) ($val->name ?? $number);
             // the converter drops an empty CUSTOM_NAME node; a missing value must clear the previously inventoried one
-            $val->custom_name = (string) ($val->custom_name ?? '');
+            if (property_exists($val, 'custom_name')) {
+                $val->custom_name = (string) ($val->custom_name ?? '');
+            } elseif (!$this->main_asset || !$this->main_asset->isPartial()) {
+                // a full inventory omits an empty custom name, so the stored value is cleared
+                $val->custom_name = '';
+            }
+
             $found_key = null;
 
             // keep key if exist from DB
