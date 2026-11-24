@@ -4920,10 +4920,12 @@ HTML;
             }
 
             if ($tooltip_content === '') {
-                $tooltip_content = Toolbox::ucfirst(
-                    sprintf(
-                        __s('Show %1$s'),
-                        self::getTypeName(Session::getPluralNumber())
+                $tooltip_content = htmlescape(
+                    Toolbox::ucfirst(
+                        sprintf(
+                            __('Show %1$s'),
+                            self::getTypeName(Session::getPluralNumber())
+                        )
                     )
                 );
             }
