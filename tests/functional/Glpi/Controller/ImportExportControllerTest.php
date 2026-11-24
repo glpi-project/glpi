@@ -139,6 +139,16 @@ final class ImportExportControllerTest extends DbTestCase
         $this->assertArrayHasKey($key, MassiveAction::getAllMassiveActions(Form::class));
         $this->assertArrayNotHasKey(Form::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'export', MassiveAction::getAllMassiveActions(Form::class));
 
+        // Processed as the API does: nothing to do, the export is a download
+        $form = $this->createForm(new FormBuilder('Exported form'));
+        $results = (new MassiveAction([
+            'action'      => 'export',
+            'action_name' => $key,
+            'items'       => [Form::class => [$form->getID() => $form->getID()]],
+            'processor'   => ImportExportManager::class,
+        ], [], 'process'))->process();
+        $this->assertSame([0, 0], [$results['ok'], $results['ko']]);
+
         $this->assertArrayNotHasKey('import', Computer::getMenuContent()['links']);
 
         $form_links = Form::getMenuContent()['links'];

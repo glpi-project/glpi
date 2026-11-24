@@ -96,4 +96,12 @@ final class ImportExportManager
         }
         return true;
     }
+
+    /**
+     * The export is a download, which processing a massive action (from the
+     * API, typically) cannot return: nothing to process.
+     *
+     * @param array<int> $ids
+     */
+    public static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids): void {}
 }
