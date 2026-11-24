@@ -5141,7 +5141,7 @@ HTML;
         $output   = $vcard->serialize();
         $filename = implode("_", array_filter($name)) . ".vcf";
 
-        @header("Content-Disposition: attachment; filename=\"$filename\"");
+        @header('Content-Disposition: attachment; filename="' . urlencode($filename) . '"');
         @header("Content-Length: " . Toolbox::strlen($output));
         @header("Connection: close");
         @header("content-type: text/x-vcard; charset=UTF-8");
