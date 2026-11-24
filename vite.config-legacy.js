@@ -34,6 +34,7 @@ import {build, defineConfig} from 'vite';
 import path from "path";
 import fs from "fs";
 import libAssetsPlugin from '@laynezh/vite-plugin-lib-assets';
+import postcssRTLCSS from 'postcss-rtlcss';
 
 const filesToCopy = [
     {
@@ -150,6 +151,14 @@ function getLegacyEntryPoints() {
 
 const legacyEntryPoints = getLegacyEntryPoints();
 
+const getPostCSSPluginsForEntry = (entry) => {
+    const pluginsForEntry = [];
+    if (entry.endsWith('tabler.scss')) {
+        pluginsForEntry.push(postcssRTLCSS());
+    }
+    return pluginsForEntry;
+};
+
 export default defineConfig(async ({ mode }) => {
     const importMetaUrlPolyfillVariableName = '__import_meta_url__';
 
@@ -210,6 +219,9 @@ export default defineConfig(async ({ mode }) => {
                         // Bootstrap 5 is fairly outdated
                         silenceDeprecations: ['mixed-decls', 'color-functions', 'global-builtin', 'import', 'if-function']
                     }
+                },
+                postcss: {
+                    plugins: getPostCSSPluginsForEntry(entry),
                 }
             },
             worker: {

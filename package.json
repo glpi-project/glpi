@@ -122,6 +122,7 @@
         "otplib": "^13.6.0",
         "patch-package": "^8.0.1",
         "playwright-ctrf-json-reporter": "^0.2.0",
+        "postcss-rtlcss": "^6.0.0",
         "sass": "^1.108.2",
         "stylelint": "^17.16.0",
         "stylelint-config-standard-scss": "^17.0.0",
