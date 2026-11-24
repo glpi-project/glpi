@@ -34,6 +34,7 @@
 
 namespace Glpi\Asset;
 
+use Glpi\Toolbox\URL;
 use Manufacturer;
 use RuleDictionnaryDropdown;
 use RuntimeException;
@@ -97,13 +98,19 @@ abstract class RuleDictionaryModel extends RuleDictionnaryDropdown
 
     public static function getSearchURL($full = true)
     {
-        return Toolbox::getItemTypeSearchURL(self::class, $full)
-            . '?class=' . static::getDefinition()->fields['system_name'];
+        return URL::buildGlpiPathUrl(
+            Toolbox::getItemTypeSearchURL(self::class, false),
+            ['class' => static::getDefinition()->fields['system_name']],
+            $full
+        );
     }
 
     public static function getFormURL($full = true)
     {
-        return Toolbox::getItemTypeFormURL(self::class, $full)
-            . '?class=' . static::getDefinition()->fields['system_name'];
+        return URL::buildGlpiPathUrl(
+            Toolbox::getItemTypeFormURL(self::class, false),
+            ['class' => static::getDefinition()->fields['system_name']],
+            $full
+        );
     }
 }

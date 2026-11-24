@@ -38,6 +38,7 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Features\ParentStatus;
+use Glpi\Toolbox\URL;
 
 /**
  * @since 9.4.0
@@ -924,7 +925,11 @@ class ITILFollowup extends CommonDBChild
 
     public static function getFormURL($full = true)
     {
-        return Toolbox::getItemTypeFormURL("ITILFollowup", $full);
+        return URL::buildGlpiPathUrl(
+            Toolbox::getItemTypeFormURL('ITILFollowup', false),
+            [],
+            $full
+        );
     }
 
 

@@ -38,6 +38,7 @@ namespace Glpi\Form\ServiceCatalog;
 use CommonGLPI;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\URL;
 use LogicException;
 use Override;
 use Session;
@@ -90,9 +91,7 @@ final class ServiceCatalog extends CommonGLPI
     #[Override]
     public static function getSearchURL($full = true): string
     {
-        global $CFG_GLPI;
-
-        return $full ? $CFG_GLPI['root_doc'] . '/ServiceCatalog' : '/ServiceCatalog';
+        return URL::buildGlpiPathUrl('/ServiceCatalog', [], $full);
     }
 
     #[Override]

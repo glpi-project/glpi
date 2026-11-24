@@ -41,6 +41,7 @@ use Document;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Locale\LanguageRegistry;
 use Glpi\Marketplace\Api\Plugins as PluginsApi;
+use Glpi\Toolbox\URL;
 use GLPINetwork;
 use Html;
 use Plugin;
@@ -97,10 +98,7 @@ class View extends CommonGLPI
 
     public static function getSearchURL($full = true)
     {
-        global $CFG_GLPI;
-
-        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-        return "$dir/front/marketplace.php";
+        return URL::buildGlpiPathUrl('/front/marketplace.php', [], $full);
     }
 
 

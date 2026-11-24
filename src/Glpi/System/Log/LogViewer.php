@@ -38,6 +38,7 @@ namespace Glpi\System\Log;
 use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
+use Glpi\Toolbox\URL;
 use Override;
 use Session;
 
@@ -166,16 +167,7 @@ final class LogViewer extends CommonGLPI
 
     public static function getSearchURL($full = true)
     {
-        global $CFG_GLPI;
-
-        return implode(
-            '/',
-            [
-                $full ? $CFG_GLPI['root_doc'] : '',
-                'front',
-                'logviewer.php',
-            ]
-        );
+        return URL::buildGlpiPathUrl('/front/logviewer.php', [], $full);
     }
 
     #[Override]

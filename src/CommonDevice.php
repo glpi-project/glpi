@@ -35,6 +35,7 @@
 
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryIdentifier;
+use Glpi\Toolbox\URL;
 
 /**
  * CommonDevice Class
@@ -666,20 +667,20 @@ abstract class CommonDevice extends CommonDropdown
 
     public static function getFormURL($full = true)
     {
-        global $CFG_GLPI;
-
-        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-        $itemtype = static::class;
-        return "$dir/front/device.form.php?itemtype=$itemtype";
+        return URL::buildGlpiPathUrl(
+            '/front/device.form.php',
+            ['itemtype' => static::class],
+            $full
+        );
     }
 
     public static function getSearchURL($full = true)
     {
-        global $CFG_GLPI;
-
-        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-        $itemtype = static::class;
-        return "$dir/front/device.php?itemtype=$itemtype";
+        return URL::buildGlpiPathUrl(
+            '/front/device.php',
+            ['itemtype' => static::class],
+            $full
+        );
     }
 
     public static function getIcon()

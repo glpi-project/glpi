@@ -55,6 +55,7 @@ use Glpi\Search\Output\HTMLSearchOutput;
 use Glpi\Security\ShareTokenManager;
 use Glpi\ShareableInterface;
 use Glpi\ShareToken;
+use Glpi\Toolbox\URL;
 use Glpi\UI\IllustrationManager;
 
 use function Safe\json_decode;
@@ -383,26 +384,20 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public static function getSearchURL($full = true)
     {
-        global $CFG_GLPI;
-
-        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-
-        if (Session::getCurrentInterface() === "central") {
-            return "$dir/front/knowbaseitem.php";
-        }
-        return "$dir/front/helpdesk.faq.php";
+        return URL::buildGlpiPathUrl(
+            Session::getCurrentInterface() === 'central' ? '/front/knowbaseitem.form.php' : '/front/helpdesk.faq.php',
+            [],
+            $full
+        );
     }
 
     public static function getFormURL($full = true)
     {
-        global $CFG_GLPI;
-
-        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-
-        if (Session::getCurrentInterface() === "central") {
-            return "$dir/front/knowbaseitem.form.php";
-        }
-        return "$dir/front/helpdesk.faq.php";
+        return URL::buildGlpiPathUrl(
+            Session::getCurrentInterface() === 'central' ? '/front/knowbaseitem.form.php' : '/front/helpdesk.faq.php',
+            [],
+            $full
+        );
     }
 
     /**
@@ -414,18 +409,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      **/
     public static function getFormURLWithParam($params = [], $full = true): string
     {
-        $url = self::getFormURL($full) . '?';
-
-        if (isset($params['_sol_to_kb'])) {
-            $url .= '&_sol_to_kb=' . $params['_sol_to_kb'];
-        }
-        if (isset($params['_fup_to_kb'])) {
-            $url .= '&_fup_to_kb=' . $params['_fup_to_kb'];
-        }
-        if (isset($params['_task_to_kb'])) {
-            $url .= '&_task_to_kb=' . $params['_task_to_kb'];
-        }
-        return $url;
+        return URL::buildGlpiPathUrl(
+            self::getFormURL(false),
+            array_filter(
+                $params,
+                static fn($key) => in_array($key, ['_fup_to_kb', '_sol_to_kb', '_task_to_kb'], true),
+                ARRAY_FILTER_USE_KEY
+            ),
+            $full
+        );
     }
 
     /**
