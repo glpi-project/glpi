@@ -37,7 +37,9 @@ namespace tests\units\Glpi\Controller;
 
 use Computer;
 use Entity;
+use Glpi\Asset\AssetDefinition;
 use Glpi\Controller\ImportExportController;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
@@ -47,11 +49,13 @@ use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use MassiveAction;
+use Profile;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use function Safe\json_decode;
+use function Safe\json_encode;
 
 final class ImportExportControllerTest extends DbTestCase
 {
@@ -86,11 +90,95 @@ final class ImportExportControllerTest extends DbTestCase
         );
     }
 
+    private function exportDefinition(string $system_name): array
+    {
+        $definition = $this->initAssetDefinition($system_name);
+        $response = $this->request(AssetDefinition::class, 'Export', 'GET', ['ids' => [$definition->getID()]]);
+        $this->assertSame('application/json', $response->headers->get('Content-Type'));
+        $this->assertStringContainsString('attachment; filename=', $response->headers->get('Content-Disposition'));
+
+        $data = json_decode($response->getContent(), true);
+        $data['items'][0]['fields']['system_name'] .= 'Copy';
+        return [$definition, json_encode($data)];
+    }
+
+    public function testRights(): void
+    {
+        $this->login();
+        $_SESSION['glpiactiveprofile']['config'] = READ;
+        $this->assertSame(200, $this->request(AssetDefinition::class, 'Export', 'GET', ['ids' => []])->getStatusCode());
+        try {
+            $this->request(AssetDefinition::class, 'Import', 'GET');
+            $this->fail('Import must require the create right');
+        } catch (AccessDeniedHttpException) {
+        }
+
+        $_SESSION['glpiactiveprofile']['config'] = 0;
+        $this->expectException(AccessDeniedHttpException::class);
+        $this->request(AssetDefinition::class, 'Export', 'GET', ['ids' => []]);
+    }
+
     public function testUnsupportedItemtype(): void
     {
         $this->login();
         $this->expectException(BadRequestHttpException::class);
         $this->request(Computer::class, 'Import', 'GET');
+    }
+
+    public function testWizard(): void
+    {
+        $this->login();
+        [$definition, $json] = $this->exportDefinition('WizardAsset');
+
+        // Step 1: upload form, posted to the itemtype's preview
+        $crawler = new Crawler($this->request(AssetDefinition::class, 'Import', 'GET')->getContent());
+        $this->assertSame(
+            '/ImportExport/Import/Preview?itemtype=' . urlencode(AssetDefinition::class),
+            $crawler->filter('form[enctype="multipart/form-data"]')->attr('action'),
+        );
+
+        // Step 2: preview, with an unknown profile
+        $data = json_decode($json, true);
+        $data['items'][0]['fields']['profiles']['Unknown profile'] = READ;
+        $json = json_encode($data);
+        $crawler = new Crawler($this->request(AssetDefinition::class, 'Import/Preview', 'POST', ['json' => $json])->getContent());
+        $this->assertStringContainsString("Can't be imported", $crawler->filter('[data-testid="import-preview"] tbody')->text());
+        $resolve = $crawler->filter('button[name="item_id"]');
+        $this->assertSame((string) $definition->getID(), $resolve->attr('value'));
+        $this->assertStringContainsString('/ImportExport/Import/ResolveIssues?itemtype=', $resolve->attr('formaction'));
+
+        // Step 3: the missing profile is listed
+        $crawler = new Crawler($this->request(AssetDefinition::class, 'Import/ResolveIssues', 'POST', ['json' => $json, 'item_id' => $definition->getID()])->getContent());
+        $this->assertSame(Profile::class, $crawler->filter('input[name="replacements[0][itemtype]"]')->attr('value'));
+        $this->assertSame('Unknown profile', $crawler->filter('input[name="replacements[0][original_name]"]')->attr('value'));
+
+        // Step 2 again, with the replacement
+        $replacements = [['itemtype' => Profile::class, 'original_name' => 'Unknown profile', 'replacement_id' => getItemByTypeName(Profile::class, 'Observer', true)]];
+        $crawler = new Crawler($this->request(AssetDefinition::class, 'Import/Preview', 'POST', ['json' => $json, 'replacements' => $replacements])->getContent());
+        $this->assertStringContainsString('Ready to be imported', $crawler->filter('[data-testid="import-preview"] tbody')->text());
+        $this->assertSame('Unknown profile', $crawler->filter('input[name="replacements[0][original_name]"]')->attr('value'));
+
+        // Removing the only item goes back to step 1
+        $response = $this->request(AssetDefinition::class, 'Import/Preview', 'POST', ['json' => $json, 'skipped_items' => [$definition->getID()]]);
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+
+        // Step 4
+        $crawler = new Crawler($this->request(AssetDefinition::class, 'Import/Execute', 'POST', ['json' => $json, 'replacements' => $replacements])->getContent());
+        $link = $crawler->filter('[data-testid="import-results"] a');
+        $this->assertSame('WizardAssetCopy', AssetDefinition::getById((int) explode('id=', $link->attr('href'))[1])->fields['system_name']);
+    }
+
+    public function testInvalidFileGoesBackToUpload(): void
+    {
+        $this->login();
+        $response = $this->request(AssetDefinition::class, 'Import/Preview', 'POST', ['json' => '{"type": "Computer", "version": 1, "items": []}']);
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $response = $this->request(AssetDefinition::class, 'Import/Preview', 'POST', ['json' => json_encode(['type' => AssetDefinition::class, 'version' => 2, 'items' => []])]);
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $response = $this->request(AssetDefinition::class, 'Import/Preview', 'POST', ['json' => 'not json']);
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $message = 'The file is not a valid export for this type of item.';
+        $this->hasSessionMessages(ERROR, [$message, $message, $message]);
     }
 
     public function testOnlyAvailableReplacementsAreUsed(): void
@@ -135,10 +223,15 @@ final class ImportExportControllerTest extends DbTestCase
     {
         $this->login();
         $key = ImportExportManager::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'export';
+        $this->assertArrayHasKey($key, MassiveAction::getAllMassiveActions(AssetDefinition::class));
         $this->assertArrayNotHasKey($key, MassiveAction::getAllMassiveActions(Computer::class));
         $this->assertArrayHasKey($key, MassiveAction::getAllMassiveActions(Form::class));
         $this->assertArrayNotHasKey(Form::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'export', MassiveAction::getAllMassiveActions(Form::class));
 
+        $this->assertSame(
+            '/ImportExport/Import?itemtype=' . urlencode(AssetDefinition::class),
+            AssetDefinition::getMenuContent()['links']['import'],
+        );
         $this->assertArrayNotHasKey('import', Computer::getMenuContent()['links']);
 
         $form_links = Form::getMenuContent()['links'];
