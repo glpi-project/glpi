@@ -17,6 +17,9 @@
         <ignoreFiles>
             <!-- Psalm gets stuck on TCPDF analysis, must be ignored for now -->
             <file name="src/Glpi/Search/Output/Tcpdf.php" />
+
+            <!-- Too many false positives on unused paths -->
+            <file name="src/UploadHandler.php" />
         </ignoreFiles>
     </projectFiles>
 
