@@ -2436,7 +2436,10 @@ class Toolbox
     public static function cleanTagOrImage($content, array $tags)
     {
         foreach ($tags as $tag) {
-            $content = preg_replace("/<img.*alt=['|\"]" . $tag . "['|\"][^>]*\>/", "<p></p>", $content);
+            /**
+             * @psalm-suppress TaintedInput (false positive)
+             */
+            $content = preg_replace("/<img.*alt=['|\"]" . preg_quote($tag, '/') . "['|\"][^>]*\>/", "<p></p>", $content);
         }
 
         return $content;
