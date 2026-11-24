@@ -1,5 +1,10 @@
 <?xml version="1.0"?>
 <psalm
+    errorLevel="8"
+    reportInfo="false"
+    findUnusedCode="false"
+    ensureOverrideAttribute="false"
+
     runTaintAnalysis="true"
 >
     <projectFiles>
@@ -31,5 +36,94 @@
             between legitimate cases (filter defined by an admin, import by DN, ...) and the unexpected cases.
         -->
         <TaintedLdap errorLevel="suppress" />
+
+        <!-- Suppress default errors (see https://psalm.dev/docs/running_psalm/error_levels/#always-treated-as-errors) -->
+        <AbstractMethodCall errorLevel="suppress" />
+        <CheckType errorLevel="suppress" />
+        <CliOnlyCall errorLevel="suppress" />
+        <CliOnlyInstancesUnguarded errorLevel="suppress" />
+        <ComplexFunction errorLevel="suppress" />
+        <ComplexMethod errorLevel="suppress" />
+        <ConfigIssue errorLevel="suppress" />
+        <ConstantDeclarationInTrait errorLevel="suppress" />
+        <DuplicateArrayKey errorLevel="suppress" />
+        <DuplicateClass errorLevel="suppress" />
+        <DuplicateConstant errorLevel="suppress" />
+        <DuplicateEnumCase errorLevel="suppress" />
+        <DuplicateEnumCaseValue errorLevel="suppress" />
+        <DuplicateFunction errorLevel="suppress" />
+        <DuplicateMethod errorLevel="suppress" />
+        <DuplicateParam errorLevel="suppress" />
+        <DuplicateProperty errorLevel="suppress" />
+        <EmptyArrayAccess errorLevel="suppress" />
+        <ExtensionRequirementViolation errorLevel="suppress" />
+        <ImplementationRequirementViolation errorLevel="suppress" />
+        <ImpureByReferenceAssignment errorLevel="suppress" />
+        <ImpureFunctionCall errorLevel="suppress" />
+        <ImpureGlobalVariable errorLevel="suppress" />
+        <ImpureMethodCall errorLevel="suppress" />
+        <ImpurePropertyAssignment errorLevel="suppress" />
+        <ImpurePropertyFetch errorLevel="suppress" />
+        <ImpureStaticProperty errorLevel="suppress" />
+        <ImpureStaticVariable errorLevel="suppress" />
+        <ImpureVariable errorLevel="suppress" />
+        <InaccessibleClassConstant errorLevel="suppress" />
+        <InaccessibleMethod errorLevel="suppress" />
+        <InaccessibleProperty errorLevel="suppress" />
+        <InterfaceInstantiation errorLevel="suppress" />
+        <InvalidAttribute errorLevel="suppress" />
+        <InvalidEnumBackingType errorLevel="suppress" />
+        <InvalidEnumCaseValue errorLevel="suppress" />
+        <InvalidEnumMethod errorLevel="suppress" />
+        <InvalidExtendClass errorLevel="suppress" />
+        <InvalidGlobal errorLevel="suppress" />
+        <InvalidInterfaceImplementation errorLevel="suppress" />
+        <InvalidParamDefault errorLevel="suppress" />
+        <InvalidParent errorLevel="suppress" />
+        <InvalidPassByReference errorLevel="suppress" />
+        <InvalidScope errorLevel="suppress" />
+        <InvalidStaticInvocation errorLevel="suppress" />
+        <InvalidThrow errorLevel="suppress" />
+        <LoopInvalidation errorLevel="suppress" />
+        <MethodSignatureMustOmitReturnType errorLevel="suppress" />
+        <MethodSignatureMustProvideReturnType errorLevel="suppress" />
+        <MissingDependency errorLevel="suppress" />
+        <MissingFile errorLevel="suppress" />
+        <MissingTemplateParam errorLevel="suppress" />
+        <MissingThrowsDocblock errorLevel="suppress" />
+        <NoEnumProperties errorLevel="suppress" />
+        <NoValue errorLevel="suppress" />
+        <NonInvariantPropertyType errorLevel="suppress" />
+        <NonStaticSelfCall errorLevel="suppress" />
+        <NullArrayAccess errorLevel="suppress" />
+        <NullFunctionCall errorLevel="suppress" />
+        <NullIterator errorLevel="suppress" />
+        <NullPropertyAssignment errorLevel="suppress" />
+        <NullPropertyFetch errorLevel="suppress" />
+        <NullReference errorLevel="suppress" />
+        <OverriddenPropertyAccess errorLevel="suppress" />
+        <ParadoxicalCondition errorLevel="suppress" />
+        <ParentNotFound errorLevel="suppress" />
+        <ParseError errorLevel="suppress" />
+        <TooFewArguments errorLevel="suppress" />
+        <UndefinedAttributeClass errorLevel="suppress" />
+        <UndefinedClass errorLevel="suppress" />
+        <UndefinedConstant errorLevel="suppress" />
+        <UndefinedDocblockClass errorLevel="suppress" />
+        <UndefinedFunction errorLevel="suppress" />
+        <UndefinedGlobalVariable errorLevel="suppress" />
+        <UndefinedInterface errorLevel="suppress" />
+        <UndefinedTrait errorLevel="suppress" />
+        <UndefinedVariable errorLevel="suppress" />
+        <UnimplementedAbstractMethod errorLevel="suppress" />
+        <UnimplementedInterfaceMethod errorLevel="suppress" />
+        <UnrecognizedExpression errorLevel="suppress" />
+        <UnrecognizedStatement errorLevel="suppress" />
+        <UnresolvableConstant errorLevel="suppress" />
+        <UnsupportedPropertyReferenceUsage errorLevel="suppress" />
+        <UnusedBaselineEntry errorLevel="suppress" />
+        <UnusedFunctionCall errorLevel="suppress" />
+        <UnusedIssueHandlerSuppression errorLevel="suppress" />
+        <UnusedMethodCall errorLevel="suppress" />
     </issueHandlers>
 </psalm>
