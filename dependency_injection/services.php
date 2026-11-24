@@ -35,6 +35,7 @@
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Glpi\Application\Environment;
+use Glpi\Console\ErrorListener as ConsoleErrorListener;
 use Glpi\DependencyInjection\PublicService;
 use Glpi\Error\ErrorHandler;
 use Glpi\Security\ReAuth\ReAuthManager;
@@ -93,6 +94,9 @@ return static function (ContainerConfigurator $container): void {
     if (Environment::get()->shouldEnableTestResources()) {
         $services->load('Glpi\Tests\Controller\\', $projectDir . '/tests/src/Controller');
     }
+
+    // Replace the Symfony console error listener, that logs the command options values.
+    $services->set('console.error_listener', ConsoleErrorListener::class);
 
     // Prevent Symfony to register its own default logger.
     // @see \Symfony\Component\HttpKernel\DependencyInjection\LoggerPass
