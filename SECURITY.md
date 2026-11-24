@@ -11,7 +11,7 @@
 Email **security@glpi-project.org**.
 
 > [!CAUTION]
-> Never use public issues, pull requests, or discussions to report security problems. Vulnerabilities are not disclosed before a fix is released.
+> Never use public issues, pull requests, or discussions to report **High and Critical** security problems. Vulnerabilities are not disclosed before a fix is released.
 
 We do not accept GitHub Security Advisory direct submissions, and we will not create accounts on third-party platforms to receive reports. All information must be sent by email or, once an advisory is opened, posted directly in that advisory.
 
@@ -49,7 +49,7 @@ If you have a GitHub account, include your username so we can add you as observe
 
 **In scope:** GLPI core, official releases.
 
-We only accept issues with demonstrated impact on confidentiality or integrity. For bugs only impacting availability and hardening suggestions (see our [threat model](THREAT_MODEL.md)), prefer opening [an issue](https://github.com/glpi-project/glpi/issues) or a pull request.
+We only accept **High and Critical** issues with demonstrated impact on confidentiality or integrity. For **Moderate and Low** vulnerabilities, or bugs only impacting availability and hardening suggestions (see our [threat model](THREAT_MODEL.md)), prefer opening [an issue](https://github.com/glpi-project/glpi/issues) or a pull request.
 
 **Out of scope:** third-party plugins (report to plugin maintainers), the GLPI Inventory Agent, Teclib'-operated websites, self-modified installs, hosting providers, standalone social engineering, hardening suggestions without a working exploit, scanner output without verification, out-of-date versions.
 
