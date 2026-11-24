@@ -35,6 +35,7 @@
 
 namespace Glpi\Dashboard;
 
+use CommonDBTM;
 use Config;
 use Dropdown;
 use Entity;
@@ -66,6 +67,19 @@ use function Safe\json_decode;
 use function Safe\json_encode;
 use function Safe\preg_replace;
 
+/**
+ * @phpstan-import-type ItemtypeRights from CommonDBTM
+ * @phpstan-import-type DashboardFields from Dashboard
+ * @phpstan-import-type DashboardItemFieldsDecoded from Item
+ * @phpstan-type DashboardGridParams array{
+ *     dashboard?: string,
+ *     entities_id?: int,
+ *     is_recursive?: int,
+ *     profiles_id?: int,
+ *     users_id?: int,
+ *     token?: string,
+ * }
+ */
 class Grid
 {
     protected int $cell_margin     = 3;
@@ -73,6 +87,7 @@ class Grid
     protected int $grid_rows       = 24;
     protected string $current         = "";
     protected Dashboard $dashboard;
+    /** @var string[] */
     protected array $items           = [];
     protected string $context            = '';
     /** @var array<string, array<string, array<string, mixed>>> Card catalog already built by this instance, by cache key. */
@@ -82,6 +97,7 @@ class Grid
     private const CARDS_BATCHES = 4;
 
     public static bool $embed              = false;
+    /** @var array<string, DashboardFields>  */
     public static array $all_dashboards     = [];
 
     public function __construct(string $dashboard_key = "central", int $grid_cols = 26, int $grid_rows = 24, string $context = 'core')
@@ -150,16 +166,7 @@ class Grid
     {
         self::loadAllDashboards();
 
-        if (
-            !isset(self::$all_dashboards[$this->current])
-            || !isset(self::$all_dashboards[$this->current]['items'])
-        ) {
-            self::$all_dashboards[$this->current] = [
-                'items' => [],
-            ];
-        }
-
-        foreach (self::$all_dashboards[$this->current]['items'] as $specs) {
+        foreach (self::$all_dashboards[$this->current]['items'] ?? [] as $specs) {
             $card_id      = $specs['card_id'] ?? $specs['gridstack_id'] ?? $specs['id'];
             $gridstack_id = $specs['gridstack_id']   ?? $specs['id'];
             $card_options = ($specs['card_options'] ?? []) + [
@@ -611,7 +618,7 @@ TWIG, $twig_params);
      * rights) plus that user's groups, scoped to the shared entity. This way, the
      * embedded dashboard only ever shows what the sharer could see.
      *
-     * @param array $params contains those keys:
+     * @param DashboardGridParams&array{entities_id: int} $params contains those keys:
      * - entities_id: entity to init in session
      * - is_recursive: do we need to display sub entities
      * - profiles_id: id of the profile that was active when the dashboard was shared
@@ -619,12 +626,12 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public function initEmbedSession(array $params = [])
+    public function initEmbedSession(array $params)
     {
         global $CFG_GLPI;
 
         $entities_id  = (int) $params['entities_id'];
-        $is_recursive = (bool) $params['is_recursive'];
+        $is_recursive = (bool) ($params['is_recursive'] ?? false);
         $profiles_id  = (int) ($params['profiles_id'] ?? 0);
         $users_id     = (int) ($params['users_id'] ?? 0);
 
@@ -735,7 +742,7 @@ TWIG, $twig_params);
      * This checks token validity to avoid displaying dashboard to invalid users
      * and initialize related session variables.
      *
-     * @param array $params contains those keys:
+     * @param DashboardGridParams $params contains those keys:
      * - dashboard: the dashboard system name
      * - entities_id: entity to init in session
      * - is_recursive: do we need to display sub entities
@@ -782,7 +789,7 @@ TWIG, $twig_params);
      * Show an embedded dashboard.
      * We must check token validity to avoid displaying dashboard to invalid users
      *
-     * @param array $params must contain "token" key
+     * @param DashboardGridParams $params must contain "token" key
      *
      * @return void (display)
      */
@@ -827,7 +834,7 @@ TWIG, $twig_params);
      * Check token variables (compare it to `dashboard`, `entities_id`, `is_recursive`,
      * `profiles_id` and `users_id` parameters)
      *
-     * @param array $params contains theses keys:
+     * @param DashboardGridParams $params contains theses keys:
      * - dashboard: the dashboard system name
      * - entities_id: entity to init in session
      * - is_recursive: do we need to display sub entities
@@ -919,7 +926,7 @@ HTML;
      * @param int $y position in the grid
      * @param int $width size in the grid
      * @param int $height size in the grid
-     * @param array $data_option aditional options passed to the widget, contains at least thses keys:
+     * @param array{color?: string, ...} $data_option aditional options passed to the widget, contains at least thses keys:
      *                             - string 'color'
      * @return void
      */
@@ -1006,7 +1013,7 @@ HTML;
     /**
      * Display mini configuration form to add or edit a widget
      *
-     * @param array $params with these keys:
+     * @param DashboardItemFieldsDecoded&array{action: 'display_add_widget'|'display_edit_widget'} $params with these keys:
      * - int    'gridstack_id': unique identifier of the card
      * - int    'x': position in the grid
      * - int    'y: position in the grid
@@ -1020,7 +1027,7 @@ HTML;
      *
      * @return void
      */
-    public function displayWidgetForm(array $params = [])
+    public function displayWidgetForm(array $params)
     {
         $gridstack_id = $params['gridstack_id'] ?? "";
         $old_id       = $gridstack_id;
@@ -1083,7 +1090,7 @@ HTML;
     /**
      * Display mini form to add filter to the current dashboard
      *
-     * @param array $params default values for
+     * @param array{used: list<string>}|array{} $params default values for
      * - 'used' already used filters
      *
      * @return void
@@ -1222,7 +1229,7 @@ HTML;
      * Return the html for the given card_id
      *
      * @param string $card_id identifier return by @see self::getAllDasboardCards
-     * @param array $card_options contains these keys:
+     * @param array{args: array{gridstack_id: string, force?: bool, embed?: bool}, force?: bool}|array{} $card_options contains these keys:
      * - array 'args':
      *    - string 'gridstack_id' unique identifier of the card in the grid, used to return html by cache
      *    - bool 'force' if true, cache will be bypassed
@@ -1292,6 +1299,7 @@ HTML;
                 Profiler::getInstance()->start($card['provider'] . ' (Provider function)');
                 $provider_func = explode('::', $card['provider']);
                 if (($CFG_GLPI['is_demo_dashboards'] ?? 0) && $provider_func[0] === Provider::class) {
+                    /** @var callable-string&non-falsy-string $fake_provider_func */
                     $fake_provider_func = FakeProvider::class . '::' . $provider_func[1];
                     $widget_args = call_user_func_array($fake_provider_func, array_values($provider_args));
                 } else {
@@ -1366,7 +1374,7 @@ HTML;
 
     /**
      * Return Html for a provided set of filters
-     * @param array $filters
+     * @param array<string, string|array<mixed, mixed>> $filters
      *
      * @return string the html
      */
@@ -1386,7 +1394,7 @@ HTML;
      * Return Html for a provided filter name
      *
      * @param string $filter_id the system name of a filter (ex dates)
-     * @param string|array $filter_values init the input with these values,
+     * @param string|array<mixed, mixed> $filter_values init the input with these values,
      *                     will be a string if empty values
      *
      * @return string the html
@@ -1407,7 +1415,7 @@ HTML;
      * Return all itemtypes possible for constructing cards.
      * User in @see self::getAllDasboardCards
      *
-     * @return array [itemtype1, itemtype2]
+     * @return array<string, string[]> [itemtype1, itemtype2]
      */
     protected function getMenuItemtypes(): array
     {
@@ -1466,7 +1474,7 @@ HTML;
      *
      * @param bool $force Force rebuild the catalog of cards
      *
-     * @return array
+     * @return array<string, array{widgettype: list<string>, group: string, itemtype: class-string<CommonDBTM>, label: string, provider: callable-string, filters?: string[]}>
      */
     public function getAllDasboardCards($force = false): array
     {
@@ -1475,6 +1483,7 @@ HTML;
         $cache_key = self::getAllDashboardCardsCacheKey();
         if (!$force && isset($this->all_cards[$cache_key])) {
             // The plugins hook is costly: a request that renders several cards must not run it for each of them.
+            // @phpstan-ignore-next-line return.type
             return $this->all_cards[$cache_key];
         }
 
@@ -1822,7 +1831,7 @@ HTML;
     /**
      * @param string $interface
      *
-     * @return array
+     * @return ItemtypeRights
      */
     public function getRights($interface = 'central')
     {
@@ -1945,6 +1954,12 @@ HTML;
     }
 
 
+    /**
+     * @param string $name
+     * @param array<string, mixed> $params
+     * @param bool $disabled_option
+     * @return string
+     */
     public static function dropdownDashboard(string $name = "", array $params = [], bool $disabled_option = false): string
     {
         $to_show = Dashboard::getAll(false, true, $params['context'] ?? 'core');
@@ -1961,6 +1976,6 @@ HTML;
             $options_dashboards = ['disabled' => __('Disabled')] + $options_dashboards;
         }
 
-        return Dropdown::showFromArray($name, $options_dashboards, $params);
+        return (string) Dropdown::showFromArray($name, $options_dashboards, $params);
     }
 }
