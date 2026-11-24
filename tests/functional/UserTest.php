@@ -82,77 +82,64 @@ class UserTest extends DbTestCase
         );
 
         $old_computer_right = $_SESSION['glpiactiveprofile']['computer'];
-        $_SESSION['glpiactiveprofile']['computer'] = READ_OWNED;
-        try {
-            $visible_used_before = User::countItemsForUser($user_id, false);
-            $visible_managed_before = User::countItemsForUser($user_id, true);
-        } finally {
-            $_SESSION['glpiactiveprofile']['computer'] = $old_computer_right;
-        }
-
         $had_active_entities = array_key_exists('glpiactiveentities', $_SESSION);
         $old_active_entities = $_SESSION['glpiactiveentities'] ?? null;
         $had_show_all_entities = array_key_exists('glpishowallentities', $_SESSION);
         $old_show_all_entities = $_SESSION['glpishowallentities'] ?? null;
 
-        $_SESSION['glpiactiveentities'] = [$scope_entity_id];
-        $_SESSION['glpishowallentities'] = false;
         try {
+            // Explicitly scope the fixture to the test entity and root entity.
+            $_SESSION['glpiactiveentities'] = [0, $scope_entity_id];
+            $_SESSION['glpishowallentities'] = false;
+
+            // Capture the count visible to a viewer with READ_OWNED only.
+            $_SESSION['glpiactiveprofile']['computer'] = READ_OWNED;
+            $visible_used_before = User::countItemsForUser($user_id, false);
+            $visible_managed_before = User::countItemsForUser($user_id, true);
+            $_SESSION['glpiactiveprofile']['computer'] = $old_computer_right;
+
+            $used_before = User::countItemsForUser($user_id, false);
+            $managed_before = User::countItemsForUser($user_id, true);
+
+            // Capture the baseline when only the test entity is active.
+            $_SESSION['glpiactiveentities'] = [$scope_entity_id];
             $entity_used_before = User::countItemsForUser($user_id, false);
             $entity_managed_before = User::countItemsForUser($user_id, true);
-        } finally {
-            if ($had_active_entities) {
-                $_SESSION['glpiactiveentities'] = $old_active_entities;
-            } else {
-                unset($_SESSION['glpiactiveentities']);
-            }
-            if ($had_show_all_entities) {
-                $_SESSION['glpishowallentities'] = $old_show_all_entities;
-            } else {
-                unset($_SESSION['glpishowallentities']);
-            }
-        }
+            $_SESSION['glpiactiveentities'] = [0, $scope_entity_id];
 
-        $used_before = User::countItemsForUser($user_id, false);
-        $managed_before = User::countItemsForUser($user_id, true);
+            $computer_data = [
+                'users_id'       => $user_id,
+                'users_id_tech'  => $user_id,
+                'groups_id'      => [$group->getID()],
+                'groups_id_tech' => [$group->getID()],
+            ];
 
-        $computer_data = [
-            'users_id'       => $user_id,
-            'users_id_tech'  => $user_id,
-            'groups_id'      => [$group->getID()],
-            'groups_id_tech' => [$group->getID()],
-        ];
+            // One item belongs to the selected entity; the other belongs to root.
+            $this->createItem(
+                \Computer::class,
+                $computer_data + $this->getMinimalCreationInput(\Computer::class)
+            );
+            $this->createItem(
+                \Computer::class,
+                ['entities_id' => 0] + $computer_data + $this->getMinimalCreationInput(\Computer::class)
+            );
 
-        // One item belongs to the selected entity; the other belongs to a different entity.
-        $this->createItem(
-            \Computer::class,
-            $computer_data + $this->getMinimalCreationInput(\Computer::class)
-        );
-        $this->createItem(
-            \Computer::class,
-            ['entities_id' => 0] + $computer_data + $this->getMinimalCreationInput(\Computer::class)
-        );
+            // User and group links must not count the same asset twice.
+            $this->assertSame($used_before + 2, User::countItemsForUser($user_id, false));
+            $this->assertSame($managed_before + 2, User::countItemsForUser($user_id, true));
 
-        // The user and group links must not count the same asset twice.
-        $this->assertSame($used_before + 2, User::countItemsForUser($user_id, false));
-        $this->assertSame($managed_before + 2, User::countItemsForUser($user_id, true));
-
-        // A viewer with READ_OWNED must not count another user's assets.
-        $_SESSION['glpiactiveprofile']['computer'] = READ_OWNED;
-        try {
+            // READ_OWNED must not count assets owned or managed by another user.
+            $_SESSION['glpiactiveprofile']['computer'] = READ_OWNED;
             $this->assertSame($visible_used_before, User::countItemsForUser($user_id, false));
             $this->assertSame($visible_managed_before, User::countItemsForUser($user_id, true));
-        } finally {
             $_SESSION['glpiactiveprofile']['computer'] = $old_computer_right;
-        }
 
-        // Entity filtering must exclude assets outside the viewer's active entity.
-        $_SESSION['glpiactiveentities'] = [$scope_entity_id];
-        $_SESSION['glpishowallentities'] = false;
-        try {
+            // The root-entity asset must not appear when only the test entity is active.
+            $_SESSION['glpiactiveentities'] = [$scope_entity_id];
             $this->assertSame($entity_used_before + 1, User::countItemsForUser($user_id, false));
             $this->assertSame($entity_managed_before + 1, User::countItemsForUser($user_id, true));
         } finally {
+            $_SESSION['glpiactiveprofile']['computer'] = $old_computer_right;
             if ($had_active_entities) {
                 $_SESSION['glpiactiveentities'] = $old_active_entities;
             } else {
