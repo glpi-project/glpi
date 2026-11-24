@@ -257,8 +257,42 @@ class Tag extends CommonDropdown
             return false;
         }
         $input = $this->prepareItemtypes($input);
+        if (!$this->checkItemtypesKeepAssociations($input)) {
+            return false;
+        }
+
         $input = $this->prepareColorsInput($input);
         return $input;
+    }
+
+    /**
+     * Refuse to restrict the tag itemtypes when the tag is still attached to items of an itemtype that would no longer be allowed.
+     *
+     * @param array<string, mixed> $input
+     */
+    private function checkItemtypesKeepAssociations(array $input): bool
+    {
+        // No restriction means that every itemtype is allowed
+        if (!isset($input['_itemtypes']) || $input['_itemtypes'] === []) {
+            return true;
+        }
+
+        $has_blocking_associations = countElementsInTable(Tag_Item::getTable(), [
+            'tags_id' => $this->getID(),
+            'NOT'     => ['itemtype' => array_values($input['_itemtypes'])],
+        ]) > 0;
+
+        if (!$has_blocking_associations) {
+            return true;
+        }
+
+        Session::addMessageAfterRedirect(
+            __s('This tag is still attached to items whose itemtype would no longer be allowed. Remove it from these items before restricting its itemtypes.'),
+            false,
+            ERROR
+        );
+
+        return false;
     }
 
     /**
@@ -511,7 +545,7 @@ class Tag extends CommonDropdown
      *
      * @param class-string<CommonGLPI>|list<class-string<CommonGLPI>>|null $itemtype Restrict the tags to those allowed for the given itemtype(s).
      *                                    Use null to get no tag (e.g. for the "All assets" search).
-     * @param int|null $entities_id Restrict to the tags visible from this entity instead of the active entities.
+     * @param int|null $entities_id Also restrict to the tags visible from this entity (e.g. the entity of the item to tag).
      *
      * @return array{tag_names: array<int, string>, bg_colors: array<int, string>, text_colors: array<int, string>}
      */

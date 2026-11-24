@@ -1056,16 +1056,7 @@ const templateTagSelection = function(selection, container) {
 
     if (bg_color && container) {
         $(container).css({ 'background-color': bg_color, 'color': text_color || '' });
-
-        const node = $(container).get(0);
-        const observer = new MutationObserver(() => {
-            const $remove = $(node).find('.select2-selection__choice__remove');
-            if ($remove.length) {
-                $remove.css('color', text_color || '');
-                observer.disconnect();
-            }
-        });
-        observer.observe(node, { childList: true });
+        $(container).find('.select2-selection__choice__remove').css('color', text_color || '');
     }
 
     // Return an element so Select2 does not escape the text a second time

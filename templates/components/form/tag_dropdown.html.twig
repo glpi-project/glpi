@@ -36,16 +36,15 @@
 
 {% set dropdown_html = call('Dropdown::showFromArray', [options.name, data.tag_names, options|merge({'display': false})]) %}
 
-{% if can_create %}
+{% if can_create and not options.readonly|default(false) %}
+    {{ call('Ajax::createIframeModalWindow', ['add_' ~ field_id, call('Tag::getFormURL'), {'display': false}])|raw }}
     <div class="btn-group btn-group-sm w-100" role="group">
         {{ dropdown_html|raw }}
-        <div class="btn btn-outline-secondary" title="{{ __('Add') }}" data-bs-toggle="modal" data-bs-target="#add_{{ field_id }}">
-            {{ call('Ajax::createIframeModalWindow', ['add_' ~ field_id, call('Tag::getFormURL'), {'display': false}])|raw }}
-            <span data-bs-toggle="tooltip">
-                <i class="ti ti-plus" aria-hidden="true"></i>
-                <span class="visually-hidden">{{ __('Add') }}</span>
-            </span>
-        </div>
+        <button type="button" class="btn btn-outline-secondary" title="{{ __('Add') }}"
+                data-bs-toggle="modal" data-bs-target="#add_{{ field_id }}">
+            <i class="ti ti-plus" aria-hidden="true"></i>
+            <span class="visually-hidden">{{ __('Add') }}</span>
+        </button>
     </div>
 {% else %}
     {{ dropdown_html|raw }}

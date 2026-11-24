@@ -270,6 +270,12 @@ class Tag_ItemTest extends DbTestCase
             Tag_Itemtype::getTagsByItemtypes([Computer::class, Printer::class])
         );
 
+        // Duplicated itemtypes are counted once
+        $this->assertSameTagIds(
+            [$computer_tag->getID(), $all_assets_tag->getID()],
+            Tag_Itemtype::getTagsByItemtypes([Computer::class, Computer::class])
+        );
+
         // No itemtype given: no tags returned
         $this->assertSame([], Tag_Itemtype::getTagsByItemtypes([]));
     }
@@ -289,6 +295,20 @@ class Tag_ItemTest extends DbTestCase
         sort($expected_tags_ids);
         sort($actual_tags_ids);
         $this->assertSame($expected_tags_ids, $actual_tags_ids);
+    }
+
+    /**
+     * Get the IDs of the tags proposed in the form of the given item.
+     *
+     * @return list<int>
+     */
+    private function getProposedTagsIds(CommonDBTM $item): array
+    {
+        $tags_ids = [];
+        foreach (Tag_Itemtype::getTagsByItemtype($item::class, Tag::getTagsEntityID($item)) as $tag) {
+            $tags_ids[] = $tag->getID();
+        }
+        return $tags_ids;
     }
 
     /**
@@ -586,6 +606,47 @@ class Tag_ItemTest extends DbTestCase
         // Same when every proposed tag is unselected
         $this->assertTrue($computer->update(['id' => $computer->getID(), '_tags' => '']));
         $this->assertSame([$inactive_tag->getID()], Tag_Item::getTagsForItem($computer));
+    }
+
+    public function testTagsNotVisibleFromActiveEntitiesAreNotProposed(): void
+    {
+        $this->login();
+
+        $root_entity_id = $this->getTestRootEntity(true);
+
+        // A recursive computer of the root entity is visible from its child entities
+        $computer = $this->createItem(Computer::class, [
+            'name'         => 'Recursive computer for entity visibility',
+            'entities_id'  => $root_entity_id,
+            'is_recursive' => 1,
+        ]);
+        $recursive_tag = $this->createTag([
+            'name'         => 'Recursive tag for entity visibility',
+            'is_active'    => 1,
+            'entities_id'  => $root_entity_id,
+            'is_recursive' => 1,
+        ]);
+        $local_tag = $this->createTag([
+            'name'         => 'Not recursive tag for entity visibility',
+            'is_active'    => 1,
+            'entities_id'  => $root_entity_id,
+            'is_recursive' => 0,
+        ]);
+        $this->assertTrue(Tag_Item::addTag($computer, $recursive_tag->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer, $local_tag->getID()));
+
+        // From the root entity, both tags are proposed
+        $this->assertContains($recursive_tag->getID(), $this->getProposedTagsIds($computer));
+        $this->assertContains($local_tag->getID(), $this->getProposedTagsIds($computer));
+
+        // From a child entity, the not recursive tag of the root entity is not visible, so it is not proposed
+        $this->setEntity('_test_child_1', true);
+        $this->assertContains($recursive_tag->getID(), $this->getProposedTagsIds($computer));
+        $this->assertNotContains($local_tag->getID(), $this->getProposedTagsIds($computer));
+
+        // As it is not proposed in the form, the not recursive tag is kept when every proposed tag is unselected
+        $this->assertTrue($computer->update(['id' => $computer->getID(), '_tags' => '']));
+        $this->assertSame([$local_tag->getID()], Tag_Item::getTagsForItem($computer));
     }
 
     public function testTagFieldIsPresentOnTaggableItemsForm(): void

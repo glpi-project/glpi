@@ -90,7 +90,7 @@ class Tag_Itemtype extends CommonDBChild
      * Get tags allowed to be attached to items of the given itemtype.
      *
      * @param class-string<CommonGLPI> $itemtype
-     * @param int|null $entities_id Restrict to the tags visible from this entity instead of the active entities.
+     * @param int|null $entities_id Also restrict to the tags visible from this entity (e.g. the entity of the item to tag).
      *
      * @return iterable<Tag>
      */
@@ -102,6 +102,12 @@ class Tag_Itemtype extends CommonDBChild
 
         if (!Tag_Itemtype::isTaggableItemtype($itemtype)) {
             return [];
+        }
+
+        // Tags must always be visible from the active entities, as they are elsewhere (search results, attachment check)
+        $entities_criteria = [getEntitiesRestrictCriteria($tag_table, '', '', true)];
+        if ($entities_id !== null) {
+            $entities_criteria[] = getEntitiesRestrictCriteria($tag_table, '', $entities_id, true);
         }
 
         return Tag::getFromIter($DB->request([
@@ -123,7 +129,7 @@ class Tag_Itemtype extends CommonDBChild
                         ['itemtype' => null],
                     ],
                 ],
-                getEntitiesRestrictCriteria($tag_table, '', $entities_id ?? '', true),
+                ...$entities_criteria,
             ],
         ]));
     }
@@ -139,6 +145,7 @@ class Tag_Itemtype extends CommonDBChild
     {
         global $DB;
 
+        $itemtypes = array_values(array_unique($itemtypes));
         if ($itemtypes === []) {
             return [];
         }

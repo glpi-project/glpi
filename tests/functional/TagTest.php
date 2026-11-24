@@ -577,6 +577,61 @@ class TagTest extends DbTestCase
     }
 
     /**
+     * Test that the itemtypes of a tag cannot be restricted when the tag is still attached to items
+     * of an itemtype that would no longer be allowed
+     */
+    public function testRestrictItemtypesOfAnAttachedTag(): void
+    {
+        $this->login();
+
+        $expected_error = 'This tag is still attached to items whose itemtype would no longer be allowed. Remove it from these items before restricting its itemtypes.';
+
+        // A tag without restriction can be restricted freely while it is not attached
+        $unused_tag = $this->createTag(['name' => 'Unused tag']);
+        $this->updateItem(Tag::class, $unused_tag->getID(), ['_itemtypes' => [Printer::class]]);
+        $this->assertEqualsCanonicalizing([Printer::class], $unused_tag->getItemtypes(false));
+
+        $tag = $this->createTag(['name' => 'Attached tag']);
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'Computer with an attached tag',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->assertTrue(Tag_Item::addTag($computer, $tag->getID()));
+
+        // Restricting to an itemtype that excludes the attached computer is refused
+        $this->assertFalse($tag->update([
+            'id'         => $tag->getID(),
+            '_itemtypes' => [Printer::class],
+        ]));
+        $this->hasSessionMessages(ERROR, [$expected_error]);
+        $this->assertTrue($tag->getFromDB($tag->getID()));
+        $this->assertEqualsCanonicalizing([], $tag->getItemtypes(false));
+        $this->assertTrue(Tag_Item::hasTag($computer, $tag->getID()));
+
+        // Restricting to itemtypes that still include the computer is allowed
+        $this->updateItem(Tag::class, $tag->getID(), ['_itemtypes' => [Computer::class, Printer::class]]);
+        $this->assertEqualsCanonicalizing([Computer::class, Printer::class], $tag->getItemtypes(false));
+
+        // Removing the computer itemtype from the restriction is refused as well
+        $this->assertFalse($tag->update([
+            'id'         => $tag->getID(),
+            '_itemtypes' => [Printer::class],
+        ]));
+        $this->hasSessionMessages(ERROR, [$expected_error]);
+        $this->assertTrue($tag->getFromDB($tag->getID()));
+        $this->assertEqualsCanonicalizing([Computer::class, Printer::class], $tag->getItemtypes(false));
+
+        // Removing every restriction is always allowed
+        $this->updateItem(Tag::class, $tag->getID(), ['_itemtypes' => []]);
+        $this->assertEqualsCanonicalizing([], $tag->getItemtypes(false));
+
+        // Once the tag is detached from the computer, it can be restricted to printers
+        $this->assertTrue(Tag_Item::removeTag($computer, $tag->getID()));
+        $this->updateItem(Tag::class, $tag->getID(), ['_itemtypes' => [Printer::class]]);
+        $this->assertEqualsCanonicalizing([Printer::class], $tag->getItemtypes(false));
+    }
+
+    /**
      * Test that tags can be attached to all taggable itemtypes and that the attachment state is correctly updated when items are updated or deleted
      */
     public function testAttachTagToAllTaggableItemtypes(): void
