@@ -56,6 +56,8 @@ final class LegacyFileLoadControllerTest extends GLPITestCase
         $request = new Request();
         $request->attributes->set(LegacyFileLoadController::REQUEST_FILE_KEY, $script_path);
 
+        $this->expectOutputString('');
+
         $initial_buffer_level = ob_get_level();
         try {
             (new LegacyFileLoadController())($request);
