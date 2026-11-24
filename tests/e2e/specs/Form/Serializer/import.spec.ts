@@ -74,8 +74,14 @@ test.describe('Import forms', () => {
 
     const doOpenImporter = async (page: Page): Promise<void> => {
         await page.goto('/front/form/form.php');
-        await page.getByRole('button', { name: "Import forms" }).click();
+        await page.getByRole('button', { name: "Import", exact: true }).click();
     };
+
+    // The submit button, not the "Import" link of the header, also shown on
+    // the wizard's pages
+    const getImportButton = (page: Page): Locator => page
+        .getByRole('main')
+        .getByRole('button', { name: "Import", exact: true });
 
     const getRows = (page: Page): Locator => {
         return page.getByRole('row');
@@ -90,7 +96,7 @@ test.describe('Import forms', () => {
         await expect(row.getByRole("button", { name: "Resolve issues" }))
             .not.toBeAttached()
         ;
-        await expect(row.getByRole("button", { name: "Remove form" }))
+        await expect(row.getByRole("button", { name: "Remove Form", exact: true }))
             .toBeAttached()
         ;
     };
@@ -104,7 +110,7 @@ test.describe('Import forms', () => {
         await expect(row.getByRole("button", { name: "Resolve issues" }))
             .toBeAttached()
         ;
-        await expect(row.getByRole("button", { name: "Remove form" }))
+        await expect(row.getByRole("button", { name: "Remove Form", exact: true }))
             .toBeAttached()
         ;
     };
@@ -127,7 +133,7 @@ test.describe('Import forms', () => {
         await assertFormCannotBeImported(preview.nth(2), "My invalid form");
 
         // Step 4: import
-        await glpi_page.getButton("Import").click();
+        await getImportButton(page).click();
         preview = getRows(page);
         await expect(
             preview.nth(1).getByRole("link", { name: "My valid form" })
@@ -198,7 +204,7 @@ test.describe('Import forms', () => {
         await assertFormIsReadyToBeImported(preview.nth(2), "My invalid form");
 
         // Step 4: import
-        await glpi_page.getButton("Import").click();
+        await getImportButton(page).click();
         preview = getRows(page);
         await expect(
             preview.nth(1).getByRole("link", { name: "My valid form" })
@@ -230,7 +236,7 @@ test.describe('Import forms', () => {
 
         // Remove the second form
         await preview.nth(2)
-            .getByRole("button", { name: "Remove form" })
+            .getByRole("button", { name: "Remove Form", exact: true })
             .click()
         ;
         await expect(preview.nth(1)).toBeAttached();
@@ -238,7 +244,7 @@ test.describe('Import forms', () => {
 
         // Remove the first form
         await preview.nth(1)
-            .getByRole("button", { name: "Remove form" })
+            .getByRole("button", { name: "Remove Form", exact: true })
             .click()
         ;
         await expect(preview).toHaveCount(0);
@@ -276,7 +282,7 @@ test.describe('Import forms', () => {
             preview.nth(1).getByRole("button", { name: "Resolve issues" })
         ).not.toBeAttached();
         await expect(
-            preview.nth(1).getByRole("button", { name: "Remove form" })
+            preview.nth(1).getByRole("button", { name: "Remove Form", exact: true })
         ).toBeAttached();
     });
 });

@@ -37,79 +37,143 @@ namespace Glpi\Form\Export\Result;
 
 final class ImportResultPreview
 {
-    /** @var string[] $valid_forms */
-    private array $valid_forms = [];
+    /** @var array<int, string> $valid_items */
+    private array $valid_items = [];
 
-    /** @var string[] $invalid_forms */
-    private array $invalid_forms = [];
+    /** @var array<int, string> $invalid_items */
+    private array $invalid_items = [];
 
-    /** @var string[] $skipped_forms */
-    private array $skipped_forms = [];
+    /** @var array<int, string> $skipped_items */
+    private array $skipped_items = [];
 
     /**
-     * Store error messages for a given form ID.
-     * Unlike $invalid_forms, this represent errors that aren't recoverable.
+     * Store error messages for a given item ID.
+     * Unlike $invalid_items, this represent errors that aren't recoverable.
      *
      *  @var array<int, array{name: string, errors: array<string>}> $fatal_errors
      **/
     private array $fatal_errors = [];
 
-    public function addValidForm(int $form_id, string $form_name): void
+    public function addValidItem(int $id, string $name): void
     {
-        $this->valid_forms[$form_id] = $form_name;
+        $this->valid_items[$id] = $name;
     }
 
-    /** @return string[] */
-    public function getValidForms(): array
+    /** @return array<int, string> */
+    public function getValidItems(): array
     {
-        return $this->valid_forms;
+        return $this->valid_items;
     }
 
-    public function addInvalidForm(int $form_id, string $form_name): void
+    public function addInvalidItem(int $id, string $name): void
     {
-        $this->invalid_forms[$form_id] = $form_name;
+        $this->invalid_items[$id] = $name;
     }
 
-    /** @return string[] */
-    public function getInvalidForms(): array
+    /** @return array<int, string> */
+    public function getInvalidItems(): array
     {
-        return $this->invalid_forms;
+        return $this->invalid_items;
     }
 
-    public function addSkippedForm(int $form_id, string $form_name): void
+    public function addSkippedItem(int $id, string $name): void
     {
-        $this->skipped_forms[$form_id] = $form_name;
+        $this->skipped_items[$id] = $name;
     }
 
-    /** @return string[] */
-    public function getSkippedForms(): array
+    /** @return array<int, string> */
+    public function getSkippedItems(): array
     {
-        return $this->skipped_forms;
+        return $this->skipped_items;
     }
 
-    public function addFatalErrorForForm(
-        int $form_id,
-        string $form_name,
-        string $error
-    ): void {
-        if (!isset($this->fatal_errors[$form_id])) {
-            $this->fatal_errors[$form_id] = [
-                'name' => $form_name,
+    public function addFatalError(int $id, string $name, string $error): void
+    {
+        if (!isset($this->fatal_errors[$id])) {
+            $this->fatal_errors[$id] = [
+                'name' => $name,
                 'errors' => [],
             ];
         }
 
-        $this->fatal_errors[$form_id]['errors'][] = $error;
+        $this->fatal_errors[$id]['errors'][] = $error;
     }
 
-    public function hasFatalErrorForForm(int $form_id): bool
+    public function hasFatalError(int $id): bool
     {
-        $errors = $this->fatal_errors[$form_id]['errors'] ?? [];
+        $errors = $this->fatal_errors[$id]['errors'] ?? [];
         return count($errors) > 0;
     }
 
-    public function getFormsWithFatalErrors(): array
+    /** @return array<int, array{name: string, errors: array<string>}> */
+    public function getItemsWithFatalErrors(): array
     {
         return $this->fatal_errors;
+    }
+
+    /** @deprecated 11.0.14 Use {@see addValidItem()} */
+    public function addValidForm(int $form_id, string $form_name): void
+    {
+        $this->addValidItem($form_id, $form_name);
+    }
+
+    /**
+     * @deprecated 11.0.14 Use {@see getValidItems()}
+     * @return array<int, string>
+     */
+    public function getValidForms(): array
+    {
+        return $this->getValidItems();
+    }
+
+    /** @deprecated 11.0.14 Use {@see addInvalidItem()} */
+    public function addInvalidForm(int $form_id, string $form_name): void
+    {
+        $this->addInvalidItem($form_id, $form_name);
+    }
+
+    /**
+     * @deprecated 11.0.14 Use {@see getInvalidItems()}
+     * @return array<int, string>
+     */
+    public function getInvalidForms(): array
+    {
+        return $this->getInvalidItems();
+    }
+
+    /** @deprecated 11.0.14 Use {@see addSkippedItem()} */
+    public function addSkippedForm(int $form_id, string $form_name): void
+    {
+        $this->addSkippedItem($form_id, $form_name);
+    }
+
+    /**
+     * @deprecated 11.0.14 Use {@see getSkippedItems()}
+     * @return array<int, string>
+     */
+    public function getSkippedForms(): array
+    {
+        return $this->getSkippedItems();
+    }
+
+    /** @deprecated 11.0.14 Use {@see addFatalError()} */
+    public function addFatalErrorForForm(int $form_id, string $form_name, string $error): void
+    {
+        $this->addFatalError($form_id, $form_name, $error);
+    }
+
+    /** @deprecated 11.0.14 Use {@see hasFatalError()} */
+    public function hasFatalErrorForForm(int $form_id): bool
+    {
+        return $this->hasFatalError($form_id);
+    }
+
+    /**
+     * @deprecated 11.0.14 Use {@see getItemsWithFatalErrors()}
+     * @return array<int, array{name: string, errors: array<string>}>
+     */
+    public function getFormsWithFatalErrors(): array
+    {
+        return $this->getItemsWithFatalErrors();
     }
 }

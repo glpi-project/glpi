@@ -75,6 +75,7 @@ use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\RenderLayout;
 use Glpi\Form\Section;
+use Glpi\ImportExport\ImportExportHandlerInterface;
 use Glpi\Plugin\Hooks;
 use Glpi\UI\IllustrationManager;
 use InvalidArgumentException;
@@ -95,16 +96,16 @@ use function Safe\md5_file;
 use function Safe\preg_match;
 use function Safe\unlink;
 
-final class FormSerializer extends AbstractFormSerializer
+final class FormSerializer extends AbstractFormSerializer implements ImportExportHandlerInterface
 {
     public function getVersion(): int
     {
         return 1;
     }
 
-    /** @param array<Form> $forms */
-    public function exportFormsToJson(array $forms): ExportResult
+    public function exportItems(array $items): ExportResult
     {
+        $forms = array_filter($items, static fn(CommonDBTM $item) => $item instanceof Form);
         $export_specification = new ExportContentSpecification();
         $export_specification->version = $this->getVersion();
 
@@ -120,6 +121,7 @@ final class FormSerializer extends AbstractFormSerializer
         );
     }
 
+    /** @param array<int|string> $skipped_forms */
     public function previewImport(
         string $json,
         DatabaseMapper $mapper,
@@ -139,7 +141,7 @@ final class FormSerializer extends AbstractFormSerializer
             $form_id   = $form_spec->id;
             $form_name = $form_spec->name;
             if (in_array($form_id, $skipped_forms)) {
-                $results->addSkippedForm($form_id, $form_name);
+                $results->addSkippedItem($form_id, $form_name);
                 continue;
             }
 
@@ -148,7 +150,7 @@ final class FormSerializer extends AbstractFormSerializer
             $missing_types = $this->getMissingCustomTypes($types_requirements);
             foreach ($missing_types as $missing_type) {
                 $message = sprintf(__('Unknown custom type: %s'), $missing_type);
-                $results->addFatalErrorForForm($form_id, $form_name, $message);
+                $results->addFatalError($form_id, $form_name, $message);
             }
 
             // Validate plugins requirements
@@ -156,11 +158,11 @@ final class FormSerializer extends AbstractFormSerializer
             $missing_plugins = $this->getMissingPlugins($plugins_requirements);
             foreach ($missing_plugins as $missing_plugin) {
                 $message = sprintf(__('Missing plugin: %s'), $missing_plugin);
-                $results->addFatalErrorForForm($form_id, $form_name, $message);
+                $results->addFatalError($form_id, $form_name, $message);
             }
 
             // Do not process others requirements if we reached a fatal error
-            if ($results->hasFatalErrorForForm($form_id)) {
+            if ($results->hasFatalError($form_id)) {
                 continue;
             }
 
@@ -169,9 +171,9 @@ final class FormSerializer extends AbstractFormSerializer
             $mapper->mapExistingItemsForRequirements($data_requirements);
 
             if ($mapper->validateRequirements($data_requirements)) {
-                $results->addValidForm($form_id, $form_name);
+                $results->addValidItem($form_id, $form_name);
             } else {
-                $results->addInvalidForm($form_id, $form_name);
+                $results->addInvalidItem($form_id, $form_name);
             }
         }
 
@@ -194,7 +196,7 @@ final class FormSerializer extends AbstractFormSerializer
             $requirements = $form_spec->data_requirements;
             $mapper->mapExistingItemsForRequirements($requirements);
 
-            $results->addIssuesForForm(
+            $results->addIssues(
                 $form_spec->id,
                 $mapper->getInvalidRequirements($requirements)
             );
@@ -203,10 +205,31 @@ final class FormSerializer extends AbstractFormSerializer
         return $results;
     }
 
+    /**
+     * @deprecated 11.0.14 Use {@see exportItems()}
+     * @param Form[] $forms
+     */
+    public function exportFormsToJson(array $forms): ExportResult
+    {
+        return $this->exportItems($forms);
+    }
+
+    /**
+     * @deprecated 11.0.14 Use {@see importItems()}
+     * @param array<int|string> $skipped_forms
+     */
     public function importFormsFromJson(
         string $json,
         DatabaseMapper $mapper,
         array $skipped_forms = [],
+    ): ImportResult {
+        return $this->importItems($json, $mapper, $skipped_forms);
+    }
+
+    public function importItems(
+        string $json,
+        DatabaseMapper $mapper,
+        array $skipped_items = [],
     ): ImportResult {
         $export_specification = $this->deserialize($json);
 
@@ -220,14 +243,14 @@ final class FormSerializer extends AbstractFormSerializer
         foreach ($export_specification->forms as $form_spec) {
             // Skip form if needed
             $form_id = $form_spec->id;
-            if (in_array($form_id, $skipped_forms)) {
+            if (in_array($form_id, $skipped_items)) {
                 continue;
             }
 
             // Validate custom types
             $types_requirements = $form_spec->custom_types_requirements;
             if (!$this->validateCustomTypesRequirements($types_requirements)) {
-                $result->addFailedFormImport(
+                $result->addFailedImport(
                     $form_spec->name,
                     ImportError::MISSING_CUSTOM_TYPE_REQUIREMENT,
                 );
@@ -236,7 +259,7 @@ final class FormSerializer extends AbstractFormSerializer
 
             $plugins_requirements = $form_spec->plugin_requirements;
             if (!$this->validatePluginsRequirements($plugins_requirements)) {
-                $result->addFailedFormImport(
+                $result->addFailedImport(
                     $form_spec->name,
                     ImportError::MISSING_PLUGIN_REQUIREMENT,
                 );
@@ -247,7 +270,7 @@ final class FormSerializer extends AbstractFormSerializer
             $mapper->mapExistingItemsForRequirements($data_requirements);
 
             if (!$mapper->validateRequirements($data_requirements)) {
-                $result->addFailedFormImport(
+                $result->addFailedImport(
                     $form_spec->name,
                     ImportError::MISSING_DATA_REQUIREMENT
                 );
@@ -255,7 +278,7 @@ final class FormSerializer extends AbstractFormSerializer
             }
 
             $form = $this->importFormFromSpec($form_spec, $mapper);
-            $result->addImportedForm($form);
+            $result->addImportedItem($form);
         }
 
         Plugin::doHook(Hooks::POST_FORMS_IMPORT, [

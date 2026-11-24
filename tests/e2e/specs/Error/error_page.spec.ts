@@ -79,7 +79,7 @@ test('Displays an access denied error', async ({ page, profile }) => {
     const urls = [
         '/front/central.php',  // streamed response
         '/front/computer.php', // generic controller
-        '/Form/Import',        // modern controller
+        '/ImportExport/Import?itemtype=Glpi%5CForm%5CForm', // modern controller
     ];
 
     const expected_code    = 403;
