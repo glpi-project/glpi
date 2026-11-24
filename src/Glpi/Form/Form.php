@@ -59,11 +59,14 @@ use Glpi\Form\Condition\QuestionData;
 use Glpi\Form\Condition\SectionData;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\FormDestinationTicket;
+use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\Helpdesk\Tile\FormTile;
+use Glpi\ImportExport\HasImportExportHandlerInterface;
+use Glpi\ImportExport\ImportExportHandlerInterface;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\Toolbox\UuidStore;
@@ -73,7 +76,6 @@ use InvalidArgumentException;
 use Item_Problem;
 use Item_Ticket;
 use Log;
-use MassiveAction;
 use Override;
 use Ramsey\Uuid\Uuid;
 use ReflectionClass;
@@ -92,7 +94,8 @@ use function Safe\strtotime;
 final class Form extends CommonDBTM implements
     ServiceCatalogLeafInterface,
     ProvideTranslationsInterface,
-    ConditionableVisibilityInterface
+    ConditionableVisibilityInterface,
+    HasImportExportHandlerInterface
 {
     use ConditionableVisibilityTrait;
     /** @use Clonable<static> */
@@ -444,32 +447,9 @@ final class Form extends CommonDBTM implements
     }
 
     #[Override]
-    public function getSpecificMassiveActions($checkitem = null): array
+    public static function getImportExportHandler(): ImportExportHandlerInterface
     {
-        $actions = parent::getSpecificMassiveActions($checkitem);
-
-        $key = self::class . MassiveAction::CLASS_ACTION_SEPARATOR . "export";
-        $icon = '<i class="ti ti-file-arrow-right" aria-hidden="true"></i>';
-        $label = __s('Export form');
-        $actions[$key] = $icon . $label;
-
-        return $actions;
-    }
-
-    #[Override]
-    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
-    {
-        global $CFG_GLPI;
-
-        $ids = array_values($ma->getItems()[Form::class]);
-        $export_url = $CFG_GLPI['url_base'];
-        $export_url .= "/Form/Export?" . http_build_query(['ids' => $ids]);
-
-        $label = __s("Click here to download the exported forms...");
-        echo "<a href=\"" . \htmlescape($export_url) . "\">$label</a>";
-        echo Html::scriptBlock("window.location.href = '" . \jsescape($export_url) . "';");
-
-        return true;
+        return new FormSerializer();
     }
 
     #[Override]
@@ -529,7 +509,6 @@ final class Form extends CommonDBTM implements
 
         if (self::canCreate()) {
             $links['view_form_categories'] = Category::getSearchURL(false);
-            $links['import_forms'] = '/Form/Import';
         }
 
         return $links;

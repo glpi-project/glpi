@@ -77,8 +77,8 @@
       {{ context_links.action_link(path(link), 'Glpi\\Form\\Category'|itemtype_name(get_plural_number()), 'ti ti-folder') }}
    {% elseif type == 'all_articles' %}
       {{ context_links.action_link(path(link), __('All articles'), 'ti ti-list-search') }}
-   {% elseif type == 'import_forms' %}
-      {{ context_links.action_link(path(link), __('Import forms'), 'ti ti-file-arrow-left') }}
+   {% elseif type == 'import' %}
+      {{ context_links.action_link(path(link), __('Import'), 'ti ti-file-arrow-left') }}
    {% elseif type == 'Glpi\\Dropdown\\DropdownDefinition' %}
       {{ context_links.action_link(
          path(link),

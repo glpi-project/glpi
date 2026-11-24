@@ -50,7 +50,7 @@ test.describe('Export forms', () => {
         await page.getByRole('button', { name: "Actions" }).click();
 
         const download_promise = page.waitForEvent('download');
-        await page.getByRole('button', { name: "Export form" }).click();
+        await page.getByRole('button', { name: "Export", exact: true }).click();
 
         const download = await download_promise;
         const json = JSON.parse(readFileSync(await download.path()).toString());
@@ -79,7 +79,7 @@ test.describe('Export forms', () => {
         const download_promise = page.waitForEvent('download');
         await form.doSetDropdownValue(
             form.getDropdownByLabel('Action'),
-            'Export form'
+            'Export'
         );
 
         const download = await download_promise;

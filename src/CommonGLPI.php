@@ -38,6 +38,7 @@ use Glpi\Debug\Profiler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Exception\RedirectException;
+use Glpi\ImportExport\ImportExportManager;
 use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\CriteriaFilter;
@@ -547,6 +548,10 @@ class CommonGLPI implements CommonGLPIInterface
                 $extra_links = $item->getAdditionalMenuLinks();
                 if (is_array($extra_links) && count($extra_links)) {
                     $menu['links'] += $extra_links;
+                }
+
+                if (ImportExportManager::isExportable($type) && $item->canCreate()) {
+                    $menu['links']['import'] = ImportExportManager::getImportUrl($type);
                 }
             }
         } else {

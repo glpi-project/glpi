@@ -30,18 +30,12 @@
  # ---------------------------------------------------------------------
  #}
 
+{% extends "pages/import_export/layout.html.twig" %}
+{% import "pages/import_export/layout.html.twig" as wizard %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-{% extends "layout/page_without_tabs.html.twig" %}
-
-{% set container_size = "narrow" %}
-
-{% block content_title %}
-    {{ __('Import forms') }}
-{% endblock content_title %}
-
 {% block content_body %}
-    <form method="POST" action="{{ path('Form/Import/Preview') }}">
+    <form method="POST" action="{{ path(urls.preview) }}">
         <div class="card">
             <div class="card-header py-3 px-4">
                 <h3 class="card-title">{{ __("Resolve issues") }}</h3>
@@ -55,10 +49,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% set existing_replacements = replacements|length %}
                     {% for issue in issues %}
                         {% set original_name = issue.default_name ?? issue.name %}
-                        {% set replacement_index = loop.index0 + existing_replacements %}
+                        {% set replacement_index = loop.index0 + replacements|length %}
                         <tr>
                             <td class="px-4 align-middle">
                                 <div class="d-flex align-items-center">
@@ -95,7 +88,7 @@
         <div class="row mt-3">
             <div class="col">
                 <div class="justify-content-end d-flex">
-                    <button type="submit" href="#" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary">
                         {{ __("Preview import") }}
                     </button>
                 </div>
@@ -103,15 +96,9 @@
         </div>
 
         <input type="hidden" name="json" value="{{ json }}"/>
-
-        {% for skipped_form in skipped_forms %}
-            <input type="hidden" name="skipped_forms[]" value="{{ skipped_form }}" />
+        {% for skipped_item in skipped_items %}
+            <input type="hidden" name="skipped_items[]" value="{{ skipped_item }}" />
         {% endfor %}
-
-        {% for itemtype, replacements_for_itemtype in replacements %}
-            {% for original_name, items_id in replacements_for_itemtype %}
-                <input type="hidden" name="replacements[{{ itemtype }}][{{ original_name }}]" value="{{ items_id }}"/>
-            {% endfor %}
-        {% endfor %}
+        {{ wizard.replacements_inputs(replacements) }}
     </form>
 {% endblock content_body %}
