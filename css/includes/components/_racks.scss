@@ -464,7 +464,7 @@ ul.indexes {
 
 .racks_col {
     margin-inline-start: 2px;
-    float: left;
+    float: inline-start;
     position: relative;
 
     &:not(:last-child) {
@@ -473,7 +473,7 @@ ul.indexes {
 }
 
 .rack_side {
-    float: left;
+    float: inline-start;
     text-align: center;
     background: var(--tblr-body-bg);
     border: 1px solid var(--tblr-border-color);
@@ -510,7 +510,7 @@ ul.indexes {
         );
     z-index: 1;
     border: 1px solid var(--tblr-border-color);
-    float: left;
+    float: inline-start;
 
     *,
     ::before,
@@ -533,13 +533,13 @@ ul.indexes {
 }
 
 .side_pdus_float {
-    float: left;
+    float: inline-start;
     min-height: 100%;
     width: 20px;
 }
 
 .side_pdus.side_pdus_nofloat {
-    clear: left;
+    clear: inline-start;
     margin: 0 2px 2px;
 }
 

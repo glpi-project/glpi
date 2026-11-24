@@ -57,19 +57,19 @@ body {
     }
 
     .flatpickr-calendar.arrowTop::before {
-        border-block-end-color: var(--glpi-flatpickr-border-color);
+        border-bottom-color: var(--glpi-flatpickr-border-color);
     }
 
     .flatpickr-calendar.arrowTop::after {
-        border-block-end-color: var(--glpi-flatpickr-bg);
+        border-bottom-color: var(--glpi-flatpickr-bg);
     }
 
     .flatpickr-calendar.arrowBottom::before {
-        border-block-start-color: var(--glpi-flatpickr-border-color);
+        border-top-color: var(--glpi-flatpickr-border-color);
     }
 
     .flatpickr-calendar.arrowBottom::after {
-        border-block-start-color: var(--glpi-flatpickr-bg);
+        border-top-color: var(--glpi-flatpickr-bg);
     }
 
     .flatpickr-months .flatpickr-month {
@@ -103,11 +103,11 @@ body {
     }
 
     .flatpickr-current-month .numInputWrapper span.arrowUp::after {
-        border-block-end-color: var(--glpi-flatpickr-text-color);
+        border-bottom-color: var(--glpi-flatpickr-text-color);
     }
 
     .flatpickr-current-month .numInputWrapper span.arrowDown::after {
-        border-block-start-color: var(--glpi-flatpickr-text-color);
+        border-top-color: var(--glpi-flatpickr-text-color);
     }
 
     .flatpickr-current-month .flatpickr-monthDropdown-months {
@@ -219,11 +219,11 @@ body {
     }
 
     .flatpickr-time .numInputWrapper span.arrowUp::after {
-        border-block-end-color: var(--glpi-flatpickr-text-color);
+        border-bottom-color: var(--glpi-flatpickr-text-color);
     }
 
     .flatpickr-time .numInputWrapper span.arrowDown::after {
-        border-block-start-color: var(--glpi-flatpickr-text-color);
+        border-top-color: var(--glpi-flatpickr-text-color);
     }
 
     .flatpickr-time input {

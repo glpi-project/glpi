@@ -114,9 +114,9 @@
         background-color: v-bind(type_color);
         position: absolute;
         width: 7px;
-        bottom: 0;
-        top: 0;
-        right: 0;
+        inset-block-end: 0;
+        inset-block-start: 0;
+        inset-inline-end: 0;
         margin-block: -1px;
     }
 </style>

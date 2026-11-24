@@ -144,8 +144,8 @@
 @include media-breakpoint-up(sm) {
     .documentation .table-of-contents {
         position: fixed;
-        top: 0;
-        left: 0;
+        inset-block-start: 0;
+        inset-inline-start: 0;
         padding-block-start: 40px;
         padding-inline-start: 15px;
         padding-inline-end: 15px;

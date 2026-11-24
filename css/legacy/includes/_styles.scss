@@ -666,7 +666,7 @@
    }
 
    .boxnotefloatright {
-      float: right;
+      float: inline-end;
       position: relative;
       padding-inline-start: 20px;
       padding-block-end: 5px;
@@ -926,7 +926,7 @@
       border-radius: 10px;
       text-align: center;
       padding: .2em .5em;
-      float: right;
+      float: inline-end;
       margin-block-start: -0.2em;
       margin-inline-start: .5em;
       font-weight: bold;
@@ -977,7 +977,7 @@
 
       .fa {
          color: white;
-         float: left;
+         float: inline-start;
          margin-inline-end: .2em;
       }
    }

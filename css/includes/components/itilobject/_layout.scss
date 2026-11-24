@@ -37,7 +37,7 @@
     }
 
     @include media-breakpoint-down(lg) {
-        margin-block-end: 55px; // .itil-footer height
+        margin-bottom: 55px; // .itil-footer height
     }
 
     @include media-breakpoint-up(lg) {

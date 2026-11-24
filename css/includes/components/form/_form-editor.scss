@@ -487,7 +487,8 @@ input.value-selector {
         }
 
         .select2-selection__rendered > span {
-            margin-inline-end: auto;
+            // RTL direction is forced for this element so physical margin is used instead of logical margin
+            margin-right: auto;
         }
 
         &:not(:has(> :nth-child(2).d-none)),

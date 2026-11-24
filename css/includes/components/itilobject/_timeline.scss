@@ -264,7 +264,7 @@
             background-color: var(--glpi-timeline-solution-bg);
             color: var(--glpi-timeline-solution-fg);
             border-color: var(--glpi-timeline-solution-border-color);
-            border-left: 1em transparent solid;
+            border-inline-start: 1em transparent solid;
 
             .solimg {
                 position: absolute;

@@ -448,14 +448,13 @@
                     .kanban-column-title,
                     .kanban_nb {
                         writing-mode: vertical-lr;
-                        margin-block-start: 10px;
-                        margin-inline-start: 0;
+                        margin-top: 10px;
+                        margin-left: 0;
                         padding: 10px 2px;
                     }
 
                     .kanban-collapse-column {
-                        margin: 0;
-                        margin-block-end: 8px;
+                        margin: 0 0 8px;
                     }
 
                     .kanban-column-toolbar {

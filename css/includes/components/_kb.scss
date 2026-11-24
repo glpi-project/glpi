@@ -596,7 +596,7 @@ body.in_modal .kb-article {
     .kb-comment-card {
         border-end-start-radius: var(--tblr-border-radius) !important;
         border-end-end-radius: var(--tblr-border-radius) !important;
-        border-bottom-width: 1px !important;
+        border-block-end-width: 1px !important;
     }
 }
 
