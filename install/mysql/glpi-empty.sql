@@ -10637,4 +10637,25 @@ CREATE TABLE `glpi_users_sessionhistories` (
     KEY `logged_out_at` (`logged_out_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_itilunreadmessages`;
+CREATE TABLE `glpi_itilunreadmessages` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `parent_itemtype` varchar(255) NOT NULL,
+  `parent_items_id` int unsigned NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) NOT NULL,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
+  `date` timestamp NULL DEFAULT NULL,
+  `flags` int unsigned NOT NULL DEFAULT '0',
+  `is_read` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `users_id` (`users_id`),
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `items_id` (`items_id`),
+  KEY `parent_item` (`parent_itemtype`,`parent_items_id`),
+  KEY `parent_items_id` (`parent_items_id`),
+  KEY `is_read` (`is_read`),
+  KEY `date` (`date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 SET FOREIGN_KEY_CHECKS=1;
