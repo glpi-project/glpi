@@ -41,6 +41,7 @@ use Glpi\Error\ErrorHandler;
 use Glpi\Log\AccessLogHandler;
 use Glpi\Log\ErrorLogHandler;
 use Monolog\Logger;
+use Monolog\Processor\PsrLogMessageProcessor;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Safe\Exceptions\InfoException;
@@ -347,6 +348,7 @@ final class SystemConfigurator
         $PHPLOGGER = new Logger('glpi');
         $PHPLOGGER->pushHandler(new ErrorLogHandler());
         $PHPLOGGER->pushHandler(new AccessLogHandler());
+        $PHPLOGGER->pushProcessor(new PsrLogMessageProcessor());
 
         $this->logger = $PHPLOGGER;
     }

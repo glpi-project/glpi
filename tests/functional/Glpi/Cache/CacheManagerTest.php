@@ -552,7 +552,7 @@ class CacheManagerTest extends GLPITestCase
         $this->assertTrue((new CacheManager())->resetAllCaches());
 
         // The Symfony `cache:clear` command dispatches console events that are traced by the debug event dispatcher.
-        $this->hasPhpLogRecordThatContains('Notified event "{event}" to listener "{listener}".', LogLevel::DEBUG);
+        $this->hasPhpLogRecordThatContains('Notified event "console.command" to listener', LogLevel::DEBUG);
 
         // The container must not be compiled in the current process, as plugins autoloaders may be registered.
         // It will be compiled during the next kernel boot.
