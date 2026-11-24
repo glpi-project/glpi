@@ -16436,25 +16436,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/TaskTemplate.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'engine\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, engine\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, 2\\?\\: string, version\\?\\: string, 3\\?\\: string, 4\\?\\: string, comment\\?\\: non\\-falsy\\-string, \\.\\.\\.\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Telemetry.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$hostname of function gethostbyname expects string, array\\|int\\|string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Telemetry.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of function getTableForItemType expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Telemetry.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$string of function substr expects string, string\\|true given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Telemetry.php',
