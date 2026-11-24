@@ -82,9 +82,12 @@ class UserTest extends DbTestCase
 
         $old_computer_right = $_SESSION['glpiactiveprofile']['computer'];
         $_SESSION['glpiactiveprofile']['computer'] = READ_OWNED;
-        $visible_used_before = User::countItemsForUser($user_id, false);
-        $visible_managed_before = User::countItemsForUser($user_id, true);
-        $_SESSION['glpiactiveprofile']['computer'] = $old_computer_right;
+        try {
+            $visible_used_before = User::countItemsForUser($user_id, false);
+            $visible_managed_before = User::countItemsForUser($user_id, true);
+        } finally {
+            $_SESSION['glpiactiveprofile']['computer'] = $old_computer_right;
+        }
 
         $used_before = User::countItemsForUser($user_id, false);
         $managed_before = User::countItemsForUser($user_id, true);
