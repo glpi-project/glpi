@@ -35,6 +35,7 @@
 
 namespace Glpi\Console\Migration;
 
+use Central;
 use DBConnection;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
@@ -183,6 +184,8 @@ class Utf8mb4Command extends AbstractCommand implements ConfigurationCommandInte
                 }
             }
         }
+
+        Central::clearDatabaseSchemaChecksCache();
 
         if (!DBConnection::updateConfigProperty(DBConnection::PROPERTY_USE_UTF8MB4, true)) {
             throw new EarlyExitException(

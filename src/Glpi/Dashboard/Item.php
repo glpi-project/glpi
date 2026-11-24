@@ -139,7 +139,6 @@ class Item extends CommonDBChild
             // clean
             $card_options = self::cleanCardOptions($card_options);
             unset(
-                $card_options['force'],
                 $card_options['card_id'],
                 $card_options['gridstack_id']
             );

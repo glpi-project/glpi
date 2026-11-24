@@ -78,7 +78,7 @@
          </div>
       </div>
    </div>
-   <script>
+   <script nonce="{{ csp_nonce() }}">
       $(function () {
          {% for button in options['buttons'] %}
          $('#{{ options.id }}').on('click', '#{{ button['id']|default(options.id ~ '_btn_' ~ (loop.index0)) }}', function (event) {

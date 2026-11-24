@@ -57,6 +57,33 @@ class Software extends InventoryAsset
 {
     public const SEPARATOR = '$$$$';
 
+    /**
+     * Software columns that can be set from inventory data.
+     *
+     * Inventory data is not restricted to known properties, so the list of written columns must not be derived from it.
+     */
+    private const SOFTWARE_INVENTORY_COLUMNS = [
+        'comment',
+        'entities_id',
+        'is_recursive',
+        'manufacturers_id',
+        'name',
+        'softwarecategories_id',
+    ];
+
+    /**
+     * Software version columns that can be set from inventory data.
+     *
+     * Inventory data is not restricted to known properties, so the list of written columns must not be derived from it.
+     */
+    private const VERSION_INVENTORY_COLUMNS = [
+        'arch',
+        'comment',
+        'entities_id',
+        'is_recursive',
+        'operatingsystems_id',
+    ];
+
     /** @var array<string, int> */
     private array $softwares = [];
     /** @var array<string, int> */
@@ -749,13 +776,12 @@ class Software extends InventoryAsset
         global $CFG_GLPI;
 
         $software = new GSoftware();
-        $soft_fields = $DB->listFields($software->getTable());
-        $stmt = $stmt_types = null;
+        $stmt = null;
 
         foreach ($this->data as $val) {
             $skey = $this->getSoftwareKey($val->name, $val->manufacturers_id);
             if (!isset($this->softwares[$skey])) {
-                $stmt_columns = $this->cleanInputToPrepare((array) $val, $soft_fields);
+                $stmt_columns = $this->cleanInputToPrepare((array) $val, self::SOFTWARE_INVENTORY_COLUMNS);
 
                 $software->handleCategoryRules($stmt_columns, true);
                 //set create date
@@ -802,8 +828,7 @@ class Software extends InventoryAsset
         global $DB;
 
         $version = new SoftwareVersion();
-        $version_fields = $DB->listFields($version->getTable());
-        $stmt = $stmt_types = null;
+        $stmt = null;
 
         foreach ($this->data as $val) {
             $skey = $this->getSoftwareKey($val->name, $val->manufacturers_id);
@@ -821,7 +846,7 @@ class Software extends InventoryAsset
 
             if (!isset($this->versions[$vkey])) {
                 $version_name = $val->version;
-                $stmt_columns = $this->cleanInputToPrepare((array) $val, $version_fields);
+                $stmt_columns = $this->cleanInputToPrepare((array) $val, self::VERSION_INVENTORY_COLUMNS);
                 $stmt_columns['name'] = $version_name;
                 $stmt_columns['softwares_id'] = $softwares_id;
                 //set create date
@@ -859,25 +884,23 @@ class Software extends InventoryAsset
     /**
      * Clean input data
      *
-     * @param array<string, mixed> $input        Input data
-     * @param array<string>        $known_fields Table fields
+     * Returned array always contains exactly the given columns, in the given order,
+     * so it can be bound to a statement prepared from another row.
+     *
+     * @param array<string, mixed> $input   Input data
+     * @param list<string>         $columns Columns to keep
      *
      * @return array<string, mixed>
      */
-    private function cleanInputToPrepare(array $input, array $known_fields): array
+    private function cleanInputToPrepare(array $input, array $columns): array
     {
-        foreach (array_keys($input) as $column) {
-            if (!isset($known_fields[$column])) {
-                unset($input[$column]);
-            } else {
-                $key = md5($column . $input[$column]);
-                if (isset($this->known_links[$key])) {
-                    $input[$column] = $this->known_links[$key];
-                }
-            }
+        $cleaned = [];
+        foreach ($columns as $column) {
+            $value = $input[$column] ?? null;
+            $key = md5($column . $value);
+            $cleaned[$column] = $this->known_links[$key] ?? $value;
         }
-        ksort($input);
-        return $input;
+        return $cleaned;
     }
 
     /**

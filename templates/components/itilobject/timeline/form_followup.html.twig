@@ -40,7 +40,8 @@
 {% set can_update_kb = has_profile_right('knowbase', constant('UPDATE')) %}
 {% set nokb = params['nokb'] is defined or (params['nokb'] ?? false) == true %}
 {% set rand = random() %}
-{% set is_default_pending = call('PendingReason::isDefaultPending') %}
+{# Only used by the form. The display mode gets its default value in the parent template, which is not rendered yet. #}
+{% set is_default_pending = (form_mode ?? 'edit') != 'view' and call('PendingReason::isDefaultPending') %}
 
 {% set content_field_id = 'solution_content_' ~ rand %}
 
@@ -183,7 +184,7 @@
                               'icon_label': true,
                               'rand': rand,
                               'additional_attributes': {
-                                'onchange': 'toggleTimelinePrivate(this.checked, this)',
+                                'data-glpi-timeline-private-toggle': '',
                                 'data-testid': 'private-switch',
                               }
                            }
@@ -230,7 +231,7 @@
                                     id="enable-pending-reasons-{{ rand }}"
                                     role="button"
                                     {{ (item.fields['status'] == constant('CommonITILObject::WAITING') or is_default_pending) and not add_reopen ? 'checked' : '' }}
-                                    data-bs-toggle="collapse" data-bs-target="#pending-reasons-setup-{{ rand }}"
+                                    aria-controls="pending-reasons-setup-{{ rand }}"
                                     data-testid="pending-checkbox" />
                            </label>
                         </span>
@@ -239,6 +240,7 @@
                            class="collapse ps-2 py-1 flex-fill {{ show_pending_reasons_actions ? 'show' : '' }}"
                            aria-expanded="{{ show_pending_reasons_actions ? 'true' : 'false' }}"
                            id="pending-reasons-setup-{{ rand }}"
+                           data-testid="pending-reasons"
                         >
                            {{ include('components/itilobject/timeline/pending_reasons.html.twig') }}
                         </div>
@@ -281,7 +283,7 @@
          </form>
       </div>
 
-      <script type="text/javascript">
+      <script nonce="{{ csp_nonce() }}" type="text/javascript">
          function itilfollowuptemplate_update{{ rand }}(value) {
             $.ajax({
                url: `${CFG_GLPI.root_doc}/ajax/itilfollowup.php`,

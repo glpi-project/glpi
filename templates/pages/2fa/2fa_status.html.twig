@@ -60,7 +60,7 @@
       <button type="button" class="btn btn-outline-secondary" name="regenerate_backup_codes">
          {{ __('Regenerate backup codes') }}
       </button>
-      <script>
+      <script nonce="{{ csp_nonce() }}">
          $(function() {
 
             {% if regenerate_backup_codes %}

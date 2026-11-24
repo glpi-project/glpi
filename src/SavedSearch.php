@@ -78,6 +78,27 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return ['tools', self::class];
     }
 
+    /**
+     * `is_private` no longer grants any right in `CommonDBTM::can()`, but a user must keep full
+     * access to their own private searches, whatever their `bookmark_public` right.
+     */
+    public function can($ID, int $right, ?array &$input = null, null &$reauth_needed = null): bool
+    {
+        if (parent::can($ID, $right, $input, $reauth_needed)) {
+            return true;
+        }
+
+        $loaded = static::isNewID($ID) || (!$this->isNewItem() && $this->fields['id'] == $ID);
+        $users_id = Session::getLoginUserID();
+
+        return !$reauth_needed
+            && in_array($right, [READ, UPDATE, DELETE, PURGE, CREATE], true)
+            && $loaded
+            && (bool) ($this->fields['is_private'] ?? false)
+            && $users_id !== false
+            && (int) ($this->fields['users_id'] ?? 0) === (int) $users_id;
+    }
+
     public function canUpdateItem(): bool
     {
         return Session::haveRight(self::$rightname, UPDATE)

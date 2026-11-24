@@ -702,25 +702,9 @@ class DBmysql
             'SELECT'     => ['information_schema.columns.table_name as TABLE_NAME'],
             'DISTINCT'   => true,
             'FROM'       => 'information_schema.columns',
-            'INNER JOIN' => [
-                'information_schema.tables' => [
-                    'FKEY' => [
-                        'information_schema.tables'  => 'table_name',
-                        'information_schema.columns' => 'table_name',
-                        [
-                            'AND' => [
-                                'information_schema.tables.table_schema' => new QueryExpression(
-                                    static::quoteName('information_schema.columns.table_schema')
-                                ),
-                            ],
-                        ],
-                    ],
-                ],
-            ],
             'WHERE'     => [
-                'information_schema.tables.table_schema' => $this->dbdefault,
-                'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
-                'information_schema.tables.table_type'    => 'BASE TABLE',
+                'information_schema.columns.table_schema' => $this->dbdefault,
+                'information_schema.columns.table_name'   => $this->getGlpiTablesNamesSubQuery($exclude_plugins),
                 ['NOT' => ['information_schema.columns.collation_name' => null]],
                 ['NOT' => ['information_schema.columns.collation_name' => ['LIKE', 'utf8mb4\_%']]],
             ],
@@ -728,7 +712,6 @@ class DBmysql
 
         if ($exclude_plugins) {
             $tables_query['WHERE'][] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'glpi\_plugin\_%']]];
-            $columns_query['WHERE'][] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'glpi\_plugin\_%']]];
         }
 
         $iterator = $this->request([
@@ -757,33 +740,13 @@ class DBmysql
             'SELECT'       => ['information_schema.columns.table_name as TABLE_NAME'],
             'DISTINCT'     => true,
             'FROM'         => 'information_schema.columns',
-            'INNER JOIN'   => [
-                'information_schema.tables' => [
-                    'FKEY' => [
-                        'information_schema.tables'  => 'table_name',
-                        'information_schema.columns' => 'table_name',
-                        [
-                            'AND' => [
-                                'information_schema.tables.table_schema' => new QueryExpression(
-                                    static::quoteName('information_schema.columns.table_schema')
-                                ),
-                            ],
-                        ],
-                    ],
-                ],
-            ],
             'WHERE'       => [
-                'information_schema.tables.table_schema' => $this->dbdefault,
-                'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
-                'information_schema.tables.table_type'   => 'BASE TABLE',
-                'information_schema.columns.data_type'   => 'datetime',
+                'information_schema.columns.table_schema' => $this->dbdefault,
+                'information_schema.columns.table_name'   => $this->getGlpiTablesNamesSubQuery($exclude_plugins),
+                'information_schema.columns.data_type'    => 'datetime',
             ],
             'ORDER'       => ['TABLE_NAME'],
         ];
-
-        if ($exclude_plugins) {
-            $query['WHERE'][] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'glpi\_plugin\_%']]];
-        }
 
         $iterator = $this->request($query);
 
@@ -812,25 +775,9 @@ class DBmysql
                 'information_schema.columns.extra as EXTRA',
             ],
             'FROM'         => 'information_schema.columns',
-            'INNER JOIN'   => [
-                'information_schema.tables' => [
-                    'FKEY' => [
-                        'information_schema.tables'  => 'table_name',
-                        'information_schema.columns' => 'table_name',
-                        [
-                            'AND' => [
-                                'information_schema.tables.table_schema' => new QueryExpression(
-                                    static::quoteName('information_schema.columns.table_schema')
-                                ),
-                            ],
-                        ],
-                    ],
-                ],
-            ],
             'WHERE'       => [
-                'information_schema.tables.table_schema'  => $this->dbdefault,
-                'information_schema.tables.table_name'    => ['LIKE', 'glpi\_%'],
-                'information_schema.tables.table_type'    => 'BASE TABLE',
+                'information_schema.columns.table_schema' => $this->dbdefault,
+                'information_schema.columns.table_name'   => $this->getGlpiTablesNamesSubQuery($exclude_plugins),
                 [
                     'OR' => [
                         ['information_schema.columns.column_name' => 'id'],
@@ -844,13 +791,38 @@ class DBmysql
             'ORDER'       => ['TABLE_NAME'],
         ];
 
-        if ($exclude_plugins) {
-            $query['WHERE'][] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'glpi\_plugin\_%']]];
-        }
-
         $iterator = $this->request($query);
 
         return $iterator;
+    }
+
+    /**
+     * Returns a subquery that lists the GLPI tables of the current database, to filter
+     * `information_schema.columns` on.
+     *
+     * A join on `information_schema.tables` would make the server read the tables of
+     * every database it hosts.
+     *
+     * @param bool $exclude_plugins
+     *
+     * @return QuerySubQuery
+     */
+    private function getGlpiTablesNamesSubQuery(bool $exclude_plugins): QuerySubQuery
+    {
+        $criteria = [
+            'information_schema.tables.table_schema' => $this->dbdefault,
+            'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
+            'information_schema.tables.table_type'   => 'BASE TABLE',
+        ];
+        if ($exclude_plugins) {
+            $criteria[] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'glpi\_plugin\_%']]];
+        }
+
+        return new QuerySubQuery([
+            'SELECT' => ['information_schema.tables.table_name'],
+            'FROM'   => 'information_schema.tables',
+            'WHERE'  => $criteria,
+        ]);
     }
 
     /**

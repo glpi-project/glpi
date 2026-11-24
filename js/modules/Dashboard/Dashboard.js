@@ -56,6 +56,81 @@ window.GLPI.Dashboard = {
         });
 
         return this.dashboards[current_dashboard_index];
+    },
+
+    /**
+     * Build the CSV content of a chart: one line per item (pie, sunburst) or per category (bars, lines)
+     * one column per series
+     *
+     * @param {Object} option ECharts options of the chart
+     * @param {string} delimiter
+     * @param {{name: string, value: string}} headers
+     * @return {string}
+     */
+    getChartCsv: function (option, delimiter, headers) {
+        const to_array = (value) => [].concat(value ?? []);
+        const get_value = (item) => (item !== null && typeof item === 'object') ? (item.value ?? '') : (item ?? '');
+        const escape = (field) => {
+            if (typeof field === 'number') {
+                return String(field);
+            }
+            let text = String(field);
+            // Avoid formulas execution when the file is opened in a spreadsheet
+            if (/^[=+\-@\t\r]/.test(text)) {
+                text = `'${text}`;
+            }
+            return `"${text.replaceAll('"', '""')}"`;
+        };
+
+        const series = to_array(option.series);
+        let rows = [];
+        if (series.length > 0 && series[0].type === 'pie') {
+            rows.push([headers.name, headers.value]);
+            to_array(series[0].data)
+                // the half pie has a filler item to hide its lower half
+                .filter((item) => !item.is_filler)
+                .forEach((item) => rows.push([item.name, get_value(item)]));
+        } else if (series.length > 0 && series[0].type === 'sunburst') {
+            rows.push([headers.name, headers.value]);
+            const add_nodes = (nodes, path) => {
+                to_array(nodes).forEach((node) => {
+                    const node_path = [...path, node.name];
+                    rows.push([node_path.join(' > '), get_value(node)]);
+                    add_nodes(node.children, node_path);
+                });
+            };
+            add_nodes(series[0].data, []);
+        } else {
+            const category_axis = [...to_array(option.xAxis), ...to_array(option.yAxis)]
+                .find((axis) => axis.type === 'category');
+            const categories = to_array(category_axis?.data).map(get_value);
+            const series_data = series.map((serie) => to_array(serie.data));
+            rows.push([headers.name, ...series.map((serie) => serie.name || headers.value)]);
+            rows = rows.concat(categories.map(
+                (category, index) => [category, ...series_data.map((data) => get_value(data[index] ?? ''))]
+            ));
+        }
+
+        return rows.map((row) => row.map(escape).join(delimiter)).join('\r\n');
+    },
+
+    /**
+     * Download the data of a chart as a CSV file named after its card
+     *
+     * @param {Object} chart ECharts instance
+     */
+    exportChartToCsv: function (chart) {
+        const option = chart.getOption();
+        // getOption() returns the components as arrays
+        const csv_options = option.toolbox[0].feature.myExportCsv;
+        const csv = this.getChartCsv(option, csv_options.delimiter, csv_options.headers);
+        const label = $(chart.getDom()).closest('.g-chart').find('.main-label').text().trim();
+
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(new Blob([`\ufeff${csv}`], {type: 'text/csv;charset=utf-8'}));
+        link.download = `${(label || 'chart').replace(/[\\/:*?\x22<>|]/g, '_')}.csv`;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(link.href));
     }
 };
 
@@ -102,10 +177,9 @@ class GLPIDashboard {
         this.dash_width = 0;
         this.cell_margin = 3;
         this.cols = 26;
-        this.cache_key = "";
         this.filters = "{}";
         this.filters_selector = "";
-        this._filters_cache = null;
+        this._filters_cache = {};
 
         GridStack.renderCB = (el, w) => {
             el.parentElement.innerHTML = w.content;
@@ -150,7 +224,6 @@ class GLPIDashboard {
         this.dash_width   = this.element.width();
         this.cell_margin  = options.cell_margin;
         this.cols         = options.cols;
-        this.cache_key    = options.cache_key || "";
         this.filters_selector = this.elem_id + ' .filters';
 
         // compute the width offset of gridstack container relatively to viewport
@@ -668,7 +741,6 @@ class GLPIDashboard {
         form_data.card_options.gridstack_id = form_data.gridstack_id;
 
         const args = form_data.card_options;
-        args.force = true;
         args.apply_filters = this.getFiltersFromDB();
 
         // add the new widget
@@ -681,7 +753,6 @@ class GLPIDashboard {
                 action:    'get_card',
                 dashboard: this.current_name,
                 card_id:   form_data.card_id,
-                cache_key: this.cache_key,
                 args:      args,
             }
         }).then((card_html) => {
@@ -1170,7 +1241,6 @@ class GLPIDashboard {
 
         // Callers that already know the filters can pass them in to avoid a redundant synch round-trip to the server
         filters = filters || this.getFiltersFromDB();
-        const force = (specific_one.length > 0 ? 1 : 0);
 
         const requested_cards = [];
         const card_ajax_data = [];
@@ -1190,16 +1260,14 @@ class GLPIDashboard {
             // append filters
             card_opt.apply_filters = filters;
 
-            card_ajax_data.push({
+            const card_data = {
                 'card_id': card_id,
-                'force': force,
                 'args': card_opt,
-                'c_cache_key': card_opt.cache_key || ""
-            });
+            };
+            card_ajax_data.push(card_data);
             requested_cards.push({
                 'card_el': card,
-                'card_id': card_id,
-                'args': card_opt,
+                ...card_data,
             });
         });
 
@@ -1213,10 +1281,7 @@ class GLPIDashboard {
                     'action':      'get_card',
                     'dashboard':   this.current_name,
                     'card_id':     requested_card.card_id,
-                    'force':       force,
                     'args':        requested_card.args,
-                    'd_cache_key': this.cache_key,
-                    'c_cache_key': requested_card.args.cache_key || ""
                 };
                 if (this.embed) {
                     data.embed        = 1;
@@ -1242,8 +1307,6 @@ class GLPIDashboard {
             // Single ajax mode, spawn a single request
             const data = {
                 'dashboard': this.current_name,
-                'force': (specific_one.length > 0 ? 1 : 0),
-                'd_cache_key': this.cache_key,
                 'cards': card_ajax_data,
                 'action': 'get_cards'
             };
@@ -1350,10 +1413,11 @@ class GLPIDashboard {
             return [];
         }
 
-        if (this._filters_cache !== null) {
-            // Avoid a synchronous round trip to the server on every call, several of which
-            // happen on a single dashboard load (init, refresh, filter changes...).
-            return this._filters_cache;
+        // Avoid a synchronous round trip to the server on every call, several of which
+        // happen on a single dashboard load (init, refresh, filter changes...).
+        // Cache is keyed by dashboard, as the user can switch dashboards without a page reload.
+        if (this._filters_cache[this.current_name] !== undefined) {
+            return this._filters_cache[this.current_name];
         }
 
         let filters;
@@ -1370,9 +1434,9 @@ class GLPIDashboard {
             }
         });
 
-        this._filters_cache = filters || {};
+        this._filters_cache[this.current_name] = filters || {};
 
-        return this._filters_cache;
+        return this._filters_cache[this.current_name];
     }
 
     /**
@@ -1386,7 +1450,7 @@ class GLPIDashboard {
             filters[this.current_name] = sub_filters;
         }
 
-        this._filters_cache = sub_filters;
+        this._filters_cache[this.current_name] = sub_filters;
 
         return $.ajax({
             method: 'POST',

@@ -2054,7 +2054,7 @@ HTML;
         ];
         // language=Twig
         $js = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-            <script type="module">
+            <script nonce="{{ csp_nonce() }}" type="module">
                 function exportToCSV() {
                     location.href = '{{ csv_link|e('js') }}';
                 }
@@ -2214,7 +2214,7 @@ HTML;
         ];
         // language=Twig
         $js = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-            <script type="module">
+            <script nonce="{{ csp_nonce() }}" type="module">
                 function exportToCSV() {
                     location.href = '{{ csv_link|e('js') }}';
                 }

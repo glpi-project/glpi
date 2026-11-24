@@ -156,19 +156,16 @@ class GenericNetworkAssetInventoryTest extends InventoryTestCase
             'date_creation' => $equipment->fields['date_creation'],
             'date_mod' => $equipment->fields['date_mod'],
             'last_inventory_update' => $date_now,
+            'last_boot' => null,
+            'sysdescr' => null,
+            'snmpcredentials_id' => 4,
+            'ram' => null,
+            'cpu' => 4,
+            'uptime' => '482 days, 05:42:18.50',
+            'last_pages_counter' => 0,
             'custom_fields' => '[]',
             'groups_id' => [],
             'groups_id_tech' => [],
-            /**
-            Present in standard NetworkEquipment
-            'ram' => null,
-            'networks_id' => 0,
-            'ticket_tco' => '0.0000',
-            'sysdescr' => null,
-            'cpu' => 4,
-            'uptime' => '482 days, 05:42:18.50',
-            'snmpcredentials_id' => $snmpcredentials_id,
-             */
         ];
         $this->assertIsArray($equipment->fields);
         $this->assertSame($expected, $equipment->fields);

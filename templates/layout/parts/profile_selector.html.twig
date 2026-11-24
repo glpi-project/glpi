@@ -75,7 +75,7 @@
 {% else %}
     <div class="dropdown dropstart" id="entity-tree-dropdown-{{ rand }}"></div>
 
-    <script type="module">
+    <script nonce="{{ csp_nonce() }}" type="module">
         window.Vue.createApp(window.Vue.components['EntitySelector/EntitySelector'].component, {
             current_entity: '{{ current_entity|e('js') }}',
             current_entity_short: '{{ current_entity_short|e('js') }}',

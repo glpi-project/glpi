@@ -121,7 +121,7 @@
          </div>
       </div>
 
-      <script type="text/javascript">
+      <script nonce="{{ csp_nonce() }}" type="text/javascript">
          function change_task_state(tasks_id, target) {
             $.post(`${CFG_GLPI.root_doc}/ajax/timeline.php`,
                {'action':     'change_task_state',

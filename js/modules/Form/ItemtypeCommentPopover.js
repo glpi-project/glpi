@@ -99,6 +99,28 @@ export default class ItemtypeCommentPopover {
      * @param {number} items_id
      */
     attachTo(element, itemtype, items_id) {
+        // The comment is displayed on hover only: it is requested on the first hover.
+        $(element).one('mouseenter', () => {
+            this.#load(itemtype, items_id).then((unique_id) => {
+                if (!unique_id) {
+                    return;
+                }
+
+                $(element).attr('data-glpi-popover-source', unique_id);
+                if ($(element).is(':hover')) {
+                    // The popover listens to the mouse entering the element, which already happened.
+                    $(element).get(0).dispatchEvent(new MouseEvent('mouseover', {bubbles: true}));
+                }
+            });
+        });
+    }
+
+    /**
+     * @param {string} itemtype
+     * @param {number} items_id
+     * @returns {Promise<string|null>} ID of the element that contains the comment, if any
+     */
+    #load(itemtype, items_id) {
         const key = `${itemtype}_${items_id}`;
 
         if (!this.requests[key]) {
@@ -122,10 +144,6 @@ export default class ItemtypeCommentPopover {
             });
         }
 
-        this.requests[key].then((unique_id) => {
-            if (unique_id) {
-                $(element).attr('data-glpi-popover-source', unique_id);
-            }
-        });
+        return this.requests[key];
     }
 }

@@ -53,7 +53,7 @@
         "monolog/monolog": "^3.12",
         "paragonie/sodium_compat": "^2.5",
         "phpdocumentor/reflection-docblock": "^6.0",
-        "phpoffice/phpspreadsheet": "^5.10",
+        "phpoffice/phpspreadsheet": "^5.11",
         "psr/cache": "^3.0",
         "psr/container": "^1.1",
         "psr/http-message": "^2.0",
@@ -117,8 +117,8 @@
         "brianium/paratest": "^7.18",
         "friendsofphp/php-cs-fixer": "^3.95",
         "friendsoftwig/twigcs": "^6.6",
-        "glpi-project/phpstan-glpi": "^1.4",
-        "glpi-project/rector-glpi": "^1.2",
+        "glpi-project/phpstan-glpi": "^1.5",
+        "glpi-project/rector-glpi": "^1.3",
         "mikey179/vfsstream": "^1.6",
         "php-parallel-lint/php-parallel-lint": "^1.4",
         "phpstan/phpstan": "^2.3",
@@ -210,7 +210,11 @@
         ],
         "patch": [
             "VENDOR_DIR='vendor/guzzlehttp/guzzle/' PATCH_FILE='tools/patches/guzzlehttp-guzzle-restrict-http-methods.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
-            "VENDOR_DIR='vendor/symfony/http-client/' PATCH_FILE='tools/patches/symfony-http-client-no-private-network-allow-list.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'"
+            "VENDOR_DIR='vendor/mikey179/vfsstream/' PATCH_FILE='tools/patches/mikey179-vfsstream-php8.6.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/rlanvin/php-rrule/' PATCH_FILE='tools/patches/rlanvin-php-rrule-php8.6.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/scssphp/source-span/' PATCH_FILE='tools/patches/scssphp-source-span-php8.6.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/symfony/http-client/' PATCH_FILE='tools/patches/symfony-http-client-no-private-network-allow-list.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/thecodingmachine/safe/' PATCH_FILE='tools/patches/thecodingmachine-safe-php8.6.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'"
         ]
     }
 }

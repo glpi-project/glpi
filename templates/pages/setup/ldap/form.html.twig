@@ -72,7 +72,7 @@
         helper: __("Indicates whether a simple bind operation should be used during connection to LDAP server. Disabling this behaviour can be required when LDAPS bind is used.")
     }) }}
     {{ fields.nullField() }}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         $(() => {
             $('select[name="use_bind"]').on('change', (e) => {
                 const bind_fields = $('.bind_field');

@@ -35,6 +35,7 @@
 
 use donatj\UserAgent\UserAgentParser;
 use Glpi\Application\Environment;
+use Glpi\Application\View\ScriptType;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
@@ -52,6 +53,7 @@ use Glpi\Inventory\Inventory;
 use Glpi\Kernel\Kernel;
 use Glpi\Locale\LanguageRegistry;
 use Glpi\Plugin\Hooks;
+use Glpi\Security\ContentSecurityPolicy\NonceContext;
 use Glpi\Security\SecurityConfig;
 use Glpi\System\Log\LogViewer;
 use Glpi\Toolbox\FrontEnd;
@@ -3033,7 +3035,7 @@ JS;
         bool $init_on_demand = false,
         array $plugins_to_remove = [],
     ) {
-        global $CFG_GLPI, $DB;
+        global $DB;
 
         // Apply all GLPI styles to editor content
         $theme = ThemeManager::getInstance()->getCurrentTheme();
@@ -3089,28 +3091,11 @@ JS;
 
         $pluginsjs = json_encode(array_values($plugins));
 
-        $language_RFC5646    = str_replace('_', '-', Session::getLanguage());      // convert to RFC5646 format (fr_FR -> fr-FR)
-        $language_regionless = preg_replace('/_.*$/', '', Session::getLanguage()); // fallback to regionless locale (fr_FR -> fr)
-        $expected_languages  = [$language_RFC5646, $language_regionless];
-        $main_language       = LanguageRegistry::getMainLanguage($language_regionless);
-        if ($main_language !== null) {
-            $expected_languages[] = str_replace('_', '-', $main_language); // fallback to main language (fr_CA -> fr_FR)
-        }
-        $language_opts = '';
-        foreach ($expected_languages as $language) {
-            if (str_starts_with($language, 'en')) {
-                // No need to hit filesystem for english, this is the default language and there is no translation files
-                // for it.
-                continue;
-            }
-            if (file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs8/$language.js")) {
-                $language_opts = json_encode([
-                    'language' => $language,
-                    'language_url' => $CFG_GLPI['root_doc'] . '/lib/tinymce-i18n/langs8/' . $language . '.js',
-                ]);
-                break;
-            }
-        }
+        // Note: "language_url" is not set here because tinymce doesn't have an option
+        // to supply the CSP nonce to be used for the script found at that url.
+        // This mean we must load the scrip ourselves in the "case tinymce" of self::requireJs().
+        $language = self::getTinymceLanguage();
+        $language_opts = $language !== null ? json_encode(['language' => $language]) : '';
 
         $mandatory_field_msg = jsescape(__('The %s field is mandatory'));
 
@@ -3342,6 +3327,32 @@ JS;
         } else {
             return  Html::scriptBlock($js);
         }
+    }
+
+    /**
+     * Get the TinyMCE language matching the session language, or null if none is available.
+     */
+    private static function getTinymceLanguage(): ?string
+    {
+        $language_RFC5646    = str_replace('_', '-', Session::getLanguage());      // convert to RFC5646 format (fr_FR -> fr-FR)
+        $language_regionless = preg_replace('/_.*$/', '', Session::getLanguage()); // fallback to regionless locale (fr_FR -> fr)
+        $expected_languages  = [$language_RFC5646, $language_regionless];
+        $main_language       = LanguageRegistry::getMainLanguage($language_regionless);
+        if ($main_language !== null) {
+            $expected_languages[] = str_replace('_', '-', $main_language); // fallback to main language (fr_CA -> fr_FR)
+        }
+        foreach ($expected_languages as $language) {
+            if (str_starts_with($language, 'en')) {
+                // No need to hit filesystem for english, this is the default language and there is no translation files
+                // for it.
+                continue;
+            }
+            if (file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs8/$language.js")) {
+                return $language;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -3710,7 +3721,9 @@ JAVASCRIPT
         if ($action) {
             $out .= "<form method='POST' action=\"" . htmlescape($action) . "\">";
             $out .= "<span class='responsive_hidden'>" . __s('Display (number of items)') . "</span>&nbsp;";
-            $out .= Dropdown::showListLimit("submit()", false);
+            $out .= Dropdown::showListLimit('', false, [
+                'add_data_attributes' => ['glpi-submit-on-change' => ''],
+            ]);
         } else {
             $out .= "<form method='POST' action =''>\n";
             $out .= "<span class='responsive_hidden'>" . __s('Display (number of items)') . "</span>&nbsp;";
@@ -4151,7 +4164,12 @@ JS;
             }
         }
 
-        $output .= Html::scriptBlock('$(function() {' . $js . '});');
+        // The script comes before its select, so it waits for the DOM while the page is loading. In a content received
+        // from an AJAX request the select is already there, and a jQuery ready callback would only run after the
+        // content is painted.
+        $output .= Html::scriptBlock(
+            '(function(init) { if (document.readyState === "loading") { $(init); } else { init(); } })(function() {' . $js . '});'
+        );
         $output .= self::select($name, $values, $options);
 
         return $output;
@@ -4504,9 +4522,14 @@ HTML;
      * @psalm-taint-escape html
      * @psalm-taint-escape has_quotes
      */
-    public static function scriptBlock($script)
+    public static function scriptBlock($script, ScriptType $type = ScriptType::Javascript)
     {
-        return sprintf('<script type="text/javascript">%s</script>', $script);
+        return sprintf(
+            '<script type="%s" nonce="%s">%s</script>',
+            htmlescape($type->value),
+            htmlescape(NonceContext::getServiceInstance()->getNonce()),
+            $script,
+        );
     }
 
 
@@ -4546,7 +4569,12 @@ HTML;
         // Convert filesystem path to URL path (fix issues with Windows directory separator)
         $url = str_replace(DIRECTORY_SEPARATOR, '/', $url);
 
-        return sprintf('<script type="%s" src="%s"></script>', htmlescape($type), htmlescape($url));
+        return sprintf(
+            '<script type="%s" src="%s" nonce="%s"></script>',
+            htmlescape($type),
+            htmlescape($url),
+            htmlescape(NonceContext::getServiceInstance()->getNonce()),
+        );
     }
 
 
@@ -5363,6 +5391,10 @@ JS);
                 break;
             case 'tinymce':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/tinymce.js';
+                $tinymce_language = self::getTinymceLanguage();
+                if ($tinymce_language !== null) {
+                    $_SESSION['glpi_js_toload'][$name][] = "lib/tinymce-i18n/langs8/$tinymce_language.js";
+                }
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/FormTags.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/UserMention.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/ContentTemplatesParameters.js';

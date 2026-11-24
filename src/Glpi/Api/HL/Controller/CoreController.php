@@ -46,6 +46,7 @@ use Glpi\Api\HL\RouteVersion;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Error\ErrorHandler;
+use Glpi\Http\CsrfChecker;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -360,36 +361,38 @@ EOT,
         });
         $doc_json_paths = json_encode($doc_json_paths, JSON_THROW_ON_ERROR);
 
+        $script = Html::scriptBlock(<<<JAVASCRIPT
+            const ui = window.SwaggerUIBundle({
+                urls: {$doc_json_paths},
+                dom_id: '#swagger-ui',
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                layout: 'StandaloneLayout',
+                docExpansion: 'none',
+                validatorUrl: 'none',
+                filter: true,
+                showExtensions: true,
+                oauth2RedirectUrl: '{$CFG_GLPI['root_doc']}/api.php/swagger-oauth-redirect',
+                // Sort operations by name and then by method
+                operationsSorter: (a, b) => {
+                    const method_order = ['get', 'post', 'put', 'patch', 'delete'];
+                    if (a.get('path') === b.get('path')) {
+                        return method_order.indexOf(a.get('method')) - method_order.indexOf(b.get('method'));
+                    }
+                    return a.get('path').localeCompare(b.get('path'));
+                },
+                tagsSorter: (a, b) => a.localeCompare(b),
+            });
+        JAVASCRIPT);
+
         $swagger_content .= <<<HTML
         <link rel="shortcut icon" type="images/x-icon" href="$favicon" />
         </head>
         <body style="margin:0; padding:0;">
             <div id="swagger-ui"></div>
-            <script>
-                const ui = window.SwaggerUIBundle({
-                    urls: {$doc_json_paths},
-                    dom_id: '#swagger-ui',
-                    presets: [
-                      SwaggerUIBundle.presets.apis,
-                      SwaggerUIStandalonePreset
-                    ],
-                    layout: 'StandaloneLayout',
-                    docExpansion: 'none',
-                    validatorUrl: 'none',
-                    filter: true,
-                    showExtensions: true,
-                    oauth2RedirectUrl: '{$CFG_GLPI['root_doc']}/api.php/swagger-oauth-redirect',
-                    // Sort operations by name and then by method
-                    operationsSorter: (a, b) => {
-                        const method_order = ['get', 'post', 'put', 'patch', 'delete'];
-                        if (a.get('path') === b.get('path')) {
-                            return method_order.indexOf(a.get('method')) - method_order.indexOf(b.get('method'));
-                        }
-                        return a.get('path').localeCompare(b.get('path'));
-                    },
-                    tagsSorter: (a, b) => a.localeCompare(b),
-                });
-            </script>
+            $script
         </body>
 HTML;
 
@@ -689,7 +692,13 @@ HTML;
             $user = new \Glpi\OAuth\User();
             $user->setIdentifier($user_id);
             $auth_request->setUser($user);
-            if (!$request->hasParameter('accept') && !$request->hasParameter('deny')) {
+            // Request parameters merge the query string and the body: only what the form posted counts,
+            // otherwise a URL carrying `accept` would turn a click on "Deny" into an approval.
+            $posted = array_diff_key($request->getParameters(), $request->getQueryParams());
+            $has_decision = array_key_exists('accept', $posted) || array_key_exists('deny', $posted);
+            // The consent decision is only accepted from the form POST. A decision passed in a GET
+            // query string would let any third-party page approve the client on behalf of the user.
+            if (!$has_decision || $request->getMethod() !== 'POST') {
                 // Display the authorization page
                 $glpi_user = new User();
                 $glpi_user->getFromDB($user_id);
@@ -702,7 +711,25 @@ HTML;
                 return new Response(200, ['Content-Type' => 'text/html'], $authorize_form);
             }
 
-            $auth_request->setAuthorizationApproved($request->hasParameter('accept'));
+            // API routes are stateless and skipped by the global CSRF check, so it is done here.
+            $server_var = [
+                'REQUEST_METHOD'      => $request->getMethod(),
+            ];
+            if ($request->hasHeader('Sec-Fetch-Site')) {
+                $server_var['HTTP_SEC_FETCH_SITE'] = $request->getHeaderLine('Sec-Fetch-Site');
+            }
+            if ($request->hasHeader('Origin')) {
+                $server_var['HTTP_ORIGIN'] = $request->getHeaderLine('Origin');
+            }
+            if ($request->hasHeader('Host')) {
+                $server_var['HTTP_HOST'] = $request->getHeaderLine('Host');
+            }
+            $symfony_request = new \Symfony\Component\HttpFoundation\Request(server: $server_var);
+            if ((new CsrfChecker())->isRequestSafeFromCSRF($symfony_request) === false) {
+                return self::getAccessDeniedErrorResponse();
+            }
+
+            $auth_request->setAuthorizationApproved(array_key_exists('accept', $posted));
             /** @var Response $response */
             $response = Server::getAuthorizationServer()->completeAuthorizationRequest($auth_request, new Response());
             return $response;
@@ -735,11 +762,14 @@ HTML;
     #[RouteVersion(introduced: '2.0')]
     public function swaggerOAuthRedirect(Request $request): Response
     {
-        $js_path = \htmlescape(Html::getPrefixedUrl('/lib/swagger-ui-dist/oauth2-redirect.js'));
+        $script = Html::script(
+            url: '/lib/swagger-ui-dist/oauth2-redirect.js',
+            minify: false
+        );
         $content = <<<HTML
 <html lang="en-US">
 <head>
-<script src="$js_path"></script>
+$script
 </head>
 <body>
 </body>

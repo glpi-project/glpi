@@ -45,6 +45,7 @@ use Glpi\Toolbox\MapperInterface;
 use InvalidArgumentException;
 use LogicException;
 use Override;
+use User;
 
 final class DatabaseMapper implements MapperInterface
 {
@@ -156,22 +157,41 @@ final class DatabaseMapper implements MapperInterface
 
     private function tryTofindOneRowByName(string $itemtype, string $name): ?array
     {
-        global $DB;
-
         if (!$this->isValidItemtype($itemtype)) {
             throw new InvalidArgumentException();
         }
 
         $item = getItemForItemtype($itemtype);
+        if ($item === false) {
+            throw new InvalidArgumentException();
+        }
+
+        if ($item instanceof CommonTreeDropdown) {
+            return $this->findOneRow($item, ['completename' => $name]);
+        }
+
+        if ($item instanceof User) {
+            // Users without a real name are exported using their login, look
+            // for it first so that another user displayed with the same name
+            // does not make it ambiguous
+            return $this->findOneRow($item, ['name' => $name])
+                ?? $this->findOneRow($item, $this->getUserFriendlyNameCriteria($name));
+        }
+
+        return $this->findOneRow($item, ['name' => $name]);
+    }
+
+    /**
+     * @param array<mixed> $condition
+     * @return array<string, mixed>|null
+     */
+    private function findOneRow(CommonDBTM $item, array $condition): ?array
+    {
+        global $DB;
+
         $query = [
             'FROM' => $item::getTable(),
         ];
-
-        if ($item instanceof CommonTreeDropdown) {
-            $condition = ['completename' => $name];
-        } else {
-            $condition = ['name' => $name];
-        }
 
         // Check entities
         if ($item->isEntityAssign()) {
@@ -190,6 +210,44 @@ final class DatabaseMapper implements MapperInterface
             return null;
         }
         return current($rows);
+    }
+
+    /**
+     * Users with a real name are exported using their friendly name, which is
+     * their real name followed or preceded by their first name (depending on
+     * the names format preference of the exporting user).
+     *
+     * As both names may contain spaces, every split of the name on a space is
+     * tried, so that the criteria only rely on the indexed name columns.
+     *
+     * @return array<mixed>
+     */
+    private function getUserFriendlyNameCriteria(string $name): array
+    {
+        $criteria = [
+            [
+                'realname' => $name,
+                'OR' => [
+                    ['firstname' => null],
+                    ['firstname' => ''],
+                ],
+            ],
+        ];
+
+        $parts = explode(' ', $name);
+        $nb_parts = count($parts);
+        for ($i = 1; $i < $nb_parts; $i++) {
+            $before = implode(' ', array_slice($parts, 0, $i));
+            $after = implode(' ', array_slice($parts, $i));
+            if ($before === '' || $after === '') {
+                continue;
+            }
+
+            $criteria[] = ['realname' => $before, 'firstname' => $after];
+            $criteria[] = ['firstname' => $before, 'realname' => $after];
+        }
+
+        return ['OR' => $criteria];
     }
 
     /**

@@ -63,11 +63,12 @@ class Widget
      * Get toolbox options for ECharts, with colors adapted to the widget palette.
      * @param string $fg_color
      * @param string $bg_color
+     * @param bool   $csv_export Add a CSV export button, its onclick callback must be set on the client side
      * @return array<string, mixed>
      */
-    public static function getEChartsToolboxOptions(string $fg_color, string $bg_color): array
+    public static function getEChartsToolboxOptions(string $fg_color, string $bg_color, bool $csv_export = false): array
     {
-        return [
+        $options = [
             'show'    => false,
             'feature' => [
                 'dataView'    => [
@@ -100,6 +101,29 @@ class Widget
                 ],
             ],
         ];
+
+        if ($csv_export) {
+            // ECharts only accepts custom features whose name starts with "my"
+            $options['feature']['myExportCsv'] = [
+                'show'      => true,
+                'title'     => __('Export to CSV'),
+                'icon'      => 'path://M14,3v4a1,1,0,0,0,1,1h4 M17,21h-10a2,2,0,0,1,-2,-2v-14a2,2,0,0,1,2,-2h7l5,5v11a2,2,0,0,1,-2,2z M12,17v-6 M9.5,14.5l2.5,2.5l2.5,-2.5',
+                'emphasis'  => [
+                    'iconStyle' => [
+                        'color' => $fg_color,
+                        'textBackgroundColor' => $bg_color,
+                        'textPadding' => 5,
+                    ],
+                ],
+                'delimiter' => $_SESSION['glpicsv_delimiter'] ?? ';',
+                'headers'   => [
+                    'name'  => __('Name'),
+                    'value' => __('Value'),
+                ],
+            ];
+        }
+
+        return $options;
     }
 
     /**
@@ -835,7 +859,7 @@ HTML;
                 'trigger'      => 'item',
                 'appendToBody' => true,
             ],
-            'toolbox' => self::getEChartsToolboxOptions($dark_fg_color, $dark_bg_color),
+            'toolbox' => self::getEChartsToolboxOptions($dark_fg_color, $dark_bg_color, true),
             'series' => [
                 [
                     'type'              => 'pie',
@@ -907,8 +931,10 @@ HTML;
         if ($p['half']) {
             $options['series'][0]['center'] = ['50%', '100%'];
             $options['series'][0]['data'][] = [
-                'name'  => '',
-                'value' => $total,
+                'name'      => '',
+                'value'     => $total,
+                // excluded from the CSV export
+                'is_filler' => true,
             ];
         }
 
@@ -919,15 +945,18 @@ HTML;
         ];
         // language=Twig
         $js = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-            <script type="module">
+            <script nonce="{{ csp_nonce() }}" type="module">
                 (async () => {
                     await import('/js/modules/Dashboard/Dashboard.js');
 
                     const target = GLPI.Dashboard.getActiveDashboard() ?
                         GLPI.Dashboard.getActiveDashboard().element.find('#{{ chart_id }} .chart')
                         : $('#{{ chart_id }} .chart');
+                    const chart_options = {{ options|json_encode|raw }};
+                    chart_options.toolbox.feature.myExportCsv.onclick = () => GLPI.Dashboard.exportChartToCsv(myChart);
+
                     const myChart = echarts.init(target[0]);
-                    myChart.setOption({{ options|json_encode|raw }});
+                    myChart.setOption(chart_options);
                     if ({{ side_legend ? 'true' : 'false' }}) {
                         // In a wide card, the legend is displayed on the right side of the chart instead of below it
                         const place_legend = () => {
@@ -1077,7 +1106,7 @@ TWIG, $twig_params);
                 'trigger'      => 'item',
                 'appendToBody' => true,
             ],
-            'toolbox' => self::getEChartsToolboxOptions($dark_fg_color, $dark_bg_color),
+            'toolbox' => self::getEChartsToolboxOptions($dark_fg_color, $dark_bg_color, true),
             'series'  => [
                 [
                     'type'      => 'sunburst',
@@ -1476,7 +1505,7 @@ HTML;
                 'top'          => $p['legend'] ? 32 : 12,
                 'containLabel' => true,
             ],
-            'toolbox' => self::getEChartsToolboxOptions($dark_fg_color, $dark_bg_color),
+            'toolbox' => self::getEChartsToolboxOptions($dark_fg_color, $dark_bg_color, true),
             'series' => $echarts_series,
             'xAxis'  => self::getEChartsCategoryAxisOptions($labels),
             'yAxis'  => self::getEChartsValueAxisOptions(),
@@ -1506,7 +1535,7 @@ HTML;
         ];
         // language=Twig
         $js = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-            <script type="module">
+            <script nonce="{{ csp_nonce() }}" type="module">
                 (async () => {
                     await import('/js/modules/Dashboard/Dashboard.js');
 
@@ -1531,6 +1560,7 @@ HTML;
                             }
                         };
                     });
+                    chart_options.toolbox.feature.myExportCsv.onclick = () => GLPI.Dashboard.exportChartToCsv(myChart);
                     if ({{ horizontal ? 'true' : 'false' }}) {
                         chart_options['xAxis'] = {
                             ...chart_options['xAxis'],
@@ -1821,7 +1851,7 @@ HTML;
                 'top'          => $p['legend'] ? 32 : 12,
                 'containLabel' => true,
             ],
-            'toolbox' => self::getEChartsToolboxOptions($dark_fg_color, $dark_bg_color),
+            'toolbox' => self::getEChartsToolboxOptions($dark_fg_color, $dark_bg_color, true),
             'xAxis'  => self::getEChartsCategoryAxisOptions($labels) + [
                 'boundaryGap' => false, // avoid spacing on the left and right
             ],
@@ -1841,7 +1871,7 @@ HTML;
         ];
         // language=Twig
         $js = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-            <script type="module">
+            <script nonce="{{ csp_nonce() }}" type="module">
                 (async () => {
                     await import('/js/modules/Dashboard/Dashboard.js');
 
@@ -1858,6 +1888,7 @@ HTML;
                             serie['label']['formatter'] = (param) => param.data.value == 0 ? '': param.data.value;
                         }
                     });
+                    chart_options.toolbox.feature.myExportCsv.onclick = () => GLPI.Dashboard.exportChartToCsv(myChart);
 
                     const myChart = echarts.init(target[0]);
                     myChart.setOption(chart_options);

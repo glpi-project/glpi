@@ -233,7 +233,10 @@ class GLPITestCase extends TestCase
     {
         $method = new ReflectionMethod($instance, $methodName);
 
-        return $method->invoke(is_string($instance) ? null : $instance, ...$args);
+        return $method->invoke(
+            $method->isStatic() ? null : $instance,
+            ...$args
+        );
     }
 
     /**
@@ -543,6 +546,7 @@ class GLPITestCase extends TestCase
         CommonDBTM::clearSearchOptionCache();
         SearchOption::clearSearchOptionCache();
         Dropdown::resetItemtypesStaticCache();
+        Session::clearEntitiesCountCache();
 
         // Reboot assets definitions
         AssetDefinitionManager::unsetInstance();

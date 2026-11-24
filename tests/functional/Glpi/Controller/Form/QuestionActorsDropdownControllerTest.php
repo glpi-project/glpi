@@ -308,6 +308,7 @@ final class QuestionActorsDropdownControllerTest extends DbTestCase
         ]);
 
         // Act: fetch dropdown values
+        // Assert: an access denied exception is thrown
         $controller = new QuestionActorsDropdownController();
         $this->expectException(AccessDeniedHttpException::class);
         $controller->__invoke($request);
@@ -343,12 +344,10 @@ final class QuestionActorsDropdownControllerTest extends DbTestCase
         ]);
 
         // Act: fetch dropdown values
+        // Assert: an access denied exception is thrown
         $controller = new QuestionActorsDropdownController();
-        $response = $controller->__invoke($request);
-        $values = json_decode($response->getContent(), associative: true);
-
-        // Assert: the unexpected condition is ignored
-        $this->assertEquals(['Group with whitelisted conditions'], $this->extractTextFromOutput($values));
+        $this->expectException(AccessDeniedHttpException::class);
+        $controller->__invoke($request);
     }
 
     private function extractTextFromOutput(array $dropdown_output): array

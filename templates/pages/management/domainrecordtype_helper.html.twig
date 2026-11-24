@@ -61,7 +61,7 @@
                         <div class="d-flex flex-row-reverse">
                             {{ inputs.submit('save', _x('button', 'Save'), 1) }}
                         </div>
-                        <script>
+                        <script nonce="{{ csp_nonce() }}">
                             $(() => {
                                 const form = $('#domain_record_data{{ rand }}');
 

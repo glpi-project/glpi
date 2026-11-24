@@ -99,7 +99,7 @@
     data-glpi-direct-access-token-input
 >
 
-<script>
+<script nonce="{{ csp_nonce() }}">
     (() => {
         const refresh_button = document.querySelector('[data-glpi-direct-access-refresh-token]');
         const input = document.querySelector('[data-glpi-direct-access-token-input]');

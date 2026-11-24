@@ -34,7 +34,7 @@
 
 {% block more_fields %}
    {% if affected_item_count is defined and affected_item_count > 0 %}
-      <script>
+      <script nonce="{{ csp_nonce() }}">
           (function() {
               const save_button = $('button[name="update"]');
               const delete_button = $('button[name="delete"]');

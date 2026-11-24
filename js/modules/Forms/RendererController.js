@@ -322,13 +322,16 @@ export class GlpiFormRendererController
                 return;
             }
 
-            // Show toast with link to answers set
-            glpi_toast_info(
-                __("Item successfully created: %s").replace(
-                    "%s",
-                    response.links_to_created_items.join(", ")
-                )
-            );
+            // Show toast with links to created items, if any (none may be
+            // created, e.g. when no destination creation condition matched)
+            if (response.has_created_items) {
+                glpi_toast_info(
+                    __("Item successfully created: %s").replace(
+                        "%s",
+                        response.links_to_created_items.join(", ")
+                    )
+                );
+            }
 
             // Show final confirmation step
             $(this.#target)

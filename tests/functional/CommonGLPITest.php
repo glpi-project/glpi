@@ -43,6 +43,7 @@ use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
 use KnowbaseItem;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use RuleTicketCollection;
 use Symfony\Component\DomCrawler\Crawler;
 
 class CommonGLPITest extends DbTestCase
@@ -122,6 +123,75 @@ class CommonGLPITest extends DbTestCase
 
         $item = new $itemtype();
         $item->display(['id' => $items_id]);
+    }
+
+    public static function tabContentProvider(): iterable
+    {
+        $computer_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
+
+        yield 'new item, allowed' => [
+            'credentials' => [TU_USER, TU_PASS],
+            'itemtype'    => Computer::class,
+            'items_id'    => 0,
+            'allowed'     => true,
+        ];
+
+        yield 'existing item, allowed' => [
+            'credentials' => [TU_USER, TU_PASS],
+            'itemtype'    => Computer::class,
+            'items_id'    => $computer_id,
+            'allowed'     => true,
+        ];
+
+        yield 'rules, allowed' => [
+            'credentials' => [TU_USER, TU_PASS],
+            'itemtype'    => RuleTicketCollection::class,
+            'items_id'    => 0,
+            'allowed'     => true,
+        ];
+
+        yield 'new item, no create right' => [
+            'credentials' => ['post-only', 'postonly'],
+            'itemtype'    => Computer::class,
+            'items_id'    => 0,
+            'allowed'     => false,
+        ];
+
+        yield 'existing item, no read right' => [
+            'credentials' => ['post-only', 'postonly'],
+            'itemtype'    => Computer::class,
+            'items_id'    => $computer_id,
+            'allowed'     => false,
+        ];
+
+        yield 'rules, no list right' => [
+            'credentials' => ['post-only', 'postonly'],
+            'itemtype'    => RuleTicketCollection::class,
+            'items_id'    => 0,
+            'allowed'     => false,
+        ];
+    }
+
+    #[DataProvider('tabContentProvider')]
+    public function testTabContentAccess(array $credentials, string $itemtype, int $items_id, bool $allowed): void
+    {
+        $this->login(...$credentials);
+
+        $_GET = [
+            '_glpi_tab' => $itemtype === RuleTicketCollection::class ? 'RuleCollection$2' : 'Computer$main',
+            '_itemtype' => $itemtype,
+            '_target'   => '/front/test.php',
+            'id'        => $items_id,
+        ];
+
+        if (!$allowed) {
+            // An explicit error must be displayed instead of an empty tab
+            $this->expectException(AccessDeniedHttpException::class);
+        } else {
+            $this->expectOutputRegex('/.+/');
+        }
+
+        include GLPI_ROOT . '/ajax/common.tabs.php';
     }
 
     public function testShowFriendlyNameBadgeInFormIsDisplayedByDefault(): void

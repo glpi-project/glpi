@@ -393,6 +393,10 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
 
         $core_fields = static::getDefinition()->getAllFields();
         foreach ($fields_display as $field) {
+            if (!array_key_exists($field['key'], $core_fields)) {
+                // Field is not available anymore (e.g. it depends on a capacity that has been disabled)
+                continue;
+            }
             $f = new CustomFieldDefinition();
             $core_field = $core_fields[$field['key']];
             $f->fields['system_name'] = $field['key'];

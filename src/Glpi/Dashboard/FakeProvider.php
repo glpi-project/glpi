@@ -448,6 +448,32 @@ final class FakeProvider extends Provider
         ];
     }
 
+    public static function ticketsByGroupAndStatus(array $params = []): array
+    {
+        return [
+            'data'  => [
+                'labels' => [
+                    _x('fake_data', 'Support level 1'),
+                    _x('fake_data', 'Support level 2'),
+                    _x('fake_data', 'Network team'),
+                    _x('fake_data', 'Workstations team'),
+                ],
+                'series' => [
+                    [
+                        'name' => __('Opened'),
+                        'data' => [48, 23, 12, 31],
+                    ],
+                    [
+                        'name' => __('Closed'),
+                        'data' => [214, 97, 45, 132],
+                    ],
+                ],
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
+        ];
+    }
+
     public static function ticketsByRequesterGroupAndStatus(array $params = []): array
     {
         return [
@@ -521,6 +547,24 @@ final class FakeProvider extends Provider
             ],
             'label' => $params['label'] ?? '',
             'icon'  => User::getIcon(),
+        ];
+    }
+
+    public static function ticketsByStatus(array $params = []): array
+    {
+        $data = [];
+        foreach (Ticket::getAllStatusArray() as $status => $label) {
+            $data[] = [
+                'number' => self::getObscureNumberForString('status' . $status, 200),
+                'label'  => $label,
+                'url'    => '',
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
         ];
     }
 
@@ -653,6 +697,50 @@ final class FakeProvider extends Provider
             'data'  => $data,
             'label' => $params['label'],
             'icon'  => $fk_item::getIcon(),
+        ];
+    }
+
+    public static function computersByOperatingSystem(array $params = []): array
+    {
+        $data = [];
+        foreach (['Microsoft Windows 11' => 2600, 'Microsoft Windows 10' => 1500, 'Ubuntu' => 600, 'macOS' => 400] as $os => $number) {
+            $data[] = [
+                'number' => $number,
+                'label'  => $os,
+                'url'    => '',
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'] ?? '',
+            'icon'  => Computer::getIcon(),
+        ];
+    }
+
+    public static function computersByAge(array $params = []): array
+    {
+        $data = [];
+        foreach (
+            [
+                __('< 1 year')  => 1100,
+                __('1-3 years') => 2100,
+                __('3-5 years') => 1400,
+                __('> 5 years') => 600,
+                __('Undefined') => 200,
+            ] as $label => $number
+        ) {
+            $data[] = [
+                'number' => $number,
+                'label'  => $label,
+                'url'    => '',
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'] ?? '',
+            'icon'  => Computer::getIcon(),
         ];
     }
 

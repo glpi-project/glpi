@@ -35,6 +35,7 @@
 
 namespace Glpi\Console\Migration;
 
+use Central;
 use DateTimeZone;
 use DBConnection;
 use Glpi\Console\AbstractCommand;
@@ -204,6 +205,8 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
                 }
             }
         }
+
+        Central::clearDatabaseSchemaChecksCache();
 
         $properties_to_update = [
             DBConnection::PROPERTY_ALLOW_DATETIME => false,

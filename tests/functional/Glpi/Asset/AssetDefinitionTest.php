@@ -40,7 +40,12 @@ use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Glpi\Asset\Capacity\HasInfocomCapacity;
+use Glpi\Asset\Capacity\IsInventoriableCapacity;
+use Glpi\Asset\CapacityConfig;
 use Glpi\Dashboard\Grid;
+use Glpi\Inventory\MainAsset\GenericAsset;
+use Glpi\Inventory\MainAsset\GenericNetworkAsset;
+use Glpi\Inventory\MainAsset\GenericPrinterAsset;
 use Glpi\Locale\LanguageRegistry;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -985,5 +990,47 @@ class AssetDefinitionTest extends DbTestCase
         $profiles = $this->callPrivateMethod($definition, 'getDecodedProfilesField');
         $this->assertArrayNotHasKey($technician_id, $profiles);
         $this->assertArrayHasKey($super_admin_id, $profiles);
+    }
+
+    public static function inventoryFieldsProvider(): iterable
+    {
+        $inventory_fields = ['last_boot', 'sysdescr', 'snmpcredentials_id', 'ram', 'last_pages_counter'];
+
+        yield 'Not inventoriable' => [
+            'inventory_mainasset' => null,
+            'expected'            => [],
+            'inventory_fields'    => $inventory_fields,
+        ];
+        yield 'Generic asset' => [
+            'inventory_mainasset' => GenericAsset::class,
+            'expected'            => ['last_boot'],
+            'inventory_fields'    => $inventory_fields,
+        ];
+        yield 'Network equipment' => [
+            'inventory_mainasset' => GenericNetworkAsset::class,
+            'expected'            => ['sysdescr', 'snmpcredentials_id', 'ram'],
+            'inventory_fields'    => $inventory_fields,
+        ];
+        yield 'Printer' => [
+            'inventory_mainasset' => GenericPrinterAsset::class,
+            'expected'            => ['sysdescr', 'snmpcredentials_id', 'ram', 'last_pages_counter'],
+            'inventory_fields'    => $inventory_fields,
+        ];
+    }
+
+    #[DataProvider('inventoryFieldsProvider')]
+    public function testGetAllFieldsInventoryFields(?string $inventory_mainasset, array $expected, array $inventory_fields): void
+    {
+        $capacities = [];
+        if ($inventory_mainasset !== null) {
+            $capacities[] = new Capacity(
+                name: IsInventoriableCapacity::class,
+                config: new CapacityConfig(['inventory_mainasset' => $inventory_mainasset])
+            );
+        }
+        $definition = $this->initAssetDefinition(capacities: $capacities);
+
+        $fields = array_keys($definition->getAllFields());
+        $this->assertSame($expected, array_values(array_intersect($fields, $inventory_fields)));
     }
 }

@@ -33,6 +33,8 @@
 import { expect, test } from '../../fixtures/glpi_fixture';
 import { Profiles } from '../../utils/Profiles';
 import { UserPage } from '../../pages/UserPage';
+import { ComputerPage } from '../../pages/ComputerPage';
+import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
 test.describe('Tabs', () => {
     test('Can use the "forcetab" URL parameter to land on a specific tab', async ({
@@ -61,5 +63,27 @@ test.describe('Tabs', () => {
             'aria-selected',
             'true',
         );
+    });
+
+    test('Displays an error when the tab content cannot be accessed', async ({
+        page,
+        profile,
+        api,
+    }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const computer_id = await api.createItem('Computer', {
+            name: 'Computer for tab access test',
+            entities_id: getWorkerEntityId(),
+        });
+        const computer_page = new ComputerPage(page);
+        await computer_page.goto(computer_id);
+
+        // Lose the rights on the computer while its page is displayed
+        await profile.set(Profiles.SelfService);
+
+        await page.getByRole('tab', { name: /^Historical/ }).click();
+        await expect(
+            page.getByRole('tabpanel').getByRole('alert')
+        ).toHaveText("You don't have permission to perform this action.");
     });
 });

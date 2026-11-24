@@ -79,26 +79,36 @@ class PluginContainer implements ContainerInterface
 
     public function set(string $id, ?object $service): void
     {
+        $this->initializeContainer();
+
         $this->internal_container->set($id, $service);
     }
 
     public function initialized(string $id): bool
     {
+        $this->initializeContainer();
+
         return $this->internal_container->initialized($id);
     }
 
     public function getParameter(string $name): UnitEnum|float|array|bool|int|string|null
     {
+        $this->initializeContainer();
+
         return $this->internal_container->getParameter($name) ?? $this->symfony_container->getParameter($name);
     }
 
     public function hasParameter(string $name): bool
     {
+        $this->initializeContainer();
+
         return $this->internal_container->hasParameter($name) || $this->symfony_container->hasParameter($name);
     }
 
     public function setParameter(string $name, UnitEnum|float|array|bool|int|string|null $value): void
     {
+        $this->initializeContainer();
+
         $this->internal_container->setParameter($name, $value);
     }
 

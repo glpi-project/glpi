@@ -811,8 +811,12 @@ trait PlanningEvent
             'value'     => strtolower($rrule['freq'] ?? ""),
             'rand'      => $rand,
             'display'   => false,
-            'on_change' => "$(\"#toggle_ar\").toggle($(\"#dropdown_rrule_freq_$rand\").val().length > 0)",
         ]);
+        $out .= Html::scriptBlock("
+            \$('#dropdown_rrule_freq_$rand').on('change', function() {
+                \$('#toggle_ar').toggle(this.value.length > 0);
+            });
+        ");
 
         $byday = $rrule['byday'] ?? [];
         if (!is_array($byday)) {

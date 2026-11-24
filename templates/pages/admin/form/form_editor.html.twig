@@ -216,7 +216,7 @@
                                 </div>
                                 <section id="item-properties" class="accordion-collapse collapse show" aria-labelledby="heading-item-properties" data-bs-parent="#glpi-form-properties-accordion">
                                     <div class="accordion-body d-flex flex-column">
-                                        <script>
+                                        <script nonce="{{ csp_nonce() }}">
                                             function renderLayoutTemplateResult(data) {
                                                 const icons = {{ enum('Glpi\\Form\\RenderLayout').cases|map((case) => {(case.value): case.getIcon()})|reduce((carry, item) => carry|merge(item), {})|json_encode|raw }};
 
@@ -502,7 +502,7 @@
     </div>
 {% endif %}
 
-<script defer type="module">
+<script nonce="{{ csp_nonce() }}" defer type="module">
 (async () => {
     const modules = await Promise.all([
         import("/js/modules/Forms/EditorController.js"),

@@ -107,7 +107,7 @@
         wrapper_class: 'd-flex flex-grow-1',
         helper: __('It is strongly advised to use the HTTPS protocol.') ~ ' ' ~ __('You may use the same placeholder tags as in the payload content and header values.')
     })) }}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         const editor_options = window.GLPI.Monaco.getSingleLineEditorOptions();
         const editor_container_id = '{{ url_editor_container_id|e('js') }}';
         window.GLPI.Monaco.createEditor(editor_container_id, 'twig', '{{ item.fields['url']|e('js') }}', {{ response_schema|json_encode|raw }}, editor_options).then(() => {

@@ -345,7 +345,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
         {% endif %}
 
             {# javascript for remove button #}
-            <script type="text/javascript">
+            <script nonce="{{ csp_nonce() }}" type="text/javascript">
                 function delete_date_{{ options.rand }}(e) {
                     e.preventDefault();
 
@@ -417,7 +417,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
             {% endif %}
 
             {# javascript for remove button #}
-            <script type="text/javascript">
+            <script nonce="{{ csp_nonce() }}" type="text/javascript">
                 function delete_date_{{ options.rand }}(e) {
                     e.preventDefault();
 
@@ -491,7 +491,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
         }|merge(options)
     ) }}
 
-    <script type="text/javascript">
+    <script nonce="{{ csp_nonce() }}" type="text/javascript">
         function toggleAssignLA_{{ assign_la_id }}() {
             // hide button clicked
             $("#button_{{ assign_la_id }}").hide();
@@ -548,7 +548,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
         }) }}
     {% endset %}
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         document.getElementById('{{ button_id|e('js') }}').addEventListener('click', () => {
             const html = '{{ dropdown_tpl|e('js') }}';
             const container = document.createElement('div');

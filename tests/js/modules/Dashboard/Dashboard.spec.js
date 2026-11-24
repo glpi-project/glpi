@@ -147,7 +147,6 @@ describe('Dashboard', () => {
                 limit: 7,
                 card_id: undefined,
                 gridstack_id: 'undefined_12345678-1234-1234-1234-123456789012',
-                force: true,
                 apply_filters: {},
             },
             gridstack_id: 'undefined_12345678-1234-1234-1234-123456789012',
@@ -202,7 +201,6 @@ describe('Dashboard', () => {
                 legend: 1,
                 limit: 10,
                 gridstack_id: 'mycard_12345678-1234-1234-1234-123456789012',
-                force: true,
                 apply_filters: {'1': 'test'},
             },
             // TODO These duplicated values probably shouldn't be here
@@ -325,7 +323,6 @@ describe('Dashboard', () => {
             action: 'get_card',
             dashboard: 'current_dashboard',
             card_id: undefined,
-            cache_key: '',
             args: {
                 color: null,
                 widgettype: null,
@@ -336,7 +333,6 @@ describe('Dashboard', () => {
                 limit: 7,
                 card_id: undefined,
                 gridstack_id: 'undefined_12345678-1234-1234-1234-123456789012',
-                force: true,
                 apply_filters: {'1': 'test'},
             }
         }, () => {
@@ -629,6 +625,51 @@ describe('Dashboard', () => {
                 'filter2': 'filter2_value',
             }
         );
+    });
+
+    test('getFiltersFromDB caches filters per dashboard', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const fetched = [];
+
+        window.AjaxMock.start();
+        // persistent, so an unexpected extra request would be counted instead of throwing
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
+            action: 'get_filter_data',
+        }, (data) => {
+            fetched.push(data.dashboard);
+            return {filter: `${data.dashboard}_value`};
+        }, true));
+
+        expect(dashboard.getFiltersFromDB()).toEqual({filter: 'current_dashboard_value'});
+        expect(dashboard.getFiltersFromDB()).toEqual({filter: 'current_dashboard_value'});
+
+        // switching dashboard must not reuse the previous dashboard's filters
+        dashboard.current_name = 'other_dashboard_1';
+        expect(dashboard.getFiltersFromDB()).toEqual({filter: 'other_dashboard_1_value'});
+
+        dashboard.current_name = 'current_dashboard';
+        expect(dashboard.getFiltersFromDB()).toEqual({filter: 'current_dashboard_value'});
+
+        expect(fetched).toEqual(['current_dashboard', 'other_dashboard_1']);
+    });
+
+    test('setFiltersInDB updates only the current dashboard cache', () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        dashboard._filters_cache = {other_dashboard_1: {filter: 'other_value'}};
+
+        window.AjaxMock.start();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
+            action: 'save_filter_data',
+            dashboard: 'current_dashboard',
+        }, () => true));
+
+        dashboard.setFiltersInDB({filter: 'new_value'});
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
+
+        // served from cache, no GET mock registered
+        expect(dashboard.getFiltersFromDB()).toEqual({filter: 'new_value'});
+        dashboard.current_name = 'other_dashboard_1';
+        expect(dashboard.getFiltersFromDB()).toEqual({filter: 'other_value'});
     });
 
     test('refreshCardsImpactedByFilter', () => {
@@ -1259,12 +1300,10 @@ describe('Dashboard', () => {
         });
         window.AjaxMock.start();
         const data = {
-            "force": 0,
-            "d_cache_key": "",
             "cards": [
-                {"card_id":"1","force":0,"args":{"gridstack_id":"1","apply_filters":{"filter1":"value1","filter2":"value2"}},"c_cache_key":""},
-                {"card_id":"2","force":0,"args":{"gridstack_id":"2","apply_filters":{"filter1":"value1","filter2":"value2"}},"c_cache_key":""},
-                {"card_id":"3","force":0,"args":{"gridstack_id":"3","apply_filters":{"filter1":"value1","filter2":"value2"}},"c_cache_key":""}
+                {"card_id":"1","args":{"gridstack_id":"1","apply_filters":{"filter1":"value1","filter2":"value2"}}},
+                {"card_id":"2","args":{"gridstack_id":"2","apply_filters":{"filter1":"value1","filter2":"value2"}}},
+                {"card_id":"3","args":{"gridstack_id":"3","apply_filters":{"filter1":"value1","filter2":"value2"}}}
             ],
             "embed": 1,
             "token": "mytoken",
@@ -1902,5 +1941,119 @@ describe('Dashboard', () => {
         dashboard.saveMarkdown = vi.fn().mockImplementation(() => {});
         $('#dashboard-12345 .markdown_content').trigger('input');
         expect(dashboard.saveMarkdown).toHaveBeenCalled();
+    });
+
+    test('getChartCsv for a pie', () => {
+        const csv = GLPI.Dashboard.getChartCsv({
+            series: [{
+                type: 'pie',
+                data: [
+                    {name: 'New', value: 3, url: '/front/ticket.php'},
+                    {name: 'Say "hello"', value: 1.5},
+                    {name: '', value: 2},
+                    // filler of a half pie
+                    {name: '', value: 6.5, is_filler: true},
+                ],
+            }],
+        }, ';', {name: 'Name', value: 'Value'});
+
+        expect(csv).toBe('"Name";"Value"\r\n"New";3\r\n"Say ""hello""";1.5\r\n"";2');
+    });
+
+    test('getChartCsv for a sunburst', () => {
+        const csv = GLPI.Dashboard.getChartCsv({
+            series: [{
+                type: 'sunburst',
+                data: [
+                    {name: 'Hardware', value: 5, children: [
+                        {name: 'Printer', value: 2},
+                        {name: 'Screen', value: 3},
+                    ]},
+                    {name: 'Software', value: 1},
+                ],
+            }],
+        }, ',', {name: 'Name', value: 'Value'});
+
+        expect(csv).toBe([
+            '"Name","Value"',
+            '"Hardware",5',
+            '"Hardware > Printer",2',
+            '"Hardware > Screen",3',
+            '"Software",1',
+        ].join('\r\n'));
+    });
+
+    test('getChartCsv for bars and lines', () => {
+        const series = [
+            {type: 'bar', name: 'Opened', data: [{value: 4, url: '/a'}, {value: 0}]},
+            {type: 'bar', name: 'Solved', data: [2, null]},
+        ];
+        const expected = [
+            '"Name";"Opened";"Solved"',
+            '"2026-10";4;2',
+            '"2026-11";0;""',
+        ].join('\r\n');
+
+        // vertical bars or lines, as returned by getOption()
+        expect(GLPI.Dashboard.getChartCsv({
+            xAxis: [{type: 'category', data: ['2026-10', '2026-11']}],
+            yAxis: [{type: 'value'}],
+            series: series,
+        }, ';', {name: 'Name', value: 'Value'})).toBe(expected);
+
+        // horizontal bars
+        expect(GLPI.Dashboard.getChartCsv({
+            xAxis: {type: 'value'},
+            yAxis: {type: 'category', data: ['2026-10', '2026-11']},
+            series: series,
+        }, ';', {name: 'Name', value: 'Value'})).toBe(expected);
+
+        // a single unnamed serie
+        expect(GLPI.Dashboard.getChartCsv({
+            xAxis: {type: 'category', data: ['A']},
+            series: [{type: 'bar', name: '', data: [7]}],
+        }, ';', {name: 'Name', value: 'Value'})).toBe('"Name";"Value"\r\n"A";7');
+    });
+
+    test('getChartCsv neutralizes formulas', () => {
+        const csv = GLPI.Dashboard.getChartCsv({
+            series: [{type: 'pie', data: [{name: '=1+1', value: 1}, {name: '@SUM(A1)', value: -2}]}],
+        }, ';', {name: 'Name', value: 'Value'});
+
+        expect(csv).toBe(`"Name";"Value"\r\n"'=1+1";1\r\n"'@SUM(A1)";-2`);
+    });
+
+    test('exportChartToCsv downloads a file named after the card', () => {
+        $('body').append(`
+            <div class="card g-chart">
+                <div class="chart"></div>
+                <span class="main-label">Tickets: by status</span>
+            </div>
+        `);
+        const chart = {
+            getDom: () => $('.g-chart .chart')[0],
+            getOption: () => ({
+                toolbox: [{feature: {myExportCsv: {delimiter: ';', headers: {name: 'Name', value: 'Value'}}}}],
+                series: [{type: 'pie', data: [{name: 'New', value: 3}]}],
+            }),
+        };
+        const default_create = URL.createObjectURL;
+        const default_revoke = URL.revokeObjectURL;
+        URL.createObjectURL = vi.fn().mockReturnValue('blob:csv');
+        URL.revokeObjectURL = vi.fn();
+        const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function () {
+            expect(this.download).toBe('Tickets_ by status.csv');
+            expect(this.href).toBe('blob:csv');
+        });
+
+        try {
+            GLPI.Dashboard.exportChartToCsv(chart);
+            expect(click).toHaveBeenCalledTimes(1);
+            expect(URL.createObjectURL.mock.calls[0][0].type).toBe('text/csv;charset=utf-8');
+        } finally {
+            click.mockRestore();
+            URL.createObjectURL = default_create;
+            URL.revokeObjectURL = default_revoke;
+        }
     });
 });

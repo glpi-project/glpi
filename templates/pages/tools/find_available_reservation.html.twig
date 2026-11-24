@@ -77,7 +77,7 @@
                     {{ fields.htmlField('', date_end_field, __('End date'), {
                         add_field_class: 'date_end_field d-none'
                     }) }}
-                    <script>
+                    <script nonce="{{ csp_nonce() }}">
                         $(() => {
                             $('select[name="reserve[_duration]"]').on('change', (e) => {
                                 const value = $(e.target).val();

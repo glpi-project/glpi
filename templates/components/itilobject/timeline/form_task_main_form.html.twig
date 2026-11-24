@@ -177,7 +177,7 @@
                         'icon_label': true,
                         'rand': rand,
                         'additional_attributes': {
-                            'onchange': 'toggleTimelinePrivate(this.checked, this)',
+                            'data-glpi-timeline-private-toggle': '',
                             'data-testid': 'private-switch',
                         }
                     }
@@ -270,7 +270,7 @@
                     }
                 ) }}
 
-                <script type="text/javascript">
+                <script nonce="{{ csp_nonce() }}" type="text/javascript">
                     function showPlanUpdate{{ rand }}(applyDefaultState = false) {
                         $('#plan{{ rand }}').hide();
                         if (applyDefaultState) {
@@ -299,7 +299,7 @@
                 </script>
                 <div class="col-12">
                 {% if subitem.can(subitem.fields['id'], constant('UPDATE')) and subitem.fields['begin'] %}
-                    <script type="text/javascript">
+                    <script nonce="{{ csp_nonce() }}" type="text/javascript">
                         showPlanUpdate{{ rand }}();
                     </script>
                     <button id="unplan{{ rand }}" class="btn btn-outline-warning" type="submit" name="unplan"
@@ -345,8 +345,7 @@
                             id="enable-pending-reasons-{{ rand }}"
                             role="button"
                             {{ item.fields['status'] == constant('CommonITILObject::WAITING') ? 'checked' : '' }}
-                            data-bs-toggle="collapse"
-                            data-bs-target="#pending-reasons-setup-{{ rand }}"
+                            {% if not has_pending_reason %}aria-controls="pending-reasons-setup-{{ rand }}"{% endif %}
                         />
                         </label>
                     </span>
@@ -408,7 +407,7 @@
         </form>
     {% endif %}
 
-    <script type="text/javascript">
+    <script nonce="{{ csp_nonce() }}" type="text/javascript">
         function itiltasktemplate_update{{ rand }}(value) {
             $.ajax({
                 url: `${CFG_GLPI.root_doc}/ajax/task.php`,
