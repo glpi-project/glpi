@@ -464,6 +464,11 @@ class User extends CommonDBTM implements TreeBrowseInterface
     {
         global $CFG_GLPI, $DB;
 
+        $user = new self();
+        if (!$user->getFromDB($users_id)) {
+            return 0;
+        }
+
         $user_criteria = self::getItemsForUserCriteria($users_id, $tech);
         $count = 0;
 
@@ -480,11 +485,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
             $table = $itemtype::getTable();
 
             if (!$DB->fieldExists($table, $user_criteria['field_user'])) {
-                continue;
-            }
-
-            $user = new self();
-            if (!$user->getFromDB($users_id)) {
                 continue;
             }
 
