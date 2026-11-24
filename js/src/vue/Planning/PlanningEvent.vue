@@ -113,7 +113,7 @@
     .event_type {
         background-color: v-bind(type_color);
         position: absolute;
-        width: 7px;
+        inline-size: 7px;
         inset-block-end: 0;
         inset-block-start: 0;
         inset-inline-end: 0;

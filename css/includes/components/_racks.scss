@@ -131,7 +131,7 @@ ul.indexes {
     text-align: center;
     font-size: 0.7em;
     color: silver;
-    float: left;
+    float: inline-start;
 }
 
 .cell_add {
@@ -145,7 +145,7 @@ ul.indexes {
         content: "\2b";
         left: 45%;
         color: grey;
-        top: 3px;
+        inset-block-start: 3px;
         font: var(--fa-font-solid);
         font-size: 1em;
         position: absolute;
@@ -160,7 +160,7 @@ ul.indexes {
 .grid-room {
     box-sizing: content-box;
     margin: 10px 0 10px 10px;
-    float: left;
+    float: inline-start;
     position: relative;
 
     *,
@@ -199,11 +199,11 @@ ul.indexes {
         .cell_add {
             height: var(--dcroom-grid-cellh);
             width: var(--dcroom-grid-cellw);
-            float: left;
+            float: inline-start;
 
             &::after {
-                left: calc(50% - 5px);
-                top: calc(50% - 6px);
+                inset-inline-start: calc(50% - 5px);
+                inset-block-start: calc(50% - 6px);
             }
         }
     }
@@ -271,7 +271,7 @@ ul.indexes {
         text-align: center;
         font-size: 0.7em;
         color: var(--tblr-body-color);
-        float: left;
+        float: inline-start;
 
         &.indexes-x {
             grid-column: 2;
@@ -280,7 +280,7 @@ ul.indexes {
             height: 15px;
 
             li {
-                float: left;
+                float: inline-start;
                 width: var(--dcroom-grid-cellw);
                 height: 15px;
             }
@@ -390,15 +390,15 @@ ul.indexes {
         &.fa {
             color: var(--tblr-body-color);
             position: absolute;
-            right: 0;
-            top: 0;
+            inset-inline-end: 0;
+            inset-block-start: 0;
             padding: 0.5em;
 
             &:link {
                 color: var(--tblr-body-color);
                 position: absolute;
-                right: 0;
-                top: 0;
+                inset-inline-end: 0;
+                inset-block-start: 0;
                 padding: 0.5em;
             }
         }
@@ -406,8 +406,8 @@ ul.indexes {
         .fa {
             color: var(--tblr-body-color);
             position: absolute;
-            right: 0;
-            top: 0;
+            inset-inline-end: 0;
+            inset-block-start: 0;
             padding: 0.5em;
         }
 
@@ -634,7 +634,7 @@ ul.indexes {
 }
 
 .grid-stack-item .item_rack_icon {
-    float: left;
+    float: inline-start;
     opacity: 0.6;
     padding: 3px 0 0 2px;
     font-size: 14px;
