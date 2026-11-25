@@ -4219,7 +4219,7 @@ HTML;
 
         if (
             $userID !== Session::getLoginUserID()
-            && (new User())->can($post['userID'], READ) === false
+            && (new User())->can($userID, READ) === false
         ) {
             throw new AccessDeniedHttpException('Cannot access devices of a user that cannot be read.');
         }
