@@ -7075,30 +7075,19 @@ final class SQLProvider implements SearchProviderInterface
                     return \htmlescape($tmp->getDescription($data[$ID][0]['name']));
 
                 case 'glpi_changes.status':
-                    if ($data[$ID][0]['name'] === null) {
-                        return '';
-                    }
-                    $status = Change::getStatus($data[$ID][0]['name']);
-                    return "<span class='text-nowrap'>"
-                        . Change::getStatusIcon($data[$ID][0]['name'], false) . "&nbsp;" . \htmlescape($status)
-                        . "</span>";
-
                 case 'glpi_problems.status':
-                    if ($data[$ID][0]['name'] === null) {
-                        return '';
-                    }
-                    $status = Problem::getStatus($data[$ID][0]['name']);
-                    return "<span class='text-nowrap'>"
-                        . Problem::getStatusIcon($data[$ID][0]['name'], false) . "&nbsp;" . \htmlescape($status)
-                        . "</span>";
-
                 case 'glpi_tickets.status':
                     if ($data[$ID][0]['name'] === null) {
                         return '';
                     }
-                    $status = Ticket::getStatus($data[$ID][0]['name']);
+                    $itil_class = match ($table) {
+                        'glpi_changes'  => Change::class,
+                        'glpi_problems' => Problem::class,
+                        default         => Ticket::class,
+                    };
+                    $status = $itil_class::getStatus($data[$ID][0]['name']);
                     return "<span class='text-nowrap'>"
-                        . Ticket::getStatusIcon($data[$ID][0]['name'], false) . "&nbsp;" . \htmlescape($status)
+                        . $itil_class::getStatusIcon($data[$ID][0]['name'], false) . "&nbsp;" . \htmlescape($status)
                         . "</span>";
 
                 case 'glpi_projectstates.name':

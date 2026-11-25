@@ -8494,6 +8494,47 @@ class SearchTest extends DbTestCase
         $this->assertSame('', $data['data']['rows'][0]['Ticket_202']['displayname']);
     }
 
+    public static function itilStatusProvider(): iterable
+    {
+        // Statuses whose label differs between the ITIL classes.
+        yield 'ticket' => [Ticket::class, Ticket::ASSIGNED];
+        yield 'change' => [Change::class, Change::EVALUATION];
+        yield 'problem' => [Problem::class, Problem::ACCEPTED];
+    }
+
+    /**
+     * @param class-string<\CommonITILObject> $itemtype
+     */
+    #[DataProvider('itilStatusProvider')]
+    public function testItilStatusDisplay(string $itemtype, int $status): void
+    {
+        $this->login();
+
+        $input = [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'status'      => $status,
+        ];
+        if ($itemtype === Ticket::class) {
+            // A ticket is set as assigned only when it has an assignee.
+            $input['_actors'] = ['assign' => [['itemtype' => User::class, 'items_id' => getItemByTypeName(User::class, TU_USER, true)]]];
+        }
+        $this->createItem($itemtype, $input, ['_actors']);
+
+        $data = $this->doSearch(
+            $itemtype,
+            ['criteria' => [['field' => 1, 'searchtype' => 'contains', 'value' => __FUNCTION__]]],
+            [12]
+        );
+        $this->assertSame(1, (int) $data['data']['totalcount']);
+        $this->assertSame(
+            "<span class='text-nowrap'>" . $itemtype::getStatusIcon($status, false) . '&nbsp;'
+                . htmlescape($itemtype::getStatus($status)) . '</span>',
+            $data['data']['rows'][0][$itemtype . '_12']['displayname']
+        );
+    }
+
     /**
      * Requesting a page past the last one under an active SQL LIMIT (stale bookmark / edited URL
      * / API) must not error: it falls back to the first page, matching the pre-optimization
