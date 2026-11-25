@@ -62,6 +62,10 @@ class SsoVariableTest extends DbTestCase
             'safe' => false,
         ];
         yield [
+            'name' => 'PHP_AUTH_PW',
+            'safe' => false,
+        ];
+        yield [
             'name' => 'HTTP_AUTH_USER',
             'safe' => false,
         ];
@@ -73,6 +77,14 @@ class SsoVariableTest extends DbTestCase
             'name' => 'HTTP_WHATEVER',
             'safe' => false,
         ];
+        yield [
+            'name' => 'REDIRECT_HTTP_REMOTE_USER',
+            'safe' => false,
+        ];
+        yield [
+            'name' => 'REDIRECT_HTTP_WHATEVER',
+            'safe' => false,
+        ];
 
         // custom variables
         yield [
@@ -81,6 +93,10 @@ class SsoVariableTest extends DbTestCase
         ];
         yield [
             'name' => 'HTTPSOMETHING', // do not match `HTTP_*`
+            'safe' => true,
+        ];
+        yield [
+            'name' => 'REDIRECT_HTTPSOMETHING', // do not match `REDIRECT_HTTP_*`
             'safe' => true,
         ];
     }
