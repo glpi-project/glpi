@@ -106,9 +106,28 @@ class Calendar_Holiday extends CommonDBRelation
         }
 
         if ($canedit) {
+            $available_criteria = [
+                'SELECT' => ['id', 'name'],
+                'FROM'   => Holiday::getTable(),
+                'WHERE'  => getEntitiesRestrictCriteria(
+                    Holiday::getTable(),
+                    '',
+                    $calendar->getEntityID(),
+                    true
+                ),
+                'ORDER'  => 'name',
+            ];
+            if (count($used) > 0) {
+                $available_criteria['WHERE'][] = ['NOT' => ['id' => array_values($used)]];
+            }
+            $available = [];
+            foreach ($DB->request($available_criteria) as $holiday) {
+                $available[$holiday['id']] = $holiday['name'];
+            }
+
             TemplateRenderer::getInstance()->display('pages/setup/calendar_holiday.html.twig', [
                 'calendar' => $calendar,
-                'used' => $used,
+                'available' => $available,
                 'params' => [
                     'canedit' => true,
                 ],

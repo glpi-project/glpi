@@ -43,17 +43,28 @@ Session::checkCentralAccess();
 $item = new Calendar_Holiday();
 
 if (isset($_POST["add"])) {
-    $item->check(-1, CREATE, $_POST);
+    // Several close times can be added at once
+    $inputs = [];
+    foreach (array_filter((array) ($_POST['holidays_id'] ?? [])) as $holidays_id) {
+        $input = [
+            'calendars_id' => (int) ($_POST['calendars_id'] ?? 0),
+            'holidays_id'  => (int) $holidays_id,
+        ];
+        $item->check(-1, CREATE, $input);
+        $inputs[] = $input;
+    }
 
-    if ($item->add($_POST)) {
-        Event::log(
-            $_POST["calendars_id"],
-            "calendars",
-            4,
-            "setup",
-            //TRANS: %s is the user login
-            sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"])
-        );
+    foreach ($inputs as $input) {
+        if ($item->add($input)) {
+            Event::log(
+                $input["calendars_id"],
+                "calendars",
+                4,
+                "setup",
+                //TRANS: %s is the user login
+                sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"])
+            );
+        }
     }
     Html::back();
 }

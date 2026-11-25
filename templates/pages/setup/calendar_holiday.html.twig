@@ -40,10 +40,9 @@
             <div class="col-12 col-xxl-12 flex-column">
                 <div class="row flex-row">
                     {{ inputs.hidden('calendars_id', calendar.getID()) }}
-                    {{ fields.dropdownField('Holiday', 'holidays_id', 0, __('Add a close time'), {
-                        used: used,
-                        display_emptychoice: false,
-                        entity: calendar.getEntityID(),
+                    {{ fields.dropdownArrayField('holidays_id', [], available, __('Add a close time'), {
+                        multiple: true,
+                        values: [],
                     }) }}
                 </div>
                 <div class="d-flex flex-row-reverse">
