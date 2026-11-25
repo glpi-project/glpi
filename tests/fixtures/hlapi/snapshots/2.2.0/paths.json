@@ -35119,7 +35119,20 @@
             "responses": {
                 "200": []
             },
-            "parameters": [],
+            "parameters": [
+                {
+                    "name": "thumbnail",
+                    "description": "Whether to return the thumbnail version of the picture",
+                    "in": "query",
+                    "required": false,
+                    "schema": {
+                        "type": "boolean",
+                        "format": "boolean",
+                        "default": false
+                    },
+                    "example": null
+                }
+            ],
             "security": [
                 {
                     "oauth": [
@@ -35374,6 +35387,18 @@
             },
             "parameters": [
                 {
+                    "name": "thumbnail",
+                    "description": "Whether to return the thumbnail version of the picture",
+                    "in": "query",
+                    "required": false,
+                    "schema": {
+                        "type": "boolean",
+                        "format": "boolean",
+                        "default": false
+                    },
+                    "example": null
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -35399,6 +35424,18 @@
                 "200": []
             },
             "parameters": [
+                {
+                    "name": "thumbnail",
+                    "description": "Whether to return the thumbnail version of the picture",
+                    "in": "query",
+                    "required": false,
+                    "schema": {
+                        "type": "boolean",
+                        "format": "boolean",
+                        "default": false
+                    },
+                    "example": null
+                },
                 {
                     "name": "username",
                     "description": "",
