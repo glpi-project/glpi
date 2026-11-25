@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Computer;
+use Config;
 use Entity;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Search\SearchOption;
@@ -44,8 +45,11 @@ use NotificationEvent;
 use ObjectLock;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile_User;
+use ProfileRight;
 use QueuedNotification;
 use Search;
+use Session;
+use Ticket;
 use User;
 use UserEmail;
 
@@ -314,5 +318,68 @@ class ObjectLockTest extends DbTestCase
         $this->assertStringContainsString('ti-lock-open', $free_display);
         $this->assertStringContainsString('ti-lock"', $locked_display);
         $this->assertStringContainsString(TU_USER, $locked_display);
+    }
+
+    public static function setReadOnlyProfileProvider(): iterable
+    {
+        $empty_rights = \array_fill_keys(
+            \array_keys(ProfileRight::getAllPossibleRights()),
+            0
+        );
+
+        // Default to empty rights + no entities
+        yield [
+            'active_profile'   => null, // no valid session
+            'expected_profile' => array_merge($empty_rights, ['entities' => []]),
+        ];
+
+        // Only active rights get the READ value
+        yield [
+            'active_profile'   => [
+                Computer::$rightname => ALLSTANDARDRIGHT,
+                Config::$rightname   => READ | UPDATE,
+            ],
+            'expected_profile' => array_merge(
+                $empty_rights,
+                [
+                    Computer::$rightname => READ,
+                    Config::$rightname   => READ,
+                ]
+            ),
+        ];
+
+        // Cannot get the READ right if it is not yet available
+        yield [
+            'active_profile'   => [
+                Ticket::$rightname => DELETE,
+            ],
+            'expected_profile' => array_merge(
+                $empty_rights,
+                [
+                    Ticket::$rightname => 0,
+                ]
+            ),
+        ];
+    }
+
+    #[DataProvider('setReadOnlyProfileProvider')]
+    public function testSetReadOnlyProfile(?array $active_profile, array $expected_profile): void
+    {
+        // Arrange
+        // Lock configuration is loaded by `Config::loadLegacyConfiguration()` only when `lock_use_lock_item` is true.
+        global $CFG_GLPI, $DB;
+        $DB->update('glpi_configs', ['value' => 1], ['name' => 'lock_use_lock_item']);
+        Config::loadLegacyConfiguration();
+        assert(isset($CFG_GLPI['lock_lockprofile']));
+
+        $_SESSION['glpiactiveprofile'] = $active_profile;
+
+        // Act
+        ObjectLock::setReadOnlyProfile();
+
+        // Assert
+        foreach ($expected_profile as $key => $expected_value) {
+            $this->assertEquals($expected_value, $_SESSION['glpiactiveprofile'][$key]);
+        }
     }
 }

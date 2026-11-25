@@ -92,6 +92,15 @@ final class DatabaseMapper implements MapperInterface
         return $this->values[$itemtype][$key];
     }
 
+    /**
+     * Unlike `getItemId()`, questions, sections and comments are not assumed
+     * to be mapped.
+     */
+    public function tryGetItemId(string $itemtype, string|int $key): ?int
+    {
+        return $this->values[$itemtype][$key] ?? null;
+    }
+
     /** @param DataRequirementSpecification[] $data_requirements */
     public function validateRequirements(array $data_requirements): bool
     {

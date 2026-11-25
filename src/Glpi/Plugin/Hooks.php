@@ -1147,6 +1147,16 @@ class Hooks
      */
     public const MAIL_SERVER_PROTOCOLS = 'mail_server_protocols';
 
+    // Forms hooks
+    /**
+     * Register a function to be called once all the forms of an import are imported.
+     * The function is called with an array containing the following properties:
+     * - 'result' => The {@link \Glpi\Form\Export\Result\ImportResult} of the import.
+     * - 'mapper' => The {@link \Glpi\Form\Export\Context\DatabaseMapper} of the import.
+     * The function is expected to return nothing.
+     */
+    public const POST_FORMS_IMPORT = 'post_forms_import';
+
     // Function hooks that are currently automatically registered. Example: MassiveActions -> plugin_myplugin_MassiveActions
 
     /**

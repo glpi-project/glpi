@@ -34,6 +34,7 @@
 
 namespace Glpi\Tests;
 
+use AutoUpdateSystem;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
 use Glpi\Inventory\Inventory;
@@ -149,5 +150,14 @@ class InventoryTestCase extends DbTestCase
         $this->assertEmpty($inventory->getErrors());
 
         return $inventory;
+    }
+
+    protected function getOrCreateNativeInventorySource(): AutoUpdateSystem
+    {
+        $native_source = new AutoUpdateSystem();
+        if (!$native_source->getFromDBByCrit(['name' => AutoUpdateSystem::NATIVE_INVENTORY])) {
+            $native_source = $this->createItem(AutoUpdateSystem::class, ['name' => AutoUpdateSystem::NATIVE_INVENTORY]);
+        }
+        return $native_source;
     }
 }

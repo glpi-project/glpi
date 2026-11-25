@@ -1018,8 +1018,11 @@ class User extends CommonDBTM implements TreeBrowseInterface
             $input["profiles_id"] = 0;
         }
 
+        // Reset tokens are written only by the password reset flow, which writes them directly.
+        unset($input['password_forget_token'], $input['password_forget_token_date']);
+
         $glpi_key = new GLPIKey();
-        foreach (['api_token', 'password_forget_token', 'personal_token'] as $token_field) {
+        foreach (['api_token', 'personal_token'] as $token_field) {
             if (
                 array_key_exists($token_field, $input)
                 && $input[$token_field] !== null
@@ -1237,18 +1240,14 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         && $this->validatePassword($input["password"] ?? '', $password_errors)
                         // Compared as integers: a loose comparison would let a non-numeric value (e.g. a JSON `true`
                         // sent through the API) match any logged-in user ID.
-                        && ((Session::getLoginUserID() !== false && (int) $input['id'] === (int) Session::getLoginUserID())
-                        || $this->currentUserHaveMoreRightThan($input['id'])
-                        // Permit to change password with token and email
-                        // The token must be a non-empty string compared strictly: a non-string value (e.g. a JSON `true`
-                        // sent through the API) would otherwise loosely match any token.
-                        || (
-                            isset($this->fields['password_forget_token'])
-                            && is_string($input['password_forget_token'] ?? null)
-                            && $input['password_forget_token'] !== ''
-                            && hash_equals((string) $glpi_key->decrypt($this->fields['password_forget_token']), $input['password_forget_token'])
-                            && (strtotime($_SESSION["glpi_currenttime"]) < strtotime($this->fields['password_forget_token_date']))
-                        ))
+                        && (
+                            (Session::getLoginUserID() !== false && (int) $input['id'] === (int) Session::getLoginUserID())
+                            || $this->currentUserHaveMoreRightThan($input['id'])
+                            // Permit to change password with token and email
+                            // The token must be a non-empty string compared strictly: a non-string value (e.g. a JSON `true`
+                            // sent through the API) would otherwise loosely match any token.
+                            || $this->hasValidPasswordResetInput($input)
+                        )
                     ) {
                         $input["password"]
                         = Auth::getPasswordHash($input["password"]);
@@ -1291,6 +1290,39 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
 
         if (
+            // User is updating his own password
+            isset($input["password"])
+            && (int) $input['id'] === Session::getLoginUserID()
+            // No need for the current password if the user is going through the password reset form.
+            && !$this->hasValidPasswordResetInput($input)
+        ) {
+            // Current password must be supplied
+            $current_password = $input['current_password'] ?? null;
+            if ($current_password === null || !is_string($current_password)) {
+                Session::addMessageAfterRedirect(
+                    __s('You must input your current password.'),
+                    false,
+                    ERROR
+                );
+                return false;
+            }
+
+            $stored_password_hash = $this->fields['password'];
+            if (!Auth::checkPassword($current_password, $stored_password_hash)) {
+                Session::addMessageAfterRedirect(
+                    __s('The current password does not match.'),
+                    false,
+                    ERROR
+                );
+                return false;
+            }
+        }
+        unset($input['current_password']);
+
+        // Reset tokens are written only by the password reset flow, which writes them directly.
+        unset($input['password_forget_token'], $input['password_forget_token_date']);
+
+        if (
             Session::getLoginUserID() !== false
             && ((int) $input['id']) !== Session::getLoginUserID()
         ) {
@@ -1301,7 +1333,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 'api_token',
                 '_reset_api_token',
                 '_regenerate_api_token',
-                'password_forget_token',
                 'personal_token',
                 '_reset_personal_token',
 
@@ -1544,7 +1575,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             );
         }
 
-        foreach (['api_token', 'password_forget_token', 'personal_token'] as $token_field) {
+        foreach (['api_token', 'personal_token'] as $token_field) {
             if (
                 array_key_exists($token_field, $input)
                 && $input[$token_field] !== null
@@ -1555,6 +1586,25 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
 
         return $input;
+    }
+
+    /** @param array<string, mixed> $input */
+    private function hasValidPasswordResetInput(array $input): bool
+    {
+        $glpi_key = new GLPIKey();
+
+        $token = $this->fields['password_forget_token'] ?? null;
+        $supplied_token = $input['password_forget_token'] ?? null;
+        $max_date = $this->fields['password_forget_token_date'] ?? null;
+
+        return is_string($token)
+            && $token !== ''
+            && is_string($supplied_token)
+            && $supplied_token !== ''
+            && hash_equals((string) $glpi_key->decrypt($token), $supplied_token)
+            && $max_date !== null
+            && strtotime($_SESSION["glpi_currenttime"]) < strtotime($max_date)
+        ;
     }
 
 

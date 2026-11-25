@@ -10772,18 +10772,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Toolbox/DataExport.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$path of static method Glpi\\\\Toolbox\\\\Filesystem\\:\\:normalizePath\\(\\) expects string, array\\|int\\|string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Toolbox/Filesystem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$url of function Safe\\\\parse_url expects string, array\\|int\\|string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Toolbox/Filesystem.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$subject of function Safe\\\\preg_match expects string, array\\|int\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,

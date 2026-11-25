@@ -1221,6 +1221,152 @@ class APIRestTest extends TestCase
         }
     }
 
+    public function testUpdateOwnPasswordRequiresCurrentPassword()
+    {
+        $user = getItemByTypeName('User', TU_USER);
+        $users_id = $user->getID();
+
+        try {
+            // Be sure to be on the right entity
+            $this->query(
+                'changeActiveEntities',
+                ['verb'    => 'POST',
+                    'headers' => ['Session-Token' => $this->session_token],
+                    'json'    => [
+                        'entities_id'   => 'all',
+                        'is_recursive'  => true,
+                    ],
+                ],
+                200
+            );
+
+            // Missing current password: refused
+            $data = $this->query(
+                'updateItems',
+                [
+                    'itemtype' => 'User',
+                    'verb'     => 'PUT',
+                    'headers'  => ['Session-Token' => $this->session_token],
+                    'json'     => [
+                        'input' => [
+                            'id'        => $users_id,
+                            'password'  => 'a new password',
+                            'password2' => 'a new password',
+                        ],
+                    ],
+                ],
+                400,
+                'ERROR_GLPI_UPDATE'
+            );
+            $this->assertSame('You must input your current password.', $data[1]);
+            $this->assertTrue($user->getFromDB($users_id));
+            $this->assertTrue(Auth::checkPassword(TU_PASS, $user->fields['password']));
+
+            // Invalid current password: refused
+            $data = $this->query(
+                'updateItems',
+                [
+                    'itemtype' => 'User',
+                    'verb'     => 'PUT',
+                    'headers'  => ['Session-Token' => $this->session_token],
+                    'json'     => [
+                        'input' => [
+                            'id'               => $users_id,
+                            'current_password' => 'not the current password',
+                            'password'         => 'a new password',
+                            'password2'        => 'a new password',
+                        ],
+                    ],
+                ],
+                400,
+                'ERROR_GLPI_UPDATE'
+            );
+            $this->assertSame('The current password does not match.', $data[1]);
+            $this->assertTrue($user->getFromDB($users_id));
+            $this->assertTrue(Auth::checkPassword(TU_PASS, $user->fields['password']));
+
+            // Valid current password: accepted
+            $this->query(
+                'updateItems',
+                [
+                    'itemtype' => 'User',
+                    'verb'     => 'PUT',
+                    'headers'  => ['Session-Token' => $this->session_token],
+                    'json'     => [
+                        'input' => [
+                            'id'               => $users_id,
+                            'current_password' => TU_PASS,
+                            'password'         => 'a new password',
+                            'password2'        => 'a new password',
+                        ],
+                    ],
+                ]
+            );
+            $this->assertTrue($user->getFromDB($users_id));
+            $this->assertTrue(Auth::checkPassword('a new password', $user->fields['password']));
+        } finally {
+            // Restore the initial password in the DB (this test is not transactional)
+            global $DB;
+            $updateSuccess = $DB->update(
+                User::getTable(),
+                ['password' => Auth::getPasswordHash(TU_PASS)],
+                ['id'       => $users_id]
+            );
+            $this->assertNotFalse($updateSuccess, 'password restore failed');
+        }
+    }
+
+    public function testUpdateOtherUserPasswordWithoutCurrentPassword()
+    {
+        // An administrator must still be able to update the password of
+        // another user without having to supply any current password.
+        $data = $this->query(
+            'createItems',
+            [
+                'verb'     => 'POST',
+                'itemtype' => 'User',
+                'headers'  => ['Session-Token' => $this->session_token],
+                'json'     => [
+                    'input' => [
+                        'name'      => \bin2hex(\random_bytes(12)),
+                        'password'  => 'initial password',
+                        'password2' => 'initial password',
+                    ],
+                ],
+            ],
+            201
+        );
+
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('id', $data);
+        $other_users_id = $data['id'];
+
+        $user = new User();
+        $this->assertTrue((bool) $user->getFromDB($other_users_id));
+
+        try {
+            $this->query(
+                'updateItems',
+                [
+                    'itemtype' => 'User',
+                    'verb'     => 'PUT',
+                    'headers'  => ['Session-Token' => $this->session_token],
+                    'json'     => [
+                        'input' => [
+                            'id'        => $other_users_id,
+                            'password'  => 'a new password',
+                            'password2' => 'a new password',
+                        ],
+                    ],
+                ]
+            );
+            $this->assertTrue($user->getFromDB($other_users_id));
+            $this->assertTrue(Auth::checkPassword('a new password', $user->fields['password']));
+        } finally {
+            // Clean up (this test is not transactional)
+            $this->assertTrue($user->delete(['id' => $other_users_id], true));
+        }
+    }
 
     public function testDeleteItem()
     {
@@ -3514,8 +3660,6 @@ class APIRestTest extends TestCase
     /**
      * Test different input types for PUT/PATCH requests to ensure the fix for
      * "Attempt to assign property 'id' on array" error works correctly
-     *
-     * @covers API::updateItems
      */
     public function testUpdateItemsWithDifferentInputTypes()
     {

@@ -64,6 +64,7 @@ use function Safe\preg_match;
 use function Safe\preg_match_all;
 use function Safe\preg_replace;
 use function Safe\preg_replace_callback;
+use function Safe\preg_split;
 
 /**
  * KnowbaseItem Class
@@ -2564,6 +2565,28 @@ TWIG, $twig_params);
 
         // Remove any whitespace from begin/end
         $search = preg_replace('/^[\p{Z}\h\v\r\n]+|[\p{Z}\h\v\r\n]+$/u', '', $search);
+        // Replace any other whitespace by a simple space
+        $search = preg_replace('/[\p{Z}\h\v\r\n]+/u', ' ', $search);
+
+        // Replace by a space all symbols located between two word chars, as MySQL fulltext index handles them as words separators
+        // (e.g. `base-de` is indexed as `base` and `de`).
+        // Outside of a quoted phrase, the resulting words are wrapped in double quotes to only match them as a phrase
+        // (e.g. `base-de` becomes `"base de"`, instead of `base* de*` that would match any word starting with `de`).
+        $inner_symbols = "[^{$word_chars}()\"* ]+";
+        $parts = preg_split('/("[^"]*")/u', $search, -1, PREG_SPLIT_DELIM_CAPTURE);
+        foreach ($parts as $i => $part) {
+            if ($i % 2 === 1) {
+                // Quoted phrase
+                $parts[$i] = preg_replace("/(?<=[{$word_chars}]){$inner_symbols}(?=[{$word_chars}])/u", ' ', $part);
+            } else {
+                $parts[$i] = preg_replace_callback(
+                    "/[{$word_chars}]+(?:{$inner_symbols}[{$word_chars}]+)+\**/u",
+                    fn(array $matches) => '"' . preg_replace("/{$inner_symbols}/u", ' ', rtrim($matches[0], '*')) . '"',
+                    $part
+                );
+            }
+        }
+        $search = implode('', $parts);
 
         // Remove all symbols except word chars, ponderation chars, parenthesis, quotes, wildcards and spaces.
         // @distance is not included, since it's unlikely a human will be using it through UI form

@@ -795,7 +795,6 @@ class UserTest extends DbTestCase
         $inputs = [
             'api_token'             => \bin2hex(\random_bytes(16)),
             '_reset_api_token'      => true,
-            'password_forget_token' => \bin2hex(\random_bytes(16)),
             'personal_token'        => \bin2hex(\random_bytes(16)),
             '_reset_personal_token' => true,
             '_useremails'           => ['test1@example.com', 'test2@example.com'],
@@ -2164,8 +2163,8 @@ class UserTest extends DbTestCase
         $password2 = "P@ssword2"; // First password change
         $password3 = "P@ssword3"; // Second password change
         $password4 = "P@ssword4"; // Not yet used password
-        $this->updateItem('User', $user->getID(), ['password' => $password2, 'password2' => $password2], ['password', 'password2']);
-        $this->updateItem('User', $user->getID(), ['password' => $password3, 'password2' => $password3], ['password', 'password2']);
+        $this->updateItem('User', $user->getID(), ['current_password' => $password1, 'password' => $password2, 'password2' => $password2], ['current_password', 'password', 'password2']);
+        $this->updateItem('User', $user->getID(), ['current_password' => $password2, 'password' => $password3, 'password2' => $password3], ['current_password', 'password', 'password2']);
         $this->assertTrue($user->getFromDB($user->fields['id']));
 
         // Last 3 passwords should not work
@@ -3473,5 +3472,107 @@ class UserTest extends DbTestCase
         $this->setEntity('_test_child_1', false);
         $output = $render(['filters' => ['active' => 1, 'users' => [$hidden_user->getID()]]]);
         $this->assertStringNotContainsString('HiddenUserRealname', $output);
+    }
+
+    public static function canUpdateOwnPasswordProvider(): iterable
+    {
+        yield 'Administrator can\'t update his own password without filling the current password' => [
+            'can_update_users' => true,
+            'input' => [
+                'password' => 'new password',
+                'password2' => 'new password',
+            ],
+            'expected' => false,
+            'expected_session_message' => 'You must input your current password.',
+        ];
+        yield 'Non administrator can\'t update his own password without filling the current password' => [
+            'can_update_users' => false,
+            'input' => [
+                'password' => 'new password',
+                'password2' => 'new password',
+            ],
+            'expected' => false,
+            'expected_session_message' => 'You must input your current password.',
+        ];
+
+        yield 'Administrator can update his own password if he fills the current password' => [
+            'can_update_users' => true,
+            'input' => [
+                'current_password' => 'password',
+                'password' => 'new password',
+                'password2' => 'new password',
+            ],
+            'expected' => true,
+        ];
+        yield 'Non administrator can update his own password if he fills the current password' => [
+            'can_update_users' => false,
+            'input' => [
+                'current_password' => 'password',
+                'password' => 'new password',
+                'password2' => 'new password',
+            ],
+            'expected' => true,
+        ];
+
+        yield 'Administrator can\'t update his own password if he fills an invalid current password' => [
+            'can_update_users' => true,
+            'input' => [
+                'current_password' => 'not_password',
+                'password' => 'new password',
+                'password2' => 'new password',
+            ],
+            'expected' => false,
+            'expected_session_message' => 'The current password does not match.',
+        ];
+        yield 'Non administrator can\'t update his own password if he fills an invalid current password' => [
+            'can_update_users' => false,
+            'input' => [
+                'current_password' => 'not_password',
+                'password' => 'new password',
+                'password2' => 'new password',
+            ],
+            'expected' => false,
+            'expected_session_message' => 'The current password does not match.',
+        ];
+    }
+
+    #[DataProvider('canUpdateOwnPasswordProvider')]
+    public function testCanUpdateOwnPassword(
+        bool $can_update_users,
+        array $input,
+        bool $expected,
+        ?string $expected_session_message = null,
+    ) {
+        // Act: create a user with the specified rights
+        $profile = $this->createItem(\Profile::class, [
+            'name' => 'My profile',
+            'interface' => 'central',
+        ]);
+        $this->addRightToProfile(
+            'My profile',
+            User::$rightname,
+            $can_update_users ? UPDATE : 0,
+        );
+        $user = $this->createItem(User::class, [
+            'name'          => "My user",
+            'password'      => 'password',
+            'password2'     => 'password',
+            'profiles_id'   => $profile->getID(),
+            '_profiles_id'  => $profile->getID(),
+            '_entities_id'  => $this->getTestRootEntity(only_id: true),
+            '_is_recursive' => true,
+        ], ['password', 'password2']);
+
+        // Act: try to update his own password
+        $this->login("My user");
+        $success = $user->update(['id' => $user->getID(), ...$input]);
+        $password_match = password_verify($input['password'], $user->fields['password']);
+
+        // Assert: the update behaved as expected
+        $this->assertEquals($expected, $success);
+        $this->assertEquals($expected, $password_match);
+        if ($expected_session_message !== null) {
+            $this->hasSessionMessageThatContains($expected_session_message, ERROR);
+        }
     }
 }

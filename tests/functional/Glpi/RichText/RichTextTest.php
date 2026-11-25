@@ -119,6 +119,95 @@ PLAINTEXT,
 HTML,
         ];
 
+        // Misplaced table content is wrapped in a cell, to prevent browsers from closing the parent table early
+        /*
+         * @TODO Fix expected result depending on PHP version.
+         *
+        yield [
+            'content'                => '<table><tr><td>a</td></tr><table><tr><td>b</td></tr></table></td></tr></table>'
+                . '<table><tbody><tr><div>c</div></tr></tbody></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table>' . $tbody_opening_tag . '<tr><td>a</td></tr><tr><td><table>' . $tbody_opening_tag . '<tr><td>b</td></tr>' . $tbody_closing_tag . '</table></td></tr>' . $tbody_closing_tag . '</table>'
+                . '<table><tbody><tr><td><div>c</div></td></tr></tbody></table>',
+        ];
+        */
+
+        // Cells outside a row are moved into a row, without being nested in another cell
+        yield [
+            'content'                => '<table><td>a</td><td>b</td></table><table><tbody><th>c</th></tbody></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table>' . $tbody_opening_tag . '<tr><td>a</td><td>b</td></tr>' . $tbody_closing_tag . '</table><table><tbody><tr><th>c</th></tr></tbody></table>',
+        ];
+
+        // Content of a column group that follows its columns is moved after it, as browsers do
+        /*
+         * @TODO Fix expected result depending on PHP version.
+         *
+        yield [
+            'content'                => '<table><colgroup><col><table><tr><td>a</td></tr></table></colgroup><tr><td>b</td></tr></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table><colgroup><col /></colgroup>' . $tbody_opening_tag . '<tr><td><table>' . $tbody_opening_tag . '<tr><td>a</td></tr>' . $tbody_closing_tag . '</table></td></tr><tr><td>b</td></tr>' . $tbody_closing_tag . '</table>',
+        ];
+        */
+        yield [
+            'content'                => '<table><colgroup><col><tbody><tr><td>a</td><td>b</td></tr></tbody></table>'
+                . '<table><colgroup><col><tr><td>c</td></tr></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table><colgroup><col /></colgroup><tbody><tr><td>a</td><td>b</td></tr></tbody></table>'
+                . '<table><colgroup><col /></colgroup>' . $tbody_opening_tag . '<tr><td>c</td></tr>' . $tbody_closing_tag . '</table>',
+        ];
+
+        // Scripts, styles and form feeds between columns do not close the column group
+        /*
+         * @TODO Fix expected result depending on PHP version.
+         *
+        yield [
+            'content'                => "<table><colgroup><col><script>x()</script><col>\f<col></colgroup><tr><td>a</td></tr></table>",
+            'encode_output_entities' => false,
+            'expected_result'        => "<table><colgroup><col /><col />\f<col /></colgroup>' . $tbody_opening_tag . '<tr><td>a</td></tr>' . $tbody_closing_tag . '</table>",
+        ];
+        */
+
+        // Scripts and styles between cells outside a row do not split the implicit row
+        yield [
+            'content'                => '<table><td>a</td><script>x()</script><td>b</td></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table>' . $tbody_opening_tag . '<tr><td>a</td><td>b</td></tr>' . $tbody_closing_tag . '</table>',
+        ];
+
+        // Table elements outside a table are removed, but their content is kept
+        yield [
+            'content'                => '<div><td>a</td></div><p><caption>b</caption></p><span><th>c</th></span>'
+                . '<tr><table><tr><td>d</td></tr></table></tr>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<div>a</div><p>b</p><span>c</span><table>' . $tbody_opening_tag . '<tr><td>d</td></tr>' . $tbody_closing_tag . '</table>',
+        ];
+
+        // Table elements that are not in their expected parent inside a table are removed too
+        /*
+         * @TODO Fix expected result depending on PHP version.
+         *
+        yield [
+            'content'                => '<table><tr><td><div><td>a</td></div><table><tr><td>b</td></tr></table></td></tr></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table>' . $tbody_opening_tag . '<tr><td><div>a</div><table>' . $tbody_opening_tag . '<tr><td>b</td></tr>' . $tbody_closing_tag . '</table></td></tr>' . $tbody_closing_tag . '</table>',
+        ];
+        */
+
+        // Scripts and styles inside a table are dropped without leaving an empty row
+        yield [
+            'content'                => '<table><tr><td>a</td></tr><style>p{}</style><tr><script>x()</script><td>b</td></tr></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table>' . $tbody_opening_tag . '<tr><td>a</td></tr><tr><td>b</td></tr>' . $tbody_closing_tag . '</table>',
+        ];
+
+        // Elements dropped by the sanitizer inside a table do not leave an empty cell or row
+        yield [
+            'content'                => '<table><tr><td>a</td></tr><iframe src="x"></iframe><tr><td>b</td><form><input></form><td>c</td></tr></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table>' . $tbody_opening_tag . '<tr><td>a</td></tr><tr><td>b</td><td>c</td></tr>' . $tbody_closing_tag . '</table>',
+        ];
+
         // Cleaning of HTML structure
         yield [
             'content'                => <<<HTML

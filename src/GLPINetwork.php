@@ -98,6 +98,7 @@ class GLPINetwork extends CommonGLPI
         $services_available = self::isServicesAvailable($curl_error);
         TemplateRenderer::getInstance()->display('pages/setup/general/glpinetwork_setup.html.twig', [
             'registration_key' => $registration_key,
+            'glpi_network_uid' => self::getGlpiNetworkUid(),
             'informations'     => $informations,
             'canedit' => $canedit,
             'services_available' => $services_available,

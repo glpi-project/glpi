@@ -191,6 +191,12 @@ final class AdministrationController extends AbstractController
                         'description' => 'Password confirmation',
                         'writeOnly' => true,
                     ],
+                    'current_password' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_PASSWORD,
+                        'description' => 'Current password, required when updating your own password',
+                        'writeOnly' => true,
+                    ],
                     'picture' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'x-mapped-from' => 'picture',

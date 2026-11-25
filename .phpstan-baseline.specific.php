@@ -189,16 +189,145 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Unmanaged.php',
 ];
 $ignoreErrors[] = [
-    'message' => '#^Possibly invalid array key type string\\|null\\.$#',
-    'identifier' => 'offsetAccess.invalidOffset',
-    'count' => 2,
-    'path' => __DIR__ . '/src/Item_Ola.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type string\\|null\\.$#',
 	'identifier' => 'offsetAccess.invalidOffset',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Migration/GenericobjectPluginMigration.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to property \\$data on an unknown class Dom\\\\Text\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to property \\$firstChild on an unknown class Dom\\\\HTMLElement\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to property \\$nextSibling on an unknown class Dom\\\\HTMLElement\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to property \\$nodeName on an unknown class Dom\\\\HTMLElement\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to property \\$ownerDocument on an unknown class Dom\\\\Node\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to method __construct\\(\\) of deprecated class Symfony\\\\Component\\\\HtmlSanitizer\\\\Parser\\\\MastermindsParser\\:
+since Symfony 7\\.4, use `NativeParser` instead$#',
+	'identifier' => 'method.deprecatedClass',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to method createElement\\(\\) on an unknown class Dom\\\\HTMLDocument\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to method insertBefore\\(\\) on an unknown class Dom\\\\HTMLElement\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to method parse\\(\\) of deprecated class Symfony\\\\Component\\\\HtmlSanitizer\\\\Parser\\\\MastermindsParser\\:
+since Symfony 7\\.4, use `NativeParser` instead$#',
+	'identifier' => 'method.deprecatedClass',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to method removeChild\\(\\) on an unknown class Dom\\\\HTMLElement\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to method replaceChild\\(\\) on an unknown class Dom\\\\HTMLElement\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Class Dom\\\\HTMLElement not found\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Class Dom\\\\Text not found\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Instantiation of deprecated class Symfony\\\\Component\\\\HtmlSanitizer\\\\Parser\\\\MastermindsParser\\:
+since Symfony 7\\.4, use `NativeParser` instead$#',
+	'identifier' => 'new.deprecatedClass',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\RichText\\\\HtmlParser\\:\\:parse\\(\\) has invalid return type Dom\\\\Node\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$node of method Glpi\\\\RichText\\\\HtmlParser\\:\\:fixTableStructure\\(\\) expects Dom\\\\HTMLElement\\|DOMNode, Dom\\\\Node\\|DOMNode given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\$document of method Glpi\\\\RichText\\\\HtmlParser\\:\\:fixTableStructure\\(\\) has invalid type Dom\\\\HTMLDocument\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\$node of method Glpi\\\\RichText\\\\HtmlParser\\:\\:fixTableStructure\\(\\) has invalid type Dom\\\\HTMLElement\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Comparison operation "\\<" between int\\<80600, 80699\\> and 80400 is always false\\.$#',
+	'identifier' => 'smaller.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\RichText\\\\HtmlParser\\:\\:parse\\(\\) never returns DOMNode so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$document of method Glpi\\\\RichText\\\\HtmlParser\\:\\:fixTableStructure\\(\\) expects Dom\\\\HTMLDocument\\|DOMDocument, Dom\\\\Document given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$node of method Glpi\\\\RichText\\\\HtmlParser\\:\\:fixTableStructure\\(\\) expects Dom\\\\HTMLElement\\|DOMNode, Dom\\\\Node given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/RichText/HtmlParser.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type int\\|string\\|null\\.$#',
@@ -211,6 +340,12 @@ $ignoreErrors[] = [
 	'identifier' => 'offsetAccess.invalidOffset',
 	'count' => 5,
 	'path' => __DIR__ . '/src/Item_Devices.php',
+];
+$ignoreErrors[] = [
+    'message' => '#^Possibly invalid array key type string\\|null\\.$#',
+    'identifier' => 'offsetAccess.invalidOffset',
+    'count' => 2,
+    'path' => __DIR__ . '/src/Item_Ola.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type int\\|null\\.$#',

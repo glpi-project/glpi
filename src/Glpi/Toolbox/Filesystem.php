@@ -104,13 +104,6 @@ final class Filesystem
     {
         $parsed_scheme = parse_url($path, PHP_URL_SCHEME);
 
-        if ($parsed_scheme === 'file') {
-            // If scheme is `file://`, parse the path again to validate that it does not contains itself
-            // an unexpected scheme.
-            $path = parse_url($path, PHP_URL_PATH);
-            $parsed_scheme = parse_url($path, PHP_URL_SCHEME);
-        }
-
         if ($parsed_scheme !== null && preg_match('/^[a-z]$/i', $parsed_scheme) !== 1) {
             // As soon as the path contains a scheme, it is not considered as safe,
             // unless the scheme is 1 letter (corresponds to a drive letter on Windows system).

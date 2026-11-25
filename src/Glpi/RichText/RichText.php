@@ -692,7 +692,7 @@ JAVASCRIPT;
             ->allowAttribute('data-video-id', ['div'])
             ->allowAttribute('data-video-src', ['div']);
 
-        $sanitizer = new HtmlSanitizer($config);
+        $sanitizer = new HtmlSanitizer($config, new HtmlParser($config));
         return $sanitizer;
     }
 }

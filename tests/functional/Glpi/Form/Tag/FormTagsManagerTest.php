@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Form\Tag;
 
 use Computer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItem;
@@ -55,7 +56,9 @@ use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Glpi\Toolbox\MapperInterface;
+use GlpiPlugin\Tester\Form\UppercaseFormTitleTagProvider;
 use LogicException;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function Safe\json_encode;
 use function Safe\preg_match;
@@ -115,6 +118,11 @@ final class FormTagsManagerTest extends DbTestCase
                 value: $form->getId(),
                 provider: new FullFormTagProvider(),
             ),
+            new Tag(
+                label: 'Tester: uppercase form title',
+                value: $form->getId(),
+                provider: new UppercaseFormTitleTagProvider('pink'),
+            ),
         ];
 
         // Without filter
@@ -128,6 +136,7 @@ final class FormTagsManagerTest extends DbTestCase
             $this->getTagByName($tags, 'Comment title: Comment title'),
             $this->getTagByName($tags, 'Comment description: Comment description'),
             $this->getTagByName($tags, 'Full form (all questions and answers)'),
+            $this->getTagByName($tags, 'Tester: uppercase form title'),
         ]);
 
         // With "name" filter
@@ -277,6 +286,119 @@ final class FormTagsManagerTest extends DbTestCase
         $tag_manager = new FormTagsManager();
         $providers = $tag_manager->getTagProviders();
         $this->assertNotEmpty($providers);
+    }
+
+    public function testGetTagProvidersIncludesPluginProviders(): void
+    {
+        $tag_manager = new FormTagsManager();
+        $providers = array_map(
+            fn($provider) => $provider::class,
+            $tag_manager->getTagProviders(),
+        );
+
+        // Providers registered by the tester plugin must be available, even
+        // when the manager is not accessed through its singleton instance.
+        $this->assertContains(UppercaseFormTitleTagProvider::class, $providers);
+    }
+
+    public function testPluginTagsContentCanBeInserted(): void
+    {
+        // Arrange: create a form, answer it and get the tag of the tester plugin
+        $tag_manager = new FormTagsManager();
+        $form = $this->createAndGetFormWithFirstAndLastNameQuestions();
+        $answers = AnswersHandler::getInstance()->saveAnswers($form, [
+            $this->getQuestionId($form, "First name") => "John",
+            $this->getQuestionId($form, "Last name") => "Smith",
+        ], 0 /* Invalid user id but we dont care for this here */);
+        $tag = $this->getTagByName(
+            $tag_manager->getTags($form),
+            'Tester: uppercase form title',
+        );
+
+        // Act: compute the tag content
+        $computed_content = $tag_manager->insertTagsContent(
+            "Title: $tag->html",
+            $answers,
+        );
+
+        // Assert: the tag was resolved by the registered plugin provider
+        $this->assertEquals('Title: FIRST AND LAST NAME FORM', $computed_content);
+    }
+
+    public function testPluginTagsCanBeRefreshed(): void
+    {
+        // Arrange: create a form and get the tag of the tester plugin
+        $tag_manager = new FormTagsManager();
+        $form = $this->createItem(Form::class, ['name' => "My form name"]);
+        $tag = $this->getTagByName(
+            $tag_manager->getTags($form),
+            'Tester: uppercase form title',
+        );
+
+        // Act: refresh the tag
+        $new_html = $tag_manager->refreshTagsContent($tag->html);
+
+        // Assert: the tag was rebuilt by the registered plugin provider
+        $this->assertEquals($tag->html, $new_html);
+    }
+
+    public function testPluginTagsIdsAreReplaced(): void
+    {
+        // Arrange: create a form and get the tag of the tester plugin
+        $tag_manager = new FormTagsManager();
+        $form = $this->createItem(Form::class, ['name' => "My form name"]);
+        $tag = $this->getTagByName(
+            $tag_manager->getTags($form),
+            'Tester: uppercase form title',
+        );
+        $mapper = new DatabaseMapper([$this->getTestRootEntity(only_id: true)]);
+        $mapper->addMappedItem(Form::class, $form->getId(), $form->getId() + 1000);
+
+        // Act: replace the ids referenced by the tags
+        $new_html = $tag_manager->replaceIdsInTags($tag->html, $mapper);
+
+        // Assert: the form id referenced by the plugin tag has been updated
+        $this->assertStringContainsString(
+            sprintf('data-form-tag-value="%d"', $form->getId() + 1000),
+            $new_html,
+        );
+        $this->assertStringContainsString(
+            sprintf(
+                'data-form-tag-provider="%s"',
+                htmlescape(UppercaseFormTitleTagProvider::class)
+            ),
+            $new_html,
+        );
+    }
+
+    public static function invalidProviderProvider(): iterable
+    {
+        yield 'Unknown class' => ['Glpi\\Form\\Tag\\UnknownTagProvider'];
+        yield 'Class that is not a tag provider' => [Computer::class];
+    }
+
+    #[DataProvider('invalidProviderProvider')]
+    public function testTagsWithInvalidProviderAreRemoved(string $provider): void
+    {
+        // Arrange: build a tag that reference an invalid provider
+        $tag_manager = new FormTagsManager();
+        $form = $this->createAndGetFormWithFirstAndLastNameQuestions();
+        $answers = AnswersHandler::getInstance()->saveAnswers($form, [
+            $this->getQuestionId($form, "First name") => "John",
+        ], 0 /* Invalid user id but we dont care for this here */);
+        $content = sprintf(
+            'Before <span data-form-tag="true" data-form-tag-value="%d" data-form-tag-provider="%s">#Invalid</span> after',
+            $form->getId(),
+            htmlescape($provider),
+        );
+
+        // Act: compute and refresh the tags
+        $inserted_content = $tag_manager->insertTagsContent($content, $answers);
+        $refreshed_content = $tag_manager->refreshTagsContent($content);
+
+        // Assert: the invalid tag was removed
+        $this->assertEquals('Before  after', $inserted_content);
+        $this->assertEquals('Before  after', $refreshed_content);
     }
 
     public function testTagsCanBeRefreshed(): void

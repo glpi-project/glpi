@@ -384,6 +384,83 @@ class AdministrationControllerTest extends HLAPITestCase
             ]);
     }
 
+    public function testUpdateOwnPasswordRequiresCurrentPassword()
+    {
+        $tu_id = getItemByTypeName('User', TU_USER, true);
+        $this->login();
+
+        $check_password = static function (string $password) use ($tu_id): bool {
+            $user = new \User();
+            $user->getFromDB($tu_id);
+            return \Auth::checkPassword($password, $user->fields['password']);
+        };
+
+        // Missing current password: refused
+        $request = new Request('PATCH', '/Administration/User/' . $tu_id);
+        $request->setParameter('password', 'a new password');
+        $request->setParameter('password2', 'a new password');
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isNotOK()
+                ->jsonContent(function ($content) {
+                    $this->assertStringContainsString('You must input your current password.', json_encode($content));
+                });
+        });
+        $this->assertTrue($check_password(TU_PASS));
+
+        // Invalid current password: refused
+        $request = new Request('PATCH', '/Administration/User/' . $tu_id);
+        $request->setParameter('current_password', 'not the current password');
+        $request->setParameter('password', 'a new password');
+        $request->setParameter('password2', 'a new password');
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isNotOK()
+                ->jsonContent(function ($content) {
+                    $this->assertStringContainsString('The current password does not match.', json_encode($content));
+                });
+        });
+        $this->assertTrue($check_password(TU_PASS));
+
+        // Valid current password: accepted
+        $request = new Request('PATCH', '/Administration/User/' . $tu_id);
+        $request->setParameter('current_password', TU_PASS);
+        $request->setParameter('password', 'a new password');
+        $request->setParameter('password2', 'a new password');
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+        $this->assertTrue($check_password('a new password'));
+    }
+
+    public function testUpdateOtherUserPasswordWithoutCurrentPassword()
+    {
+        // An administrator must still be able to update the password of
+        // another user without having to supply any current password.
+        $this->loginWeb();
+        $other_user = $this->createItem('User', [
+            'name'      => 'testuser_password_update',
+            'password'  => 'initial password',
+            'password2' => 'initial password',
+        ], ['password', 'password2']);
+
+        $this->login();
+        $request = new Request('PATCH', '/Administration/User/' . $other_user->getID());
+        $request->setParameter('password', 'a new password');
+        $request->setParameter('password2', 'a new password');
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+
+        $user = new \User();
+        $user->getFromDB($other_user->getID());
+        $this->assertTrue(\Auth::checkPassword('a new password', $user->fields['password']));
+    }
+
     public function testCreateUpdateDeleteGroup()
     {
         $this->api->autoTestCRUD('/Administration/Group');

@@ -381,6 +381,7 @@ class Plugin extends CommonDBTM
                     self::$activated_plugins[] = $plugin_key;
                 }
 
+                break; // priority to first found, do not boot the plugin again from another base dir
             }
         }
     }

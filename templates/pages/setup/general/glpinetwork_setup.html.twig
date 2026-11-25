@@ -51,6 +51,16 @@
 
     {{ fields.largeTitle(__('Registration'), 'ti ti-shield-star', true) }}
 
+    {# The field has no name, to not be submitted and saved as a configuration value. #}
+    {% set glpi_network_uid_field %}
+        {{ fields.passwordField('', glpi_network_uid, __('GLPI Network UID'), {
+            full_width: true,
+            readonly: true,
+            is_disclosable: true,
+            helper: __('Identifier of this GLPI instance on GLPI Network services. It differs from the instance UUID used by telemetry.'),
+        }) }}
+    {% endset %}
+
     {% if registration_key is empty %}
 
         {% set registration_alert %}
@@ -85,6 +95,8 @@
             }
         ) }}
 
+        {{ glpi_network_uid_field }}
+
     {% else %}
         {% if informations['validation_message'] is not empty %}
             {% set subscription_ok = informations['is_valid'] and informations['subscription']['is_running'] %}
@@ -112,6 +124,8 @@
                 full_width: true,
             }) }}
         {% endif %}
+
+        {{ glpi_network_uid_field }}
 
         {% set clear_btn %}
             <button type="submit" name="reset_registration_key" value="1" class="ms-auto btn btn-outline-danger">

@@ -49,6 +49,7 @@ return $config
     ], false)
 
     ->ignoreUnknownClasses(['DB', 'DbTestCase', 'PluginGenericobjectType'])
+    ->ignoreUnknownClasses(['Dom\HTMLDocument', 'Dom\HTMLElement', 'Dom\Node', 'Dom\Text'])
 
     // Ignore errors on extensions that are suggested but not required
     ->ignoreErrorsOnExtensionAndPaths('ext-exif', [

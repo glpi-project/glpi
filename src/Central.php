@@ -625,6 +625,16 @@ class Central extends CommonGLPI
                     );
             }
 
+            if ($CFG_GLPI['cas_host'] !== '' && ($CFG_GLPI['cas_certificate_filepath'] ?? '') === '') {
+                $messages['warnings'][] = __s('No certificate has been configured in the CAS authentication settings. As a result, the authentication flow is not protected against man-in-the-middle attacks, which could allow a malicious actor to bypass authentication with the CAS server.')
+                    . ' '
+                    . sprintf(
+                        '<a href="%s">%s</a>',
+                        htmlescape($CFG_GLPI['root_doc'] . '/front/auth.others.php'),
+                        __s('See configuration')
+                    );
+            }
+
             // These checks query the information schema, which is slow when the server hosts many tables.
             $schema_checks = $GLPI_CACHE->get(self::DATABASE_SCHEMA_CHECKS_CACHE_KEY);
             if (!is_array($schema_checks)) {

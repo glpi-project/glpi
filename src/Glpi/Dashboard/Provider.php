@@ -1002,7 +1002,7 @@ class Provider
         Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
         $iterator = $DB->request($criteria);
 
-        $search_criteria = self::getSearchFiltersCriteria($fk_table, $params['apply_filters'])['criteria'] ?? [];
+        $search_criteria = self::getSearchFiltersCriteria($c_table, $params['apply_filters'])['criteria'] ?? [];
 
         $url = $item::getSearchURL();
 
@@ -2053,7 +2053,7 @@ class Provider
             $data[] = [
                 'number' => $result['nb_tickets'],
                 'label'  => $is_group
-                    ? ($result['first'] ?? '')
+                    ? ($result['name'] ?? '')
                     : formatUserName($result['actor_id'], $result['username'] ?? '', $result['second'] ?? '', $result['first'] ?? ''),
                 'url'    => Ticket::getSearchURL() . "?" . Toolbox::append_params($s_params),
             ];
