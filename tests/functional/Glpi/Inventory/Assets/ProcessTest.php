@@ -223,6 +223,43 @@ class ProcessTest extends AbstractInventoryAsset
         $this->assertSame($nb_logs, countElementsInTable(\Log::getTable(), $logs_criteria));
     }
 
+    public function testHandleLongCommandLine(): void
+    {
+        $this->login();
+        $conf = new Conf();
+        $this->assertTrue($conf->saveConf([
+            'import_process' => 1,
+        ]));
+        $this->logout();
+
+        $computer = getItemByTypeName(Computer::class, '_test_pc01');
+
+        $converter = new Converter();
+        $json = json_decode($converter->convert($this->assetProvider()[0]['xml']));
+
+        // command line exceeding the 65535 bytes of a TEXT column, see #25948
+        $cmd = '/usr/bin/java -cp ' . str_repeat('/opt/app/lib/dependency.jar:', 3000);
+        $this->assertGreaterThan(65535, strlen($cmd));
+        $json->content->processes[0]->cmd = $cmd;
+
+        // inventory is played twice: existing process must be matched and updated
+        for ($i = 0; $i < 2; $i++) {
+            $asset = new Process($computer, $json->content->processes);
+            $asset->setExtraData((array) $json->content);
+            $this->assertTrue($asset->checkConf($conf));
+            $asset->prepare();
+            $asset->handleLinks();
+            $asset->handle();
+        }
+
+        $processes = getAllDataFromTable(
+            \Item_Process::getTable(),
+            ['items_id' => $computer->fields['id'], 'itemtype' => Computer::class]
+        );
+        $this->assertCount(1, $processes);
+        $this->assertSame($cmd, current($processes)['cmd']);
+    }
+
     public function testGenericAssetProcess(): void
     {
         global $DB;
