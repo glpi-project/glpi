@@ -6453,118 +6453,9 @@ final class SQLProvider implements SearchProviderInterface
 
             switch ($table . '.' . $field) {
                 case "glpi_users.name":
-                    // USER search case
-                    if (
-                        ($itemtype != User::class)
-                        && isset($so["forcegroupby"]) && $so["forcegroupby"]
-                    ) {
-                        $out           = "";
-                        $count_display = 0;
-
-                        for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                            if (
-                                (isset($data[$ID][$k]['name']) && ($data[$ID][$k]['name'] > 0))
-                                || (isset($data[$ID][$k][2]) && ($data[$ID][$k][2] != ''))
-                            ) {
-                                if ($count_display) {
-                                    $out .= Search::LBBR;
-                                }
-
-                                if (isset($data[$ID][$k]['name']) && $data[$ID][$k]['name'] > 0) {
-                                    if (is_subclass_of($itemtype, CommonITILObject::class)) {
-                                        if (
-                                            Session::getCurrentInterface() == 'helpdesk'
-                                            && $orig_id == 5 // -> Assigned user
-                                            && !empty($anon_name = User::getAnonymizedNameForUser(
-                                                $data[$ID][$k]['name'],
-                                                $itemtype::getById($data['id'])->getEntityId()
-                                            ))
-                                        ) {
-                                            $out .= \htmlescape($anon_name);
-                                        } else {
-                                            $user = new User();
-                                            if ($user->getFromDB($data[$ID][$k]['name'])) {
-                                                $tooltip = "";
-                                                if (Session::haveRight(User::$rightname, READ)) {
-                                                    $tooltip = Html::showToolTip(
-                                                        __s('Loading...'),
-                                                        [
-                                                            'link'    => $user->getLinkURL(),
-                                                            'display' => false,
-                                                            'url'     => '/User/InfoCard/' . $user->getID(),
-                                                        ]
-                                                    );
-                                                }
-                                                $out .= sprintf(__s('%1$s %2$s'), htmlescape($user->getName()), $tooltip);
-                                            }
-                                        }
-
-                                    } else {
-                                        $out .= getUserLink($data[$ID][$k]['name']);
-                                    }
-                                    $count_display++;
-                                }
-
-                                // Manage alternative_email for tickets_users
-                                if (
-                                    is_subclass_of($itemtype, CommonITILObject::class)
-                                    && isset($data[$ID][$k][2])
-                                ) {
-                                    $split = explode(Search::LONGSEP, $data[$ID][$k][2]);
-                                    $counter = count($split);
-                                    for ($l = 0; $l < $counter; $l++) {
-                                        $split2 = explode(" ", $split[$l]);
-                                        if ((count($split2) == 2) && ($split2[0] == 0) && !empty($split2[1])) {
-                                            if ($count_display) {
-                                                $out .= Search::LBBR;
-                                            }
-                                            $count_display++;
-                                            $out .= "<a href='mailto:" . \htmlescape($split2[1]) . "'>" . \htmlescape($split2[1]) . "</a>";
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                    $out = self::giveUserNameItem($itemtype, $ID, $data, $so, $orig_id, $html_output);
+                    if ($out !== null) {
                         return $out;
-                    }
-                    if ($itemtype != User::class) {
-                        $out = '';
-                        if ($data[$ID][0]['id'] > 0) {
-                            $toadd = '';
-                            if (is_subclass_of($itemtype, CommonITILObject::class)) {
-                                if (Session::haveRight(User::$rightname, READ)) {
-                                    $users_id = (int) $data[$ID][0]['id'];
-                                    $toadd = Html::showToolTip(
-                                        __s('Loading...'),
-                                        [
-                                            'link'    => User::getFormURLWithID($users_id),
-                                            'display' => false,
-                                            'url'     => '/User/InfoCard/' . $users_id,
-                                        ]
-                                    );
-                                }
-                            }
-                            $userlink = formatUserLink(
-                                $data[$ID][0]['id'],
-                                $data[$ID][0]['name'],
-                                $data[$ID][0]['realname'],
-                                $data[$ID][0]['firstname'],
-                            );
-                            $out = sprintf(__s('%1$s %2$s'), $userlink, $toadd);
-                        }
-                        return $out;
-                    }
-
-                    if ($html_output) {
-                        $current_users_id = $data[$ID][0]['id'] ?? 0;
-                        if ($current_users_id > 0) {
-                            return TemplateRenderer::getInstance()->render('components/user/picture.html.twig', [
-                                'users_id'      => $current_users_id,
-                                'display_login' => true,
-                                'force_login'   => true,
-                                'avatar_size'   => "avatar-sm",
-                            ]);
-                        }
                     }
                     break;
 
@@ -6790,62 +6681,9 @@ final class SQLProvider implements SearchProviderInterface
                     break;
 
                 case "glpi_tickets.id":
-                    if ($so["datatype"] == 'count') {
-                        if (
-                            ($data[$ID][0]['name'] > 0)
-                            && Session::haveRight(Ticket::$rightname, Ticket::READALL)
-                        ) {
-                            if ($itemtype == User::class) {
-                                // Requester
-                                if ($ID == 'User_60') {
-                                    $options['criteria'][0]['field']      = 4;
-                                    $options['criteria'][0]['searchtype'] = 'equals';
-                                    $options['criteria'][0]['value']      = $data['id'];
-                                    $options['criteria'][0]['link']       = 'AND';
-                                }
-
-                                // Writer
-                                if ($ID == 'User_61') {
-                                    $options['criteria'][0]['field']      = 22;
-                                    $options['criteria'][0]['searchtype'] = 'equals';
-                                    $options['criteria'][0]['value']      = $data['id'];
-                                    $options['criteria'][0]['link']       = 'AND';
-                                }
-                                // Assign
-                                if ($ID == 'User_64') {
-                                    $options['criteria'][0]['field']      = 5;
-                                    $options['criteria'][0]['searchtype'] = 'equals';
-                                    $options['criteria'][0]['value']      = $data['id'];
-                                    $options['criteria'][0]['link']       = 'AND';
-                                }
-                            } elseif ($itemtype == ITILCategory::class) {
-                                $options['criteria'][0]['field']      = 7;
-                                $options['criteria'][0]['searchtype'] = 'equals';
-                                $options['criteria'][0]['value']      = $data['id'];
-                                $options['criteria'][0]['link']       = 'AND';
-                            } else {
-                                $options['criteria'][0]['field']       = 12;
-                                $options['criteria'][0]['searchtype']  = 'equals';
-                                $options['criteria'][0]['value']       = 'all';
-                                $options['criteria'][0]['link']        = 'AND';
-
-                                $options['metacriteria'][0]['itemtype']   = $itemtype;
-                                $options['metacriteria'][0]['field']      = SearchOption::getOptionNumber(
-                                    $itemtype,
-                                    'name'
-                                );
-                                $options['metacriteria'][0]['searchtype'] = 'equals';
-                                $options['metacriteria'][0]['value']      = $data['id'];
-                                $options['metacriteria'][0]['link']       = 'AND';
-                            }
-
-                            $options['reset'] = 'reset';
-
-                            $out  = "<a id='ticket" . \htmlescape($itemtype . $data['id']) . "' ";
-                            $out .= "href=\"" . \htmlescape($CFG_GLPI["root_doc"] . "/front/ticket.php?" . Toolbox::append_params($options, '&')) . "\">";
-                            $out .= \htmlescape($data[$ID][0]['name']) . "</a>";
-                            return $out;
-                        }
+                    $out = self::giveTicketIdItem($itemtype, $ID, $data, $so);
+                    if ($out !== null) {
+                        return $out;
                     }
                     break;
 
@@ -7053,134 +6891,7 @@ final class SQLProvider implements SearchProviderInterface
 
                     // OLA TTO / OLA TTR - due time and due time + progress ( so 185, 186, 180, 181 )
                 case "glpi_items_olas.due_time":
-                    $out = '';
-
-                    $data_items = array_filter($data[$ID], fn($key) => is_numeric($key), ARRAY_FILTER_USE_KEY);
-                    foreach ($data_items as $data_item) {
-                        // data used :
-                        // - name -> due_time (see below)
-                        // - status (ticket status)
-                        // - takeintoaccount_delay_stat
-                        // - date (ticket creation date)
-                        // - olas_id
-                        // - waiting_time
-                        // - end_time
-                        $ticket_status = $data_item['status'] ?? null;
-                        $due_time = $data_item['name'] ?? null;
-                        $ticket_creation_date = $data_item['date'] ?? null;
-                        $waiting_time = $data_item['waiting_time'] ?? null;
-                        $ola_end_time = $data_item['end_time'] ?? null;
-                        $olas_id = $data_item['olas_id'] ?? null;
-
-                        $ola = new OLA();
-                        // no item_olas associated
-                        if (!$olas_id) {
-                            continue;
-                        }
-                        if (!$ola->getFromDB($olas_id)) {
-                            throw new Exception('Referenced OLA not found for item_olas ID: ' . $olas_id);
-                        }
-                        $ola_name = $ola->fields['name'];
-                        $ola_type = $ola->fields['type']; // won't change between loops
-
-                        // no due time set, nothing to display
-                        if (is_null($due_time)) {
-                            continue;
-                        }
-
-                        // For TTR : no display if ticket is in waiting status
-                        if (
-                            $ticket_status == CommonITILObject::WAITING
-                            && $ola_type == SLM::TTR) {
-                            continue;
-                        }
-
-                        // ticket is solved or closed, no progress to display, just display the date
-                        if (
-                            ($ticket_status == Ticket::SOLVED)
-                            || ($ticket_status == Ticket::CLOSED)
-                        ) {
-                            $out .= htmlescape($ola_name) . ' : ' . htmlescape(Html::convDateTime($due_time)) . '</br>';
-                            continue;
-                        }
-
-                        // no progress bar if
-                        // - ola completed (end_time is set)
-                        // - search option without progress bar
-                        if ($ola_end_time || in_array($orig_id, [180, 185])) {
-                            $out .= htmlescape($ola_name) . ' : ' . htmlescape(Html::convDateTime($due_time)) . '</br>';
-                            continue;
-                        }
-
-                        // - progress bar construction
-                        $color = null;
-                        if ($ticket_status == CommonITILObject::WAITING) {
-                            $color = '#AAAAAA';
-                        }
-
-                        // time calculations to build the progress bar
-                        // progress bar is displayed only is ola is not completed
-                        $delay_between_ticket_creation_and_now = $ola->getActiveTimeBetween($ticket_creation_date, date('Y-m-d H:i:s'));
-                        $delay_between_ticket_creation_and_ola_due_time = $ola->getActiveTimeBetween($ticket_creation_date, $due_time);
-
-                        if (($delay_between_ticket_creation_and_ola_due_time - $waiting_time) != 0) {
-                            $percentage_done = round((100 * ($delay_between_ticket_creation_and_now - $waiting_time)) / ($delay_between_ticket_creation_and_ola_due_time - $waiting_time));
-                        } else {
-                            // Total time is null : no active time
-                            $percentage_done = 100;
-                        }
-                        if ($percentage_done > 100) {
-                            $percentage_done = 100;
-                        }
-                        switch ($_SESSION['glpiduedatewarning_unit']) {
-                            case 'hour':
-                                $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * HOUR_TIMESTAMP;
-                                $less_warn = ($delay_between_ticket_creation_and_ola_due_time - $delay_between_ticket_creation_and_now);
-                                break;
-                            case 'day':
-                                $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * DAY_TIMESTAMP;
-                                $less_warn = ($delay_between_ticket_creation_and_ola_due_time - $delay_between_ticket_creation_and_now);
-                                break;
-                            case '%':
-                            default:
-                                $less_warn_limit = $_SESSION['glpiduedatewarning_less'];
-                                $less_warn = (100 - $percentage_done);
-                                break;
-                        }
-
-                        $less_crit_limit = 0;
-                        $less_crit = 0;
-                        if ($_SESSION['glpiduedatecritical_unit'] == '%') {
-                            $less_crit_limit = $_SESSION['glpiduedatecritical_less'];
-                            $less_crit = (100 - $percentage_done);
-                        } elseif ($_SESSION['glpiduedatecritical_unit'] == 'hour') {
-                            $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * HOUR_TIMESTAMP;
-                            $less_crit = ($delay_between_ticket_creation_and_ola_due_time - $delay_between_ticket_creation_and_now);
-                        } elseif ($_SESSION['glpiduedatecritical_unit'] == 'day') {
-                            $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * DAY_TIMESTAMP;
-                            $less_crit = ($delay_between_ticket_creation_and_ola_due_time - $delay_between_ticket_creation_and_now);
-                        }
-
-                        if ($color === null) {
-                            $color = $_SESSION['glpiduedateok_color'];
-                            if ($less_crit < $less_crit_limit) {
-                                $color = $_SESSION['glpiduedatecritical_color'];
-                            } elseif ($less_warn < $less_warn_limit) {
-                                $color = $_SESSION['glpiduedatewarning_color'];
-                            }
-                        }
-
-                        $progressbar_data = [
-                            'text' => $ola_name . ' : ' . Html::convDateTime($due_time),
-                            'percent' => (int) $percentage_done,
-                            'percent_text' => (string) $percentage_done,
-                            'color' => $color,
-                        ];
-
-                        $out .= self::getProgressBar([$progressbar_data]);
-                    }
-
-                    return $out;
+                    return self::giveOlaDueTimeItem($ID, $data, $orig_id);
 
                 case "glpi_softwarelicenses.number":
                     if ($data[$ID][0]['min'] == -1) {
@@ -7433,68 +7144,8 @@ final class SQLProvider implements SearchProviderInterface
                        </div>";
 
                 case "glpi_knowbaseitems.name":
-                    global $DB;
-                    $result = $DB->request([
-                        'SELECT' => [
-                            KnowbaseItem::getTable() . '.is_faq',
-                            KnowbaseItem::getTable() . '.id',
-                        ],
-                        'FROM'   => KnowbaseItem::getTable(),
-                        'LEFT JOIN' => [
-                            Entity_KnowbaseItem::getTable() => [
-                                'ON'  => [
-                                    Entity_KnowbaseItem::getTable() => KnowbaseItem::getForeignKeyField(),
-                                    KnowbaseItem::getTable()        => 'id',
-                                ],
-                            ],
-                            KnowbaseItem_Profile::getTable() => [
-                                'ON'  => [
-                                    KnowbaseItem_Profile::getTable() => KnowbaseItem::getForeignKeyField(),
-                                    KnowbaseItem::getTable()         => 'id',
-                                ],
-                            ],
-                            Group_KnowbaseItem::getTable() => [
-                                'ON'  => [
-                                    Group_KnowbaseItem::getTable() => KnowbaseItem::getForeignKeyField(),
-                                    KnowbaseItem::getTable()       => 'id',
-                                ],
-                            ],
-                            KnowbaseItem_User::getTable() => [
-                                'ON'  => [
-                                    KnowbaseItem_User::getTable() => KnowbaseItem::getForeignKeyField(),
-                                    KnowbaseItem::getTable()      => 'id',
-                                ],
-                            ],
-                        ],
-                        'WHERE'  => [
-                            KnowbaseItem::getTable() . '.id' => $data[$ID][0]['id'],
-                            'OR' => [
-                                Entity_KnowbaseItem::getTable() . '.id' => ['>=', 0],
-                                KnowbaseItem_Profile::getTable() . '.id' => ['>=', 0],
-                                Group_KnowbaseItem::getTable() . '.id' => ['>=', 0],
-                                KnowbaseItem_User::getTable() . '.id' => ['>=', 0],
-                            ],
-                        ],
-                    ]);
-                    $name = $data[$ID][0]['name'];
-                    $icon_class = "";
-                    $icon_title = "";
-                    $href = KnowbaseItem::getFormURLWithID($data[$ID][0]['id']);
-                    if (count($result) > 0) {
-                        foreach ($result as $row) {
-                            if ($row['is_faq']) {
-                                $icon_class = "ti ti-help faq";
-                                $icon_title = __s("This item is part of the FAQ");
-                            }
-                        }
-                    } else {
-                        $icon_class = "ti ti-eye-off not-published";
-                        $icon_title = __s("This item is not published yet");
-                    }
-                    $icon = $icon_title !== ''
-                        ? "<i class='$icon_class' title='$icon_title' aria-hidden='true'></i><span class='visually-hidden'>$icon_title</span> "
-                        : '';
-                    return "<div class='kb'> $icon<a href='" . \htmlescape($href) . "'>" . \htmlescape($name) . "</a></div>";
+                    return self::giveKnowbaseItemNameItem($ID, $data);
+
                 case "glpi_certificates.date_expiration":
                     if (
                         !in_array($orig_id, [151, 158, 181, 186])
@@ -7941,6 +7592,412 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         return $out;
+    }
+
+    /**
+     * Users of a "glpi_users.name" column: links, avatars, anonymized names. Null when the
+     * generic rendering applies.
+     *
+     * @param array<mixed> $data
+     * @param array<mixed> $so
+     */
+    private static function giveUserNameItem(string $itemtype, string $ID, array $data, array $so, int|string $orig_id, bool $html_output): ?string
+    {
+        // USER search case
+        if (
+            ($itemtype != User::class)
+            && isset($so["forcegroupby"]) && $so["forcegroupby"]
+        ) {
+            $out           = "";
+            $count_display = 0;
+
+            for ($k = 0; $k < $data[$ID]['count']; $k++) {
+                if (
+                    (isset($data[$ID][$k]['name']) && ($data[$ID][$k]['name'] > 0))
+                    || (isset($data[$ID][$k][2]) && ($data[$ID][$k][2] != ''))
+                ) {
+                    if ($count_display) {
+                        $out .= Search::LBBR;
+                    }
+
+                    if (isset($data[$ID][$k]['name']) && $data[$ID][$k]['name'] > 0) {
+                        if (is_subclass_of($itemtype, CommonITILObject::class)) {
+                            if (
+                                Session::getCurrentInterface() == 'helpdesk'
+                                && $orig_id == 5 // -> Assigned user
+                                && !empty($anon_name = User::getAnonymizedNameForUser(
+                                    $data[$ID][$k]['name'],
+                                    $itemtype::getById($data['id'])->getEntityId()
+                                ))
+                            ) {
+                                $out .= \htmlescape($anon_name);
+                            } else {
+                                $user = new User();
+                                if ($user->getFromDB($data[$ID][$k]['name'])) {
+                                    $tooltip = "";
+                                    if (Session::haveRight(User::$rightname, READ)) {
+                                        $tooltip = Html::showToolTip(
+                                            __s('Loading...'),
+                                            [
+                                                'link'    => $user->getLinkURL(),
+                                                'display' => false,
+                                                'url'     => '/User/InfoCard/' . $user->getID(),
+                                            ]
+                                        );
+                                    }
+                                    $out .= sprintf(__s('%1$s %2$s'), htmlescape($user->getName()), $tooltip);
+                                }
+                            }
+
+                        } else {
+                            $out .= getUserLink($data[$ID][$k]['name']);
+                        }
+                        $count_display++;
+                    }
+
+                    // Manage alternative_email for tickets_users
+                    if (
+                        is_subclass_of($itemtype, CommonITILObject::class)
+                        && isset($data[$ID][$k][2])
+                    ) {
+                        $split = explode(Search::LONGSEP, $data[$ID][$k][2]);
+                        $counter = count($split);
+                        for ($l = 0; $l < $counter; $l++) {
+                            $split2 = explode(" ", $split[$l]);
+                            if ((count($split2) == 2) && ($split2[0] == 0) && !empty($split2[1])) {
+                                if ($count_display) {
+                                    $out .= Search::LBBR;
+                                }
+                                $count_display++;
+                                $out .= "<a href='mailto:" . \htmlescape($split2[1]) . "'>" . \htmlescape($split2[1]) . "</a>";
+                            }
+                        }
+                    }
+                }
+            }
+            return $out;
+        }
+        if ($itemtype != User::class) {
+            $out = '';
+            if ($data[$ID][0]['id'] > 0) {
+                $toadd = '';
+                if (is_subclass_of($itemtype, CommonITILObject::class)) {
+                    if (Session::haveRight(User::$rightname, READ)) {
+                        $users_id = (int) $data[$ID][0]['id'];
+                        $toadd = Html::showToolTip(
+                            __s('Loading...'),
+                            [
+                                'link'    => User::getFormURLWithID($users_id),
+                                'display' => false,
+                                'url'     => '/User/InfoCard/' . $users_id,
+                            ]
+                        );
+                    }
+                }
+                $userlink = formatUserLink(
+                    $data[$ID][0]['id'],
+                    $data[$ID][0]['name'],
+                    $data[$ID][0]['realname'],
+                    $data[$ID][0]['firstname'],
+                );
+                $out = sprintf(__s('%1$s %2$s'), $userlink, $toadd);
+            }
+            return $out;
+        }
+
+        if ($html_output) {
+            $current_users_id = $data[$ID][0]['id'] ?? 0;
+            if ($current_users_id > 0) {
+                return TemplateRenderer::getInstance()->render('components/user/picture.html.twig', [
+                    'users_id'      => $current_users_id,
+                    'display_login' => true,
+                    'force_login'   => true,
+                    'avatar_size'   => "avatar-sm",
+                ]);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Link to the tickets of a "glpi_tickets.id" column. Null when the generic rendering
+     * applies.
+     *
+     * @param array<mixed> $data
+     * @param array<mixed> $so
+     */
+    private static function giveTicketIdItem(string $itemtype, string $ID, array $data, array $so): ?string
+    {
+        global $CFG_GLPI;
+
+        if ($so["datatype"] == 'count') {
+            if (
+                ($data[$ID][0]['name'] > 0)
+                && Session::haveRight(Ticket::$rightname, Ticket::READALL)
+            ) {
+                if ($itemtype == User::class) {
+                    // Requester
+                    if ($ID == 'User_60') {
+                        $options['criteria'][0]['field']      = 4;
+                        $options['criteria'][0]['searchtype'] = 'equals';
+                        $options['criteria'][0]['value']      = $data['id'];
+                        $options['criteria'][0]['link']       = 'AND';
+                    }
+
+                    // Writer
+                    if ($ID == 'User_61') {
+                        $options['criteria'][0]['field']      = 22;
+                        $options['criteria'][0]['searchtype'] = 'equals';
+                        $options['criteria'][0]['value']      = $data['id'];
+                        $options['criteria'][0]['link']       = 'AND';
+                    }
+                    // Assign
+                    if ($ID == 'User_64') {
+                        $options['criteria'][0]['field']      = 5;
+                        $options['criteria'][0]['searchtype'] = 'equals';
+                        $options['criteria'][0]['value']      = $data['id'];
+                        $options['criteria'][0]['link']       = 'AND';
+                    }
+                } elseif ($itemtype == ITILCategory::class) {
+                    $options['criteria'][0]['field']      = 7;
+                    $options['criteria'][0]['searchtype'] = 'equals';
+                    $options['criteria'][0]['value']      = $data['id'];
+                    $options['criteria'][0]['link']       = 'AND';
+                } else {
+                    $options['criteria'][0]['field']       = 12;
+                    $options['criteria'][0]['searchtype']  = 'equals';
+                    $options['criteria'][0]['value']       = 'all';
+                    $options['criteria'][0]['link']        = 'AND';
+
+                    $options['metacriteria'][0]['itemtype']   = $itemtype;
+                    $options['metacriteria'][0]['field']      = SearchOption::getOptionNumber(
+                        $itemtype,
+                        'name'
+                    );
+                    $options['metacriteria'][0]['searchtype'] = 'equals';
+                    $options['metacriteria'][0]['value']      = $data['id'];
+                    $options['metacriteria'][0]['link']       = 'AND';
+                }
+
+                $options['reset'] = 'reset';
+
+                $out  = "<a id='ticket" . \htmlescape($itemtype . $data['id']) . "' ";
+                $out .= "href=\"" . \htmlescape($CFG_GLPI["root_doc"] . "/front/ticket.php?" . Toolbox::append_params($options, '&')) . "\">";
+                $out .= \htmlescape($data[$ID][0]['name']) . "</a>";
+                return $out;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * OLA TTO / TTR of a ticket: due time, with a progress bar for options 180 and 181.
+     *
+     * @param array<mixed> $data
+     */
+    private static function giveOlaDueTimeItem(string $ID, array $data, int|string $orig_id): string
+    {
+        $out = '';
+
+        $data_items = array_filter($data[$ID], fn($key) => is_numeric($key), ARRAY_FILTER_USE_KEY);
+        foreach ($data_items as $data_item) {
+            // data used :
+            // - name -> due_time (see below)
+            // - status (ticket status)
+            // - takeintoaccount_delay_stat
+            // - date (ticket creation date)
+            // - olas_id
+            // - waiting_time
+            // - end_time
+            $ticket_status = $data_item['status'] ?? null;
+            $due_time = $data_item['name'] ?? null;
+            $ticket_creation_date = $data_item['date'] ?? null;
+            $waiting_time = $data_item['waiting_time'] ?? null;
+            $ola_end_time = $data_item['end_time'] ?? null;
+            $olas_id = $data_item['olas_id'] ?? null;
+
+            $ola = new OLA();
+            // no item_olas associated
+            if (!$olas_id) {
+                continue;
+            }
+            if (!$ola->getFromDB($olas_id)) {
+                throw new Exception('Referenced OLA not found for item_olas ID: ' . $olas_id);
+            }
+            $ola_name = $ola->fields['name'];
+            $ola_type = $ola->fields['type']; // won't change between loops
+
+            // no due time set, nothing to display
+            if (is_null($due_time)) {
+                continue;
+            }
+
+            // For TTR : no display if ticket is in waiting status
+            if (
+                $ticket_status == CommonITILObject::WAITING
+                && $ola_type == SLM::TTR) {
+                continue;
+            }
+
+            // ticket is solved or closed, no progress to display, just display the date
+            if (
+                ($ticket_status == Ticket::SOLVED)
+                || ($ticket_status == Ticket::CLOSED)
+            ) {
+                $out .= htmlescape($ola_name) . ' : ' . htmlescape(Html::convDateTime($due_time)) . '</br>';
+                continue;
+            }
+
+            // no progress bar if
+            // - ola completed (end_time is set)
+            // - search option without progress bar
+            if ($ola_end_time || in_array($orig_id, [180, 185])) {
+                $out .= htmlescape($ola_name) . ' : ' . htmlescape(Html::convDateTime($due_time)) . '</br>';
+                continue;
+            }
+
+            // - progress bar construction
+            $color = null;
+            if ($ticket_status == CommonITILObject::WAITING) {
+                $color = '#AAAAAA';
+            }
+
+            // time calculations to build the progress bar
+            // progress bar is displayed only is ola is not completed
+            $delay_between_ticket_creation_and_now = $ola->getActiveTimeBetween($ticket_creation_date, date('Y-m-d H:i:s'));
+            $delay_between_ticket_creation_and_ola_due_time = $ola->getActiveTimeBetween($ticket_creation_date, $due_time);
+
+            if (($delay_between_ticket_creation_and_ola_due_time - $waiting_time) != 0) {
+                $percentage_done = round((100 * ($delay_between_ticket_creation_and_now - $waiting_time)) / ($delay_between_ticket_creation_and_ola_due_time - $waiting_time));
+            } else {
+                // Total time is null : no active time
+                $percentage_done = 100;
+            }
+            if ($percentage_done > 100) {
+                $percentage_done = 100;
+            }
+            switch ($_SESSION['glpiduedatewarning_unit']) {
+                case 'hour':
+                    $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * HOUR_TIMESTAMP;
+                    $less_warn = ($delay_between_ticket_creation_and_ola_due_time - $delay_between_ticket_creation_and_now);
+                    break;
+                case 'day':
+                    $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * DAY_TIMESTAMP;
+                    $less_warn = ($delay_between_ticket_creation_and_ola_due_time - $delay_between_ticket_creation_and_now);
+                    break;
+                case '%':
+                default:
+                    $less_warn_limit = $_SESSION['glpiduedatewarning_less'];
+                    $less_warn = (100 - $percentage_done);
+                    break;
+            }
+
+            $less_crit_limit = 0;
+            $less_crit = 0;
+            if ($_SESSION['glpiduedatecritical_unit'] == '%') {
+                $less_crit_limit = $_SESSION['glpiduedatecritical_less'];
+                $less_crit = (100 - $percentage_done);
+            } elseif ($_SESSION['glpiduedatecritical_unit'] == 'hour') {
+                $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * HOUR_TIMESTAMP;
+                $less_crit = ($delay_between_ticket_creation_and_ola_due_time - $delay_between_ticket_creation_and_now);
+            } elseif ($_SESSION['glpiduedatecritical_unit'] == 'day') {
+                $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * DAY_TIMESTAMP;
+                $less_crit = ($delay_between_ticket_creation_and_ola_due_time - $delay_between_ticket_creation_and_now);
+            }
+
+            if ($color === null) {
+                $color = $_SESSION['glpiduedateok_color'];
+                if ($less_crit < $less_crit_limit) {
+                    $color = $_SESSION['glpiduedatecritical_color'];
+                } elseif ($less_warn < $less_warn_limit) {
+                    $color = $_SESSION['glpiduedatewarning_color'];
+                }
+            }
+
+            $progressbar_data = [
+                'text' => $ola_name . ' : ' . Html::convDateTime($due_time),
+                'percent' => (int) $percentage_done,
+                'percent_text' => (string) $percentage_done,
+                'color' => $color,
+            ];
+
+            $out .= self::getProgressBar([$progressbar_data]);
+        }
+
+        return $out;
+    }
+
+    /**
+     * Knowledge base article name, with its FAQ icon, linked to the article.
+     *
+     * @param array<mixed> $data
+     */
+    private static function giveKnowbaseItemNameItem(string $ID, array $data): string
+    {
+        global $DB;
+
+        global $DB;
+        $result = $DB->request([
+            'SELECT' => [
+                KnowbaseItem::getTable() . '.is_faq',
+                KnowbaseItem::getTable() . '.id',
+            ],
+            'FROM'   => KnowbaseItem::getTable(),
+            'LEFT JOIN' => [
+                Entity_KnowbaseItem::getTable() => [
+                    'ON'  => [
+                        Entity_KnowbaseItem::getTable() => KnowbaseItem::getForeignKeyField(),
+                        KnowbaseItem::getTable()        => 'id',
+                    ],
+                ],
+                KnowbaseItem_Profile::getTable() => [
+                    'ON'  => [
+                        KnowbaseItem_Profile::getTable() => KnowbaseItem::getForeignKeyField(),
+                        KnowbaseItem::getTable()         => 'id',
+                    ],
+                ],
+                Group_KnowbaseItem::getTable() => [
+                    'ON'  => [
+                        Group_KnowbaseItem::getTable() => KnowbaseItem::getForeignKeyField(),
+                        KnowbaseItem::getTable()       => 'id',
+                    ],
+                ],
+                KnowbaseItem_User::getTable() => [
+                    'ON'  => [
+                        KnowbaseItem_User::getTable() => KnowbaseItem::getForeignKeyField(),
+                        KnowbaseItem::getTable()      => 'id',
+                    ],
+                ],
+            ],
+            'WHERE'  => [
+                KnowbaseItem::getTable() . '.id' => $data[$ID][0]['id'],
+                'OR' => [
+                    Entity_KnowbaseItem::getTable() . '.id' => ['>=', 0],
+                    KnowbaseItem_Profile::getTable() . '.id' => ['>=', 0],
+                    Group_KnowbaseItem::getTable() . '.id' => ['>=', 0],
+                    KnowbaseItem_User::getTable() . '.id' => ['>=', 0],
+                ],
+            ],
+        ]);
+        $name = $data[$ID][0]['name'];
+        $icon_class = "";
+        $icon_title = "";
+        $href = KnowbaseItem::getFormURLWithID($data[$ID][0]['id']);
+        if (count($result) > 0) {
+            foreach ($result as $row) {
+                if ($row['is_faq']) {
+                    $icon_class = "ti ti-help faq";
+                    $icon_title = __s("This item is part of the FAQ");
+                }
+            }
+        } else {
+            $icon_class = "ti ti-eye-off not-published";
+            $icon_title = __s("This item is not published yet");
+        }
+        $icon = $icon_title !== ''
+            ? "<i class='$icon_class' title='$icon_title' aria-hidden='true'></i><span class='visually-hidden'>$icon_title</span> "
+            : '';
+        return "<div class='kb'> $icon<a href='" . \htmlescape($href) . "'>" . \htmlescape($name) . "</a></div>";
     }
 
     /**

@@ -8494,6 +8494,44 @@ class SearchTest extends DbTestCase
         $this->assertSame('', $data['data']['rows'][0]['Ticket_202']['displayname']);
     }
 
+    /**
+     * Columns with a specific rendering fall back to the generic one when they have nothing
+     * specific to show.
+     */
+    public function testSpecificColumnsFallBackToGenericRendering(): void
+    {
+        $this->login();
+
+        // Login of a user in a non-HTML output: a link instead of the avatar.
+        $users_id = $this->createItem(User::class, ['name' => __FUNCTION__])->getID();
+        try {
+            $data = $this->doSearch(
+                User::class,
+                [
+                    'criteria'     => [['field' => 1, 'searchtype' => 'contains', 'value' => __FUNCTION__]],
+                    'display_type' => \Search::CSV_OUTPUT,
+                ],
+                [1]
+            );
+        } finally {
+            \Search::$output_type = \Search::HTML_OUTPUT;
+        }
+        $this->assertSame(1, (int) $data['data']['totalcount']);
+        $this->assertSame(
+            sprintf('<a id=\'User_%1$d_%1$d\' href=\'%2$s\'>%3$s</a>', $users_id, User::getFormURLWithID($users_id), __FUNCTION__),
+            $data['data']['rows'][0]['User_1']['displayname']
+        );
+
+        // User without ticket: no link for the "Number of tickets as requester" column.
+        $data = $this->doSearch(
+            User::class,
+            ['criteria' => [['field' => 1, 'searchtype' => 'contains', 'value' => __FUNCTION__]]],
+            [60]
+        );
+        $this->assertSame(1, (int) $data['data']['totalcount']);
+        $this->assertSame("<span class='text-nowrap'>0</span>", $data['data']['rows'][0]['User_60']['displayname']);
+    }
+
     public static function itilStatusProvider(): iterable
     {
         // Statuses whose label differs between the ITIL classes.
