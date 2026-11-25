@@ -1638,7 +1638,12 @@ EOT,
      */
     private function getUserPictureResponse(Request $request, string $username, ?string $picture_path): Response
     {
+        $thumbnail = $request->getParameter('thumbnail', false);
         if ($picture_path !== null) {
+            if (filter_var($thumbnail, FILTER_VALIDATE_BOOLEAN)) {
+                // add "_min" suffix to the file name portion of the path
+                $picture_path = preg_replace('/(\.[^\.]+)$/', '_min$1', $picture_path);
+            }
             $picture_path = GLPI_PICTURE_DIR . '/' . $picture_path;
         } else {
             $picture_path = GLPI_ROOT . '/public/pics/picture.png';
@@ -1649,7 +1654,15 @@ EOT,
     #[Route(path: '/User/Me/Picture', methods: ['GET'], scopes: ['user'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
-        description: 'Get the picture for the current user'
+        description: 'Get the picture for the current user',
+        parameters: [
+            new Doc\Parameter(
+                name: 'thumbnail',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_BOOLEAN, default: false),
+                description: 'Whether to return the thumbnail version of the picture',
+                location: Doc\Parameter::LOCATION_QUERY,
+            ),
+        ],
     )]
     public function getMyPicture(Request $request): Response
     {
@@ -1692,7 +1705,15 @@ EOT,
     #[Route(path: '/User/{id}/Picture', methods: ['GET'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
-        description: 'Get the picture for the current user'
+        description: 'Get the picture for the current user',
+        parameters: [
+            new Doc\Parameter(
+                name: 'thumbnail',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_BOOLEAN, default: false),
+                description: 'Whether to return the thumbnail version of the picture',
+                location: Doc\Parameter::LOCATION_QUERY,
+            ),
+        ],
     )]
     public function getUserPictureByID(Request $request): Response
     {
@@ -1711,7 +1732,15 @@ EOT,
     #[Route(path: '/User/username/{username}/Picture', methods: ['GET'], requirements: ['username' => '[a-zA-Z0-9_]+'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
-        description: 'Get the picture for the current user'
+        description: 'Get the picture for the current user',
+        parameters: [
+            new Doc\Parameter(
+                name: 'thumbnail',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_BOOLEAN, default: false),
+                description: 'Whether to return the thumbnail version of the picture',
+                location: Doc\Parameter::LOCATION_QUERY,
+            ),
+        ],
     )]
     public function getUserPictureByUsername(Request $request): Response
     {
