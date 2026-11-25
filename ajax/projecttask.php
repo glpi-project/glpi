@@ -42,10 +42,8 @@ use function Safe\json_encode;
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
-if (isset($_POST['projecttasktemplates_id']) && ($_POST['projecttasktemplates_id'] > 0)) {
-    $template = new ProjectTaskTemplate();
-    $template->getFromDB($_POST['projecttasktemplates_id']);
-
+$template = new ProjectTaskTemplate();
+if (isset($_POST['projecttasktemplates_id']) && $template->can($_POST['projecttasktemplates_id'], READ)) {
     $template->fields['description'] = DropdownTranslation::getTranslatedValue(
         $template->getID(),
         $template->getType(),

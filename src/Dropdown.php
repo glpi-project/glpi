@@ -39,6 +39,7 @@ use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Dropdown\DropdownDefinitionManager;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Features\AssignableItem;
 use Glpi\Form\Category;
 use Glpi\Plugin\Hooks;
@@ -4213,6 +4214,10 @@ HTML;
 
         // Basic security check - ensure user is logged in
         Session::checkLoginUser();
+
+        if (isset($post['userID']) && (new User())->can($post['userID'], READ) === false) {
+            throw new AccessDeniedHttpException('Cannot access devices of a user that cannot be read.');
+        }
 
         $userID = $post['userID'] ?? Session::getLoginUserID();
         $entity_restrict = Session::getMatchingActiveEntities($post['entity_restrict'] ?? -1);
