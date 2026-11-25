@@ -1101,16 +1101,16 @@
         },
         {
             "name": "glpi-project/inventory_format",
-            "version": "1.2.5",
+            "version": "1.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/inventory_format.git",
-                "reference": "0d5a1415cda6bf5cf41ff85c605fe3b4808f8f0d"
+                "reference": "19e213003f82d1343bfbb304f99d38ae795c0871"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/0d5a1415cda6bf5cf41ff85c605fe3b4808f8f0d",
-                "reference": "0d5a1415cda6bf5cf41ff85c605fe3b4808f8f0d",
+                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/19e213003f82d1343bfbb304f99d38ae795c0871",
+                "reference": "19e213003f82d1343bfbb304f99d38ae795c0871",
                 "shasum": ""
             },
             "require": {
@@ -1170,7 +1170,8 @@
                 "issues": "https://github.com/glpi-project/inventory_format/issues",
                 "source": "https://github.com/glpi-project/inventory_format"
             },
-            "time": "2026-09-01T09:49:07+00:00"
+            "time": "2026-11-25T12:44:15+00:00",
+            "published-time": "2026-11-25T12:44:53+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -4217,7 +4218,8 @@
                 "issues": "https://github.com/phplang/scope-exit/issues",
                 "source": "https://github.com/phplang/scope-exit/tree/master"
             },
-            "time": "2016-09-17T00:15:18+00:00"
+            "time": "2016-09-17T00:15:18+00:00",
+            "published-time": "2016-09-17T00:20:48+00:00"
         },
         {
             "name": "phpoffice/phpspreadsheet",
@@ -5991,16 +5993,16 @@
         },
         {
             "name": "seld/jsonlint",
-            "version": "1.12.1",
+            "version": "1.12.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/jsonlint.git",
-                "reference": "9a90eb5d32d5a500296bf43f946d60246444d5f7"
+                "reference": "4882a0459c88772e4afa3a73ee81b7824490aa9c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/9a90eb5d32d5a500296bf43f946d60246444d5f7",
-                "reference": "9a90eb5d32d5a500296bf43f946d60246444d5f7",
+                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/4882a0459c88772e4afa3a73ee81b7824490aa9c",
+                "reference": "4882a0459c88772e4afa3a73ee81b7824490aa9c",
                 "shasum": ""
             },
             "require": {
@@ -6039,7 +6041,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Seldaek/jsonlint/issues",
-                "source": "https://github.com/Seldaek/jsonlint/tree/1.12.1"
+                "source": "https://github.com/Seldaek/jsonlint/tree/1.12.2"
             },
             "funding": [
                 {
@@ -6051,7 +6053,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-06-12T11:32:29+00:00"
+            "time": "2026-11-03T10:16:18+00:00",
+            "published-time": "2026-11-03T10:20:37+00:00"
         },
         {
             "name": "simplepie/simplepie",
@@ -6228,7 +6231,8 @@
                 "issues": "https://github.com/swaggest/json-diff/issues",
                 "source": "https://github.com/swaggest/json-diff/tree/v3.12.1"
             },
-            "time": "2025-03-10T08:22:10+00:00"
+            "time": "2025-03-10T08:22:10+00:00",
+            "published-time": "2025-03-10T08:22:36+00:00"
         },
         {
             "name": "swaggest/json-schema",
@@ -6279,7 +6283,8 @@
                 "issues": "https://github.com/swaggest/php-json-schema/issues",
                 "source": "https://github.com/swaggest/php-json-schema/tree/v0.12.43"
             },
-            "time": "2024-12-22T21:18:27+00:00"
+            "time": "2024-12-22T21:18:27+00:00",
+            "published-time": "2024-12-22T21:18:54+00:00"
         },
         {
             "name": "symfony/cache",
@@ -8509,7 +8514,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-28T09:35:49+00:00"
+            "time": "2026-10-28T09:35:49+00:00",
+            "published-time": "2026-10-28T10:07:45+00:00"
         },
         {
             "name": "symfony/polyfill-php84",
@@ -17227,5 +17233,5 @@
     "platform-overrides": {
         "php": "8.3.99"
     },
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.11.0"
 }
