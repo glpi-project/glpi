@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+
 Html::header_nocache();
 
 if (
@@ -43,7 +45,10 @@ if (
 }
 
 $item = getItemForItemtype($_REQUEST['itemtype']);
-$item->getFromDB((int) $_REQUEST['items_id']);
+
+if ($item && !$item->can((int) $_REQUEST['items_id'], READ)) {
+    throw new AccessDeniedHttpException();
+}
 
 $locations_id = $item->fields['locations_id'] ?? 0;
 

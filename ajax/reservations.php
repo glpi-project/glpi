@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+
 use function Safe\json_encode;
 
 Session::checkRightsOr('reservation', [READ, ReservationItem::RESERVEANITEM]);
@@ -56,6 +58,11 @@ if ($_REQUEST["action"] == "get_resources") {
 }
 
 if (($_POST['action'] ?? null) === "update_event") {
+    $reservation = new Reservation();
+    if (!$reservation->can($_REQUEST['id'], UPDATE)) {
+        throw new AccessDeniedHttpException();
+    }
+
     $result = Reservation::updateEvent($_REQUEST);
     echo json_encode(['result' => $result]);
     return;

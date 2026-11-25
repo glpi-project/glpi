@@ -37,22 +37,27 @@
  * @since 9.2
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+
 use function Safe\json_encode;
 
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
-if (isset($_POST['projecttasktemplates_id']) && ($_POST['projecttasktemplates_id'] > 0)) {
-    $template = new ProjectTaskTemplate();
-    $template->getFromDB($_POST['projecttasktemplates_id']);
+$template_id = $_POST['projecttasktemplates_id'] ?? 0;
 
-    $template->fields['description'] = DropdownTranslation::getTranslatedValue(
-        $template->getID(),
-        $template->getType(),
-        'description',
-        $_SESSION['glpilanguage'],
-        $template->fields['description']
-    );
+$template = new ProjectTaskTemplate();
 
-    echo json_encode($template->fields);
+if (!$template->can($template_id, READ)) {
+    throw new AccessDeniedHttpException();
 }
+
+$template->fields['description'] = DropdownTranslation::getTranslatedValue(
+    $template->getID(),
+    $template->getType(),
+    'description',
+    $_SESSION['glpilanguage'],
+    $template->fields['description']
+);
+
+echo json_encode($template->fields);
