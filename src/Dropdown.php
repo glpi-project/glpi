@@ -4215,11 +4215,15 @@ HTML;
         // Basic security check - ensure user is logged in
         Session::checkLoginUser();
 
-        if (isset($post['userID']) && (new User())->can($post['userID'], READ) === false) {
+        $userID = (int) ($post['userID'] ?? Session::getLoginUserID());
+
+        if (
+            $userID !== Session::getLoginUserID()
+            && (new User())->can($post['userID'], READ) === false
+        ) {
             throw new AccessDeniedHttpException('Cannot access devices of a user that cannot be read.');
         }
 
-        $userID = $post['userID'] ?? Session::getLoginUserID();
         $entity_restrict = Session::getMatchingActiveEntities($post['entity_restrict'] ?? -1);
         $used = $post['used'] ?? [];
 
