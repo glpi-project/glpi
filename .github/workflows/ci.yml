@@ -398,7 +398,7 @@ jobs:
           retention-days: 7
       - name: "Publish test summary results"
         if: ${{ !cancelled() }}
-        uses: ctrf-io/github-test-reporter@v1.3.2
+        uses: ctrf-io/github-test-reporter@v1.4.0
         with:
           report-path: ctrf/ctrf-report.json
           collapse-large-reports: true
