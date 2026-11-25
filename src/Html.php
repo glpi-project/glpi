@@ -1039,8 +1039,8 @@ TWIG,
                 }
             }
             // sort assets menu better to list if ordered by name, usefull when we have more than 50 assets name
-            if (isset($menu['assets']['submenu'])) {
-                uasort($menu['assets']['submenu'], static fn ($a, $b): int => strcoll(mb_strtolower($a['title']),mb_strtolower($b['title'])));
+            if (isset($menu['assets']['content'])) {
+                uasort($menu['assets']['content'], static fn ($a, $b): int => strcoll(mb_strtolower($a['title']),mb_strtolower($b['title'])));
             }
             $_SESSION['glpimenu'] = $menu;
         } else {
