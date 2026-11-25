@@ -40,7 +40,7 @@
             <div class="col-12 col-xxl-12 flex-column">
                 <div class="row flex-row">
                     {{ inputs.hidden('calendars_id', calendar.getID()) }}
-                    {{ fields.dropdownArrayField('holidays_id', [], available, __('Add a close time'), {
+                    {{ fields.dropdownArrayField('holidays_id', '', available, __('Add a close time'), {
                         multiple: true,
                         values: [],
                     }) }}
