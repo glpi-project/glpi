@@ -38,15 +38,11 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\Toolbox\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 
-use function Safe\curl_exec;
-use function Safe\curl_getinfo;
-use function Safe\curl_init;
-use function Safe\curl_setopt;
 use function Safe\file_get_contents;
 use function Safe\ini_get;
 use function Safe\json_encode;
-use function Safe\parse_url;
 use function Safe\preg_match;
 use function Safe\preg_replace;
 
@@ -176,37 +172,36 @@ class Telemetry extends CommonGLPI
             'version' => '',
         ];
 
-        if (!filter_var(gethostbyname(parse_url($CFG_GLPI['url_base'], PHP_URL_HOST)), FILTER_VALIDATE_IP)) {
-            // Do not try to get headers if hostname cannot be resolved
+        try {
+            try {
+                $response = (new HttpClient(allow_private_networks: true, bypass_proxy: true))->get(
+                    $CFG_GLPI['url_base'],
+                    [
+                        'max_redirects' => 0,
+                    ]
+                );
+            } catch (HttpExceptionInterface $exception) {
+                $response = $exception->getResponse();
+            }
+        } catch (ExceptionInterface $exception) {
             return $server;
         }
+        $server_header = $response->getHeaders(false)['server'][0] ?? '';
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $CFG_GLPI['url_base']);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HEADER, 1);
+        // see RFC2616
+        //
+        // `Server` header may contains multiple values (e.g. Apache/2.4.46 (Debian) mod_fcgid/2.3.9 OpenSSL/1.1.1d).
+        // We only get the first value, assuming it corresponds to the server engine.
+        $separators = '\/() ';
+        $server_string_pattern = "(?<engine>[^{$separators}]+)" // mandatory `product`
+            . "(\/(?<version>[^$separators]+))?" // optional `/version`
+            . "( (?<comment>\([^$separators]+\)))?" // optional ` (comment)`
+        ;
 
-        // Issue #3180 - disable SSL certificate validation (wildcard, self-signed)
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
-        if ($response = curl_exec($ch)) {
-            $headers = substr($response, 0, curl_getinfo($ch, CURLINFO_HEADER_SIZE));
-            $header_matches = [];
-            // see RFC2616
-            //
-            // `Server` header may contains multiple values (e.g. Apache/2.4.46 (Debian) mod_fcgid/2.3.9 OpenSSL/1.1.1d).
-            // We only get the first value, assuming it corresponds to the server engine.
-            $separators = '\/() ';
-            $server_string_pattern = "(?<engine>[^{$separators}]+)" // mandatory `product`
-                . "(\/(?<version>[^$separators]+))?" // optional `/version`
-                . "( (?<comment>\([^$separators]+\)))?" // optional ` (comment)`
-            ;
-            if (preg_match("/^Server: {$server_string_pattern}/im", $headers, $header_matches) === 1) {
-                $server['engine']  = $header_matches['engine'];
-                $server['version'] = $hide_sensitive_data ? 'x.y.z' : ($header_matches['version'] ?? null);
-            }
+        $header_matches = [];
+        if (preg_match("/^{$server_string_pattern}/i", $server_header, $header_matches) === 1) {
+            $server['engine']  = $header_matches['engine'] ?? '';
+            $server['version'] = $hide_sensitive_data ? 'x.y.z' : ($header_matches['version'] ?? '');
         }
 
         return $server;

@@ -68,7 +68,11 @@ abstract class AbstractGroupFilter extends AbstractFilter
     {
         global $DB;
 
-        return Toolbox::hasTrait(getItemtypeForTable($table), AssignableItem::class)
+        $itemtype = getItemtypeForTable($table);
+        if ($itemtype === null) {
+            return false;
+        }
+        return Toolbox::hasTrait($itemtype, AssignableItem::class)
             || $DB->fieldExists($table, 'groups_id')
             || in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()], true);
     }

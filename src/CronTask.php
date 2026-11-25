@@ -1405,7 +1405,7 @@ TWIG, ['msg' => __('Last run list')]);
         if (!is_array($values)) {
             $values = [$field => $values];
         }
-        $options['display'] = 0;
+        $options['display'] = false;
         switch ($field) {
             case 'mode':
                 $options['value']         = $values[$field];

@@ -473,7 +473,7 @@ HTML,
         ];
         yield [
             'search'   => 'unicode😃unicode',
-            'expected' => 'unicodeunicode*', // * added when there is no boolean operators
+            'expected' => '"unicode unicode"', // symbols inside a term are words separators, resulting words are searched as a phrase
         ];
         yield [
             'search'   => '+underscore -_',
@@ -484,7 +484,8 @@ HTML,
             'expected' => 'Бесплатное* программное* обеспечение*', // * added when there is no boolean operators
         ];
 
-        // Ponderation chars are preserved only when they are located before a search term
+        // Ponderation chars are preserved only when they are located before a search term,
+        // they are handled as words separators when located inside a search term (resulting words are searched as a phrase)
         yield [
             'search'   => '+(>IMAP <auth) -test ~unit',
             'expected' => '+(>IMAP <auth) -test ~unit',
@@ -495,7 +496,7 @@ HTML,
         ];
         yield [
             'search'   => 'search wi+th ope-rators in~side t<ext>s',
-            'expected' => 'search* with* operators* inside* texts*', // * added when there is no boolean operators
+            'expected' => 'search "wi th" "ope rators" "in side" "t ext s"',
         ];
         yield [
             'search'   => '++search --with +~-surnumerous >><<+operators',
@@ -503,11 +504,29 @@ HTML,
         ];
         yield [
             'search'   => '+collector IMAP+OAuth',
-            'expected' => '+collector IMAPOAuth',
+            'expected' => '+collector "IMAP OAuth"',
         ];
         yield [
             'search'   => '+прогр~аммное Беспл>атное обесп<ечение',
-            'expected' => '+программное Бесплатное обеспечение',
+            'expected' => '+"прогр аммное" "Беспл атное" "обесп ечение"',
+        ];
+        yield [
+            'search'   => "+search\t-with\n~whitespaces\u{00A0}>before\r\n<operators",
+            'expected' => '+search -with ~whitespaces >before <operators',
+        ];
+
+        // Symbols located at the end of a search term are not handled as words separators
+        yield [
+            'search'   => 'test.**',
+            'expected' => 'test*',
+        ];
+        yield [
+            'search'   => '"test-"',
+            'expected' => '"test"',
+        ];
+        yield [
+            'search'   => '+base-de* -"foo-bar"',
+            'expected' => '+"base de" -"foo bar"',
         ];
 
         // Parenthesis are removed when inside texts, when odd or when empty
@@ -802,6 +821,28 @@ HTML,
                 'type' => 'search',
                 'count' => 2,
                 'sort' => ['_knowbaseitem01', '_knowbaseitem02'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => 'apple-macintosh',
+                    // Hyphen inside a term is handled as a words separator, resulting words are searched as a phrase
+                ],
+                'type' => 'search',
+                'count' => 1,
+                'sort' => ['_knowbaseitem02'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => 'macintosh.strudel',
+                    // Symbols inside a term are handled as words separators, resulting words are searched as a phrase
+                ],
+                'type' => 'search',
+                'count' => 1,
+                'sort' => ['_knowbaseitem02'],
             ],
         ];
     }

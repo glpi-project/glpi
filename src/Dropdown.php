@@ -2315,6 +2315,7 @@ HTML;
      * @return int|string
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
+     * @phpstan-return ($options is array{display?: true|1, ...} ? int : string)
      **/
     public static function showFromArray($name, array $elements, $options = [])
     {

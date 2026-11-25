@@ -11,7 +11,7 @@
 Email **security@glpi-project.org**.
 
 > [!CAUTION]
-> Never use public issues, pull requests, or discussions to report security problems. Vulnerabilities are not disclosed before a fix is released.
+> Never use public issues, pull requests, or discussions to report security problems. The security team decides when and how each vulnerability is disclosed (see [Disclosure](#disclosure)).
 
 We do not accept GitHub Security Advisory direct submissions, and we will not create accounts on third-party platforms to receive reports. All information must be sent by email or, once an advisory is opened, posted directly in that advisory.
 
@@ -79,11 +79,15 @@ Reports scoring an attacker with a standard-interface profile as PR:L will be re
 
 ## Disclosure
 
-Critical and High advisories are published one month after the fix release; other advisories are published one week after the fix release. You will receive credit on the advisory unless you request anonymity. Unilateral disclosure before a fix ships ends our engagement.
+Only **High and Critical** vulnerabilities will receive a GHSA identifier and a CVE identifier.
+Their advisory will be published one month after the fix release.
+You will receive credit on the advisory unless you request anonymity. Unilateral disclosure before a fix ships ends our engagement.
+
+**Medium and Low** vulnerabilities are handled in public GitHub issues and fixed in public pull requests. They do not receive a security advisory, a GHSA identifier, or a CVE identifier.
+
+The same applies to reports submitted with a High or Critical severity that the GLPI security team re-scores as Medium or Low during triage. The final severity is the one assessed by the security team.
 
 We do not offer monetary rewards.
-
-While all vulnerabilities will receive fixes and a GHSA identifier, GLPI requests CVE identifiers only for confirmed **High and Critical** vulnerabilities. Please reference lower-severity ones with their GHSA ID.
 
 ## AI-assisted reports
 

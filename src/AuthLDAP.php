@@ -2894,28 +2894,48 @@ TWIG, $twig_params);
         $ldapuri = self::buildUri($host, (int) $port);
 
         if (!empty($tls_certfile)) {
-            if (!Filesystem::isFilepathSafe($tls_certfile)) {
-                trigger_error("TLS certificate path is not safe.", E_USER_WARNING);
-            } elseif (!file_exists($tls_certfile)) {
-                trigger_error("TLS certificate path is not valid.", E_USER_WARNING);
+            if (
+                !Filesystem::isFilepathSafe($tls_certfile)
+                || !is_file($tls_certfile)
+                || !is_readable($tls_certfile)
+            ) {
+                trigger_error("TLS certificate path is incorrect.", E_USER_WARNING);
+                // Unsecure connection, do not try to authenticate.
+                return false;
             } else {
                 try {
                     @ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile);
                 } catch (LdapException $e) {
-                    trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CERTFILE`", E_USER_WARNING);
+                    global $PHPLOGGER;
+                    $PHPLOGGER->error(
+                        'Unable to set LDAP option `LDAP_OPT_X_TLS_CERTFILE`.',
+                        ['exception' => $e]
+                    );
+                    // Unsecure connection, do not try to authenticate.
+                    return false;
                 }
             }
         }
         if (!empty($tls_keyfile)) {
-            if (!Filesystem::isFilepathSafe($tls_keyfile)) {
-                trigger_error("TLS key file path is not safe.", E_USER_WARNING);
-            } elseif (!file_exists($tls_keyfile)) {
-                trigger_error("TLS key file path is not valid.", E_USER_WARNING);
+            if (
+                !Filesystem::isFilepathSafe($tls_keyfile)
+                || !is_file($tls_keyfile)
+                || !is_readable($tls_keyfile)
+            ) {
+                trigger_error("TLS key file path is incorrect.", E_USER_WARNING);
+                // Unsecure connection, do not try to authenticate.
+                return false;
             } else {
                 try {
                     @ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile);
                 } catch (LdapException $e) {
-                    trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_KEYFILE`", E_USER_WARNING);
+                    global $PHPLOGGER;
+                    $PHPLOGGER->error(
+                        'Unable to set LDAP option `LDAP_OPT_X_TLS_KEYFILE`.',
+                        ['exception' => $e]
+                    );
+                    // Unsecure connection, do not try to authenticate.
+                    return false;
                 }
             }
         }
@@ -3926,7 +3946,9 @@ TWIG, $twig_params);
             $input["rootdn_passwd"] = (new GLPIKey())->encrypt($input["rootdn_passwd"]);
         }
 
-        $this->checkFilesExist($input);
+        if (!$this->checkFilesExist($input)) {
+            return false;
+        }
 
         return $input;
     }
@@ -4422,7 +4444,11 @@ TWIG, $twig_params);
         if (
             isset($input['tls_certfile'])
             && $input['tls_certfile'] !== ''
-            && (!Filesystem::isFilepathSafe($input['tls_certfile']) || !file_exists($input['tls_certfile']))
+            && (
+                !Filesystem::isFilepathSafe($input['tls_certfile'])
+                || !is_file($input['tls_certfile'])
+                || !is_readable($input['tls_certfile'])
+            )
         ) {
             Session::addMessageAfterRedirect(
                 __s('TLS certificate path is incorrect'),
@@ -4435,7 +4461,11 @@ TWIG, $twig_params);
         if (
             isset($input['tls_keyfile'])
             && $input['tls_keyfile'] !== ''
-            && (!Filesystem::isFilepathSafe($input['tls_keyfile']) || !file_exists($input['tls_keyfile']))
+            && (
+                !Filesystem::isFilepathSafe($input['tls_keyfile'])
+                || !is_file($input['tls_keyfile'])
+                || !is_readable($input['tls_keyfile'])
+            )
         ) {
             Session::addMessageAfterRedirect(
                 __s('TLS key file path is incorrect'),

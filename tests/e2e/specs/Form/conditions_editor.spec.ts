@@ -458,6 +458,41 @@ test(`Can use the editor to add or delete conditions on a destination`, async ({
     await expect(dest_final_conditions).toHaveCount(1);
 });
 
+test(`Destination condition items are grouped by section`, async ({
+    page,
+    profile,
+    formImporter,
+}) => {
+    await profile.set(Profiles.SuperAdmin);
+    const form = new FormPage(page);
+    const info = await formImporter.importForm("two-sections-three-questions.json");
+
+    await form.gotoDestinationTab(info.getId());
+    await form.doOpenDestinationConditionEditor();
+    await form.doSetVisibilityStrategy("Created if...");
+    await form.doFillStringCondition(
+        0, "And", "My second question", "Contains", "GLPI"
+    );
+    await form.doAddNewCondition();
+    await form.doFillStringCondition(
+        1, "Or", "Just a question to avoid empty sections", "Contains", "GLPI"
+    );
+
+    const conditions = form.getVisibleConditions();
+    await expect(form.getConditionTarget(conditions.nth(0)))
+        .toHaveText("First section - My second question");
+    await expect(form.getConditionTarget(conditions.nth(1)))
+        .toHaveText("My second section - Just a question to avoid empty sections");
+
+    // Grouping must also be applied when the editor is rendered from saved data
+    await form.doSaveDestination();
+    await form.doOpenDestinationConditionEditor();
+    await expect(form.getConditionTarget(conditions.nth(0)))
+        .toHaveText("First section - My second question");
+    await expect(form.getConditionTarget(conditions.nth(1)))
+        .toHaveText("My second section - Just a question to avoid empty sections");
+});
+
 test(`Conditions count badge is updated when conditions are added or removed`, async ({
     page,
     profile,

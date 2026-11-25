@@ -49,6 +49,7 @@ return $config
     ], false)
 
     ->ignoreUnknownClasses(['DB', 'DbTestCase', 'PluginGenericobjectType'])
+    ->ignoreUnknownClasses(['Dom\HTMLDocument', 'Dom\HTMLElement', 'Dom\Node', 'Dom\Text'])
 
     // Ignore errors on extensions that are suggested but not required
     ->ignoreErrorsOnExtensionAndPaths('ext-exif', [
@@ -70,6 +71,7 @@ return $config
     ], [ErrorType::DEV_DEPENDENCY_IN_PROD])
 
     ->ignoreErrorsOnExtension('ext-bcmath', [ErrorType::UNUSED_DEPENDENCY]) // Required by tc-lib-barcode
+    ->ignoreErrorsOnExtension('ext-curl', [ErrorType::UNUSED_DEPENDENCY]) // Required by Symfony/HttpClient
     ->ignoreErrorsOnExtension('ext-tokenizer', [ErrorType::UNUSED_DEPENDENCY]) // Required by symfony/routing
     ->ignoreErrorsOnPackages([
         'apereo/phpcas', // Not detected because the library doesn't have an autoloader

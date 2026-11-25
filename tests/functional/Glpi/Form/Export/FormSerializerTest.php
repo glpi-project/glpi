@@ -106,6 +106,7 @@ use Glpi\Form\Tag\CommentTitleTagProvider;
 use Glpi\Form\Tag\FormTagProvider;
 use Glpi\Form\Tag\QuestionTagProvider;
 use Glpi\Form\Tag\SectionTagProvider;
+use Glpi\Plugin\Hooks;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -1436,6 +1437,61 @@ final class FormSerializerTest extends DbTestCase
             $forms[0]->fields['name'],
             $forms[2]->fields['name'],
         ], array_map(fn(Form $form) => $form->fields['name'], $import_result->getImportedForms()));
+    }
+
+    public function testPostImportHookIsCalledOnceAllFormsAreImported(): void
+    {
+        global $PLUGIN_HOOKS;
+
+        // Arrange: export two forms with a question and listen to the hook
+        $forms = [];
+        foreach (range(1, 2) as $i) {
+            $builder = new FormBuilder("Form $i");
+            $builder->addQuestion("Question $i", QuestionTypeShortText::class);
+            $forms[] = $this->createForm($builder);
+        }
+        $json = self::$serializer->exportFormsToJson($forms)->getJsonContent();
+        $questions_specs = array_merge(...array_column(
+            json_decode($json, true)['forms'],
+            'questions',
+        ));
+
+        $calls = [];
+        $PLUGIN_HOOKS[Hooks::POST_FORMS_IMPORT]['tester'] = function (array $params) use (&$calls, $questions_specs) {
+            $mapper = $params['mapper'];
+            $calls[] = [
+                'imported_forms' => count($params['result']->getImportedForms()),
+                'questions_ids'  => array_map(
+                    fn(array $spec) => [
+                        $mapper->tryGetItemId(Question::class, $spec['id']),
+                        $mapper->tryGetItemId(Question::class, $spec['uuid']),
+                    ],
+                    $questions_specs,
+                ),
+            ];
+        };
+
+        // Act: import the forms
+        try {
+            $result = self::$serializer->importFormsFromJson(
+                $json,
+                new DatabaseMapper([$this->getTestRootEntity(only_id: true)]),
+            );
+        } finally {
+            unset($PLUGIN_HOOKS[Hooks::POST_FORMS_IMPORT]['tester']);
+        }
+
+        // Assert: the hook was called once, with the ids of both forms questions
+        $imported_questions_ids = [];
+        foreach ($result->getImportedForms() as $form) {
+            foreach ($form->getQuestions() as $question) {
+                $imported_questions_ids[] = [$question->getID(), $question->getID()];
+            }
+        }
+        $this->assertCount(1, $calls);
+        $this->assertSame(2, $calls[0]['imported_forms']);
+        $this->assertCount(2, $imported_questions_ids);
+        $this->assertSame($imported_questions_ids, $calls[0]['questions_ids']);
     }
 
     public function testAllFieldsAreExportedAndImported(): void

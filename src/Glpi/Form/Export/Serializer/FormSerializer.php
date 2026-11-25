@@ -75,6 +75,7 @@ use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\RenderLayout;
 use Glpi\Form\Section;
+use Glpi\Plugin\Hooks;
 use Glpi\UI\IllustrationManager;
 use InvalidArgumentException;
 use JsonSerializable;
@@ -256,6 +257,11 @@ final class FormSerializer extends AbstractFormSerializer
             $form = $this->importFormFromSpec($form_spec, $mapper);
             $result->addImportedForm($form);
         }
+
+        Plugin::doHook(Hooks::POST_FORMS_IMPORT, [
+            'result' => $result,
+            'mapper' => $mapper,
+        ]);
 
         return $result;
     }
