@@ -169,7 +169,29 @@ class SsoVariable extends CommonDropdown
     {
         $name = mb_strtoupper($name);
 
-        return str_starts_with($name, 'HTTP_') === false
-            && $name !== 'PHP_AUTH_USER';
+        if ($name === 'PHP_AUTH_USER' || $name === 'PHP_AUTH_PW') {
+            // `$_SERVER['PHP_AUTH_USER']` and `$_SERVER['PHP_AUTH_PW']` correspond to values extracted from the `Authorization` header.
+            // e.g. `curl --header 'Basic dXNlcm5hbWU6cGFzcw=='` -> `$_SERVER['PHP_AUTH_USER'] = 'username'`, `$_SERVER['PHP_AUTH_PW'] = 'pass'.
+            // They can be crafted by the client.
+            return false;
+        }
+
+        if (str_starts_with($name, 'HTTP_')) {
+            // `$_SERVER['HTTP_*']` correspond to request header values.
+            // e.g. `curl --header 'Remote-User: glpi'` -> `$_SERVER['HTTP_REMOTE_USER'] = 'glpi'`.
+            // They can be crafted by the client.
+            return false;
+        }
+
+        if (str_starts_with($name, 'REDIRECT_HTTP_')) {
+            // `$_SERVER['REDIRECT_HTTP_*']` correspond to request header passed inside HTTP env variables in a redirect rule.
+            // For instance, with the `RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]` rule,
+            // `curl --header 'Remote-User: glpi'` -> `$_SERVER['REDIRECT_HTTP_REMOTE_USER'] = 'glpi'`.
+            // They can be crafted by the client, but requires an uncommon web server configuration to be accessible to GLPI.
+            return false;
+        }
+
+
+        return true;
     }
 }
