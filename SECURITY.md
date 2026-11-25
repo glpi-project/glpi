@@ -1,17 +1,25 @@
 # Security Policy
 
 > [!IMPORTANT]
-> We receive a lot of security reports and we need to validate each one - please be patient ;)
-> Also, please provide us all information, scripts, etc so we can easily reproduce and test.
-> 
-> Thank you!
+> Most reports we receive are duplicates. Read [Before reporting](#before-reporting) first.
+
+## Before reporting
+
+- Reproduce on the latest patch release of a supported branch. The simplest way: `docker pull glpi/glpi:latest`.
+- Search the [published advisories](https://github.com/glpi-project/glpi/security/advisories) and the [security issues](https://github.com/glpi-project/glpi/issues?q=label%3Asecurity).
 
 ## Reporting
 
-Email **security@glpi-project.org**.
+Apply the first rule that matches.
+
+1. **Email security@glpi-project.org** if the attacker is unauthenticated or uses a simplified-interface profile (e.g. *Self-Service*), or if the issue leads to code execution, SQL injection, authentication or MFA bypass, account takeover, privilege escalation to another profile, or disclosure of secrets.
+2. **[Open a public issue](https://github.com/glpi-project/glpi/issues/new?template=bug_report.yml)** prefixed with `[Security]` if the attacker needs a standard-interface profile (e.g. *Technician*, *Admin*). This covers most missing right checks and cross-entity access. These issues are Medium or Low and fixed in public.
+3. **Open an issue or a pull request** for availability bugs and hardening suggestions (see [threat model](THREAT_MODEL.md)).
+
+When in doubt, email us. We redirect rule 2 emails to public issues.
 
 > [!CAUTION]
-> Never use public issues, pull requests, or discussions to report security problems. The security team decides when and how each vulnerability is disclosed (see [Disclosure](#disclosure)).
+> Never publish a rule 1 issue in public issues, pull requests or discussions.
 
 We do not accept GitHub Security Advisory direct submissions, and we will not create accounts on third-party platforms to receive reports. All information must be sent by email or, once an advisory is opened, posted directly in that advisory.
 
@@ -20,6 +28,8 @@ We do not accept GitHub Security Advisory direct submissions, and we will not cr
 Send a separate email for each unrelated vulnerability. Do not bundle unrelated issues into a single thread, and do not reply to an existing report thread to raise a new, unrelated one. This keeps triage, severity assessment, and advisory tracking clean — one report, one thread, one advisory.
 
 This is distinct from the grouping rule below: instances sharing the *same root cause and repair* stay in one report; unrelated vulnerabilities each get their own.
+
+Planning more than five reports (research campaign, automated audit)? Email us first.
 
 ## Required information
 
@@ -35,13 +45,13 @@ Use the following structure for your reports:
     - Description of the root cause of the vulnerability, with references to relevant code. Use GitHub permalinks whenever possible.
     - Impact and the security boundary crossed.
 - Exploit Scenario
-    - Concise, human-readable steps to reproduce the issue from a clean install using the current [official Docker setup](https://github.com/glpi-project/docker-images). Use a freshly pulled image of the latest patch release of the affected supported branch. Focus on reproducing the issue rather than explaining the vulnerability, and perform the steps manually before submitting the report.
+    - Concise, human-readable steps to reproduce the issue from a clean install using the current [official Docker setup](https://github.com/glpi-project/docker-images). Use a freshly pulled image of the latest patch release of the affected supported branch (`glpi/glpi:latest` for the newest branch). Focus on reproducing the issue rather than explaining the vulnerability, and perform the steps manually before submitting the report.
     - Working proof of concept (Python, PHP, ...) to validate and reproduce the issue; and then make sure it gets fixed. Attach it as a file (script, HTTP request collection, etc.) rather than pasting source code inline in the email body to keep reports readable and reproducible, and avoids mangling by mail clients (indentation, quoting, encoding).
 - Recommendation
     - Suggest how to address the issue.
     - Do not attach a patch to the report. The GLPI team will offer you the opportunity to review its patch before publication.
 
-Omit generic background, repeated impact claims, and CVSS scores.
+Omit generic background and repeated impact claims.
 
 If you have a GitHub account, include your username so we can add you as observer when the advisory is opened.
 
@@ -49,7 +59,7 @@ If you have a GitHub account, include your username so we can add you as observe
 
 **In scope:** GLPI core, official releases.
 
-We only accept issues with demonstrated impact on confidentiality or integrity. For bugs only impacting availability and hardening suggestions (see our [threat model](THREAT_MODEL.md)), prefer opening [an issue](https://github.com/glpi-project/glpi/issues) or a pull request.
+We only accept issues with demonstrated impact on confidentiality or integrity.
 
 **Out of scope:** third-party plugins (report to plugin maintainers), the GLPI Inventory Agent, Teclib'-operated websites, self-modified installs, hosting providers, standalone social engineering, hardening suggestions without a working exploit, scanner output without verification, out-of-date versions.
 
@@ -65,7 +75,7 @@ Only the latest patch release of each supported branch is in scope. Reports agai
 
 ## Scoring 
 
-GLPI assesses severity using CVSS v4 during triage. Do not score your submissions.
+GLPI uses CVSS v4.
 
 During triage, GLPI uses the following convention for the **Privileges Required (PR)** metric:
 
