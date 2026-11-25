@@ -53,6 +53,164 @@ use function Safe\preg_match_all;
 final class Pagination
 {
     /**
+     * LIMIT clause, set here when an active search is paginated in the database.
+     */
+    private string $limit;
+
+    /**
+     * FROM clause of the page and count queries: main table, default join and the joins that
+     * yield at most one row per item, see buildMinimalFrom().
+     */
+    private string $minimal_from = '';
+
+    /**
+     * @var array<int, mixed>
+     */
+    private array $minimal_from_values = [];
+
+    /**
+     * @param array<int|string, mixed> $data
+     * @param array<int|string, mixed> $sort_fields
+     * @param array<int|string, mixed> $searchopt
+     * @param array<int, string>       $blacklist_tables
+     */
+    private function __construct(
+        private readonly array $data,
+        private readonly SearchQueryParts $parts,
+        private readonly array $sort_fields,
+        private readonly array $searchopt,
+        private readonly array $blacklist_tables,
+    ) {
+        $this->limit = $parts->limit;
+    }
+
+    /**
+     * Search query of a non-union search. An active search gets a SQL LIMIT plus a dedicated
+     * COUNT query, so paging happens in the database instead of fetching every row; its page
+     * of ids is resolved before the display joins when possible (deferred join). Otherwise the
+     * full query is returned. Fills `$data['sql']['raw']`, `['count']` and `['has_sql_limit']`.
+     *
+     * @param array<int|string, mixed> $data
+     * @param array<int|string, mixed> $sort_fields
+     * @param array<int|string, mixed> $searchopt
+     * @param array<int, string>       $blacklist_tables
+     */
+    public static function buildSearchQuery(
+        array &$data,
+        SearchQueryParts $parts,
+        array $sort_fields,
+        array $searchopt,
+        array $blacklist_tables
+    ): Select {
+        return (new self($data, $parts, $sort_fields, $searchopt, $blacklist_tables))->build($data);
+    }
+
+    /**
+     * @param array<int|string, mixed> $data
+     */
+    private function build(array &$data): Select
+    {
+        $parts = $this->parts;
+
+        // The SQL LIMIT relies on the minimal FROM covering the WHERE, which holds only without
+        // meta/all_search/`view`/`all`/HAVING; otherwise keep the legacy fetch-all behaviour.
+        $supports_sql_limit = empty($this->data['search']['all_search'])
+            && $parts->having === ''
+            && count($this->data['search']['metacriteria'] ?? []) === 0
+            && !self::hasMetaCriteria($this->data['search']['criteria'] ?? [])
+            && !self::criteriaReferenceAllColumns($this->data['search']['criteria'] ?? []);
+
+        $need_active_count = false;
+        if (
+            $supports_sql_limit
+            && $this->limit === ''
+            && !$this->data['search']['export_all']
+            && (($this->data['search']['as_map'] ?? 0) != 1)
+        ) {
+            $this->limit = " LIMIT " . (int) $this->data['search']['start'] . ", " . (int) $this->data['search']['list_limit'];
+            $data['sql']['has_sql_limit'] = true;
+            $need_active_count = true;
+        }
+
+        $can_defer = $this->canUseDeferredJoin();
+
+        // Minimal FROM shared by the active COUNT query and the deferred inner subquery.
+        if ($can_defer || $need_active_count) {
+            $this->buildMinimalFrom(self::collectFilterForcegroupbyIds($this->data['search']['criteria'], $this->searchopt));
+            // The WHERE may reference a 1:N join via the itemtype visibility/default
+            // restriction (not just user criteria, e.g. KnowbaseItem). If the minimal FROM
+            // does not cover every alias the WHERE uses, fall back to the full query.
+            if (!self::minimalFromCoversWhere($this->minimal_from, $parts->where)) {
+                $can_defer         = false;
+                $need_active_count = false;
+                $this->limit       = '';
+                $data['sql']['has_sql_limit'] = false;
+            }
+        }
+
+        $data['sql']['raw'] = [
+            'SELECT' => $parts->select,
+            'FROM' => $parts->from,
+            'WHERE' => $parts->where,
+            'GROUPBY' => $parts->groupby,
+            'HAVING' => $parts->having,
+            'ORDER' => $parts->order,
+            'LIMIT' => $this->limit,
+        ];
+
+        if ($need_active_count) {
+            $data['sql']['count'][] = $this->buildActiveCountQuery();
+        }
+
+        $inner = null;
+        if ($can_defer) {
+            $sorts_on_linked_table = false;
+            foreach ($this->sort_fields as $sort_field) {
+                if ($this->isLinkedTableSortOption($this->searchopt[$sort_field['searchopt_id']])) {
+                    $sorts_on_linked_table = true;
+                    break;
+                }
+            }
+            // Two-phase: inner subquery picks the page of ids (no display 1:N joins), outer
+            // query attaches the display joins to just those ids.
+            $inner = $sorts_on_linked_table
+                ? $this->buildDeferredInnerQueryWithSortColumns()
+                : $this->buildDeferredInnerQuery();
+        }
+
+        if ($inner !== null) {
+            $query = $parts->select
+                . " FROM `" . $parts->itemtable . "`"
+                . " INNER JOIN (" . $inner->getQuery() . ") AS `deferred_page`"
+                . " ON `" . $parts->itemtable . "`.`id` = `deferred_page`.`id` "
+                . $parts->joins
+                . $parts->groupby
+                . $parts->order . ', `' . $parts->itemtable . '`.`id` ' . $this->getTieBreakerOrder();
+            // Param order matches the `?` order: outer SELECT, inner subquery (its WHERE
+            // included), then outer display joins — inner WHERE BEFORE the joins here.
+            $values = array_merge($parts->select_values, $inner->getParams(), $parts->joins_values);
+        } else {
+            $query = $parts->select
+                . $parts->from
+                . $parts->where
+                . $parts->groupby
+                . $parts->having
+                . $parts->order
+                . $this->limit;
+            $values = array_merge(
+                $parts->select_values,
+                $parts->from_values,
+                $parts->where_values,
+                $parts->having_values
+            );
+        }
+
+        return (new Select())
+            ->setQuery($query)
+            ->setParams($values);
+    }
+
+    /**
      * IDs of forcegroupby (1:N) fields used as a WHERE filter: their join must stay in the
      * minimal FROM (the WHERE references it), unlike display-only 1:N joins which are deferred.
      *
@@ -60,7 +218,7 @@ final class Pagination
      * @param array<int|string, mixed> $searchopt
      * @return list<int>
      */
-    public static function collectFilterForcegroupbyIds(array $criteria, array $searchopt): array
+    private static function collectFilterForcegroupbyIds(array $criteria, array $searchopt): array
     {
         $ids = [];
         foreach ($criteria as $criterion) {
@@ -88,54 +246,47 @@ final class Pagination
      * Uses its own $already_link_tables so a kept filter join re-emits any `beforejoin` parent a
      * deferred join would otherwise have supplied. Not valid with meta criterion / all_search.
      *
-     * @param array<int|string, mixed> $data
-     * @param array<int|string, mixed> $searchopt
-     * @param array<int, string>       $blacklist_tables
-     * @param list<int>                $keep_forcegroupby_ids Forcegroupby field IDs filtered in WHERE.
-     * @return array{query: string, params: array<int, mixed>}
+     * @param list<int> $keep_forcegroupby_ids Forcegroupby field IDs filtered in WHERE.
      */
-    public static function buildMinimalFrom(
-        array $data,
-        string $itemtable,
-        array $searchopt,
-        array $blacklist_tables,
-        array $keep_forcegroupby_ids
-    ): array {
+    private function buildMinimalFrom(array $keep_forcegroupby_ids): void
+    {
+        $itemtable           = $this->parts->itemtable;
         $already_link_tables = [$itemtable];
 
         $query  = SQLProvider::buildFrom($itemtable) . ' ';
-        $default_ljoin = Search::addDefaultJoin($data['itemtype'], $itemtable, $already_link_tables);
+        $default_ljoin = Search::addDefaultJoin($this->data['itemtype'], $itemtable, $already_link_tables);
         $query .= $default_ljoin->getQuery() . ' ';
         $params = $default_ljoin->getParams();
 
-        foreach ($data['tocompute'] as $val) {
+        foreach ($this->data['tocompute'] as $val) {
             if (
-                !isset($searchopt[$val]['table'])
-                || in_array($searchopt[$val]['table'], $blacklist_tables, true)
+                !isset($this->searchopt[$val]['table'])
+                || in_array($this->searchopt[$val]['table'], $this->blacklist_tables, true)
             ) {
                 continue;
             }
             // Defer display-only 1:N joins; keep WHERE-filtered ones ((int) $val: mixed id types).
-            if (!empty($searchopt[$val]['forcegroupby']) && !in_array((int) $val, $keep_forcegroupby_ids, true)) {
+            if (!empty($this->searchopt[$val]['forcegroupby']) && !in_array((int) $val, $keep_forcegroupby_ids, true)) {
                 continue;
             }
             $ljoin = Search::addLeftJoin(
-                $data['itemtype'],
+                $this->data['itemtype'],
                 $itemtable,
                 $already_link_tables,
-                $searchopt[$val]['table'],
-                $searchopt[$val]['linkfield'],
+                $this->searchopt[$val]['table'],
+                $this->searchopt[$val]['linkfield'],
                 false,
                 '',
-                $searchopt[$val]['joinparams'] ?? [],
-                $searchopt[$val]['field'] ?? '',
-                ($searchopt[$val]['use_join_subquery'] ?? false)
+                $this->searchopt[$val]['joinparams'] ?? [],
+                $this->searchopt[$val]['field'] ?? '',
+                ($this->searchopt[$val]['use_join_subquery'] ?? false)
             );
             $query  .= $ljoin->getQuery() . ' ';
             $params  = array_merge($params, $ljoin->getParams());
         }
 
-        return ['query' => $query, 'params' => $params];
+        $this->minimal_from        = $query;
+        $this->minimal_from_values = $params;
     }
 
     /**
@@ -144,48 +295,46 @@ final class Pagination
      * here); canUseDeferredJoin() guarantees each sort field is a plain column, so this is valid.
      * The `id` follows the direction of the last sort field: a mixed `col DESC, id ASC` prevents
      * the engine from reading the page through the `col` index and makes it sort every row.
-     *
-     * @param array<int|string, mixed> $sort_fields
-     * @param array<int|string, mixed> $searchopt
      */
-    public static function buildInnerOrderBy(string $itemtable, array $sort_fields, array $searchopt): string
+    private function buildInnerOrderBy(): string
     {
         global $DB;
 
-        $criteria = [];
-        foreach ($sort_fields as $sort_field) {
+        $itemtable = $this->parts->itemtable;
+        $criteria  = [];
+        foreach ($this->sort_fields as $sort_field) {
             $ID = $sort_field['searchopt_id'];
-            if (!isset($searchopt[$ID]['field'])) {
+            if (!isset($this->searchopt[$ID]['field'])) {
                 continue;
             }
             $order      = (($sort_field['order'] ?? 'ASC') === 'ASC') ? 'ASC' : 'DESC';
-            $criteria[] = $DB::quoteName("{$itemtable}.{$searchopt[$ID]['field']}") . ' ' . $order;
+            $criteria[] = $DB::quoteName("{$itemtable}.{$this->searchopt[$ID]['field']}") . ' ' . $order;
         }
-        $criteria[] = $DB::quoteName("{$itemtable}.id") . ' ' . self::getTieBreakerOrder($sort_fields);
+        $criteria[] = $DB::quoteName("{$itemtable}.id") . ' ' . $this->getTieBreakerOrder();
 
         return ' ORDER BY ' . implode(', ', $criteria);
     }
 
     /**
      * Direction of the `id` tie-breaker: the direction of the last sort field.
-     *
-     * @param array<int|string, mixed> $sort_fields
      */
-    public static function getTieBreakerOrder(array $sort_fields): string
+    private function getTieBreakerOrder(): string
     {
-        $last = end($sort_fields);
+        $sort_fields = $this->sort_fields;
+        $last        = end($sort_fields);
         return (is_array($last) && ($last['order'] ?? 'ASC') !== 'ASC') ? 'DESC' : 'ASC';
     }
 
     /**
-     * Whether every join of the given FROM clause yields at most one row per item, i.e. is a
-     * plain `LEFT JOIN` from a main-table column to the `id` of the joined table. Anything else
+     * Whether every join of the minimal FROM yields at most one row per item, i.e. is a plain
+     * `LEFT JOIN` from a main-table column to the `id` of the joined table. Anything else
      * (default join, 1:N join, extra join condition) is considered as possibly multiplying rows.
      */
-    private static function hasOnlyOneToOneJoins(string $itemtable, string $from): bool
+    private function hasOnlyOneToOneJoins(): bool
     {
+        $itemtable = $this->parts->itemtable;
         $from_main = trim(SQLProvider::buildFrom($itemtable));
-        $joins     = trim($from);
+        $joins     = trim($this->minimal_from);
         if (!str_starts_with($joins, $from_main)) {
             return false;
         }
@@ -205,66 +354,59 @@ final class Pagination
     }
 
     /**
-     * Inner subquery resolving the page of main-table IDs alone (no display 1:N joins), with
-     * ORDER BY + LIMIT. It is grouped by id only when a join may multiply rows: MySQL does not
+     * GROUP BY of the inner subquery: only when a join may multiply rows, because MySQL does not
      * optimise the GROUP BY away and then sorts every matching row instead of reading the sort
-     * index. getParams() order: minimal-FROM, then WHERE.
-     *
-     * @param array{query: string, params: array<int, mixed>} $minimal_from
-     * @param array<int, mixed>                                $WHERE_VALUES
+     * index.
      */
-    public static function buildDeferredInnerQuery(
-        string $itemtable,
-        array $minimal_from,
-        string $WHERE,
-        array $WHERE_VALUES,
-        string $inner_order,
-        string $LIMIT
-    ): Select {
-        $query = 'SELECT `' . $itemtable . '`.`id`'
-            . $minimal_from['query']
-            . $WHERE
-            . (self::hasOnlyOneToOneJoins($itemtable, $minimal_from['query']) ? '' : ' GROUP BY `' . $itemtable . '`.`id`')
-            . $inner_order
-            . $LIMIT;
+    private function buildInnerGroupBy(): string
+    {
+        return $this->hasOnlyOneToOneJoins() ? '' : ' GROUP BY `' . $this->parts->itemtable . '`.`id`';
+    }
+
+    /**
+     * Inner subquery resolving the page of main-table IDs alone (no display 1:N joins), with
+     * ORDER BY + LIMIT. getParams() order: minimal-FROM, then WHERE.
+     */
+    private function buildDeferredInnerQuery(): Select
+    {
+        $query = 'SELECT `' . $this->parts->itemtable . '`.`id`'
+            . $this->minimal_from
+            . $this->parts->where
+            . $this->buildInnerGroupBy()
+            . $this->buildInnerOrderBy()
+            . $this->limit;
 
         return (new Select())
             ->setQuery($query)
-            ->setParams(array_merge($minimal_from['params'], $WHERE_VALUES));
+            ->setParams(array_merge($this->minimal_from_values, $this->parts->where_values));
     }
 
     /**
      * COUNT(DISTINCT id) query giving the total row count for an active (SQL-limited) search.
-     *
-     * @param array{query: string, params: array<int, mixed>} $minimal_from
-     * @param array<int, mixed>                                $WHERE_VALUES
      */
-    public static function buildActiveCountQuery(
-        string $itemtable,
-        array $minimal_from,
-        string $WHERE,
-        array $WHERE_VALUES
-    ): Select {
-        $query = 'SELECT COUNT(DISTINCT `' . $itemtable . '`.`id`)'
-            . $minimal_from['query']
-            . $WHERE;
+    private function buildActiveCountQuery(): Select
+    {
+        $query = 'SELECT COUNT(DISTINCT `' . $this->parts->itemtable . '`.`id`)'
+            . $this->minimal_from
+            . $this->parts->where;
 
         return (new Select())
             ->setQuery($query)
-            ->setParams(array_merge($minimal_from['params'], $WHERE_VALUES));
+            ->setParams(array_merge($this->minimal_from_values, $this->parts->where_values));
     }
 
     /**
      * Whether the search option is a column of a table linked by a foreign key of the main table
      * (standard join on the linked table id): such a join yields at most one row per item.
      *
-     * @param class-string<CommonDBTM>  $itemtype
-     * @param array<string, mixed>      $opt
+     * @param array<string, mixed> $opt
      */
-    public static function isLinkedTableSortOption(string $itemtype, array $opt, string $itemtable): bool
+    private function isLinkedTableSortOption(array $opt): bool
     {
+        $itemtype = $this->data['itemtype'];
+
         return isset($opt['table'], $opt['field'])
-            && $opt['table'] !== $itemtable
+            && $opt['table'] !== $this->parts->itemtable
             && !empty($opt['linkfield'])
             && !Search::isVirtualField($opt['linkfield'])
             && empty($opt['forcegroupby'])
@@ -283,26 +425,17 @@ final class Pagination
      * Inner subquery of the deferred join when sorting on columns of linked tables: the sort
      * columns are selected (the outer ORDER BY relies on their `ITEM_x` aliases), then only the
      * ids are kept. Null when it cannot be built safely.
-     *
-     * @param class-string<CommonDBTM>                         $itemtype
-     * @param array{query: string, params: array<int, mixed>} $minimal_from
-     * @param array<int, mixed>                                $where_values
-     * @param array<int|string, mixed>                         $sort_fields
      */
-    public static function buildDeferredInnerQueryWithSortColumns(
-        string $itemtype,
-        string $itemtable,
-        array $minimal_from,
-        string $where,
-        array $where_values,
-        array $sort_fields,
-        string $order,
-        string $limit
-    ): ?Select {
+    private function buildDeferredInnerQueryWithSortColumns(): ?Select
+    {
+        /** @var class-string<CommonDBTM> $itemtype */
+        $itemtype  = $this->data['itemtype'];
+        $itemtable = $this->parts->itemtable;
+
         // A derived table cannot contain duplicated column names, whereas some search options
         // select the same aliased column twice.
         $columns = ['id' => '`' . $itemtable . '`.`id` AS `id`'];
-        foreach ($sort_fields as $sort_field) {
+        foreach ($this->sort_fields as $sort_field) {
             $criteria = SQLProvider::getSelectCriteria($itemtype, (int) $sort_field['searchopt_id']);
             if (!is_array($criteria)) {
                 return null;
@@ -322,22 +455,22 @@ final class Pagination
             }
         }
         // Every table referenced by the sort must be joined in the minimal FROM.
-        if (!self::minimalFromCoversWhere($minimal_from['query'], implode(' ', $columns) . $order)) {
+        if (!self::minimalFromCoversWhere($this->minimal_from, implode(' ', $columns) . $this->parts->order)) {
             return null;
         }
 
         $query = 'SELECT `id` FROM ('
             . 'SELECT ' . implode(', ', $columns)
-            . $minimal_from['query']
-            . $where
-            . (self::hasOnlyOneToOneJoins($itemtable, $minimal_from['query']) ? '' : ' GROUP BY `' . $itemtable . '`.`id`')
-            . $order . ', `' . $itemtable . '`.`id` ' . self::getTieBreakerOrder($sort_fields)
-            . $limit
+            . $this->minimal_from
+            . $this->parts->where
+            . $this->buildInnerGroupBy()
+            . $this->parts->order . ', `' . $itemtable . '`.`id` ' . $this->getTieBreakerOrder()
+            . $this->limit
             . ') AS `deferred_sorted`';
 
         return (new Select())
             ->setQuery($query)
-            ->setParams(array_merge($minimal_from['params'], $where_values));
+            ->setParams(array_merge($this->minimal_from_values, $this->parts->where_values));
     }
 
     /**
@@ -347,27 +480,18 @@ final class Pagination
      * resolved and ordered from the minimal FROM alone). HAVING / 1:N-aggregate
      * sorts are excluded on purpose — the aggregate must be computed over the whole relation
      * anyway, so deferral buys little. Otherwise the normal query is emitted.
-     *
-     * @param array<int|string, mixed> $data
-     * @param array<int|string, mixed> $sort_fields
-     * @param array<int|string, mixed> $searchopt
      */
-    public static function canUseDeferredJoin(
-        array $data,
-        string $itemtable,
-        string $GROUPBY,
-        string $LIMIT,
-        string $ORDER,
-        string $HAVING,
-        array $sort_fields,
-        array $searchopt
-    ): bool {
+    private function canUseDeferredJoin(): bool
+    {
         global $CFG_GLPI;
+
+        $data      = $this->data;
+        $itemtable = $this->parts->itemtable;
 
         if (isset($CFG_GLPI['union_search_type'][$data['itemtype']])) {
             return false;
         }
-        if ($GROUPBY === '' || $LIMIT === '' || $ORDER === '' || $HAVING !== '') {
+        if ($this->parts->groupby === '' || $this->limit === '' || $this->parts->order === '' || $this->parts->having !== '') {
             return false;
         }
         if (!empty($data['search']['all_search'])) {
@@ -384,15 +508,15 @@ final class Pagination
             return false;
         }
 
-        foreach ($sort_fields as $sort_field) {
+        foreach ($this->sort_fields as $sort_field) {
             $ID = $sort_field['searchopt_id'];
-            if (!isset($searchopt[$ID]['table']) || !isset($searchopt[$ID]['field'])) {
+            if (!isset($this->searchopt[$ID]['table']) || !isset($this->searchopt[$ID]['field'])) {
                 return false;
             }
-            $opt = $searchopt[$ID];
+            $opt = $this->searchopt[$ID];
             // Columns of a table linked by a foreign key of the main table are joined in the
             // minimal FROM (1:1 join), so the inner subquery can sort on them too.
-            if (self::isLinkedTableSortOption($data['itemtype'], $opt, $itemtable)) {
+            if ($this->isLinkedTableSortOption($opt)) {
                 continue;
             }
             // Only plain main-table columns are orderable in the inner subquery.
@@ -425,7 +549,7 @@ final class Pagination
      *
      * @param array<int|string, mixed> $criteria
      */
-    public static function hasMetaCriteria(array $criteria): bool
+    private static function hasMetaCriteria(array $criteria): bool
     {
         foreach ($criteria as $criterion) {
             if (isset($criterion['criteria']) && is_array($criterion['criteria'])) {
@@ -445,7 +569,7 @@ final class Pagination
      *
      * @param array<int|string, mixed> $criteria
      */
-    public static function criteriaReferenceAllColumns(array $criteria): bool
+    private static function criteriaReferenceAllColumns(array $criteria): bool
     {
         foreach ($criteria as $criterion) {
             if (isset($criterion['criteria']) && is_array($criterion['criteria'])) {
@@ -470,7 +594,7 @@ final class Pagination
      * via the itemtype visibility/default restriction. Errs on the safe side: a subquery-local
      * alias (rare in WHERE) yields false → the optimisation is skipped, never a broken query.
      */
-    public static function minimalFromCoversWhere(string $minimal_from, string $where): bool
+    private static function minimalFromCoversWhere(string $minimal_from, string $where): bool
     {
         if (!preg_match_all('/`([a-z0-9_]+)`\s*\.\s*`/i', $where, $matches)) {
             return true;

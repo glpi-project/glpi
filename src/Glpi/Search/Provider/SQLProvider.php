@@ -81,6 +81,7 @@ use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\Provider\SQL\Pagination;
+use Glpi\Search\Provider\SQL\SearchQueryParts;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\SanitizedStringsDecoder;
@@ -5147,124 +5148,30 @@ final class SQLProvider implements SearchProviderInterface
                 $WHERE_VALUES = array_merge($WHERE_VALUES, $system_criteria_sql->getParams());
             }
 
-            // Active-search pagination: apply a SQL LIMIT (+ a dedicated COUNT query) so paging
-            // happens in the DB instead of fetching everything. Relies on the minimal FROM
-            // covering the WHERE, which holds only without meta/all_search/`view`/`all`/HAVING;
-            // otherwise keep the legacy fetch-all behaviour.
-            $supports_sql_limit = empty($data['search']['all_search'])
-                && $HAVING === ''
-                && count($data['search']['metacriteria'] ?? []) === 0
-                && !Pagination::hasMetaCriteria($data['search']['criteria'] ?? [])
-                && !Pagination::criteriaReferenceAllColumns($data['search']['criteria'] ?? []);
-
-            $need_active_count = false;
-            if (
-                $supports_sql_limit
-                && empty($LIMIT)
-                && !$data['search']['export_all']
-                && (($data['search']['as_map'] ?? 0) != 1)
-            ) {
-                $LIMIT = " LIMIT " . (int) $data['search']['start'] . ", " . (int) $data['search']['list_limit'];
-                $data['sql']['has_sql_limit'] = true;
-                $need_active_count = true;
-            }
-
-            $can_defer = Pagination::canUseDeferredJoin($data, $itemtable, $GROUPBY, $LIMIT, $ORDER, $HAVING, $sort_fields, $searchopt);
-
-            // Minimal FROM shared by the active COUNT query and the deferred inner subquery.
-            $minimal_from = null;
-            if ($can_defer || $need_active_count) {
-                $keep_forcegroupby_ids = Pagination::collectFilterForcegroupbyIds($data['search']['criteria'], $searchopt);
-                $minimal_from = Pagination::buildMinimalFrom($data, $itemtable, $searchopt, $blacklist_tables, $keep_forcegroupby_ids);
-                // The WHERE may reference a 1:N join via the itemtype visibility/default
-                // restriction (not just user criteria, e.g. KnowbaseItem). If the minimal FROM
-                // does not cover every alias the WHERE uses, fall back to the full query.
-                if (!Pagination::minimalFromCoversWhere($minimal_from['query'], $WHERE)) {
-                    $can_defer         = false;
-                    $need_active_count = false;
-                    $minimal_from      = null;
-                    $LIMIT             = '';
-                    $data['sql']['has_sql_limit'] = false;
-                }
-            }
-
-            $data['sql']['raw'] = [
-                'SELECT' => $SELECT,
-                'FROM' => $FROM,
-                'WHERE' => $WHERE,
-                'GROUPBY' => $GROUPBY,
-                'HAVING' => $HAVING,
-                'ORDER' => $ORDER,
-                'LIMIT' => $LIMIT,
-            ];
-
-            if ($need_active_count && $minimal_from !== null) {
-                $data['sql']['count'][] = Pagination::buildActiveCountQuery(
-                    $itemtable,
-                    $minimal_from,
-                    $WHERE,
-                    $WHERE_VALUES
-                );
-            }
-
-            $inner = null;
-            if ($can_defer && $minimal_from !== null) {
-                $sorts_on_linked_table = false;
-                foreach ($sort_fields as $sort_field) {
-                    if (Pagination::isLinkedTableSortOption($data['itemtype'], $searchopt[$sort_field['searchopt_id']], $itemtable)) {
-                        $sorts_on_linked_table = true;
-                        break;
-                    }
-                }
-                // Two-phase: inner subquery picks the page of ids (no display 1:N joins), outer
-                // query attaches the display joins to just those ids.
-                $inner = $sorts_on_linked_table
-                    ? Pagination::buildDeferredInnerQueryWithSortColumns(
-                        $data['itemtype'],
-                        $itemtable,
-                        $minimal_from,
-                        $WHERE,
-                        $WHERE_VALUES,
-                        $sort_fields,
-                        $ORDER,
-                        $LIMIT
-                    )
-                    : Pagination::buildDeferredInnerQuery(
-                        $itemtable,
-                        $minimal_from,
-                        $WHERE,
-                        $WHERE_VALUES,
-                        Pagination::buildInnerOrderBy($itemtable, $sort_fields, $searchopt),
-                        $LIMIT
-                    );
-            }
-
-            if ($inner !== null) {
-                $QUERY = $SELECT
-                    . " FROM `" . $itemtable . "`"
-                    . " INNER JOIN (" . $inner->getQuery() . ") AS `deferred_page`"
-                    . " ON `" . $itemtable . "`.`id` = `deferred_page`.`id` "
-                    . $FROM_JOINS
-                    . $GROUPBY
-                    . $ORDER . ', `' . $itemtable . '`.`id` ' . Pagination::getTieBreakerOrder($sort_fields);
-                // Param order matches the `?` order: outer SELECT, inner subquery (its WHERE
-                // included), then outer display joins — inner WHERE BEFORE the joins here.
-                $QUERY_VALUES = array_merge($SELECT_VALUES, $inner->getParams(), $FROM_JOINS_VALUES);
-            } else {
-                $QUERY_VALUES = array_merge(
-                    $SELECT_VALUES,
-                    $FROM_VALUES,
-                    $WHERE_VALUES,
-                    $HAVING_VALUES
-                );
-                $QUERY = $SELECT
-                    . $FROM
-                    . $WHERE
-                    . $GROUPBY
-                    . $HAVING
-                    . $ORDER
-                    . $LIMIT;
-            }
+            $search = Pagination::buildSearchQuery(
+                $data,
+                new SearchQueryParts(
+                    itemtable: $itemtable,
+                    select: $SELECT,
+                    select_values: $SELECT_VALUES,
+                    from: $FROM,
+                    from_values: $FROM_VALUES,
+                    joins: $FROM_JOINS,
+                    joins_values: $FROM_JOINS_VALUES,
+                    where: $WHERE,
+                    where_values: $WHERE_VALUES,
+                    groupby: $GROUPBY,
+                    having: $HAVING,
+                    having_values: $HAVING_VALUES,
+                    order: $ORDER,
+                    limit: $LIMIT,
+                ),
+                $sort_fields,
+                $searchopt,
+                $blacklist_tables
+            );
+            $QUERY        = $search->getQuery();
+            $QUERY_VALUES = $search->getParams();
         }
         $data['sql']['search'] = (new Select())
             ->setQuery($QUERY)
