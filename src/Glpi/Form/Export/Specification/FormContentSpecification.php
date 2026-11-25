@@ -36,6 +36,9 @@
 namespace Glpi\Form\Export\Specification;
 
 use Glpi\Form\Export\Serializer\DynamicExportData;
+use Glpi\ImportExport\Specification\CustomTypeRequirementSpecification;
+use Glpi\ImportExport\Specification\DataRequirementSpecification;
+use Glpi\ImportExport\Specification\PluginRequirementSpecification;
 
 final class FormContentSpecification
 {

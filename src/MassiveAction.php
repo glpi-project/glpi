@@ -37,6 +37,7 @@ use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Features\Clonable;
+use Glpi\ImportExport\ImportExportManager;
 use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
@@ -713,6 +714,11 @@ class MassiveAction
             // Add a note for objects with the UPDATENOTE rights
             if (Session::haveRight($item::$rightname, UPDATENOTE)) {
                 $actions[$self_pref . 'add_note'] = "<i class='ti ti-note' aria-hidden='true'></i>" . __s("Add note");
+            }
+
+            if (ImportExportManager::isExportable($itemtype) && $itemtype::canView()) {
+                $actions[ImportExportManager::class . self::CLASS_ACTION_SEPARATOR . 'export']
+                    = "<i class='ti ti-file-arrow-right' aria-hidden='true'></i>" . __s('Export');
             }
 
             // Plugin Specific actions

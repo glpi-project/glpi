@@ -6200,36 +6200,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/Destination/AddDestinationController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Import\\\\Step2PreviewController\\:\\:getJsonFormFromRequest\\(\\) should return string but returns bool\\|float\\|int\\|string\\|null\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Import/Step2PreviewController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset bool\\|float\\|int\\|string\\|null might not exist on array\\<int, array\\<Glpi\\\\Form\\\\Export\\\\Specification\\\\DataRequirementSpecification\\>\\>\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Import/Step3ResolveIssuesController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$json of method Glpi\\\\Form\\\\Export\\\\Serializer\\\\FormSerializer\\:\\:listIssues\\(\\) expects string, bool\\|float\\|int\\|string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Import/Step3ResolveIssuesController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Possibly invalid array key type bool\\|float\\|int\\|string\\|null\\.$#',
-	'identifier' => 'offsetAccess.invalidOffset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Import/Step3ResolveIssuesController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$json of method Glpi\\\\Form\\\\Export\\\\Serializer\\\\FormSerializer\\:\\:importFormsFromJson\\(\\) expects string, bool\\|float\\|int\\|string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Import/Step4ExecuteController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Property Glpi\\\\Controller\\\\Form\\\\RendererController\\:\\:\\$interface \\(string\\) does not accept string\\|false\\.$#',
 	'identifier' => 'assign.propertyType',
 	'count' => 1,
@@ -7148,7 +7118,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Glpi\\\\Form\\\\Export\\\\Specification\\\\DataRequirementSpecification\\:\\:fromItem\\(\\) expects CommonDBTM, CommonDBTM\\|false given\\.$#',
+	'message' => '#^Parameter \\#1 \\$item of static method Glpi\\\\ImportExport\\\\Specification\\\\DataRequirementSpecification\\:\\:fromItem\\(\\) expects CommonDBTM, CommonDBTM\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php',
@@ -7172,7 +7142,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ITILActorField.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Glpi\\\\Form\\\\Export\\\\Specification\\\\DataRequirementSpecification\\:\\:fromItem\\(\\) expects CommonDBTM, CommonDBTM\\|false given\\.$#',
+	'message' => '#^Parameter \\#1 \\$item of static method Glpi\\\\ImportExport\\\\Specification\\\\DataRequirementSpecification\\:\\:fromItem\\(\\) expects CommonDBTM, CommonDBTM\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ITILActorField.php',
@@ -7292,7 +7262,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ValidationField.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Glpi\\\\Form\\\\Export\\\\Specification\\\\DataRequirementSpecification\\:\\:fromItem\\(\\) expects CommonDBTM, CommonDBTM\\|false given\\.$#',
+	'message' => '#^Parameter \\#1 \\$item of static method Glpi\\\\ImportExport\\\\Specification\\\\DataRequirementSpecification\\:\\:fromItem\\(\\) expects CommonDBTM, CommonDBTM\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ValidationField.php',
@@ -7337,19 +7307,19 @@ $ignoreErrors[] = [
 	'message' => '#^Offset int\\|string might not exist on array\\<string, int\\>\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Export/Context/DatabaseMapper.php',
+	'path' => __DIR__ . '/src/Glpi/ImportExport/Context/DatabaseMapper.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$name of method Glpi\\\\Form\\\\Export\\\\Context\\\\DatabaseMapper\\:\\:contextExist\\(\\) expects string, int\\|string given\\.$#',
+	'message' => '#^Parameter \\#2 \\$name of method Glpi\\\\ImportExport\\\\Context\\\\DatabaseMapper\\:\\:contextExist\\(\\) expects string, int\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Export/Context/DatabaseMapper.php',
+	'path' => __DIR__ . '/src/Glpi/ImportExport/Context/DatabaseMapper.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Form\\\\Export\\\\Context\\\\DatabaseMapper\\:\\:\\$values \\(array\\<string, array\\<string, int\\>\\>\\) does not accept array\\<string, array\\<int\\|string, int\\>\\>\\.$#',
+	'message' => '#^Property Glpi\\\\ImportExport\\\\Context\\\\DatabaseMapper\\:\\:\\$values \\(array\\<string, array\\<string, int\\>\\>\\) does not accept array\\<string, array\\<int\\|string, int\\>\\>\\.$#',
 	'identifier' => 'assign.propertyType',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Export/Context/DatabaseMapper.php',
+	'path' => __DIR__ . '/src/Glpi/ImportExport/Context/DatabaseMapper.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'plugin\' on array\\|true\\.$#',
@@ -7394,13 +7364,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Export/Serializer/FormSerializer.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Glpi\\\\Form\\\\Export\\\\Specification\\\\DataRequirementSpecification\\:\\:fromItem\\(\\) expects CommonDBTM, Entity\\|false given\\.$#',
+	'message' => '#^Parameter \\#1 \\$item of static method Glpi\\\\ImportExport\\\\Specification\\\\DataRequirementSpecification\\:\\:fromItem\\(\\) expects CommonDBTM, Entity\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Export/Serializer/FormSerializer.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of class Glpi\\\\Form\\\\Export\\\\Specification\\\\CustomTypeRequirementSpecification constructor expects string, string\\|null given\\.$#',
+	'message' => '#^Parameter \\#1 \\$itemtype of class Glpi\\\\ImportExport\\\\Specification\\\\CustomTypeRequirementSpecification constructor expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Export/Serializer/FormSerializer.php',
@@ -7412,7 +7382,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Export/Serializer/FormSerializer.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$id of method Glpi\\\\Form\\\\Export\\\\Context\\\\DatabaseMapper\\:\\:addMappedItem\\(\\) expects int, int\\|false given\\.$#',
+	'message' => '#^Parameter \\#3 \\$id of method Glpi\\\\ImportExport\\\\Context\\\\DatabaseMapper\\:\\:addMappedItem\\(\\) expects int, int\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Form/Export/Serializer/FormSerializer.php',
@@ -7640,7 +7610,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeItem.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Glpi\\\\Form\\\\Export\\\\Specification\\\\DataRequirementSpecification\\:\\:fromItem\\(\\) expects CommonDBTM, CommonDBTM\\|false given\\.$#',
+	'message' => '#^Parameter \\#1 \\$item of static method Glpi\\\\ImportExport\\\\Specification\\\\DataRequirementSpecification\\:\\:fromItem\\(\\) expects CommonDBTM, CommonDBTM\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeItem.php',

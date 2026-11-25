@@ -49,6 +49,7 @@ use Glpi\Asset\CustomFieldType\TextType;
 use Glpi\Asset\CustomFieldType\TypeInterface;
 use Glpi\CustomObject\AbstractDefinition;
 use Glpi\Features\AssetImage;
+use Glpi\ImportExport\ImportExportHandlerInterface;
 use Glpi\Inventory\MainAsset\GenericAsset;
 use Glpi\Inventory\MainAsset\MainAsset;
 use Glpi\Inventory\MainAsset\NetworkEquipment as NetworkEquipmentMainAsset;
@@ -78,6 +79,11 @@ final class AssetDefinition extends AbstractDefinition
     public static function getSectorizedDetails(): array
     {
         return ['config', self::class];
+    }
+
+    public static function getImportExportHandler(): ImportExportHandlerInterface
+    {
+        return new AssetDefinitionSerializer();
     }
 
     public static function getCustomObjectBaseClass(): string

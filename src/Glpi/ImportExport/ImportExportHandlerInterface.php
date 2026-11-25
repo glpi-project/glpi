@@ -33,22 +33,31 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Export\Result;
+namespace Glpi\ImportExport;
 
-final class ExportResult
+use CommonDBTM;
+use Glpi\ImportExport\Context\DatabaseMapper;
+use Glpi\ImportExport\Result\ExportResult;
+use Glpi\ImportExport\Result\ImportResult;
+use Glpi\ImportExport\Result\ImportResultIssues;
+use Glpi\ImportExport\Result\ImportResultPreview;
+
+/**
+ * What the import/export wizard needs from a serializer.
+ *
+ * Items are identified in the file by their id on the source instance, which
+ * is the key used to skip them or to resolve their issues.
+ */
+interface ImportExportHandlerInterface
 {
-    public function __construct(
-        private string $filename,
-        private string $json_content,
-    ) {}
+    /** @param CommonDBTM[] $items */
+    public function exportItems(array $items): ExportResult;
 
-    public function getFileName(): string
-    {
-        return $this->filename;
-    }
+    /** @param array<int|string> $skipped_items */
+    public function previewImport(string $json, DatabaseMapper $mapper, array $skipped_items = []): ImportResultPreview;
 
-    public function getJsonContent(): string
-    {
-        return $this->json_content;
-    }
+    public function listIssues(DatabaseMapper $mapper, string $json): ImportResultIssues;
+
+    /** @param array<int|string> $skipped_items */
+    public function importItems(string $json, DatabaseMapper $mapper, array $skipped_items = []): ImportResult;
 }

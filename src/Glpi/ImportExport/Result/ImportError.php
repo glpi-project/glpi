@@ -33,11 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Export\Result;
+namespace Glpi\ImportExport\Result;
 
 enum ImportError
 {
     case MISSING_DATA_REQUIREMENT;
     case MISSING_CUSTOM_TYPE_REQUIREMENT;
     case MISSING_PLUGIN_REQUIREMENT;
+    /** Unknown type, existing item... */
+    case FATAL_ERROR;
+    /** The item was refused by the target instance. */
+    case INVALID_DATA;
 }

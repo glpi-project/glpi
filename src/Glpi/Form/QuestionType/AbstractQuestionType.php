@@ -40,9 +40,9 @@ use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\EmptyConditionHandler;
 use Glpi\Form\Condition\ConditionHandler\RegexConditionHandler;
 use Glpi\Form\Condition\ConditionHandler\VisibilityConditionHandler;
-use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Question;
+use Glpi\ImportExport\Context\DatabaseMapper;
 use InvalidArgumentException;
 use Override;
 

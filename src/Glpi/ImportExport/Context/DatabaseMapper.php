@@ -33,14 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Export\Context;
+namespace Glpi\ImportExport\Context;
 
 use CommonDBTM;
 use CommonTreeDropdown;
 use Glpi\Form\Comment;
-use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
+use Glpi\ImportExport\Specification\DataRequirementSpecification;
 use Glpi\Toolbox\MapperInterface;
 use InvalidArgumentException;
 use LogicException;

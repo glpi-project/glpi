@@ -39,7 +39,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\FormDestinationInterface;
-use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\ImportExport\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
 use Override;

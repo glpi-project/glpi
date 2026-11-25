@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,30 +33,33 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\Form\Import;
+namespace Glpi\ImportExport\Result;
 
-use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Form\Form;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Glpi\ImportExport\Specification\DataRequirementSpecification;
 
-/**
- * Initial entry point of the import form process.
- */
-final class Step1IndexController extends AbstractController
+final class ImportResultIssues
 {
-    #[Route("/Form/Import", name: "glpi_form_import", methods: "GET")]
-    public function __invoke(Request $request): Response
-    {
-        if (!Form::canCreate()) {
-            throw new AccessDeniedHttpException();
-        }
+    /** @var array<int, DataRequirementSpecification[]> $issues */
+    private array $issues = [];
 
-        return $this->render("pages/admin/form/import/step1_index.html.twig", [
-            'title' => __("Import form"),
-            'menu'  => ['admin', Form::class],
-        ]);
+    /** @param DataRequirementSpecification[] $issues */
+    public function addIssues(int $id, array $issues): void
+    {
+        $this->issues[$id] = $issues;
+    }
+
+    /** @return array<int, DataRequirementSpecification[]> */
+    public function getIssues(): array
+    {
+        return $this->issues;
+    }
+
+    /**
+     * @deprecated 11.0.14 Use {@see addIssues()}
+     * @param DataRequirementSpecification[] $issues
+     */
+    public function addIssuesForForm(int $form_id, array $issues): void
+    {
+        $this->addIssues($form_id, $issues);
     }
 }

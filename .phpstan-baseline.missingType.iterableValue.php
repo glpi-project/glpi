@@ -11048,18 +11048,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/AbstractController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Import\\\\Step2PreviewController\\:\\:previewResponse\\(\\) has parameter \\$replacements with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Import/Step2PreviewController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Import\\\\Step2PreviewController\\:\\:previewResponse\\(\\) has parameter \\$skipped_forms with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Import/Step2PreviewController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Translation\\\\AddNewFormTranslationController\\:\\:getContextTranslations\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -15212,28 +15200,16 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/EndUserInputNameProvider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Export\\\\Context\\\\DatabaseMapper\\:\\:__construct\\(\\) has parameter \\$entities_restrictions with no value type specified in iterable type array\\.$#',
+	'message' => '#^Method Glpi\\\\ImportExport\\\\Context\\\\DatabaseMapper\\:\\:__construct\\(\\) has parameter \\$entities_restrictions with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Export/Context/DatabaseMapper.php',
+	'path' => __DIR__ . '/src/Glpi/ImportExport/Context/DatabaseMapper.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Export\\\\Context\\\\DatabaseMapper\\:\\:tryTofindOneRowByName\\(\\) return type has no value type specified in iterable type array\\.$#',
+	'message' => '#^Method Glpi\\\\ImportExport\\\\Context\\\\DatabaseMapper\\:\\:tryTofindOneRowByName\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Export/Context/DatabaseMapper.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Form\\\\Export\\\\Result\\\\ImportResultIssues\\:\\:\\$issues type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Export/Result/ImportResultIssues.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Export\\\\Result\\\\ImportResultPreview\\:\\:getFormsWithFatalErrors\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Export/Result/ImportResultPreview.php',
+	'path' => __DIR__ . '/src/Glpi/ImportExport/Context/DatabaseMapper.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\Export\\\\Serializer\\\\DynamicExportDataField\\:\\:__construct\\(\\) has parameter \\$requirements with no value type specified in iterable type array\\.$#',
@@ -15260,19 +15236,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Export/Serializer/FormSerializer.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Export\\\\Serializer\\\\FormSerializer\\:\\:importFormsFromJson\\(\\) has parameter \\$skipped_forms with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Export/Serializer/FormSerializer.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\Export\\\\Serializer\\\\FormSerializer\\:\\:importValidationCondition\\(\\) has parameter \\$conditions with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Export/Serializer/FormSerializer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Export\\\\Serializer\\\\FormSerializer\\:\\:previewImport\\(\\) has parameter \\$skipped_forms with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Export/Serializer/FormSerializer.php',
@@ -15351,12 +15315,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\Form\\:\\:cronInfo\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Form\\:\\:getSpecificMassiveActions\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Form.php',

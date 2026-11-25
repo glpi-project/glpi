@@ -40,11 +40,11 @@ use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Destination\FormDestination;
-use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeImpact;
 use Glpi\ImpactLevel;
+use Glpi\ImportExport\Context\DatabaseMapper;
 use InvalidArgumentException;
 use Override;
 

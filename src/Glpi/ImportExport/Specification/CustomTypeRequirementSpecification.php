@@ -32,11 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Export\Specification;
+namespace Glpi\ImportExport\Specification;
 
-final class PluginRequirementSpecification
+final class CustomTypeRequirementSpecification
 {
     public function __construct(
-        public string $key = "",
+        public string $itemtype = "",
     ) {}
 }

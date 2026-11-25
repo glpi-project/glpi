@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,27 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Export\Result;
+namespace Glpi\ImportExport\Specification;
 
-use Glpi\Form\Export\Specification\DataRequirementSpecification;
-
-final class ImportResultIssues
+final class PluginRequirementSpecification
 {
-    /** @var array<int, DataRequirementSpecification[]> $valid_forms */
-    private array $issues = [];
-
-    /**
-     * @param int $form_id
-     * @param DataRequirementSpecification[] $issues
-     */
-    public function addIssuesForForm(int $form_id, array $issues): void
-    {
-        $this->issues[$form_id] = $issues;
-    }
-
-    /** @return array<int, DataRequirementSpecification[]> */
-    public function getIssues(): array
-    {
-        return $this->issues;
-    }
+    public function __construct(
+        public string $key = "",
+    ) {}
 }

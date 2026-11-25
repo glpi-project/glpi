@@ -37,9 +37,9 @@ namespace Glpi\Form\Destination;
 use CommonDBTM;
 use Exception;
 use Glpi\Form\AnswersSet;
-use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
+use Glpi\ImportExport\Context\DatabaseMapper;
 
 interface FormDestinationInterface
 {

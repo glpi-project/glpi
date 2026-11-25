@@ -33,25 +33,22 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Export\Specification;
+namespace Glpi\ImportExport\Result;
 
-use CommonDBTM;
-use CommonTreeDropdown;
-
-final class DataRequirementSpecification
+final class ExportResult
 {
     public function __construct(
-        public string $itemtype = "",
-        public string $name = "",
+        private string $filename,
+        private string $json_content,
     ) {}
 
-    public static function fromItem(CommonDBTM $item): self
+    public function getFileName(): string
     {
-        if ($item instanceof CommonTreeDropdown) {
-            $name = $item->getName(['complete' => true]);
-        } else {
-            $name = $item->getName();
-        }
-        return new self($item::class, $name);
+        return $this->filename;
+    }
+
+    public function getJsonContent(): string
+    {
+        return $this->json_content;
     }
 }

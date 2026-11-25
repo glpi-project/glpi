@@ -74,7 +74,7 @@ test.describe('Import forms', () => {
 
     const doOpenImporter = async (page: Page): Promise<void> => {
         await page.goto('/front/form/form.php');
-        await page.getByRole('link', { name: "Import forms" }).click();
+        await page.getByRole('link', { name: "Import", exact: true }).click();
     };
 
     const getRows = (page: Page): Locator => {
@@ -90,7 +90,7 @@ test.describe('Import forms', () => {
         await expect(row.getByRole("button", { name: "Resolve issues" }))
             .not.toBeAttached()
         ;
-        await expect(row.getByRole("button", { name: "Remove form" }))
+        await expect(row.getByRole("button", { name: "Remove Form", exact: true }))
             .toBeAttached()
         ;
     };
@@ -104,7 +104,7 @@ test.describe('Import forms', () => {
         await expect(row.getByRole("button", { name: "Resolve issues" }))
             .toBeAttached()
         ;
-        await expect(row.getByRole("button", { name: "Remove form" }))
+        await expect(row.getByRole("button", { name: "Remove Form", exact: true }))
             .toBeAttached()
         ;
     };
@@ -230,7 +230,7 @@ test.describe('Import forms', () => {
 
         // Remove the second form
         await preview.nth(2)
-            .getByRole("button", { name: "Remove form" })
+            .getByRole("button", { name: "Remove Form", exact: true })
             .click()
         ;
         await expect(preview.nth(1)).toBeAttached();
@@ -238,7 +238,7 @@ test.describe('Import forms', () => {
 
         // Remove the first form
         await preview.nth(1)
-            .getByRole("button", { name: "Remove form" })
+            .getByRole("button", { name: "Remove Form", exact: true })
             .click()
         ;
         await expect(preview).toHaveCount(0);
@@ -276,7 +276,7 @@ test.describe('Import forms', () => {
             preview.nth(1).getByRole("button", { name: "Resolve issues" })
         ).not.toBeAttached();
         await expect(
-            preview.nth(1).getByRole("button", { name: "Remove form" })
+            preview.nth(1).getByRole("button", { name: "Remove Form", exact: true })
         ).toBeAttached();
     });
 });

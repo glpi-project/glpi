@@ -53,7 +53,7 @@ export class FormImporter
         // Note: this does not really use the API for now as there are no real
         // endpoint to import a form (so we do a simple POST request).
         // We'll refactor later when we add this endpoint.
-        const response = await this.request.post('/Form/Import/Execute', {
+        const response = await this.request.post(`/ImportExport/Import/Execute?itemtype=${encodeURIComponent('Glpi\\Form\\Form')}`, {
             form: {
                 json: readFileSync(file_path).toString(),
                 'replacements[0][itemtype]'      : "Entity",

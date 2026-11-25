@@ -34,7 +34,7 @@
 
 namespace Glpi\Form\Export\Serializer;
 
-use Glpi\Form\Export\Specification\DataRequirementSpecification;
+use Glpi\ImportExport\Specification\DataRequirementSpecification;
 
 final class DynamicExportData
 {

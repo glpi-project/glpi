@@ -37,9 +37,9 @@ namespace Glpi\Form\Destination;
 
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
-use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
+use Glpi\ImportExport\Context\DatabaseMapper;
 use LogicException;
 use Override;
 use Toolbox;
