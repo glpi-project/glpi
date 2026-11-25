@@ -90,6 +90,9 @@
          copyable: true
       }) }}
       {{ fields.nullField() }}
+      {% if is_2fa_used and config['enable_api_login_credentials'] %}
+          {{ alerts.alert_danger(__('The legacy API does not support the 2FA authentication. Therefore, enabling the login with credentials option is discouraged when the 2FA is active.'), [], true) }}
+      {% endif %}
       {{ fields.sliderField('enable_api_login_credentials', config['enable_api_login_credentials'], __("Enable login with credentials"), {
          helper: __("Allow to login to API and get a session token with user credentials")
       }) }}

@@ -42,6 +42,7 @@ use Glpi\Form\Migration\FormMigration;
 use Glpi\Marketplace\Controller;
 use Glpi\Migration\GenericobjectPluginMigration;
 use Glpi\Plugin\Hooks;
+use Glpi\Security\TOTPManager;
 use Glpi\System\HousekeepingCron;
 use Glpi\System\Requirement\PhpSupportedVersion;
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
@@ -606,6 +607,19 @@ class Central extends CommonGLPI
                     . sprintf(
                         '<a href="%s">%s</a>',
                         htmlescape($CFG_GLPI['root_doc'] . '/front/auth.others.php'),
+                        __s('See configuration')
+                    );
+            }
+
+            if (
+                $CFG_GLPI['enable_api_login_credentials']
+                && (new TOTPManager())->is2FAUsed()
+            ) {
+                $messages['warnings'][] = __s('The legacy API does not support the 2FA authentication. Therefore, enabling the login with credentials option is discouraged when the 2FA is active.')
+                    . ' '
+                    . sprintf(
+                        '<a href="%s">%s</a>',
+                        htmlescape($CFG_GLPI['root_doc'] . '/front/config.form.php?forcetab=Config$8'),
                         __s('See configuration')
                     );
             }

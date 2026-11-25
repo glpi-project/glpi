@@ -42,8 +42,10 @@ use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\AuthenticationFailedException;
 use GLPIKey;
+use Group;
 use Group_User;
 use JsonException;
+use Profile;
 use Profile_User;
 use RobThree\Auth\Algorithm;
 use RobThree\Auth\Providers\Qr\BaconQrCodeProvider;
@@ -638,5 +640,38 @@ final class TOTPManager
             'backup_codes' => $this->regenerateBackupCodes($users_id),
             'redirect'     => $redirect,
         ]);
+    }
+
+    /**
+     * Indicates whether the 2FA is used on the current GLPI instance.
+     */
+    public function is2FAUsed(): bool
+    {
+        global $CFG_GLPI, $DB;
+
+        if ((int) $CFG_GLPI['2fa_enforced'] === 1) {
+            return true;
+        }
+
+        $enforcing_items = [
+            Entity::class => '2fa_enforcement_strategy',
+            Profile::class => '2fa_enforced',
+            Group::class => '2fa_enforced',
+        ];
+
+        foreach ($enforcing_items as $enforcing_item => $enforcing_field) {
+            $criteria = [
+                'SELECT' => ['id'],
+                'FROM'   => $enforcing_item::getTable(),
+                'WHERE'  => [$enforcing_field => 1],
+                'LIMIT'  => 1,
+            ];
+
+            if ($DB->request($criteria)->count() > 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
