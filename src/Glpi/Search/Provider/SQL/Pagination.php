@@ -36,6 +36,7 @@
 namespace Glpi\Search\Provider\SQL;
 
 use CommonDBTM;
+use Glpi\DBAL\Parts\LeftJoin;
 use Glpi\DBAL\Parts\Select;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Search\Provider\SQLProvider;
@@ -67,6 +68,11 @@ final class Pagination
      * @var array<int, mixed>
      */
     private array $minimal_from_values = [];
+
+    /**
+     * Whether every join of the minimal FROM yields at most one row per item.
+     */
+    private bool $minimal_from_is_one_to_one = true;
 
     /**
      * @param array<int|string, mixed> $data
@@ -253,10 +259,7 @@ final class Pagination
         $itemtable           = $this->parts->itemtable;
         $already_link_tables = [$itemtable];
 
-        $query  = SQLProvider::buildFrom($itemtable) . ' ';
-        $default_ljoin = Search::addDefaultJoin($this->data['itemtype'], $itemtable, $already_link_tables);
-        $query .= $default_ljoin->getQuery() . ' ';
-        $params = $default_ljoin->getParams();
+        $joins = [SQLProvider::getDefaultJoinCriteria($this->data['itemtype'], $itemtable, $already_link_tables)];
 
         foreach ($this->data['tocompute'] as $val) {
             if (
@@ -269,7 +272,7 @@ final class Pagination
             if (!empty($this->searchopt[$val]['forcegroupby']) && !in_array((int) $val, $keep_forcegroupby_ids, true)) {
                 continue;
             }
-            $ljoin = Search::addLeftJoin(
+            $joins[] = SQLProvider::getLeftJoinCriteria(
                 $this->data['itemtype'],
                 $itemtable,
                 $already_link_tables,
@@ -281,8 +284,16 @@ final class Pagination
                 $this->searchopt[$val]['field'] ?? '',
                 ($this->searchopt[$val]['use_join_subquery'] ?? false)
             );
+        }
+
+        $query  = SQLProvider::buildFrom($itemtable) . ' ';
+        $params = [];
+        foreach ($joins as $criteria) {
+            $ljoin   = (new LeftJoin())->withCriteria($criteria);
             $query  .= $ljoin->getQuery() . ' ';
             $params  = array_merge($params, $ljoin->getParams());
+            $this->minimal_from_is_one_to_one = $this->minimal_from_is_one_to_one
+                && self::isOneToOneJoin($criteria, $itemtable);
         }
 
         $this->minimal_from        = $query;
@@ -326,29 +337,34 @@ final class Pagination
     }
 
     /**
-     * Whether every join of the minimal FROM yields at most one row per item, i.e. is a plain
-     * `LEFT JOIN` from a main-table column to the `id` of the joined table. Anything else
-     * (default join, 1:N join, extra join condition) is considered as possibly multiplying rows.
+     * Whether the join criteria, as returned by SQLProvider::getLeftJoinCriteria(), yield at most
+     * one row per item: only `LEFT JOIN`s whose sole condition is a column of the reference
+     * table equal to the `id` of the joined table. Anything else (other join type, sub-query,
+     * extra condition) is considered as possibly multiplying rows.
+     *
+     * @param array<mixed> $criteria
      */
-    private function hasOnlyOneToOneJoins(): bool
+    private static function isOneToOneJoin(array $criteria, string $ref_table): bool
     {
-        $itemtable = $this->parts->itemtable;
-        $from_main = trim(SQLProvider::buildFrom($itemtable));
-        $joins     = trim($this->minimal_from);
-        if (!str_starts_with($joins, $from_main)) {
-            return false;
-        }
-        $joins = ltrim(substr($joins, strlen($from_main)));
-
-        while ($joins !== '') {
-            if (
-                !preg_match('/^LEFT JOIN `(\w+)`(?: AS `(\w+)`)? ON \(`(\w+)`\.`\w+` = `(\w+)`\.`id`\)\s*/', $joins, $matches)
-                || $matches[3] !== $itemtable
-                || $matches[4] !== ($matches[2] !== '' ? $matches[2] : $matches[1])
-            ) {
+        foreach ($criteria as $type => $tables) {
+            if ($type !== 'LEFT JOIN' || !is_array($tables)) {
                 return false;
             }
-            $joins = substr($joins, strlen($matches[0]));
+            foreach ($tables as $table => $join) {
+                if (!is_string($table) || !is_array($join) || array_keys($join) !== ['ON'] || !is_array($join['ON'])) {
+                    return false;
+                }
+                // Table key: `table` or `table AS `alias``.
+                $parts = explode(' AS ', $table);
+                $alias = trim(end($parts), '` ');
+                if (
+                    count($join['ON']) !== 2
+                    || !is_string($join['ON'][$ref_table] ?? null)
+                    || ($join['ON'][$alias] ?? null) !== 'id'
+                ) {
+                    return false;
+                }
+            }
         }
         return true;
     }
@@ -360,7 +376,7 @@ final class Pagination
      */
     private function buildInnerGroupBy(): string
     {
-        return $this->hasOnlyOneToOneJoins() ? '' : ' GROUP BY `' . $this->parts->itemtable . '`.`id`';
+        return $this->minimal_from_is_one_to_one ? '' : ' GROUP BY `' . $this->parts->itemtable . '`.`id`';
     }
 
     /**
