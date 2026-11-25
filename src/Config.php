@@ -45,6 +45,7 @@ use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\Kernel\Kernel;
 use Glpi\Mail\SMTP\OauthConfig;
 use Glpi\Plugin\Hooks;
+use Glpi\Security\TOTPManager;
 use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\ArrayNormalizer;
@@ -621,6 +622,8 @@ class Config extends CommonDBTM
             return;
         }
 
+        $is_2fa_used = (new TOTPManager())->is2FAUsed();
+
         // Options just for new API
         $api_versions = Router::getAPIVersions();
         $legacy_version = array_filter($api_versions, static fn($version) => $version['api_version'] === '1');
@@ -634,6 +637,7 @@ class Config extends CommonDBTM
             'config_object' => new Config(),
             'config' => $CFG_GLPI,
             'canedit' => static::canUpdate(),
+            'is_2fa_used' => $is_2fa_used,
             'getting_started_doc_url' => $getting_started_doc,
             'endpoint_doc_url' => $endpoint_doc,
             'api_url' => $current_version['endpoint'],
