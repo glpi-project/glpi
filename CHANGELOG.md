@@ -51,6 +51,7 @@ The present file will list all changes made to the project; according to the
 - `$onchange` parameter of `Dropdown::showListLimit()`. It is now ignored and triggers a warning.
 - `laminas/laminas-mail` and `laminas/laminas-mime` PHP libraries. Use `directorytree/imapengine` and `zbateson/mail-mime-parser` instead.
 - `Toolbox::getMailServerStorageInstance()`. Use `Toolbox::getMailServerMailboxInstance()` instead.
+- `/front/pluginimage.send.php` endpoint.
 
 ## [12.0.3] unreleased
 
