@@ -766,237 +766,20 @@ final class SQLProvider implements SearchProviderInterface
                 break;
 
             case ProjectTask::class:
-                if (!Session::haveRightsOr(Project::$rightname, [Project::READALL, Project::READMY])) {
-                    // Can only see the tasks assigned to the user or one of his groups
-                    $teamtable = 'glpi_projecttaskteams';
-                    $user_criteria = [
-                        "$teamtable.itemtype" => User::class,
-                        "$teamtable.items_id" => Session::getLoginUserID(),
-                    ];
-                    $or_criteria = [$user_criteria];
-                    if (count($_SESSION['glpigroups'])) {
-                        $group_criteria = [
-                            "$teamtable.itemtype" => Group::class,
-                            "$teamtable.items_id" => $_SESSION['glpigroups'],
-                        ];
-                        $or_criteria[] = $group_criteria;
-                    }
-                    $criteria = [
-                        "glpi_projects.is_template" => 0,
-                        'OR' => $or_criteria,
-                    ];
-                } elseif (Session::haveRight(Project::$rightname, Project::READMY)) {
-                    // User must be the manager, in the manager group or in the project team
-                    $teamtable = 'glpi_projectteams';
-                    $user_criteria = [
-                        "$teamtable.itemtype" => User::class,
-                        "$teamtable.items_id" => Session::getLoginUserID(),
-                    ];
-                    $or_criteria = [
-                        $user_criteria,
-                        'glpi_projects.users_id' => Session::getLoginUserID(),
-                    ];
-                    if (count($_SESSION['glpigroups'])) {
-                        $group_criteria = [
-                            "$teamtable.itemtype" => Group::class,
-                            "$teamtable.items_id" => $_SESSION['glpigroups'],
-                        ];
-                        $or_criteria[] = $group_criteria;
-                    }
-                    $criteria = [
-                        'OR' => $or_criteria,
-                    ];
-                }
+                $criteria = self::getProjectTaskDefaultWhereCriteria();
                 break;
 
             case Project::class:
-                if (!Session::haveRight(Project::$rightname, Project::READALL)) {
-                    $teamtable  = 'glpi_projectteams';
-                    $user_criteria = [
-                        "$teamtable.itemtype" => User::class,
-                        "$teamtable.items_id" => Session::getLoginUserID(),
-                    ];
-                    $or_criteria = [
-                        "glpi_projects.users_id" => Session::getLoginUserID(),
-                        $user_criteria,
-                    ];
-                    if (count($_SESSION['glpigroups'])) {
-                        $group_criteria = [
-                            "$teamtable.itemtype" => Group::class,
-                            "$teamtable.items_id" => $_SESSION['glpigroups'],
-                        ];
-                        $or_criteria[] = ["glpi_projects.groups_id" => $_SESSION['glpigroups']];
-                        $or_criteria[] = $group_criteria;
-                    }
-                    $criteria = [
-                        "OR" => $or_criteria,
-                    ];
-                }
+                $criteria = self::getProjectDefaultWhereCriteria();
                 break;
 
             case Ticket::class:
-                // Same structure in addDefaultJoin
-                if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
-                    $searchopt
-                        = SearchOption::getOptionsForItemtype($itemtype);
-                    $requester_table
-                        = '`glpi_tickets_users_'
-                        . self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']
-                        ['joinparams']) . '`';
-                    $requestergroup_table
-                        = '`glpi_groups_tickets_'
-                        . self::computeComplexJoinID($searchopt[71]['joinparams']['beforejoin']
-                        ['joinparams']) . '`';
-
-                    $assign_table
-                        = '`glpi_tickets_users_'
-                        . self::computeComplexJoinID($searchopt[5]['joinparams']['beforejoin']
-                        ['joinparams']) . '`';
-                    $assigngroup_table
-                        = '`glpi_groups_tickets_'
-                        . self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']
-                        ['joinparams']) . '`';
-
-                    $observer_table
-                        = '`glpi_tickets_users_'
-                        . self::computeComplexJoinID($searchopt[66]['joinparams']['beforejoin']
-                        ['joinparams']) . '`';
-                    $observergroup_table
-                        = '`glpi_groups_tickets_'
-                        . self::computeComplexJoinID($searchopt[65]['joinparams']['beforejoin']
-                        ['joinparams']) . '`';
-
-                    $criteria = [
-                        'OR' => [],
-                    ];
-                    if (Session::haveRight(Ticket::$rightname, Ticket::READMY)) {
-                        $criteria['OR'][] = [
-                            'OR' => [
-                                "$requester_table.users_id" => Session::getLoginUserID(),
-                                "$observer_table.users_id" => Session::getLoginUserID(),
-                                "glpi_tickets.users_id_recipient" => Session::getLoginUserID(),
-                            ],
-                        ];
-                    } else {
-                        $criteria['OR'][] = new QueryExpression('false');
-                    }
-
-                    if (Session::haveRight(Ticket::$rightname, Ticket::READGROUP)) {
-                        if (count($_SESSION['glpigroups'])) {
-                            $criteria['OR'][] = [
-                                'OR' => [
-                                    "$requestergroup_table.groups_id" => $_SESSION['glpigroups'],
-                                    "$observergroup_table.groups_id" => $_SESSION['glpigroups'],
-                                ],
-                            ];
-                        }
-                    }
-
-                    if (Session::haveRight(Ticket::$rightname, Ticket::OWN)) {// Can own ticket: show assign to me
-                        $criteria['OR'][] = [
-                            "$assign_table.users_id" => Session::getLoginUserID(),
-                        ];
-                    }
-
-                    if (Session::haveRight(Ticket::$rightname, Ticket::READASSIGN)) { // assign to me
-                        $criteria['OR'][] = [
-                            "$assign_table.users_id" => Session::getLoginUserID(),
-                        ];
-                        if (count($_SESSION['glpigroups'])) {
-                            $criteria['OR'][] = [
-                                "$assigngroup_table.groups_id" => $_SESSION['glpigroups'],
-                            ];
-                        }
-                    }
-
-                    if (Session::haveRight(Ticket::$rightname, Ticket::READNEWTICKET)) {
-                        $criteria['OR'][] = [
-                            'glpi_tickets.status' => CommonITILObject::INCOMING,
-                        ];
-                    }
-
-                    if (
-                        Session::haveRightsOr(
-                            TicketValidation::$rightname,
-                            [
-                                TicketValidation::VALIDATEINCIDENT,
-                                TicketValidation::VALIDATEREQUEST,
-                            ]
-                        )
-                    ) {
-                        $criteria['OR'][] = TicketValidation::getTargetCriteriaForUser((int) Session::getLoginUserID());
-                    }
-                }
+                $criteria = self::getTicketDefaultWhereCriteria();
                 break;
 
             case Change::class:
             case Problem::class:
-                if ($itemtype === Change::class) {
-                    $right       = 'change';
-                    $table       = 'changes';
-                    $groupetable = "`glpi_changes_groups_";
-                } elseif ($itemtype === Problem::class) {
-                    $right       = 'problem';
-                    $table       = 'problems';
-                    $groupetable = "`glpi_groups_problems_";
-                }
-                // Same structure in addDefaultJoin
-                if (!Session::haveRight("$right", $itemtype::READALL)) {
-                    $criteria = [
-                        'OR' => [],
-                    ];
-
-                    $searchopt       = SearchOption::getOptionsForItemtype($itemtype);
-                    if (Session::haveRight("$right", $itemtype::READMY)) {
-                        $requester_table      = '`glpi_' . $table . '_users_'
-                            . self::computeComplexJoinID($searchopt[4]['joinparams']
-                            ['beforejoin']['joinparams']) . '`';
-                        $requestergroup_table = $groupetable
-                            . self::computeComplexJoinID($searchopt[71]['joinparams']
-                            ['beforejoin']['joinparams']) . '`';
-
-                        $observer_table       = '`glpi_' . $table . '_users_'
-                            . self::computeComplexJoinID($searchopt[66]['joinparams']
-                            ['beforejoin']['joinparams']) . '`';
-                        $observergroup_table  = $groupetable
-                            . self::computeComplexJoinID($searchopt[65]['joinparams']
-                            ['beforejoin']['joinparams']) . '`';
-
-                        $assign_table         = '`glpi_' . $table . '_users_'
-                            . self::computeComplexJoinID($searchopt[5]['joinparams']
-                            ['beforejoin']['joinparams']) . '`';
-                        $assigngroup_table    = $groupetable
-                            . self::computeComplexJoinID($searchopt[8]['joinparams']
-                            ['beforejoin']['joinparams']) . '`';
-
-                        $criteria['OR'][] = [
-                            'OR' => [
-                                "$requester_table.users_id" => Session::getLoginUserID(),
-                                "$observer_table.users_id" => Session::getLoginUserID(),
-                                "$assign_table.users_id" => Session::getLoginUserID(),
-                                "glpi_" . $table . ".users_id_recipient" => Session::getLoginUserID(),
-                            ],
-                        ];
-                        if (count($_SESSION['glpigroups'])) {
-                            $criteria['OR'][] = [
-                                'OR' => [
-                                    "$requestergroup_table.groups_id" => $_SESSION['glpigroups'],
-                                    "$observergroup_table.groups_id" => $_SESSION['glpigroups'],
-                                    "$assigngroup_table.groups_id" => $_SESSION['glpigroups'],
-                                ],
-                            ];
-                        }
-                    } else {
-                        $criteria['OR'][] = new QueryExpression('false');
-                    }
-
-                    if (
-                        $itemtype === Change::class
-                        && Session::haveRightsOr(ChangeValidation::$rightname, ChangeValidation::getValidateRights())
-                    ) {
-                        $criteria['OR'][] = ChangeValidation::getTargetCriteriaForUser((int) Session::getLoginUserID());
-                    }
-                }
+                $criteria = self::getChangeOrProblemDefaultWhereCriteria($itemtype);
                 break;
 
             case Config::class:
@@ -1009,90 +792,11 @@ final class SQLProvider implements SearchProviderInterface
                 break;
 
             case TicketTask::class:
-                // Filter on is_private
-                $allowed_is_private = [];
-                if (Session::haveRight(TicketTask::$rightname, CommonITILTask::SEEPRIVATE)) {
-                    $allowed_is_private[] = 1;
-                }
-                if (Session::haveRight(TicketTask::$rightname, CommonITILTask::SEEPUBLIC)) {
-                    $allowed_is_private[] = 0;
-                }
-
-                // If the user can't see public and private
-                if (!count($allowed_is_private)) {
-                    $criteria = new QueryExpression('false');
-                    break;
-                }
-
-                $criteria = [
-                    'OR' => [
-                        'glpi_tickettasks.is_private' => $allowed_is_private,
-                        // Check for assigned or created tasks
-                        'glpi_tickettasks.users_id' => Session::getLoginUserID(),
-                        'glpi_tickettasks.users_id_tech' => Session::getLoginUserID(),
-                    ],
-                ];
-
-                // Check for parent item visibility unless the user can see all the
-                // possible parents
-                if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
-                    $criteria[] = [
-                        new QueryExpression(TicketTask::buildParentCondition()),
-                    ];
-                }
-
+                $criteria = self::getTicketTaskDefaultWhereCriteria();
                 break;
 
             case ITILFollowup::class:
-                // Filter on is_private
-                $allowed_is_private = [];
-                if (Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
-                    $allowed_is_private[] = 1;
-                }
-                if (Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPUBLIC)) {
-                    $allowed_is_private[] = 0;
-                }
-
-                // If the user can't see public and private
-                if (!count($allowed_is_private)) {
-                    $criteria = new QueryExpression('false');
-                    break;
-                }
-
-                $criteria = [
-                    'glpi_itilfollowups.is_private' => $allowed_is_private,
-                    'OR' => [
-                        new QueryExpression(ITILFollowup::buildParentCondition(Ticket::class)),
-                        new QueryExpression(ITILFollowup::buildParentCondition(
-                            Change::class,
-                            'changes_id',
-                            "glpi_changes_users",
-                            "glpi_changes_groups"
-                        )),
-                        new QueryExpression(ITILFollowup::buildParentCondition(
-                            Problem::class,
-                            'problems_id',
-                            "glpi_problems_users",
-                            "glpi_groups_problems"
-                        )),
-                    ],
-                ];
-
-                // Entity restrictions
-                $entity_restrictions = [];
-                foreach ($CFG_GLPI['itil_types'] as $itil_itemtype) {
-                    $entity_restrictions[] = getEntitiesRestrictCriteria(
-                        $itil_itemtype::getTable() . '_items_id_' . self::computeComplexJoinID([
-                            'condition' => ['REFTABLE.itemtype' => $itil_itemtype],
-                        ]),
-                        'entities_id',
-                        ''
-                    );
-                }
-                if ($entity_restrictions !== []) {
-                    $criteria[] = ['OR' => $entity_restrictions];
-                }
-
+                $criteria = self::getITILFollowupDefaultWhereCriteria();
                 break;
 
             case PlanningExternalEvent::class:
@@ -1157,6 +861,387 @@ final class SQLProvider implements SearchProviderInterface
 
         /* Hook to restrict user right on current itemtype */
         [$itemtype, $criteria] = Plugin::doHookFunction(Hooks::ADD_DEFAULT_WHERE, [$itemtype, $criteria]);
+        return $criteria;
+    }
+
+    /**
+     * Project tasks visible to the current user, from their project rights.
+     *
+     * @return array<mixed>
+     */
+    private static function getProjectTaskDefaultWhereCriteria(): array
+    {
+        $criteria = [];
+
+        if (!Session::haveRightsOr(Project::$rightname, [Project::READALL, Project::READMY])) {
+            // Can only see the tasks assigned to the user or one of his groups
+            $teamtable = 'glpi_projecttaskteams';
+            $user_criteria = [
+                "$teamtable.itemtype" => User::class,
+                "$teamtable.items_id" => Session::getLoginUserID(),
+            ];
+            $or_criteria = [$user_criteria];
+            if (count($_SESSION['glpigroups'])) {
+                $group_criteria = [
+                    "$teamtable.itemtype" => Group::class,
+                    "$teamtable.items_id" => $_SESSION['glpigroups'],
+                ];
+                $or_criteria[] = $group_criteria;
+            }
+            $criteria = [
+                "glpi_projects.is_template" => 0,
+                'OR' => $or_criteria,
+            ];
+        } elseif (Session::haveRight(Project::$rightname, Project::READMY)) {
+            // User must be the manager, in the manager group or in the project team
+            $teamtable = 'glpi_projectteams';
+            $user_criteria = [
+                "$teamtable.itemtype" => User::class,
+                "$teamtable.items_id" => Session::getLoginUserID(),
+            ];
+            $or_criteria = [
+                $user_criteria,
+                'glpi_projects.users_id' => Session::getLoginUserID(),
+            ];
+            if (count($_SESSION['glpigroups'])) {
+                $group_criteria = [
+                    "$teamtable.itemtype" => Group::class,
+                    "$teamtable.items_id" => $_SESSION['glpigroups'],
+                ];
+                $or_criteria[] = $group_criteria;
+            }
+            $criteria = [
+                'OR' => $or_criteria,
+            ];
+        }
+
+        return $criteria;
+    }
+
+    /**
+     * Projects visible to the current user without the READALL right.
+     *
+     * @return array<mixed>
+     */
+    private static function getProjectDefaultWhereCriteria(): array
+    {
+        $criteria = [];
+
+        if (!Session::haveRight(Project::$rightname, Project::READALL)) {
+            $teamtable  = 'glpi_projectteams';
+            $user_criteria = [
+                "$teamtable.itemtype" => User::class,
+                "$teamtable.items_id" => Session::getLoginUserID(),
+            ];
+            $or_criteria = [
+                "glpi_projects.users_id" => Session::getLoginUserID(),
+                $user_criteria,
+            ];
+            if (count($_SESSION['glpigroups'])) {
+                $group_criteria = [
+                    "$teamtable.itemtype" => Group::class,
+                    "$teamtable.items_id" => $_SESSION['glpigroups'],
+                ];
+                $or_criteria[] = ["glpi_projects.groups_id" => $_SESSION['glpigroups']];
+                $or_criteria[] = $group_criteria;
+            }
+            $criteria = [
+                "OR" => $or_criteria,
+            ];
+        }
+
+        return $criteria;
+    }
+
+    /**
+     * Tickets visible to the current user without the READALL right. Same structure as the
+     * Ticket case of getDefaultJoinCriteria().
+     *
+     * @return array<mixed>
+     */
+    private static function getTicketDefaultWhereCriteria(): array
+    {
+        $criteria = [];
+
+        // Same structure in addDefaultJoin
+        if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
+            $searchopt
+                = SearchOption::getOptionsForItemtype(Ticket::class);
+            $requester_table
+                = '`glpi_tickets_users_'
+                . self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']
+                ['joinparams']) . '`';
+            $requestergroup_table
+                = '`glpi_groups_tickets_'
+                . self::computeComplexJoinID($searchopt[71]['joinparams']['beforejoin']
+                ['joinparams']) . '`';
+
+            $assign_table
+                = '`glpi_tickets_users_'
+                . self::computeComplexJoinID($searchopt[5]['joinparams']['beforejoin']
+                ['joinparams']) . '`';
+            $assigngroup_table
+                = '`glpi_groups_tickets_'
+                . self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']
+                ['joinparams']) . '`';
+
+            $observer_table
+                = '`glpi_tickets_users_'
+                . self::computeComplexJoinID($searchopt[66]['joinparams']['beforejoin']
+                ['joinparams']) . '`';
+            $observergroup_table
+                = '`glpi_groups_tickets_'
+                . self::computeComplexJoinID($searchopt[65]['joinparams']['beforejoin']
+                ['joinparams']) . '`';
+
+            $criteria = [
+                'OR' => [],
+            ];
+            if (Session::haveRight(Ticket::$rightname, Ticket::READMY)) {
+                $criteria['OR'][] = [
+                    'OR' => [
+                        "$requester_table.users_id" => Session::getLoginUserID(),
+                        "$observer_table.users_id" => Session::getLoginUserID(),
+                        "glpi_tickets.users_id_recipient" => Session::getLoginUserID(),
+                    ],
+                ];
+            } else {
+                $criteria['OR'][] = new QueryExpression('false');
+            }
+
+            if (Session::haveRight(Ticket::$rightname, Ticket::READGROUP)) {
+                if (count($_SESSION['glpigroups'])) {
+                    $criteria['OR'][] = [
+                        'OR' => [
+                            "$requestergroup_table.groups_id" => $_SESSION['glpigroups'],
+                            "$observergroup_table.groups_id" => $_SESSION['glpigroups'],
+                        ],
+                    ];
+                }
+            }
+
+            if (Session::haveRight(Ticket::$rightname, Ticket::OWN)) {// Can own ticket: show assign to me
+                $criteria['OR'][] = [
+                    "$assign_table.users_id" => Session::getLoginUserID(),
+                ];
+            }
+
+            if (Session::haveRight(Ticket::$rightname, Ticket::READASSIGN)) { // assign to me
+                $criteria['OR'][] = [
+                    "$assign_table.users_id" => Session::getLoginUserID(),
+                ];
+                if (count($_SESSION['glpigroups'])) {
+                    $criteria['OR'][] = [
+                        "$assigngroup_table.groups_id" => $_SESSION['glpigroups'],
+                    ];
+                }
+            }
+
+            if (Session::haveRight(Ticket::$rightname, Ticket::READNEWTICKET)) {
+                $criteria['OR'][] = [
+                    'glpi_tickets.status' => CommonITILObject::INCOMING,
+                ];
+            }
+
+            if (
+                Session::haveRightsOr(
+                    TicketValidation::$rightname,
+                    [
+                        TicketValidation::VALIDATEINCIDENT,
+                        TicketValidation::VALIDATEREQUEST,
+                    ]
+                )
+            ) {
+                $criteria['OR'][] = TicketValidation::getTargetCriteriaForUser((int) Session::getLoginUserID());
+            }
+        }
+
+        return $criteria;
+    }
+
+    /**
+     * Changes or problems visible to the current user without the READALL right. Same structure
+     * as the Change and Problem case of getDefaultJoinCriteria().
+     *
+     * @param class-string<Change|Problem> $itemtype
+     * @return array<mixed>
+     */
+    private static function getChangeOrProblemDefaultWhereCriteria(string $itemtype): array
+    {
+        $criteria = [];
+
+        if ($itemtype === Change::class) {
+            $right       = 'change';
+            $table       = 'changes';
+            $groupetable = "`glpi_changes_groups_";
+        } else {
+            $right       = 'problem';
+            $table       = 'problems';
+            $groupetable = "`glpi_groups_problems_";
+        }
+        // Same structure in addDefaultJoin
+        if (!Session::haveRight("$right", $itemtype::READALL)) {
+            $criteria = [
+                'OR' => [],
+            ];
+
+            $searchopt       = SearchOption::getOptionsForItemtype($itemtype);
+            if (Session::haveRight("$right", $itemtype::READMY)) {
+                $requester_table      = '`glpi_' . $table . '_users_'
+                    . self::computeComplexJoinID($searchopt[4]['joinparams']
+                    ['beforejoin']['joinparams']) . '`';
+                $requestergroup_table = $groupetable
+                    . self::computeComplexJoinID($searchopt[71]['joinparams']
+                    ['beforejoin']['joinparams']) . '`';
+
+                $observer_table       = '`glpi_' . $table . '_users_'
+                    . self::computeComplexJoinID($searchopt[66]['joinparams']
+                    ['beforejoin']['joinparams']) . '`';
+                $observergroup_table  = $groupetable
+                    . self::computeComplexJoinID($searchopt[65]['joinparams']
+                    ['beforejoin']['joinparams']) . '`';
+
+                $assign_table         = '`glpi_' . $table . '_users_'
+                    . self::computeComplexJoinID($searchopt[5]['joinparams']
+                    ['beforejoin']['joinparams']) . '`';
+                $assigngroup_table    = $groupetable
+                    . self::computeComplexJoinID($searchopt[8]['joinparams']
+                    ['beforejoin']['joinparams']) . '`';
+
+                $criteria['OR'][] = [
+                    'OR' => [
+                        "$requester_table.users_id" => Session::getLoginUserID(),
+                        "$observer_table.users_id" => Session::getLoginUserID(),
+                        "$assign_table.users_id" => Session::getLoginUserID(),
+                        "glpi_" . $table . ".users_id_recipient" => Session::getLoginUserID(),
+                    ],
+                ];
+                if (count($_SESSION['glpigroups'])) {
+                    $criteria['OR'][] = [
+                        'OR' => [
+                            "$requestergroup_table.groups_id" => $_SESSION['glpigroups'],
+                            "$observergroup_table.groups_id" => $_SESSION['glpigroups'],
+                            "$assigngroup_table.groups_id" => $_SESSION['glpigroups'],
+                        ],
+                    ];
+                }
+            } else {
+                $criteria['OR'][] = new QueryExpression('false');
+            }
+
+            if (
+                $itemtype === Change::class
+                && Session::haveRightsOr(ChangeValidation::$rightname, ChangeValidation::getValidateRights())
+            ) {
+                $criteria['OR'][] = ChangeValidation::getTargetCriteriaForUser((int) Session::getLoginUserID());
+            }
+        }
+
+        return $criteria;
+    }
+
+    /**
+     * Ticket tasks visible to the current user: private ones, own ones and their parent tickets.
+     *
+     * @return array<mixed>|QueryExpression
+     */
+    private static function getTicketTaskDefaultWhereCriteria(): array|QueryExpression
+    {
+        $criteria = [];
+
+        // Filter on is_private
+        $allowed_is_private = [];
+        if (Session::haveRight(TicketTask::$rightname, CommonITILTask::SEEPRIVATE)) {
+            $allowed_is_private[] = 1;
+        }
+        if (Session::haveRight(TicketTask::$rightname, CommonITILTask::SEEPUBLIC)) {
+            $allowed_is_private[] = 0;
+        }
+
+        // If the user can't see public and private
+        if (!count($allowed_is_private)) {
+            return new QueryExpression('false');
+        }
+
+        $criteria = [
+            'OR' => [
+                'glpi_tickettasks.is_private' => $allowed_is_private,
+                // Check for assigned or created tasks
+                'glpi_tickettasks.users_id' => Session::getLoginUserID(),
+                'glpi_tickettasks.users_id_tech' => Session::getLoginUserID(),
+            ],
+        ];
+
+        // Check for parent item visibility unless the user can see all the
+        // possible parents
+        if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
+            $criteria[] = [
+                new QueryExpression(TicketTask::buildParentCondition()),
+            ];
+        }
+
+        return $criteria;
+    }
+
+    /**
+     * Followups visible to the current user: privacy, parent item visibility and entities.
+     *
+     * @return array<mixed>|QueryExpression
+     */
+    private static function getITILFollowupDefaultWhereCriteria(): array|QueryExpression
+    {
+        global $CFG_GLPI;
+
+        $criteria = [];
+
+        // Filter on is_private
+        $allowed_is_private = [];
+        if (Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
+            $allowed_is_private[] = 1;
+        }
+        if (Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPUBLIC)) {
+            $allowed_is_private[] = 0;
+        }
+
+        // If the user can't see public and private
+        if (!count($allowed_is_private)) {
+            return new QueryExpression('false');
+        }
+
+        $criteria = [
+            'glpi_itilfollowups.is_private' => $allowed_is_private,
+            'OR' => [
+                new QueryExpression(ITILFollowup::buildParentCondition(Ticket::class)),
+                new QueryExpression(ITILFollowup::buildParentCondition(
+                    Change::class,
+                    'changes_id',
+                    "glpi_changes_users",
+                    "glpi_changes_groups"
+                )),
+                new QueryExpression(ITILFollowup::buildParentCondition(
+                    Problem::class,
+                    'problems_id',
+                    "glpi_problems_users",
+                    "glpi_groups_problems"
+                )),
+            ],
+        ];
+
+        // Entity restrictions
+        $entity_restrictions = [];
+        foreach ($CFG_GLPI['itil_types'] as $itil_itemtype) {
+            $entity_restrictions[] = getEntitiesRestrictCriteria(
+                $itil_itemtype::getTable() . '_items_id_' . self::computeComplexJoinID([
+                    'condition' => ['REFTABLE.itemtype' => $itil_itemtype],
+                ]),
+                'entities_id',
+                ''
+            );
+        }
+        if ($entity_restrictions !== []) {
+            $criteria[] = ['OR' => $entity_restrictions];
+        }
+
         return $criteria;
     }
 
