@@ -40,10 +40,10 @@
     {{ call('Ajax::createIframeModalWindow', ['add_' ~ field_id, call('Tag::getFormURL'), {'display': false}])|raw }}
     <div class="btn-group btn-group-sm w-100" role="group">
         {{ dropdown_html|raw }}
-        <button type="button" class="btn btn-outline-secondary" title="{{ __('Add') }}"
+        <button type="button" class="btn btn-outline-secondary" title="{{ _x('button', 'Add a tag') }}"
                 data-bs-toggle="modal" data-bs-target="#add_{{ field_id }}">
             <i class="ti ti-plus" aria-hidden="true"></i>
-            <span class="visually-hidden">{{ __('Add') }}</span>
+            <span class="visually-hidden">{{ _x('button', 'Add a tag') }}</span>
         </button>
     </div>
 {% else %}
