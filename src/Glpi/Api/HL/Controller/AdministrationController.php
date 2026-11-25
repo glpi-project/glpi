@@ -62,6 +62,8 @@ use UserEmail;
 use UserTitle;
 use ValidatorSubstitute;
 
+use function Safe\preg_replace;
+
 /**
  * @phpstan-type EmailData = array{id: int, email: string, is_default: int, _links: array{'self': array{href: non-empty-string}}}
  */
