@@ -49,7 +49,14 @@ export class FormImporter
         this.csrf = csrf;
     }
 
-    public async importForm(filename: string): Promise<ImportedFormInfo>
+    /**
+     * The form is imported in the given entity, which must be one of the
+     * active entities: the import wizard refuses any other.
+     */
+    public async importForm(
+        filename: string,
+        entity_id: number = getWorkerEntityId(),
+    ): Promise<ImportedFormInfo>
     {
         const file_path = path.join(__dirname, `../../fixtures/forms/${filename}`);
 
@@ -61,7 +68,7 @@ export class FormImporter
                 json: readFileSync(file_path).toString(),
                 'replacements[0][itemtype]'      : "Entity",
                 'replacements[0][original_name]' : "Root entity",
-                'replacements[0][replacement_id]': getWorkerEntityId(),
+                'replacements[0][replacement_id]': entity_id,
             },
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',

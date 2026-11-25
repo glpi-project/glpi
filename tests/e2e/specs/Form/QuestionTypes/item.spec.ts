@@ -58,7 +58,7 @@ test.describe('Item form question type', () => {
         await entity.switchToWithoutRecursion(entity_id);
         api.refreshSession();
 
-        const info = await formImporter.importForm('question_types/item-editor-test.json');
+        const info = await formImporter.importForm('question_types/item-editor-test.json', entity_id);
         form_id = info.getId();
         await form.goto(form_id);
 
