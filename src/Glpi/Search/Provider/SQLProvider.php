@@ -2574,34 +2574,7 @@ final class SQLProvider implements SearchProviderInterface
                 break;
 
             case ProjectTask::class:
-                // Same structure in addDefaultWhere
-                $out = self::getLeftJoinCriteria(
-                    $itemtype,
-                    $ref_table,
-                    $already_link_tables,
-                    "glpi_projects",
-                    "projects_id"
-                );
-                $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                    $itemtype,
-                    $ref_table,
-                    $already_link_tables,
-                    "glpi_projecttaskteams",
-                    "projecttaskteams_id",
-                    false,
-                    '',
-                    ['jointype' => 'child']
-                ));
-                $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                    $itemtype,
-                    'glpi_projects',
-                    $already_link_tables,
-                    "glpi_projectteams",
-                    "projectteams_id",
-                    false,
-                    '',
-                    ['jointype' => 'child']
-                ));
+                $out = self::getProjectTaskDefaultJoinCriteria($itemtype, $ref_table, $already_link_tables);
                 break;
 
             case Project::class:
@@ -2621,233 +2594,12 @@ final class SQLProvider implements SearchProviderInterface
                 break;
 
             case Ticket::class:
-                // Same structure in addDefaultWhere
-                if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
-                    $searchopt = SearchOption::getOptionsForItemtype($itemtype);
-
-                    // show mine: requester
-                    $out = self::getLeftJoinCriteria(
-                        $itemtype,
-                        $ref_table,
-                        $already_link_tables,
-                        "glpi_tickets_users",
-                        "tickets_users_id",
-                        false,
-                        '',
-                        $searchopt[4]['joinparams']['beforejoin']['joinparams']
-                    );
-
-                    if (Session::haveRight(Ticket::$rightname, Ticket::READGROUP)) {
-                        if (count($_SESSION['glpigroups'])) {
-                            $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                                $itemtype,
-                                $ref_table,
-                                $already_link_tables,
-                                "glpi_groups_tickets",
-                                "groups_tickets_id",
-                                false,
-                                '',
-                                $searchopt[71]['joinparams']['beforejoin']
-                                ['joinparams']
-                            ));
-                        }
-                    }
-
-                    // show mine: observer
-                    $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                        $itemtype,
-                        $ref_table,
-                        $already_link_tables,
-                        "glpi_tickets_users",
-                        "tickets_users_id",
-                        false,
-                        '',
-                        $searchopt[66]['joinparams']['beforejoin']['joinparams']
-                    ));
-
-                    if (count($_SESSION['glpigroups'])) {
-                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                            $itemtype,
-                            $ref_table,
-                            $already_link_tables,
-                            "glpi_groups_tickets",
-                            "groups_tickets_id",
-                            false,
-                            '',
-                            $searchopt[65]['joinparams']['beforejoin']['joinparams']
-                        ));
-                    }
-
-                    if (Session::haveRight(Ticket::$rightname, Ticket::OWN)) { // Can own ticket: show assign to me
-                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                            $itemtype,
-                            $ref_table,
-                            $already_link_tables,
-                            "glpi_tickets_users",
-                            "tickets_users_id",
-                            false,
-                            '',
-                            $searchopt[5]['joinparams']['beforejoin']['joinparams']
-                        ));
-                    }
-
-                    if (Session::haveRightsOr(Ticket::$rightname, [Ticket::READMY, Ticket::READASSIGN])) { // show mine + assign to me
-                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                            $itemtype,
-                            $ref_table,
-                            $already_link_tables,
-                            "glpi_tickets_users",
-                            "tickets_users_id",
-                            false,
-                            '',
-                            $searchopt[5]['joinparams']['beforejoin']['joinparams']
-                        ));
-
-                        if (count($_SESSION['glpigroups'])) {
-                            $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                                $itemtype,
-                                $ref_table,
-                                $already_link_tables,
-                                "glpi_groups_tickets",
-                                "groups_tickets_id",
-                                false,
-                                '',
-                                $searchopt[8]['joinparams']['beforejoin']
-                                ['joinparams']
-                            ));
-                        }
-                    }
-
-                    if (
-                        Session::haveRightsOr(
-                            TicketValidation::$rightname,
-                            [TicketValidation::VALIDATEINCIDENT,
-                                TicketValidation::VALIDATEREQUEST,
-                            ]
-                        )
-                    ) {
-                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                            $itemtype,
-                            $ref_table,
-                            $already_link_tables,
-                            "glpi_ticketvalidations",
-                            "ticketvalidations_id",
-                            false,
-                            '',
-                            $searchopt[58]['joinparams']['beforejoin']['joinparams']
-                        ));
-                    }
-                }
+                $out = self::getTicketDefaultJoinCriteria($itemtype, $ref_table, $already_link_tables);
                 break;
 
             case Change::class:
             case Problem::class:
-                if ($itemtype === Change::class) {
-                    $right       = 'change';
-                    $table       = 'changes';
-                    $groupetable = "glpi_changes_groups";
-                    $linkfield   = "changes_groups_id";
-                } elseif ($itemtype === Problem::class) {
-                    $right       = 'problem';
-                    $table       = 'problems';
-                    $groupetable = "glpi_groups_problems";
-                    $linkfield   = "groups_problems_id";
-                }
-
-                // Same structure in addDefaultWhere
-                if (!Session::haveRight("$right", $itemtype::READALL)) {
-                    $searchopt = SearchOption::getOptionsForItemtype($itemtype);
-
-                    if (Session::haveRight("$right", $itemtype::READMY)) {
-                        // show mine : requester
-                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                            $itemtype,
-                            $ref_table,
-                            $already_link_tables,
-                            "glpi_" . $table . "_users",
-                            $table . "_users_id",
-                            false,
-                            '',
-                            $searchopt[4]['joinparams']['beforejoin']['joinparams']
-                        ));
-                        if (count($_SESSION['glpigroups'])) {
-                            $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                                $itemtype,
-                                $ref_table,
-                                $already_link_tables,
-                                $groupetable,
-                                $linkfield,
-                                false,
-                                '',
-                                $searchopt[71]['joinparams']['beforejoin']['joinparams']
-                            ));
-                        }
-
-                        // show mine : observer
-                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                            $itemtype,
-                            $ref_table,
-                            $already_link_tables,
-                            "glpi_" . $table . "_users",
-                            $table . "_users_id",
-                            false,
-                            '',
-                            $searchopt[66]['joinparams']['beforejoin']['joinparams']
-                        ));
-                        if (count($_SESSION['glpigroups'])) {
-                            $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                                $itemtype,
-                                $ref_table,
-                                $already_link_tables,
-                                $groupetable,
-                                $linkfield,
-                                false,
-                                '',
-                                $searchopt[65]['joinparams']['beforejoin']['joinparams']
-                            ));
-                        }
-
-                        // show mine : assign
-                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                            $itemtype,
-                            $ref_table,
-                            $already_link_tables,
-                            "glpi_" . $table . "_users",
-                            $table . "_users_id",
-                            false,
-                            '',
-                            $searchopt[5]['joinparams']['beforejoin']['joinparams']
-                        ));
-                        if (count($_SESSION['glpigroups'])) {
-                            $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                                $itemtype,
-                                $ref_table,
-                                $already_link_tables,
-                                $groupetable,
-                                $linkfield,
-                                false,
-                                '',
-                                $searchopt[8]['joinparams']['beforejoin']['joinparams']
-                            ));
-                        }
-                    }
-
-                    if (
-                        $itemtype === Change::class
-                        && Session::haveRightsOr(ChangeValidation::$rightname, ChangeValidation::getValidateRights())
-                    ) {
-                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
-                            $itemtype,
-                            $ref_table,
-                            $already_link_tables,
-                            "glpi_changevalidations",
-                            "changevalidations_id",
-                            false,
-                            '',
-                            $searchopt[58]['joinparams']['beforejoin']['joinparams']
-                        ));
-                    }
-                }
+                $out = self::getChangeOrProblemDefaultJoinCriteria($itemtype, $ref_table, $already_link_tables);
                 break;
 
             case KnowbaseItem::class:
@@ -2899,6 +2651,302 @@ final class SQLProvider implements SearchProviderInterface
         if (is_string($out)) {
             $out = self::parseJoinString($out);
         }
+        return $out;
+    }
+
+    /**
+     * Joins needed by getProjectTaskDefaultWhereCriteria().
+     *
+     * @param class-string<CommonDBTM> $itemtype
+     * @param array<int, string>       $already_link_tables
+     * @return array<mixed>
+     */
+    private static function getProjectTaskDefaultJoinCriteria(string $itemtype, string $ref_table, array &$already_link_tables): array
+    {
+        $out = [];
+
+        // Same structure in addDefaultWhere
+        $out = self::getLeftJoinCriteria(
+            $itemtype,
+            $ref_table,
+            $already_link_tables,
+            "glpi_projects",
+            "projects_id"
+        );
+        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
+            $itemtype,
+            $ref_table,
+            $already_link_tables,
+            "glpi_projecttaskteams",
+            "projecttaskteams_id",
+            false,
+            '',
+            ['jointype' => 'child']
+        ));
+        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
+            $itemtype,
+            'glpi_projects',
+            $already_link_tables,
+            "glpi_projectteams",
+            "projectteams_id",
+            false,
+            '',
+            ['jointype' => 'child']
+        ));
+
+        return $out;
+    }
+
+    /**
+     * Joins needed by getTicketDefaultWhereCriteria().
+     *
+     * @param class-string<CommonDBTM> $itemtype
+     * @param array<int, string>       $already_link_tables
+     * @return array<mixed>
+     */
+    private static function getTicketDefaultJoinCriteria(string $itemtype, string $ref_table, array &$already_link_tables): array
+    {
+        $out = [];
+
+        // Same structure in addDefaultWhere
+        if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
+            $searchopt = SearchOption::getOptionsForItemtype($itemtype);
+
+            // show mine: requester
+            $out = self::getLeftJoinCriteria(
+                $itemtype,
+                $ref_table,
+                $already_link_tables,
+                "glpi_tickets_users",
+                "tickets_users_id",
+                false,
+                '',
+                $searchopt[4]['joinparams']['beforejoin']['joinparams']
+            );
+
+            if (Session::haveRight(Ticket::$rightname, Ticket::READGROUP)) {
+                if (count($_SESSION['glpigroups'])) {
+                    $out = array_merge_recursive($out, self::getLeftJoinCriteria(
+                        $itemtype,
+                        $ref_table,
+                        $already_link_tables,
+                        "glpi_groups_tickets",
+                        "groups_tickets_id",
+                        false,
+                        '',
+                        $searchopt[71]['joinparams']['beforejoin']
+                        ['joinparams']
+                    ));
+                }
+            }
+
+            // show mine: observer
+            $out = array_merge_recursive($out, self::getLeftJoinCriteria(
+                $itemtype,
+                $ref_table,
+                $already_link_tables,
+                "glpi_tickets_users",
+                "tickets_users_id",
+                false,
+                '',
+                $searchopt[66]['joinparams']['beforejoin']['joinparams']
+            ));
+
+            if (count($_SESSION['glpigroups'])) {
+                $out = array_merge_recursive($out, self::getLeftJoinCriteria(
+                    $itemtype,
+                    $ref_table,
+                    $already_link_tables,
+                    "glpi_groups_tickets",
+                    "groups_tickets_id",
+                    false,
+                    '',
+                    $searchopt[65]['joinparams']['beforejoin']['joinparams']
+                ));
+            }
+
+            if (Session::haveRight(Ticket::$rightname, Ticket::OWN)) { // Can own ticket: show assign to me
+                $out = array_merge_recursive($out, self::getLeftJoinCriteria(
+                    $itemtype,
+                    $ref_table,
+                    $already_link_tables,
+                    "glpi_tickets_users",
+                    "tickets_users_id",
+                    false,
+                    '',
+                    $searchopt[5]['joinparams']['beforejoin']['joinparams']
+                ));
+            }
+
+            if (Session::haveRightsOr(Ticket::$rightname, [Ticket::READMY, Ticket::READASSIGN])) { // show mine + assign to me
+                $out = array_merge_recursive($out, self::getLeftJoinCriteria(
+                    $itemtype,
+                    $ref_table,
+                    $already_link_tables,
+                    "glpi_tickets_users",
+                    "tickets_users_id",
+                    false,
+                    '',
+                    $searchopt[5]['joinparams']['beforejoin']['joinparams']
+                ));
+
+                if (count($_SESSION['glpigroups'])) {
+                    $out = array_merge_recursive($out, self::getLeftJoinCriteria(
+                        $itemtype,
+                        $ref_table,
+                        $already_link_tables,
+                        "glpi_groups_tickets",
+                        "groups_tickets_id",
+                        false,
+                        '',
+                        $searchopt[8]['joinparams']['beforejoin']
+                        ['joinparams']
+                    ));
+                }
+            }
+
+            if (
+                Session::haveRightsOr(
+                    TicketValidation::$rightname,
+                    [TicketValidation::VALIDATEINCIDENT,
+                        TicketValidation::VALIDATEREQUEST,
+                    ]
+                )
+            ) {
+                $out = array_merge_recursive($out, self::getLeftJoinCriteria(
+                    $itemtype,
+                    $ref_table,
+                    $already_link_tables,
+                    "glpi_ticketvalidations",
+                    "ticketvalidations_id",
+                    false,
+                    '',
+                    $searchopt[58]['joinparams']['beforejoin']['joinparams']
+                ));
+            }
+        }
+
+        return $out;
+    }
+
+    /**
+     * Joins needed by getChangeOrProblemDefaultWhereCriteria().
+     *
+     * @param class-string<Change|Problem> $itemtype
+     * @param array<int, string>       $already_link_tables
+     * @return array<mixed>
+     */
+    private static function getChangeOrProblemDefaultJoinCriteria(string $itemtype, string $ref_table, array &$already_link_tables): array
+    {
+        $out = [];
+
+        if ($itemtype === Change::class) {
+            $right       = 'change';
+            $table       = 'changes';
+            $groupetable = "glpi_changes_groups";
+            $linkfield   = "changes_groups_id";
+        } else {
+            $right       = 'problem';
+            $table       = 'problems';
+            $groupetable = "glpi_groups_problems";
+            $linkfield   = "groups_problems_id";
+        }
+
+        // Same structure in addDefaultWhere
+        if (!Session::haveRight("$right", $itemtype::READALL)) {
+            $searchopt = SearchOption::getOptionsForItemtype($itemtype);
+
+            if (Session::haveRight("$right", $itemtype::READMY)) {
+                // show mine : requester
+                $out = array_merge_recursive($out, self::getLeftJoinCriteria(
+                    $itemtype,
+                    $ref_table,
+                    $already_link_tables,
+                    "glpi_" . $table . "_users",
+                    $table . "_users_id",
+                    false,
+                    '',
+                    $searchopt[4]['joinparams']['beforejoin']['joinparams']
+                ));
+                if (count($_SESSION['glpigroups'])) {
+                    $out = array_merge_recursive($out, self::getLeftJoinCriteria(
+                        $itemtype,
+                        $ref_table,
+                        $already_link_tables,
+                        $groupetable,
+                        $linkfield,
+                        false,
+                        '',
+                        $searchopt[71]['joinparams']['beforejoin']['joinparams']
+                    ));
+                }
+
+                // show mine : observer
+                $out = array_merge_recursive($out, self::getLeftJoinCriteria(
+                    $itemtype,
+                    $ref_table,
+                    $already_link_tables,
+                    "glpi_" . $table . "_users",
+                    $table . "_users_id",
+                    false,
+                    '',
+                    $searchopt[66]['joinparams']['beforejoin']['joinparams']
+                ));
+                if (count($_SESSION['glpigroups'])) {
+                    $out = array_merge_recursive($out, self::getLeftJoinCriteria(
+                        $itemtype,
+                        $ref_table,
+                        $already_link_tables,
+                        $groupetable,
+                        $linkfield,
+                        false,
+                        '',
+                        $searchopt[65]['joinparams']['beforejoin']['joinparams']
+                    ));
+                }
+
+                // show mine : assign
+                $out = array_merge_recursive($out, self::getLeftJoinCriteria(
+                    $itemtype,
+                    $ref_table,
+                    $already_link_tables,
+                    "glpi_" . $table . "_users",
+                    $table . "_users_id",
+                    false,
+                    '',
+                    $searchopt[5]['joinparams']['beforejoin']['joinparams']
+                ));
+                if (count($_SESSION['glpigroups'])) {
+                    $out = array_merge_recursive($out, self::getLeftJoinCriteria(
+                        $itemtype,
+                        $ref_table,
+                        $already_link_tables,
+                        $groupetable,
+                        $linkfield,
+                        false,
+                        '',
+                        $searchopt[8]['joinparams']['beforejoin']['joinparams']
+                    ));
+                }
+            }
+
+            if (
+                $itemtype === Change::class
+                && Session::haveRightsOr(ChangeValidation::$rightname, ChangeValidation::getValidateRights())
+            ) {
+                $out = array_merge_recursive($out, self::getLeftJoinCriteria(
+                    $itemtype,
+                    $ref_table,
+                    $already_link_tables,
+                    "glpi_changevalidations",
+                    "changevalidations_id",
+                    false,
+                    '',
+                    $searchopt[58]['joinparams']['beforejoin']['joinparams']
+                ));
+            }
+        }
+
         return $out;
     }
 
