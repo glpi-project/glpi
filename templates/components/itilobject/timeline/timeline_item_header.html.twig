@@ -43,7 +43,7 @@
          'anonym_user': anonym_user,
          'entry': entry,
          'show_creation': false,
-         'show_last_update': not has_badges_line,
+         'show_last_update': false,
       }, with_context = false) }}
    </div>
 
@@ -89,6 +89,14 @@
             {% set actions = actions|merge({promote_btn}) %}
          {% endif %}
       {% endif %}
+
+      {% import 'components/itilobject/timeline/timeline_item_plugin_actions.html.twig' as plugin_actions_macros %}
+      {% set plugin_actions = plugin_actions|default({'button': [], 'menu': []}) %}
+      {% if plugin_actions['menu'] is not empty %}
+         {% set actions = actions|merge([plugin_actions_macros.menu_items(plugin_actions['menu'])]) %}
+      {% endif %}
+
+      {{ plugin_actions_macros.buttons(plugin_actions['button']) }}
 
       {% if actions|length %}
          <div class="dropdown">

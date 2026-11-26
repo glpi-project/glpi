@@ -7616,6 +7616,89 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
+     * Get the actions provided by plugins for an entry of the timeline, via the {@link Hooks::TIMELINE_ITEM_ACTIONS} hook.
+     *
+     * @param array{type: string, item: array<string, mixed>, item_action?: string} $entry Timeline entry
+     * @param CommonDBTM|null $entry_object Item shown by the entry
+     *
+     * @return array{
+     *     button: array<array{label: string, icon: string, url: ?string, class: string, attributes: array<string, string>}>,
+     *     menu: array<array{label: string, icon: string, url: ?string, class: string, attributes: array<string, string>}>
+     * }
+     */
+    public function getTimelineItemPluginActions(array $entry, ?CommonDBTM $entry_object = null): array
+    {
+        global $PLUGIN_HOOKS;
+
+        $actions = ['button' => [], 'menu' => []];
+
+        /**
+         * @var string $plugin
+         * @var array<mixed>|callable $hook_callable
+         */
+        foreach ($PLUGIN_HOOKS[Hooks::TIMELINE_ITEM_ACTIONS] ?? [] as $plugin => $hook_callable) {
+            if (!Plugin::isPluginActive($plugin)) {
+                continue;
+            }
+
+            $plugin_actions = is_callable($hook_callable)
+                ? $hook_callable(['item' => $entry_object, 'parent' => $this, 'entry' => $entry])
+                : $hook_callable;
+            if (!is_array($plugin_actions)) {
+                trigger_error(
+                    sprintf('"%s" hook callback result should be an array, "%s" returned.', Hooks::TIMELINE_ITEM_ACTIONS, gettype($plugin_actions)),
+                    E_USER_WARNING
+                );
+                continue;
+            }
+
+            foreach ($plugin_actions as $action) {
+                $display = is_array($action) ? ($action['display'] ?? 'menu') : null;
+                if (
+                    !is_array($action)
+                    || !is_string($action['label'] ?? null)
+                    || $action['label'] === ''
+                    || !in_array($display, ['button', 'menu'], true)
+                ) {
+                    trigger_error(
+                        sprintf('Invalid action returned by the "%s" hook of the "%s" plugin: a label and a "button" or "menu" display are expected.', Hooks::TIMELINE_ITEM_ACTIONS, $plugin),
+                        E_USER_WARNING
+                    );
+                    continue;
+                }
+
+                $attributes = [];
+                foreach ($action['attributes'] ?? [] as $name => $value) {
+                    // The core sets these attributes, and the name of an attribute cannot be escaped
+                    if (
+                        !is_string($name)
+                        || !preg_match('/^[a-z][a-z0-9_.:-]*$/i', $name)
+                        || in_array(strtolower($name), ['class', 'href', 'type', 'title'], true)
+                        || !is_scalar($value)
+                    ) {
+                        trigger_error(
+                            sprintf('Invalid attribute "%s" returned by the "%s" hook of the "%s" plugin.', (string) $name, Hooks::TIMELINE_ITEM_ACTIONS, $plugin),
+                            E_USER_WARNING
+                        );
+                        continue;
+                    }
+                    $attributes[$name] = (string) $value;
+                }
+
+                $actions[$display][] = [
+                    'label'      => $action['label'],
+                    'icon'       => is_string($action['icon'] ?? null) ? $action['icon'] : '',
+                    'url'        => is_string($action['url'] ?? null) && $action['url'] !== '' ? $action['url'] : null,
+                    'class'      => is_string($action['class'] ?? null) ? $action['class'] : '',
+                    'attributes' => $attributes,
+                ];
+            }
+        }
+
+        return $actions;
+    }
+
+    /**
      * Get an HTML string of all timeline actions/buttons provided by plugins via the {@link Hooks::TIMELINE_ACTIONS}  hook.
      * @return string
      * @since 10.0.0

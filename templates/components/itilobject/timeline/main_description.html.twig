@@ -44,7 +44,22 @@
       </div>
       <div class="col-12 col-sm d-flex flex-column content-part">
          {% import 'components/itilobject/timeline/timeline.html.twig' as timeline_macros %}
-         {{ timeline_macros.meta(users_id, null, anonym_user ?? false, item.fields['date'], get_class(item) ~ '_' ~ item.getID(), false) }}
+         {# The last update is displayed next to the creation time, above the card #}
+         {% set last_update %}
+            {{ include('components/itilobject/timeline/timeline_item_header_badges.html.twig', {
+               'users_id': users_id,
+               'date_creation': item.fields['date_creation'],
+               'date_mod': item.fields['date_mod'],
+               'users_id_editor': item.fields['users_id_lastupdater'],
+               'anonym_user': anonym_user ?? false,
+               'show_creation': false,
+               'last_update_class': 'timeline-meta-update',
+            }, with_context = false) }}
+         {% endset %}
+         {{ timeline_macros.meta(users_id, null, anonym_user ?? false, item.fields['date'], get_class(item) ~ '_' ~ item.getID(), false, null, last_update) }}
+         {# Actions added by plugins on the description: its entry is the item itself #}
+         {% set plugin_actions = item.getTimelineItemPluginActions({'type': item.getType(), 'item': item.fields}, item) %}
+         {% import 'components/itilobject/timeline/timeline_item_plugin_actions.html.twig' as plugin_actions_macros %}
          <div class="timeline-content left card">
             <div class="card-body px-1 px-xxl-3">
                <div class="d-flex timeline-header">
@@ -57,20 +72,30 @@
                         'anonym_user': anonym_user ?? false,
                         'anchor': get_class(item) ~ '_' ~ item.getID(),
                         'show_creation': false,
+                        'show_last_update': false,
                      }, with_context = false) }}
                   </div>
 
-                  {% if canupdate %}
-                    <div class="dropdown ms-auto timeline-item-buttons">
-                        <button class="btn btn-sm btn-ghost-secondary timeline-more-actions" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{{ __('More actions') }}">
-                            <i class="fas ti ti-dots-vertical" aria-hidden="true"></i>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="more-actions-{{ entry_rand }}">
-                            <li><a class="dropdown-item edit-timeline-item" href="#">
-                            <i class="ti ti-edit" aria-hidden="true"></i>
-                            <span>{{ __('Edit') }}</span>
-                            </a></li>
-                        </ul>
+                  {% if canupdate or plugin_actions['button'] is not empty or plugin_actions['menu'] is not empty %}
+                    <div class="d-flex ms-auto timeline-item-buttons">
+                      {{ plugin_actions_macros.buttons(plugin_actions['button']) }}
+
+                      {% if canupdate or plugin_actions['menu'] is not empty %}
+                        <div class="dropdown">
+                          <button class="btn btn-sm btn-ghost-secondary timeline-more-actions" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{{ __('More actions') }}">
+                              <i class="fas ti ti-dots-vertical" aria-hidden="true"></i>
+                          </button>
+                          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="more-actions-{{ entry_rand }}">
+                              {% if canupdate %}
+                                <li><a class="dropdown-item edit-timeline-item" href="#">
+                                <i class="ti ti-edit" aria-hidden="true"></i>
+                                <span>{{ __('Edit') }}</span>
+                                </a></li>
+                              {% endif %}
+                              {{ plugin_actions_macros.menu_items(plugin_actions['menu']) }}
+                          </ul>
+                        </div>
+                      {% endif %}
                     </div>
                   {% endif %}
 

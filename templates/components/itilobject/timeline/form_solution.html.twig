@@ -66,21 +66,23 @@
             {% if entry_i['status'] in [constant('CommonITILValidation::ACCEPTED'), constant('CommonITILValidation::REFUSED')] %}
                {% set is_accepted = entry_i['status'] == constant('CommonITILValidation::ACCEPTED') %}
                {% set action = is_accepted ? __('Accepted') : _x('validation', 'Refused') %}
+               {% import 'components/itilobject/timeline/timeline.html.twig' as timeline_macros %}
+               {# Relative date ("4 weeks ago") if the user prefers it: no "on" before it #}
+               {% set is_relative_date = session('glpitimeline_date_format') == constant('Config::TIMELINE_RELATIVE_DATE') %}
+               {% set approval_date = timeline_macros.badge_date(entry_i['date_approval']) %}
                <span class="badge {{ is_accepted ? 'bg-success-lt' : 'bg-danger-lt' }}" data-testid="solution-approval-status">
                   <i class="ti {{ is_accepted ? 'ti-check' : 'ti-x' }} me-1" aria-hidden="true"></i>
                   {% if entry_i['users_id_approval'] > 0 %}
-                     {{ __('%1$s on %2$s by %3$s')|format(
-                        action,
-                        entry_i['date_approval']|formatted_datetime,
+                     {{ (is_relative_date ? __('%1$s %2$s by %3$s') : __('%1$s on %2$s by %3$s'))|format(
+                        action|e,
+                        approval_date,
                         get_item_link('User', entry_i['users_id_approval'], {'enable_anonymization': true})
                      )|raw }}
                   {% else %}
-                     {{ __('%1$s on %2$s')|format(action, entry_i['date_approval']|formatted_datetime) }}
+                     {{ (is_relative_date ? __('%1$s %2$s') : __('%1$s on %2$s'))|format(action|e, approval_date)|raw }}
                   {% endif %}
                </span>
             {% endif %}
-
-            {{ last_update }}
          </div>
 
          {# A solution of a closed item can stay waiting (closed without approval) #}
@@ -90,7 +92,8 @@
             <div class="solution-approval mt-3 pt-2 border-top" data-testid="solution-approval">
                {% if is_waiting_approval %}
                   <div class="d-flex flex-wrap align-items-center gap-2">
-                     <span class="badge bg-yellow-lt">
+                     {# The border of the card carries the state, see _timeline.scss #}
+                     <span class="solution-waiting-label fw-semibold">
                         <i class="ti ti-hourglass me-1" aria-hidden="true"></i>
                         {{ __('Waiting for approval') }}
                      </span>

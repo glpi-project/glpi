@@ -62,7 +62,27 @@
             padding-inline-start: 0;
         }
 
-        .timeline-more-actions {
+        // Actions added by plugins (see Hooks::TIMELINE_ITEM_ACTIONS) look like the menu button
+        .timeline-item-buttons {
+            gap: 4px;
+        }
+
+        .timeline-item-action {
+            height: 22px;
+            min-height: 0;
+            padding: 0 4px;
+            font-size: 0.75rem;
+
+            // Enabled state shown by the color only, not the background of an active ghost button
+            &.active {
+                color: var(--tblr-primary);
+                background-color: transparent;
+                border-color: transparent;
+            }
+        }
+
+        .timeline-more-actions,
+        .timeline-item-action-icon {
             width: 22px;
             height: 22px;
             min-height: 0;
@@ -86,6 +106,18 @@
 
         &.timeline-meta-right {
             flex-direction: row-reverse;
+
+            // Reversed line: the separator of the last update is on the other side
+            .timeline-meta-update {
+                &::before {
+                    content: none;
+                }
+
+                &::after {
+                    content: "·";
+                    margin-inline-start: 0.25em;
+                }
+            }
         }
 
         .timeline-author {
@@ -102,6 +134,28 @@
 
         .timeline-time {
             color: var(--tblr-secondary);
+        }
+
+        // Last update of the description, as plain text next to the creation time
+        .timeline-meta-update {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25em;
+            color: var(--tblr-secondary);
+
+            &::before {
+                content: "·";
+                margin-inline-end: 0.25em;
+            }
+
+
+            i {
+                display: none;
+            }
+
+            a {
+                color: inherit;
+            }
         }
     }
 
@@ -155,12 +209,16 @@
     }
 
     @media (hover: hover) {
-        .timeline-more-actions {
+        // An enabled action (e.g. a translated content) stays visible
+        .timeline-more-actions,
+        .timeline-item-action:not(.active) {
             visibility: hidden;
         }
 
-        &:hover {
-            .timeline-more-actions {
+        &:hover,
+        &:focus-within {
+            .timeline-more-actions,
+            .timeline-item-action {
                 visibility: visible;
             }
         }
@@ -179,11 +237,12 @@
             align-items: start;
             padding-block-end: 0.5625rem;
 
-            // Room kept for the actions on the first line
-            --timeline-actions-room: 0px;
+            // Room kept for the actions on the first line: menu button, and icon buttons of the plugins
+            // (their number is set on the element, see timeline.html.twig)
+            --timeline-actions-room: calc(var(--timeline-plugin-buttons, 0) * 26px);
 
             &:has(> .timeline-header .timeline-more-actions) {
-                --timeline-actions-room: 34px;
+                --timeline-actions-room: calc(34px + var(--timeline-plugin-buttons, 0) * 26px);
             }
 
             > *,
@@ -248,7 +307,8 @@
     }
 
     // The text starts on the line of the actions, unless a badge is already there
-    &:not(.ITILContent) .timeline-content > .card-body:not(:has(> .timeline-refusal-reason, > .timeline-header .creator > .badge)) > .read-only-content > :is(.rich_text_container, .validation-content):first-child {
+    // (or a plugin action button with a label, of unknown width)
+    &:not(.ITILContent) .timeline-content > .card-body:not(:has(> .timeline-refusal-reason, > .timeline-header .creator > .badge, > .timeline-header .timeline-item-action:not(.timeline-item-action-icon))) > .read-only-content > :is(.rich_text_container, .validation-content):first-child {
         grid-row: 1;
 
         &::before {
@@ -280,20 +340,30 @@
 
     // The palette blue is too strong for a whole card
     &.ITILSolution .timeline-content {
-        background-color: color-mix(in srgb, var(--glpi-timeline-solution-bg) 50%, var(--tblr-bg-surface));
+        background-color: color-mix(in srgb, var(--glpi-timeline-solution-bg) 20%, var(--tblr-bg-surface));
     }
 
-    // Approval status (also on the reason of a refusal)
-    &.ITILValidation .timeline-content.waiting {
-        border-inline-start: 10px solid rgb(221, 157, 39);
+    // Approval status (also on the reason of a refusal).
+    // ".card" to win over the border of the cards of the dark palettes (":root[data-glpi-theme-dark="1"] .card")
+    .timeline-content.card.waiting {
+        border-inline-start: 10px solid rgb(247, 148, 0);
     }
 
-    .timeline-content.accepted {
+    .timeline-content.card.accepted {
         border-inline-start: 10px solid rgb(49, 174, 49);
     }
 
-    .timeline-content.refused {
+    .timeline-content.card.refused {
         border-inline-start: 10px solid rgb(226, 80, 80);
+    }
+
+    // A solution waiting for an approval: its border carries the state, a label (not a low contrast badge) names it
+    .solution-waiting-label i {
+        color: rgb(190, 108, 0);
+
+        html[data-glpi-theme-dark="1"] & {
+            color: rgb(255, 172, 51);
+        }
     }
 
     &.Document_Item {
@@ -326,19 +396,6 @@
             @include tabler-badge-fix;
 
             display: inline-block;
-        }
-
-        .timeline-last-update {
-            display: inline-flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 0 4px;
-            font-size: 0.75rem;
-            color: var(--tblr-secondary);
-
-            a {
-                color: inherit;
-            }
         }
     }
 

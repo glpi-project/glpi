@@ -25,6 +25,7 @@ The present file will list all changes made to the project; according to the
 ### API changes
 
 #### Added
+- `Hooks::TIMELINE_ITEM_ACTIONS`/`timeline_item_actions` plugin hook to add actions to the entries of the timeline of a Ticket, Change or Problem, as icon buttons next to their menu or as items of this menu.
 
 #### Changes
 - `NotificationEvent::raiseEvent()` has a new optional `$notifications_id` parameter to send only one notification of the event.
