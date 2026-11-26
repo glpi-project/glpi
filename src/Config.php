@@ -35,6 +35,7 @@
 
 use Glpi\Api\HL\Router;
 use Glpi\Application\Environment;
+use Glpi\Application\GitCheckout;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Config\ConfigContainer;
@@ -865,7 +866,11 @@ class Config extends CommonDBTM
 
         // Compute code integrity summary
         $code_integrity = null;
-        if (Environment::get()->shouldExpectResourcesToChange() === false) {
+        if (
+            Environment::get()->shouldExpectResourcesToChange() === false
+            // The source code manifest is generated during the release build, it is empty in a git checkout.
+            && !GitCheckout::isGitCheckout(GLPI_ROOT)
+        ) {
             try {
                 $code_integrity = (new SourceCodeIntegrityChecker())->getSummary();
             } catch (Throwable $e) {
