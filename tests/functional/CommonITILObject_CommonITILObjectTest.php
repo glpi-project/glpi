@@ -657,4 +657,57 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $allowed_link_id);
     }
+
+    public static function massiveActionSubFormProvider(): iterable
+    {
+        yield 'add' => ['add'];
+        yield 'delete' => ['delete'];
+    }
+
+    #[DataProvider('massiveActionSubFormProvider')]
+    public function testMassiveActionSubFormProposesItemsFromSubEntities(string $action): void
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        $target = $this->createItem(\Ticket::class, [
+            'name'        => 'Ticket in child entity for massive link',
+            'content'     => 'content',
+            'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
+        ]);
+
+        $massive_action = new \MassiveAction(
+            [
+                'action'      => $action,
+                'action_name' => $action,
+                'items'       => [\Ticket::class => [1 => 1]],
+                'processor'   => \CommonITILObject_CommonITILObject::class,
+            ],
+            [],
+            'specialize'
+        );
+        ob_start();
+        $this->assertTrue(\CommonITILObject_CommonITILObject::showMassiveActionsSubForm($massive_action));
+        $html = ob_get_clean();
+
+        // Retrieve the entity restriction sent to the items dropdown
+        $this->assertSame(1, preg_match('/[{,]entity_restrict:(-?\d+|\[[^\]]*\])/', $html, $matches));
+        $entity_restrict = json_decode($matches[1], true);
+
+        $post = [
+            'itemtype'        => \Ticket::class,
+            'entity_restrict' => is_array($entity_restrict) ? json_encode($entity_restrict) : $entity_restrict,
+            'searchText'      => 'Ticket in child entity for massive link',
+        ];
+        $post['_idor_token'] = \Session::getNewIDORToken(\Ticket::class, ['entity_restrict' => $post['entity_restrict']]);
+        $result = \Dropdown::getDropdownValue($post, false);
+
+        $found_ids = [];
+        array_walk_recursive($result['results'], function ($value, $key) use (&$found_ids) {
+            if ($key === 'id') {
+                $found_ids[] = $value;
+            }
+        });
+        $this->assertContains($target->getID(), $found_ids);
+    }
 }
