@@ -264,6 +264,13 @@ class Tag_ItemTest extends DbTestCase
             Tag_Itemtype::getTagsByItemtype(Printer::class)
         );
 
+        $expected_ids = [$computer_tag->getID(), $all_assets_tag->getID()];
+        $actual_ids = Tag_Itemtype::getTagIdsByItemtype(Computer::class);
+        sort($expected_ids);
+        sort($actual_ids);
+        $this->assertSame($expected_ids, $actual_ids);
+        $this->assertSame([], Tag_Itemtype::getTagIdsByItemtype(Tag::class));
+
         // Tags allowed for both Computer and Printer
         $this->assertSameTagIds(
             [$all_assets_tag->getID()],
@@ -295,20 +302,6 @@ class Tag_ItemTest extends DbTestCase
         sort($expected_tags_ids);
         sort($actual_tags_ids);
         $this->assertSame($expected_tags_ids, $actual_tags_ids);
-    }
-
-    /**
-     * Get the IDs of the tags proposed in the form of the given item.
-     *
-     * @return list<int>
-     */
-    private function getProposedTagsIds(CommonDBTM $item): array
-    {
-        $tags_ids = [];
-        foreach (Tag_Itemtype::getTagsByItemtype($item::class, Tag::getTagsEntityID($item)) as $tag) {
-            $tags_ids[] = $tag->getID();
-        }
-        return $tags_ids;
     }
 
     /**
@@ -636,13 +629,15 @@ class Tag_ItemTest extends DbTestCase
         $this->assertTrue(Tag_Item::addTag($computer, $local_tag->getID()));
 
         // From the root entity, both tags are proposed
-        $this->assertContains($recursive_tag->getID(), $this->getProposedTagsIds($computer));
-        $this->assertContains($local_tag->getID(), $this->getProposedTagsIds($computer));
+        $proposed_tags_ids = Tag_Itemtype::getTagIdsByItemtype(Computer::class, Tag::getTagsEntityID($computer));
+        $this->assertContains($recursive_tag->getID(), $proposed_tags_ids);
+        $this->assertContains($local_tag->getID(), $proposed_tags_ids);
 
         // From a child entity, the not recursive tag of the root entity is not visible, so it is not proposed
         $this->setEntity('_test_child_1', true);
-        $this->assertContains($recursive_tag->getID(), $this->getProposedTagsIds($computer));
-        $this->assertNotContains($local_tag->getID(), $this->getProposedTagsIds($computer));
+        $proposed_tags_ids = Tag_Itemtype::getTagIdsByItemtype(Computer::class, Tag::getTagsEntityID($computer));
+        $this->assertContains($recursive_tag->getID(), $proposed_tags_ids);
+        $this->assertNotContains($local_tag->getID(), $proposed_tags_ids);
 
         // As it is not proposed in the form, the not recursive tag is kept when every proposed tag is unselected
         $this->assertTrue($computer->update(['id' => $computer->getID(), '_tags' => '']));

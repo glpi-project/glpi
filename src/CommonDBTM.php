@@ -6951,10 +6951,7 @@ class CommonDBTM extends CommonGLPI
         $old_tags_ids = Tag_Item::getTagsForItem($this);
 
         // Only the tags proposed in the form can be removed to keep inactive tags.
-        $available_tags = [];
-        foreach (Tag_Itemtype::getTagsByItemtype($this::class, Tag::getTagsEntityID($this)) as $tag) {
-            $available_tags[] = $tag->getID();
-        }
+        $available_tags = Tag_Itemtype::getTagIdsByItemtype($this::class, Tag::getTagsEntityID($this));
 
         foreach ($old_tags_ids as $tags_id) {
             if (in_array($tags_id, $available_tags, true) && !in_array($tags_id, $tags_ids, true)) {

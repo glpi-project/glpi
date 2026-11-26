@@ -33,6 +33,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QuerySubQuery;
 
 /**
  * Tag class
@@ -257,7 +258,7 @@ class Tag extends CommonDropdown
             return false;
         }
         $input = $this->prepareItemtypes($input);
-        if (!$this->checkItemtypesKeepAssociations($input)) {
+        if (!$this->checkItemtypesKeepAssociations($input) || !$this->checkEntityScopeKeepAssociations($input)) {
             return false;
         }
 
@@ -293,6 +294,80 @@ class Tag extends CommonDropdown
         );
 
         return false;
+    }
+
+    /**
+     * Refuse to change the tag entity or recursion when the tag is still attached to items
+     * from which it would no longer be visible (same rule as when attaching a tag to an item).
+     *
+     * @param array<string, mixed> $input
+     */
+    private function checkEntityScopeKeepAssociations(array $input): bool
+    {
+        $entities_id  = (int) ($input['entities_id'] ?? $this->fields['entities_id']);
+        $is_recursive = (bool) ($input['is_recursive'] ?? $this->fields['is_recursive']);
+
+        if (
+            $entities_id === (int) $this->fields['entities_id']
+            && $is_recursive === (bool) $this->fields['is_recursive']
+        ) {
+            return true;
+        }
+
+        $allowed_entities = $is_recursive
+            ? array_values(array_map('intval', getSonsOf(Entity::getTable(), $entities_id)))
+            : [$entities_id];
+
+        if (!$this->hasItemsOutsideEntities($allowed_entities)) {
+            return true;
+        }
+
+        Session::addMessageAfterRedirect(
+            __s('This tag is still attached to items from which it would no longer be visible. Remove it from these items before changing its entity or recursion.'),
+            false,
+            ERROR
+        );
+
+        return false;
+    }
+
+    /**
+     * Check whether the tag is attached to at least one item whose entity is not in the given list.
+     *
+     * @param list<int> $entities_ids
+     */
+    private function hasItemsOutsideEntities(array $entities_ids): bool
+    {
+        global $DB;
+
+        $link_table = Tag_Item::getTable();
+        $itemtypes = $DB->request([
+            'SELECT'   => 'itemtype',
+            'DISTINCT' => true,
+            'FROM'     => $link_table,
+            'WHERE'    => ['tags_id' => $this->getID()],
+        ]);
+
+        $outside_conditions = [];
+        foreach ($itemtypes as $row) {
+            $item = getItemForItemtype($row['itemtype']);
+            if (!$item instanceof CommonDBTM || !$item->isField('entities_id')) {
+                continue;
+            }
+            $outside_conditions[] = [
+                'itemtype' => $item::class,
+                'items_id' => new QuerySubQuery([
+                    'SELECT' => 'id',
+                    'FROM'   => $item::getTable(),
+                    'WHERE'  => ['NOT' => getEntitiesRestrictCriteria($item::getTable(), '', $entities_ids)],
+                ]),
+            ];
+        }
+
+        return $outside_conditions !== [] && countElementsInTable($link_table, [
+            'tags_id' => $this->getID(),
+            'OR'      => $outside_conditions,
+        ]) > 0;
     }
 
     /**

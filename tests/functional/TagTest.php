@@ -632,6 +632,110 @@ class TagTest extends DbTestCase
     }
 
     /**
+     * @return iterable<array{string, array{string, bool}, array{string, bool}, bool}>
+     */
+    public static function entityScopeChangeProvider(): iterable
+    {
+        // Every attached item belongs to `_test_child_1`
+        $scope_changes = [
+            [['_test_root_entity', true], ['_test_root_entity', false], false],
+            [['_test_root_entity', true], ['_test_child_2', true], false],
+            [['_test_root_entity', true], ['_test_child_1', true], true],
+            [['_test_root_entity', true], ['_test_child_1', false], true],
+            [['_test_child_1', false], ['_test_root_entity', false], false],
+            [['_test_child_1', false], ['_test_child_1', true], true],
+            [['_test_child_1', false], ['_test_root_entity', true], true],
+        ];
+
+        foreach ([Computer::class, \Database::class, Entity::class] as $itemtype) {
+            foreach ($scope_changes as [$old_scope, $new_scope, $is_allowed]) {
+                yield [$itemtype, $old_scope, $new_scope, $is_allowed];
+            }
+        }
+    }
+
+    /**
+     * Test that the entity or the recursion of a tag cannot be changed when the tag is still attached to items
+     * from which it would no longer be visible
+     *
+     * @param array{0: string, 1: bool} $old_scope Entity name and recursion of the tag before the update
+     * @param array{0: string, 1: bool} $new_scope Entity name and recursion of the tag sent in the update
+     */
+    #[DataProvider('entityScopeChangeProvider')]
+    public function testChangeEntityScopeOfAnAttachedTag(
+        string $itemtype,
+        array $old_scope,
+        array $new_scope,
+        bool $is_allowed
+    ): void {
+        $this->login();
+
+        $tag = $this->createTag([
+            'name'         => 'Scoped tag',
+            'entities_id'  => getItemByTypeName(Entity::class, $old_scope[0], true),
+            'is_recursive' => (int) $old_scope[1],
+        ]);
+        $item = $this->getItemOfChildEntity($itemtype);
+        $this->assertTrue(Tag_Item::addTag($item, $tag->getID()));
+
+        $this->assertSame($is_allowed, $tag->update([
+            'id'           => $tag->getID(),
+            'entities_id'  => getItemByTypeName(Entity::class, $new_scope[0], true),
+            'is_recursive' => (int) $new_scope[1],
+        ]));
+        if (!$is_allowed) {
+            $this->hasSessionMessages(ERROR, [
+                'This tag is still attached to items from which it would no longer be visible. Remove it from these items before changing its entity or recursion.',
+            ]);
+        }
+
+        [$expected_entity, $expected_recursive] = $is_allowed ? $new_scope : $old_scope;
+        $this->assertTrue($tag->getFromDB($tag->getID()));
+        $this->assertSame(getItemByTypeName(Entity::class, $expected_entity, true), $tag->fields['entities_id']);
+        $this->assertSame((int) $expected_recursive, $tag->fields['is_recursive']);
+        $this->assertTrue(Tag_Item::hasTag($item, $tag->getID()));
+    }
+
+    /**
+     * Test that the entity and the recursion of a tag can be changed freely while it is not attached
+     */
+    public function testChangeEntityScopeOfAnUnattachedTag(): void
+    {
+        $this->login();
+
+        $tag = $this->createTag([
+            'name'         => 'Unattached scoped tag',
+            'entities_id'  => $this->getTestRootEntity(true),
+            'is_recursive' => 1,
+        ]);
+        $this->updateItem(Tag::class, $tag->getID(), [
+            'entities_id'  => getItemByTypeName(Entity::class, '_test_child_2', true),
+            'is_recursive' => 0,
+        ]);
+    }
+
+    private function getItemOfChildEntity(string $itemtype): \CommonDBTM
+    {
+        $entities_id = getItemByTypeName(Entity::class, '_test_child_1', true);
+
+        return match ($itemtype) {
+            Entity::class   => getItemByTypeName(Entity::class, '_test_child_1'),
+            \Database::class => $this->createItem(\Database::class, [
+                'name'                 => 'Database of child 1',
+                'databaseinstances_id' => $this->createItem(\DatabaseInstance::class, [
+                    'name'        => 'Database instance of child 1',
+                    'entities_id' => $entities_id,
+                ])->getID(),
+                'entities_id'          => $entities_id,
+            ]),
+            default         => $this->createItem($itemtype, [
+                'name'        => 'Item of child 1',
+                'entities_id' => $entities_id,
+            ]),
+        };
+    }
+
+    /**
      * Test that tags can be attached to all taggable itemtypes and that the attachment state is correctly updated when items are updated or deleted
      */
     public function testAttachTagToAllTaggableItemtypes(): void

@@ -98,11 +98,47 @@ class Tag_Itemtype extends CommonDBChild
     {
         global $DB;
 
-        $tag_table = Tag::getTable();
+        if (!Tag_Itemtype::isTaggableItemtype($itemtype)) {
+            return [];
+        }
+
+        return Tag::getFromIter($DB->request(self::getTagsByItemtypeCriteria($itemtype, $entities_id)));
+    }
+
+    /**
+     * Get the IDs of the tags allowed to be attached to items of the given itemtype.
+     *
+     * @param class-string<CommonGLPI> $itemtype
+     * @param int|null $entities_id Also restrict to the tags visible from this entity (e.g. the entity of the item to tag).
+     *
+     * @return list<int>
+     */
+    public static function getTagIdsByItemtype(string $itemtype, ?int $entities_id = null): array
+    {
+        global $DB;
 
         if (!Tag_Itemtype::isTaggableItemtype($itemtype)) {
             return [];
         }
+
+        $ids = [];
+        foreach ($DB->request(self::getTagsByItemtypeCriteria($itemtype, $entities_id)) as $row) {
+            $ids[] = (int) $row['id'];
+        }
+
+        return $ids;
+    }
+
+    /**
+     * Build the request selecting the IDs of the tags allowed for the given itemtype.
+     *
+     * @param class-string<CommonGLPI> $itemtype
+     *
+     * @return array<string, mixed>
+     */
+    private static function getTagsByItemtypeCriteria(string $itemtype, ?int $entities_id): array
+    {
+        $tag_table = Tag::getTable();
 
         // Tags must always be visible from the active entities, as they are elsewhere (search results, attachment check)
         $entities_criteria = [getEntitiesRestrictCriteria($tag_table, '', '', true)];
@@ -110,9 +146,9 @@ class Tag_Itemtype extends CommonDBChild
             $entities_criteria[] = getEntitiesRestrictCriteria($tag_table, '', $entities_id, true);
         }
 
-        return Tag::getFromIter($DB->request([
+        return [
             'SELECT' => [$tag_table . '.id'],
-            'FROM' => Tag::getTable(),
+            'FROM' => $tag_table,
             'LEFT JOIN' => [
                 self::getTable() => [
                     'ON' => [
@@ -131,7 +167,7 @@ class Tag_Itemtype extends CommonDBChild
                 ],
                 ...$entities_criteria,
             ],
-        ]));
+        ];
     }
 
     /**
