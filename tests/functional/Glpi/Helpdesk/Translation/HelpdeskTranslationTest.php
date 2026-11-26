@@ -553,4 +553,57 @@ class HelpdeskTranslationTest extends DbTestCase
             );
         }
     }
+
+    public function testTranslationCannotBeMovedToANonUpdatableEntity(): void
+    {
+        $this->login();
+
+        $entity_a_id = getItemByTypeName(Entity::class, '_test_child_1', true);
+        $entity_b_id = getItemByTypeName(Entity::class, '_test_child_2', true);
+
+        $translation_id = $this->createItem(
+            HelpdeskTranslation::class,
+            [
+                'itemtype'     => Entity::class,
+                'items_id'     => $entity_a_id,
+                'language'     => 'fr_FR',
+                'key'          => Entity::TRANSLATION_KEY_CUSTOM_HELPDESK_HOME_TITLE,
+                'translations' => ['one' => 'Titre A'],
+            ],
+            ['translations']
+        )->getID();
+
+        // Only entity A is visible
+        $this->setEntity('_test_child_1', false);
+
+        $input = [
+            'id'           => $translation_id,
+            'itemtype'     => Entity::class,
+            'items_id'     => $entity_b_id,
+            'key'          => Entity::TRANSLATION_KEY_CUSTOM_HELPDESK_HOME_TITLE,
+            'language'     => 'fr_FR',
+            'translations' => ['one' => 'Injected text'],
+        ];
+
+        // Rights checks done by the controllers
+        $this->assertFalse((new HelpdeskTranslation())->can(-1, CREATE, $input));
+        $translation = new HelpdeskTranslation();
+        $this->assertTrue($translation->can($translation_id, UPDATE, $input));
+
+        $this->assertFalse($translation->update($input));
+
+        // The translation is still attached to entity A, unchanged
+        $translation = HelpdeskTranslation::getById($translation_id);
+        $this->assertSame($entity_a_id, $translation->fields['items_id']);
+        $this->assertSame('Titre A', $translation->getTranslation());
+
+        // A legitimate update of the translation text still works
+        $this->assertTrue($translation->update([
+            'id'           => $translation_id,
+            'itemtype'     => Entity::class,
+            'items_id'     => $entity_a_id,
+            'translations' => ['one' => 'Titre A modifié'],
+        ]));
+        $this->assertSame('Titre A modifié', HelpdeskTranslation::getById($translation_id)->getTranslation());
+    }
 }

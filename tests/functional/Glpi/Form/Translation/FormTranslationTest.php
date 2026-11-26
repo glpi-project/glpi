@@ -472,4 +472,90 @@ class FormTranslationTest extends DbTestCase
             "Translation row should not be listed as the original default value is empty and the translation has been deleted."
         );
     }
+
+    public function testTranslationCannotBeMovedToANonUpdatableForm(): void
+    {
+        $this->login();
+
+        $form_a = $this->createForm(
+            (new FormBuilder('Form A'))
+                ->setEntitiesId(getItemByTypeName('Entity', '_test_child_1', true))
+                ->setIsRecursive(0)
+        );
+        $form_b = $this->createForm(
+            (new FormBuilder('Form B'))
+                ->setEntitiesId(getItemByTypeName('Entity', '_test_child_2', true))
+                ->setIsRecursive(0)
+        );
+        $this->addTranslationToForm($form_a, 'fr_FR', Form::TRANSLATION_KEY_NAME, 'Formulaire A');
+        $translation_id = FormTranslation::getForItemKeyAndLanguage($form_a, Form::TRANSLATION_KEY_NAME, 'fr_FR')->getID();
+
+        // Only the entity of form A is visible
+        $this->setEntity('_test_child_1', false);
+
+        $input = [
+            'id'           => $translation_id,
+            'itemtype'     => Form::class,
+            'items_id'     => $form_b->getID(),
+            'key'          => Form::TRANSLATION_KEY_NAME,
+            'language'     => 'fr_FR',
+            'translations' => ['one' => 'Injected text'],
+        ];
+
+        // Rights checks done by the controllers
+        $this->assertFalse((new FormTranslation())->can(-1, CREATE, $input));
+        $translation = new FormTranslation();
+        $this->assertTrue($translation->can($translation_id, UPDATE, $input));
+
+        $this->assertFalse($translation->update($input));
+
+        // The translation is still attached to form A, unchanged
+        $translation = FormTranslation::getById($translation_id);
+        $this->assertSame(Form::class, $translation->fields['itemtype']);
+        $this->assertSame($form_a->getID(), $translation->fields['items_id']);
+        $this->assertSame('Formulaire A', $translation->getTranslation());
+        $this->assertNull(FormTranslation::getForItemKeyAndLanguage($form_b, Form::TRANSLATION_KEY_NAME, 'fr_FR'));
+    }
+
+    public static function translationUpdateProvider(): iterable
+    {
+        yield 'only translations' => [false];
+        yield 'with own itemtype/items_id' => [true];
+    }
+
+    #[DataProvider('translationUpdateProvider')]
+    public function testTranslationTextCanBeUpdated(bool $with_parent_fields): void
+    {
+        $this->login();
+
+        $form = $this->createForm(
+            (new FormBuilder('Form A'))
+                ->setEntitiesId(getItemByTypeName('Entity', '_test_child_1', true))
+                ->setIsRecursive(0)
+        );
+        $this->addTranslationToForm($form, 'fr_FR', Form::TRANSLATION_KEY_NAME, 'Formulaire A');
+        $translation_id = FormTranslation::getForItemKeyAndLanguage($form, Form::TRANSLATION_KEY_NAME, 'fr_FR')->getID();
+
+        $this->setEntity('_test_child_1', false);
+
+        $input = [
+            'id'           => $translation_id,
+            'translations' => ['one' => 'Formulaire A modifié'],
+        ];
+        if ($with_parent_fields) {
+            $input += [
+                'itemtype' => Form::class,
+                'items_id' => $form->getID(),
+                'key'      => Form::TRANSLATION_KEY_NAME,
+            ];
+        }
+
+        $translation = new FormTranslation();
+        $this->assertTrue($translation->can($translation_id, UPDATE, $input));
+        $this->assertTrue($translation->update($input));
+
+        $translation = FormTranslation::getById($translation_id);
+        $this->assertSame($form->getID(), $translation->fields['items_id']);
+        $this->assertSame('Formulaire A modifié', $translation->getTranslation());
+    }
 }

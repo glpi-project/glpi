@@ -63,6 +63,12 @@ abstract class ItemTranslation extends CommonDBChild
     #[Override]
     public function prepareInputForUpdate($input): array
     {
+        // Moving the translation to another item requires the same rights as creating it on that item.
+        if (!$this->checkAttachedItemChangesAllowed($input, [static::$itemtype, static::$items_id])) {
+            // An empty input makes `CommonDBTM::update()` fail.
+            return [];
+        }
+
         return $this->prepapreInput($input);
     }
 
