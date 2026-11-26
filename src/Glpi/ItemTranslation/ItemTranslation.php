@@ -63,6 +63,12 @@ abstract class ItemTranslation extends CommonDBChild
     #[Override]
     public function prepareInputForUpdate($input): array
     {
+        $input = parent::prepareInputForUpdate($input);
+        if ($input === false) {
+            // An empty input makes `CommonDBTM::update()` fail.
+            return [];
+        }
+
         return $this->prepapreInput($input);
     }
 
