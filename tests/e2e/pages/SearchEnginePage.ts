@@ -43,6 +43,8 @@ export class SearchEnginePage extends GlpiPage
     public readonly search_criteria_fields: Locator;
     public readonly datetime_time_toggle: Locator;
     public readonly datetime_calendar_button: Locator;
+    public readonly first_criteria_value_dropdown: Locator;
+    public readonly upward_select2_results: Locator;
 
     public constructor(page: Page)
     {
@@ -57,6 +59,11 @@ export class SearchEnginePage extends GlpiPage
         this.search_criteria_fields   = this.search_filters_panel.locator('select[name$="[field]"]');
         this.datetime_time_toggle     = page.getByRole('checkbox', { name: 'Specify a time' });
         this.datetime_calendar_button = page.getByRole('button', { name: 'Enter or select a date' });
+        // Select2 widgets have no accessible name either, match on their markup
+        // eslint-disable-next-line playwright/no-raw-locators
+        this.first_criteria_value_dropdown = this.search_filters_panel.locator('select[name="criteria[0][value]"] + .select2');
+        // eslint-disable-next-line playwright/no-raw-locators
+        this.upward_select2_results   = page.locator('.select2-dropdown--above');
     }
 
     public async goto(): Promise<void>
@@ -75,6 +82,54 @@ export class SearchEnginePage extends GlpiPage
             `/front/ticket.php?criteria[0][link]=AND&criteria[0][field]=15`
             + `&criteria[0][searchtype]=lessthan&criteria[0][value]=${date}`
         );
+    }
+
+    public async gotoTicketWithNotClosedStatusCriteria(): Promise<void>
+    {
+        await this.page.goto(
+            `/front/ticket.php?criteria[0][link]=AND&criteria[0][field]=12`
+            + `&criteria[0][searchtype]=equals&criteria[0][value]=notold`
+        );
+    }
+
+    /**
+     * Open the search filters with content inserted above the search page (like plugins using
+     * the "pre_item_list" hook), so that the bottom of the filters panel reaches the bottom of the screen.
+     */
+    public async doOpenSearchFiltersAtViewportBottom(): Promise<void>
+    {
+        await this.doOpenSearchFilters();
+        const panel_bottom = await this.search_filters_panel.evaluate(async (node) => {
+            await Promise.all(node.getAnimations().map((animation) => animation.finished));
+            return node.getBoundingClientRect().bottom;
+        });
+        await this.doOpenSearchFilters(); // close
+        await this.search_filters_panel.waitFor({ state: 'hidden' });
+
+        const block_height = (this.page.viewportSize()?.height ?? 0) - 10 - panel_bottom;
+        await this.search_page.evaluate((search_page, height) => {
+            const block = document.createElement('div');
+            block.style.height = `${height}px`;
+            search_page.before(block);
+        }, block_height);
+        await this.doOpenSearchFilters();
+    }
+
+    public async doOpenFirstCriteriaValueDropdown(): Promise<void>
+    {
+        await this.first_criteria_value_dropdown.click();
+    }
+
+    /**
+     * Whether the top edge of the upward Select2 results is really displayed (not hidden by another element).
+     */
+    public async isUpwardSelect2ResultsTopVisible(): Promise<boolean>
+    {
+        return this.upward_select2_results.evaluate((node) => {
+            const rect = node.getBoundingClientRect();
+            const hit = document.elementFromPoint(rect.left + rect.width / 2, rect.top + 5);
+            return hit !== null && node.contains(hit);
+        });
     }
 
     public async doOpenSearchFilters(): Promise<void>
