@@ -137,7 +137,7 @@
 
                   {% set asset_breadcrumb %}
                      <span id="show_{{ side }}_asset_breadcrumb">
-                        {% if item.fields['items_id_endpoint_' ~ side]|length > 0 %}
+                        {% if item.fields['items_id_endpoint_' ~ side] > 0 %}
                            {{ call(item.fields['itemtype_endpoint_' ~ side] ~ '::renderDcBreadcrumb', [
                               item.fields['items_id_endpoint_' ~ side]
                            ])|raw }}

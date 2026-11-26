@@ -35,6 +35,9 @@
 
 {% block form_fields %}
    {{ fields.textField('name', item.fields['name'], __('Name')) }}
+
+   {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number())) }}
+
    {{ fields.dropdownItemTypes('itemtype', item.fields['itemtype']|default('Ticket'), _n('Type', 'Types', 1), {
       types: config('notificationtemplates_types')
    }) }}

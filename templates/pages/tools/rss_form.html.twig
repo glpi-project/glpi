@@ -37,6 +37,9 @@
     {% if not item.isNewItem() %}
         {{ fields.textField('name', item.fields['name'], __('Name')) }}
     {% endif %}
+
+    {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number())) }}
+
     {{ fields.textField('url', item.fields['url'], __('URL'), {
         full_width: true
     }) }}
