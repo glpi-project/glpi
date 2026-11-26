@@ -1383,6 +1383,56 @@ abstract class CommonITILValidationTest extends DbTestCase
         $this->assertValidationStatusEquals(CommonITILValidation::ACCEPTED, $itil->fields['global_validation']);
     }
 
+    public static function purgeLastValidationProvider(): iterable
+    {
+        yield 'step requiring 0%' => [0];
+        yield 'step requiring 50%' => [50];
+        yield 'step requiring 100%' => [100];
+    }
+
+    #[DataProvider('purgeLastValidationProvider')]
+    public function testPurgeLastValidationResetsGlobalValidation(int $required_percent): void
+    {
+        $this->login();
+        $vs = $this->createValidationStepTemplate($required_percent);
+        [$itil, $ivs] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::WAITING]);
+        $this->assertValidationStatusEquals(CommonITILValidation::WAITING, (int) $itil->fields['global_validation']);
+
+        $validation = $itil::getValidationClassInstance();
+        $this->assertTrue($validation->getFromDBByCrit(['itils_validationsteps_id' => $ivs->getID()]));
+        $this->assertTrue($validation->delete(['id' => $validation->getID()], true));
+
+        $this->assertFalse($ivs->getFromDB($ivs->getID()));
+        $this->assertTrue($itil->getFromDB($itil->getID()));
+        $this->assertValidationStatusEquals(CommonITILValidation::NONE, (int) $itil->fields['global_validation']);
+    }
+
+    public function testPurgeLastValidationOfAStepKeepsOtherStepsValidations(): void
+    {
+        $this->login();
+        [$itil, $ivs_1] = $this->createITILSValidationStepWithValidations(
+            $this->createValidationStepTemplate(100),
+            [CommonITILValidation::WAITING]
+        );
+        $ivs_2 = $this->addITILValidationStepWithValidations(
+            $this->createValidationStepTemplate(100),
+            [CommonITILValidation::REFUSED],
+            $itil
+        );
+        $this->assertTrue($itil->getFromDB($itil->getID()));
+        $this->assertValidationStatusEquals(CommonITILValidation::REFUSED, (int) $itil->fields['global_validation']);
+
+        $validation = $itil::getValidationClassInstance();
+        $this->assertTrue($validation->getFromDBByCrit(['itils_validationsteps_id' => $ivs_2->getID()]));
+        $this->assertTrue($validation->delete(['id' => $validation->getID()], true));
+
+        $this->assertFalse($ivs_2->getFromDB($ivs_2->getID()));
+        $this->assertTrue($ivs_1->getFromDB($ivs_1->getID()));
+        $this->assertSame(1, countElementsInTable($validation::getTable(), ['itils_validationsteps_id' => $ivs_1->getID()]));
+        $this->assertTrue($itil->getFromDB($itil->getID()));
+        $this->assertValidationStatusEquals(CommonITILValidation::WAITING, (int) $itil->fields['global_validation']);
+    }
+
     public static function getNumberToValidateProvider(): array
     {
         return [
