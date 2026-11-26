@@ -38,6 +38,7 @@ namespace Glpi\Marketplace;
 use CommonGLPI;
 use Config;
 use Document;
+use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Locale\LanguageRegistry;
 use Glpi\Marketplace\Api\Plugins as PluginsApi;
@@ -794,7 +795,9 @@ JS;
                             <i class='ti ti-toggle-right-filled' aria-hidden='true'></i>
                         </button>";
                 } else {
-                    $csp_confirmation = CspState::getActivationConfirmationMessage([$plugin_key]);
+                    $csp_confirmation = Environment::get()->shouldWarnAboutCspIncompatiblePlugins()
+                        ? CspState::getActivationConfirmationMessage([$plugin_key])
+                        : null;
                     $csp_confirmation_attr = $csp_confirmation !== null
                         ? \sprintf('data-glpi-csp-confirm="%s"', \htmlescape($csp_confirmation))
                         : '';

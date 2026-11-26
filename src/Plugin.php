@@ -37,6 +37,7 @@
  * Based on cacti plugin system
  */
 use Composer\Autoload\ClassLoader;
+use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Config\ConfigContainer;
@@ -3167,12 +3168,27 @@ class Plugin extends CommonDBTM
      */
     private static function getCspConfirmationAttribute(array $plugin_keys): string
     {
-        $message = CspState::getActivationConfirmationMessage($plugin_keys);
+        $message = self::getCspConfirmationMessage($plugin_keys);
         if ($message === null) {
             return '';
         }
 
         return \sprintf('data-glpi-csp-confirm="%s"', \htmlescape($message));
+    }
+
+    /**
+     * Get the message used to ask for a confirmation before the activation of the given plugins,
+     * or null if no confirmation is required.
+     *
+     * @param array<string> $plugin_keys
+     */
+    private static function getCspConfirmationMessage(array $plugin_keys): ?string
+    {
+        if (!Environment::get()->shouldWarnAboutCspIncompatiblePlugins()) {
+            return null;
+        }
+
+        return CspState::getActivationConfirmationMessage($plugin_keys);
     }
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
@@ -3207,7 +3223,7 @@ class Plugin extends CommonDBTM
                     }
                 }
                 $submit_options = ['name' => 'enable'];
-                $csp_confirmation = CspState::getActivationConfirmationMessage($directories);
+                $csp_confirmation = self::getCspConfirmationMessage($directories);
                 if ($csp_confirmation !== null) {
                     $submit_options['data-glpi-csp-confirm'] = $csp_confirmation;
                 }
