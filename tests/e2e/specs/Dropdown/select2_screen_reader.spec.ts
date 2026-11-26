@@ -30,62 +30,62 @@
  * ---------------------------------------------------------------------
  */
 
-import { Page } from '@playwright/test';
+import { randomUUID } from 'crypto';
 import { test, expect } from '../../fixtures/glpi_fixture';
-import { GlpiPage } from '../../pages/GlpiPage';
+import { Select2Page } from '../../pages/Select2Page';
 import { Profiles } from '../../utils/Profiles';
+import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
-/**
- * Screen readers announce the option referenced by the `aria-activedescendant`
- * attribute of the focused element.
- */
-async function expectHighlightedOptionToBeAnnounced(page: Page, previous_id: string | null = null): Promise<string>
-{
-    // eslint-disable-next-line playwright/no-raw-locators
-    const focused = page.locator(':focus');
-    await expect(focused).toHaveAttribute('aria-activedescendant', /.+/);
-    const active_id = await focused.getAttribute('aria-activedescendant') ?? '';
-    expect(active_id).not.toBe(previous_id);
+test.describe('AJAX dropdown with fewer results than the search field threshold', () => {
+    test.afterEach(async ({ entity, api }) => {
+        await entity.resetToDefaultWorkerEntity();
+        api.refreshSession();
+    });
 
-    // eslint-disable-next-line playwright/no-raw-locators
-    const active_option = page.locator(`[id="${active_id}"]`);
-    await expect(active_option).toHaveRole('option');
-    await expect(active_option).toHaveClass(/select2-results__option--highlighted/);
+    test('options are announced while navigating with the keyboard', async ({ page, profile, entity, api }) => {
+        await profile.set(Profiles.SuperAdmin);
 
-    return active_id;
-}
+        // Use a dedicated entity so that the number of locations does not depend on other tests
+        const entity_id = await api.createItem('Entity', {
+            name: `Entity ${randomUUID()}`,
+            entities_id: getWorkerEntityId(),
+        });
+        api.refreshSession();
+        for (const name of ['Location A', 'Location B']) {
+            await api.createItem('Location', { name: name, entities_id: entity_id, is_recursive: 0 });
+        }
+        await entity.switchToWithoutRecursion(entity_id);
+        api.refreshSession();
 
-test('options of an AJAX dropdown are announced while navigating with the keyboard', async ({ page, profile }) => {
-    await profile.set(Profiles.SuperAdmin);
-    const glpi_page = new GlpiPage(page);
-    await page.goto('/front/ticket.form.php');
+        const select2 = new Select2Page(page);
+        await page.goto('/front/computer.form.php');
 
-    const dropdown = glpi_page.getDropdownByLabel('Category');
-    await dropdown.focus();
-    await page.keyboard.press('Enter');
-    await expect(page.getByRole('listbox').getByRole('option').first()).toBeVisible();
-    await expect(page.getByRole('option', { name: 'Searching…' })).toBeHidden();
+        const dropdown = select2.getDropdownByLabel('Location');
+        await select2.doOpenDropdownWithKeyboard(dropdown);
+        await expect(select2.options).toHaveText(['-----', /Location A/, /Location B/]);
 
-    // The focus must not be lost when the search field is hidden because there are few results
-    const first_id = await expectHighlightedOptionToBeAnnounced(page);
-    await page.keyboard.press('ArrowDown');
-    await expectHighlightedOptionToBeAnnounced(page, first_id);
+        // The search field gets hidden: the focus must be given back to the selection
+        await expect(select2.dropdown_search_field).toBeHidden();
+        await expect(dropdown).toBeFocused();
+
+        const first_id = await select2.assertHighlightedOptionIsAnnounced();
+        await select2.doHighlightNextOption();
+        await select2.assertHighlightedOptionIsAnnounced(first_id);
+    });
 });
 
 test('options of an AJAX dropdown are announced while searching with the keyboard', async ({ page, profile }) => {
     await profile.set(Profiles.SuperAdmin);
-    const glpi_page = new GlpiPage(page);
+    const select2 = new Select2Page(page);
     await page.goto('/front/computer.form.php');
 
-    const dropdown = glpi_page.getDropdownByLabel('Technician in charge');
-    await dropdown.focus();
-    await page.keyboard.press('Enter');
+    const dropdown = select2.getDropdownByLabel('Technician in charge');
+    await select2.doOpenDropdownWithKeyboard(dropdown);
     await page.keyboard.type('E2E worker');
     await expect(page.getByRole('option', { name: 'E2E worker account 02' })).toBeVisible();
-    // eslint-disable-next-line playwright/no-raw-locators
-    await expect(page.locator(':focus')).toHaveRole('searchbox');
+    await expect(select2.dropdown_search_field).toBeFocused();
 
-    const first_id = await expectHighlightedOptionToBeAnnounced(page);
-    await page.keyboard.press('ArrowDown');
-    await expectHighlightedOptionToBeAnnounced(page, first_id);
+    const first_id = await select2.assertHighlightedOptionIsAnnounced();
+    await select2.doHighlightNextOption();
+    await select2.assertHighlightedOptionIsAnnounced(first_id);
 });
