@@ -35,6 +35,7 @@
 
 namespace Glpi\Console\Plugin;
 
+use Glpi\Application\Environment;
 use Glpi\Security\ContentSecurityPolicy\CspState;
 use Plugin;
 use Symfony\Component\Console\Input\InputInterface;
@@ -90,7 +91,8 @@ class ActivateCommand extends AbstractPluginCommand
                 continue;
             }
 
-            $will_disable_csp = CspState::getPluginsThatWouldDisableCsp([$directory]) !== [];
+            $will_disable_csp = Environment::get()->shouldWarnAboutCspIncompatiblePlugins()
+                && CspState::getPluginsThatWouldDisableCsp([$directory]) !== [];
 
             if (!$plugin->activate($plugin->fields['id'])) {
                 $this->output->writeln(

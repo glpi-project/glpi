@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Grid;
@@ -755,7 +756,9 @@ class Central extends CommonGLPI
             }
 
             // Warn if the CSP is disabled because of incompatible plugins
-            $csp_incompatible_plugins = CspState::getIncompatiblePlugins();
+            $csp_incompatible_plugins = Environment::get()->shouldWarnAboutCspIncompatiblePlugins()
+                ? CspState::getIncompatiblePlugins()
+                : [];
             if ($csp_incompatible_plugins !== []) {
                 $plugins_names = \array_map(
                     static function (string $plugin_key): string {
