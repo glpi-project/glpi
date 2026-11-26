@@ -47,6 +47,7 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 
+use function Safe\scandir;
 use function Safe\touch;
 
 class CacheManagerTest extends GLPITestCase
@@ -557,5 +558,60 @@ class CacheManagerTest extends GLPITestCase
         // The container must not be compiled in the current process, as plugins autoloaders may be registered.
         // It will be compiled during the next kernel boot.
         $this->assertFileDoesNotExist($container_loader_file);
+    }
+
+    public function testClearObsoleteCacheDirectories(): void
+    {
+        $current = GLPI_FILES_VERSION;
+
+        vfsStream::setup(
+            'glpi',
+            null,
+            [
+                'config' => [],
+                'files'  => [
+                    '_cache' => [
+                        // Current version, for any environment: preserved
+                        $current . '-production'  => ['app' => ['container.php' => '']],
+                        $current . '-development' => [],
+                        // Other versions/revisions: removed
+                        '11.0.14-dev-00000000-production'              => ['app' => ['container.php' => '']],
+                        '11.0.14-dev-00000000-0123456789ab-production' => [],
+                        '12.0.0-rc1-1a2b3c4d-e2e_testing'              => [],
+                        // Not a cache directory: preserved
+                        'phpstan'                  => ['cache.php' => ''],
+                        '11.0.14-dev-00000000-foo' => [],
+                        '11.0.14-production'       => 'not a directory',
+                    ],
+                ],
+            ]
+        );
+
+        $instance = new CacheManager(
+            vfsStream::url('glpi/config'),
+            vfsStream::url('glpi/files/_cache/' . $current . '-production')
+        );
+
+        $root_dir = vfsStream::url('glpi/files/_cache');
+        $this->assertSame(
+            [
+                $root_dir . '/11.0.14-dev-00000000-0123456789ab-production' => true,
+                $root_dir . '/11.0.14-dev-00000000-production'              => true,
+                $root_dir . '/12.0.0-rc1-1a2b3c4d-e2e_testing'              => true,
+            ],
+            $instance->clearObsoleteCacheDirectories()
+        );
+
+        $remaining = \array_values(\array_diff(scandir($root_dir), ['.', '..']));
+        \sort($remaining);
+        $expected = [
+            $current . '-development',
+            $current . '-production',
+            '11.0.14-dev-00000000-foo',
+            '11.0.14-production',
+            'phpstan',
+        ];
+        \sort($expected);
+        $this->assertSame($expected, $remaining);
     }
 }

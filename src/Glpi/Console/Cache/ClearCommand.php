@@ -66,6 +66,13 @@ class ClearCommand extends Command
             InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
             __('Cache context to clear (i.e. \'core\' or \'plugin:plugin_name\'). All contexts are cleared by default.')
         );
+
+        $this->addOption(
+            'obsolete',
+            null,
+            InputOption::VALUE_NONE,
+            __('Only remove the cache directories of other GLPI versions, the current cache is preserved.')
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -76,7 +83,26 @@ class ClearCommand extends Command
         $success = true;
 
         $contexts = $input->getOption('context');
-        if (empty($contexts)) {
+
+        if ($input->getOption('obsolete')) {
+            if (!empty($contexts)) {
+                throw new InvalidArgumentException(
+                    __('The "--obsolete" and "--context" options cannot be used together.')
+                );
+            }
+
+            $results = $cache_manager->clearObsoleteCacheDirectories();
+            foreach ($results as $path => $removed) {
+                $output->writeln(
+                    sprintf(
+                        $removed ? __('Directory "%s" removed.') : __('Unable to remove directory "%s".'),
+                        $path
+                    ),
+                    $removed ? OutputInterface::VERBOSITY_VERBOSE : OutputInterface::VERBOSITY_NORMAL
+                );
+            }
+            $success = !in_array(false, $results, true);
+        } elseif (empty($contexts)) {
             $success = $cache_manager->resetAllCaches();
         } else {
             foreach ($contexts as $context) {

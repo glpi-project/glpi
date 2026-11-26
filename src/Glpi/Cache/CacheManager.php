@@ -36,6 +36,7 @@
 namespace Glpi\Cache;
 
 use DirectoryIterator;
+use Glpi\Application\Environment;
 use Glpi\Kernel\Kernel;
 use InvalidArgumentException;
 use Psr\Cache\CacheItemPoolInterface;
@@ -49,6 +50,8 @@ use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Filesystem;
 use Toolbox;
 
 use function Safe\glob;
@@ -237,10 +240,8 @@ class CacheManager
 
         $raw_config = $this->getRawConfig();
 
-        $namespace_prefix = $raw_config['namespace_prefix'] ?? '';
-        if (!empty($namespace_prefix)) {
-            $namespace_prefix .= '-';
-        }
+        $namespace_prefix = $raw_config['namespace_prefix'] ?? null;
+        $namespace_prefix = is_string($namespace_prefix) && $namespace_prefix !== '' ? $namespace_prefix . '-' : '';
 
         if ($context === self::CONTEXT_TRANSLATIONS) {
             // 'translations' context is not supposed to be configured
@@ -256,7 +257,10 @@ class CacheManager
             $dsn       = $context_config['dsn'];
             $options   = $context_config['options'] ?? [];
             $scheme    = $this->extractScheme($dsn);
-            $namespace = $this->normalizeNamespace($namespace_prefix . $context);
+            // Unlike the filesystem adapters, that are stored in a directory specific to the source code
+            // version (see `Kernel::getCacheRootDir()`), the external storages are shared by all versions.
+            // The version is therefore added to the namespace, to not use obsolete data after an update.
+            $namespace = $this->normalizeNamespace($namespace_prefix . GLPI_FILES_VERSION . '-' . $context);
 
             switch ($scheme) {
                 case self::SCHEME_MEMCACHED:
@@ -327,6 +331,52 @@ class CacheManager
         $success = $this->resetCompiledTemplates() && $success;
 
         return $success;
+    }
+
+    /**
+     * Remove the cache directories of other GLPI versions.
+     *
+     * A new cache directory is used for each GLPI version (and for each revision on a git checkout),
+     * see `Kernel::getCacheRootDir()`. The previous ones are never used again.
+     *
+     * @return array<string, bool> Path of each obsolete directory, associated to the removal result.
+     */
+    public function clearObsoleteCacheDirectories(): array
+    {
+        $root_dir = \dirname($this->cache_dir);
+        $current_version = GLPI_FILES_VERSION;
+
+        // Cache directories are named `{GLPI_FILES_VERSION}-{environment}`.
+        // Other directories (e.g. caches of dev tools) must be preserved.
+        $environments = \implode('|', \array_map(
+            static fn(Environment $env) => \preg_quote($env->value, '/'),
+            Environment::cases()
+        ));
+        $pattern = '/^(?<version>\d+\.\d+\.\d+.*)-(?:' . $environments . ')$/';
+
+        $results = [];
+        $filesystem = new Filesystem();
+        foreach (new DirectoryIterator($root_dir) as $item) {
+            if (
+                $item->isDot()
+                || !$item->isDir()
+                || preg_match($pattern, $item->getFilename(), $matches) !== 1
+                || ($matches['version'] ?? null) === $current_version
+            ) {
+                continue;
+            }
+
+            $path = $item->getPathname();
+            try {
+                $filesystem->remove($path);
+                $results[$path] = true;
+            } catch (IOException $e) {
+                $results[$path] = false;
+            }
+        }
+        \ksort($results);
+
+        return $results;
     }
 
     /**
