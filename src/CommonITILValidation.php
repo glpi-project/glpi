@@ -542,9 +542,10 @@ abstract class CommonITILValidation extends CommonDBChild
 
     public function post_purgeItem()
     {
-        // Empty step must be removed first, otherwise it is computed as refused
+        // Empty step must be removed first, otherwise it is computed as refused; template ID is read before, for rules criteria
+        $validationstep_id = $this->getValidationStepTemplateId();
         $this->removeUnsedITILValidationStep();
-        $this->recomputeItilStatus();
+        $this->recomputeItilStatus($validationstep_id);
 
         parent::post_purgeItem();
     }
@@ -2169,18 +2170,15 @@ HTML;
         }
     }
 
-    public function recomputeItilStatus(): void
+    /**
+     * @param int|null $validationstep_id Validation step template ID, to pass when the ITIL validation step is already deleted
+     */
+    public function recomputeItilStatus(?int $validationstep_id = null): void
     {
         $itil_object = $this->getItem();
         $this->checkIsAnItilObject($itil_object);
 
-        // find validation_step name from $this->fields['itils_validationsteps_id']
-
-        $itil_validationstep = static::getValidationStepInstance();
-
-        if ($itil_validationstep && $itil_validationstep->getFromDB($this->fields['itils_validationsteps_id'])) {
-            $validationstep_id = $itil_validationstep->fields['validationsteps_id'];
-        }
+        $validationstep_id ??= $this->getValidationStepTemplateId();
 
         // update result not checked, there can be legit reasons to fails (e.g. ticket is closed)
         $itil_object->update(
@@ -2189,9 +2187,19 @@ HTML;
                 'global_validation' => self::computeValidationStatus($itil_object),
                 '_from_itilvalidation' => true,
                 '_trigger' => $this,
-                '_validationsteps_id' => $validationstep_id ?? null,
+                '_validationsteps_id' => $validationstep_id,
             ]
         );
+    }
+
+    private function getValidationStepTemplateId(): ?int
+    {
+        $itil_validationstep = static::getValidationStepInstance();
+        if ($itil_validationstep && $itil_validationstep->getFromDB($this->fields['itils_validationsteps_id'])) {
+            return (int) $itil_validationstep->fields['validationsteps_id'];
+        }
+
+        return null;
     }
 
     /**
