@@ -167,7 +167,7 @@ final class ResourcesChecker
 
         // On a git checkout, a `git pull` may update the dependencies or the locales definitions
         // without them being installed/compiled.
-        return Environment::get()->shouldExpectResourcesToChange()
+        return Environment::get()->shouldExpectResourcesToChange($this->root_dir)
             || GitCheckout::isGitCheckout($this->root_dir);
     }
 }

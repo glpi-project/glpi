@@ -200,12 +200,15 @@ enum Environment: string
      *
      * An instance running from a git checkout does not need to watch for changes: the cache
      * directory depends on the checked out revision (see `GLPI_FILES_VERSION`).
+     * If this revision cannot be read, the cache directory would be shared by all the revisions,
+     * so changes must be watched.
      */
-    public function shouldExpectResourcesToChange(): bool
+    public function shouldExpectResourcesToChange(string $root_dir = GLPI_ROOT): bool
     {
         return match ($this) {
             self::TESTING, self::DEVELOPMENT, self::E2E => true,
-            self::STAGING, self::PRODUCTION             => false,
+            self::STAGING, self::PRODUCTION             => GitCheckout::isGitCheckout($root_dir)
+                && GitCheckout::getRevision($root_dir) === null,
         };
     }
 
