@@ -257,6 +257,16 @@ class Entity extends CommonTreeDropdown implements
             return false;
         }
 
+        // Items attached to a deleted entity would become unreachable, they must be moved by a replacement
+        if (!isset($this->input['_replace_by']) && $this->isUsed()) {
+            Session::addMessageAfterRedirect(
+                __s("You can't delete that item, because it is used for one or more items"),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
         // Cleaning sons calls getAncestorsOf and thus... Re-create cache. Call it before clean.
         $this->cleanParentsSons();
         $ckey = 'ancestors_cache_' . static::getTable() . '_' . $this->getID();

@@ -19,6 +19,7 @@ The present file will list all changes made to the project; according to the
 
 #### Changes
 - Updating the password of the user you are logged in as through the legacy REST API or the High-Level API now requires supplying the current password in the `current_password` field.
+- Purging an `Entity` still used by other items is now refused unless a replacement entity is given in the `_replace_by` input.
 
 #### Deprecated
 

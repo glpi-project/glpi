@@ -50,6 +50,8 @@ use Glpi\Helpdesk\HomePageTabs;
 use Glpi\Tests\DbTestCase;
 use ITILFollowup;
 use ITILSolution;
+use Location;
+use MassiveAction;
 use NotificationTarget;
 use NotificationTargetTicket;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -536,6 +538,65 @@ class EntityTest extends DbTestCase
 
         // Profile_User has been deleted when entity has been deleted
         $this->assertFalse($profile_user->getFromDB($profile_user_id));
+    }
+
+    public function testDeleteUsedEntityIsRefused(): void
+    {
+        $this->login();
+        $root_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $entity = $this->createItem(Entity::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $root_id,
+        ]);
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $entity->getID(),
+        ]);
+
+        $this->assertFalse($entity->delete(['id' => $entity->getID()], true));
+        $this->hasSessionMessages(ERROR, ["You can&#039;t delete that item, because it is used for one or more items"]);
+
+        $this->assertTrue($entity->getFromDB($entity->getID()));
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertSame($entity->getID(), $ticket->fields['entities_id']);
+    }
+
+    public function testDeleteUsedEntityWithReplacement(): void
+    {
+        $this->login();
+        $root_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $entity = $this->createItem(Entity::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $root_id,
+        ]);
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $entity->getID(),
+        ]);
+
+        $this->assertTrue($entity->delete(['id' => $entity->getID(), '_replace_by' => $root_id], true));
+
+        $this->assertFalse($entity->getFromDB($entity->getID()));
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertSame($root_id, $ticket->fields['entities_id']);
+    }
+
+    public function testPurgeEvenIfLinkedMassiveActionNotAvailableForEntity(): void
+    {
+        $this->login();
+
+        $this->assertArrayNotHasKey(
+            'MassiveAction:purge_but_item_linked',
+            MassiveAction::getAllMassiveActions(Entity::class)
+        );
+        $this->assertArrayHasKey(
+            'MassiveAction:purge_but_item_linked',
+            MassiveAction::getAllMassiveActions(Location::class)
+        );
     }
 
     public static function getUsedConfigProvider(): iterable
