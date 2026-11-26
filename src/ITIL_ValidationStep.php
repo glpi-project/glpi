@@ -83,7 +83,7 @@ abstract class ITIL_ValidationStep extends CommonDBChild
     {
         $validation = getItemForItemtype(static::$validation_classname);
         $validation->deleteByCriteria([
-            $this->fields['itemtype']::getForeignKeyField() => $this->fields['items_id'],
+            'itils_validationsteps_id' => $this->getID(),
         ]);
 
         parent::cleanDBonPurge();

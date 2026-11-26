@@ -542,8 +542,9 @@ abstract class CommonITILValidation extends CommonDBChild
 
     public function post_purgeItem()
     {
-        $this->recomputeItilStatus();
+        // Empty step must be removed first, otherwise it is computed as refused
         $this->removeUnsedITILValidationStep();
+        $this->recomputeItilStatus();
 
         parent::post_purgeItem();
     }
