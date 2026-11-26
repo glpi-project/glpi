@@ -311,13 +311,33 @@ class MailCollector extends CommonDBTM
             $protocol_choices['/' . $key] = $protocol['label'];
         }
 
-        foreach (OAuthApplication::getActiveApplications() as $app) {
-            $protocol_choices['/' . OAuthApplication::PROTOCOL_PREFIX . $app->getID()] = $app->fields['name'];
+        // Server types of the OAuth applications, with what the form needs to
+        // pick an authorized mailbox, or to request a new authorization.
+        $oauth_applications = [];
+        foreach (OAuthApplication::getActiveApplications() as $application) {
+            $emails = $application->getAuthorizedEmails(OAuthAuthorization::TYPE_IMAP);
+            try {
+                $defaults = $application->getImapDefaults();
+            } catch (RuntimeException) {
+                $defaults = null; // unknown provider
+            }
+            $oauth_applications['/' . OAuthApplication::PROTOCOL_PREFIX . $application->getID()] = [
+                'id'            => $application->getID(),
+                'name'          => $application->fields['name'],
+                // Empty choice valued '' (not '0'), not to be copied as login.
+                'emails'        => ['' => Dropdown::EMPTY_VALUE] + array_combine($emails, $emails),
+                'has_emails'    => $emails !== [],
+                'defaults'      => $defaults,
+                // Right only: the reauthentication required by the application
+                // is asked by the authorization request endpoint.
+                'can_authorize' => OAuthApplication::canUpdate(),
+            ];
         }
 
         TemplateRenderer::getInstance()->display('pages/setup/mailcollector/setup_form.html.twig', [
-            'item'             => $this,
-            'protocol_choices' => $protocol_choices,
+            'item'               => $this,
+            'protocol_choices'   => $protocol_choices,
+            'oauth_applications' => $oauth_applications,
         ]);
         return true;
     }

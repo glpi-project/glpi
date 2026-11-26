@@ -569,6 +569,46 @@ class OAuthAuthorization extends CommonDBChild
     }
 
     /**
+     * Returns a usable access token, refreshing it first when it is missing
+     * or expired. Returns null, with the reason in getLastError(), when no
+     * usable token can be obtained.
+     */
+    public function getValidAccessToken(): ?AccessToken
+    {
+        $this->error = null;
+
+        $token = $this->getAccessToken();
+        if ($token !== null && !self::isTokenExpired($token)) {
+            return $token;
+        }
+
+        if (!$this->refreshToken()) {
+            return null;
+        }
+
+        $token = $this->getAccessToken();
+        if ($token === null) {
+            $this->error = __('Unable to obtain a valid access token');
+        }
+
+        return $token;
+    }
+
+    /**
+     * Loads the authorization of a mailbox on an application.
+     *
+     * @param string $type One of `self::TYPE_IMAP`/`self::TYPE_SMTP`.
+     */
+    public function getFromDBForApplicationAndEmail(int $oauthapplications_id, string $email, string $type = self::TYPE_IMAP): bool
+    {
+        return $this->getFromDBByCrit([
+            'oauthapplications_id' => $oauthapplications_id,
+            'email'                => $email,
+            'type'                 => $type,
+        ]);
+    }
+
+    /**
      * Manually refreshes the access token using the stored refresh token.
      */
     public function refreshToken(): bool
@@ -646,19 +686,12 @@ class OAuthAuthorization extends CommonDBChild
      */
     public function testConnection(): array
     {
-        $token = $this->getAccessToken();
-        if ($token === null || self::isTokenExpired($token)) {
-            if (!$this->refreshToken()) {
-                return [
-                    'success' => false,
-                    'message' => $this->getLastError() ?? __('Unable to obtain a valid access token'),
-                ];
-            }
-            $token = $this->getAccessToken();
-        }
-
+        $token = $this->getValidAccessToken();
         if ($token === null) {
-            return ['success' => false, 'message' => __('Unable to obtain a valid access token')];
+            return [
+                'success' => false,
+                'message' => $this->getLastError() ?? __('Unable to obtain a valid access token'),
+            ];
         }
 
         $application = new OAuthApplication();

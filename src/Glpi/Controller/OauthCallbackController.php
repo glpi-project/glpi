@@ -37,6 +37,7 @@ namespace Glpi\Controller;
 use Glpi\Http\Firewall;
 use Glpi\Http\RedirectResponse;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Glpi\Toolbox\URL;
 use OAuthApplication;
 use OAuthAuthorization;
 use Session;
@@ -83,9 +84,12 @@ final class OauthCallbackController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_CENTRAL_ACCESS)]
     public function complete(Request $request): Response
     {
+        global $CFG_GLPI;
+
         $application_id = $_SESSION['oauth2_provider_id'] ?? null;
         $type           = $_SESSION['oauth2_type'] ?? null;
         $state          = $_SESSION['oauth2_state'] ?? null;
+        $return_url     = $_SESSION['oauth2_return_url'] ?? null;
 
         // Only consume the pending authorization the callback belongs to: a
         // stale callback (from an older attempt, or replayed) must not wipe
@@ -95,7 +99,14 @@ final class OauthCallbackController extends AbstractController
             && $state !== null
             && $request->query->get('state') === $state;
         if ($is_state_valid) {
-            unset($_SESSION['oauth2_provider_id'], $_SESSION['oauth2_type'], $_SESSION['oauth2_state']);
+            unset(
+                $_SESSION['oauth2_provider_id'],
+                $_SESSION['oauth2_type'],
+                $_SESSION['oauth2_state'],
+                $_SESSION['oauth2_return_url']
+            );
+        } else {
+            $return_url = null;
         }
 
         $application = new OAuthApplication();
@@ -131,9 +142,14 @@ final class OauthCallbackController extends AbstractController
             }
         }
 
-        $redirect_url = $application->getFromDB($application_id)
-            ? $application->getLinkURL()
-            : $application->getSearchURL(true);
+        if (is_string($return_url) && URL::isGLPIRelativeUrl($return_url)) {
+            // Back to the page the authorization was requested from (e.g. a mail collector form).
+            $redirect_url = $CFG_GLPI['root_doc'] . $return_url;
+        } else {
+            $redirect_url = $application->getFromDB($application_id)
+                ? $application->getLinkURL()
+                : $application->getSearchURL(true);
+        }
 
         return new RedirectResponse($redirect_url);
     }
