@@ -48,6 +48,7 @@ use Glpi\OAuth\Server;
 use Glpi\Plugin\Hooks;
 use Glpi\Progress\AbstractProgressIndicator;
 use Glpi\Rules\RulesManager;
+use Glpi\Security\ContentSecurityPolicy\CspState;
 use Glpi\Toolbox\HttpClient;
 use Glpi\Toolbox\URL;
 use Glpi\Toolbox\VersionParser;
@@ -468,6 +469,30 @@ class Toolbox
         ) {
             trigger_error($message, E_USER_DEPRECATED);
         }
+    }
+
+    /**
+     * Report the usage of a deprecated feature that is ignored when the Content Security Policy (CSP) is enabled.
+     *
+     * When the CSP is enabled, a warning is triggered, as the feature has no effect and deprecations
+     * may not be reported (e.g. in production environment).
+     * Otherwise, a deprecation is triggered.
+     *
+     * @param string $message
+     *
+     * @return void
+     */
+    public static function deprecatedCspIncompatibleUsage(string $message): void
+    {
+        if (CspState::isEnabled()) {
+            trigger_error(
+                $message . ' This usage is ignored because the Content Security Policy (CSP) is enabled.',
+                E_USER_WARNING
+            );
+            return;
+        }
+
+        self::deprecated($message);
     }
 
     /**

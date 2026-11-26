@@ -544,7 +544,7 @@ class Html
      **/
     public static function addConfirmationOnAction($string, $additionalactions = '')
     {
-        Toolbox::deprecated('Use the `data-glpi-confirm="<message>"` attribute instead.');
+        Toolbox::deprecatedCspIncompatibleUsage('`Html::addConfirmationOnAction()` is deprecated. Use the `data-glpi-confirm="<message>"` attribute instead.');
 
         if (CspState::isEnabled()) {
             return '';
@@ -569,7 +569,7 @@ class Html
      **/
     public static function getConfirmationOnActionScript($string, $additionalactions = '')
     {
-        Toolbox::deprecated('Use the `data-glpi-confirm="<message>"` attribute instead.');
+        Toolbox::deprecatedCspIncompatibleUsage('`Html::getConfirmationOnActionScript()` is deprecated. Use the `data-glpi-confirm="<message>"` attribute instead.');
 
         if (CspState::isEnabled()) {
             return '';
@@ -1819,7 +1819,7 @@ TWIG,
 
         $out .= "<input type='checkbox' class='form-check-input " . htmlescape($params['class']) . "' title=\"" . htmlescape($params['title']) . "\" ";
         if (isset($params['onclick'])) {
-            Toolbox::deprecated('The `onclick` option is deprecated.');
+            Toolbox::deprecatedCspIncompatibleUsage('The `onclick` option of `Html::getCheckbox()` is deprecated.');
             if (!CspState::isEnabled()) {
                 $out .= " onclick='" . htmlescape($params['onclick']) . "'";
             }
@@ -3655,7 +3655,7 @@ JAVASCRIPT
      **/
     public static function printCleanArray($tab, $pad = 0, $jsexpand = false)
     {
-        Toolbox::deprecated('Use Symfony\'s `dump()` or `dd()` functions instead.');
+        Toolbox::deprecatedCspIncompatibleUsage('`Html::printCleanArray()` is deprecated. Use Symfony\'s `dump()` or `dd()` functions instead.');
 
         if (CspState::isEnabled()) {
             return;
@@ -4413,7 +4413,7 @@ JS;
      **/
     public static function link($text, $url, $options = [])
     {
-        Toolbox::deprecated();
+        Toolbox::deprecatedCspIncompatibleUsage('`Html::link()` is deprecated.');
 
         if (CspState::isEnabled()) {
             return '';
@@ -4593,7 +4593,7 @@ JS;
         }
         $confirm_action = '';
         if (isset($options['confirmaction'])) {
-            Toolbox::deprecated('The `confirmaction` option is deprecated. Confirmation is now handled through the `data-glpi-confirm` attribute.');
+            Toolbox::deprecatedCspIncompatibleUsage('The `confirmaction` option of `Html::submit()` is deprecated. Confirmation is now handled through the `data-glpi-confirm` attribute.');
             if (!CspState::isEnabled()) {
                 $confirm_action = $options['confirmaction'];
             }

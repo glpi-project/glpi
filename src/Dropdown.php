@@ -2358,7 +2358,7 @@ HTML;
         }
 
         if (!empty($param['on_change'])) {
-            Toolbox::deprecated('The `on_change` option of `Dropdown::showFromArray()` is deprecated.');
+            Toolbox::deprecatedCspIncompatibleUsage('The `on_change` option of `Dropdown::showFromArray()` is deprecated.');
         }
 
         $other_select_option = $name . '_other_value';
@@ -2855,7 +2855,7 @@ HTML;
         global $CFG_GLPI;
 
         if ($onchange !== '') {
-            Toolbox::deprecated('The `$onchange` parameter of `Dropdown::showListLimit()` is deprecated.');
+            Toolbox::deprecatedCspIncompatibleUsage('The `$onchange` parameter of `Dropdown::showListLimit()` is deprecated.');
         }
 
         if (isset($_SESSION['glpilist_limit'])) {

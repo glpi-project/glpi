@@ -39,7 +39,7 @@
 {% set button_role = button_role ?? 'button' %}
 
 {% if add_link starts with 'javascript:' %}
-    {% do call(['Toolbox', 'deprecated'], ['Support of `javascript:` values for the `add_link` parameter of `components/tab/addlink_block.html.twig` is deprecated.']) %}
+    {% do call(['Toolbox', 'deprecatedCspIncompatibleUsage'], ['Support of `javascript:` values for the `add_link` parameter of `components/tab/addlink_block.html.twig` is deprecated.']) %}
 {% endif %}
 
 <div class="{{ block_class }}">

@@ -180,7 +180,7 @@
                 {% endif %}
                 {% set onclick_attrib = '' %}
                 {% if val is iterable and val.onclick is defined %}
-                    {% do call('Toolbox::deprecated', ['The `onclick` key of the `addbuttons` option is deprecated.']) %}
+                    {% do call('Toolbox::deprecatedCspIncompatibleUsage', ['The `onclick` key of the `addbuttons` option of `CommonDBTM::showFormButtons()` is deprecated.']) %}
                     {% if not call('Glpi\\Security\\ContentSecurityPolicy\\CspState::isEnabled') %}
                         {% set onclick_attrib = 'onclick="' ~ val.onclick|e ~ '"' %}
                     {% endif %}
