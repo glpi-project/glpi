@@ -540,7 +540,15 @@ class EntityTest extends DbTestCase
         $this->assertFalse($profile_user->getFromDB($profile_user_id));
     }
 
-    public function testDeleteUsedEntityIsRefused(): void
+    public static function invalidReplacementProvider(): iterable
+    {
+        yield 'no replacement' => ['replacement' => null];
+        yield 'replaced by itself' => ['replacement' => 'self'];
+        yield 'replaced by a missing entity' => ['replacement' => 'missing'];
+    }
+
+    #[DataProvider('invalidReplacementProvider')]
+    public function testDeleteUsedEntityIsRefused(?string $replacement): void
     {
         $this->login();
         $root_id = getItemByTypeName('Entity', '_test_root_entity', true);
@@ -555,7 +563,14 @@ class EntityTest extends DbTestCase
             'entities_id' => $entity->getID(),
         ]);
 
-        $this->assertFalse($entity->delete(['id' => $entity->getID()], true));
+        $input = ['id' => $entity->getID()];
+        if ($replacement === 'self') {
+            $input['_replace_by'] = $entity->getID();
+        } elseif ($replacement === 'missing') {
+            $input['_replace_by'] = $entity->getID() + 1000;
+        }
+
+        $this->assertFalse($entity->delete($input, true));
         $this->hasSessionMessages(ERROR, ["You can&#039;t delete that item, because it is used for one or more items"]);
 
         $this->assertTrue($entity->getFromDB($entity->getID()));

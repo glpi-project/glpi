@@ -257,8 +257,12 @@ class Entity extends CommonTreeDropdown implements
             return false;
         }
 
-        // Items attached to a deleted entity would become unreachable, they must be moved by a replacement
-        if (!isset($this->input['_replace_by']) && $this->isUsed()) {
+        // Items attached to a deleted entity would become unreachable, they must be moved to another existing entity
+        $replace_by = isset($this->input['_replace_by']) ? (int) $this->input['_replace_by'] : null;
+        $has_valid_replacement = $replace_by !== null
+            && $replace_by !== $this->getID()
+            && countElementsInTable(static::getTable(), ['id' => $replace_by]) > 0;
+        if (!$has_valid_replacement && $this->isUsed()) {
             Session::addMessageAfterRedirect(
                 __s("You can't delete that item, because it is used for one or more items"),
                 false,
