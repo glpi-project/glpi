@@ -40,8 +40,11 @@ use Glpi\Features\Clonable;
 use Glpi\Features\DCBreadcrumb;
 use Glpi\Features\Kanban;
 use Glpi\Features\PlanningEvent;
+use Glpi\Mail\Protocol\ImapOauthProtocol;
 use Glpi\Tests\DbTestCase;
 use ITILFollowup;
+use Laminas\Mail\Storage\Exception\RuntimeException;
+use OAuthApplication;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use stdClass;
@@ -1907,5 +1910,74 @@ HTML;
     private function getCustomLogFilePath(): string
     {
         return GLPI_LOG_DIR . "/" . self::TEST_CUSTOM_LOG_FILE_NAME . ".log";
+    }
+
+    private function createOAuthApplication(bool $is_active = true): OAuthApplication
+    {
+        return $this->createItem(OAuthApplication::class, [
+            'name'          => 'OAuth app ' . $this->getUniqueString(),
+            'is_active'     => (int) $is_active,
+            'provider'      => OAuthApplication::GOOGLE,
+            'client_id'     => 'my-client-id',
+            'client_secret' => 'my-secret',
+        ], ['client_secret']);
+    }
+
+    public function testActiveOAuthApplicationsAreMailServerProtocols(): void
+    {
+        $active   = $this->createOAuthApplication();
+        $inactive = $this->createOAuthApplication(false);
+
+        $active_type   = OAuthApplication::PROTOCOL_PREFIX . $active->getID();
+        $inactive_type = OAuthApplication::PROTOCOL_PREFIX . $inactive->getID();
+
+        $protocols = \Toolbox::getMailServerProtocols();
+        $this->assertArrayHasKey('imap', $protocols);
+        $this->assertArrayHasKey('pop', $protocols);
+        $this->assertArrayHasKey($active_type, $protocols);
+        $this->assertSame($active->fields['name'], $protocols[$active_type]['label']);
+        $this->assertArrayNotHasKey($inactive_type, $protocols);
+
+        // They cannot be used to authenticate users.
+        $this->assertSame(['imap', 'pop'], array_keys(\Toolbox::getMailServerProtocols(allow_plugins_protocols: false)));
+
+        $protocol = \Toolbox::getMailServerProtocolInstance($active_type);
+        $this->assertInstanceOf(ImapOauthProtocol::class, $protocol);
+        $this->assertSame($active->getID(), $protocol->getApplicationId());
+        $this->assertNull(\Toolbox::getMailServerProtocolInstance($inactive_type));
+    }
+
+    public function testOAuthStorageIsBuiltForTheApplication(): void
+    {
+        $application = $this->createOAuthApplication();
+
+        // The application ID is given to the storage, which then looks for the
+        // authorization of the mailbox: none exists, so no connection is attempted.
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('mailbox mailbox@example.com is not authorized on the OAuth application');
+
+        \Toolbox::getMailServerStorageInstance(
+            OAuthApplication::PROTOCOL_PREFIX . $application->getID(),
+            ['host' => 'imap.gmail.com', 'user' => 'mailbox@example.com', 'password' => '']
+        );
+    }
+
+    public function testOAuthMailServerTypeIsParsed(): void
+    {
+        $active   = $this->createOAuthApplication();
+        $inactive = $this->createOAuthApplication(false);
+
+        $active_type   = OAuthApplication::PROTOCOL_PREFIX . $active->getID();
+        $inactive_type = OAuthApplication::PROTOCOL_PREFIX . $inactive->getID();
+
+        $config = \Toolbox::parseMailServerConnectString('{imap.gmail.com:993/' . $active_type . '/ssl}INBOX');
+        $this->assertSame($active_type, $config['type']);
+        $this->assertSame('imap.gmail.com', $config['address']);
+        $this->assertSame('993', $config['port']);
+        $this->assertTrue($config['ssl']);
+        $this->assertSame('INBOX', $config['mailbox']);
+
+        $config = \Toolbox::parseMailServerConnectString('{imap.gmail.com:993/' . $inactive_type . '/ssl}INBOX');
+        $this->assertSame('', $config['type']);
     }
 }

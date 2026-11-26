@@ -94,11 +94,49 @@
 
     {{ fields.smallTitle(__('Authentication')) }}
 
+    {% set server_type = connect_opts['type'] is not empty ? ('/' ~ connect_opts['type']) : '' %}
+    {% set is_oauth = oauth_applications[server_type] is defined %}
+
     {{ fields.textField(
         'login',
         item.fields['login'],
-        __('Login')
+        __('Login'), {
+            add_field_class: is_oauth ? 'd-none' : '',
+            add_field_attribs: {
+                'data-glpi-mailcollector-auth': 'password',
+            },
+        }
     ) }}
+
+    {# With an OAuth application, the login is one of the mailboxes authorized on it. #}
+    {% for oauth_type, oauth_application in oauth_applications %}
+        {% set authorize_btn %}
+            {% if oauth_application['can_authorize'] %}
+                <button type="button" class="btn btn-outline-secondary ms-2 text-nowrap"
+                        data-glpi-oauth-authorize="{{ oauth_application['id'] }}"
+                        title="{{ __('Redirects to the provider to authorize a mailbox. Unsaved changes of this form will be lost.') }}">
+                    <i class="ti ti-key" aria-hidden="true"></i>
+                    {{ __('Authorize a mailbox') }}
+                </button>
+            {% endif %}
+        {% endset %}
+        {% set oauth_login_helper = oauth_application['has_emails'] ? __('Mailbox authorized on the OAuth application to collect emails from.') : __('No mailbox is authorized on this OAuth application yet.') %}
+        {{ fields.dropdownArrayField(
+            '_oauth_login_' ~ oauth_application['id'],
+            item.fields['login'],
+            oauth_application['emails'],
+            __('Login'), {
+                display_emptychoice: false,
+                add_field_class: oauth_type == server_type ? '' : 'd-none',
+                add_field_attribs: {
+                    'data-glpi-mailcollector-auth': oauth_type,
+                },
+                add_field_html: authorize_btn,
+                input_class: 'col-xxl-7 d-flex',
+                helper: oauth_login_helper,
+            }
+        ) }}
+    {% endfor %}
 
     {{ fields.nullField() }}
 
@@ -107,6 +145,10 @@
         '',
         __('Password'), {
             clearable: not item.isNewItem(),
+            add_field_class: is_oauth ? 'd-none' : '',
+            add_field_attribs: {
+                'data-glpi-mailcollector-auth': 'password',
+            },
             'additional_attributes': {
                 'autocomplete': 'new-password',
             }
@@ -204,6 +246,73 @@
             helper: create_user_helper|trim|default(null)
         }
     ) }}
+
+    {% if oauth_applications is not empty %}
+        {% set oauth_specs = {} %}
+        {% for oauth_type, oauth_application in oauth_applications %}
+            {% set oauth_specs = oauth_specs|merge({(oauth_type): {
+                id: oauth_application['id'],
+                defaults: oauth_application['defaults'],
+            }}) %}
+        {% endfor %}
+        <script>
+            $(function() {
+                const form = $('[data-glpi-mailcollector-auth="password"]').first().closest('form');
+                const login = form.find('input[name="login"]');
+                const oauth_specs = {{ oauth_specs|json_encode|raw }};
+
+                // Shows the login/password fields, or the authorized mailboxes
+                // of the OAuth application selected as server type.
+                form.on('change', '[name="server_type"]', function() {
+                    const type = $(this).val();
+                    const spec = oauth_specs[type] ?? null;
+
+                    form.find('[data-glpi-mailcollector-auth]').each(function() {
+                        const auth = $(this).attr('data-glpi-mailcollector-auth');
+                        $(this).toggleClass('d-none', spec !== null ? auth !== type : auth !== 'password');
+                    });
+
+                    if (spec === null) {
+                        return;
+                    }
+
+                    login.val(form.find('[name="_oauth_login_' + spec.id + '"]').val() || '').trigger('change');
+
+                    const server = form.find('[name="mail_server"]');
+                    if (spec.defaults !== null && server.val() === '') {
+                        server.val(spec.defaults.host).trigger('change');
+                        form.find('[name="server_port"]').val(spec.defaults.port).trigger('change');
+                        const ssl = spec.defaults.ssl.toUpperCase();
+                        form.find('[name="server_ssl"]').val(ssl === 'SSL' ? '/ssl' : '').trigger('change');
+                        form.find('[name="server_tls"]').val(ssl === 'TLS' ? '/tls' : '').trigger('change');
+                    }
+                });
+
+                form.on('change', '[name^="_oauth_login_"]', function() {
+                    login.val($(this).val() || '').trigger('change');
+                });
+
+                // Requests the authorization of a new mailbox, then comes back to this form.
+                form.on('click', '[data-glpi-oauth-authorize]', function() {
+                    const auth_form = $('<form>', {
+                        method: 'post',
+                        action: CFG_GLPI.root_doc + '/ajax/oauthauthorization_action.php',
+                    });
+                    const values = {
+                        id: $(this).attr('data-glpi-oauth-authorize'),
+                        type: '{{ constant('OAuthAuthorization::TYPE_IMAP')|e('js') }}',
+                        request_authorization: 1,
+                        return_url: '{{ (item.isNewItem() ? item.getFormURL(false) : item.getFormURLWithID(item.getID(), false))|e('js') }}',
+                    };
+                    $.each(values, function(name, value) {
+                        auth_form.append($('<input>', {type: 'hidden', name: name, value: value}));
+                    });
+                    $('body').append(auth_form);
+                    auth_form[0].submit();
+                });
+            });
+        </script>
+    {% endif %}
 
     {% if connect_opts['type'] != 'pop' %}
         <script>

@@ -42,7 +42,9 @@ use Glpi\Exception\Database\StatementException;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Helpdesk\DefaultDataManager;
+use Glpi\Mail\Protocol\ImapOauthProtocol;
 use Glpi\Mail\Protocol\ProtocolInterface;
+use Glpi\Mail\Storage\ImapOauthStorage;
 use Glpi\Message\MessageType;
 use Glpi\OAuth\Server;
 use Glpi\Plugin\Hooks;
@@ -1510,10 +1512,7 @@ class Toolbox
         // server string is surrounded by "{}" and can be followed by a folder name
         // i.e. "{mail.domain.org/imap/ssl}INBOX", or "{mail.domain.org/pop}"
         $type = preg_replace('/^\{[^\/]+\/([^\/]+)(?:\/.+)*\}.*/', '$1', $value);
-        $tab['type'] = in_array($type, array_keys(self::getMailServerProtocols($allow_plugins_protocols)))
-            || preg_match('/^' . preg_quote(OAuthApplication::PROTOCOL_PREFIX, '/') . '\d+$/', $type)
-            ? $type
-            : '';
+        $tab['type'] = in_array($type, array_keys(self::getMailServerProtocols($allow_plugins_protocols))) ? $type : '';
 
         $tab['ssl'] = false;
         if (strstr($value, "/ssl")) {
@@ -1622,7 +1621,10 @@ class Toolbox
      *  - 'protocol_class' field is the protocol class to use (see Laminas\Mail\Protocol\Imap | Laminas\Mail\Protocol\Pop3);
      *  - 'storage_class' field is the storage class to use (see Laminas\Mail\Storage\Imap | Laminas\Mail\Storage\Pop3).
      *
-     * @param bool  $allow_plugins_protocols    Whether plugins protocol must be allowed.
+     * An "IMAP OAuth" protocol is added for each active OAuth application.
+     *
+     * @param bool  $allow_plugins_protocols    Whether plugins and OAuth applications protocols must be allowed.
+     *                                          They cannot be used to authenticate users against a mail server.
      *
      * @return array
      */
@@ -1646,6 +1648,8 @@ class Toolbox
         if ($allow_plugins_protocols === false) {
             return $protocols;
         }
+
+        $protocols += self::getOAuthMailServerProtocols();
 
         $additional_protocols = Plugin::doHookFunction(Hooks::MAIL_SERVER_PROTOCOLS, []);
         if (is_array($additional_protocols)) {
@@ -1676,6 +1680,34 @@ class Toolbox
                 'Invalid value returned by "mail_server_protocols" hook.',
                 E_USER_WARNING
             );
+        }
+
+        return $protocols;
+    }
+
+    /**
+     * Returns the "IMAP OAuth" protocol of each active OAuth application, keyed
+     * by `OAuthApplication::PROTOCOL_PREFIX` followed by the application ID.
+     *
+     * @return array<string, array{label: string, protocol: callable(): ImapOauthProtocol, storage: callable(array<string, mixed>): ImapOauthStorage}>
+     */
+    private static function getOAuthMailServerProtocols(): array
+    {
+        if (!DBConnection::isDbAvailable()) {
+            return [];
+        }
+
+        $protocols = [];
+        foreach (OAuthApplication::getActiveApplications() as $application) {
+            $application_id = $application->getID();
+            $protocols[OAuthApplication::PROTOCOL_PREFIX . $application_id] = [
+                'label'    => $application->fields['name'],
+                'protocol' => static fn(): ImapOauthProtocol => new ImapOauthProtocol($application_id),
+                'storage'  => static function (array $params) use ($application_id): ImapOauthStorage {
+                    $params['application_id'] = $application_id;
+                    return new ImapOauthStorage($params);
+                },
+            ];
         }
 
         return $protocols;

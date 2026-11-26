@@ -42,7 +42,11 @@ if (isset($_POST['id']) && isset($_POST['type']) && isset($_POST['request_author
 
     $application = new OAuthApplication();
     $application->check((int) ($_POST['id'] ?? 0), UPDATE);
-    $application->redirectToAuthorizationUrl($type);
+    $return_url = $_POST['return_url'] ?? null;
+    $application->redirectToAuthorizationUrl(
+        $type,
+        return_url: is_string($return_url) && $return_url !== '' ? $return_url : null
+    );
 } elseif (isset($_POST['id']) && isset($_POST['refresh'])) {
     $authorization = new OAuthAuthorization();
     $authorization->check((int) ($_POST['id'] ?? 0), UPDATE);

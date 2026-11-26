@@ -547,6 +547,102 @@ class OAuthAuthorizationTest extends DbTestCase
     // refreshToken()
     // -------------------------------------------------------------------------
 
+    public function testGetValidAccessTokenReturnsTheStoredTokenWhileItIsValid(): void
+    {
+        $this->login();
+
+        $app = $this->createApplication();
+
+        $provider = new FakeOauthProviderForTests();
+        $testable = TestableOAuthAuthorization::withProvider($provider);
+        $created = $this->createItem(OAuthAuthorization::class, [
+            'oauthapplications_id' => $app->getID(),
+            'type'                 => OAuthAuthorization::TYPE_IMAP,
+            'email'                => 'user@example.com',
+            'token'                => json_encode(['access_token' => 'valid-access', 'expires' => time() + 3600]),
+            'refresh_token'        => 'a-refresh',
+        ], ['token', 'refresh_token']);
+        $testable->getFromDB($created->getID());
+
+        $this->assertSame('valid-access', $testable->getValidAccessToken()?->getToken());
+        $this->assertNull($testable->getLastError());
+        $this->assertNull($provider->last_grant);
+    }
+
+    public function testGetValidAccessTokenRefreshesAnExpiredToken(): void
+    {
+        $this->login();
+
+        $app = $this->createApplication();
+
+        $provider = new FakeOauthProviderForTests();
+        $provider->access_token_result = new AccessToken([
+            'access_token' => 'new-access',
+            'expires_in'   => 3600,
+        ]);
+        $testable = TestableOAuthAuthorization::withProvider($provider);
+        $created = $this->createItem(OAuthAuthorization::class, [
+            'oauthapplications_id' => $app->getID(),
+            'type'                 => OAuthAuthorization::TYPE_IMAP,
+            'email'                => 'user@example.com',
+            'token'                => json_encode(['access_token' => 'expired-access', 'expires' => time() - 60]),
+            'refresh_token'        => 'a-refresh',
+        ], ['token', 'refresh_token']);
+        $testable->getFromDB($created->getID());
+
+        $this->assertSame('new-access', $testable->getValidAccessToken()?->getToken());
+        $this->assertSame('refresh_token', $provider->last_grant);
+        $this->assertSame('a-refresh', $provider->last_options['refresh_token']);
+    }
+
+    public function testGetValidAccessTokenFailsWhenTheTokenCannotBeRenewed(): void
+    {
+        $this->login();
+
+        $app = $this->createApplication();
+
+        $created = $this->createItem(OAuthAuthorization::class, [
+            'oauthapplications_id' => $app->getID(),
+            'type'                 => OAuthAuthorization::TYPE_IMAP,
+            'email'                => 'user@example.com',
+            'token'                => json_encode(['access_token' => 'expired-access', 'expires' => time() - 60]),
+        ], ['token']);
+        $testable = TestableOAuthAuthorization::withProvider(new FakeOauthProviderForTests());
+        $testable->getFromDB($created->getID());
+
+        $this->assertNull($testable->getValidAccessToken());
+        $this->assertSame('No refresh token is available for this authorization', $testable->getLastError());
+    }
+
+    public function testGetFromDBForApplicationAndEmail(): void
+    {
+        $this->login();
+
+        $app = $this->createApplication();
+        $other_app = $this->createApplication();
+
+        $imap = $this->createItem(OAuthAuthorization::class, [
+            'oauthapplications_id' => $app->getID(),
+            'type'                 => OAuthAuthorization::TYPE_IMAP,
+            'email'                => 'user@example.com',
+        ]);
+        $smtp = $this->createItem(OAuthAuthorization::class, [
+            'oauthapplications_id' => $app->getID(),
+            'type'                 => OAuthAuthorization::TYPE_SMTP,
+            'email'                => 'user@example.com',
+        ]);
+
+        $authorization = new OAuthAuthorization();
+        $this->assertTrue($authorization->getFromDBForApplicationAndEmail($app->getID(), 'user@example.com'));
+        $this->assertSame($imap->getID(), $authorization->getID());
+
+        $this->assertTrue($authorization->getFromDBForApplicationAndEmail($app->getID(), 'user@example.com', OAuthAuthorization::TYPE_SMTP));
+        $this->assertSame($smtp->getID(), $authorization->getID());
+
+        $this->assertFalse($authorization->getFromDBForApplicationAndEmail($app->getID(), 'other@example.com'));
+        $this->assertFalse($authorization->getFromDBForApplicationAndEmail($other_app->getID(), 'user@example.com'));
+    }
+
     public function testRefreshTokenFailsWithoutRefreshToken(): void
     {
         $this->login();

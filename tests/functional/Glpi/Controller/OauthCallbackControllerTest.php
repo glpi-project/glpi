@@ -38,6 +38,7 @@ use Glpi\Controller\OauthCallbackController;
 use Glpi\Exception\RedirectException;
 use Glpi\Http\Firewall;
 use Glpi\Http\RedirectResponse;
+use Glpi\Mail\OauthProvider\OwnerDetails;
 use Glpi\Mail\OauthProvider\ProviderInterface;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Glpi\Tests\DbTestCase;
@@ -48,9 +49,12 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use League\OAuth2\Client\Provider\AbstractProvider;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 use OAuthApplication;
 use OAuthAuthorization;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Http\Message\RequestInterface;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\json_encode;
@@ -197,8 +201,122 @@ class OauthCallbackControllerTest extends DbTestCase
 
     public function tearDown(): void
     {
-        unset($_SESSION['oauth2_provider_id'], $_SESSION['oauth2_type'], $_SESSION['oauth2_state']);
+        unset(
+            $_SESSION['oauth2_provider_id'],
+            $_SESSION['oauth2_type'],
+            $_SESSION['oauth2_state'],
+            $_SESSION['oauth2_return_url']
+        );
         parent::tearDown();
+    }
+
+    /**
+     * Provider answering without any HTTP call, to request an authorization.
+     */
+    private function getOfflineProvider(): ProviderInterface
+    {
+        return new class implements ProviderInterface {
+            public function getAuthorizationUrl(array $options = [])
+            {
+                return 'https://provider.example.com/authorize';
+            }
+
+            public function getAccessToken($grant, array $options = [])
+            {
+                throw new RuntimeException('Not expected to be called.');
+            }
+
+            public function getState()
+            {
+                return 'offline-state';
+            }
+
+            public function getOwnerDetails(AccessTokenInterface $token): ?OwnerDetails
+            {
+                return null;
+            }
+
+            public static function getImapDefaults(): array
+            {
+                return ['host' => 'imap.example.com', 'port' => 993, 'ssl' => 'SSL'];
+            }
+
+            public static function getName(): string
+            {
+                return 'Offline';
+            }
+        };
+    }
+
+    public static function returnUrlProvider(): iterable
+    {
+        yield 'mail collector form' => ['/front/mailcollector.form.php?id=12', '/front/mailcollector.form.php?id=12'];
+        yield 'new mail collector' => ['/front/mailcollector.form.php', '/front/mailcollector.form.php'];
+        yield 'absolute URL' => ['https://evil.example.com/front/mailcollector.form.php', null];
+        yield 'protocol relative URL' => ['//evil.example.com/front/mailcollector.form.php', null];
+        yield 'path traversal' => ['/front/../../etc/passwd', null];
+        yield 'no return URL' => [null, null];
+    }
+
+    #[DataProvider('returnUrlProvider')]
+    public function testOnlyGlpiRelativeReturnUrlsAreKept(?string $return_url, ?string $expected): void
+    {
+        $this->login();
+
+        $app = $this->createApplication();
+        $_SESSION['oauth2_return_url'] = '/front/stale.php';
+
+        try {
+            $app->redirectToAuthorizationUrl(OAuthAuthorization::TYPE_IMAP, $this->getOfflineProvider(), $return_url);
+            $this->fail('A redirection to the provider consent screen was expected.');
+        } catch (RedirectException $e) {
+            $this->assertSame('https://provider.example.com/authorize', $e->getResponse()->getTargetUrl());
+        }
+
+        $this->assertSame($expected, $_SESSION['oauth2_return_url'] ?? null);
+    }
+
+    public function testCallbackGoesBackToTheRequestingPage(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $app = $this->createApplication();
+        $_SESSION['oauth2_provider_id'] = $app->getID();
+        $_SESSION['oauth2_type']        = 'IMAP';
+        $_SESSION['oauth2_state']       = 'expected-state';
+        $_SESSION['oauth2_return_url']  = '/front/mailcollector.form.php?id=12';
+
+        $request = Request::create('/oauth/callback/complete?state=expected-state&error=access_denied', 'GET');
+
+        $response = (new OauthCallbackController())->complete($request);
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame($CFG_GLPI['root_doc'] . '/front/mailcollector.form.php?id=12', $response->getTargetUrl());
+        $this->assertArrayNotHasKey('oauth2_return_url', $_SESSION);
+        $this->hasSessionMessages(ERROR, ['Authorization failed with error: access_denied']);
+    }
+
+    public function testStaleCallbackDoesNotUseTheReturnUrl(): void
+    {
+        $this->login();
+
+        $app = $this->createApplication();
+        $_SESSION['oauth2_provider_id'] = $app->getID();
+        $_SESSION['oauth2_type']        = 'IMAP';
+        $_SESSION['oauth2_state']       = 'expected-state';
+        $_SESSION['oauth2_return_url']  = '/front/mailcollector.form.php?id=12';
+
+        $request = Request::create('/oauth/callback/complete?state=other-state&code=xyz', 'GET');
+
+        $response = (new OauthCallbackController())->complete($request);
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame($app->getLinkURL(), $response->getTargetUrl());
+        // Kept for the pending authorization it belongs to.
+        $this->assertSame('/front/mailcollector.form.php?id=12', $_SESSION['oauth2_return_url']);
+        $this->hasSessionMessages(ERROR, ['Unable to verify authorization code']);
     }
 
     public function testFirstHitBouncesToTheCompletionRoute(): void
