@@ -288,8 +288,10 @@ class NotificationEventMailing extends NotificationEventAbstract
                                 continue;
                             }
                             $image_path = GLPI_DOC_DIR . "/" . $doc->fields['filepath'];
-                            $mail->embedFromPath($image_path, $doc->fields['filename']);
-                            $inline_docs[$document_id] = $doc->fields['filename'];
+                            // Prefix with document ID, as several documents may share the same filename
+                            $cid = $document_id . '-' . $doc->fields['filename'];
+                            $mail->embedFromPath($image_path, $cid);
+                            $inline_docs[$document_id] = $cid;
                         } else {
                             if (
                                 $current->fields['attach_documents'] !== NotificationSetting::ATTACH_NO_DOCUMENT
@@ -314,7 +316,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                         )
                     ) {
                         foreach ($matches[2] as $pos => $docID) {
-                            if (in_array($docID, $inline_docs)) {
+                            if (isset($inline_docs[$docID])) {
                                 // Already in mapping
                                 continue;
                             }
@@ -390,14 +392,15 @@ class NotificationEventMailing extends NotificationEventAbstract
                                 }
                             }
 
-                            $mail->embedFromPath($image_path, $doc->fields['filename']);
-                            $inline_docs[$docID] = $doc->fields['filename'];
+                            $cid = $docID . '-' . $doc->fields['filename'];
+                            $mail->embedFromPath($image_path, $cid);
+                            $inline_docs[$docID] = $cid;
                         }
                     }
 
                     // replace img[src] by cid:tag in html content
                     // replace a[href] by absolute URL
-                    foreach ($inline_docs as $docID => $filename) {
+                    foreach ($inline_docs as $docID => $cid) {
                         $current->fields['body_html'] = preg_replace(
                             [
                                 '/src=["\'][^"\']*document\.send\.php\?docid(?:=|&#61;)' . $docID . '(&[^"\']+)?["\']/',
@@ -407,7 +410,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                                 // 'cid' must be identical as second arg used in `embedFromPath` method
                                 // Symfony/Mime will then replace it by an auto-generated value
                                 // see Symfony\Mime\Email::prepareParts()
-                                'src="cid:' . $filename . '" style="max-width: 100%; height: auto;"',
+                                'src="cid:' . $cid . '" style="max-width: 100%; height: auto;"',
                                 'href="' . htmlescape($CFG_GLPI['url_base'] . '/front/document.send.php?docid=' . $docID) . '$1"',
                             ],
                             $current->fields['body_html']

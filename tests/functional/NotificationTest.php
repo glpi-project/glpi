@@ -58,6 +58,7 @@ use NotificationEvent;
 use NotificationEventMailing;
 use NotificationSetting;
 use NotificationTarget;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
 use Psr\Log\LogLevel;
 use QueuedNotification;
@@ -66,6 +67,7 @@ use Session;
 use Symfony\Component\Mailer\DelayedEnvelope;
 use Symfony\Component\Mailer\SentMessage;
 use Symfony\Component\Mailer\Transport\AbstractTransport;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Part\DataPart;
 use Ticket;
 use TicketTask;
@@ -865,6 +867,132 @@ HTML,
         $this->assertCount(1, $attachments);
         $this->assertInstanceOf(DataPart::class, $attachments[0]);
         $this->assertEquals($followup_doc->fields['filename'], $attachments[0]->getFilename());
+    }
+
+    /**
+     * Create an image document, optionally forcing its filename.
+     */
+    private function createImageDocument(?string $forced_filename = null): Document
+    {
+        global $DB;
+
+        $uploaded = $this->createUploadedImage('inline');
+        $document = $this->createItem(Document::class, [
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            '_filename'   => [$uploaded],
+        ]);
+        if ($forced_filename !== null) {
+            $this->assertTrue($DB->update(Document::getTable(), ['filename' => $forced_filename], ['id' => $document->getID()]));
+            $this->assertTrue($document->getFromDB($document->getID()));
+        }
+
+        return $document;
+    }
+
+    /**
+     * Queue an HTML mail notification on the given computer and send it.
+     */
+    private function sendHtmlNotification(Computer $computer, string $body_html): Email
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['use_notifications'] = $CFG_GLPI['notifications_mailing'] = true;
+
+        $queued = $this->createItem(QueuedNotification::class, [
+            'itemtype'         => Computer::class,
+            'items_id'         => $computer->getID(),
+            'event'            => 'update',
+            'mode'             => 'mailing',
+            'name'             => __FUNCTION__,
+            'sender'           => 'sender@glpi.com',
+            'sendername'       => 'Sender',
+            'recipient'        => 'recipient@glpi.com',
+            'recipientname'    => 'Recipient',
+            'body_html'        => $body_html,
+            'body_text'        => 'text',
+            'attach_documents' => NotificationSetting::ATTACH_NO_DOCUMENT,
+        ]);
+
+        $transport = $this->createCapturingTransport();
+        NotificationEventMailing::setMailer(new GLPIMailer($transport));
+        NotificationEventMailing::send([$queued->fields]);
+        NotificationEventMailing::setMailer(null);
+
+        return $transport->sent_email;
+    }
+
+    public static function inlineImagesWithSameFilenameProvider(): iterable
+    {
+        yield 'documents found by tag' => [true];
+        yield 'documents found by img[src] only' => [false];
+    }
+
+    #[DataProvider('inlineImagesWithSameFilenameProvider')]
+    public function testInlineImagesWithSameFilenameHaveDistinctContentIds(bool $link_documents): void
+    {
+        $this->login();
+
+        $computer = $this->createItem(Computer::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $doc_1 = $this->createImageDocument('image001.png');
+        $doc_2 = $this->createImageDocument('image001.png');
+
+        $body_html = '';
+        foreach ([$doc_1, $doc_2] as $document) {
+            if ($link_documents) {
+                $this->createItem(Document_Item::class, [
+                    'documents_id' => $document->getID(),
+                    'itemtype'     => Computer::class,
+                    'items_id'     => $computer->getID(),
+                ]);
+            }
+            $body_html .= '<p><img src="/front/document.send.php?docid=' . $document->getID() . '" alt="' . $document->fields['tag'] . '" /></p>';
+        }
+
+        $email = $this->sendHtmlNotification($computer, $body_html);
+
+        // Each `cid:` reference must target its own document content
+        $this->assertSame(2, preg_match_all('/src="cid:([^"]+)"/', $email->getHtmlBody(), $matches));
+        $cids = $matches[1];
+        $this->assertCount(2, array_unique($cids));
+
+        $parts_by_name = [];
+        foreach ($email->getAttachments() as $attachment) {
+            $parts_by_name[$attachment->getName()] = $attachment;
+        }
+        foreach ([$doc_1, $doc_2] as $index => $document) {
+            $this->assertArrayHasKey($cids[$index], $parts_by_name);
+            $this->assertSame(
+                file_get_contents(GLPI_DOC_DIR . '/' . $document->fields['filepath']),
+                $parts_by_name[$cids[$index]]->getBody()
+            );
+        }
+    }
+
+    public function testInlineImageMatchingTagIsEmbeddedOnce(): void
+    {
+        $this->login();
+
+        $computer = $this->createItem(Computer::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $document = $this->createImageDocument();
+        $this->createItem(Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'itemtype'     => Computer::class,
+            'items_id'     => $computer->getID(),
+        ]);
+
+        // Document matches both its tag and an `img[src]` reference
+        $email = $this->sendHtmlNotification(
+            $computer,
+            '<p><img src="/front/document.send.php?docid=' . $document->getID() . '" alt="' . $document->fields['tag'] . '" /></p>'
+        );
+
+        $this->assertCount(1, $email->getAttachments());
     }
 
     /**
