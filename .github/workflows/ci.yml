@@ -388,7 +388,7 @@ jobs:
         with:
           name: playwright-report
           path: playwright-report/
-          retention-days: 30
+          retention-days: 7
       - name: "Upload output"
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7.0.2
