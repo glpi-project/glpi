@@ -40,6 +40,8 @@ use Glpi\Features\Clonable;
 use Glpi\Features\DCBreadcrumb;
 use Glpi\Features\Kanban;
 use Glpi\Features\PlanningEvent;
+use Glpi\Security\ContentSecurityPolicy\CspState;
+use Glpi\Tests\CspTesterTrait;
 use Glpi\Tests\DbTestCase;
 use ITILFollowup;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -51,7 +53,30 @@ use Ticket;
 
 class ToolboxTest extends DbTestCase
 {
+    use CspTesterTrait;
+
     private const TEST_CUSTOM_LOG_FILE_NAME = 'test_log_file';
+
+    public function testDeprecatedCspIncompatibleUsageWhenCspIsEnabled(): void
+    {
+        $this->assertTrue(CspState::isEnabled());
+
+        \Toolbox::deprecatedCspIncompatibleUsage('The `foo` option is deprecated.');
+
+        $this->hasPhpLogRecordThatContains(
+            'The `foo` option is deprecated. This usage is ignored because the Content Security Policy (CSP) is enabled.',
+            LogLevel::WARNING
+        );
+    }
+
+    public function testDeprecatedCspIncompatibleUsageWhenCspIsDisabled(): void
+    {
+        $this->disableCsp();
+
+        \Toolbox::deprecatedCspIncompatibleUsage('The `foo` option is deprecated.');
+
+        $this->hasPhpLogRecordThatContains('User Deprecated: The `foo` option is deprecated.', LogLevel::INFO);
+    }
 
     public function testGetRandomString()
     {

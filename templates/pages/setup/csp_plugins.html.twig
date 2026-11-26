@@ -119,7 +119,7 @@
                 <strong>Use <code>reExecuteTrustedScript(script)</code> instead of <code>$.globalEval()</code>.</strong>
             </li>
             <li class="mb-2">
-                <strong>Deprecated methods and options</strong> become no-ops when the CSP is enabled.
+                <strong>Deprecated methods and options</strong> become no-ops when the CSP is enabled, and GLPI logs a warning each time they are used.
                 Fix any deprecation warnings that GLPI logs for your plugin.
             </li>
             <li class="mb-2">
