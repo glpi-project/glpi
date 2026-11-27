@@ -37,5 +37,7 @@
  */
 
 $migration->dropKey('glpi_states', 'unicity');
+$migration->dropKey('glpi_states', 'entities_id');
 $migration->migrationOneTable('glpi_states');
 $migration->addKey('glpi_states', ['entities_id', 'states_id', 'name'], 'unicity', 'UNIQUE');
+$migration->addKey('glpi_states', 'states_id');
