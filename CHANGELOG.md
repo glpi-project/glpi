@@ -15,6 +15,7 @@ The present file will list all changes made to the project; according to the
 
 ### Changes
 - Mails receivers now rely on the `directorytree/imapengine` library to connect to IMAP servers.
+- Planning dates of external events and reminders are now defined using start and end dates, with a choice between an "All day" event and a "Time slot" event, instead of a start date and a duration.
 
 ### Deprecated
 
@@ -25,6 +26,8 @@ The present file will list all changes made to the project; according to the
 ### API changes
 
 #### Added
+- `Planning::showEventDatesForm()`
+- `inputs.time()` and `fields.timeField()` Twig macros in `basic_inputs_macros.html.twig` and `fields_macros.html.twig`.
 
 #### Changes
 - `NotificationEvent::raiseEvent()` has a new optional `$notifications_id` parameter to send only one notification of the event.

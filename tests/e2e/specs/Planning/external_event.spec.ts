@@ -32,8 +32,48 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '../../fixtures/glpi_fixture';
 import { Profiles } from '../../utils/Profiles';
+import { ExternalEventPage } from '../../pages/ExternalEventPage';
 
 test.describe('External event', () => {
+    test('New event form loads correctly', async ({ page, profile }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const event_page = new ExternalEventPage(page);
+
+        // A new event has no dates yet, the form must still be displayed with default ones
+        await event_page.goto();
+        await expect(event_page.title_input).toBeVisible();
+        await expect(event_page.time_slot_radio).toBeChecked();
+        await expect(event_page.all_day_radio).not.toBeChecked();
+        await expect(event_page.start_time_input).toBeVisible();
+        await expect(event_page.end_time_input).toBeVisible();
+        await expect(event_page.plan_begin_input).toHaveValue(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:00$/);
+        await expect(event_page.plan_end_input).toHaveValue(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:00$/);
+    });
+
+    test('End date follows a start date typed in the past', async ({ page, profile }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const event_page = new ExternalEventPage(page);
+
+        await event_page.goto();
+        await expect(event_page.plan_begin_input).toHaveValue(/^\d{4}-\d{2}-\d{2} /);
+
+        // The new end date is lower than the previous start date, it must not be rejected by the end date picker
+        await event_page.doTypeStartDate('2020-01-15');
+        // An event starting late in the evening ends on the following day
+        await expect(event_page.end_date_input).toHaveValue(/^2020-01-1[56]$/);
+
+        // Default start time is the current time, use a fixed one to not depend on it
+        await event_page.doTypeStartTime('10:00');
+        await expect(event_page.plan_begin_input).toHaveValue('2020-01-15 10:00:00');
+        await expect(event_page.end_date_input).toHaveValue('2020-01-15');
+        await expect(event_page.plan_end_input).toHaveValue(/^2020-01-15 /);
+
+        // Typing an end time must keep the end date, even when the event is not in the current year
+        await event_page.end_time_input.fill('15:00');
+        await event_page.end_time_input.press('Tab');
+        await expect(event_page.plan_end_input).toHaveValue('2020-01-15 15:00:00');
+    });
+
     test('Accessibility - Form', async ({ page, profile }) => {
         await profile.set(Profiles.SuperAdmin);
 
@@ -52,6 +92,11 @@ test.describe('External event', () => {
 
         // eslint-disable-next-line playwright/no-raw-locators
         await expect(page.locator('.modal.show')).toBeVisible();
+
+        // Wait for the modal fade animation to be over, colors are altered while it is running
+        await page.waitForFunction(() =>
+            document.getAnimations().filter(a => a.playState === 'running').length === 0
+        );
 
         const modal_a11y = await new AxeBuilder({ page })
             .include('.modal.show')
