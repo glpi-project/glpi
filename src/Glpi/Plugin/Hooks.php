@@ -760,7 +760,8 @@ class Hooks
      * Register a function to add actions to an entry of the timeline of a Ticket, Change or Problem
      * (description, followup, task, solution, validation...), rendered with the page: no script has to wait
      * for the page to be loaded to insert them.
-     * The function is called once per entry, with the following parameters:
+     * The function is called once per entry, except for the compact lines of the history and of the automatic reminders
+     * (Log and ITILReminder entries), which have no actions. It is called with the following parameters:
      * - 'item' => The item shown by the entry (the Ticket, Change or Problem itself for its description), or null if it cannot be loaded.
      * - 'parent' => The Ticket, Change or Problem.
      * - 'entry' => The timeline entry, see {@link self::TIMELINE_ITEMS}: 'type', 'item' (fields of the item), and 'item_action' when it is set

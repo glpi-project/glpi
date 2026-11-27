@@ -209,17 +209,18 @@
     }
 
     @media (hover: hover) {
-        // An enabled action (e.g. a translated content) stays visible
+        // An enabled action (e.g. a translated content) stays visible.
+        // Transparent rather than hidden: the actions stay focusable, so that :focus-within shows them to keyboard users.
         .timeline-more-actions,
         .timeline-item-action:not(.active) {
-            visibility: hidden;
+            opacity: 0;
         }
 
         &:hover,
         &:focus-within {
             .timeline-more-actions,
             .timeline-item-action {
-                visibility: visible;
+                opacity: 1;
             }
         }
     }
