@@ -476,7 +476,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
 
         // Restrict to entities available to the current viewer and to the target user's entities.
-        $viewer_entity_criteria = getEntitiesRestrictCriteria($table);
+        $viewer_entity_criteria = getEntitiesRestrictCriteria($table,'', '', $item->maybeRecursive());
         if (count($viewer_entity_criteria) > 0) {
             $where[] = $viewer_entity_criteria;
         }
