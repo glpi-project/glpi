@@ -460,7 +460,7 @@
 
     {% if editable %}
         {% set locale = get_current_locale() %}
-        <script type="module">
+        <script nonce="{{ csp_nonce() }}" type="module">
             flatpickr(document.getElementById('{{ options.id|e('js') }}'), {
                 wrap: true,
                 enableTime: true,
