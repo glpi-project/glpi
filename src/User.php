@@ -453,6 +453,72 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
 
     /**
+     * Get shared query parameters for items linked to a user.
+     *
+     * @param CommonDBTM $item
+     * @param array      $user_criteria
+     * @param int[]      $target_entities
+     *
+     * @return array<string, mixed>
+     */
+    private static function getItemsForUserQueryParams(
+        CommonDBTM $item,
+        array $user_criteria,
+        array $target_entities
+    ): array {
+        $table = $item::getTable();
+
+        $where = [$user_criteria['criteria']];
+
+        $system_criteria = $item::getSystemSQLCriteria();
+        if (count($system_criteria) > 0) {
+            $where[] = $system_criteria;
+        }
+
+        // Restrict to entities available to the current viewer and to the target user's entities.
+        $viewer_entity_criteria = getEntitiesRestrictCriteria($table);
+        if (count($viewer_entity_criteria) > 0) {
+            $where[] = $viewer_entity_criteria;
+        }
+
+        $target_entity_criteria = getEntitiesRestrictCriteria($table, 'entities_id', $target_entities);
+        if (count($target_entity_criteria) > 0) {
+            $where[] = $target_entity_criteria;
+        }
+
+        if ($item instanceof AssignableItemInterface) {
+            $where[] = $item::getAssignableVisiblityCriteria();
+        }
+
+        if ($item->maybeTemplate()) {
+            $where[] = ['is_template' => 0];
+        }
+
+        if ($item->maybeDeleted()) {
+            $where[] = ['is_deleted' => 0];
+        }
+
+        return [
+            'FROM' => $table,
+            'LEFT JOIN' => [
+                Group_Item::getTable() => [
+                    'FKEY' => [
+                        $table => 'id',
+                        Group_Item::getTable() => 'items_id',
+                        [
+                            'AND' => [
+                                Group_Item::getTable() . '.itemtype' => $item::class,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'WHERE' => ['AND' => $where],
+        ];
+    }
+
+
+    /**
      * Count items linked to a user.
      *
      * @param int  $users_id User ID
@@ -488,44 +554,15 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 continue;
             }
 
-            $where = [
-                $user_criteria['criteria'] + $item::getSystemSQLCriteria(),
-                getEntitiesRestrictCriteria($table),
-                getEntitiesRestrictCriteria($table, 'entities_id', $user->getEntities()),
-            ];
-
-            if ($item instanceof AssignableItemInterface) {
-                $where[] = $item::getAssignableVisiblityCriteria();
-            }
-
-            if ($item->maybeTemplate()) {
-                $where[] = ['is_template' => 0];
-            }
-
-            if ($item->maybeDeleted()) {
-                $where[] = ['is_deleted' => 0];
-            }
-
             $query = [
                 'SELECT' => [
                     'COUNT DISTINCT' => "$table.id AS cpt",
                 ],
-                'FROM'  => $table,
-                'LEFT JOIN' => [
-                    Group_Item::getTable() => [
-                        'FKEY' => [
-                            $table => 'id',
-                            Group_Item::getTable() => 'items_id',
-                            [
-                                'AND' => [
-                                    Group_Item::getTable() . '.itemtype' => $itemtype,
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                'WHERE' => ['AND' => $where],
-            ];
+            ] + self::getItemsForUserQueryParams(
+                $item,
+                $user_criteria,
+                $user->getEntities()
+            );
 
             $count += $DB->request($query)->current()['cpt'];
         }
@@ -5463,43 +5500,24 @@ HTML;
 
                 $target_entities = count($filters['entity']) > 0 ? $filters['entity'] : $this->getEntities();
 
-                $where = ['entities_id' => $target_entities] + $criteria + $item::getSystemSQLCriteria();
-                if (count($item_criteria) > 0) {
-                    $where[] = $item_criteria;
-                }
-
-                $iterator_params = [
-                    'SELECT'  => [
-                        "$itemtable.*",
-                        QueryFunction::groupConcat(
-                            expression: new QueryIdentifier($relation_table . '.groups_id'),
-                            distinct: true,
-                            alias: 'groups_ids'
-                        ),
-                        new QueryExpression(new QueryValue($itemtype), 'itemtype'),
-                    ],
-                    'FROM'    => $itemtable,
-                    'LEFT JOIN' => [
-                        Group_Item::getTable() => [
-                            'FKEY' => [
-                                $itemtable => 'id',
-                                Group_Item::getTable() => 'items_id', [
-                                    'AND' => [
-                                        Group_Item::getTable() . '.itemtype' => $itemtype,
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ],
-                    'WHERE'   => $where,
-                    'GROUPBY' => "$itemtable.id",
+                $iterator_params = self::getItemsForUserQueryParams(
+                    $item,
+                    $user_criteria,
+                    $target_entities
+                );
+                $iterator_params['SELECT'] = [
+                    "$itemtable.*",
+                    QueryFunction::groupConcat(
+                        expression: new QueryIdentifier($relation_table . '.groups_id'),
+                        distinct: true,
+                        alias: 'groups_ids'
+                    ),
+                    new QueryExpression(new QueryValue($itemtype), 'itemtype'),
                 ];
+                $iterator_params['GROUPBY'] = "$itemtable.id";
 
-                if ($item->maybeTemplate()) {
-                    $iterator_params['WHERE']['is_template'] = 0;
-                }
-                if ($item->maybeDeleted()) {
-                    $iterator_params['WHERE']['is_deleted'] = 0;
+                if (count($item_criteria) > 0) {
+                    $iterator_params['WHERE']['AND'][] = $item_criteria;
                 }
 
                 $item_iterator = $DB->request($iterator_params);
