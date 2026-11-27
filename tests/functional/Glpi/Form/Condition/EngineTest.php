@@ -464,6 +464,11 @@ final class EngineTest extends DbTestCase
                     'First section' => true,
                     'Second section' => false,
                 ],
+                // Questions of the first section must not inherit its configured (ignored) visibility
+                'questions' => [
+                    'Question used as condition' => true,
+                    'Another question' => false,
+                ],
             ],
         ];
     }

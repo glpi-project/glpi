@@ -185,8 +185,11 @@ final class Engine
             $items[] = $comment;
         }
 
-        // Add all sections
-        foreach ($this->form->getSections() as $section) {
+        // Add all sections except the first one, which must always be visible
+        // (missing from the visibility cache, it is considered visible by its children)
+        $sections = $this->form->getSections();
+        array_shift($sections);
+        foreach ($sections as $section) {
             $items[] = $section;
         }
 
