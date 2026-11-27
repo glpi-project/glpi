@@ -1316,6 +1316,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Cartridge.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method CartridgeItem\\:\\:dropdownForPrinter\\(\\) should return bool\\|string but returns int\\|string\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CartridgeItem.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method CartridgeItem\\:\\:prepareInputForClone\\(\\) should return array but returns array\\|false\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -2360,6 +2366,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILRecurrent.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method CommonITILSatisfaction\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILSatisfaction.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$users_id of method CommonITILObject\\:\\:isUser\\(\\) expects int, int\\|string\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -3058,6 +3070,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'plugin\' on non\\-empty\\-array\\|true\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CronTask.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method CronTask\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
+	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CronTask.php',
 ];
@@ -3818,6 +3836,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method DropdownTranslation\\:\\:dropdownFields\\(\\) should return int but returns int\\|string\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DropdownTranslation.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$itemtype of static method DropdownTranslation\\:\\:getTranslatedValue\\(\\) expects string, class\\-string\\<CommonTreeDropdown\\>\\|CommonTreeDropdown given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
@@ -3886,7 +3910,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Entity\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
 	'identifier' => 'return.type',
-	'count' => 3,
+	'count' => 6,
 	'path' => __DIR__ . '/src/Entity.php',
 ];
 $ignoreErrors[] = [
@@ -6062,6 +6086,246 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/CustomObject/AbstractDefinition.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$json of function Safe\\\\json_decode expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Dashboard.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$raw_rights of static method Glpi\\\\Dashboard\\\\Dashboard\\:\\:convertRights\\(\\) expects array, array\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Dashboard.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$value of function count expects array\\|Countable, array\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Dashboard.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$array of function array_map expects array, array\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Dashboard.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Dashboard\\\\Dashboard\\:\\:\\$key \\(string\\) does not accept int\\|string\\.$#',
+	'identifier' => 'assign.propertyType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Dashboard.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access constant class on CommonDBTM\\|null\\.$#',
+	'identifier' => 'classConstant.nonObject',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/FakeProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call static method getIcon\\(\\) on CommonDBTM\\|null\\.$#',
+	'identifier' => 'staticMethod.nonObject',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/FakeProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call static method getSearchURL\\(\\) on CommonDBTM\\|null\\.$#',
+	'identifier' => 'staticMethod.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/FakeProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call static method getTypeName\\(\\) on CommonDBTM\\|null\\.$#',
+	'identifier' => 'staticMethod.nonObject',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/FakeProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Match arm comparison between \'closed\' and \'closed\' is always true\\.$#',
+	'identifier' => 'match.alwaysTrue',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/FakeProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$array of function array_keys expects array, array\\|int\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/FakeProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Dashboard\\\\Filters\\\\AbstractFilter\\:\\:getSearchOptionID\\(\\) should return int but returns int\\|string\\|false\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Filters/AbstractFilter.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itemtype of static method Search\\:\\:getOptions\\(\\) expects string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Filters/AbstractFilter.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$class of static method Toolbox\\:\\:hasTrait\\(\\) expects object\\|string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Filters/AbstractGroupFilter.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Dashboard\\\\Grid\\:\\:dropdownDashboard\\(\\) should return string but returns int\\|string\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Grid.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$callback of function call_user_func_array expects callable\\(\\)\\: mixed, non\\-falsy\\-string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Grid.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access constant class on CommonDBTM\\|null\\.$#',
+	'identifier' => 'classConstant.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method getSystemSQLCriteria\\(\\) on CommonDBTM\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method isEntityAssign\\(\\) on CommonDBTM\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method maybeDeleted\\(\\) on CommonDBTM\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method maybeRecursive\\(\\) on CommonDBTM\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method maybeTemplate\\(\\) on CommonDBTM\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method rawSearchOptions\\(\\) on CommonDBTM\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call static method getFormURLWithID\\(\\) on CommonDBTM\\|null\\.$#',
+	'identifier' => 'staticMethod.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call static method getIcon\\(\\) on CommonDBTM\\|null\\.$#',
+	'identifier' => 'staticMethod.nonObject',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call static method getIndexName\\(\\) on CommonDBTM\\|null\\.$#',
+	'identifier' => 'staticMethod.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call static method getSearchURL\\(\\) on CommonDBTM\\|null\\.$#',
+	'identifier' => 'staticMethod.nonObject',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call static method getSystemSQLCriteria\\(\\) on CommonDBTM\\|null\\.$#',
+	'identifier' => 'staticMethod.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call static method getTable\\(\\) on CommonDBTM\\|null\\.$#',
+	'identifier' => 'staticMethod.nonObject',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call static method getTableField\\(\\) on CommonDBTM\\|null\\.$#',
+	'identifier' => 'staticMethod.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call static method getTypeName\\(\\) on CommonDBTM\\|null\\.$#',
+	'identifier' => 'staticMethod.nonObject',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$array of function array_keys expects array, array\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$array of function array_values expects array, array\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$item of static method Glpi\\\\Dashboard\\\\Provider\\:\\:nbItemByFk\\(\\) expects CommonDBTM\\|null, CommonDBTM\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itemtype of function getForeignKeyFieldForItemType expects class\\-string\\<CommonDBTM\\>, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$object_or_class of function is_a expects object\\|string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$users_id of static method CommonITILValidation\\:\\:getTargetCriteriaForUser\\(\\) expects int, int\\|string\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$fk_item of static method Glpi\\\\Dashboard\\\\Provider\\:\\:nbItemByFk\\(\\) expects CommonDBTM\\|null, CommonDBTM\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#6 \\$year of function Safe\\\\mktime expects int\\|null, float\\|int given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#3 \\$length of function array_splice expects int\\|null, float\\|int given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Widget.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Debug\\\\Profile\\:\\:getDebugInfo\\(\\) should return array but returns array\\|null\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -6156,6 +6420,12 @@ $ignoreErrors[] = [
 	'identifier' => 'assign.propertyType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Error/ErrorHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Event\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
+	'identifier' => 'return.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Event.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Offset \'items_id\' might not exist on array\\<string, mixed\\>\\|string\\.$#',
@@ -11306,6 +11576,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ITILFollowup.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method ITILFollowup\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/ITILFollowup.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:addFiles\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
@@ -11350,7 +11626,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method ITILSolution\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
 	'identifier' => 'return.type',
-	'count' => 1,
+	'count' => 2,
 	'path' => __DIR__ . '/src/ITILSolution.php',
 ];
 $ignoreErrors[] = [
@@ -11778,6 +12054,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Item_Devices.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Item_Disk\\:\\:getEncryptionStatusDropdown\\(\\) should return string but returns int\\|string\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Item_Disk.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call static method dropdown\\(\\) on CommonDBTM\\|false\\.$#',
@@ -12866,6 +13148,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkPortEthernet.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method NetworkPortEthernet\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
+	'identifier' => 'return.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/NetworkPortEthernet.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$string of function strtolower expects string, int\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -12903,6 +13191,12 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method NetworkPortFiberchannel\\:\\:getPortSpeed\\(\\) should return array\\|string but returns int\\|string\\|false\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NetworkPortFiberchannel.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method NetworkPortFiberchannel\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkPortFiberchannel.php',
@@ -12974,6 +13268,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkPortInstantiation.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method NetworkPortWifi\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
+	'identifier' => 'return.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/NetworkPortWifi.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method NetworkPort_NetworkPort\\:\\:createHub\\(\\) should return int but returns int\\|false\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -12992,6 +13292,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkPort_Vlan.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method NotImportedEmail\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NotImportedEmail.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:addFiles\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
@@ -13002,6 +13308,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Notepad.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Notification\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Notification.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$ong of method CommonGLPI\\:\\:addStandardTab\\(\\) expects array\\<string, bool\\|string\\>, array\\<string, bool\\|string\\|null\\> given\\.$#',
@@ -14438,6 +14750,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Plugin.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method Plugin\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Plugin.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$ID of static method User\\:\\:getNameForLog\\(\\) expects int, int\\|string\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 4,
@@ -14572,7 +14890,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Profile\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
 	'identifier' => 'return.type',
-	'count' => 1,
+	'count' => 3,
 	'path' => __DIR__ . '/src/Profile.php',
 ];
 $ignoreErrors[] = [
@@ -16034,6 +16352,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/SavedSearch.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method SavedSearch_User\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/SavedSearch_User.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Argument of an invalid type array\\|Glpi\\\\DBAL\\\\QueryExpression supplied for foreach, only iterables are supported\\.$#',
 	'identifier' => 'foreach.nonIterable',
 	'count' => 1,
@@ -16221,6 +16545,12 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Software\\:\\:addSoftware\\(\\) should return int but returns int\\|false\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Software.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Software\\:\\:dropdownLicenseToInstall\\(\\) should return int but returns int\\|string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Software.php',
@@ -17039,6 +17369,12 @@ $ignoreErrors[] = [
 	'message' => '#^Method Webhook\\:\\:getParentItemSchema\\(\\) should return array but returns array\\|null\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Webhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Webhook\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
+	'identifier' => 'return.type',
+	'count' => 2,
 	'path' => __DIR__ . '/src/Webhook.php',
 ];
 $ignoreErrors[] = [

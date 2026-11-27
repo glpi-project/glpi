@@ -44,7 +44,6 @@ use Html;
 use Line;
 use Mexitek\PHPColors\Color;
 use Plugin;
-use Safe\Exceptions\PcreException;
 use Search;
 use Symfony\Component\DomCrawler\Crawler;
 use Toolbox;
@@ -55,36 +54,6 @@ use function Safe\preg_match;
 
 /**
  * Widget class
- *
- * @phpstan-type WidgetType array{
- *     label: string,
- *     function: callable-string,
- *     image: string,
- *     haspalette?: bool,
- *     gradient?: bool,
- *     limit?: bool,
- *     legend?: bool,
- *     labels?: bool,
- *     width?: int,
- *     height?: int,
- *     pointlbl?: bool,
- *     ...
- * }
- *
- * @phpstan-type BaseWidgetParams array{label?: string, alt?: string, color?: string, icon?: string, limit?: int, legend?: bool, use_gradient?: bool, palette?: string, class?: string, filters?: string[], rand?: int}
- * @phpstan-type BigNumberWidgetParams array{number?: int, url?: string, label?: string, alt?: string, color?: string, icon?: string, id?: string, filters?: string[]}
- * @phpstan-type MultipleNumberData array{number: int, url: string, label: string, icon?: string, limit?: int}
- * @phpstan-type MultipleNumberWidgetParams array{data?: MultipleNumberData[]} & BaseWidgetParams
- * @phpstan-type PieWidgetParams array{data?: MultipleNumberData[], donut?: bool, half?: bool} & BaseWidgetParams
- * @phpstan-type ChartData array{url?: string, label: int|string, number: int|float, icon?: string}
- * @phpstan-type MultipleChartData array{labels: array<int|string|false>, series: array<array{name?: mixed, data?: array<mixed>}>}
- * @phpstan-type BarsWidgetParams array{data?: ChartData[], horizontal?: bool, distributed?: bool, stacked?: bool, multiple?: bool, point_labels?: bool, cache_key?: int|string, label?: string, alt?: string, color?: string, icon?: string, limit?: int, legend?: bool, use_gradient?: bool, palette?: string, class?: string, filters?: string[], rand?: int, ...}
- * @phpstan-type MultipleBarsWidgetParams array{data: MultipleChartData, horizontal?: bool, stacked?: bool, point_labels?: bool, cache_key?: int|string, label?: string, alt?: string, color?: string, icon?: string, limit?: int, legend?: bool, use_gradient?: bool, palette?: string, class?: string, filters?: string[], rand?: int, ...}
- * @phpstan-type LinesWidgetParams array{data?: ChartData[], area?: bool, multiple?: bool, show_points?: bool, point_labels?: bool, line_width?: int, cache_key?: int|string, label?: string, alt?: string, color?: string, icon?: string, limit?: int, legend?: bool, use_gradient?: bool, palette?: string, class?: string, filters?: string[], rand?: int, ...}
- * @phpstan-type MultipleLinesWidgetParams array{data: MultipleChartData, area?: bool, point_labels?: bool, show_points?: bool, line_width?: int, cache_key?: int|string, label?: string, alt?: string, color?: string, icon?: string, limit?: int, legend?: bool, use_gradient?: bool, palette?: string, class?: string, filters?: string[], rand?: int, ...}
- * @phpstan-type MarkdownWidgetParams array{color?: string, markdown_content?: string}
- * @phpstan-type SearchListWidgetParams array{itemtype: class-string<\CommonDBTM>, s_criteria?: array<mixed>|string, url?: string, label?: string, alt?: string, color?: string, icon?: string, id?: string, limit?: int, rand?: int, filters?: string[]}
- * @phpstan-type ArticleListWidgetParams array{data?: array{url: string, icon: string, label: string, number?: int, content: string, author: string}[], date: string} & BaseWidgetParams
  **/
 class Widget
 {
@@ -138,7 +107,7 @@ class Widget
      * This is used when adding a new card to display optgroups
      * This array can be hooked by plugins to add their own definitions.
      *
-     * @return array<string, WidgetType>
+     * @return array
      */
     public static function getAllTypes(): array
     {
@@ -375,15 +344,15 @@ class Widget
     /**
      * Display a big number widget.
      *
-     * @param BigNumberWidgetParams $params contains these keys:
-     * - number: the number to display
-     * - url: url to redirect when clicking on the widget
-     * - label: title of the widget
-     * - alt: tooltip
-     * - color: hex color of the widget
-     * - icon: font awesome class to display an icon side of the label
-     * - id: unique dom identifier
-     * - filters: array of filter's id to apply classes on widget html
+     * @param array $params contains these keys:
+     * - int    'number': the number to display
+     * - string 'url': url to redirect when clicking on the widget
+     * - string 'label': title of the widget
+     * - string 'alt': tooltip
+     * - string 'color': hex color of the widget
+     * - string 'icon': font awesome class to display an icon side of the label
+     * - string 'id': unique dom identifier
+     * - array  'filters': array of filter's id to apply classes on widget html
      *
      * @return string html of the widget
      */
@@ -473,10 +442,6 @@ HTML;
     }
 
 
-    /**
-     * @param MultipleNumberWidgetParams $params
-     * @return string
-     */
     public static function summaryNumber(array $params = []): string
     {
         $params['class'] = 'summary-numbers';
@@ -487,7 +452,7 @@ HTML;
     /**
      * Display a multiple big number widget.
      *
-     * @param MultipleNumberWidgetParams $params contains these keys:
+     * @param array $params contains these keys:
      * - array  'data': represents the lines to display
      *    - int    'number': the number to display in the line
      *    - string 'url': url to redirect when clicking on the line
@@ -657,7 +622,7 @@ HTML;
     /**
      * Display a widget with a pie chart
      *
-     * @param PieWidgetParams $params contains these keys:
+     * @param array $params contains these keys:
      * - array  'data': represents the slices to display
      *    - int    'number': number of the slice
      *    - string 'url': url to redirect when clicking on the slice
@@ -670,7 +635,7 @@ HTML;
      * - bool   'use_gradient': gradient or generic palette
      * - int    'limit': the number of slices
      * - bool 'donut': do we want a "holed" pie
-     * - bool 'half': do we want an half pie
+     * - bool 'gauge': do we want an half pie
      * - array  'filters': array of filter's id to apply classes on widget html
      *
      * @return string html of the widget
@@ -900,10 +865,9 @@ TWIG, $twig_params);
 
     /**
      * Display a widget with a donut chart
+     * @see self::pie for params
      *
-     * @param PieWidgetParams $params
      * @return string html
-     * @see self::pie
      */
     public static function donut(array $params = []): string
     {
@@ -915,10 +879,9 @@ TWIG, $twig_params);
 
     /**
      * Display a widget with a half donut chart
+     * @see self::pie for params
      *
-     * @param PieWidgetParams $params
      * @return string html
-     * @see self::pie
      */
     public static function halfDonut(array $params = []): string
     {
@@ -929,10 +892,9 @@ TWIG, $twig_params);
 
     /**
      * Display a widget with a half pie chart
+     * @see self::pie for params
      *
-     * @param PieWidgetParams $params
      * @return string html
-     * @see self::pie
      */
     public static function halfPie(array $params = []): string
     {
@@ -946,7 +908,6 @@ TWIG, $twig_params);
      * Display a widget with a bar chart (with single series)
      * @see self::getBarsGraph for params
      *
-     * @param BarsWidgetParams $params
      * @return string html
      */
     public static function simpleBar(array $params = []): string
@@ -1000,7 +961,6 @@ TWIG, $twig_params);
      * Display a widget with an horizontal bar chart
      * @see self::getBarsGraph for params
      *
-     * @param BarsWidgetParams $params
      * @return string html
      */
     public static function simpleHbar(array $params = []): string
@@ -1011,7 +971,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param BarsWidgetParams $params
      * @inheritdoc self::simpleHbar
      */
     public static function hbar(array $params = []): string
@@ -1024,10 +983,9 @@ TWIG, $twig_params);
      * Display a widget with a multiple bars chart
      * @see self::getBarsGraph for params
      *
-     * @param MultipleBarsWidgetParams $params
      * @return string html
      */
-    public static function multipleBars(array $params): string
+    public static function multipleBars(array $params = []): string
     {
         return self::getBarsGraph(
             array_merge($params, [
@@ -1044,10 +1002,9 @@ TWIG, $twig_params);
      * Display a widget with a stacked multiple bars chart
      * @see self::getBarsGraph for params
      *
-     * @param MultipleBarsWidgetParams $params
      * @return string html
      */
-    public static function StackedBars(array $params): string
+    public static function StackedBars(array $params = []): string
     {
         return self::multipleBars(array_merge($params, [
             'stacked' => true,
@@ -1059,10 +1016,9 @@ TWIG, $twig_params);
      * Display a widget with a horizontal stacked multiple bars chart
      * @see self::getBarsGraph for params
      *
-     * @param MultipleBarsWidgetParams $params
      * @return string html
      */
-    public static function stackedHBars(array $params): string
+    public static function stackedHBars(array $params = []): string
     {
         return self::StackedBars(array_merge($params, [
             'horizontal' => true,
@@ -1074,10 +1030,9 @@ TWIG, $twig_params);
      * Display a widget with a horizontal multiple bars chart
      * @see self::getBarsGraph for params
      *
-     * @param MultipleBarsWidgetParams $params
      * @return string html
      */
-    public static function multipleHBars(array $params): string
+    public static function multipleHBars(array $params = []): string
     {
         return self::multipleBars(array_merge($params, [
             'horizontal' => true,
@@ -1088,7 +1043,7 @@ TWIG, $twig_params);
     /**
      * Display a widget with a bars chart
      *
-     * @param BarsWidgetParams|MultipleBarsWidgetParams $params contains these keys:
+     * @param array $params contains these keys:
      * - array  'data': represents the bars to display
      *    - string 'url': url to redirect when clicking on the bar
      *    - string 'label': title of the bar
@@ -1106,8 +1061,8 @@ TWIG, $twig_params);
      * - bool   'point_labels': display labels (for values) directly on graph
      * - int    'limit': the number of bars
      * - array  'filters': array of filter's id to apply classes on widget html
-     * @param array<int|string|false> $labels title of the bars (if a single array is given, we have a single bar graph)
-     * @param array<int|string, mixed> $series values of the bar (if a single array is given, we have a single bar graph)
+     * @param array $labels title of the bars (if a single array is given, we have a single bar graph)
+     * @param array $series values of the bar (if a single array is given, we have a single bar graph)
      *
      * @return string html of the widget
      */
@@ -1405,12 +1360,10 @@ TWIG, $twig_params);
      * Display a widget with a line chart (with single series)
      * @see self::getLinesGraph for params
      *
-     * @param LinesWidgetParams $params
      * @return string html
      */
     public static function simpleLine(array $params = []): string
     {
-        $params = array_merge(['data' => [], 'label' => ''], $params);
         $default_entry = [
             'url'    => '',
             'icon'   => '',
@@ -1447,7 +1400,6 @@ TWIG, $twig_params);
      * Display a widget with a area chart (with single serie)
      * @see self::getLinesGraph for params
      *
-     * @param LinesWidgetParams $params
      * @return string html
      */
     public static function simpleArea(array $params = []): string
@@ -1462,10 +1414,9 @@ TWIG, $twig_params);
      * Display a widget with a multiple line chart (with multiple series)
      * @see self::getLinesGraph for params
      *
-     * @param MultipleLinesWidgetParams $params
      * @return string html
      */
-    public static function multipleLines(array $params): string
+    public static function multipleLines(array $params = []): string
     {
         return self::getLinesGraph(
             array_merge($params, [
@@ -1482,10 +1433,9 @@ TWIG, $twig_params);
      * Display a widget with a multiple area chart (with multiple series)
      * @see self::getLinesGraph for params
      *
-     * @param MultipleLinesWidgetParams $params
      * @return string html
      */
-    public static function multipleAreas(array $params): string
+    public static function multipleAreas(array $params = []): string
     {
         return self::multipleLines(array_merge($params, [
             'area' => true,
@@ -1496,7 +1446,7 @@ TWIG, $twig_params);
     /**
      * Display a widget with a lines chart
      *
-     * @param LinesWidgetParams|MultipleLinesWidgetParams $params contains these keys:
+     * @param array $params contains these keys:
      * - array  'data': represents the lines to display
      *    - string 'url': url to redirect when clicking on the line
      *    - string 'label': title of the line
@@ -1512,8 +1462,8 @@ TWIG, $twig_params);
      * - bool   'point_labels': display labels (for values) directly on graph
      * - int    'limit': the number of lines
      * - array  'filters': array of filter's id to apply classes on widget html
-     * @param array<int|string|false> $labels title of the lines (if a single array is given, we have a single line graph)
-     * @param array<int|string, mixed> $series values of the line (if a single array is given, we have a single line graph)
+     * @param array $labels title of the lines (if a single array is given, we have a single line graph)
+     * @param array $series values of the line (if a single array is given, we have a single line graph)
      *
      * @return string html of the widget
      */
@@ -1730,7 +1680,7 @@ TWIG, $twig_params);
     /**
      * Display an editable markdown widget
      *
-     * @param MarkdownWidgetParams $params with these keys:
+     * @param array $params with these keys:
      * - string 'color': hex color
      * - string 'markdown_content': text content formatted with warkdown
      *
@@ -1782,7 +1732,7 @@ HTML;
     /**
      * Display an html table from a \Search result
      *
-     * @param SearchListWidgetParams $params contains these keys:
+     * @param array $params contains these keys:
      * - string 'itemtype': Glpi oObject to search
      * - array  's_criteria': parameters to pass to the search engine (@see \Search::manageParams)
      * - string 'label': global title of the widget
@@ -1796,7 +1746,7 @@ HTML;
      *
      * @return string html of the widget
      */
-    public static function searchShowList(array $params): string
+    public static function searchShowList(array $params = []): string
     {
         $default = [
             'url'        => '',
@@ -1805,13 +1755,14 @@ HTML;
             'color'      => '',
             'icon'       => '',
             's_criteria' => '',
+            'itemtype'   => '',
             'limit'      => $_SESSION['glpilist_limit'],
             'rand'       => mt_rand(),
             'filters'    => [],
         ];
         $p = array_merge($default, $params);
 
-        $id = "search-table-" . Html::sanitizeDomId((string) $p['rand']);
+        $id = "search-table-" . Html::sanitizeDomId($p['rand']);
 
         $color = new Color($p['color']);
         $is_light = $color->isLight();
@@ -1882,11 +1833,6 @@ HTML;
     }
 
 
-    /**
-     * @param ArticleListWidgetParams $params
-     * @return string
-     * @throws PcreException
-     */
     public static function articleList(array $params): string
     {
         $default = [
@@ -2035,11 +1981,7 @@ JAVASCRIPT;
         return $html . $js;
     }
 
-    /**
-     * @param string $palette_name
-     * @param int $nb_series
-     * @return string[] array of hex color strings
-     */
+
     public static function getPalette(string $palette_name, int $nb_series = 0): array
     {
         $palette_obj = new Palette($palette_name);
@@ -2051,7 +1993,7 @@ JAVASCRIPT;
      * Get a non-gradient palette based on the number of series
      * @param int $nb_series
      *
-     * @return string[] array of hex color strings
+     * @return array of hex color strings
      */
     public static function getDefaultPalette(int $nb_series = 10): array
     {
@@ -2079,7 +2021,10 @@ JAVASCRIPT;
      * @param int $nb_series how much step in gradient we need
      * @param bool $revert direction of the gradient
      *
-     * @return array{names: string[], colors: string[]}
+     * @return array with [
+     *    'names' => [...]
+     *    'colors' => [...]
+     * ]
      */
     public static function getGradientPalette(
         string $bgcolor = "",

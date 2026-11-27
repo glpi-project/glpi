@@ -535,8 +535,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
      *
      * @param Printer $printer
      *
-     * @return int|false the random id of the displayed dropdown, or false if there is no compatible cartridge
-     * @used-by Cartridge::showForPrinter
+     * @return string|bool
      **/
     public static function dropdownForPrinter(Printer $printer)
     {

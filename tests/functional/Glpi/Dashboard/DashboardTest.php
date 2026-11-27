@@ -59,9 +59,8 @@ class DashboardTest extends DbTestCase
         $items = $this->getPrivateProperty('items');
         $this->assertCount(3, $items);
 
-        // Rights are stored in their converted format (one entry per right type)
         $rights = $this->getPrivateProperty('rights');
-        $this->assertSame(2, array_sum(array_map('count', $rights)));
+        $this->assertCount(2, $rights);
     }
 
 
@@ -287,9 +286,7 @@ class DashboardTest extends DbTestCase
         $this->assertEquals($title, $this->dashboard->getTitle());
         $this->assertEquals($key, $this->getPrivateProperty('key'));
         $this->assertCount(2, $this->getPrivateProperty('items'));
-        $rights = $this->getPrivateProperty('rights');
-        $this->assertSame(1, array_sum(array_map('count', $rights)));
-        $this->assertSame([0], $rights['entities_id']);
+        $this->assertCount(1, $this->getPrivateProperty('rights'));
     }
 
     public function testConvertRights()
