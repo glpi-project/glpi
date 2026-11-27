@@ -53,6 +53,17 @@ use Glpi\DBAL\QueryParam;
  * }
  *
  * @phpstan-type DashboardItemFieldsDecoded DashboardItemFields & array{ card_options: array<string, mixed>, ... }
+ *
+ * @phpstan-type DashboardItemInput array{
+ *     gridstack_id: string, // unique id of the card in the grid, usually built like card_id.uuidv4
+ *     card_id: string, // key of the array returned by Grid::getAllDasboardCards()
+ *     x: int,
+ *     y: int,
+ *     width: int,
+ *     height: int,
+ *     card_options?: array<string, mixed>, // depends on the card, contains at least a "color" key
+ *     ...
+ * }
  */
 class Item extends CommonDBChild
 {
@@ -115,14 +126,7 @@ class Item extends CommonDBChild
      * Save items in DB for the provided dashboard
      *
      * @param int $dashboards_id id (not key) of the dashboard
-     * @param DashboardItemFieldsDecoded[] $items cards of the dashboard, contains:
-     *    - gridstack_id: unique id of the card in the grid, usually build like card_id.uuidv4
-     *    - card_id: key of array return by getAllDasboardCards
-     *    - x: position in grid
-     *    - y: position in grid
-     *    - width: size in grid
-     *    - height: size in grid
-     *    - card_options, sub array, depends on the card, contains at least a key color
+     * @param DashboardItemInput[] $items cards of the dashboard
      *
      * @return void
      */
