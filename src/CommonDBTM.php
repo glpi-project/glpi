@@ -69,8 +69,6 @@ use function Safe\unlink;
 
 /**
  * Common DataBase Table Manager Class - Persistent Object
- *
- * @phpstan-type ItemtypeRights array<int, string|array{short: string, long: string}>
  */
 class CommonDBTM extends CommonGLPI
 {
@@ -5547,7 +5545,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param string $interface (default 'central')
      *
-     * @return ItemtypeRights array of rights to display
+     * @return array array of rights to display
      **/
     public function getRights($interface = 'central')
     {

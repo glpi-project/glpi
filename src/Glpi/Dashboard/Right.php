@@ -36,18 +36,8 @@
 namespace Glpi\Dashboard;
 
 use CommonDBChild;
-use CommonDBTM;
 use Glpi\DBAL\QueryParam;
 
-/**
- * @phpstan-type DashboardRightFields array{
- *     id: int,
- *     dashboards_dashboards_id: int,
- *     itemtype: class-string<CommonDBTM>,
- *     items_id: int,
- * }
- * @phpstan-type DashboardConvertedRights array{entities_id?: int[], profiles_id?: int[], users_id?: int[], groups_id?: int[]}
- */
 class Right extends CommonDBChild
 {
     public static string $itemtype = Dashboard::class;
@@ -62,7 +52,7 @@ class Right extends CommonDBChild
      *
      * @param int $dashboards_id
      *
-     * @return DashboardRightFields[] the rights
+     * @return array the rights
      */
     public static function getForDashboard(int $dashboards_id = 0): array
     {
@@ -89,7 +79,7 @@ class Right extends CommonDBChild
      * Save rights in DB for the provided dashboard
      *
      * @param int $dashboards_id id (not key) of the dashboard
-     * @param DashboardConvertedRights $rights contains these data:
+     * @param array $rights contains these data:
      * - 'users_id'    => [items_id]
      * - 'groups_id'   => [items_id]
      * - 'entities_id' => [items_id]

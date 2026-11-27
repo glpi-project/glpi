@@ -120,7 +120,6 @@ final class CardsController extends AbstractController
             }
 
             try {
-                // @phpstan-ignore-next-line argument.type
                 $html = $grid->getCardHtml($card['card_id'], [
                     'dashboard' => $dashboard_key,
                     'card_id'   => $card['card_id'],

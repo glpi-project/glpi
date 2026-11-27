@@ -58,7 +58,6 @@ use Glpi\Debug\Profiler;
 use Glpi\Search\Input\QueryBuilder;
 use Group;
 use Group_Ticket;
-use InvalidArgumentException;
 use Item_OperatingSystem;
 use OperatingSystem;
 use Profile_User;
@@ -75,11 +74,6 @@ use function Safe\mktime;
 use function Safe\strtotime;
 
 /**
- * @phpstan-type ProviderParams array{label?: string, icon?: string, apply_filters?: array<string, mixed>}
- * @phpstan-type ProviderEntry array{number: int|string, label: int|string, url: string}
- * @phpstan-type ProviderNoData array{nodata: true}
- * @phpstan-type ProviderSeriesData array{labels: array<int|string>, series: list<array{name: string, data: list<int|float>}>, nodata?: bool}
- *
  * Provider class
  **/
 class Provider
@@ -89,19 +83,18 @@ class Provider
      *
      * @param CommonDBTM|null $item object to count
      *
-     * @param array{apply_filters?: array<string, mixed>} $params default values for
-     * - 'apply_filters' The IDs of filters to apply
+     * @param array $params default values for
+     * - 'apply_filters' values from dashboard filters
      *
-     * @return array{number: int, url: string, label: string, icon: string}
-     * @todo $item should never be null
+     * @return array :
+     * - 'number'
+     * - 'url'
+     * - 'label'
+     * - 'icon'
      */
     public static function bigNumberItem(?CommonDBTM $item = null, array $params = []): array
     {
         $DB = DBConnection::getReadConnection();
-
-        if ($item === null) {
-            throw new InvalidArgumentException("Item must be provided");
-        }
 
         $default_params = [
             'apply_filters'  => [],
@@ -187,8 +180,11 @@ class Provider
 
 
     /**
-     * @param array<int, mixed> $arguments
-     * @return array<string, mixed>|void
+     * @method array bigNumberItem(CommonDBTM $item, array $params = [])
+     * @method array nbItemByFk(CommonDBTM $item, array $params = [])
+     * @method array articleListItem(CommonDBTM $item, array $params = [])
+     *
+     * @return array|void
      */
     public static function __callStatic(string $name = "", array $arguments = [])
     {
@@ -211,16 +207,10 @@ class Provider
             if (count($tmp) === 2) {
                 $itemtype    = $tmp[0];
                 $fk_itemtype = $tmp[1];
-                $item = getItemForItemtype($itemtype);
-                $item_fk = getItemForItemtype($fk_itemtype);
-
-                if ($item === false || $item_fk === false) {
-                    throw new InvalidArgumentException("Invalid itemtype or fk_itemtype");
-                }
 
                 return static::nbItemByFk(
-                    $item,
-                    $item_fk,
+                    getItemForItemtype($itemtype),
+                    getItemForItemtype($fk_itemtype),
                     $arguments[0] ?? []
                 );
             }
@@ -250,12 +240,16 @@ class Provider
      * - 'planned': ticket with planned status
      * - 'solved': ticket with solved status
      * - 'closed': ticket with closed status
-     * @param array{title?: string, icon?: string, apply_filters?: array<string, mixed>} $params default values for
+     * @param array $params default values for
      * - 'title' of the card
      * - 'icon' of the card
      * - 'apply_filters' values from dashboard filters
      *
-     * @return array{number: int, url: string, label: string, icon: string}
+     * @return array :
+     * - 'number'
+     * - 'url'
+     * - 'label'
+     * - 'icon'
      */
     public static function nbTicketsGeneric(
         string $case = "",
@@ -426,7 +420,7 @@ class Provider
                 ];
 
                 if ($params['validation_check_user']) {
-                    $where[] = TicketValidation::getTargetCriteriaForUser((int) Session::getLoginUserID());
+                    $where[] = TicketValidation::getTargetCriteriaForUser(Session::getLoginUserID());
                 }
 
                 // Join glpi_ticketvalidations table if not already done
@@ -540,9 +534,6 @@ class Provider
 
     /**
      * Get the number of late tickets by SLA status and technician
-     *
-     * @param array{label?: string, icon?: string, apply_filters?: array<string, mixed>} $params
-     * @return array{label: string, icon: string, data: array{nodata?: bool, labels: string[], series: list<array{name: string, data: list<int>}>}}
      */
     public static function nbTicketsByAgreementStatusAndTechnician(array $params = []): array
     {
@@ -716,10 +707,6 @@ class Provider
         ];
     }
 
-    /**
-     * @param ProviderParams $params
-     * @return array{label: string, icon: string, data: ProviderSeriesData}
-     */
     public static function nbTicketsByAgreementStatusAndTechnicianGroup(
         array $params = []
     ): array {
@@ -885,7 +872,7 @@ class Provider
      *
      * @param CommonDBTM $item main item to count
      * @param CommonDBTM $fk_item groupby by this item (we will find the foreign key in the main item)
-     * @param array{label?: string, icon?: string, searchoption_id?: int, limit?: int, join_key?: string, apply_filters?: array<string, mixed>} $params values for:
+     * @param array $params values for:
      * - 'title' of the card
      * - 'icon' of the card
      * - 'searchoption_id' id corresponding to FK search option
@@ -893,9 +880,14 @@ class Provider
      * - 'join_key' LEFT, INNER, etc JOIN
      * - 'apply_filters' values from dashboard filters
      *
-     * @return array{label: string, icon: string, data: list<ProviderEntry>|ProviderNoData}
-     *
-     * @todo $item and $fk_item should never be null
+     * @return array :
+     * - 'data': [
+     *    'url'
+     *    'number'
+     *    'label'
+     * ]
+     * - 'label'
+     * - 'icon'
      */
     public static function nbItemByFk(
         ?CommonDBTM $item = null,
@@ -903,13 +895,6 @@ class Provider
         array $params = []
     ): array {
         $DB = DBConnection::getReadConnection();
-
-        if ($item === null) {
-            throw new InvalidArgumentException("Item must be provided");
-        }
-        if ($fk_item === null) {
-            throw new InvalidArgumentException("FK Item must be provided");
-        }
 
         $c_table     = $item::getTable();
         $fk_table    = $fk_item::getTable();
@@ -1040,9 +1025,9 @@ class Provider
     /**
      * Count number of tickets grouped by their current status.
      *
-     * @param ProviderParams $params
+     * @param array<string, mixed> $params
      *
-     * @return array{label: string, icon: string, data: list<ProviderEntry>|ProviderNoData}
+     * @return array<string, mixed>
      */
     public static function ticketsByStatus(array $params = []): array
     {
@@ -1120,9 +1105,9 @@ class Provider
     /**
      * Count number of computers grouped by their operating system.
      *
-     * @param ProviderParams $params
+     * @param array<string, mixed> $params
      *
-     * @return array{label: string, icon: string, data: list<ProviderEntry>|ProviderNoData}
+     * @return array<string, mixed>
      */
     public static function computersByOperatingSystem(array $params = []): array
     {
@@ -1217,8 +1202,8 @@ class Provider
 
     /**
      * Count number of tickets grouped by their category and their entity
-     * @param ProviderParams $params
-     * @return array{label: string, icon: string, data: ProviderSeriesData}
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
      */
     public static function ticketsByCategoryAndEntity(array $params = []): array
     {
@@ -1312,8 +1297,8 @@ class Provider
 
     /**
      * count number of opened and closed tickets grouped by their assigned group
-     * @param ProviderParams $params
-     * @return array{label: string, icon: string, data: ProviderSeriesData}
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
      */
     public static function ticketsByGroupAndStatus(array $params = []): array
     {
@@ -1412,20 +1397,15 @@ class Provider
      * Get a list of article for an compatible item (with date,name,text fields)
      *
      * @param CommonDBTM $item the itemtype to list
-     * @param array{icon?: string, apply_filters?: array<string, mixed>} $params default values for
+     * @param array   $params default values for
      * - 'icon' of the card
      * - 'apply_filters' values from dashboard filters
      *
-     * @return array{data: list<array{date: string, label: string, content: string, author: string, url: string}>|ProviderNoData, number: int, url: string, label: string, icon: string}
-     * @todo $item should never be null
+     * @return array
      */
     public static function articleListItem(?CommonDBTM $item = null, array $params = []): array
     {
         $DB = DBConnection::getReadConnection();
-
-        if ($item === null) {
-            throw new InvalidArgumentException("Item must be provided");
-        }
 
         $default_params = [
             'icon'          => $item::getIcon(),
@@ -1478,9 +1458,12 @@ class Provider
     /**
      * get multiple count of ticket by month
      *
-     * @param array{label?: string, icon?: string, apply_filters?: array<string, mixed>} $params
+     * @param array $params default values for
+     * - 'title' of the card
+     * - 'icon' of the card
+     * - 'apply_filters' values from dashboard filters
      *
-     * @return array{label: string, icon: string, distributed: false, data: array{label: string, url: string, number: int}[]}
+     * @return array
      */
     public static function ticketsOpened(array $params = []): array
     {
@@ -1556,9 +1539,12 @@ class Provider
     /**
      * Get ticket evolution by opened, solved, closed, late series and months group
      *
-     * @param array{label?: string, icon?: string, apply_filters?: array<string, mixed>} $params
+     * @param array $params default values for
+     * - 'title' of the card
+     * - 'icon' of the card
+     * - 'apply_filters' values from dashboard filters
      *
-     * @return array{label: string, icon: string, data: array{labels: array<int|string>, series: list<array{name: string, search: array<string, mixed>, data?: array<mixed>}>}}
+     * @return array
      */
     public static function getTicketsEvolution(array $params = []): array
     {
@@ -1570,7 +1556,7 @@ class Provider
         $params = array_merge($default_params, $params);
 
         $year   = date("Y") - 15;
-        $begin  = date("Y-m-d", mktime(1, 0, 0, (int) date("m"), (int) date("d"), (int) $year));
+        $begin  = date("Y-m-d", mktime(1, 0, 0, (int) date("m"), (int) date("d"), $year));
         $end    = date("Y-m-d");
 
         if (
@@ -1710,9 +1696,9 @@ class Provider
             );
 
             if ($i === 0) {
-                $monthsyears = array_keys($values ?? []);
+                $monthsyears = array_keys($values);
             }
-            $values = array_values($values ?? []);
+            $values = array_values($values);
 
             foreach ($values as $index => $number) {
                 $current_monthyear = $monthsyears[$index];
@@ -1743,12 +1729,12 @@ class Provider
     /**
      * get ticket by their curent status and their opening date
      *
-     * @param array{label?: string, icon?: string, apply_filters?: array<string, mixed>} $params default values for
+     * @param array $params default values for
      * - 'title' of the card
      * - 'icon' of the card
      * - 'apply_filters' values from dashboard filters
      *
-     * @return array{label: string, icon: string, data: array{labels: array<int|string>, series: array<int|string, array<string, mixed>>}}
+     * @return array
      */
     public static function getTicketsStatus(array $params = []): array
     {
@@ -1921,12 +1907,12 @@ class Provider
      * - group_observer
      * - user_assign
      * - group_assign
-     * @param ProviderParams $params default values for
+     * @param array $params default values for
      * - 'title' of the card
      * - 'icon' of the card
      * - 'apply_filters' values from dashboard filters
      *
-     * @return array{label: string, icon: string|null, data: list<array{number: mixed, label: mixed, url: string}>}
+     * @return array
      */
     public static function nbTicketsActor(
         string $case = "",
@@ -2069,12 +2055,12 @@ class Provider
     /**
      * get average stats (takeintoaccoutn, solve/close delay, waiting) of ticket by month
      *
-     * @param ProviderParams $params default values for
+     * @param array $params default values for
      * - 'title' of the card
      * - 'icon' of the card
      * - 'apply_filters' values from dashboard filters
      *
-     * @return array{label: string, icon: string, data: ProviderSeriesData}
+     * @return array
      */
     public static function averageTicketTimes(array $params = [])
     {
@@ -2150,12 +2136,12 @@ class Provider
     /**
      * get multiple count of ticket by status and month
      *
-     * @param ProviderParams $params default values for
+     * @param array $params default values for
      * - 'title' of the card
      * - 'icon' of the card
      * - 'apply_filters' values from dashboard filters
      *
-     * @return array{label: string, icon: string, data: list<array{number: int, label: string, url: string, color: string}>}
+     * @return array
      */
     public static function getTicketSummary(array $params = [])
     {
@@ -2215,8 +2201,8 @@ class Provider
     /**
      * Count number of computers grouped by their age (based on the warranty
      * start date declared on their financial and administrative information)
-     * @param ProviderParams $params
-     * @return array{label: string, icon: string, data: list<ProviderEntry>|ProviderNoData}
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
      */
     public static function computersByAge(array $params = []): array
     {
@@ -2310,9 +2296,6 @@ class Provider
         ];
     }
 
-    /**
-     * @return array{0: string, 1: string} start (inclusive) and end (exclusive) dates of the month
-     */
     public static function formatMonthyearDates(string $monthyear): array
     {
         $rawdate = explode('-', $monthyear);
@@ -2330,10 +2313,10 @@ class Provider
      * Get search criteria based on given filters.
      *
      * @param string $table                     Related itemtype table.
-     * @param array<string, mixed> $apply_filters Dashboard filters.
+     * @param array $apply_filters              Dashboard filters.
      * @param bool $default_criteria_on_empty   Return default criteria if filters are not producing any criteria.
      *
-     * @return array{criteria: array<int, array<string, mixed>>} An array containing a `criteria` key that contains search criteria.
+     * @return array An empty array, or an array containing a `criteria` key that contains search criteria.
      *
      * @FIXME Remove `criteria` key encapsulation. It cannot be done in 10.0 as some plugins are relying on current signature.
      */
@@ -2352,7 +2335,7 @@ class Provider
         }
 
         $itemtype = getItemTypeForTable($table);
-        if ($itemtype !== null && is_a($itemtype, CommonDBTM::class, true) && $default_criteria_on_empty === true && count($s_criteria) === 0) {
+        if (is_a($itemtype, CommonDBTM::class, true) && $default_criteria_on_empty === true && count($s_criteria) === 0) {
             $s_criteria = QueryBuilder::getDefaultCriteria($itemtype);
         }
 
@@ -2385,9 +2368,9 @@ class Provider
 
     /**
      * @param string $table
-     * @param array<string, mixed> $apply_filters
+     * @param array $apply_filters
      *
-     * @return array<string, mixed>
+     * @return array
      */
     public static function getFiltersCriteria(string $table = "", array $apply_filters = [])
     {

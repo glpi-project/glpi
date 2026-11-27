@@ -214,7 +214,6 @@ switch ($_REQUEST['action']) {
             throw new AccessDeniedHttpException();
         }
 
-        // @phpstan-ignore-next-line argument.type
         $grid->displayWidgetForm($_REQUEST);
         break;
 
@@ -255,7 +254,6 @@ switch ($_REQUEST['action']) {
         Profiler::getInstance()->start('Get cards HTML');
         foreach ($cards as $card) {
             try {
-                // @phpstan-ignore-next-line argument.type
                 $result[$card['card_id']] = $grid->getCardHtml($card['card_id'], array_merge($request_data, $card));
             } catch (Throwable $e) {
                 // Send exception to logger without actually exiting.

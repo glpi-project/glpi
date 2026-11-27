@@ -2456,10 +2456,6 @@ class Toolbox
      * @param mixed $json the var to test
      *
      * @return bool
-     * @phpstan-return (
-     *     $json is float|int|numeric-string ? true :
-     *     ($json is string ? bool : false)
-     * )
      */
     public static function isJSON($json): bool
     {

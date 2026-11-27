@@ -37,7 +37,6 @@ namespace Glpi\Dashboard;
 
 use CommonDBChild;
 use Glpi\Dashboard\Filters\{
-    AbstractFilter,
     DatesFilter,
     DatesModFilter,
     EntityFilter,
@@ -69,7 +68,7 @@ class Filter extends CommonDBChild
     /**
      * Return IDs of filters that can be applied to given table.
      *
-     * @return string[] array of filter IDs
+     * @return array of filters
      */
     public static function getAppliableFilters(string $table): array
     {
@@ -99,7 +98,7 @@ class Filter extends CommonDBChild
     /**
      * Return registered filters classes.
      *
-     * @return class-string<AbstractFilter>[] array of filter classes
+     * @return array
      */
     public static function getRegisteredFilterClasses(): array
     {
@@ -137,13 +136,13 @@ class Filter extends CommonDBChild
      * Return filters choices (to be used in a dropdown context).
      * Keys are filters ids, values are filters labels.
      *
-     * @return array<string, string> array of filter key/name pairs.
+     * @return array of filters
      */
     public static function getFilterChoices(): array
     {
         $filters = [];
 
-        /* @var AbstractFilter $filter_class */
+        /* @var \Glpi\Dashboard\Filters\AbstractFilter $filter_class */
         foreach (self::getRegisteredFilterClasses() as $filter_class) {
             $filters[$filter_class::getId()] = $filter_class::getName();
         }
