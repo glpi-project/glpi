@@ -56,7 +56,7 @@ class Plugins
     /** @var ?array  */
     protected $last_error  = null;
 
-    public const COL_PAGE    = 200;
+    public const COL_PAGE    = 50;
 
     /**
      * Max request attempts on READ operations.
