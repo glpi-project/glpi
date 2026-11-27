@@ -7039,7 +7039,7 @@ CREATE TABLE `glpi_states` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`states_id`,`name`),
+  UNIQUE KEY `unicity` (`entities_id`,`states_id`,`name`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),

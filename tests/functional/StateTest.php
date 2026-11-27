@@ -94,6 +94,37 @@ class StateTest extends DbTestCase
         }
     }
 
+    public function testUnicityPerEntity(): void
+    {
+        $this->login();
+
+        $root_entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
+        $entity_a_id = $this->createItem('Entity', ['name' => 'child A', 'entities_id' => $root_entity_id])->getID();
+        $entity_b_id = $this->createItem('Entity', ['name' => 'child B', 'entities_id' => $root_entity_id])->getID();
+
+        // Same name in two different entities is allowed
+        $this->createItem(\State::class, ['name' => 'Test', 'entities_id' => $entity_a_id]);
+        $state_b_id = $this->createItem(\State::class, ['name' => 'Test', 'entities_id' => $entity_b_id])->getID();
+
+        // Same name in the same entity is refused with a message
+        $input = ['name' => 'Test', 'entities_id' => $entity_b_id, 'states_id' => 0];
+        $state = new \State();
+        $this->assertFalse($state->add($input));
+        $this->hasSessionMessages(ERROR, ['Status of items must be unique!']);
+
+        // Renaming to a name used in another entity is allowed
+        $other_b = $this->createItem(\State::class, ['name' => 'Other B', 'entities_id' => $entity_b_id]);
+        $other_a = $this->createItem(\State::class, ['name' => 'Other A', 'entities_id' => $entity_a_id]);
+        $this->updateItem(\State::class, $other_a->getID(), ['name' => 'Other B']);
+
+        // Renaming to a name used in the same entity is refused with a message
+        $this->assertFalse($other_b->update(['id' => $other_b->getID(), 'name' => 'Test']));
+        $this->hasSessionMessages(ERROR, ['Status of items must be unique per level!']);
+
+        // Updating an item without changing its unicity fields is allowed
+        $this->updateItem(\State::class, $state_b_id, ['comment' => 'foo']);
+    }
+
     public function testVisibility(): void
     {
         global $CFG_GLPI;
