@@ -45,7 +45,9 @@ use Glpi\Inventory\MainAsset\GenericNetworkAsset;
 use Glpi\Inventory\MainAsset\GenericPrinterAsset;
 use Glpi\Tests\DbTestCase;
 use NetworkEquipment;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpClient\Exception\TransportException;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
 use function Safe\json_decode;
 
@@ -882,6 +884,134 @@ XML;
             proc_close($server);
             unlink($router);
         }
+    }
+
+    public function testRequestAgentDoesNotFollowRedirections(): void
+    {
+        // Local HTTP server standing for the agent: its status endpoint redirects to another location.
+        $marker = GLPI_TMP_DIR . '/agent_marker_' . mt_rand();
+        [$server, $router, $port] = $this->startAgentServer(
+            '$path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);'
+            . ' touch(' . var_export($marker, true) . ' . "." . trim($path, "/"));'
+            . ' if ($path === "/status") { header("Location: /redirected", true, 302); return true; }'
+            . ' echo "redirection target reached";'
+        );
+
+        try {
+            $agent = $this->createAgentWithAddress('agent-redirect.invalid', '127.0.0.2', $port);
+
+            // The redirection is not followed: the agent is considered as not answering,
+            // and the redirection target is never requested.
+            try {
+                $agent->requestAgent('status');
+                $this->fail('A redirecting agent must not be considered as answering.');
+            } catch (ExceptionInterface) {
+                // expected: no address answered
+            }
+            $this->assertFileExists($marker . '.status', 'The agent status endpoint was not requested.');
+            $this->assertFileDoesNotExist($marker . '.redirected');
+        } finally {
+            $this->stopAgentServer($server, $router);
+            foreach (['status', 'redirected'] as $suffix) {
+                if (file_exists($marker . '.' . $suffix)) {
+                    unlink($marker . '.' . $suffix);
+                }
+            }
+        }
+    }
+
+    public function testAgentURLsIgnoreInvalidAddresses(): void
+    {
+        // Inventory data can name the computer with characters that would inject
+        // a path, a port or credentials into the agent URL: such names are ignored.
+        foreach (['intranet.local/admin/', 'x@10.0.0.5', '10.0.0.5:8080/a?', '10.0.0.5#', 'name with spaces'] as $name) {
+            $agent = $this->createAgentWithAddress($name, '127.0.0.2', 62354);
+            $this->assertSame(
+                ['http://127.0.0.2:62354', 'https://127.0.0.2:62354'],
+                $agent->getAgentURLs(),
+                'Invalid address kept for name ' . $name
+            );
+        }
+
+        $agent = $this->createAgentWithAddress('valid-agent.example', '127.0.0.2', 62354);
+        $this->assertSame(
+            [
+                'http://valid-agent.example:62354',
+                'http://127.0.0.2:62354',
+                'https://valid-agent.example:62354',
+                'https://127.0.0.2:62354',
+            ],
+            $agent->getAgentURLs()
+        );
+    }
+
+    public static function requestStatusProvider(): iterable
+    {
+        yield 'agent status' => ['status: waiting', 'waiting'];
+        yield 'agent status with trailing newline' => ["status: running task Inventory\n", 'running task Inventory'];
+        yield 'arbitrary content' => ['{"secret": "internal-only"}', 'Unknown'];
+        yield 'status followed by other content' => ["status: waiting\nsecret=internal-only", 'Unknown'];
+    }
+
+    #[DataProvider('requestStatusProvider')]
+    public function testRequestStatusOnlyReturnsAStatus(string $body, string $expected): void
+    {
+        [$server, $router, $port] = $this->startAgentServer('echo ' . var_export($body, true) . ';');
+
+        try {
+            $agent = $this->createAgentWithAddress('agent-status.invalid', '127.0.0.2', $port);
+            $this->assertSame(['answer' => $expected], $agent->requestStatus());
+        } finally {
+            $this->stopAgentServer($server, $router);
+        }
+    }
+
+    /**
+     * Start a local HTTP server on 127.0.0.2, standing for an agent.
+     *
+     * @return array{0: resource, 1: string, 2: int} server process, router file, port
+     */
+    private function startAgentServer(string $router_code): array
+    {
+        $router = GLPI_TMP_DIR . '/agent_router_' . mt_rand() . '.php';
+        file_put_contents($router, '<?php ' . $router_code);
+        $socket = stream_socket_server('tcp://127.0.0.2:0');
+        $this->assertNotFalse($socket);
+        $port = (int) substr(strrchr(stream_socket_get_name($socket, false), ':'), 1);
+        fclose($socket);
+        $server = proc_open(
+            [PHP_BINARY, '-S', '127.0.0.2:' . $port, $router],
+            [['pipe', 'r'], ['file', '/dev/null', 'w'], ['file', '/dev/null', 'w']],
+            $pipes
+        );
+        $this->assertIsResource($server);
+
+        $ready = false;
+        for ($i = 0; $i < 50 && !$ready; $i++) {
+            $fp = @fsockopen('127.0.0.2', $port);
+            if ($fp !== false) {
+                fclose($fp);
+                $ready = true;
+            } else {
+                usleep(100000);
+            }
+        }
+        if (!$ready) {
+            $this->stopAgentServer($server, $router);
+            $this->fail('Local HTTP server did not start');
+        }
+
+        return [$server, $router, $port];
+    }
+
+    /**
+     * @param resource $server
+     */
+    private function stopAgentServer($server, string $router): void
+    {
+        proc_terminate($server);
+        proc_close($server);
+        unlink($router);
     }
 
     private function createAgentWithAddress(string $name, string $ip, int $port): \Agent

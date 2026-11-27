@@ -50,7 +50,6 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 use function Safe\json_decode;
 use function Safe\json_encode;
 use function Safe\preg_match;
-use function Safe\preg_replace;
 
 /**
  * @since 10.0.0
@@ -665,6 +664,16 @@ class Agent extends CommonDBTM
             $port = self::DEFAULT_PORT;
         }
 
+        // Addresses come from inventory data: keep only plain host names and IP literals,
+        // so they cannot inject a path, a port or credentials into the agent URL.
+        $addresses = array_filter($addresses, static function (string $address): bool {
+            if (str_starts_with($address, '[') && str_ends_with($address, ']')) {
+                return filter_var(substr($address, 1, -1), FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false;
+            }
+            return filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false
+                || filter_var($address, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false;
+        });
+
         $urls = [];
         foreach ($protocols as $protocol) {
             foreach ($addresses as $address) {
@@ -704,6 +713,8 @@ class Agent extends CommonDBTM
                     context: self::class,
                     options: [
                         'base_uri' => $address,
+                        // Agent addresses come from inventory data: never follow a redirection to another location.
+                        'max_redirects' => 0,
                     ]
                 );
                 $response = $httpClient->get($endpoint, []);
@@ -780,7 +791,10 @@ class Agent extends CommonDBTM
 
         switch ($request) {
             case self::ACTION_STATUS:
-                $data['answer'] = preg_replace('/status: /', '', $raw_content);
+                // Only return a status line: never relay the content of an arbitrary response.
+                $matches = [];
+                preg_match('/^status: ([\w ,.:()\/-]{1,255})$/', trim($raw_content), $matches);
+                $data['answer'] = $matches[1] ?? __('Unknown');
                 break;
             case self::ACTION_INVENTORY:
                 $now = new DateTime();
