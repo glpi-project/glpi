@@ -3874,7 +3874,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Property CommonITILObject\\:\\:\\$lazy_loaded_users type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
+	'count' => 3,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [

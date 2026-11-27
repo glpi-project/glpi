@@ -134,6 +134,8 @@ class NotificationEventAjaxTest extends DbTestCase
         $notiftpltpl = new \Notification_NotificationTemplate();
         $this->assertGreaterThan(0, $notiftpltpl->add($row));
 
+        // a new instance: a reused one would be handled as an update of the previous ticket
+        $ticket = new \Ticket();
         $this->assertGreaterThan(
             0,
             (int) $ticket->add([

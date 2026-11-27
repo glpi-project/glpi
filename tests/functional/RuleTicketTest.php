@@ -732,6 +732,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
                 $tickets_id = $ticket->add([
                     'name'    => 'test actors',
                     'content' => 'test actors',
+                    'entities_id' => $this->getTestRootEntity(true),
                     '_actors' => [
                         $actortype => [
                             [
@@ -827,6 +828,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->assertGreaterThan(0, $tickets_id);
 
         //Must ensure the rule will be applied with _users_id_requester being both an int and an array
+        $ticket = new Ticket();
         $tickets_id_2 = $ticket->add([
             'name'    => 'test manager number 2',
             'content' => 'test manager number 2',
@@ -862,6 +864,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         ]);
         $this->checkInput($ruleaction, $action_id_2, $action_input);
 
+        $ticket = new Ticket();
         $tickets_id_3 = $ticket->add([
             'name'    => 'test manager number 3',
             'content' => 'test manager number 3',
@@ -869,6 +872,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         ]);
         $this->assertGreaterThan(0, $tickets_id_3);
 
+        $ticket = new Ticket();
         $tickets_id_4 = $ticket->add([
             'name'    => 'test manager number 4',
             'content' => 'test manager number 4',
@@ -1021,6 +1025,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $group_id1 = $group->add($group_input = [
             "name"         => "group1",
             "is_requester" => true,
+            "entities_id"  => $this->getTestRootEntity(true),
         ]);
         $this->checkInput($group, $group_id1, $group_input);
 
@@ -1028,6 +1033,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $group_id2 = $group->add($group_input = [
             "name"         => "group2",
             "is_requester" => true,
+            "entities_id"  => $this->getTestRootEntity(true),
         ]);
         $this->checkInput($group, $group_id2, $group_input);
 
@@ -1063,6 +1069,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $ticket_id = $ticket->add([
             'name'              => 'test',
             'content'           => 'test',
+            'entities_id'       => $this->getTestRootEntity(true),
             '_groups_id_requester' => [$group_id1],
         ]);
         $this->assertGreaterThan(0, $ticket_id);
@@ -1114,7 +1121,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $user_id = $this->createItem(\User::class, [
             'name'        => 'test',
             '_profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-            '_entities_id' => 0,
+            '_entities_id' => $this->getTestRootEntity(true),
         ])->getID();
 
         $ticket->update([

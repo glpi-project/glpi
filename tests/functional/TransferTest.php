@@ -39,6 +39,7 @@ use Certificate_Item;
 use Computer;
 use Glpi\Tests\DbTestCase;
 use Item_SoftwareVersion;
+use PHPUnit\Framework\Attributes\TestWith;
 use Software;
 use SoftwareVersion;
 
@@ -1478,5 +1479,38 @@ class TransferTest extends DbTestCase
             ->getMock();
         $ma->method('getAction')->willReturn($action);
         return $ma;
+    }
+
+    /**
+     * A ticket linked to the transferred computer moves to the new entity with it, whether open or closed
+     * (closed items only accept an entity change as part of a transfer).
+     */
+    #[TestWith([\CommonITILObject::INCOMING], 'open ticket')]
+    #[TestWith([\CommonITILObject::CLOSED], 'closed ticket')]
+    public function testTransferComputerMovesLinkedTicket(int $status): void
+    {
+        // --- arrange ---
+        $this->login();
+        $initial_entity_id = getItemByTypeName(\Entity::class, '_test_child_1', true);
+        $new_entity_id = getItemByTypeName(\Entity::class, '_test_child_2', true);
+
+        $computer = $this->createItem(Computer::class, ['name' => __FUNCTION__, 'entities_id' => $initial_entity_id]);
+        $ticket = $this->createItem(\Ticket::class, ['name' => __FUNCTION__, 'content' => 'content', 'entities_id' => $initial_entity_id]);
+        // link before setting the status: a closed ticket may refuse new item links
+        $item_ticket = $this->createItem(\Item_Ticket::class, ['tickets_id' => $ticket->getID(), 'itemtype' => Computer::class, 'items_id' => $computer->getID()]);
+        $ticket = $this->updateItem(\Ticket::class, $ticket->getID(), ['status' => $status]);
+        assert((int) $ticket->fields['status'] === $status, 'The linked ticket must have the status of the tested case (open or closed) before the transfer.');
+
+        // --- act ---
+        // keep_ticket = 2: tickets linked to the transferred computer are transferred with it
+        (new \Transfer())->moveItems([Computer::class => [$computer->getID()]], $new_entity_id, ['keep_ticket' => 2]);
+
+        // --- assert ---
+        $computer->getFromDB($computer->getID());
+        $this->assertEquals($new_entity_id, $computer->fields['entities_id']);
+        $ticket->getFromDB($ticket->getID());
+        $this->assertEquals($new_entity_id, $ticket->fields['entities_id']);
+        $item_ticket->getFromDB($item_ticket->getID());
+        $this->assertEquals($computer->getID(), $item_ticket->fields['items_id']);
     }
 }

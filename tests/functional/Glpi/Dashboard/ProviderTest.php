@@ -87,37 +87,38 @@ class ProviderTest extends DbTestCase
         );
 
         $ticket = new \Ticket();
+        // created without session, the assignee is set through its link (actors in the input need a session with the right)
         $ticket->add([
             'name' => "test dashboard card SLA / tech",
             'content' => 'foo',
-            '_users_id_assign' => 2, // glpi
             'sla_id_tto'       => $slaTto->getID(),
             'sla_id_ttr'       => $slaTtr->getID(),
             'status'           => \Ticket::ASSIGNED,
         ]);
         $this->assertFalse($ticket->isNewItem());
+        $this->createItem(\Ticket_User::class, ['tickets_id' => $ticket->getID(), 'users_id' => 2, 'type' => \CommonITILActor::ASSIGN]); // glpi
 
         $ticket2 = new \Ticket();
         $ticket2->add([
             'name' => "test dashboard card SLA / tech",
             'content' => 'foo',
-            '_users_id_assign' => 4, // tech
             'sla_id_tto'       => $slaTto->getID(),
             'sla_id_ttr'       => $slaTtr->getID(),
             'status'           => \Ticket::ASSIGNED,
         ]);
         $this->assertFalse($ticket2->isNewItem());
+        $this->createItem(\Ticket_User::class, ['tickets_id' => $ticket2->getID(), 'users_id' => 4, 'type' => \CommonITILActor::ASSIGN]); // tech
 
         $ticket3 = new \Ticket();
         $ticket3->add([
             'name' => "test dashboard card SLA / tech",
             'content' => 'foo',
-            '_users_id_assign' => 4, // tech
             'sla_id_tto'       => $slaTto->getID(),
             'sla_id_ttr'       => $slaTtr->getID(),
             'status'           => \Ticket::ASSIGNED,
         ]);
         $this->assertFalse($ticket3->isNewItem());
+        $this->createItem(\Ticket_User::class, ['tickets_id' => $ticket3->getID(), 'users_id' => 4, 'type' => \CommonITILActor::ASSIGN]); // tech
 
         $output = Provider::nbTicketsByAgreementStatusAndTechnician();
         $expected = [
@@ -398,37 +399,38 @@ class ProviderTest extends DbTestCase
         $this->assertFalse($group2->isNewItem());
 
         $ticket = new \Ticket();
+        // created without session, the assignee is set through its link (actors in the input need a session with the right)
         $ticket->add([
             'name' => "test dashboard card SLA / tech",
             'content' => 'foo',
-            '_groups_id_assign' => $group->getID(),
             'sla_id_tto'       => $slaTto->getID(),
             'sla_id_ttr'       => $slaTtr->getID(),
             'status'           => \Ticket::ASSIGNED,
         ]);
         $this->assertFalse($ticket->isNewItem());
+        $this->createItem(\Group_Ticket::class, ['tickets_id' => $ticket->getID(), 'groups_id' => $group->getID(), 'type' => \CommonITILActor::ASSIGN]);
 
         $ticket2 = new \Ticket();
         $ticket2->add([
             'name' => "test dashboard card SLA / tech for second group",
             'content' => 'foo',
-            '_groups_id_assign' => $group2->getID(),
             'sla_id_tto'       => $slaTto->getID(),
             'sla_id_ttr'       => $slaTtr->getID(),
             'status'           => \Ticket::ASSIGNED,
         ]);
         $this->assertFalse($ticket2->isNewItem());
+        $this->createItem(\Group_Ticket::class, ['tickets_id' => $ticket2->getID(), 'groups_id' => $group2->getID(), 'type' => \CommonITILActor::ASSIGN]);
 
         $ticket3 = new \Ticket();
         $ticket3->add([
             'name' => "test dashboard card SLA / tech for second group",
             'content' => 'foo',
-            '_groups_id_assign' => $group2->getID(),
             'sla_id_tto'       => $slaTto->getID(),
             'sla_id_ttr'       => $slaTtr->getID(),
             'status'           => \Ticket::ASSIGNED,
         ]);
         $this->assertFalse($ticket3->isNewItem());
+        $this->createItem(\Group_Ticket::class, ['tickets_id' => $ticket3->getID(), 'groups_id' => $group2->getID(), 'type' => \CommonITILActor::ASSIGN]);
 
         $output = Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
         $expected = [

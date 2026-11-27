@@ -3484,6 +3484,8 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
      */
     public function testDefaultProfileCriterion(): void
     {
+        $this->login();
+
         // Get the root entity
         $entity = getItemByTypeName(Entity::class, '_test_root_entity', true);
 

@@ -995,7 +995,8 @@ class CommonDBTM extends CommonGLPI
                             $input['is_dynamic'] = $data['is_dynamic'];
                         }
 
-                        $item->update($input);
+                        // cleanup done by GLPI: the related items must be updated whatever the rights of the current user
+                        Session::callAsSystem(fn() => $item->update($input));
                     }
                 }
             }
