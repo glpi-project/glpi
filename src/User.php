@@ -456,7 +456,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * Get shared query parameters for items linked to a user.
      *
      * @param CommonDBTM $item
-     * @param array      $user_criteria
+     * @param array{field_user: 'users_id'|'users_id_tech', groups_ids: int[], criteria: array<string, mixed>} $user_criteria
      * @param int[]      $target_entities
      *
      * @return array<string, mixed>
