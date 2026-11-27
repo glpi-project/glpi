@@ -49,6 +49,12 @@ $tables = [
     'glpi_domaintypes', 'glpi_domainrelations', 'glpi_domainrecordtypes', 'glpi_appliancetypes', 'glpi_applianceenvironments',
     'glpi_agenttypes', 'glpi_pendingreasons', 'glpi_pendingreasons_items', 'glpi_snmpcredentials', 'glpi_forms_categories',
     'glpi_oauthclients', 'glpi_defaultfilters',
+    'glpi_items_devicebatteries', 'glpi_items_devicecameras', 'glpi_items_devicecases',
+    'glpi_items_devicecontrols', 'glpi_items_devicedrives', 'glpi_items_devicefirmwares',
+    'glpi_items_devicegenerics', 'glpi_items_devicegraphiccards', 'glpi_items_deviceharddrives',
+    'glpi_items_devicememories', 'glpi_items_devicemotherboards', 'glpi_items_devicenetworkcards',
+    'glpi_items_devicepcis', 'glpi_items_devicepowersupplies', 'glpi_items_deviceprocessors',
+    'glpi_items_devicesensors', 'glpi_items_devicesimcards', 'glpi_items_devicesoundcards',
 ];
 
 foreach ($tables as $table) {
