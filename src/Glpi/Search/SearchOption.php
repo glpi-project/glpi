@@ -505,6 +505,8 @@ final class SearchOption implements ArrayAccess
         $actions   = [
             'contains'    => __('contains'),
             'notcontains' => __('not contains'),
+            'regexp'      => __('matches regular expression'),
+            'notregexp'   => __('does not match regular expression'),
             'empty'       => __('is empty'),
             'searchopt'   => [],
         ];
@@ -538,6 +540,14 @@ final class SearchOption implements ArrayAccess
 
                         case "notcontains":
                             $actions['notcontains'] = __('not contains');
+                            break;
+
+                        case "regexp":
+                            $actions['regexp'] = __('matches regular expression');
+                            break;
+
+                        case "notregexp":
+                            $actions['notregexp'] = __('does not match regular expression');
                             break;
 
                         case "under":
@@ -657,6 +667,8 @@ final class SearchOption implements ArrayAccess
                     $actions = [
                         'contains'    => __('contains'),
                         'notcontains' => __('not contains'),
+                        'regexp'      => __('matches regular expression'),
+                        'notregexp'   => __('does not match regular expression'),
                         'equals'      => __('is'),
                         'notequals'   => __('is not'),
                         'empty'       => __('is empty'),

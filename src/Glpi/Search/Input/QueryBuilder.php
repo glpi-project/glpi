@@ -408,14 +408,19 @@ final class QueryBuilder implements SearchInputInterface
 
         // Default case : text field
         if (!$display) {
-            $fieldpattern = self::getInputValidationPattern($searchopt['datatype'] ?? '', false);
-            $pattern = $fieldpattern['pattern'];
-            $message = $fieldpattern['validation_message'];
-
             $field_title = __s('Criteria value');
-            echo "<input type='text' class='form-control' size='13' aria-label='" . htmlescape($field_title) . "' name='" . htmlescape($inputname) . "' value=\""
-                . htmlescape($request['value']) . "\" pattern=\"" . htmlescape($pattern) . "\">"
-                . "<span class='invalid-tooltip'>" . htmlescape($message) . "</span>";
+            if (in_array($request['searchtype'], ['regexp', 'notregexp'], true)) {
+                echo "<input type='text' class='form-control' size='13' aria-label='" . htmlescape($field_title) . "' name='" . htmlescape($inputname) . "' value=\""
+                    . htmlescape($request['value']) . "\">";
+            } else {
+                $fieldpattern = self::getInputValidationPattern($searchopt['datatype'] ?? '', false);
+                $pattern = $fieldpattern['pattern'];
+                $message = $fieldpattern['validation_message'];
+
+                echo "<input type='text' class='form-control' size='13' aria-label='" . htmlescape($field_title) . "' name='" . htmlescape($inputname) . "' value=\""
+                    . htmlescape($request['value']) . "\" pattern=\"" . htmlescape($pattern) . "\">"
+                    . "<span class='invalid-tooltip'>" . htmlescape($message) . "</span>";
+            }
         }
     }
 

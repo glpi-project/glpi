@@ -8558,6 +8558,91 @@ class SearchTest extends DbTestCase
         $this->assertNotContains($ticket->getID(), array_column($data['data']['rows'], 'id'));
         $this->assertSame(0, $data['data']['totalcount']);
     }
+
+    public function testRegexpValidation(): void
+    {
+        $this->assertTrue(SQLProvider::isValidRegexp('^PC-[0-9]+$'));
+        $this->assertTrue(SQLProvider::isValidRegexp('foo/bar'));
+        $this->assertTrue(SQLProvider::isValidRegexp('foo\/bar'));
+        $this->assertTrue(SQLProvider::isValidRegexp('^user.*@example\.com$'));
+        $this->assertTrue(SQLProvider::isValidRegexp('(foo|bar)+'));
+
+        $this->assertFalse(SQLProvider::isValidRegexp(''));
+        $this->assertFalse(SQLProvider::isValidRegexp('[unclosed'));
+        $this->assertFalse(SQLProvider::isValidRegexp('(unclosed'));
+        $this->assertFalse(SQLProvider::isValidRegexp("abc\0def"));
+        $this->assertFalse(
+            SQLProvider::isValidRegexp(
+                str_repeat('a', SQLProvider::MAX_REGEXP_LENGTH + 1)
+            )
+        );
+        $this->assertFalse(SQLProvider::isValidRegexp('(a+)+'));
+        $this->assertFalse(SQLProvider::isValidRegexp('(.*)*'));
+        $this->assertFalse(SQLProvider::isValidRegexp('([0-9]+){2,}'));
+    }
+
+    public function testRegexpSearch(): void
+    {
+        $this->login();
+
+        $actions = SearchOption::getActionsFor(Computer::class, 1);
+        $this->assertArrayHasKey('regexp', $actions);
+        $this->assertArrayHasKey('notregexp', $actions);
+
+        $pc1 = $this->createItem(Computer::class, [
+            'name'        => 'regex-pc-01',
+            'serial'      => 'SN-1234',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $pc2 = $this->createItem(Computer::class, [
+            'name'        => 'regex-pc-02',
+            'serial'      => null,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $srv = $this->createItem(Computer::class, [
+            'name'        => 'regex-srv-99',
+            'serial'      => 'OTHER-99',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        // Positive regexp match
+        $res = \Search::getDatas(Computer::class, [
+            'reset'    => 'reset',
+            'criteria' => [
+                ['field' => 1, 'searchtype' => 'regexp', 'value' => '^regex-pc-[0-9]{2}$'],
+            ],
+        ]);
+        $ids = array_column($res['data']['rows'], 'id');
+        $this->assertSame(2, $res['data']['totalcount']);
+        $this->assertContains($pc1->getID(), $ids);
+        $this->assertContains($pc2->getID(), $ids);
+        $this->assertNotContains($srv->getID(), $ids);
+
+        // Negative regexp match (must include NULL values on optional fields like serial)
+        $res = \Search::getDatas(Computer::class, [
+            'reset'    => 'reset',
+            'criteria' => [
+                ['field' => 1, 'searchtype' => 'regexp', 'value' => '^regex-'],
+                ['link' => 'AND', 'field' => 5, 'searchtype' => 'notregexp', 'value' => '^SN-[0-9]+$'],
+            ],
+        ]);
+        $ids = array_column($res['data']['rows'], 'id');
+        $this->assertSame(2, $res['data']['totalcount']);
+        $this->assertNotContains($pc1->getID(), $ids);
+        $this->assertContains($pc2->getID(), $ids);
+        $this->assertContains($srv->getID(), $ids);
+
+        // Invalid / unsafe / SQLi-like patterns must safely return 0 rows without SQL errors
+        foreach (['[unclosed', '(a+)+', "^regex' OR '1'='1"] as $bad_pattern) {
+            $res = \Search::getDatas(Computer::class, [
+                'reset'    => 'reset',
+                'criteria' => [
+                    ['field' => 1, 'searchtype' => 'regexp', 'value' => $bad_pattern],
+                ],
+            ]);
+            $this->assertSame(0, $res['data']['totalcount']);
+        }
+    }
 }
 
 // @codingStandardsIgnoreStart

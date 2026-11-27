@@ -365,7 +365,7 @@ class APIRestTest extends TestCase
         $this->assertIsArray($data[1]['available_searchtypes']);
 
         $this->assertSame(
-            ['contains', 'notcontains', 'equals', 'notequals', 'empty'],
+            ['contains', 'notcontains', 'regexp', 'notregexp', 'equals', 'notequals', 'empty'],
             $data[1]['available_searchtypes']
         );
     }
