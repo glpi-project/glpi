@@ -37,11 +37,13 @@ namespace Glpi\Toolbox;
 use CommonGLPI;
 use GLPIKey;
 use Safe\Exceptions\NetworkException;
+use Safe\Exceptions\UrlException;
 use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Component\HttpClient\Exception\RedirectionException;
 use Symfony\Component\HttpClient\Exception\ServerException;
 use Symfony\Component\HttpClient\HttpClient as HttpClientFactory;
 use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
+use Symfony\Component\HttpClient\Response\AsyncResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -52,22 +54,32 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Contracts\HttpClient\ResponseStreamInterface;
 
 use function Safe\dns_get_record;
+use function Safe\parse_url;
 
 final class HttpClient
 {
     private HttpClientInterface $client;
 
     /**
+     * Proxied client without private networks filtering, used for hosts that only the proxy can resolve.
+     */
+    private ?HttpClientInterface $unfiltered_proxy_client = null;
+
+    /**
      * @param class-string<CommonGLPI>|null $context Configuration context.
      * @param array<string, mixed> $options Client options, see `HttpClientInterface::DEFAULT_OPTIONS`.
      * @param bool $allow_private_networks Allow usage of private networks, regardless of the configuration.
      * @param bool $bypass_proxy Prevent usage of proxy, regardless of the configuration.
+     * @param bool $resolve_through_proxy Send requests to hosts that the GLPI server cannot resolve to the proxy,
+     *                                    without checking them against private networks.
+     *                                    Must be used only for URLs configured by administrators.
      */
     public function __construct(
         ?string $context = null,
         array $options = [],
         bool $allow_private_networks = false,
-        bool $bypass_proxy = false
+        bool $bypass_proxy = false,
+        bool $resolve_through_proxy = false
     ) {
         global $CFG_GLPI;
 
@@ -121,6 +133,9 @@ final class HttpClient
                     }
                     $proxy_ips = array_merge(gethostbynamel($proxy_host) ?: [], $proxy_ipv6);
                 }
+                if ($resolve_through_proxy) {
+                    $this->unfiltered_proxy_client = $inner_client->withOptions($client_options);
+                }
             }
             $inner_client = new NoPrivateNetworkHttpClient($inner_client, null, $proxy_ips);
         }
@@ -144,7 +159,19 @@ final class HttpClient
      */
     public function request(string $method, string $uri = '', array $options = []): ResponseInterface
     {
-        $response = $this->client->request($method, $uri, $options);
+        $client = $this->client;
+        if (
+            $this->unfiltered_proxy_client !== null
+            && !array_key_exists('proxy', $options)
+            && !self::isResolvableLocally($uri)
+        ) {
+            // The target IP cannot be checked as the host is resolved by the proxy, which is trusted to filter it.
+            // Redirections are not followed, as their target would not be checked either.
+            $client = $this->unfiltered_proxy_client;
+            $options['max_redirects'] = 0;
+        }
+
+        $response = $client->request($method, $uri, $options);
 
         if ($response->getStatusCode() >= 300 && $response->getStatusCode() < 400) {
             throw new RedirectionException($response);
@@ -205,6 +232,38 @@ final class HttpClient
      */
     public function stream(ResponseInterface $response, ?float $timeout = null): ResponseStreamInterface
     {
-        return $this->client->stream($response, $timeout);
+        // Responses of the filtering client are async responses.
+        $client = $this->unfiltered_proxy_client !== null && !$response instanceof AsyncResponse
+            ? $this->unfiltered_proxy_client
+            : $this->client;
+
+        return $client->stream($response, $timeout);
+    }
+
+    /**
+     * Whether the URI host is an IP address or can be resolved by the GLPI server.
+     * An invalid URI or an empty host (relative URI) is considered resolvable, so it stays filtered.
+     */
+    private static function isResolvableLocally(string $uri): bool
+    {
+        try {
+            $host = parse_url($uri, PHP_URL_HOST);
+        } catch (UrlException) {
+            return true;
+        }
+        if (!is_string($host)) {
+            return true;
+        }
+
+        $host = trim($host, '[]');
+        if ($host === '' || filter_var($host, FILTER_VALIDATE_IP) !== false || gethostbynamel($host) !== false) {
+            return true;
+        }
+
+        try {
+            return @dns_get_record($host, DNS_AAAA) !== [];
+        } catch (NetworkException) {
+            return false;
+        }
     }
 }
