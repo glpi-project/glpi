@@ -768,6 +768,45 @@ class PendingReasonTest extends DbTestCase
     }
 
     /**
+     * A solved parent keeps its pending data: enabling pending without reason on edit must set it pending again.
+     */
+    public function testEditFollowupSetPendingWithoutReasonOnSolvedParent(): void
+    {
+        $this->login();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'             => 'Ticket',
+            'content'          => 'Ticket',
+            '_users_id_assign' => getItemByTypeName('User', TU_USER, true),
+            'entities_id'      => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $followup = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => 'Followup',
+        ]);
+        $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => 'Pending followup',
+            'pending'  => 1,
+        ], ['pending']);
+        $this->updateItem(Ticket::class, $ticket->getID(), ['status' => CommonITILObject::SOLVED]);
+        $this->assertNotFalse(PendingReason_Item::getForItem($ticket));
+
+        $this->updateItem(ITILFollowup::class, $followup->getID(), [
+            'content' => 'Followup edited',
+            'pending' => 1,
+        ], ['pending']);
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertEquals(CommonITILObject::WAITING, $ticket->fields['status']);
+        $p_item = PendingReason_Item::getForItem($ticket);
+        $this->assertEquals(CommonITILObject::SOLVED, $p_item->fields['previous_status']);
+        $this->assertNotFalse(PendingReason_Item::getForItem($followup));
+    }
+
+    /**
      * Editing a followup on a manually waiting parent (toggle checked by default) must not attach pending data.
      */
     public function testEditFollowupOnManuallyWaitingParentDoesNotAddPendingData(): void

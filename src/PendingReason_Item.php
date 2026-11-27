@@ -550,10 +550,7 @@ class PendingReason_Item extends CommonDBRelation
                 ($timeline_item->input['pending'] ?? 0)
                 && (
                     ($timeline_item->input['pendingreasons_id'] ?? 0) > 0
-                    || (
-                        $timeline_item->input['_job']->fields['status'] != CommonITILObject::WAITING
-                        && !self::getForItem($timeline_item->input['_job'])
-                    )
+                    || $timeline_item->input['_job']->fields['status'] != CommonITILObject::WAITING
                 )
             ) {
                 // Set parent status
