@@ -45,9 +45,51 @@ class Ticket_Contract extends CommonDBRelation
     public static int $checkItem_2_Rights = self::HAVE_VIEW_RIGHT_ON_ITEM;
     public static bool $check_entity_coherency = false;
 
+    private bool $is_ticket_purge = false;
+
     public static function getTypeName($nb = 0)
     {
         return __('Tickets / Contracts');
+    }
+
+    public function post_addItem()
+    {
+        parent::post_addItem();
+
+        if (!($this->input['_no_ticket_webhook'] ?? false)) {
+            $this->raiseTicketUpdateWebhook();
+        }
+    }
+
+    public function post_purgeItem()
+    {
+        parent::post_purgeItem();
+
+        if (!$this->is_ticket_purge) {
+            $this->raiseTicketUpdateWebhook();
+        }
+    }
+
+    public function cleanDBonItemDelete($itemtype, $items_id)
+    {
+        // The ticket "delete" webhook supersedes an "update" for each removed link
+        $this->is_ticket_purge = is_a($itemtype, Ticket::class, true);
+        try {
+            parent::cleanDBonItemDelete($itemtype, $items_id);
+        } finally {
+            $this->is_ticket_purge = false;
+        }
+    }
+
+    /**
+     * Raise the ticket "update" webhook, as its contracts are exposed in its API schema.
+     */
+    private function raiseTicketUpdateWebhook(): void
+    {
+        $ticket = Ticket::getById($this->fields['tickets_id']);
+        if ($ticket instanceof Ticket) {
+            Webhook::raise('update', $ticket);
+        }
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)

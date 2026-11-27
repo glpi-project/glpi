@@ -52,6 +52,7 @@ use CommonITILActor;
 use CommonITILObject;
 use CommonITILTask;
 use CommonITILValidation;
+use Contract;
 use Document_Item;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
@@ -101,6 +102,7 @@ use stdClass;
 use Supplier;
 use TaskCategory;
 use Ticket;
+use Ticket_Contract;
 use Ticket_Ticket;
 use TicketCost;
 use TicketRecurrent;
@@ -441,6 +443,37 @@ final class ITILController extends AbstractController
                     'type' => Doc\Schema::TYPE_STRING,
                 ];
                 $schemas[$itil_type]['properties']['request_type'] = self::getDropdownTypeSchema(class: RequestType::class, full_schema: 'RequestType');
+                $schemas[$itil_type]['properties']['contracts'] = [
+                    'x-version-introduced' => '3.1.0',
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'readOnly' => true,
+                    'x-rights-conditions' => [
+                        'read' => static fn() => Contract::canView(),
+                    ],
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Contract',
+                        'x-join' => [
+                            'table' => Contract::getTable(),
+                            'fkey' => 'contracts_id',
+                            'field' => 'id',
+                            'primary-property' => 'id',
+                            'ref-join' => [
+                                'table' => Ticket_Contract::getTable(),
+                                'fkey' => 'id',
+                                'field' => 'tickets_id',
+                            ],
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'readOnly' => true,
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
+                        ],
+                    ],
+                ];
 
                 // SLA/OLA Properties
 
