@@ -1,0 +1,74 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# Actions added by plugins to a timeline entry, see CommonITILObject::getTimelineItemPluginActions() #}
+
+{# Icon buttons, next to the menu of the entry (the label is displayed when there is no icon) #}
+{% macro buttons(actions) %}
+   {% for action in actions %}
+      {% set attributes = call('Html::parseAttributes', {options: action['attributes']}) %}
+      {% set content %}
+         {% if action['icon'] %}
+            <i class="{{ action['icon'] }}" aria-hidden="true"></i>
+            <span class="visually-hidden">{{ action['label'] }}</span>
+         {% else %}
+            <span>{{ action['label'] }}</span>
+         {% endif %}
+      {% endset %}
+      {% set class = 'btn btn-sm btn-ghost-secondary timeline-item-action ' ~ (action['icon'] ? 'timeline-item-action-icon ' : '') ~ action['class'] %}
+      {% if action['url'] is not null %}
+         <a class="{{ class }}" href="{{ action['url'] }}" title="{{ action['label'] }}" data-bs-toggle="tooltip" {{ attributes|raw }}>{{ content }}</a>
+      {% else %}
+         <button type="button" class="{{ class }}" title="{{ action['label'] }}" data-bs-toggle="tooltip" {{ attributes|raw }}>{{ content }}</button>
+      {% endif %}
+   {% endfor %}
+{% endmacro %}
+
+{# Items of the menu of the entry #}
+{% macro menu_items(actions) %}
+   {% for action in actions %}
+      {% set attributes = call('Html::parseAttributes', {options: action['attributes']}) %}
+      <li>
+         {% if action['url'] is not null %}
+            <a class="dropdown-item {{ action['class'] }}" href="{{ action['url'] }}" {{ attributes|raw }}>
+               {% if action['icon'] %}<i class="{{ action['icon'] }}" aria-hidden="true"></i>{% endif %}
+               <span>{{ action['label'] }}</span>
+            </a>
+         {% else %}
+            <button type="button" class="dropdown-item {{ action['class'] }}" {{ attributes|raw }}>
+               {% if action['icon'] %}<i class="{{ action['icon'] }}" aria-hidden="true"></i>{% endif %}
+               <span>{{ action['label'] }}</span>
+            </button>
+         {% endif %}
+      </li>
+   {% endfor %}
+{% endmacro %}

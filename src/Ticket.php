@@ -371,6 +371,15 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                   && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])));
     }
 
+    protected function canRecipientApprove(int $users_id): bool
+    {
+        if ($users_id === (int) Session::getLoginUserID()) {
+            // Active profile only, as in canApprove()
+            return Session::haveRight(self::$rightname, self::SURVEY);
+        }
+        return Profile::haveUserRight($users_id, self::$rightname, self::SURVEY, $this->getEntityID());
+    }
+
 
     public function canMassiveAction($action, $field, $value)
     {
@@ -3969,7 +3978,7 @@ JAVASCRIPT;
                         'last_solution.items_id'   => new QueryIdentifier('glpi_tickets.id'),
                         'last_solution.itemtype'   => self::class,
                     ],
-                    'ORDER'  => 'last_solution.id DESC',
+                    'ORDER'  => ['last_solution.date_creation DESC', 'last_solution.id DESC'],
                     'LIMIT'  => 1,
                 ]);
 

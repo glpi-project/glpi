@@ -757,6 +757,29 @@ class Hooks
     public const TIMELINE_ITEMS          = 'timeline_items';
 
     /**
+     * Register a function to add actions to an entry of the timeline of a Ticket, Change or Problem
+     * (description, followup, task, solution, validation...), rendered with the page: no script has to wait
+     * for the page to be loaded to insert them.
+     * The function is called once per entry, except for the compact lines of the history and of the automatic reminders
+     * (Log and ITILReminder entries), which have no actions. It is called with the following parameters:
+     * - 'item' => The item shown by the entry (the Ticket, Change or Problem itself for its description), or null if it cannot be loaded.
+     * - 'parent' => The Ticket, Change or Problem.
+     * - 'entry' => The timeline entry, see {@link self::TIMELINE_ITEMS}: 'type', 'item' (fields of the item), and 'item_action' when it is set
+     *   (e.g. 'validation-request' or 'validation-answer' for the two entries of a validation).
+     * The function is expected to return an array of actions. Each action is an array with the following properties:
+     * - 'label' => (required) The label of the action. Also used as the title of an icon button.
+     * - 'icon' => The CSS classes of the icon, e.g. 'ti ti-language'.
+     * - 'display' => 'menu' (default) to add the action to the menu of the entry, or 'button' to display it as an icon button next to this menu.
+     * - 'url' => The URL to go to. Without it, the action is a button: handle its click with a delegated event listener.
+     * - 'class' => Additional CSS classes. Use 'active' for a button showing an enabled state.
+     * - 'attributes' => Additional HTML attributes (e.g. 'data-*' attributes), as an array of name => value.
+     *
+     * @used-by templates/components/itilobject/timeline/timeline_item_header.html.twig
+     * @used-by templates/components/itilobject/timeline/main_description.html.twig
+     */
+    public const TIMELINE_ITEM_ACTIONS   = 'timeline_item_actions';
+
+    /**
      * Register a function to set the icon used by an item in the impact graph.
      * The function is called with the following parameters:
      * - 'itemtype' => The type of the item being shown in the graph

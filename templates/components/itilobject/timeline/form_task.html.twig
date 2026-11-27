@@ -53,6 +53,8 @@
          </div>
 
          <div class="timeline-badges">
+            {{ private_badge }}
+
             {% if entry_i['users_id_tech'] %}
                <span class="badge bg-orange-lt">
                   {% set is_current_tech = (entry_i['users_id_tech'] == session('glpiID')) %}

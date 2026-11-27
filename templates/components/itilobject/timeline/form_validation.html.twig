@@ -40,7 +40,10 @@
    {% if form_mode == 'view' %}
       {# Item displayed in timeline #}
       <div class="read-only-content w-100">
-         {{ entry_i['content']|raw }}
+         {# Wrapped to flow next to the actions (see _timeline.scss) #}
+         <div class="validation-content">
+            {{ entry_i['content']|raw }}
+         </div>
 
          {% if (entry_i['comment_submission'] ?? '')|length %}
             <div class='alert alert-info mt-2'>
@@ -106,14 +109,15 @@
                   ) }}
                </div>
 
+               <hr class="my-2" />
                <div class="validation-footer">
-                  <button type="submit" class="btn btn-outline-green" name="approval_action" value="approve">
-                     <i class="ti ti-thumb-up" aria-hidden="true"></i>
-                     <span class="validation-label">{{ __('Approve') }}</span>
-                  </button>
-                  <button type="submit" class="btn btn-outline-red" name="approval_action" value="refuse">
+                  <button type="submit" class="btn btn-outline-danger" name="approval_action" value="refuse">
                      <i class="ti ti-thumb-down" aria-hidden="true"></i>
                      <span class="validation-label">{{ __('Refuse') }}</span>
+                  </button>
+                  <button type="submit" class="btn btn-outline-success" name="approval_action" value="approve">
+                     <i class="ti ti-thumb-up" aria-hidden="true"></i>
+                     <span class="validation-label">{{ __('Approve') }}</span>
                   </button>
                </div>
             </form>
@@ -158,13 +162,13 @@
          </div>
 
          <div class="validation-footer">
-            <button type="submit" class="btn btn-outline-green" name="approval_action" value="approve">
-               <i class="ti ti-thumb-up" aria-hidden="true"></i>
-               <span class="validation-label">{{ __('Approve') }}</span>
-            </button>
-            <button type="submit" class="btn btn-outline-red" name="approval_action" value="refuse">
+            <button type="submit" class="btn btn-outline-danger" name="approval_action" value="refuse">
                <i class="ti ti-thumb-down" aria-hidden="true"></i>
                <span class="validation-label">{{ __('Refuse') }}</span>
+            </button>
+            <button type="submit" class="btn btn-outline-success" name="approval_action" value="approve">
+               <i class="ti ti-thumb-up" aria-hidden="true"></i>
+               <span class="validation-label">{{ __('Approve') }}</span>
             </button>
          </div>
       </form>
