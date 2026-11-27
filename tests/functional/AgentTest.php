@@ -884,6 +884,98 @@ XML;
         }
     }
 
+    public function testRequestAgentDoesNotFollowRedirections(): void
+    {
+        // Local HTTP server standing for the agent: its status endpoint redirects to another location.
+        $router = GLPI_TMP_DIR . '/agent_router_' . mt_rand() . '.php';
+        $marker = $router . '.reached';
+        file_put_contents(
+            $router,
+            '<?php if (parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH) !== "/redirected") { header("Location: /redirected", true, 302); return true; } touch(' . var_export($marker, true) . '); echo "redirection target reached";'
+        );
+        $socket = stream_socket_server('tcp://127.0.0.2:0');
+        $this->assertNotFalse($socket);
+        $port = (int) substr(strrchr(stream_socket_get_name($socket, false), ':'), 1);
+        fclose($socket);
+        $server = proc_open(
+            [PHP_BINARY, '-S', '127.0.0.2:' . $port, $router],
+            [['pipe', 'r'], ['file', '/dev/null', 'w'], ['file', '/dev/null', 'w']],
+            $pipes
+        );
+        $this->assertIsResource($server);
+
+        try {
+            $ready = false;
+            for ($i = 0; $i < 50 && !$ready; $i++) {
+                $fp = @fsockopen('127.0.0.2', $port);
+                if ($fp !== false) {
+                    fclose($fp);
+                    $ready = true;
+                } else {
+                    usleep(100000);
+                }
+            }
+            $this->assertTrue($ready, 'Local HTTP server did not start');
+
+            $agent = $this->createAgentWithAddress('agent-redirect.invalid', '127.0.0.2', $port);
+
+            // A redirection is neither followed nor taken as the agent's answer: the next address (https) is tried and fails too.
+            $failed = false;
+            try {
+                $agent->requestAgent('status');
+            } catch (\Throwable) {
+                $failed = true;
+            }
+            $this->assertTrue($failed, 'A redirection must not be accepted as an agent response');
+            $this->assertSame(['answer' => __('Unknown')], $agent->requestStatus());
+            $this->assertSame(['answer' => __('Unknown')], $agent->requestInventory());
+            $this->assertFileDoesNotExist($marker);
+        } finally {
+            proc_terminate($server);
+            proc_close($server);
+            unlink($router);
+            if (file_exists($marker)) {
+                unlink($marker);
+            }
+        }
+    }
+
+    public function testGuessAddressesIgnoresNamesThatAreNotHostnames(): void
+    {
+        $domain = $this->createItem(\Domain::class, [
+            'name'        => 'example.org',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $create_agent = function (string $name) use ($domain): \Agent {
+            $agent = $this->createAgentWithAddress($name, '127.0.0.2', 62354);
+            $this->createItem(\Domain_Item::class, [
+                'domains_id' => $domain->getID(),
+                'itemtype'   => Computer::class,
+                'items_id'   => $agent->fields['items_id'],
+            ]);
+            return $agent;
+        };
+
+        // Names (alone or with their domain) that would change the URL's port, path, user info, query or fragment.
+        foreach (
+            [
+                'internal-host:8080/admin/',
+                'user@internal-host',
+                'internal-host?x',
+                'internal-host#x',
+                'name with spaces',
+            ] as $name
+        ) {
+            $this->assertSame(['127.0.0.2'], $create_agent($name)->guessAddresses(), $name);
+        }
+
+        // A plain host name is still used, alone and with its domain.
+        $this->assertSame(
+            ['pc-01_lab.local', '127.0.0.2', 'pc-01_lab.local.example.org'],
+            $create_agent('pc-01_lab.local')->guessAddresses()
+        );
+    }
+
     private function createAgentWithAddress(string $name, string $ip, int $port): \Agent
     {
         global $DB;
