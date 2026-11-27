@@ -34,7 +34,6 @@
 
 namespace tests\units;
 
-use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\ITILTrait;
 use Glpi\Tests\Glpi\SLMTrait;
@@ -2815,10 +2814,6 @@ class SLMTest extends DbTestCase
         $this->assertEqualsCanonicalizing($created_olas_ids, array_column($olas_data, 'olas_id'));
 
         // to simplify test, remove the OLA associated on ticket creation (= keep only the ones created on update)
-        // clean levels_todo to ensure there is no waste inside.
-        global $DB;
-        $DB->delete($level_ticket_class::getTable(), [new QueryExpression('1=1')]);
-
         $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => $new_created_olas_ids]);
 
         // Check that the target date are correct (+ 4 hours)

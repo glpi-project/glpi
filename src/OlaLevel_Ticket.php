@@ -168,8 +168,8 @@ class OlaLevel_Ticket extends CommonDBTM
         $items_ola = new Item_Ola();
 
         // cleanup, remove unrelevant db entries
-        // - ticket not found (or deleted)
-        if (!$ticket->getFromDB($data['tickets_id']) || $ticket->isDeleted()) {
+        // - ticket not found
+        if (!$ticket->getFromDB($data['tickets_id'])) {
             $olalevelticket->delete(['id' => $data['id']]);
 
             return;
@@ -181,8 +181,8 @@ class OlaLevel_Ticket extends CommonDBTM
             return;
         }
 
-        if ($ticket->isSolved()) {
-            // no deletion : keep olaLevel_Ticket db entry in case of solution not validated
+        if ($ticket->areOlaLevelsSuspended()) {
+            // no deletion : levels are suspended (trash, waiting, solution not validated, ...), the level is rescheduled when the ticket is resumed
 
             return;
         }
@@ -241,6 +241,7 @@ class OlaLevel_Ticket extends CommonDBTM
         if (
             $olalevel->getRuleWithCriteriasAndActions($data['olalevels_id'], true, true)
             && $ola->getFromDB($data['olas_id'])
+            && $olalevel->fields['is_active']
         ) {
             $doit = true;
             if (count($olalevel->criterias)) {
@@ -273,10 +274,11 @@ class OlaLevel_Ticket extends CommonDBTM
      * @since 9.1    2 parameters mandatory
      * @param int               $tickets_id Ticket ID
      * @param SLM::TTR|SLM::TTO $olaType    Type of ola
+     * @param int               $olas_id    Replay only the levels of this OLA (0 = all the OLAs of this type)
      *
      * @return void
      */
-    public static function replayForTicket($tickets_id, $olaType)
+    public static function replayForTicket($tickets_id, $olaType, int $olas_id = 0)
     {
         global $DB;
 
@@ -305,22 +307,20 @@ class OlaLevel_Ticket extends CommonDBTM
                 'glpi_olalevels_tickets.date'       => ['<', $now],
                 'glpi_olalevels_tickets.tickets_id' => $tickets_id,
                 'glpi_olas.type'                    => $olaType,
-            ],
+            ] + ($olas_id > 0 ? ['glpi_olas.id' => $olas_id] : []),
+            // one level at a time (several OLA of the same type may have passed levels)
+            'ORDER'     => 'glpi_olalevels_tickets.date',
+            'LIMIT'     => 1,
         ];
 
         $last_escalation = -1;
-        do {
-            $iterator = $DB->request($criteria);
-            $number = count($iterator);
-            if ($number === 1) {
-                $data = $iterator->current();
-                if ($data['id'] === $last_escalation) {
-                    // Possible infinite loop. Trying to apply exact same SLA assignment.
-                    break;
-                }
-                self::doLevelForTicket($data);
-                $last_escalation = $data['id'];
+        while ($data = $DB->request($criteria)->current()) {
+            if ($data['id'] === $last_escalation) {
+                // Possible infinite loop (level kept, e.g. suspended ticket). Trying to apply exact same OLA level.
+                break;
             }
-        } while ($number === 1);
+            self::doLevelForTicket($data);
+            $last_escalation = $data['id'];
+        }
     }
 }
