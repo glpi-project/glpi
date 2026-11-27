@@ -218,12 +218,6 @@ enum Environment: string
             return true;
         }
 
-        // If GLPI is install direcly by cloning the git repository, then it is preferable to check
-        // resources state.
-        if (is_dir($root_dir . '/.git')) {
-            return true;
-        }
-
         return false;
     }
 
