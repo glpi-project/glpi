@@ -109,7 +109,6 @@ CREATE TABLE `glpi_authldaps` (
   `responsible_field` varchar(255) DEFAULT NULL,
   `pagesize` int NOT NULL DEFAULT '0',
   `ldap_maxlimit` int NOT NULL DEFAULT '0',
-  `can_support_pagesize` tinyint NOT NULL DEFAULT '0',
   `picture_field` varchar(255) DEFAULT NULL,
   `begin_date_field` varchar(255) DEFAULT NULL,
   `end_date_field` varchar(255) DEFAULT NULL,
