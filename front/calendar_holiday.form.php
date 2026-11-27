@@ -50,8 +50,8 @@ if (isset($_POST["add"])) {
             'calendars_id' => (int) ($_POST['calendars_id'] ?? 0),
             'holidays_id'  => (int) $holidays_id,
         ];
-        $item->check(-1, CREATE, $input);
         $inputs[] = $input;
+        $item->check(-1, CREATE, $input);
     }
 
     foreach ($inputs as $input) {
