@@ -59,7 +59,12 @@ test.describe('External event', () => {
 
         // The new end date is lower than the previous start date, it must not be rejected by the end date picker
         await event_page.doTypeStartDate('2020-01-15');
-        await expect(event_page.plan_begin_input).toHaveValue(/^2020-01-15 /);
+        // An event starting late in the evening ends on the following day
+        await expect(event_page.end_date_input).toHaveValue(/^2020-01-1[56]$/);
+
+        // Default start time is the current time, use a fixed one to not depend on it
+        await event_page.doTypeStartTime('10:00');
+        await expect(event_page.plan_begin_input).toHaveValue('2020-01-15 10:00:00');
         await expect(event_page.end_date_input).toHaveValue('2020-01-15');
         await expect(event_page.plan_end_input).toHaveValue(/^2020-01-15 /);
 

@@ -78,4 +78,10 @@ export class ExternalEventPage extends GlpiPage
         // The typed value is taken into account when the picker is closed
         await this.title_input.click();
     }
+
+    public async doTypeStartTime(time: string): Promise<void>
+    {
+        await this.start_time_input.fill(time);
+        await this.start_time_input.press('Tab');
+    }
 }
