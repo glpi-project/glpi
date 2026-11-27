@@ -71,13 +71,16 @@
           }
        }
     </style>
-    {% if value > 0 %}
-        {% for i in range(0, value - 1) %}
+    {# Stars are whole items: a non-integer value (e.g. an average) would make range() fail #}
+    {% set filled_stars = value|round(0, 'floor')|number_format(0, '.', '') + 0 %}
+    {% set total_stars = max|round(0, 'floor')|number_format(0, '.', '') + 0 %}
+    {% if filled_stars > 0 %}
+        {% for i in range(0, filled_stars - 1) %}
             <span class="ti star-selectable star-selected {{ not readonly ? 'cursor-pointer' : '' }}"></span>
         {% endfor %}
     {% endif %}
-    {% if value < max %}
-        {% for i in range(value, max - 1) %}
+    {% if filled_stars < total_stars %}
+        {% for i in range(filled_stars, total_stars - 1) %}
             <span class="ti star-selectable {{ not readonly ? 'cursor-pointer' : '' }}"></span>
         {% endfor %}
     {% endif %}
