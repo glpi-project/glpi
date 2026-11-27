@@ -653,6 +653,190 @@ class PendingReasonTest extends DbTestCase
         $this->assertFalse($p_item);
     }
 
+    public static function timelineItemTypeProvider(): iterable
+    {
+        // The UI does not send pendingreasons_id when no reason is selected
+        foreach ([ITILFollowup::class, TicketTask::class] as $itemtype) {
+            yield "$itemtype, empty reason" => [$itemtype, ['pendingreasons_id' => 0]];
+            yield "$itemtype, no reason field" => [$itemtype, []];
+        }
+    }
+
+    /**
+     * Enabling pending without reason when editing a timeline item must set the parent as pending, as on add.
+     */
+    #[DataProvider('timelineItemTypeProvider')]
+    public function testEditTimelineItemSetPendingWithoutReason(string $itemtype, array $reason_input): void
+    {
+        $this->login();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'             => 'Ticket',
+            'content'          => 'Ticket',
+            '_users_id_assign' => getItemByTypeName('User', TU_USER, true),
+            'entities_id'      => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $this->assertEquals(CommonITILObject::ASSIGNED, $ticket->fields['status']);
+
+        $parent_fk = $itemtype === ITILFollowup::class
+            ? ['itemtype' => Ticket::class, 'items_id' => $ticket->getID()]
+            : ['tickets_id' => $ticket->getID()];
+        $timeline_item = $this->createItem($itemtype, $parent_fk + [
+            'content'    => 'Private item',
+            'is_private' => 1,
+        ]);
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertEquals(CommonITILObject::ASSIGNED, $ticket->fields['status']);
+
+        // Same input as the timeline edit form with the pending toggle on and no reason
+        $this->updateItem($itemtype, $timeline_item->getID(), $parent_fk + $reason_input + [
+            'content'    => 'Public item',
+            'is_private' => 0,
+            'pending'    => 1,
+        ], ['pending', 'pendingreasons_id']);
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertEquals(CommonITILObject::WAITING, $ticket->fields['status']);
+
+        $p_item = PendingReason_Item::getForItem($ticket);
+        $this->assertNotFalse($p_item);
+        $this->assertEquals(0, $p_item->fields['pendingreasons_id']);
+        $this->assertEquals(CommonITILObject::ASSIGNED, $p_item->fields['previous_status']);
+        $this->assertNotFalse(PendingReason_Item::getForItem($timeline_item));
+
+        // Editing again with the toggle still on must keep the existing parent pending data
+        $this->updateItem($itemtype, $timeline_item->getID(), $parent_fk + $reason_input + [
+            'content' => 'Public item edited again',
+            'pending' => 1,
+        ], ['pending', 'pendingreasons_id']);
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertEquals(CommonITILObject::WAITING, $ticket->fields['status']);
+        $p_item_after = PendingReason_Item::getForItem($ticket);
+        $this->assertEquals($p_item->getID(), $p_item_after->getID());
+        $this->assertEquals(CommonITILObject::ASSIGNED, $p_item_after->fields['previous_status']);
+
+        // Disabling the toggle must restore the previous status
+        $this->updateItem($itemtype, $timeline_item->getID(), $parent_fk + [
+            'content' => 'Public item',
+            'pending' => 0,
+        ], ['pending']);
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertEquals(CommonITILObject::ASSIGNED, $ticket->fields['status']);
+        $this->assertFalse(PendingReason_Item::getForItem($ticket));
+    }
+
+    /**
+     * Enabling pending without reason when editing a timeline item must not override an active pending reason.
+     */
+    public function testEditFollowupSetPendingWithoutReasonKeepsActiveReason(): void
+    {
+        $this->login();
+
+        $pending_reason = getItemByTypeName(PendingReason::class, 'needupdate_pendingreason', true);
+        $ticket = $this->createItem(Ticket::class, [
+            'name'             => 'Ticket',
+            'content'          => 'Ticket',
+            '_users_id_assign' => getItemByTypeName('User', TU_USER, true),
+            'entities_id'      => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $followup = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => 'Followup',
+        ]);
+        $this->createItem(ITILFollowup::class, [
+            'itemtype'                    => Ticket::class,
+            'items_id'                    => $ticket->getID(),
+            'content'                     => 'Followup with pending reason',
+            'pending'                     => 1,
+            'pendingreasons_id'           => $pending_reason,
+            'followup_frequency'          => 604800,
+            'followups_before_resolution' => 3,
+        ], ['pending', 'pendingreasons_id', 'followup_frequency', 'followups_before_resolution']);
+
+        $this->updateItem(ITILFollowup::class, $followup->getID(), [
+            'content'           => 'Followup',
+            'pending'           => 1,
+            'pendingreasons_id' => 0,
+        ], ['pending', 'pendingreasons_id']);
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertEquals(CommonITILObject::WAITING, $ticket->fields['status']);
+        $p_item = PendingReason_Item::getForItem($ticket);
+        $this->assertEquals($pending_reason, $p_item->fields['pendingreasons_id']);
+        $this->assertEquals(CommonITILObject::ASSIGNED, $p_item->fields['previous_status']);
+    }
+
+    /**
+     * A solved parent keeps its pending data: enabling pending without reason on edit must set it pending again.
+     */
+    public function testEditFollowupSetPendingWithoutReasonOnSolvedParent(): void
+    {
+        $this->login();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'             => 'Ticket',
+            'content'          => 'Ticket',
+            '_users_id_assign' => getItemByTypeName('User', TU_USER, true),
+            'entities_id'      => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $followup = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => 'Followup',
+        ]);
+        $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => 'Pending followup',
+            'pending'  => 1,
+        ], ['pending']);
+        $this->updateItem(Ticket::class, $ticket->getID(), ['status' => CommonITILObject::SOLVED]);
+        $this->assertNotFalse(PendingReason_Item::getForItem($ticket));
+
+        $this->updateItem(ITILFollowup::class, $followup->getID(), [
+            'content' => 'Followup edited',
+            'pending' => 1,
+        ], ['pending']);
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertEquals(CommonITILObject::WAITING, $ticket->fields['status']);
+        $p_item = PendingReason_Item::getForItem($ticket);
+        $this->assertEquals(CommonITILObject::SOLVED, $p_item->fields['previous_status']);
+        $this->assertNotFalse(PendingReason_Item::getForItem($followup));
+    }
+
+    /**
+     * Editing a followup on a manually waiting parent (toggle checked by default) must not attach pending data.
+     */
+    public function testEditFollowupOnManuallyWaitingParentDoesNotAddPendingData(): void
+    {
+        $this->login();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'             => 'Ticket',
+            'content'          => 'Ticket',
+            '_users_id_assign' => getItemByTypeName('User', TU_USER, true),
+            'entities_id'      => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $followup = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => 'Followup',
+        ]);
+        $this->updateItem(Ticket::class, $ticket->getID(), ['status' => CommonITILObject::WAITING]);
+
+        $this->updateItem(ITILFollowup::class, $followup->getID(), [
+            'content' => 'Followup typo fix',
+            'pending' => 1,
+        ], ['pending']);
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertEquals(CommonITILObject::WAITING, $ticket->fields['status']);
+        $this->assertFalse(PendingReason_Item::getForItem($ticket));
+        $this->assertFalse(PendingReason_Item::getForItem($followup));
+    }
+
     /**
      * Remove pending from timeline item should delete any linked
      * PendingReason_Item objects and restore previous status

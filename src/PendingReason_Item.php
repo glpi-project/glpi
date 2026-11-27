@@ -544,23 +544,27 @@ class PendingReason_Item extends CommonDBRelation
             }
         } else {
             // Not pending yet; did it change ?
+            // Without reason, only act on a parent that is not already pending
+            // (the toggle is checked by default on a waiting parent, editing a followup must not change it)
             if (
                 ($timeline_item->input['pending'] ?? 0)
-                && isset($timeline_item->input['pendingreasons_id'])
-                && $timeline_item->input['pendingreasons_id'] > 0
+                && (
+                    ($timeline_item->input['pendingreasons_id'] ?? 0) > 0
+                    || $timeline_item->input['_job']->fields['status'] != CommonITILObject::WAITING
+                )
             ) {
                 // Set parent status
                 $timeline_item->input['_status'] = CommonITILObject::WAITING;
 
                 // Create pending_item data for event and parent
                 self::createForItem($timeline_item->input["_job"], [
-                    'pendingreasons_id' => $timeline_item->input['pendingreasons_id'],
+                    'pendingreasons_id' => $timeline_item->input['pendingreasons_id'] ?? 0,
                     'followup_frequency'         => $timeline_item->input['followup_frequency'] ?? 0,
                     'followups_before_resolution'        => $timeline_item->input['followups_before_resolution'] ?? 0,
                     'previous_status'              => $timeline_item->input["_job"]->fields['status'],
                 ]);
                 self::createForItem($timeline_item, [
-                    'pendingreasons_id' => $timeline_item->input['pendingreasons_id'],
+                    'pendingreasons_id' => $timeline_item->input['pendingreasons_id'] ?? 0,
                     'followup_frequency'         => $timeline_item->input['followup_frequency'] ?? 0,
                     'followups_before_resolution'        => $timeline_item->input['followups_before_resolution'] ?? 0,
                 ]);
