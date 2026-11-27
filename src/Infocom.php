@@ -1629,6 +1629,7 @@ HTML;
             'datatype'           => 'decimal',
             'forcegroupby'       => true,
             'joinparams'         => $joinparams,
+            'step'               => '0.0001',
         ];
 
         $tab[] = [
@@ -1639,6 +1640,7 @@ HTML;
             'datatype'           => 'decimal',
             'forcegroupby'       => true,
             'joinparams'         => $joinparams,
+            'step'               => '0.0001',
         ];
 
         $tab[] = [
@@ -1827,6 +1829,7 @@ HTML;
             'field'              => 'warranty_value',
             'name'               => __('Warranty extension value'),
             'datatype'           => 'decimal',
+            'step'               => '0.0001',
         ];
 
         $tab[] = [
@@ -1867,6 +1870,7 @@ HTML;
             'field'              => 'value',
             'name'               => _x('price', 'Value'),
             'datatype'           => 'decimal',
+            'step'               => '0.0001',
         ];
 
         $tab[] = [
