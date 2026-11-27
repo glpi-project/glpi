@@ -92,7 +92,11 @@ if (isset($_POST["add"])) {
         isset($_POST["_type"]) && !empty($_POST["_type"])
         && isset($_POST["reminders_id"]) && $_POST["reminders_id"]
     ) {
-        if (array_key_exists('entities_id', $_POST) && $_POST['entities_id'] == -1) {
+        if (
+            in_array($_POST['_type'], ['Group', 'Profile'], true)
+            && array_key_exists('entities_id', $_POST)
+            && $_POST['entities_id'] == -1
+        ) {
             // "No restriction" value selected
             $_POST['entities_id'] = 'NULL';
             $_POST['no_entity_restriction'] = 1;
@@ -118,7 +122,9 @@ if (isset($_POST["add"])) {
                 break;
 
             case 'Entity':
-                $item = new Entity_Reminder();
+                if (isset($_POST['entities_id']) && is_numeric($_POST['entities_id']) && (int) $_POST['entities_id'] >= 0) {
+                    $item = new Entity_Reminder();
+                }
                 break;
         }
         if (!is_null($item)) {

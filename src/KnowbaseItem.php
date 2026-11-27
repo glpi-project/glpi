@@ -532,7 +532,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         if (isset($this->input["_visibility"]['_type']) && !empty($this->input["_visibility"]["_type"])) {
             $this->input["_visibility"]['knowbaseitems_id'] = $this->getID();
             $item                                           = null;
-            if (isset($this->input["_visibility"]['entities_id']) && $this->input["_visibility"]['entities_id'] == -1) {
+            if (
+                in_array($this->input["_visibility"]['_type'], ['Group', 'Profile'], true)
+                && isset($this->input["_visibility"]['entities_id'])
+                && $this->input["_visibility"]['entities_id'] == -1
+            ) {
                 // "No restriction" value selected
                 $this->input["_visibility"]['entities_id'] = null;
                 $this->input["_visibility"]['no_entity_restriction'] = 1;
@@ -566,7 +570,13 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                     break;
 
                 case 'Entity':
-                    $item = new Entity_KnowbaseItem();
+                    if (
+                        isset($this->input["_visibility"]['entities_id'])
+                        && is_numeric($this->input["_visibility"]['entities_id'])
+                        && (int) $this->input["_visibility"]['entities_id'] >= 0
+                    ) {
+                        $item = new Entity_KnowbaseItem();
+                    }
                     break;
             }
             if (!is_null($item)) {
@@ -3439,7 +3449,7 @@ TWIG, $twig_params);
     /**
      * Get dropdown parameters from showVisibility method
      *
-     * @return array{type: string, right: string, entity?: int, is_recursive?: bool, allusers: int}
+     * @return array{type: string, right: string, entity?: int, is_recursive?: bool, used: array{User: list<int|string>, Entity: list<int|string>}, allusers: int}
      */
     protected function getShowVisibilityDropdownParams()
     {

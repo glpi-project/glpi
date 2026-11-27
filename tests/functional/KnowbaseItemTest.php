@@ -34,18 +34,26 @@
 
 namespace test\units;
 
+use Dropdown;
 use Entity;
+use Entity_KnowbaseItem;
+use Glpi\Controller\Knowbase\AddPermissionController;
+use Glpi\Controller\Knowbase\PermissionDropdownController;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profile as DebugProfile;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Knowbase\EditorAction;
 use Glpi\Knowbase\EditorActionType;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\Tests\DbTestCase;
+use Group;
+use Group_KnowbaseItem;
 use InvalidArgumentException;
 use KnowbaseItem;
 use KnowbaseItem_Comment;
 use KnowbaseItem_KnowbaseItem;
+use KnowbaseItem_Profile;
 use KnowbaseItem_User;
 use KnowbaseItemTranslation;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -57,6 +65,7 @@ use Psr\Log\LogLevel;
 use RuntimeException;
 use Session;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\Request;
 use User;
 
 use function Safe\file_get_contents;
@@ -4917,5 +4926,150 @@ HTML,
         $this->renderArticle($id);
         $this->renderArticle($id);
         $this->assertSame($initial + 3, $views());
+    }
+
+    public function testGetShowVisibilityDropdownParams(): void
+    {
+        $this->login();
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'KB visibility dropdown params ' . $this->getUniqueString(),
+            'answer'       => 'Content',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+
+        $users_id = getItemByTypeName('User', 'glpi', true);
+        $group = $this->createItem(Group::class, [
+            'name'        => 'Group visibility ' . $this->getUniqueString(),
+            'entities_id' => 0,
+        ]);
+        $profiles_id = getItemByTypeName('Profile', 'Admin', true);
+
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'users_id'         => $users_id,
+        ]);
+        $this->createItem(Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'entities_id'      => 0,
+            'is_recursive'     => 0,
+        ]);
+        $this->createItem(Group_KnowbaseItem::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'groups_id'        => $group->getID(),
+            'entities_id'      => 0,
+        ]);
+        $this->createItem(KnowbaseItem_Profile::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'profiles_id'      => $profiles_id,
+            'entities_id'      => 0,
+        ]);
+
+        $this->assertTrue($kb->getFromDB($kb->getID()));
+
+        $params = $this->callPrivateMethod($kb, 'getShowVisibilityDropdownParams');
+        $this->assertSame([
+            'User'   => [$users_id],
+            'Entity' => [0],
+        ], $params['used']);
+    }
+
+    public function testAddWithEntityVisibilityEmptyChoice(): void
+    {
+        $this->login();
+
+        $kb_empty = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'KB entity empty choice ' . $this->getUniqueString(),
+            'answer'      => 'Content',
+            '_visibility' => [
+                '_type'        => 'Entity',
+                'entities_id'  => -1,
+                'is_recursive' => 0,
+            ],
+        ]);
+        $this->assertSame([], Entity_KnowbaseItem::getEntities($kb_empty->getID()));
+
+        $kb_root = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'KB root entity ' . $this->getUniqueString(),
+            'answer'      => 'Content',
+            '_visibility' => [
+                '_type'        => 'Entity',
+                'entities_id'  => 0,
+                'is_recursive' => 0,
+            ],
+        ]);
+        $entities = Entity_KnowbaseItem::getEntities($kb_root->getID());
+        $this->assertArrayHasKey(0, $entities);
+        $this->assertCount(1, $entities[0]);
+    }
+
+    public function testEntityDropdownEmptyChoiceAndRootEntityExclusion(): void
+    {
+        $this->login();
+
+        // When Root entity (0) is in 'used' and empty choice uses -1 via 'toadd',
+        // Root entity is excluded while the empty choice ('-----') remains available.
+        $result = Dropdown::getDropdownValue([
+            'itemtype'            => Entity::class,
+            'display_emptychoice' => false,
+            'toadd'               => [-1 => Dropdown::EMPTY_VALUE],
+            'used'                => [0],
+            'page'                => 1,
+            'page_limit'          => 50,
+            '_idor_token'         => Session::getNewIDORToken(Entity::class),
+        ], false);
+
+        $this->assertIsArray($result);
+        $ids = array_column($result['results'], 'id');
+        $this->assertContains(-1, $ids);
+        $this->assertNotContains(0, $ids);
+    }
+
+    public function testPermissionDropdownAndAddEntityValidation(): void
+    {
+        $this->login();
+        $this->setEntity(0, true);
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'KB permission controller ' . $this->getUniqueString(),
+            'answer'       => 'Content',
+            'entities_id'  => 0,
+            'is_recursive' => 0,
+        ]);
+
+        // Add Root entity (0) via AddPermissionController
+        $add_request = Request::create('/Knowbase/AddPermission', 'POST', [
+            'knowbaseitems_id' => $kb->getID(),
+            '_type'            => Entity::class,
+            'entities_id'      => 0,
+            'is_recursive'     => 0,
+        ]);
+        $add_response = (new AddPermissionController())->__invoke($add_request);
+        $this->assertSame(200, $add_response->getStatusCode());
+        $this->assertArrayHasKey(0, Entity_KnowbaseItem::getEntities($kb->getID()));
+
+        // PermissionDropdownController should fall back to -1 empty choice (not '' -> 0)
+        // when the active entity (0) is already in 'used'
+        $dropdown_request = Request::create('/Knowbase/PermissionDropdown', 'POST', [
+            'type'             => Entity::class,
+            'right'            => 'knowbase',
+            'knowbaseitems_id' => $kb->getID(),
+        ]);
+        $dropdown_html = (new PermissionDropdownController())->__invoke($dropdown_request)->getContent();
+        $this->assertIsString($dropdown_html);
+        $this->assertStringContainsString(Dropdown::EMPTY_VALUE, $dropdown_html);
+        $this->assertStringContainsString('"-1":"' . Dropdown::EMPTY_VALUE . '"', $dropdown_html);
+        $this->assertStringContainsString('"used":[0]', $dropdown_html);
+
+        // Submitting entities_id = -1 for Entity::class must be rejected
+        $invalid_request = Request::create('/Knowbase/AddPermission', 'POST', [
+            'knowbaseitems_id' => $kb->getID(),
+            '_type'            => Entity::class,
+            'entities_id'      => -1,
+            'is_recursive'     => 0,
+        ]);
+        $this->expectException(BadRequestHttpException::class);
+        (new AddPermissionController())->__invoke($invalid_request);
     }
 }

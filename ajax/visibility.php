@@ -71,7 +71,6 @@ if (
             $params             = [
                 'rand' => $rand,
                 'name' => $prefix . 'groups_id' . $suffix,
-                'used' => $_POST['used']['Group'] ?? [],
             ];
             $params['toupdate'] = ['value_fieldname'
                                                   => 'value',
@@ -90,7 +89,7 @@ if (
 
         case 'Entity':
             Entity::dropdown([
-                'display_emptychoice' => true,
+                'toadd' => [-1 => Dropdown::EMPTY_VALUE],
                 'value' => -1,
                 'name'  => $prefix . 'entities_id' . $suffix,
                 'used'  => $_POST['used']['Entity'] ?? [],
@@ -110,7 +109,6 @@ if (
             $params             = [
                 'rand'      => $rand,
                 'name'      => $prefix . 'profiles_id' . $suffix,
-                'used'      => $_POST['used']['Profile'] ?? [],
                 'condition' => [
                     'glpi_profilerights.name'     => $righttocheck,
                     'glpi_profilerights.rights'   => ['&', $checkright],

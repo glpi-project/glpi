@@ -88,14 +88,22 @@ final class AddPermissionController extends AbstractController
             $input['is_recursive'] = $request->request->getBoolean('is_recursive');
             $class                 = KnowbaseItem_Profile::class;
         } elseif ($type === Entity::class) {
-            $input['entities_id']  = $request->request->getInt('entities_id');
+            $entities_id = $request->request->getInt('entities_id', -1);
+            if ($entities_id < 0) {
+                throw new BadRequestHttpException();
+            }
+            $input['entities_id']  = $entities_id;
             $input['is_recursive'] = $request->request->getBoolean('is_recursive');
             $class                 = Entity_KnowbaseItem::class;
         } else {
             throw new BadRequestHttpException();
         }
 
-        if (isset($input['entities_id']) && $input['entities_id'] == -1) {
+        if (
+            in_array($type, [Group::class, Profile::class], true)
+            && isset($input['entities_id'])
+            && $input['entities_id'] == -1
+        ) {
             $input['entities_id'] = null;
             $input['no_entity_restriction'] = 1;
         }
