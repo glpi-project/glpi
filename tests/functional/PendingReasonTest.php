@@ -704,6 +704,17 @@ class PendingReasonTest extends DbTestCase
         $this->assertEquals(CommonITILObject::ASSIGNED, $p_item->fields['previous_status']);
         $this->assertNotFalse(PendingReason_Item::getForItem($timeline_item));
 
+        // Editing again with the toggle still on must keep the existing parent pending data
+        $this->updateItem($itemtype, $timeline_item->getID(), $parent_fk + $reason_input + [
+            'content' => 'Public item edited again',
+            'pending' => 1,
+        ], ['pending', 'pendingreasons_id']);
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertEquals(CommonITILObject::WAITING, $ticket->fields['status']);
+        $p_item_after = PendingReason_Item::getForItem($ticket);
+        $this->assertEquals($p_item->getID(), $p_item_after->getID());
+        $this->assertEquals(CommonITILObject::ASSIGNED, $p_item_after->fields['previous_status']);
+
         // Disabling the toggle must restore the previous status
         $this->updateItem($itemtype, $timeline_item->getID(), $parent_fk + [
             'content' => 'Public item',
