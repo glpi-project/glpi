@@ -67,3 +67,19 @@ test('Search engine accessibility', async ({ page, profile }) => {
     ;
     expect(sorts_a11y.violations).toEqual([]);
 });
+
+test('Criteria dropdown opening upwards is not clipped by the results container', async ({ page, profile }) => {
+    await profile.set(Profiles.SuperAdmin);
+    await page.setViewportSize({ width: 1280, height: 750 });
+    const search_engine_page = new SearchEnginePage(page);
+    await search_engine_page.gotoTicketWithNotClosedStatusCriteria();
+    await expect(search_engine_page.search_page).toBeVisible();
+
+    // Content displayed above the list leaves no room below the criteria
+    await search_engine_page.doOpenSearchFiltersAtViewportBottom();
+    await search_engine_page.doOpenFirstCriteriaValueDropdown();
+
+    // The dropdown opens upwards, outside of the scrollable results container, and must not be hidden
+    await expect(search_engine_page.upward_select2_results).toBeVisible();
+    await expect.poll(() => search_engine_page.isUpwardSelect2ResultsTopVisible()).toBe(true);
+});
