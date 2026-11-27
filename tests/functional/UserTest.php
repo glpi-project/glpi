@@ -216,7 +216,10 @@ class UserTest extends DbTestCase
             // Add an item in root to check that the target user's entity scope is respected.
             $this->createItem(
                 Computer::class,
-                ['entities_id' => 0, 'name' => $root_name] + $computer_data + $this->getMinimalCreationInput(Computer::class)
+                [
+                    'entities_id' => 0,
+                    'name'        => $root_name,
+                ] + $computer_data + $this->getMinimalCreationInput(Computer::class)
             );
 
             // The root entity is excluded from both the count and the item list when only the test entity is active.
