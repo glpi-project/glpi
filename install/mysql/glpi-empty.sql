@@ -7039,14 +7039,14 @@ CREATE TABLE `glpi_states` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`states_id`,`name`),
+  UNIQUE KEY `unicity` (`entities_id`,`states_id`,`name`),
   KEY `name` (`name`),
-  KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `is_helpdesk_visible` (`is_helpdesk_visible`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
-  KEY `level` (`level`)
+  KEY `level` (`level`),
+  KEY `states_id` (`states_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS glpi_dropdownvisibilities;

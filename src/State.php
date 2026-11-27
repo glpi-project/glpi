@@ -300,6 +300,9 @@ class State extends CommonTreeDropdown
         if (!isset($input['states_id'])) {
             $input['states_id'] = 0;
         }
+        if (!isset($input['entities_id'])) {
+            $input['entities_id'] = 0;
+        }
         if (!$this->isUnique($input)) {
             Session::addMessageAfterRedirect(
                 htmlescape(sprintf(__s('%1$s must be unique!'), static::getTypeName(1))),
@@ -936,6 +939,7 @@ class State extends CommonTreeDropdown
     /**
      * Checks that this state is unique given the new field values.
      *    Unique fields checked:
+     *       - entities_id
      *       - states_id
      *       - name
      * @param array $input Array of field names and values
@@ -945,7 +949,8 @@ class State extends CommonTreeDropdown
     {
         global $DB;
 
-        $unicity_fields = ['states_id', 'name'];
+        $unicity_fields = ['entities_id', 'states_id', 'name'];
+        $is_new_item = $this->isNewItem();
 
         $has_changed = false;
         $where = [];
@@ -958,9 +963,16 @@ class State extends CommonTreeDropdown
             }
             if (isset($input[$unicity_field])) {
                 $where[$unicity_field] = $input[$unicity_field];
+            } elseif (!$is_new_item && isset($this->fields[$unicity_field])) {
+                // On update, unchanged fields keep their current value
+                $where[$unicity_field] = $this->fields[$unicity_field];
             }
         }
-        if (!$has_changed) {
+        if (!$is_new_item) {
+            // Do not count the updated item itself
+            $where['NOT'] = ['id' => $this->getID()];
+        }
+        if (!$is_new_item && !$has_changed) {
             // state has not changed; this is OK.
             return true;
         }
