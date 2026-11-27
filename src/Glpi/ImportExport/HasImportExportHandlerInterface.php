@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,30 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\Form\Import;
-
-use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Form\Form;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+namespace Glpi\ImportExport;
 
 /**
- * Initial entry point of the import form process.
+ * An itemtype that can be exported and imported: it gets the generic "Export"
+ * massive action, "Import" menu link and import wizard, and brings the
+ * serializer that defines its file format.
  */
-final class Step1IndexController extends AbstractController
+interface HasImportExportHandlerInterface
 {
-    #[Route("/Form/Import", name: "glpi_form_import", methods: "GET")]
-    public function __invoke(Request $request): Response
-    {
-        if (!Form::canCreate()) {
-            throw new AccessDeniedHttpException();
-        }
-
-        return $this->render("pages/admin/form/import/step1_index.html.twig", [
-            'title' => __("Import form"),
-            'menu'  => ['admin', Form::getType()],
-        ]);
-    }
+    public static function getImportExportHandler(): ImportExportHandlerInterface;
 }

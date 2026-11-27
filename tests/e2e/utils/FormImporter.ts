@@ -49,19 +49,26 @@ export class FormImporter
         this.csrf = csrf;
     }
 
-    public async importForm(filename: string): Promise<ImportedFormInfo>
+    /**
+     * The form is imported in the given entity, which must be one of the
+     * active entities: the import wizard refuses any other.
+     */
+    public async importForm(
+        filename: string,
+        entity_id: number = getWorkerEntityId(),
+    ): Promise<ImportedFormInfo>
     {
         const file_path = path.join(__dirname, `../../fixtures/forms/${filename}`);
 
         // Note: this does not really use the API for now as there are no real
         // endpoint to import a form (so we do a simple POST request).
         // We'll refactor later when we add this endpoint.
-        const response = await this.request.post('/Form/Import/Execute', {
+        const response = await this.request.post(`/ImportExport/Import/Execute?itemtype=${encodeURIComponent('Glpi\\Form\\Form')}`, {
             form: {
                 json: readFileSync(file_path).toString(),
                 'replacements[0][itemtype]'      : "Entity",
                 'replacements[0][original_name]' : "Root entity",
-                'replacements[0][replacement_id]': getWorkerEntityId(),
+                'replacements[0][replacement_id]': entity_id,
             },
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',

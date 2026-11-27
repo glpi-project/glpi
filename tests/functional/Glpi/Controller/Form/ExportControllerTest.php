@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Controller\Form;
 
-use Glpi\Controller\Form\ExportController;
+use Glpi\Controller\ImportExportController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Form\Form;
 use Glpi\Tests\DbTestCase;
@@ -50,11 +50,11 @@ final class ExportControllerTest extends DbTestCase
         $this->login();
         $_SESSION['glpiactiveprofile']['form'] = 0;
 
-        $request = Request::create('/Form/Export', 'GET', ['ids' => []]);
-        $controller = new ExportController();
+        $request = Request::create('/ImportExport/Export', 'GET', ['itemtype' => Form::class, 'ids' => []]);
+        $controller = new ImportExportController();
 
         $this->expectException(AccessDeniedHttpException::class);
-        $controller->__invoke($request);
+        $controller->export($request);
     }
 
     public function testAllAccessibleFormsAreExported(): void
@@ -73,11 +73,12 @@ final class ExportControllerTest extends DbTestCase
             'is_recursive' => 0,
         ]);
 
-        $request = Request::create('/Form/Export', 'GET', [
+        $request = Request::create('/ImportExport/Export', 'GET', [
+            'itemtype' => Form::class,
             'ids' => [$form_a->getID(), $form_b->getID()],
         ]);
-        $controller = new ExportController();
-        $response = $controller->__invoke($request);
+        $controller = new ImportExportController();
+        $response = $controller->export($request);
 
         $exported_names = $this->getExportedFormNames($response->getContent());
         $this->assertContains('Accessible Form A', $exported_names);
@@ -106,11 +107,12 @@ final class ExportControllerTest extends DbTestCase
         // Restrict the active session to child_1 only (no subtree)
         $this->setEntity('_test_child_1', false);
 
-        $request = Request::create('/Form/Export', 'GET', [
+        $request = Request::create('/ImportExport/Export', 'GET', [
+            'itemtype' => Form::class,
             'ids' => [$visible_form->getID(), $hidden_form->getID()],
         ]);
-        $controller = new ExportController();
-        $response = $controller->__invoke($request);
+        $controller = new ImportExportController();
+        $response = $controller->export($request);
 
         $exported_names = $this->getExportedFormNames($response->getContent());
         $this->assertContains('Visible Form', $exported_names);
@@ -133,11 +135,12 @@ final class ExportControllerTest extends DbTestCase
         // Restrict the active session to child_1 only (no subtree); child_2 form is out of scope
         $this->setEntity('_test_child_1', false);
 
-        $request = Request::create('/Form/Export', 'GET', [
+        $request = Request::create('/ImportExport/Export', 'GET', [
+            'itemtype' => Form::class,
             'ids' => [$hidden_form->getID()],
         ]);
-        $controller = new ExportController();
-        $response = $controller->__invoke($request);
+        $controller = new ImportExportController();
+        $response = $controller->export($request);
 
         $exported_names = $this->getExportedFormNames($response->getContent());
         $this->assertEmpty($exported_names);
@@ -147,9 +150,9 @@ final class ExportControllerTest extends DbTestCase
     {
         $this->login();
 
-        $request = Request::create('/Form/Export', 'GET', ['ids' => []]);
-        $controller = new ExportController();
-        $response = $controller->__invoke($request);
+        $request = Request::create('/ImportExport/Export', 'GET', ['itemtype' => Form::class, 'ids' => []]);
+        $controller = new ImportExportController();
+        $response = $controller->export($request);
 
         $exported_names = $this->getExportedFormNames($response->getContent());
         $this->assertEmpty($exported_names);

@@ -1,0 +1,126 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "pages/import_export/layout.html.twig" %}
+{% import "pages/import_export/layout.html.twig" as wizard %}
+
+{% block content_body %}
+    {% set item_label = itemtype|itemtype_name %}
+    <form method="POST" action="{{ path(urls.execute) }}" data-submit-once>
+        <div class="card">
+            <div class="card-header py-3 px-4">
+                <h3 class="card-title">{{ __("Import preview") }}</h3>
+            </div>
+            <table class="table table-card mb-0" data-testid="import-preview">
+                <thead>
+                    <tr>
+                        <th class="w-50 px-4">{{ __("Name") }}</th>
+                        <th class="w-25 px-4">{{ __("Status") }}</th>
+                        <th class="w-25 px-4">{{ _n('Action', 'Actions', get_plural_number()) }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% macro render_row(item_id, item_name, status_icon, messages, show_resolve_issues_action, urls, item_label) %}
+                        <tr>
+                            <td class="w-50 px-4 align-middle">{{ item_name }}</td>
+                            <td class="w-50 px-4 align-middle">
+                                <div class="d-flex align-items-center">
+                                    <i class="ti {{ status_icon }} me-2" aria-hidden="true"></i>
+                                    <div>
+                                        {% for message in messages %}
+                                            <span>{{ message }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="w-25 px-4 align-middle">
+                                <div class="d-flex flex-row-reverse align-items-center gap-2">
+                                    <button
+                                        type="submit"
+                                        class="btn btn-link p-0 text-danger"
+                                        name="skipped_items[]"
+                                        value="{{ item_id }}"
+                                        formaction="{{ path(urls.preview) }}"
+                                        title="{{ __('Remove from the import list') }}"
+                                        aria-label="{{ __('Remove %s')|format(item_label) }}"
+                                    >
+                                        <i class="ti ti-trash" aria-hidden="true"></i>
+                                    </button>
+
+                                    {% if show_resolve_issues_action %}
+                                        <span class="vr"></span>
+                                        <button
+                                            type="submit"
+                                            class="btn btn-link p-0"
+                                            name="item_id"
+                                            value="{{ item_id }}"
+                                            formaction="{{ path(urls.resolve_issues) }}"
+                                        >
+                                            {{ __("Resolve issues") }}
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endmacro %}
+
+                    {% for item_id, item_name in preview.getValidItems() %}
+                        {{ _self.render_row(item_id, item_name, 'ti-check text-success', [__("Ready to be imported")], false, urls, item_label) }}
+                    {% endfor %}
+                    {% for item_id, item_name in preview.getInvalidItems() %}
+                        {{ _self.render_row(item_id, item_name, 'ti-x text-danger', [__("Can't be imported")], true, urls, item_label) }}
+                    {% endfor %}
+                    {% for item_id, details in preview.getItemsWithFatalErrors() %}
+                        {{ _self.render_row(item_id, details.name, 'ti-x text-danger', details.errors, false, urls, item_label) }}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col">
+                <div class="justify-content-end d-flex">
+                    <button type="submit" class="btn btn-primary">
+                        {{ __("Import") }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" name="json" value="{{ json }}" />
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+        {% for skipped_item_id in preview.getSkippedItems()|keys %}
+            <input type="hidden" name="skipped_items[]" value="{{ skipped_item_id }}" />
+        {% endfor %}
+        {{ wizard.replacements_inputs(replacements) }}
+    </form>
+{% endblock content_body %}

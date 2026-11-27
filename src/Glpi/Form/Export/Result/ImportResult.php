@@ -35,37 +35,66 @@
 
 namespace Glpi\Form\Export\Result;
 
+use CommonDBTM;
 use Glpi\Form\Form;
 
 final class ImportResult
 {
-    /** @var Form[] $imported_forms */
-    private array $imported_forms = [];
+    /** @var CommonDBTM[] $imported_items */
+    private array $imported_items = [];
 
-    /** @var array<string, ImportError> $failed_forms */
-    private array $failed_forms = [];
+    /** @var array<string, ImportError> $failed_items */
+    private array $failed_items = [];
 
-    public function addImportedForm(Form $form): void
+    public function addImportedItem(CommonDBTM $item): void
     {
-        $this->imported_forms[] = $form;
+        $this->imported_items[] = $item;
     }
 
-    /** @return Form[] */
-    public function getImportedForms(): array
+    /** @return CommonDBTM[] */
+    public function getImportedItems(): array
     {
-        return $this->imported_forms;
+        return $this->imported_items;
     }
 
-    public function addFailedFormImport(
-        string $form_name,
-        ImportError $error,
-    ): void {
-        $this->failed_forms[$form_name] = $error;
+    public function addFailedImport(string $name, ImportError $error): void
+    {
+        $this->failed_items[$name] = $error;
     }
 
     /** @return array<string, ImportError> */
+    public function getFailedImports(): array
+    {
+        return $this->failed_items;
+    }
+
+    /** @deprecated 11.0.14 Use {@see addImportedItem()} */
+    public function addImportedForm(Form $form): void
+    {
+        $this->addImportedItem($form);
+    }
+
+    /**
+     * @deprecated 11.0.14 Use {@see getImportedItems()}
+     * @return Form[]
+     */
+    public function getImportedForms(): array
+    {
+        return array_values(array_filter($this->imported_items, static fn(CommonDBTM $item): bool => $item instanceof Form));
+    }
+
+    /** @deprecated 11.0.14 Use {@see addFailedImport()} */
+    public function addFailedFormImport(string $form_name, ImportError $error): void
+    {
+        $this->addFailedImport($form_name, $error);
+    }
+
+    /**
+     * @deprecated 11.0.14 Use {@see getFailedImports()}
+     * @return array<string, ImportError>
+     */
     public function getFailedFormImports(): array
     {
-        return $this->failed_forms;
+        return $this->getFailedImports();
     }
 }
