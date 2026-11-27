@@ -42,6 +42,7 @@ use Glpi\Cache\CacheManager;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Exception\EarlyExitException;
 use Glpi\Console\Traits\TelemetryActivationTrait;
+use Glpi\DBAL\Doctrine\ConnectionFactory;
 use Glpi\Progress\ConsoleProgressIndicator;
 use Glpi\System\Requirement\DbConfiguration;
 use GLPIKey;
@@ -269,7 +270,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
              */
             public function __construct($dbh)
             {
-                $this->dbh = $dbh;
+                parent::__construct(null, ConnectionFactory::createFromNativeConnection($dbh));
             }
         };
         $config_requirement = new DbConfiguration($db);

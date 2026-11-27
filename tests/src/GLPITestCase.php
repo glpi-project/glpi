@@ -46,6 +46,7 @@ use DateTimeImmutable;
 use DBmysql;
 use DCRoom;
 use DeviceSimcard;
+use Doctrine\DBAL\Connection;
 use Domain;
 use DomainRecord;
 use Dropdown;
@@ -54,6 +55,7 @@ use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Config\ConfigContainer;
 use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Grid;
+use Glpi\DBAL\Result;
 use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Search\SearchOption;
 use Glpi\Tests\Log\TestHandler;
@@ -65,7 +67,6 @@ use Log;
 use Monolog\Level;
 use Monolog\Logger;
 use Monolog\LogRecord;
-use mysqli;
 use org\bovigo\vfs\vfsStreamWrapper;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
@@ -474,21 +475,33 @@ class GLPITestCase extends TestCase
     }
 
     /**
-     * Get the raw database handle object.
+     * Build a database query result containing the given rows.
+     *
+     * @param list<array<string, mixed>> $rows
+     */
+    protected function buildDbResult(array $rows): Result
+    {
+        return new Result(
+            array_map(static fn(array $row) => array_values($row), $rows),
+            array_map(
+                static fn(string $name) => ['name' => $name, 'table' => ''],
+                array_keys($rows[0] ?? [])
+            )
+        );
+    }
+
+    /**
+     * Get the Doctrine DBAL connection.
      *
      * Useful when you need to run some queries that may not be allowed by
      * the DBMysql object.
-     *
-     * @return mysqli
      */
-    protected function getDbHandle(): mysqli
+    protected function getDbConnection(): Connection
     {
-        /** @var DBmysql $db */
+        /** @var DBmysql $DB */
         global $DB;
 
-        $reflection = new ReflectionClass(DBmysql::class);
-        $property = $reflection->getProperty("dbh");
-        return $property->getValue($DB);
+        return $DB->getConnection();
     }
 
     /**

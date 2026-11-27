@@ -33,11 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use Glpi\DBAL\QueryAliasInterface;
 use Glpi\DBAL\QueryElementInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\Result;
 
 use function Safe\preg_split;
 
@@ -53,10 +55,10 @@ class DBmysqlIterator implements SeekableIterator, Countable
     private ?DBmysql $conn = null;
     // Current SQL query
     private ?string $sql = null;
-    /** @var array<int, mixed> */
+    /** @var list<mixed> */
     private array $values = [];
     // Current result
-    private mysqli_result|bool $res = false;
+    private ?Result $res = null;
 
     /**
      * Total number of rows.
@@ -147,13 +149,13 @@ class DBmysqlIterator implements SeekableIterator, Countable
     {
         $this->values = []; //reset values
         $this->buildQuery($criteria);
-        $this->res = false;
+        $this->res = null;
         if ($this->conn) {
             $stmt = $this->conn->prepare($this->sql ?? '');
             $this->conn->executeStatement($stmt, $this->values);
-            $this->res = $this->conn->getStatementResult($stmt);
+            $this->res = $stmt->getResult();
         }
-        $this->count = $this->res instanceof mysqli_result ? $this->conn->numrows($this->res) : 0;
+        $this->count = $this->res !== null ? $this->conn->numrows($this->res) : 0;
         $this->setPosition(0);
         return $this;
     }
@@ -170,7 +172,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
     public function buildQuery(array $criteria): void
     {
         $this->sql = null;
-        $this->res = false;
+        $this->res = null;
 
         $table = $criteria['FROM'] ?? null;
         unset($criteria['FROM']);
@@ -251,69 +253,60 @@ class DBmysqlIterator implements SeekableIterator, Countable
             }
         }
 
-        $this->sql = 'SELECT ';
-        $first = true;
+        $query_builder = $this->createQueryBuilder();
 
         // SELECT field list
+        $select = [];
         if ($count) {
-            $this->sql .= 'COUNT(';
+            $count_expr = 'COUNT(';
             if ($distinct) {
-                $this->sql .= 'DISTINCT ';
+                $count_expr .= 'DISTINCT ';
             }
             if (!empty($field) && !is_array($field)) {
-                $this->sql .= DBmysql::quoteName($field);
+                $count_expr .= DBmysql::quoteName($field);
             } else {
                 if ($distinct) {
                     throw new LogicException("With COUNT and DISTINCT, you must specify exactly one field, or use 'COUNT DISTINCT'.");
                 }
-                $this->sql .= "*";
+                $count_expr .= "*";
             }
-            $this->sql .= ") AS $count";
-            $first = false;
+            $select[] = $count_expr . ") AS $count";
         }
         if (!$count || is_array($field)) {
             if ($distinct && !$count) {
-                $this->sql .= 'DISTINCT ';
+                $query_builder->distinct();
             }
             if (empty($field)) {
-                $this->sql .= '*';
-            }
-            if (!empty($field)) {
+                $select[] = '*';
+            } else {
                 if (!is_array($field)) {
                     $field = [$field];
                 }
                 foreach ($field as $t => $f) {
-                    if ($first) {
-                        $first = false;
-                    } else {
-                        $this->sql .= ', ';
-                    }
-                    $this->sql .= $this->handleFields($t, $f);
+                    $select[] = $this->handleFields($t, $f);
                 }
             }
         }
+        $query_builder->select(...$select);
 
         // FROM table list
+        $from = [];
         if (is_array($table)) {
             if (count($table)) {
-                $table = array_map([DBmysql::class, 'quoteName'], $table);
-                $this->sql .= ' FROM ' . implode(", ", $table);
+                $from = array_map([DBmysql::class, 'quoteName'], array_values($table));
             } else {
                 throw new LogicException("Missing table name.");
             }
         } elseif ($table) {
             if ($table instanceof AbstractQuery) {
-                $query = $table;
-                $table = $query->getQuery();
-                $this->values = array_merge($this->values, $query->getParams());
+                $from[] = $table->getQuery();
+                $this->values = array_merge($this->values, $table->getParams());
             } elseif ($table instanceof QueryElementInterface) {
-                $query = $table;
-                $table = $query->getValue();
-                $this->values = array_merge($this->values, $query->getParams());
+                $from[] = $table->getValue();
+                $this->values = array_merge($this->values, $table->getParams());
             } else {
-                $table = DBmysql::quoteName($table);
+                $from[] = DBmysql::quoteName($table);
             }
-            $this->sql .= " FROM $table";
         } else {
             /*
              * TODO filter with if ($where || !empty($criteria)) {
@@ -323,13 +316,19 @@ class DBmysqlIterator implements SeekableIterator, Countable
         }
 
         // JOIN
+        // Joins are attached to the last table of the FROM clause, as SQL does with `FROM a, b JOIN c`.
+        // They are not registered using the query builder join methods, as they rely on aliases
+        // and do not support the criteria syntax (raw joins, joins without alias, ...).
         if ($join !== []) {
-            $this->sql .= $this->analyseJoins($join);
+            $from[array_key_last($from)] .= $this->analyseJoins($join);
+        }
+        foreach ($from as $from_expr) {
+            $query_builder->from($from_expr);
         }
 
         // WHERE criteria list
         if ($criteria !== []) {
-            $this->sql .= " WHERE " . $this->analyseCrit($criteria);
+            $query_builder->where($this->analyseCrit($criteria));
             if ($where) {
                 trigger_error(
                     'Criteria found both inside and outside "WHERE" key. Some of them will be ignored',
@@ -337,32 +336,58 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 );
             }
         } elseif ($where) {
-            $this->sql .= " WHERE " . $this->analyseCrit($where);
+            $query_builder->where($this->analyseCrit($where));
         }
 
         // GROUP BY field list
         if (is_array($groupby)) {
             if (count($groupby)) {
-                $this->sql .= ' GROUP BY ' . implode(", ", $this->handleGroupByFields($groupby));
+                $query_builder->groupBy(...$this->handleGroupByFields($groupby));
             } else {
                 throw new LogicException("Missing group by field.");
             }
         } elseif ($groupby) {
-            $this->sql .= " GROUP BY " . implode(", ", $this->handleGroupByFields([$groupby]));
+            $query_builder->groupBy(...$this->handleGroupByFields([$groupby]));
         }
 
         // HAVING criteria list
         if ($having) {
-            $this->sql .= " HAVING " . $this->analyseCrit($having);
+            $query_builder->having($this->analyseCrit($having));
         }
 
         // ORDER BY
         if ($orderby !== null) {
-            $this->sql .= $this->handleOrderClause($orderby);
+            foreach ($this->getOrderByExpressions($orderby) as $order_expr) {
+                $query_builder->addOrderBy($order_expr);
+            }
         }
 
-        //LIMIT & OFFSET
-        $this->sql .= $this->handleLimits($limit, $start);
+        // LIMIT & OFFSET, rendered by the database platform
+        if (is_numeric($limit) && $limit > 0) {
+            $query_builder->setMaxResults((int) $limit);
+            if (is_numeric($start) && $start > 0) {
+                $query_builder->setFirstResult((int) $start);
+            }
+        }
+
+        // Parameters are collected in the order of their placeholders in the generated SQL query.
+        $query_builder->setParameters($this->values);
+
+        $this->sql = $query_builder->getSQL();
+    }
+
+    /**
+     * Create a query builder using the database connection.
+     */
+    private function createQueryBuilder(): QueryBuilder
+    {
+        /** @var ?DBmysql $DB */
+        global $DB;
+
+        // Iterator may be used only to build SQL queries, without connection.
+        $db = $this->conn ?? $DB ?? throw new LogicException('A database connection is required to build queries.');
+
+        return $db->getConnection()->createQueryBuilder();
     }
 
     /**
@@ -397,6 +422,18 @@ class DBmysqlIterator implements SeekableIterator, Countable
      * @return string
      */
     public function handleOrderClause($clause)
+    {
+        return " ORDER BY " . implode(", ", $this->getOrderByExpressions($clause));
+    }
+
+    /**
+     * Get the "ORDER BY" SQL clause expressions
+     *
+     * @param string|QueryElementInterface|array<int, string|QueryElementInterface> $clause Clause parameters
+     *
+     * @return list<string>
+     */
+    private function getOrderByExpressions($clause): array
     {
         if (!is_array($clause)) {
             $clause = [$clause];
@@ -434,7 +471,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
             }
         }
 
-        return " ORDER BY " . implode(", ", $cleanorderby);
+        return $cleanorderby;
     }
 
 
@@ -558,7 +595,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
     }
 
     /**
-     * @return array<int, mixed>
+     * @return list<mixed>
      */
     public function getValues(): array
     {
@@ -572,7 +609,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      */
     public function __destruct()
     {
-        if ($this->res instanceof mysqli_result) {
+        if ($this->res !== null) {
             $this->conn->freeResult($this->res);
         }
     }
@@ -881,12 +918,12 @@ class DBmysqlIterator implements SeekableIterator, Countable
     }
 
     /**
-     * Check if the current result is not a {@link \mysqli_result}, indicating a failure.
+     * Check if there is no current result, indicating a failure.
      * @return bool
      */
     public function isFailed(): bool
     {
-        return !($this->res instanceof mysqli_result);
+        return $this->res === null;
     }
 
     /**
@@ -928,7 +965,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      */
     private function setPosition(int $position): void
     {
-        if (!($this->res instanceof mysqli_result)) {
+        if ($this->res === null) {
             // Result is not valid, nothing to do.
             return;
         }
@@ -964,8 +1001,13 @@ class DBmysqlIterator implements SeekableIterator, Countable
         return in_array($value, $this->allowed_operators, true);
     }
 
+    /**
+     * Columns metadata of the result.
+     *
+     * @return list<array{name: string, table: string}>
+     */
     public function fetchFields(): array
     {
-        return $this->res->fetch_fields();
+        return $this->res?->getColumns() ?? [];
     }
 }

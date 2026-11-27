@@ -36,7 +36,7 @@
 namespace Glpi\System\Requirement;
 
 use DBmysql;
-use mysqli_result;
+use Glpi\DBAL\Result;
 
 /**
  * @since 10.0.0
@@ -62,9 +62,9 @@ class DbConfiguration extends AbstractRequirement
     {
         $query = 'SELECT @@GLOBAL.' . $this->db->quoteName('innodb_page_size as innodb_page_size');
 
-        /** @var mysqli_result $db_config_res */
+        /** @var Result $db_config_res */
         $db_config_res = $this->db->doQuery($query);
-        $db_config = $db_config_res->fetch_assoc();
+        $db_config = $db_config_res->fetchAssoc();
 
         $incompatibilities = [];
         if ((int) $db_config['innodb_page_size'] < 8192) {
