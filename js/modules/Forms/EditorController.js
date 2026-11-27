@@ -1186,8 +1186,9 @@ export class GlpiFormEditorController
                         '[data-glpi-form-editor-section]'
                     );
                 } else {
+                    // Conditions may belong to a block or to a section
                     parent_item = $(element).closest(
-                        '[data-glpi-form-editor-block]'
+                        '[data-glpi-form-editor-block], [data-glpi-form-editor-section]'
                     );
                 }
                 if (parent_item.length !== 1) {

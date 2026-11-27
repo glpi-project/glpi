@@ -52,12 +52,17 @@ test(`Can't delete a question used in conditions`, async ({
     const dialog = page.getByRole('dialog', { name: 'Item has conditions and cannot be deleted' });
     await expect(dialog).toBeVisible();
     await expect(dialog.getByRole('link', { name: 'My second question' })).toBeVisible();
+    await expect(dialog.getByRole('link', { name: 'Second section' })).toBeVisible();
     await expect(dialog.getByRole('link', { name: 'First section' })).toBeHidden();
     await dialog.getByRole('button', { name: 'Close' }).click();
 
     // Delete both conditions from the second question
     await form.doOpenQuestionConditionEditor(1);
     await form.doDeleteCondition(1);
+    await form.doDeleteCondition(0);
+
+    // Delete the condition from the second section
+    await form.doOpenSectionConditionEditor(1);
     await form.doDeleteCondition(0);
 
     // Now deleting the first question should succeed (no dialog)

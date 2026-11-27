@@ -22,6 +22,23 @@
                     "rank": 0,
                     "visibility_strategy": "always_visible",
                     "conditions": []
+                },
+                {
+                    "id": 2,
+                    "uuid": "d1e2f3a4-b5c6-7890-abcd-dep100000020",
+                    "name": "Second section",
+                    "description": null,
+                    "rank": 1,
+                    "visibility_strategy": "visible_if",
+                    "conditions": [
+                        {
+                            "item_uuid": "d1e2f3a4-b5c6-7890-abcd-dep100000100",
+                            "item_type": "question",
+                            "value_operator": "contains",
+                            "logic_operator": "and",
+                            "value": "GLPI is great"
+                        }
+                    ]
                 }
             ],
             "comments": [],
