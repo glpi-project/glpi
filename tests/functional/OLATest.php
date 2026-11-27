@@ -1670,6 +1670,72 @@ class OLATest extends DbTestCase
         $this->assertSame(2, $this->countOlaRecalls($ticket), 'Second level should be executed once at its new date.');
     }
 
+    public function testDisabledPendingOlaLevelIsNotExecuted(): void
+    {
+        // arrange - TTO OLA (90 min) with 2 levels sending recall_ola (10:34 and 11:44), ticket not taken into account
+        $this->login();
+        $ola = $this->createOlaWithRecallLevels();
+        $this->setCurrentTime('2025-06-26 10:04:00');
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()]]);
+
+        // act - the pending first level is disabled
+        $this->updateItem(OlaLevel::class, OlaLevel::getFirstOlaLevel($ola->getID()), ['is_active' => 0]);
+
+        // assert - the disabled level is not executed, the next one is
+        $this->setCurrentTime('2025-06-26 10:40:00');
+        $this->runOlaCron();
+        $this->assertSame(0, $this->countOlaRecalls($ticket), 'A disabled level must not be executed.');
+
+        $this->setCurrentTime('2025-06-26 11:50:00');
+        $this->runOlaCron();
+        $this->assertSame(1, $this->countOlaRecalls($ticket), 'The next active level should be executed.');
+    }
+
+    public function testMigrationSchedulesOlaLevelsOfSuspendedTickets(): void
+    {
+        global $DB;
+
+        // arrange - TTO OLA (90 min) with 2 levels sending recall_ola (10:34 and 11:44)
+        $this->login();
+        $ola = $this->createOlaWithRecallLevels();
+        $this->setCurrentTime('2025-06-26 10:04:00');
+        $waiting_ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()]]);
+        $closed_ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()]]);
+        $this->setCurrentTime('2025-06-26 10:20:00');
+        $this->updateItem(Ticket::class, $waiting_ticket->getID(), ['status' => CommonITILObject::WAITING]);
+        $this->updateItem(Ticket::class, $closed_ticket->getID(), ['status' => CommonITILObject::CLOSED]);
+        // legacy state: no level scheduled for suspended tickets
+        $DB->delete(OlaLevel_Ticket::getTable(), ['tickets_id' => [$waiting_ticket->getID(), $closed_ticket->getID()]]);
+
+        // act - run the migration twice
+        $migration_file = GLPI_ROOT . '/install/migrations/update_12.0.2_to_12.0.3/olalevels_tickets.php';
+        require $migration_file;
+        require $migration_file;
+
+        // assert - only the first level of the waiting ticket is scheduled
+        $levels = (new OlaLevel_Ticket())->find(['tickets_id' => [$waiting_ticket->getID(), $closed_ticket->getID()]]);
+        $this->assertCount(1, $levels);
+        $level = current($levels);
+        $this->assertSame($waiting_ticket->getID(), $level['tickets_id']);
+        $this->assertSame(OlaLevel::getFirstOlaLevel($ola->getID()), $level['olalevels_id']);
+
+        // assert - levels are suspended, then executed once each after waiting (delayed by 100 minutes)
+        $this->setCurrentTime('2025-06-26 11:50:00');
+        $this->runOlaCron();
+        $this->assertSame(0, $this->countOlaRecalls($waiting_ticket), 'Levels must stay suspended while waiting.');
+
+        $this->setCurrentTime('2025-06-26 12:00:00');
+        $this->updateItem(Ticket::class, $waiting_ticket->getID(), ['status' => CommonITILObject::INCOMING]);
+        $this->setCurrentTime('2025-06-26 12:20:00');
+        $this->runOlaCron();
+        $this->assertSame(1, $this->countOlaRecalls($waiting_ticket), 'First level should be executed after waiting.');
+
+        $this->setCurrentTime('2025-06-26 13:30:00');
+        $this->runOlaCron();
+        $this->runOlaCron();
+        $this->assertSame(2, $this->countOlaRecalls($waiting_ticket), 'Second level should be executed once.');
+    }
+
     public function testPassedOlaLevelsOfBackdatedTicketAreExecutedOnce(): void
     {
         // arrange - TTO OLA (90 min) with 2 levels sending recall_ola (10:34 and 11:44)

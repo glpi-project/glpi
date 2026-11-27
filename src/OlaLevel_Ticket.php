@@ -241,6 +241,7 @@ class OlaLevel_Ticket extends CommonDBTM
         if (
             $olalevel->getRuleWithCriteriasAndActions($data['olalevels_id'], true, true)
             && $ola->getFromDB($data['olas_id'])
+            && $olalevel->fields['is_active']
         ) {
             $doit = true;
             if (count($olalevel->criterias)) {
