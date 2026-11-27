@@ -31,8 +31,15 @@
  * ---------------------------------------------------------------------
  */
 
+.cropper-scroll-container {
+    overflow-x: auto;
+    width: 100%;
+}
+
 .cropper-container {
     position: relative;
+    min-width: 800px;
+    width: 100%;
 
     cropper-canvas {
         min-height: 100px;
