@@ -567,6 +567,13 @@ class NotificationTarget extends CommonDBChild
                 'notifications_id' => $input['notifications_id'],
             ]
         );
+        // An empty multiple dropdown is submitted as an empty string
+        foreach (['_targets', '_exclusions'] as $field) {
+            if (isset($input[$field]) && !is_array($input[$field])) {
+                $input[$field] = [];
+            }
+        }
+
         $actives = [];
         if (count($targets)) {
             foreach ($targets as $data) {
