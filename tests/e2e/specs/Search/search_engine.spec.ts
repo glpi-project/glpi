@@ -81,5 +81,5 @@ test('Criteria dropdown opening upwards is not clipped by the results container'
 
     // The dropdown opens upwards, outside of the scrollable results container, and must not be hidden
     await expect(search_engine_page.upward_select2_results).toBeVisible();
-    expect(await search_engine_page.isUpwardSelect2ResultsTopVisible()).toBe(true);
+    await expect.poll(() => search_engine_page.isUpwardSelect2ResultsTopVisible()).toBe(true);
 });
