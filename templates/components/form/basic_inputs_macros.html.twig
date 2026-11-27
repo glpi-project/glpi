@@ -427,8 +427,6 @@
         'minute_increment': config('time_step'),
     }|merge(options) %}
 
-    {% set editable = not options.readonly and not options.disabled %}
-
     {% set options = {
         'id': name|safe_dom_id ~ '_' ~ options.rand
     }|merge(options) %}
@@ -436,6 +434,8 @@
     {% if options.fields_template.isReadonlyField(name)|default(false) %}
         {% set options = options|merge({'readonly': true}) %}
     {% endif %}
+
+    {% set editable = not options.readonly and not options.disabled %}
 
     {% set a11y_name = options.field_label is not empty ? options.field_label : __('Enter or select a time') %}
 
