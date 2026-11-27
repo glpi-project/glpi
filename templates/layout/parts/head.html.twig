@@ -31,10 +31,7 @@
  #}
 
 <!DOCTYPE html>
-<html lang="{{ lang ?? 'en' }}"
-    {% if session('glpiisrtl') %}
-        dir="rtl"
-    {% endif %}
+<html lang="{{ lang ?? 'en' }}" dir="{{ session('glpiisrtl') ? 'rtl' : 'ltr' }}"
     {% if session('glpihighcontrast_css') %}
         data-high-contrast="1"
     {% endif %}
