@@ -18,6 +18,8 @@ The present file will list all changes made to the project; according to the
 
 #### Added
 
+- `$resolve_through_proxy` parameter of `Glpi\Toolbox\HttpClient::__construct()`, to send requests to hosts that only the proxy can resolve (for URLs configured by administrators).
+
 #### Changes
 
 #### Deprecated
