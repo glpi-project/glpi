@@ -87,4 +87,39 @@ class TicketRecurrentTest extends CommonITILRecurrentTest
         ])), 'date');
         $this->assertSame(['2020-01-01 00:00:00', '2020-01-01 00:00:00'], $dates);
     }
+
+    public function testNextCreationDateMovesForwardWhenPhpClockIsBehind(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $template = $this->createItem(\TicketTemplate::class, [
+            'name' => $this->getUniqueString(),
+        ]);
+        $recurrent = $this->createItem(\TicketRecurrent::class, [
+            'name'               => $this->getUniqueString(),
+            'tickettemplates_id' => $template->getID(),
+            'begin_date'         => '2020-01-01 00:00:00',
+            'end_date'           => null,
+            'periodicity'        => DAY_TIMESTAMP,
+            'create_before'      => 0,
+            'calendars_id'       => 0,
+            'is_active'          => 1,
+            'entities_id'        => $this->getTestRootEntity(true),
+        ]);
+
+        // The database considers today's occurrence as due, but the PHP clock is one minute behind it.
+        $due_date = date('Y-m-d 00:00:00');
+        // Direct DB update: updateItem() would recompute the next creation date.
+        $DB->update(\TicketRecurrent::getTable(), ['next_creation_date' => $due_date], ['id' => $recurrent->getID()]);
+        $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', strtotime($due_date) - MINUTE_TIMESTAMP);
+
+        \CommonITILRecurrentCron::cronRecurrentItems($this->createMock(\CronTask::class));
+        \CommonITILRecurrentCron::cronRecurrentItems($this->createMock(\CronTask::class));
+
+        $this->assertSame(1, countElementsInTable(\Ticket::getTable(), ['tickettemplates_id' => $template->getID()]));
+        $this->assertTrue($recurrent->getFromDB($recurrent->getID()));
+        $this->assertGreaterThan($due_date, $recurrent->fields['next_creation_date']);
+    }
 }
