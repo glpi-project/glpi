@@ -266,7 +266,11 @@ class DBmysql
         mysqli_report(MYSQLI_REPORT_OFF);
 
         $this->dbh = @new mysqli();
+        // `ssl_set()` alone only enables SSL when at least one of its parameters is set,
+        // `MYSQLI_CLIENT_SSL` must be passed to `real_connect()` to enforce it.
+        $flags = 0;
         if ($this->dbssl) {
+            $flags = MYSQLI_CLIENT_SSL;
             $this->dbh->ssl_set(
                 $this->dbsslkey,
                 $this->dbsslcert,
@@ -290,13 +294,13 @@ class DBmysql
         $hostport = explode(":", $host);
         if (count($hostport) < 2) {
             // Host
-            @$this->dbh->real_connect($host, $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault);
+            @$this->dbh->real_connect($host, $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, null, null, $flags);
         } elseif (intval($hostport[1]) > 0) {
             // Host:port
-            @$this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, (int) $hostport[1]);
+            @$this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, (int) $hostport[1], null, $flags);
         } else {
             // :Socket
-            @$this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, (int) ini_get('mysqli.default_port'), $hostport[1]);
+            @$this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, (int) ini_get('mysqli.default_port'), $hostport[1], $flags);
         }
 
         if (!$this->dbh->connect_error) {
