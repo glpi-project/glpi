@@ -46,11 +46,18 @@ final class ConsoleCommandRedactionProcessor implements ProcessorInterface
             preg_match_all('/\'[^\']*\'|"[^"]*"|\S+/', $record->context['command'], $matches);
             $tokens = $matches[0];
 
-            $commandFound = false;
+            $command_found = false;
+            $end_of_options = false;
             $sanitized = [];
 
             foreach ($tokens as $token) {
-                if (str_starts_with($token, '-')) {
+                if (!$end_of_options && $token === '--') {
+                    // End of options: every following token is positional
+                    $end_of_options = true;
+                    $sanitized[] = $token;
+                    continue;
+                }
+                if (!$end_of_options && str_starts_with($token, '-')) {
                     // Option token - Keep the flag name, strip everything after '='
                     $sanitized[] = str_contains($token, '=')
                         ? explode('=', $token, 2)[0] . '=***'
@@ -58,10 +65,10 @@ final class ConsoleCommandRedactionProcessor implements ProcessorInterface
                     continue;
                 }
 
-                if (!$commandFound) {
+                if (!$command_found) {
                     // First non-option is command name token
                     $sanitized[] = $token;
-                    $commandFound = true;
+                    $command_found = true;
                     continue;
                 }
 
