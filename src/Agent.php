@@ -571,12 +571,14 @@ class Agent extends CommonDBTM
         $item = $this->getLinkedItem();
         if ((int) $item->getID() > 0) {
             $item_name = $item->getFriendlyName();
-            $addresses[] = $item_name;
+            if (self::isValidHostname($item_name)) {
+                $addresses[] = $item_name;
+            }
 
             //deviceid should contains machines name
             $matches = [];
             preg_match('/^(\s)+-\d{4}(-\d{2}){5}$/', $this->fields['deviceid'], $matches);
-            if (isset($matches[1])) {
+            if (isset($matches[1]) && self::isValidHostname($matches[1])) {
                 if (!in_array($matches[1], $addresses)) {
                     $addresses[] = $matches[1];
                 }
@@ -654,11 +656,27 @@ class Agent extends CommonDBTM
             ]);
 
             foreach ($iterator as $row) {
-                $addresses[] = sprintf('%s.%s', $item_name, $row['name']);
+                $fqdn = sprintf('%s.%s', $item_name, $row['name']);
+                if (self::isValidHostname($fqdn)) {
+                    $addresses[] = $fqdn;
+                }
             }
         }
 
         return $addresses;
+    }
+
+    /**
+     * Check that a name taken from inventory data can only be used as a host name.
+     * Characters that would change the URL built from it (port, path, user info, query, fragment) are refused.
+     *
+     * @param string $name Name to check
+     *
+     * @return bool
+     */
+    private static function isValidHostname(string $name): bool
+    {
+        return preg_match('/^[a-z0-9_-]+(\.[a-z0-9_-]+)*$/i', $name) === 1;
     }
 
     /**
@@ -713,6 +731,8 @@ class Agent extends CommonDBTM
         foreach ($addresses as $address) {
             $options = [
                 'base_uri'        => $address,
+                // Agent addresses come from inventory data: never follow a redirection to another location.
+                'allow_redirects' => false,
             ];
 
             if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
@@ -723,6 +743,12 @@ class Agent extends CommonDBTM
                 // init guzzle client with base options
                 $httpClient = Toolbox::getGuzzleClient($options);
                 $response = $httpClient->request('GET', $endpoint, []);
+                if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
+                    // Redirections are not followed: an address that does not answer directly is not the agent.
+                    $exception = new RuntimeException(sprintf('Agent answered with HTTP status %d', $response->getStatusCode()));
+                    $response = null;
+                    continue;
+                }
                 self::$found_addresses[$agents_id] = $address;
                 break;
             } catch (Throwable $exception) {
