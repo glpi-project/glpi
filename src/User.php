@@ -536,6 +536,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
 
         $user_criteria = self::getItemsForUserCriteria($users_id, $tech);
+        $target_entities = $user->getEntities();
         $count = 0;
 
         foreach ($CFG_GLPI['assignable_types'] as $itemtype) {
@@ -561,7 +562,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             ] + self::getItemsForUserQueryParams(
                 $item,
                 $user_criteria,
-                $user->getEntities()
+                $target_entities
             );
 
             $count += $DB->request($query)->current()['cpt'];
@@ -5404,7 +5405,6 @@ HTML;
 
         $user_criteria = self::getItemsForUserCriteria($ID, $tech);
         $field_user = $user_criteria['field_user'];
-        $criteria = $user_criteria['criteria'];
 
         $number = 0;
 
