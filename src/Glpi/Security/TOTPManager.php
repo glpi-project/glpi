@@ -483,8 +483,14 @@ final class TOTPManager
         if ((int) $CFG_GLPI['2fa_enforced'] === 1) {
             $enforced = true;
         } else {
-            // Check entity configuration
-            $entities = PermissionManager::getInstance()->getAllEntities($users_id);
+            // Check entity configuration, skipping the per-entity resolution when no entity enforces 2FA
+            $has_enforcing_entity = $DB->request([
+                'SELECT' => ['id'],
+                'FROM'   => Entity::getTable(),
+                'WHERE'  => ['2fa_enforcement_strategy' => 1],
+                'LIMIT'  => 1,
+            ])->count() > 0;
+            $entities = $has_enforcing_entity ? PermissionManager::getInstance()->getAllEntities($users_id) : [];
             foreach ($entities as $entity) {
                 if ((int) Entity::getUsedConfig('2fa_enforcement_strategy', $entity, '', 0) === 1) {
                     $enforced = true;

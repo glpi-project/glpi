@@ -48,6 +48,7 @@ use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\EntityField;
 use Glpi\Form\Destination\CommonITILField\EntityFieldConfig;
 use Glpi\Form\Destination\CommonITILField\EntityFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\ImpactField;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
 use Glpi\Form\Destination\CommonITILField\ITILFollowupField;
 use Glpi\Form\Destination\CommonITILField\ITILTaskField;
@@ -336,6 +337,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
             new ContentField(),
             new TemplateField($template_class),
             new UrgencyField(),
+            new ImpactField(),
             new ITILCategoryField(),
             new EntityField(),
             new LocationField(),
@@ -427,6 +429,11 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
             $reflection = new ReflectionClass($field);
             $attributes = $reflection->getAttributes(HasFormTags::class);
             if (!count($attributes)) {
+                continue;
+            }
+
+            // The value may be missing, e.g. for a strategy that doesn't use it
+            if (!is_string($config[$field_key]['value'] ?? null)) {
                 continue;
             }
 

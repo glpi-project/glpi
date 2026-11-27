@@ -2272,4 +2272,100 @@ JSON;
         $this->assertTrue($portwifi->getFromDBByCrit(['networkports_id' => $networkport->fields['id']]));
         $this->assertSame($expected, $portwifi->fields['version']);
     }
+
+    public static function updateSourceOfExistingComputerProvider(): iterable
+    {
+        yield 'computer created manually without update source' => [null];
+        yield 'computer created manually with another update source' => ['Manual source'];
+        yield 'computer already inventoried by GLPI Native Inventory' => [\AutoUpdateSystem::NATIVE_INVENTORY];
+    }
+
+    #[DataProvider('updateSourceOfExistingComputerProvider')]
+    public function testInventoryUpdateSourceOfExistingComputer(?string $initial_source): void
+    {
+        $native_source = $this->getOrCreateNativeInventorySource();
+
+        $initial_source_id = 0;
+        if ($initial_source === \AutoUpdateSystem::NATIVE_INVENTORY) {
+            $initial_source_id = $native_source->getID();
+        } elseif ($initial_source !== null) {
+            $initial_source_id = $this->createItem(\AutoUpdateSystem::class, ['name' => $initial_source])->getID();
+        }
+
+        //computer created manually, then matched by the inventory on its serial number
+        $computer = $this->createItem(\Computer::class, [
+            'name'                 => 'glpixps',
+            'serial'               => '640HP72',
+            'entities_id'          => 0,
+            'autoupdatesystems_id' => $initial_source_id,
+        ]);
+        $this->assertSame($initial_source_id, $computer->fields['autoupdatesystems_id']);
+
+        $json = json_decode(json_encode([
+            'action'   => 'inventory',
+            'deviceid' => 'glpixps-2026-11-17-10-00-00',
+            'itemtype' => 'Computer',
+            'content'  => [
+                'hardware'      => [
+                    'name' => 'glpixps',
+                    'uuid' => '25C1BB60-5BCB-11D9-B18F-5404A6A534C4',
+                ],
+                'bios'          => [
+                    'ssn' => '640HP72',
+                ],
+                'monitors'      => [
+                    [
+                        'caption'      => 'DELL P2419H',
+                        'manufacturer' => 'Dell Inc.',
+                        'serial'       => 'MONITOR47633',
+                    ],
+                ],
+                'usbdevices'    => [
+                    [
+                        'name'      => 'Peripheral 47633',
+                        'serial'    => 'PERIPHERAL47633',
+                        'vendorid'  => '046d',
+                        'productid' => 'c52b',
+                    ],
+                ],
+                'versionclient' => 'GLPI-Agent_v1.11',
+            ],
+        ]));
+
+        $inventory = $this->doInventory($json);
+
+        //inventory must have updated the existing computer, not created a new one
+        $this->assertSame($computer->getID(), $inventory->getItem()->getID());
+
+        $this->assertTrue($computer->getFromDB($computer->getID()));
+        $this->assertSame(1, $computer->fields['is_dynamic']);
+        $this->assertSame(
+            $native_source->getID(),
+            $computer->fields['autoupdatesystems_id'],
+            'Update source of the inventoried computer has not been set to "GLPI Native Inventory"'
+        );
+
+        //linked monitor and peripheral inherit the computer update source
+        $monitor = new \Monitor();
+        $this->assertTrue($monitor->getFromDBByCrit(['serial' => 'MONITOR47633']));
+        $this->assertSame(
+            $native_source->getID(),
+            $monitor->fields['autoupdatesystems_id'],
+            'Update source of the linked monitor has not been set to "GLPI Native Inventory"'
+        );
+
+        $peripheral = new \Peripheral();
+        $this->assertTrue($peripheral->getFromDBByCrit(['serial' => 'PERIPHERAL47633']));
+        $this->assertTrue((new Asset_PeripheralAsset())->getFromDBByCrit([
+            'itemtype_asset'      => \Computer::class,
+            'items_id_asset'      => $computer->getID(),
+            'itemtype_peripheral' => \Peripheral::class,
+            'items_id_peripheral' => $peripheral->getID(),
+        ]));
+        $this->assertSame(
+            $native_source->getID(),
+            $peripheral->fields['autoupdatesystems_id'],
+            'Update source of the linked peripheral has not been set to "GLPI Native Inventory"'
+        );
+    }
 }

@@ -78,6 +78,27 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return ['tools', self::class];
     }
 
+    /**
+     * `is_private` no longer grants any right in `CommonDBTM::can()`, but a user must keep full
+     * access to their own private searches, whatever their `bookmark_public` right.
+     */
+    public function can($ID, int $right, ?array &$input = null, null &$reauth_needed = null): bool
+    {
+        if (parent::can($ID, $right, $input, $reauth_needed)) {
+            return true;
+        }
+
+        $loaded = static::isNewID($ID) || (!$this->isNewItem() && $this->fields['id'] == $ID);
+        $users_id = Session::getLoginUserID();
+
+        return !$reauth_needed
+            && in_array($right, [READ, UPDATE, DELETE, PURGE, CREATE], true)
+            && $loaded
+            && (bool) ($this->fields['is_private'] ?? false)
+            && $users_id !== false
+            && (int) ($this->fields['users_id'] ?? 0) === (int) $users_id;
+    }
+
     public function canUpdateItem(): bool
     {
         return Session::haveRight(self::$rightname, UPDATE)
@@ -278,6 +299,15 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return true;
     }
 
+    public static function getMenuContent()
+    {
+        // canView() is always true, so the menu entry must rely on the profile right.
+        if (!Session::haveRight(self::$rightname, READ)) {
+            return [];
+        }
+        return parent::getMenuContent();
+    }
+
     public function canViewItem(): bool
     {
         if ($this->fields['is_private'] == 1) {
@@ -357,7 +387,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             'massiveaction' => false,
             'joinparams'    => [
                 'jointype'  => 'child',
-                'condition' => ['NEWTABLE.users_id' => Session::getLoginUserID()],
+                'condition' => ['NEWTABLE.users_id' => (int) Session::getLoginUserID()],
             ],
             'datatype'      => 'specific',
             'searchtype'    => [

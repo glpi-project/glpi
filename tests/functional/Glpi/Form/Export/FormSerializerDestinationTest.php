@@ -45,6 +45,9 @@ use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\EntityField;
 use Glpi\Form\Destination\CommonITILField\EntityFieldConfig;
 use Glpi\Form\Destination\CommonITILField\EntityFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\ImpactField;
+use Glpi\Form\Destination\CommonITILField\ImpactFieldConfig;
+use Glpi\Form\Destination\CommonITILField\ImpactFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldConfig;
@@ -97,6 +100,7 @@ use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
+use Glpi\Form\QuestionType\QuestionTypeImpact;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
@@ -244,6 +248,16 @@ final class FormSerializerDestinationTest extends DbTestCase
                     ],
                 ],
             ],
+        ];
+
+        yield 'ITILFollowupField with specific content' => [
+            'field_key' => ITILFollowupField::getKey(),
+            'config'    => new ITILFollowupFieldConfig(
+                strategy: ITILFollowupFieldStrategy::SPECIFIC_CONTENT,
+                specific_content: '<p>ENTREE VALIDEE</p>',
+            ),
+            // Empty templates list is not stored
+            'keys_to_ignore' => [ITILFollowupFieldConfig::ITILFOLLOWUPTEMPLATE_IDS],
         ];
 
         yield 'RequestSourceField' => [
@@ -566,6 +580,14 @@ final class FormSerializerDestinationTest extends DbTestCase
             'config' => new UrgencyFieldConfig(
                 strategy: UrgencyFieldStrategy::SPECIFIC_VALUE,
                 specific_urgency_value: 5
+            ),
+        ];
+
+        yield 'ImpactField' => [
+            'field_key' => ImpactField::getKey(),
+            'config' => new ImpactFieldConfig(
+                strategy: ImpactFieldStrategy::SPECIFIC_VALUE,
+                specific_impact_value: 4
             ),
         ];
 
@@ -899,6 +921,19 @@ final class FormSerializerDestinationTest extends DbTestCase
             'questions_to_create' => [
                 [
                     'type' => QuestionTypeUrgency::class,
+                ],
+            ],
+        ];
+
+        yield 'ImpactField' => [
+            'field_key' => ImpactField::getKey(),
+            'config_fn'    => fn($questions) => new ImpactFieldConfig(
+                strategy: ImpactFieldStrategy::SPECIFIC_ANSWER,
+                specific_question_id: current($questions)->getId(),
+            ),
+            'questions_to_create' => [
+                [
+                    'type' => QuestionTypeImpact::class,
                 ],
             ],
         ];

@@ -299,6 +299,7 @@ class SlaLevel_Ticket extends CommonDBTM
                         // Action done : drop the line
                         $slalevelticket->delete(['id' => $data['id']]);
 
+                        $ticket->is_sla_level_update = true;
                         $ticket->update($input);
                     } else {
                         // Drop line

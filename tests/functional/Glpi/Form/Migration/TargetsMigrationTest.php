@@ -50,6 +50,9 @@ use Glpi\Form\Destination\CommonITILField\DeploymentPlanField;
 use Glpi\Form\Destination\CommonITILField\EntityField;
 use Glpi\Form\Destination\CommonITILField\EntityFieldConfig;
 use Glpi\Form\Destination\CommonITILField\EntityFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\ImpactField;
+use Glpi\Form\Destination\CommonITILField\ImpactFieldConfig;
+use Glpi\Form\Destination\CommonITILField\ImpactFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ImpactsField;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
@@ -216,6 +219,9 @@ final class TargetsMigrationTest extends DbTestCase
                         UrgencyField::getKey()        => new UrgencyFieldConfig(
                             strategy: UrgencyFieldStrategy::FROM_TEMPLATE
                         ),
+                        ImpactField::getKey()         => new ImpactFieldConfig(
+                            strategy: ImpactFieldStrategy::LAST_VALID_ANSWER
+                        ),
                         RequestTypeField::getKey()    => new RequestTypeFieldConfig(
                             strategy: RequestTypeFieldStrategy::SPECIFIC_VALUE,
                             specific_request_type: Ticket::INCIDENT_TYPE
@@ -283,6 +289,9 @@ final class TargetsMigrationTest extends DbTestCase
                         UrgencyField::getKey()        => new UrgencyFieldConfig(
                             strategy: UrgencyFieldStrategy::FROM_TEMPLATE
                         ),
+                        ImpactField::getKey()         => new ImpactFieldConfig(
+                            strategy: ImpactFieldStrategy::LAST_VALID_ANSWER
+                        ),
                         LinkedITILObjectsField::getKey() => new LinkedITILObjectsFieldConfig([
                             new LinkedITILObjectsFieldStrategyConfig(
                                 strategy: null, // No specific strategy for linked ITIL objects
@@ -345,6 +354,9 @@ final class TargetsMigrationTest extends DbTestCase
                         ),
                         UrgencyField::getKey()        => new UrgencyFieldConfig(
                             strategy: UrgencyFieldStrategy::FROM_TEMPLATE
+                        ),
+                        ImpactField::getKey()         => new ImpactFieldConfig(
+                            strategy: ImpactFieldStrategy::LAST_VALID_ANSWER
                         ),
                         LinkedITILObjectsField::getKey() => new LinkedITILObjectsFieldConfig([
                             new LinkedITILObjectsFieldStrategyConfig(

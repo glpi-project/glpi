@@ -34,13 +34,17 @@
 
 namespace tests\units\Glpi\RichText;
 
+use Document;
+use Document_Item;
 use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\Tag;
 use Glpi\RichText\RichText;
-use Glpi\Tests\GLPITestCase;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Rule;
+use Ticket;
 
-class RichTextTest extends GLPITestCase
+class RichTextTest extends DbTestCase
 {
     public static function getSafeHtmlProvider(): iterable
     {
@@ -113,6 +117,95 @@ PLAINTEXT,
  - mailto:test&#64;glpi-project.org<br />
 </p>
 HTML,
+        ];
+
+        // Misplaced table content is wrapped in a cell, to prevent browsers from closing the parent table early
+        /*
+         * @TODO Fix expected result depending on PHP version.
+         *
+        yield [
+            'content'                => '<table><tr><td>a</td></tr><table><tr><td>b</td></tr></table></td></tr></table>'
+                . '<table><tbody><tr><div>c</div></tr></tbody></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table>' . $tbody_opening_tag . '<tr><td>a</td></tr><tr><td><table>' . $tbody_opening_tag . '<tr><td>b</td></tr>' . $tbody_closing_tag . '</table></td></tr>' . $tbody_closing_tag . '</table>'
+                . '<table><tbody><tr><td><div>c</div></td></tr></tbody></table>',
+        ];
+        */
+
+        // Cells outside a row are moved into a row, without being nested in another cell
+        yield [
+            'content'                => '<table><td>a</td><td>b</td></table><table><tbody><th>c</th></tbody></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table>' . $tbody_opening_tag . '<tr><td>a</td><td>b</td></tr>' . $tbody_closing_tag . '</table><table><tbody><tr><th>c</th></tr></tbody></table>',
+        ];
+
+        // Content of a column group that follows its columns is moved after it, as browsers do
+        /*
+         * @TODO Fix expected result depending on PHP version.
+         *
+        yield [
+            'content'                => '<table><colgroup><col><table><tr><td>a</td></tr></table></colgroup><tr><td>b</td></tr></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table><colgroup><col /></colgroup>' . $tbody_opening_tag . '<tr><td><table>' . $tbody_opening_tag . '<tr><td>a</td></tr>' . $tbody_closing_tag . '</table></td></tr><tr><td>b</td></tr>' . $tbody_closing_tag . '</table>',
+        ];
+        */
+        yield [
+            'content'                => '<table><colgroup><col><tbody><tr><td>a</td><td>b</td></tr></tbody></table>'
+                . '<table><colgroup><col><tr><td>c</td></tr></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table><colgroup><col /></colgroup><tbody><tr><td>a</td><td>b</td></tr></tbody></table>'
+                . '<table><colgroup><col /></colgroup>' . $tbody_opening_tag . '<tr><td>c</td></tr>' . $tbody_closing_tag . '</table>',
+        ];
+
+        // Scripts, styles and form feeds between columns do not close the column group
+        /*
+         * @TODO Fix expected result depending on PHP version.
+         *
+        yield [
+            'content'                => "<table><colgroup><col><script>x()</script><col>\f<col></colgroup><tr><td>a</td></tr></table>",
+            'encode_output_entities' => false,
+            'expected_result'        => "<table><colgroup><col /><col />\f<col /></colgroup>' . $tbody_opening_tag . '<tr><td>a</td></tr>' . $tbody_closing_tag . '</table>",
+        ];
+        */
+
+        // Scripts and styles between cells outside a row do not split the implicit row
+        yield [
+            'content'                => '<table><td>a</td><script>x()</script><td>b</td></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table>' . $tbody_opening_tag . '<tr><td>a</td><td>b</td></tr>' . $tbody_closing_tag . '</table>',
+        ];
+
+        // Table elements outside a table are removed, but their content is kept
+        yield [
+            'content'                => '<div><td>a</td></div><p><caption>b</caption></p><span><th>c</th></span>'
+                . '<tr><table><tr><td>d</td></tr></table></tr>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<div>a</div><p>b</p><span>c</span><table>' . $tbody_opening_tag . '<tr><td>d</td></tr>' . $tbody_closing_tag . '</table>',
+        ];
+
+        // Table elements that are not in their expected parent inside a table are removed too
+        /*
+         * @TODO Fix expected result depending on PHP version.
+         *
+        yield [
+            'content'                => '<table><tr><td><div><td>a</td></div><table><tr><td>b</td></tr></table></td></tr></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table>' . $tbody_opening_tag . '<tr><td><div>a</div><table>' . $tbody_opening_tag . '<tr><td>b</td></tr>' . $tbody_closing_tag . '</table></td></tr>' . $tbody_closing_tag . '</table>',
+        ];
+        */
+
+        // Scripts and styles inside a table are dropped without leaving an empty row
+        yield [
+            'content'                => '<table><tr><td>a</td></tr><style>p{}</style><tr><script>x()</script><td>b</td></tr></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table>' . $tbody_opening_tag . '<tr><td>a</td></tr><tr><td>b</td></tr>' . $tbody_closing_tag . '</table>',
+        ];
+
+        // Elements dropped by the sanitizer inside a table do not leave an empty cell or row
+        yield [
+            'content'                => '<table><tr><td>a</td></tr><iframe src="x"></iframe><tr><td>b</td><form><input></form><td>c</td></tr></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table>' . $tbody_opening_tag . '<tr><td>a</td></tr><tr><td>b</td><td>c</td></tr>' . $tbody_closing_tag . '</table>',
         ];
 
         // Cleaning of HTML structure
@@ -901,6 +994,150 @@ HTML,
             $expected_result,
             $result,
         );
+    }
+
+    public function testGetEnhancedHtmlReplacesImagesByGallery(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $document = $this->createImageDocument();
+        $src = $CFG_GLPI['root_doc'] . '/front/document.send.php?docid=' . $document->getID() . '&amp;itemtype=Ticket&amp;items_id=1';
+        $content = <<<HTML
+<p>Screenshot: <a href="{$src}" target="_blank"><img alt="screenshot" width="40" src="{$src}" /></a></p>
+HTML;
+
+        $result = RichText::getEnhancedHtml($content, ['images_gallery' => true]);
+
+        // The link to the image is replaced by a gallery item, and its URLs are not encoded twice
+        $this->assertStringNotContainsString('<img alt="screenshot"', $result);
+        $this->assertStringContainsString("<a href='{$src}' itemprop='contentUrl' data-index='0'>", $result);
+        $this->assertStringContainsString("<img src='{$src}' itemprop='thumbnail' loading='lazy'", $result);
+    }
+
+    public static function galleryThumbnailSizeProvider(): iterable
+    {
+        yield 'no size in the content' => [
+            'size_attributes'     => '',
+            'expected_attributes' => "width='67' height='71' style='aspect-ratio: 67 / 71'",
+        ];
+        yield 'width only' => [
+            'size_attributes'     => 'width="40"',
+            'expected_attributes' => "width='40' height='42' style='aspect-ratio: 40 / 42'",
+        ];
+        yield 'height only' => [
+            'size_attributes'     => 'height="35"',
+            'expected_attributes' => "width='33' height='35' style='aspect-ratio: 33 / 35'",
+        ];
+        yield 'width and height' => [
+            'size_attributes'     => 'width="40" height="20"',
+            'expected_attributes' => "width='40' height='20' style='aspect-ratio: 40 / 20'",
+        ];
+    }
+
+    #[DataProvider('galleryThumbnailSizeProvider')]
+    public function testGalleryThumbnailHasBothDimensions(string $size_attributes, string $expected_attributes): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $document = $this->createImageDocument();
+        $src = $CFG_GLPI['root_doc'] . '/front/document.send.php?docid=' . $document->getID();
+        $content = <<<HTML
+<p><a href="{$src}" target="_blank"><img alt="screenshot" {$size_attributes} src="{$src}" /></a></p>
+HTML;
+
+        $result = RichText::getEnhancedHtml($content, ['images_gallery' => true]);
+
+        // Without its two dimensions, the image has no reserved box and moves the content when it is loaded.
+        // Without an explicit ratio, it takes the ratio of the file once loaded, whatever its attributes are.
+        $this->assertStringContainsString(
+            "<img src='{$src}' itemprop='thumbnail' loading='lazy' {$expected_attributes}>",
+            $result
+        );
+    }
+
+    public function testGalleryFollowsTheRightToViewTheImage(): void
+    {
+        global $CFG_GLPI;
+
+        // The document belongs to another user, and the reader has no right on the documents
+        $this->login();
+        $document = $this->createImageDocument();
+
+        $this->login('post-only', 'postonly');
+        $this->assertFalse($document->canViewFile());
+        $ticket = new Ticket();
+        $tickets_id = $ticket->add(['name' => 'Ticket with an image', 'content' => 'Ticket with an image']);
+        $this->assertGreaterThan(0, $tickets_id);
+
+        $this->login();
+        $this->createItem(Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'itemtype'     => Ticket::class,
+            'items_id'     => $tickets_id,
+        ]);
+
+        $this->login('post-only', 'postonly');
+        $src = $CFG_GLPI['root_doc'] . '/front/document.send.php?docid=' . $document->getID();
+        $render = static fn(string $src): string => RichText::getEnhancedHtml(
+            '<p><a href="' . $src . '" target="_blank"><img alt="screenshot" src="' . $src . '" /></a></p>',
+            ['images_gallery' => true]
+        );
+
+        // Without its ticket, the image cannot be downloaded: it is left as it is, as its size would already tell
+        // something about the file
+        $result = $render($src);
+        $this->assertStringContainsString('<img alt="screenshot"', $result);
+        $this->assertStringNotContainsString("itemprop='thumbnail'", $result);
+        $this->assertStringNotContainsString('"w":67', $result);
+
+        // From its ticket, it can be: same check as the one of `front/document.send.php`
+        $result = $render($src . '&amp;itemtype=Ticket&amp;items_id=' . $tickets_id);
+        $this->assertStringContainsString("itemprop='thumbnail' loading='lazy' width='67' height='71'", $result);
+    }
+
+    public function testGalleryDataCannotBreakItsScript(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $document = $this->createImageDocument();
+        $src = $CFG_GLPI['root_doc'] . '/front/document.send.php?docid=' . $document->getID() . '&amp;x=&lt;!--&lt;script&gt;';
+        $content = <<<HTML
+<p><a href="{$src}" target="_blank"><img alt="screenshot" src="{$src}" /></a></p>
+HTML;
+
+        $result = RichText::getEnhancedHtml($content, ['images_gallery' => true]);
+
+        // The URL of the image is written in a script block, where `<!--<script>` would keep the block open and
+        // swallow the rest of the page
+        $this->assertStringContainsString("itemprop='thumbnail'", $result);
+        $this->assertStringNotContainsString('<!--<script>', $result);
+
+        // It is still the same URL once the data is read
+        $this->assertSame(1, preg_match('/dataSource: (\[.*\]),/', $result, $matches));
+        $this->assertSame(html_entity_decode($src), json_decode($matches[1], true)[0]['src']);
+    }
+
+    /**
+     * Creates a document from the 67 x 71 image of the fixtures.
+     */
+    private function createImageDocument(): Document
+    {
+        $filename = 'foo.png';
+        copy(FIXTURE_DIR . '/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
+
+        $document = new Document();
+        $document->add([
+            'filename'         => $filename,
+            '_filename'        => [$filename],
+            '_tag_filename'    => [Rule::getUuid()],
+            '_prefix_filename' => ['5e5e92ffd9bd91.11111111'],
+        ]);
+        $this->assertFalse($document->isNewItem());
+
+        return $document;
     }
 
 }

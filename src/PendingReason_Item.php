@@ -269,34 +269,42 @@ class PendingReason_Item extends CommonDBRelation
 
         $task_class = $item::getTaskClass();
 
+        $followups_query = new QuerySubQuery([
+            'SELECT' => ['id'],
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'itemtype' => ITILFollowup::class,
+                'items_id' => new QuerySubQuery([
+                    'SELECT' => 'id',
+                    'FROM'   => ITILFollowup::getTable(),
+                    'WHERE'  => [
+                        'itemtype' => $item::class,
+                        'items_id' => $item->getID(),
+                    ],
+                ]),
+            ],
+        ]);
+
+        $tasks_query = new QuerySubQuery([
+            'SELECT' => ['id'],
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'itemtype' => $task_class::getType(),
+                'items_id' => new QuerySubQuery([
+                    'SELECT' => 'id',
+                    'FROM'   => $task_class::getTable(),
+                    'WHERE'  => [
+                        $item::getForeignKeyField() => $item->getID(),
+                    ],
+                ]),
+            ],
+        ]);
+
+        // Two lookups in a union rather than one OR: with the OR, the (itemtype, items_id)
+        // index cannot be used and the whole table is scanned.
         $data = $DB->request([
             'SELECT' => ['MAX' => 'id AS max_id'],
-            'FROM'  => PendingReason_Item::getTable(),
-            'WHERE' => [
-                'OR' => [
-                    [
-                        'itemtype' => ITILFollowup::class,
-                        'items_id' => new QuerySubQuery([
-                            'SELECT' => 'id',
-                            'FROM'   => ITILFollowup::getTable(),
-                            'WHERE'  => [
-                                'itemtype' => $item::class,
-                                'items_id' => $item->getID(),
-                            ],
-                        ]),
-                    ],
-                    [
-                        'itemtype' => $task_class::getType(),
-                        'items_id' => new QuerySubQuery([
-                            'SELECT' => 'id',
-                            'FROM'   => $task_class::getTable(),
-                            'WHERE'  => [
-                                $item::getForeignKeyField() => $item->getID(),
-                            ],
-                        ]),
-                    ],
-                ],
-            ],
+            'FROM'   => new QueryUnion([$followups_query, $tasks_query], false, 'pending_timeline_items'),
         ]);
 
         if (!count($data)) {

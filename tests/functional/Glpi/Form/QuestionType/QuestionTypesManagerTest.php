@@ -42,6 +42,7 @@ use Glpi\Form\QuestionType\QuestionTypeDateTime;
 use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeFile;
+use Glpi\Form\QuestionType\QuestionTypeImpact;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
@@ -103,6 +104,7 @@ final class QuestionTypesManagerTest extends DbTestCase
             QuestionTypeCategory::DATE_AND_TIME,
             QuestionTypeCategory::ACTORS,
             QuestionTypeCategory::URGENCY,
+            QuestionTypeCategory::IMPACT,
             QuestionTypeCategory::REQUEST_TYPE,
             QuestionTypeCategory::FILE,
             QuestionTypeCategory::RADIO,
@@ -163,6 +165,13 @@ final class QuestionTypesManagerTest extends DbTestCase
             'category' => QuestionTypeCategory::URGENCY,
             'expected_types' => [
                 (new QuestionTypeUrgency())->getName(),
+            ],
+        ];
+
+        yield [
+            'category' => QuestionTypeCategory::IMPACT,
+            'expected_types' => [
+                (new QuestionTypeImpact())->getName(),
             ],
         ];
 

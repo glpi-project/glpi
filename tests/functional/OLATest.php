@@ -327,6 +327,21 @@ class OLATest extends DbTestCase
         $this->assertCount(3, $io->getDataFromOlasIdsForTicket($ticket, [$ola_tto1->getID(), $ola_tto2->getID(), $ola_ttr->getID()]));
     }
 
+    public function testGetDataFromOlasIdsForNewTicket(): void
+    {
+        $this->login();
+        // arrange : create 2 olas, and a ticket that is not yet saved
+        ['ola' => $ola_tto, 'slm' => $slm, 'group' => $group] = $this->createOLA(ola_type: SLM::TTO);
+        ['ola' => $ola_ttr] = $this->createOLA(ola_type: SLM::TTR, group: $group, slm: $slm);
+        $ticket = new Ticket();
+        $ticket->getEmpty();
+
+        // assert - requested olas data is returned, without searching associations of the unsaved ticket
+        $io = new Item_Ola();
+        $olas_data = $io->getDataFromOlasIdsForTicket($ticket, [$ola_tto->getID(), $ola_ttr->getID()]);
+        $this->assertCount(2, $olas_data);
+    }
+
     public function testAssociateSingleOlaOnCreation(): void
     {
         // arrange

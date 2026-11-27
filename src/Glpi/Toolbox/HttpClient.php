@@ -60,17 +60,31 @@ final class HttpClient
     /**
      * @param class-string<CommonGLPI>|null $context Configuration context.
      * @param array<string, mixed> $options Client options, see `HttpClientInterface::DEFAULT_OPTIONS`.
+     * @param bool $allow_private_networks Allow usage of private networks, regardless of the configuration.
+     * @param bool $bypass_proxy Prevent usage of proxy, regardless of the configuration.
      */
-    public function __construct(?string $context = null, array $options = [])
-    {
+    public function __construct(
+        ?string $context = null,
+        array $options = [],
+        bool $allow_private_networks = false,
+        bool $bypass_proxy = false
+    ) {
         global $CFG_GLPI;
 
         $client_options = $options + [
             'max_connect_duration' => 5,
         ];
 
-        $use_proxy = $context === null || \in_array($context, $CFG_GLPI['proxy_exclusions'], true) === false;
-        $allow_private_networks = \in_array($context, GLPI_SERVERSIDE_URL_ALLOWED_PRIVATE_NETWORKS_CONTEXTS, true);
+        $use_proxy = $bypass_proxy !== true
+            && (
+                $context === null
+                || \in_array($context, $CFG_GLPI['proxy_exclusions'], true) === false
+            );
+        $allow_private_networks = $allow_private_networks
+            || (
+                $context !== null
+                && \in_array($context, GLPI_SERVERSIDE_URL_ALLOWED_PRIVATE_NETWORKS_CONTEXTS, true)
+            );
 
         if ($use_proxy && !empty($CFG_GLPI['proxy_name'])) {
             $proxy_credentials = '';
@@ -87,6 +101,8 @@ final class HttpClient
                 $CFG_GLPI['proxy_name'],
                 $CFG_GLPI['proxy_port']
             );
+        } elseif ($bypass_proxy) {
+            $client_options['no_proxy'] = '*';
         }
 
         $inner_client = HttpClientFactory::create();

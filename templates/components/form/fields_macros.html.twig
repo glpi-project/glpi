@@ -384,18 +384,8 @@
          {% endif %}
          {% if clearable %}
             <input type="hidden" name="_blank_{{ name }}" />
-             {%- set clear_js -%}
-                 const blank_input = $('input[name=\'_blank_{{ name|e('css')|e('js') }}\']');
-                 blank_input.val(blank_input.val() ? '' : true);
-                 if ($(this).closest('.picture_gallery_item').length) {
-                    $(this).closest('.picture_gallery_item').hide();
-                    $(this).closest('.picture_gallery').siblings('.deletion_pending').removeClass('d-none');
-                 } else {
-                    $(this).closest('.img-overlay-wrapper').hide();
-                 }
-             {%- endset -%}
             <button type="button" class="btn p-2 position-absolute top-0 start-0" title="{{ __('Delete') }}"
-                    onclick="{{ clear_js }}">
+                    data-glpi-image-clear>
                <i class="ti ti-x" aria-hidden="true"></i>
             </button>
          {% endif %}
@@ -646,7 +636,7 @@
     {% set value = value|replace({'ti ': ''}) %}
 
     {{ _self.dropdownArrayField(name, value, {(value): value}, label, options) }}
-    <script type="module">
+    <script nonce="{{ csp_nonce() }}" type="module">
         import('/js/modules/Form/WebIconSelector.js').then((m) => {
             const dropdown_id = '{{ ('dropdown_' ~ name ~ options.rand)|replace({'[': '_', ']': '_'})|e('js') }}';
             const selector = new m.default(document.getElementById(dropdown_id));
@@ -1027,7 +1017,7 @@
     {{ _self.htmlField(name, code_container, label, {
         wrapper_class: 'd-flex flex-grow-1',
     }|merge(options)) }}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         $(() => {
             const editor_options = {{ options.single_line ? 'true' : 'false' }} ? window.GLPI.Monaco.getSingleLineEditorOptions() : {};
             window.GLPI.Monaco.createEditor('{{ code_container_id|e('js') }}', '{{ options.language|e('js') }}', "{{ value|e('js') }}", {{ options.completions|json_encode|raw }}, editor_options).then(() => {

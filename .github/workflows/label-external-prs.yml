@@ -1,0 +1,48 @@
+name: "Label external contributions"
+
+# Add the "external contribution" label to PRs opened by people who do not
+# have at least triage access to the repository, so that they can be filtered
+# in searches (e.g. `is:pr is:open -label:"external contribution"`).
+#
+# The repository role of the author is checked rather than the
+# `author_association` field of the event payload, which depends on the
+# visibility of the org membership.
+#
+# Uses pull_request_target so the label is also added on PRs from forks.
+# Safe because only the GitHub REST API is called; no PR code is ever
+# checked out or executed.
+
+on:
+  pull_request_target:
+    types: [opened, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  label:
+    name: "Label external contribution"
+    if: github.event.pull_request.user.type != 'Bot'
+    runs-on: "ubuntu-latest"
+    permissions:
+      pull-requests: write
+    steps:
+      - name: "Check author permission and add label"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          LABEL: "external contribution"
+        run: |
+          set -e
+          ROLE=$(gh api "/repos/$REPO/collaborators/$AUTHOR/permission" --jq '.role_name')
+          echo "$AUTHOR has role '$ROLE' on $REPO"
+          case "$ROLE" in
+            admin|maintain|write|triage)
+              echo "Internal contribution, nothing to do."
+              exit 0
+              ;;
+          esac
+          gh api -X POST "/repos/$REPO/issues/$PR_NUMBER/labels" -f "labels[]=$LABEL" > /dev/null
+          echo "Label '$LABEL' added."

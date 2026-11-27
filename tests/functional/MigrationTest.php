@@ -1176,6 +1176,104 @@ class MigrationTest extends DbTestCase
         ], $migration->getMockedQueries());
     }
 
+    public static function searchOptionInSortProvider(): iterable
+    {
+        // Multiple columns sort
+        yield [
+            'query'         => 'sort%5B0%5D=1&sort%5B1%5D=40&order%5B0%5D=ASC&order%5B1%5D=DESC&itemtype=Computer',
+            'new_opt'       => 100,
+            'expected'      => 'sort%5B0%5D=1&sort%5B1%5D=100&order%5B0%5D=ASC&order%5B1%5D=DESC&itemtype=Computer',
+        ];
+        yield [
+            'query'         => 'sort%5B0%5D=40&sort%5B1%5D=1&order%5B0%5D=ASC&order%5B1%5D=DESC&itemtype=Computer',
+            'new_opt'       => null,
+            'expected'      => 'sort%5B0%5D=1&order%5B0%5D=DESC&itemtype=Computer',
+        ];
+        // Multiple columns sort with a legacy scalar order
+        yield [
+            'query'         => 'sort%5B0%5D=40&sort%5B1%5D=1&order=DESC&itemtype=Computer',
+            'new_opt'       => null,
+            'expected'      => 'sort%5B0%5D=1&itemtype=Computer',
+        ];
+        yield [
+            'query'         => 'sort%5B0%5D=1&sort%5B1%5D=40&order=DESC&itemtype=Computer',
+            'new_opt'       => null,
+            'expected'      => 'sort%5B0%5D=1&order%5B0%5D=DESC&itemtype=Computer',
+        ];
+        // Replacement option already used in sort: first occurrence takes precedence
+        yield [
+            'query'         => 'sort%5B0%5D=40&sort%5B1%5D=100&order%5B0%5D=ASC&order%5B1%5D=DESC&itemtype=Computer',
+            'new_opt'       => 100,
+            'expected'      => 'sort%5B0%5D=100&order%5B0%5D=ASC&itemtype=Computer',
+        ];
+        yield [
+            'query'         => 'sort%5B0%5D=100&sort%5B1%5D=40&order%5B0%5D=DESC&order%5B1%5D=ASC&itemtype=Computer',
+            'new_opt'       => 100,
+            'expected'      => 'sort%5B0%5D=100&order%5B0%5D=DESC&itemtype=Computer',
+        ];
+        // Order entry kept with its sort entry when removing a sort entry
+        yield [
+            'query'         => 'sort%5B0%5D=40&sort%5B1%5D=1&order%5B1%5D=DESC&itemtype=Computer',
+            'new_opt'       => null,
+            'expected'      => 'sort%5B0%5D=1&order%5B0%5D=DESC&itemtype=Computer',
+        ];
+
+        // Sort not affected by the change: kept as is, even when only criteria are migrated
+        yield [
+            'query'         => 'sort%5B0%5D=2&order%5B1%5D=DESC&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&itemtype=Computer',
+            'new_opt'       => 100,
+            'expected'      => 'sort%5B0%5D=2&order%5B1%5D=DESC&criteria%5B0%5D%5Bfield%5D=100&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&itemtype=Computer',
+        ];
+
+        // Legacy single column sort
+        yield [
+            'query'         => 'sort=40&order=ASC&itemtype=Computer',
+            'new_opt'       => 100,
+            'expected'      => 'sort=100&order=ASC&itemtype=Computer',
+        ];
+        yield [
+            'query'         => 'sort=40&order=ASC&itemtype=Computer',
+            'new_opt'       => null,
+            'expected'      => 'order=ASC&itemtype=Computer',
+        ];
+    }
+
+    #[DataProvider('searchOptionInSortProvider')]
+    public function testSearchOptionInSortIsMigrated(string $query, ?int $new_opt, string $expected): void
+    {
+        $migration = $this->getMigrationMock(db_options: [
+            '_mock_tableExists' => true,
+            '_mock_request' => function ($request) use ($query) {
+                if (($request['FROM'] ?? null) === \SavedSearch::getTable()) {
+                    return new ArrayIterator([
+                        [
+                            'id'        => 1,
+                            'itemtype'  => 'Computer',
+                            'query'     => $query,
+                        ],
+                    ]);
+                }
+                return new ArrayIterator([]);
+            },
+        ]);
+
+        if ($new_opt === null) {
+            $migration->removeSearchOption('Computer', 40);
+        } else {
+            $migration->changeSearchOption('Computer', 40, $new_opt);
+        }
+        $migration->executeMigration();
+
+        $queries = $migration->getMockedQueries();
+        $this->assertEquals(
+            [
+                'sql' => "UPDATE `glpi_savedsearches` SET `query` = ? WHERE `id` = ?",
+                'values' => [$expected, 1],
+            ],
+            end($queries)
+        );
+    }
+
     public function testRemoveSearchOption()
     {
         $migration = $this->getMigrationMock(db_options: [
@@ -1627,6 +1725,13 @@ class MigrationTest extends DbTestCase
                 // prepared on its connection and the mock has no mysqli handler.
                 global $DB;
                 $DB->executeStatement($stmt, $params, $types);
+            }
+
+            public function getStatementResult(mysqli_stmt $stmt): mysqli_result|false
+            {
+                // Proxy result retrieval to the real DB instance since the statement was executed on its connection.
+                global $DB;
+                return $DB->getStatementResult($stmt);
             }
         };
         $db->disableTableCaching();

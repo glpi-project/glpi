@@ -1143,18 +1143,25 @@ abstract class CommonITILValidation extends CommonDBChild
                             </div>
                         </div>
                         <div class="flex-shrink-0">
-                            <span class="ti ti-edit"
-                               role="button"
+                            <button type="button"
+                               class="border-0 bg-transparent p-0"
                                title="{{ edit_button_label }}"
-                               onclick="glpi_ajax_dialog({{ edit_dialog_params|json_encode }});"
+                               id="edit_validation_step_{{ step_id }}_{{ rand }}"
                             >
+                                <i class="ti ti-edit" aria-hidden="true"></i>
                                 <span class="visually-hidden">{{ edit_button_label }}</span>
-                            </span>
+                            </button>
+                            <script nonce="{{ csp_nonce() }}">
+                                document.getElementById('edit_validation_step_{{ step_id }}_{{ rand }}').addEventListener('click', () => {
+                                    glpi_ajax_dialog({{ edit_dialog_params|json_encode|raw }});
+                                });
+                            </script>
                         </div>
                     </div>
                 TWIG,
                 [
                     'step_id'            => $validation_step_id,
+                    'rand'               => $rand,
                     'step_name'          => $step_name,
                     'step_status'        => $step_status,
                     'accepted_percent'   => $step_achievements[self::ACCEPTED],
@@ -1226,7 +1233,7 @@ abstract class CommonITILValidation extends CommonDBChild
                     }
                 }
 
-                $script = "";
+                $html = "";
                 if ($canedit) {
                     $edit_title = __s('Edit');
                     $item_id = (int) $itil->fields['id'];
@@ -1240,27 +1247,28 @@ abstract class CommonITILValidation extends CommonDBChild
 
                     $rand_id = htmlescape($item_id . $row_id . $rand);
 
-                    $script = <<<HTML
+                    $script = Html::scriptBlock(<<<JAVASCRIPT
+                        function viewEditValidation{$rand_id}() {
+                            glpi_ajax_dialog({
+                                url: CFG_GLPI.root_doc + "/ajax/viewsubitem.php",
+                                modalclass: 'modal-xl',
+                                params: $params_json,
+                            });
+                        };
+                        document.getElementById('viewvalidation{$rand_id}').addEventListener('click', () => {
+                            viewEditValidation{$rand_id}();
+                        });
+                JAVASCRIPT);
+                    $html = <<<HTML
                         <span class="ti ti-edit" style="cursor:pointer" title="{$edit_title}"
                               id="viewvalidation{$rand_id}">
                         </span>
-                        <script>
-                            function viewEditValidation{$rand_id}() {
-                                glpi_ajax_dialog({
-                                    url: CFG_GLPI.root_doc + "/ajax/viewsubitem.php",
-                                    modalclass: 'modal-xl',
-                                    params: $params_json,
-                                });
-                            };
-                            document.getElementById('viewvalidation{$rand_id}').addEventListener('click', () => {
-                                viewEditValidation{$rand_id}();
-                            });
-                        </script>
+                        $script
 HTML;
                 }
 
                 $values[] = [
-                    'edit'                  => $script,
+                    'edit'                  => $html,
                     'status'                => $status,
                     'type_name'             => $type_name,
                     'target_name'           => $target_name,

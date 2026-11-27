@@ -1064,6 +1064,36 @@ class ProviderTest extends DbTestCase
         }
     }
 
+    public function testNbItemByFkCounts(): void
+    {
+        $this->login();
+
+        $category_1 = $this->createItem(\ITILCategory::class, ['name' => 'nbItemByFk category 1']);
+        $category_2 = $this->createItem(\ITILCategory::class, ['name' => 'nbItemByFk category 2']);
+        $group      = $this->createItem(\Group::class, ['name' => 'nbItemByFk group']);
+
+        foreach ([$category_1->getID(), $category_1->getID(), $category_1->getID(), $category_2->getID(), 0] as $i => $categories_id) {
+            $this->createItem(\Ticket::class, [
+                'name'              => "nbItemByFk ticket $i",
+                'content'           => 'foo',
+                'itilcategories_id' => $categories_id,
+                'entities_id'       => $this->getTestRootEntity(true),
+                '_groups_id_assign' => $group->getID(),
+            ]);
+        }
+
+        // The counts are the same without any join, and with the join added by a filter.
+        foreach ([[], ['group_tech' => $group->getID()]] as $filters) {
+            $result  = Provider::nbItemByFk(new \Ticket(), new \ITILCategory(), ['apply_filters' => $filters, 'limit' => 500]);
+            $numbers = array_column($result['data'], 'number', 'label');
+
+            $this->assertSame(3, $numbers['nbItemByFk category 1']);
+            $this->assertSame(1, $numbers['nbItemByFk category 2']);
+            $this->assertGreaterThanOrEqual(1, $numbers[__('without')]);
+        }
+        $this->assertSame(1, $numbers[__('without')]);
+    }
+
 
     public function testTicketCardsVisibility(): void
     {
@@ -1701,6 +1731,75 @@ class ProviderTest extends DbTestCase
             $this->assertIsString($data['label']);
             $this->assertStringContainsString(\Ticket::getSearchURL(), $data['url']);
         }
+    }
+
+    public function testTopTicketsCategoriesUrlWithFilters(): void
+    {
+        $this->login();
+
+        $parent = $this->createItem(\ITILCategory::class, [
+            'name'        => 'Dashboard parent category',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $child = $this->createItem(\ITILCategory::class, [
+            'name'              => 'Dashboard child category',
+            'itilcategories_id' => $parent->getID(),
+            'entities_id'       => $this->getTestRootEntity(true),
+        ]);
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'              => 'Dashboard ticket',
+            'content'           => 'content',
+            'itilcategories_id' => $child->getID(),
+            'entities_id'       => $this->getTestRootEntity(true),
+        ]);
+
+        $result = Provider::multipleNumberTicketByITILCategory([
+            'apply_filters' => [
+                'itilcategory' => $parent->getID(),
+                'dates'        => [date('Y-m-d', strtotime('-1 day')), date('Y-m-d', strtotime('+1 day'))],
+            ],
+        ]);
+        $this->assertCount(1, $result['data']);
+
+        // filters criteria must target ticket search options, not ITILCategory ones
+        parse_str(parse_url($result['data'][0]['url'], PHP_URL_QUERY), $query);
+        $this->assertEquals(
+            [
+                ['link' => 'AND', 'field' => '15', 'searchtype' => 'morethan', 'value' => date('Y-m-d 00:00:00', strtotime('-1 day'))],
+                ['link' => 'AND', 'field' => '15', 'searchtype' => 'lessthan', 'value' => date('Y-m-d 00:00:00', strtotime('+2 day'))],
+                ['link' => 'AND', 'field' => '7', 'searchtype' => 'under', 'value' => (string) $parent->getID()],
+                ['field' => '7', 'searchtype' => 'equals', 'value' => (string) $child->getID()],
+            ],
+            $query['criteria']
+        );
+
+        $data = \Search::getDatas(\Ticket::class, ['criteria' => $query['criteria']]);
+        $this->assertEquals(1, $data['data']['totalcount']);
+        $this->assertEquals($ticket->getID(), $data['data']['rows'][0]['id']);
+    }
+
+    public function testNbTicketsActorGroupLabel(): void
+    {
+        $this->login();
+
+        $group = $this->createItem(\Group::class, [
+            'name'        => 'Dashboard requester group',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'        => 'Dashboard ticket',
+            'content'     => 'content',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->createItem(\Group_Ticket::class, [
+            'tickets_id' => $ticket->getID(),
+            'groups_id'  => $group->getID(),
+            'type'       => \CommonITILActor::REQUESTER,
+        ]);
+
+        $result = Provider::nbTicketsActor('group_requester');
+
+        $this->assertContains('Dashboard requester group', array_column($result['data'], 'label'));
     }
 
     public static function monthYearProvider()
@@ -2837,6 +2936,44 @@ class ProviderTest extends DbTestCase
         $this->assertCount(2, $result['data']['series']);
         foreach ($result['data']['series'] as $serie) {
             $this->assertCount(count($result['data']['labels']), $serie['data']);
+        }
+    }
+
+    public function testFakeTicketsByGroupAndStatus(): void
+    {
+        // Demo mode must not run the real query
+        $method = new \ReflectionMethod(FakeProvider::class, 'ticketsByGroupAndStatus');
+        $this->assertSame(FakeProvider::class, $method->getDeclaringClass()->getName());
+
+        $result = FakeProvider::ticketsByGroupAndStatus(['label' => 'test']);
+        $this->assertSame('test', $result['label']);
+        $this->assertCount(2, $result['data']['series']);
+        foreach ($result['data']['series'] as $serie) {
+            $this->assertCount(count($result['data']['labels']), $serie['data']);
+        }
+    }
+
+    public static function fakePieProvider(): iterable
+    {
+        yield ['ticketsByStatus'];
+        yield ['computersByOperatingSystem'];
+        yield ['computersByAge'];
+    }
+
+    #[DataProvider('fakePieProvider')]
+    public function testFakePie(string $provider): void
+    {
+        // Demo mode must not run the real query
+        $method = new \ReflectionMethod(FakeProvider::class, $provider);
+        $this->assertSame(FakeProvider::class, $method->getDeclaringClass()->getName());
+
+        $result = FakeProvider::$provider(['label' => 'test']);
+        $this->assertSame('test', $result['label']);
+        $this->assertNotEmpty($result['data']);
+        foreach ($result['data'] as $entry) {
+            $this->assertArrayHasKey('number', $entry);
+            $this->assertArrayHasKey('label', $entry);
+            $this->assertArrayHasKey('url', $entry);
         }
     }
 

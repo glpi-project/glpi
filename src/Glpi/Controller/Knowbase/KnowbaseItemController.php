@@ -103,7 +103,7 @@ final class KnowbaseItemController extends AbstractController
         }
 
         return new StreamedResponse(static function () use ($kbitem) {
-            $kbitem->showFull();
+            $kbitem->showFull(['embedded' => true]);
         });
     }
 

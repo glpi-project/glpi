@@ -581,6 +581,51 @@ types.set('QuestionTypeUrgency', {
         }
     ]
 });
+types.set('QuestionTypeImpact', {
+    file: "question_types/impact-question.json",
+    conditions: [
+        {
+            operator: 'Is equal to',
+            value: 'Very high',
+            valueType: 'dropdown'
+        },
+        {
+            operator: 'Is not equal to',
+            value: 'Very high',
+            valueType: 'dropdown'
+        },
+        {
+            operator: 'Is greater than',
+            value: 'Very high',
+            valueType: 'dropdown'
+        },
+        {
+            operator: 'Is less than',
+            value: 'Very high',
+            valueType: 'dropdown'
+        },
+        {
+            operator: 'Is greater than or equals to',
+            value: 'Very high',
+            valueType: 'dropdown'
+        },
+        {
+            operator: 'Is less than or equals to',
+            value: 'Very high',
+            valueType: 'dropdown'
+        },
+        {
+            operator: 'Match regular expression',
+            value: '/^1$/',
+            valueType: 'string'
+        },
+        {
+            operator: 'Do not match regular expression',
+            value: '/^1$/',
+            valueType: 'string'
+        }
+    ]
+});
 types.set('QuestionTypeRequestType', {
     file: "question_types/request-type-question.json",
     conditions: [

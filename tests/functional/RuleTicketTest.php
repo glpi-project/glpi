@@ -2107,4 +2107,69 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             \RuleCollection::isCriteraADropdown($rule->getCriterias(), $condition, 'itilcategories_id')
         );
     }
+
+    public function testPreviewImportRefusedDropdownCriterionLabel(): void
+    {
+        $this->login();
+
+        $xml = <<<XML
+<?xml version="1.0"?>
+<rules>
+  <rule>
+    <entities_id>Root entity</entities_id>
+    <sub_type>RuleTicket</sub_type>
+    <ranking>1</ranking>
+    <name>Rule with unknown group criterion</name>
+    <description></description>
+    <match>AND</match>
+    <is_active>1</is_active>
+    <comment></comment>
+    <is_recursive>1</is_recursive>
+    <uuid>test-unknown-group-criterion</uuid>
+    <condition>1</condition>
+    <rulecriteria>
+      <criteria>_groups_id_requester</criteria>
+      <condition>0</condition>
+      <pattern>Unknown group</pattern>
+    </rulecriteria>
+    <ruleaction>
+      <action_type>assign</action_type>
+      <field>urgency</field>
+      <value>4</value>
+    </ruleaction>
+  </rule>
+</rules>
+XML;
+
+        $tmp_file = tempnam(GLPI_TMP_DIR, 'rules_import_');
+        file_put_contents($tmp_file, $xml);
+
+        $_FILES['xml_file'] = [
+            'name'     => 'rules.xml',
+            'type'     => 'text/xml',
+            'tmp_name' => $tmp_file,
+            'error'    => UPLOAD_ERR_OK,
+            'size'     => filesize($tmp_file),
+        ];
+
+        ob_start();
+        $result = \RuleCollection::previewImportRules();
+        $output = ob_get_clean();
+
+        unset($_FILES['xml_file']);
+        unlink($tmp_file);
+
+        $this->assertTrue($result);
+
+        // The rule must be refused because of its criterion referencing an unknown group
+        $this->assertSame(
+            [0 => ['criterias' => [0]]],
+            $_SESSION['glpi_import_rules_refused']
+        );
+
+        // The refused criterion must be displayed with its condition label
+        $rule = new \RuleTicket();
+        $this->assertStringContainsString($rule->getCriteriaName('_groups_id_requester'), $output);
+        $this->assertStringContainsString('Unknown group', $output);
+    }
 }

@@ -132,7 +132,7 @@
    {% endif %}
 </div>
 
-<script type="text/javascript">
+<script nonce="{{ csp_nonce() }}" type="text/javascript">
 $(function() {
    $(document).on("click", ".filter-timeline-popover .trigger-filter", function() {
       var timeline       = $('#itil-object-container .itil-timeline');

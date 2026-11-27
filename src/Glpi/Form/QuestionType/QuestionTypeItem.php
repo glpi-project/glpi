@@ -396,36 +396,17 @@ class QuestionTypeItem extends AbstractQuestionType implements
     public function renderAdministrationOptionsTemplate(?Question $question): string
     {
         $template = <<<TWIG
-            {% set rand = random() %}
-
-            <div id="is_multiple_items_{{ rand }}" class="d-flex gap-2">
+            <div class="d-flex gap-2">
                 <label class="form-check form-switch mb-0">
                     <input type="hidden" name="is_multiple_items" value="0"
                     data-glpi-form-editor-specific-question-extra-data>
                     <input class="form-check-input" type="checkbox" name="is_multiple_items"
                         value="1" {{ is_multiple_items ? 'checked' : '' }}
-                        onchange="handleMultipleItemsCheckbox_{{ rand }}(this)"
+                        data-glpi-form-question-item-multiple-toggle
                         data-glpi-form-editor-specific-question-extra-data>
                     <span class="form-check-label">{{ is_multiple_items_label }}</span>
                 </label>
             </div>
-
-            <script>
-                function handleMultipleItemsCheckbox_{{ rand }}(input) {
-                    const is_checked = $(input).is(':checked');
-                    const selects = $(input).closest('section[data-glpi-form-editor-question]')
-                        .find('div .items-dropdown');
-
-                    {# Toggle all selects visibility #}
-                    selects.toggleClass('d-none');
-
-                    {# Disable hidden select #}
-                    selects.find('select').prop('disabled', (i, v) => !v);
-
-                    {# Handle hidden input for multiple items #}
-                    selects.find('input[type="hidden"]').prop('disabled', !is_checked);
-                }
-            </script>
 TWIG;
 
         $twig = TemplateRenderer::getInstance();

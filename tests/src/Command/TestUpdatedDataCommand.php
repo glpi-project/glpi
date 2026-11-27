@@ -305,6 +305,9 @@ class TestUpdatedDataCommand extends Command
             // Dashbords may have placeholders which are only present on new installs
             'glpi_dashboards_dashboards',
             'glpi_dashboards_items',
+
+            // Document types are not automatically updated
+            'glpi_documenttypes',
         ];
     }
 

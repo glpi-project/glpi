@@ -133,6 +133,11 @@ class TicketTemplate extends ITILTemplate
                 'externalid',
                 'glpi_tickets'
             )   => 'externalid',
+            $itil_object->getSearchOptionIDByField(
+                'field',
+                'name',
+                'glpi_slastatuses'
+            )   => 'slastatuses_id',
         ];
 
         if ($withtypeandcategory) {

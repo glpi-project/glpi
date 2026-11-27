@@ -855,6 +855,26 @@ class Contract extends CommonDBTM implements StateInterface
             ],
         ];
 
+        $tab[] = [
+            'id'                 => '70',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'linkfield'          => 'users_id_tech',
+            'name'               => __('Technician in charge'),
+            'datatype'           => 'dropdown',
+            'right'              => 'own_ticket',
+        ];
+
+        $tab[] = [
+            'id'                 => '71',
+            'table'              => 'glpi_groups',
+            'field'              => 'completename',
+            'linkfield'          => 'groups_id_tech',
+            'name'               => __('Group in charge'),
+            'condition'          => ['is_assign' => 1],
+            'datatype'           => 'dropdown',
+        ];
+
         return $tab;
     }
 
@@ -1397,7 +1417,6 @@ class Contract extends CommonDBTM implements StateInterface
      *                      only available if entity is a single value not an array (default false)
      *    - used          : array / Already used items ID: not to display in dropdown (default empty)
      *    - nochecklimit  : boolean / disable limit for nomber of device (for supplier, default false)
-     *    - on_change     : string / value to transmit to "onChange"
      *    - display       : boolean / display or return string (default true)
      *    - expired       : boolean / display expired contract (default false)
      *    - toadd         : array / array of specific values to add at the beginning

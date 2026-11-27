@@ -42,6 +42,7 @@ use Glpi\Error\ErrorHandler;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\TOTPManager;
+use Glpi\Toolbox\Filesystem;
 use Glpi\Toolbox\IPUtilities;
 use Safe\Exceptions\LdapException;
 
@@ -49,7 +50,6 @@ use function Safe\ini_get;
 use function Safe\ldap_bind;
 use function Safe\parse_url;
 use function Safe\preg_match;
-use function Safe\session_name;
 
 /**
  *  Identification class used to login
@@ -269,7 +269,7 @@ class Auth extends CommonGLPI
             }
             $protocol->connect(
                 $config['address'],
-                $config['port'],
+                $config['port'] !== '' ? (int) $config['port'] : null,
                 $ssl
             );
 
@@ -572,8 +572,33 @@ class Auth extends CommonGLPI
                     false
                 );
 
-                // no SSL validation for the CAS server
-                phpCAS::setNoCasServerValidation();
+                if (($CFG_GLPI['cas_certificate_filepath'] ?? '') !== '') {
+                    // Set the certificate to use.
+                    // Block the authentication if the certificate file cannot be used.
+                    if (
+                        !Filesystem::isFilepathSafe($CFG_GLPI['cas_certificate_filepath'])
+                        || !is_file($CFG_GLPI['cas_certificate_filepath'])
+                        || !is_readable($CFG_GLPI['cas_certificate_filepath'])
+                    ) {
+                        trigger_error('The CAS certificate file path is not valid.', E_USER_WARNING);
+                        return false;
+                    } else {
+                        try {
+                            phpCAS::setCasServerCACert($CFG_GLPI['cas_certificate_filepath']);
+                        } catch (CAS_Exception $e) {
+                            global $PHPLOGGER;
+                            $PHPLOGGER->error(
+                                'Unable to use the CAS certificate file.',
+                                ['exception' => $e]
+                            );
+                            return false;
+                        }
+                    }
+                } else {
+                    // No SSL validation for the CAS server.
+                    // This is unsafe but the administrator knows what he is doing.
+                    phpCAS::setNoCasServerValidation();
+                }
 
                 // force CAS authentication
                 phpCAS::forceAuthentication();
@@ -690,7 +715,7 @@ class Auth extends CommonGLPI
                 }
                 break;
             case self::COOKIE:
-                $cookie_name   = session_name() . '_rememberme';
+                $cookie_name   = self::getRememberMeCookieName();
 
                 if ($CFG_GLPI["login_remember_time"]) {
                     $data = null;
@@ -1216,7 +1241,13 @@ class Auth extends CommonGLPI
             $_SESSION["noAUTO"] = 1;
         }
 
-        if ($this->auth_succeded && $CFG_GLPI['login_remember_time'] > 0 && $remember_me && Session::getLoginSessionUID() !== null) {
+        if (
+            $this->auth_succeded
+            && $CFG_GLPI['login_remember_time'] > 0
+            && $remember_me
+            && Session::getLoginSessionUID() !== null
+            && !$DB->isReplica()
+        ) {
             self::setRememberMeCookie(
                 users_id: $this->user->getID(),
                 token_uid: Session::getLoginSessionUID(),
@@ -1614,7 +1645,7 @@ class Auth extends CommonGLPI
             }
         }
 
-        $cookie_name = session_name() . '_rememberme';
+        $cookie_name = self::getRememberMeCookieName();
         if ($CFG_GLPI["login_remember_time"] && isset($_COOKIE[$cookie_name])) {
             if ($redirect) {
                 Html::redirect($CFG_GLPI["root_doc"] . "/front/login.php" . $redir_string);
@@ -1738,8 +1769,19 @@ class Auth extends CommonGLPI
         if (!Config::canUpdate()) {
             return false;
         }
+
+        $is_sso_variable_safe = true;
+        if (
+            $CFG_GLPI['ssovariables_id'] > 0
+            && ($sso_variable = SsoVariable::getById($CFG_GLPI['ssovariables_id'])) !== false
+            && $sso_variable->isSafe() === false
+        ) {
+            $is_sso_variable_safe = false;
+        }
+
         TemplateRenderer::getInstance()->display('pages/setup/authentication/other_ext_setup.html.twig', [
             'config' => $CFG_GLPI,
+            'is_sso_variable_safe' => $is_sso_variable_safe,
         ]);
     }
 
@@ -1831,6 +1873,19 @@ class Auth extends CommonGLPI
     }
 
     /**
+     * Returns the "rememberme" cookie name.
+     *
+     * Unlike the session cookie name, it does not depend on the GLPI version,
+     * to keep the "rememberme" feature working across GLPI updates.
+     */
+    public static function getRememberMeCookieName(): string
+    {
+        return 'glpi_'
+            . \hash('sha512', GLPI_ROOT . ($_SERVER['HTTP_HOST'] ?? '') . ($_SERVER['SERVER_PORT'] ?? ''))
+            . '_rememberme';
+    }
+
+    /**
      * Defines "rememberme" cookie.
      *
      * @param int $users_id The ID of the user for which the remember me cookie is being set.
@@ -1847,13 +1902,22 @@ class Auth extends CommonGLPI
             throw new InvalidArgumentException('Token UID and hash must not be empty.');
         }
 
-        $cookie_name     = session_name() . '_rememberme';
+        $cookie_name     = self::getRememberMeCookieName();
         $cookie_lifetime = time() + $CFG_GLPI['login_remember_time'];
         $cookie_path     = ini_get('session.cookie_path');
         $cookie_domain   = ini_get('session.cookie_domain');
         $cookie_secure   = filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN);
         $cookie_samesite = ini_get('session.cookie_samesite');
         $token_hash = password_hash($token, PASSWORD_DEFAULT);
+
+        // The cookie is about to be replaced, so its previous token must not remain usable.
+        if (isset($_COOKIE[$cookie_name])) {
+            $DB->delete('glpi_usertokens', [
+                'type' => 'rememberme',
+                'users_id' => $users_id,
+                'token_uid' => explode(':', $_COOKIE[$cookie_name])[0],
+            ]);
+        }
 
         $DB->insert('glpi_usertokens', [
             'type' => 'rememberme',

@@ -56,10 +56,16 @@ class RuleTicket extends RuleCommonITILObject
             foreach ($this->actions as $action) {
                 switch ($action->fields["action_type"]) {
                     case "send":
-                        //recall & recall_ola
+                        //recall & recall_ola, optionally restricted to a single notification
                         $ticket = new Ticket();
                         if ($ticket->getFromDB($output['id'])) {
-                            NotificationEvent::raiseEvent($action->fields['field'], $ticket);
+                            $field = $action->fields['field'];
+                            if (str_ends_with($field, LevelAgreementLevel::NOTIFICATION_RECALL_SUFFIX)) {
+                                $event = substr($field, 0, -strlen(LevelAgreementLevel::NOTIFICATION_RECALL_SUFFIX));
+                                NotificationEvent::raiseEvent($event, $ticket, notifications_id: (int) $action->fields['value']);
+                            } else {
+                                NotificationEvent::raiseEvent($action->fields['field'], $ticket);
+                            }
                         }
                         break;
 

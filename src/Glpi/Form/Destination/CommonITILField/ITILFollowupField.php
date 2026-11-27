@@ -34,21 +34,30 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
+use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Destination\HasFormTags;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
+use Glpi\Form\Tag\FormTagsManager;
 use InvalidArgumentException;
+use ITILFollowup;
 use ITILFollowupTemplate;
 use Override;
+use RuntimeException;
 use Session;
 
+use function Safe\json_encode;
+use function Safe\preg_match;
+
+#[HasFormTags]
 final class ITILFollowupField extends AbstractConfigField
 {
     #[Override]
@@ -79,6 +88,7 @@ final class ITILFollowupField extends AbstractConfigField
         return $twig->render('pages/admin/form/itil_config_fields/itilfollowuptemplate.html.twig', [
             // Possible configuration constant that will be used to to hide/show additional fields
             'CONFIG_SPECIFIC_VALUES'  => ITILFollowupFieldStrategy::SPECIFIC_VALUES->value,
+            'CONFIG_SPECIFIC_CONTENT' => ITILFollowupFieldStrategy::SPECIFIC_CONTENT->value,
 
             // General display options
             'options' => $display_options,
@@ -88,6 +98,14 @@ final class ITILFollowupField extends AbstractConfigField
                 'aria_label'     => __("Select followup templates..."),
                 'value'           => $config->getSpecificITILFollowupTemplatesIds() ?? [],
                 'input_name'      => $input_name . "[" . ITILFollowupFieldConfig::ITILFOLLOWUPTEMPLATE_IDS . "]",
+            ],
+
+            // Specific additional config for SPECIFIC_CONTENT strategy
+            'specific_content_extra_field' => [
+                'aria_label' => __("Followup content"),
+                'value'      => (new FormTagsManager())->refreshTagsContent($config->getSpecificContent()),
+                'input_name' => $input_name . "[" . ITILFollowupFieldConfig::SPECIFIC_CONTENT . "]",
+                'form_id'    => $form->getID(),
             ],
         ]);
     }
@@ -113,6 +131,54 @@ final class ITILFollowupField extends AbstractConfigField
         }
 
         return $input;
+    }
+
+    #[Override]
+    public function applyConfiguratedValueAfterDestinationCreation(
+        FormDestination $destination,
+        JsonFieldInterface $config,
+        AnswersSet $answers_set,
+        array $created_objects
+    ): void {
+        if (!$config instanceof ITILFollowupFieldConfig) {
+            throw new InvalidArgumentException("Unexpected config class");
+        }
+
+        // Only one strategy is allowed
+        $strategy = current($config->getStrategies());
+
+        // Compute value according to strategy
+        $content = $strategy->getITILFollowupContent($config);
+        if ($content === null) {
+            return;
+        }
+
+        // Tags may resolve to empty answers, a followup can't be blank
+        $content = (new FormTagsManager())->insertTagsContent($content, $answers_set);
+        if (!preg_match('/[^\s\x{00A0}]/u', html_entity_decode(strip_tags($content)))) {
+            return;
+        }
+
+        foreach ($created_objects[$destination->getID()] ?? [] as $item) {
+            if (!$item instanceof CommonITILObject) {
+                continue;
+            }
+
+            // Same as the ITIL object creation, rights must not depend on the
+            // user who submitted the form
+            $input = [
+                'itemtype' => $item::class,
+                'items_id' => $item->getID(),
+                'content'  => $content,
+                // The status and take into account are set by the form, not
+                // by its followup
+                '_do_not_compute_status'          => true,
+                '_do_not_compute_takeintoaccount' => true,
+            ];
+            if (!Session::callAsSystem(fn() => (new ITILFollowup())->add($input))) {
+                throw new RuntimeException("Failed to create followup: " . json_encode($input));
+            }
+        }
     }
 
     #[Override]

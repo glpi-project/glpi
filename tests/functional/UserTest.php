@@ -35,9 +35,11 @@
 namespace tests\units;
 
 use AuthLDAP;
+use Computer;
 use DateInterval;
 use DateTime;
 use DBmysql;
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Tests\DbTestCase;
@@ -47,14 +49,282 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Profile_User;
 use Psr\Log\LogLevel;
+use ReflectionClass;
 use User;
 use UserCategory;
 
 use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
 use function Safe\strtotime;
 
 class UserTest extends DbTestCase
 {
+    public function testCountItemsForUserIncludesGroupItemsOnlyOnceAndRespectsVisibility(): void
+    {
+        $this->login();
+
+        $user_id = (int) getItemByTypeName('User', 'normal', true);
+        $user = new User();
+        $this->assertTrue($user->getFromDB($user_id));
+
+        $old_get = $_GET;
+        $render_items = function (bool $tech) use ($user, $old_get): string {
+            $_GET = [];
+            $buffer_level = ob_get_level();
+            ob_start();
+            try {
+                $user->showItems($tech);
+                return ob_get_clean();
+            } finally {
+                while (ob_get_level() > $buffer_level) {
+                    ob_end_clean();
+                }
+                $_GET = $old_get;
+            }
+        };
+
+        $scope_entity_id = (int) $this->getTestRootEntity(true);
+        $group = $this->createItem(
+            Group::class,
+            ['name' => $this->getUniqueString()] + $this->getMinimalCreationInput(Group::class)
+        );
+
+        $group_user = new Group_User();
+        $this->assertGreaterThan(
+            0,
+            (int) $group_user->add([
+                'groups_id' => $group->getID(),
+                'users_id'  => $user_id,
+            ])
+        );
+
+        $old_computer_right = $_SESSION['glpiactiveprofile']['computer'];
+        $had_active_entities = array_key_exists('glpiactiveentities', $_SESSION);
+        $old_active_entities = $_SESSION['glpiactiveentities'] ?? null;
+        $had_show_all_entities = array_key_exists('glpishowallentities', $_SESSION);
+        $old_show_all_entities = $_SESSION['glpishowallentities'] ?? null;
+
+        try {
+            // Explicitly scope the fixtures to the test entity and root entity.
+            $_SESSION['glpiactiveentities'] = [0, $scope_entity_id];
+            $_SESSION['glpishowallentities'] = false;
+
+            $used_before = User::countItemsForUser($user_id, false);
+            $managed_before = User::countItemsForUser($user_id, true);
+
+            // Capture the baseline when only the test entity is active.
+            $_SESSION['glpiactiveentities'] = [$scope_entity_id];
+            $entity_used_before = User::countItemsForUser($user_id, false);
+            $entity_managed_before = User::countItemsForUser($user_id, true);
+            $_SESSION['glpiactiveentities'] = [0, $scope_entity_id];
+
+            // Capture visibility baselines before creating assets linked only to another user.
+            $_SESSION['glpiactiveprofile']['computer'] = READ_OWNED;
+            $owned_used_before = User::countItemsForUser($user_id, false);
+            $owned_managed_before = User::countItemsForUser($user_id, true);
+
+            $_SESSION['glpiactiveprofile']['computer'] = READ_ASSIGNED;
+            $assigned_used_before = User::countItemsForUser($user_id, false);
+            $assigned_managed_before = User::countItemsForUser($user_id, true);
+            $_SESSION['glpiactiveprofile']['computer'] = $old_computer_right;
+
+            $direct_name = $this->getUniqueString();
+            $group_used_name = $this->getUniqueString();
+            $group_managed_name = $this->getUniqueString();
+            $root_name = $this->getUniqueString();
+
+            $computer_data = [
+                'name'           => $direct_name,
+                'users_id'       => $user_id,
+                'users_id_tech'  => $user_id,
+                'groups_id'      => [$group->getID()],
+                'groups_id_tech' => [$group->getID()],
+            ];
+
+            // Direct user and group assignment: the item must only be counted once.
+            $this->createItem(
+                Computer::class,
+                $computer_data + $this->getMinimalCreationInput(Computer::class)
+            );
+
+            // Group-only normal assignment must increase only the used-item count.
+            $this->createItem(
+                Computer::class,
+                [
+                    'name'           => $group_used_name,
+                    'users_id'       => 0,
+                    'users_id_tech'  => 0,
+                    'groups_id'      => [$group->getID()],
+                    'groups_id_tech' => [],
+                ] + $this->getMinimalCreationInput(Computer::class)
+            );
+
+            // Group-only technician assignment must increase only the managed-item count.
+            $this->createItem(
+                Computer::class,
+                [
+                    'name'           => $group_managed_name,
+                    'users_id'       => 0,
+                    'users_id_tech'  => 0,
+                    'groups_id'      => [],
+                    'groups_id_tech' => [$group->getID()],
+                ] + $this->getMinimalCreationInput(Computer::class)
+            );
+
+            // READ_OWNED must not count assets linked only to another user's groups.
+            $_SESSION['glpiactiveprofile']['computer'] = READ_OWNED;
+            $this->assertSame($owned_used_before, User::countItemsForUser($user_id, false));
+            $this->assertSame($owned_managed_before, User::countItemsForUser($user_id, true));
+
+            $owned_used_output = $render_items(false);
+            $owned_managed_output = $render_items(true);
+            foreach ([$direct_name, $group_used_name, $group_managed_name] as $name) {
+                $this->assertStringNotContainsString($name, $owned_used_output);
+                $this->assertStringNotContainsString($name, $owned_managed_output);
+            }
+
+            // READ_ASSIGNED must apply the same visibility rules to both item lists and counters.
+            $_SESSION['glpiactiveprofile']['computer'] = READ_ASSIGNED;
+            $this->assertSame($assigned_used_before, User::countItemsForUser($user_id, false));
+            $this->assertSame($assigned_managed_before, User::countItemsForUser($user_id, true));
+
+            $assigned_used_output = $render_items(false);
+            $assigned_managed_output = $render_items(true);
+            foreach ([$direct_name, $group_used_name, $group_managed_name] as $name) {
+                $this->assertStringNotContainsString($name, $assigned_used_output);
+                $this->assertStringNotContainsString($name, $assigned_managed_output);
+            }
+
+            // Group-only assignments are included with full rights, while direct + group links are not duplicated.
+            $_SESSION['glpiactiveprofile']['computer'] = $old_computer_right;
+            $this->assertSame($used_before + 2, User::countItemsForUser($user_id, false));
+            $this->assertSame($managed_before + 2, User::countItemsForUser($user_id, true));
+
+            $used_output = $render_items(false);
+            $managed_output = $render_items(true);
+            $this->assertStringContainsString($direct_name, $used_output);
+            $this->assertStringContainsString($group_used_name, $used_output);
+            $this->assertStringNotContainsString($group_managed_name, $used_output);
+            $this->assertStringContainsString($direct_name, $managed_output);
+            $this->assertStringContainsString($group_managed_name, $managed_output);
+            $this->assertStringNotContainsString($group_used_name, $managed_output);
+            $this->assertSame(1, substr_count($used_output, $direct_name));
+            $this->assertSame(1, substr_count($managed_output, $direct_name));
+
+            // Add an item in root to check that the target user's entity scope is respected.
+            $this->createItem(
+                Computer::class,
+                [
+                    'entities_id' => 0,
+                    'name'        => $root_name,
+                ] + $computer_data + $this->getMinimalCreationInput(Computer::class)
+            );
+
+            // The root entity is excluded from both the count and the item list when only the test entity is active.
+            $_SESSION['glpiactiveentities'] = [$scope_entity_id];
+            $this->assertSame($entity_used_before + 2, User::countItemsForUser($user_id, false));
+            $this->assertSame($entity_managed_before + 2, User::countItemsForUser($user_id, true));
+            $this->assertStringNotContainsString($root_name, $render_items(false));
+            $this->assertStringNotContainsString($root_name, $render_items(true));
+        } finally {
+            $_SESSION['glpiactiveprofile']['computer'] = $old_computer_right;
+            if ($had_active_entities) {
+                $_SESSION['glpiactiveentities'] = $old_active_entities;
+            } else {
+                unset($_SESSION['glpiactiveentities']);
+            }
+            if ($had_show_all_entities) {
+                $_SESSION['glpishowallentities'] = $old_show_all_entities;
+            } else {
+                unset($_SESSION['glpishowallentities']);
+            }
+        }
+    }
+
+    public function testCheckDefaultPasswordsIsCachedWhilePasswordsDoNotChange(): void
+    {
+        global $DB, $GLPI_CACHE;
+
+        $DB->update(User::getTable(), ['password' => \Auth::getPasswordHash('tech')], ['name' => 'tech']);
+        $this->assertContains('tech', User::checkDefaultPasswords());
+
+        // The result is read from the cache...
+        $users = iterator_to_array($DB->request([
+            'SELECT' => ['name', 'password'],
+            'FROM'   => User::getTable(),
+            'WHERE'  => [
+                'is_active'  => 1,
+                'is_deleted' => 0,
+                'name'       => ['glpi', 'tech', 'normal', 'post-only'],
+            ],
+            'ORDER'  => ['name'],
+        ]), false);
+        $cache_key = (new ReflectionClass(User::class))->getConstant('DEFAULT_PASSWORDS_CACHE_KEY_PREFIX')
+            . sha1(json_encode($users));
+        $this->assertContains('tech', $GLPI_CACHE->get($cache_key));
+        $GLPI_CACHE->set($cache_key, ['from cache']);
+        $this->assertSame(['from cache'], User::checkDefaultPasswords());
+
+        // ... until a password changes.
+        $DB->update(User::getTable(), ['password' => \Auth::getPasswordHash('a new password')], ['name' => 'tech']);
+        $default_logins = User::checkDefaultPasswords();
+        $this->assertNotContains('tech', $default_logins);
+        $this->assertNotContains('from cache', $default_logins);
+    }
+    public function testLdapGroupLookupMatchesLegacyHtmlEncodedValues(): void
+    {
+        global $DB;
+
+        $dn_raw     = 'CN=Batches&Interfaces,OU=R&D <Team>,DC=example,DC=org';
+        $dn_encoded = 'CN=Batches&#38;Interfaces,OU=R&#38;D &#60;Team&#62;,DC=example,DC=org';
+
+        // Groups stored the way GLPI 10.x saved them (HTML encoded), as found in migrated databases
+        $this->assertTrue($DB->insert('glpi_groups', [
+            'name'          => __FUNCTION__ . '_dn',
+            'entities_id'   => 0,
+            'ldap_group_dn' => $dn_encoded,
+        ]));
+        $by_dn_id = $DB->insertId();
+        $this->assertTrue($DB->insert('glpi_groups', [
+            'name'        => __FUNCTION__ . '_value',
+            'entities_id' => 0,
+            'ldap_field'  => 'memberof',
+            'ldap_value'  => $dn_encoded,
+        ]));
+        $by_value_id = $DB->insertId();
+
+        $variants = $this->callPrivateMethod(User::class, 'withLegacyHtmlEncodedVariants', [$dn_raw, 'CN=plain,DC=example,DC=org']);
+        $this->assertSame([$dn_raw, $dn_encoded, 'CN=plain,DC=example,DC=org'], $variants);
+
+        // Same criteria as User::getFromLDAPGroupVirtual() / getFromLDAPGroupDiscret()
+        $found = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_groups',
+            'WHERE'  => ['ldap_group_dn' => $variants],
+        ])->current();
+        $this->assertSame($by_dn_id, (int) $found['id']);
+
+        $lgroups = [];
+        foreach ($variants as $lgroup) {
+            $lgroups[] = [new QueryExpression('? LIKE `ldap_value`', values: [$lgroup])];
+        }
+        $found = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_groups',
+            'WHERE'  => ['ldap_field' => 'memberof', 'OR' => $lgroups],
+        ])->current();
+        $this->assertSame($by_value_id, (int) $found['id']);
+
+        // Without the encoded variant the raw DN does not match (the bug from #23339)
+        $this->assertCount(0, $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_groups',
+            'WHERE'  => ['ldap_group_dn' => [$dn_raw]],
+        ]));
+    }
+
     public function testGenerateUserToken()
     {
         $this->login(); // must be authenticated to be able to regenerate self personal token
@@ -764,12 +1034,13 @@ class UserTest extends DbTestCase
         $inputs = [
             'api_token'             => \bin2hex(\random_bytes(16)),
             '_reset_api_token'      => true,
-            'password_forget_token' => \bin2hex(\random_bytes(16)),
             'personal_token'        => \bin2hex(\random_bytes(16)),
             '_reset_personal_token' => true,
             '_useremails'           => ['test1@example.com', 'test2@example.com'],
             '_emails'               => ['test1@example.com', 'test2@example.com'],
             'is_active'             => false,
+            'is_deleted'            => true,
+            'name'                  => 'renamed_user',
         ];
 
         foreach ($users_matrix as $login => $targer_users_names) {
@@ -806,6 +1077,76 @@ class UserTest extends DbTestCase
                 $this->assertEquals(true, \array_key_exists($key, $output));
             }
         }
+    }
+
+    public function testPrepareInputForUpdatePasswordForgetTokenTypeJuggling(): void
+    {
+        global $DB;
+
+        $target_user = \getItemByTypeName(User::class, 'glpi');
+        $token = \bin2hex(\random_bytes(16));
+        $this->assertTrue(
+            $DB->update(
+                User::getTable(),
+                [
+                    'password_forget_token'      => (new \GLPIKey())->encrypt($token),
+                    'password_forget_token_date' => date('Y-m-d H:i:s', strtotime('+1 day')),
+                ],
+                ['id' => $target_user->getID()]
+            )
+        );
+        $this->assertTrue($target_user->getFromDB($target_user->getID()));
+
+        $password_input = [
+            'id'        => $target_user->getID(),
+            'password'  => 'Takeover-2026!',
+            'password2' => 'Takeover-2026!',
+        ];
+
+        // A less privileged user must not be able to change the password with a non-matching token,
+        // whatever its type (JSON payloads of the API keep native types).
+        $this->login('tech', 'tech');
+        foreach ([true, 1, '', 'wrong-token', [$token]] as $forged_token) {
+            $output = $target_user->prepareInputForUpdate($password_input + ['password_forget_token' => $forged_token]);
+            $this->assertFalse($output, 'Token ' . var_export($forged_token, true) . ' must be refused');
+            $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+        }
+
+        // A non-numeric ID must not be considered as the ID of the logged-in user.
+        $output = $target_user->prepareInputForUpdate(['id' => true] + $password_input);
+        $this->assertFalse($output, 'ID `true` must not match the logged-in user');
+        $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+
+        // Without session (password reset form), only the exact token is accepted.
+        $this->logout();
+        $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s');
+        foreach ([true, 1, '', 'wrong-token'] as $forged_token) {
+            $output = $target_user->prepareInputForUpdate($password_input + ['password_forget_token' => $forged_token]);
+            $this->assertFalse($output, 'Token ' . var_export($forged_token, true) . ' must be refused');
+            $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+        }
+        $output = $target_user->prepareInputForUpdate($password_input + ['password_forget_token' => $token]);
+        $this->assertIsArray($output);
+        $this->assertTrue(\Auth::checkPassword('Takeover-2026!', $output['password']));
+    }
+
+    public function testPrepareInputForUpdateUnchangedProtectedFields(): void
+    {
+        $this->login('tech', 'tech');
+        $target_user = \getItemByTypeName(User::class, 'glpi');
+
+        // Empty or unchanged values of protected fields are silently ignored (`end_date` and `api_token` are NULL,
+        // `is_active` is 1)...
+        foreach (['end_date' => false, 'api_token' => 0, 'is_active' => true] as $key => $value) {
+            $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), $key => $value]);
+            $this->assertIsArray($output, "Unchanged `{$key}` must not block the update");
+            $this->assertArrayNotHasKey($key, $output);
+        }
+
+        // ... but an actual change is refused.
+        $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), 'is_active' => false]);
+        $this->assertFalse($output);
+        $this->hasSessionMessages(ERROR, ['You are not allowed to update the following fields: is_active']);
     }
 
     public function testPrepareInputForUpdate2fa(): void
@@ -864,6 +1205,43 @@ class UserTest extends DbTestCase
         $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), 'authtype' => \Auth::EXTERNAL]);
         $this->assertArrayNotHasKey('authtype', $output);
     }
+
+    public function testPrepareInputForUpdateAuthLinkFields(): void
+    {
+        $this->login();
+
+        $target_user = \getItemByTypeName(User::class, 'glpi');
+        $input = [
+            'id'           => $target_user->getID(),
+            'auths_id'     => 3,
+            'sync_field'   => 'abcdef',
+            'user_dn'      => 'cn=someone,dc=example,dc=org',
+            'user_dn_hash' => md5('cn=someone,dc=example,dc=org'),
+        ];
+
+        // Check with right to update the authentication
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT + User::UPDATEAUTHENT;
+        $output = $target_user->prepareInputForUpdate($input);
+        foreach (['auths_id', 'sync_field', 'user_dn'] as $field) {
+            $this->assertSame($input[$field], $output[$field]);
+        }
+
+        // Check without right to update the authentication
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT;
+        $output = $target_user->prepareInputForUpdate($input);
+        foreach (['auths_id', 'sync_field', 'user_dn', 'user_dn_hash'] as $field) {
+            $this->assertArrayNotHasKey($field, $output);
+        }
+
+        // Backend routines (no session) can still update them
+        $this->logout();
+        $output = $target_user->prepareInputForUpdate($input);
+        foreach (['auths_id', 'sync_field', 'user_dn'] as $field) {
+            $this->assertSame($input[$field], $output[$field]);
+        }
+    }
+
+
 
     public function testPrepareInputForUpdateAuthTypeAsSystemRoutine(): void
     {
@@ -2024,8 +2402,8 @@ class UserTest extends DbTestCase
         $password2 = "P@ssword2"; // First password change
         $password3 = "P@ssword3"; // Second password change
         $password4 = "P@ssword4"; // Not yet used password
-        $this->updateItem('User', $user->getID(), ['password' => $password2, 'password2' => $password2], ['password', 'password2']);
-        $this->updateItem('User', $user->getID(), ['password' => $password3, 'password2' => $password3], ['password', 'password2']);
+        $this->updateItem('User', $user->getID(), ['current_password' => $password1, 'password' => $password2, 'password2' => $password2], ['current_password', 'password', 'password2']);
+        $this->updateItem('User', $user->getID(), ['current_password' => $password2, 'password' => $password3, 'password2' => $password3], ['current_password', 'password', 'password2']);
         $this->assertTrue($user->getFromDB($user->fields['id']));
 
         // Last 3 passwords should not work
@@ -3359,5 +3737,173 @@ class UserTest extends DbTestCase
         $this->assertTrue($realname_ro($html_external));
         $this->assertTrue($firstname_ro($html_external));
         $this->assertTrue($middlename_ro($html_external));
+    }
+
+    public function testShowItemsFilters(): void
+    {
+        $this->login();
+
+        $user = getItemByTypeName(User::class, TU_USER);
+        $other_user = $this->createItem(User::class, [
+            'name'      => $this->getUniqueString(),
+            'realname'  => 'OtherUserRealname',
+            '_profiles_id'  => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id'  => $this->getTestRootEntity(true),
+            '_is_recursive' => 1,
+        ]);
+        $this->createItem(Computer::class, [
+            'name'        => 'Computer used by test user',
+            'entities_id' => $this->getTestRootEntity(true),
+            'users_id'    => $user->getID(),
+        ]);
+
+        $render = function (array $get) use ($user): string {
+            $_GET = $get;
+            ob_start();
+            $user->showItems(false);
+            $output = ob_get_clean();
+            $_GET = [];
+            return $output;
+        };
+
+        // Filter row is closed by default
+        $output = $render([]);
+        $this->assertStringContainsString('Computer used by test user', $output);
+        $this->assertStringNotContainsString('filter_row', $output);
+
+        // Non array filters are ignored
+        $output = $render(['filters' => 'invalid']);
+        $this->assertStringContainsString('Computer used by test user', $output);
+        $this->assertStringNotContainsString('filter_row', $output);
+
+        // Users and groups filters are AJAX dropdowns, other users are not listed in the page
+        $output = $render(['filters' => ['active' => 1]]);
+        $this->assertStringContainsString('filter_row', $output);
+        $this->assertStringContainsString('name="filters[users][]"', $output);
+        $this->assertStringContainsString('getDropdownUsers.php', $output);
+        $this->assertStringContainsString('name="filters[group][]"', $output);
+        $this->assertStringNotContainsString('OtherUserRealname', $output);
+
+        // Users filter is applied
+        $output = $render(['filters' => ['active' => 1, 'users' => [$user->getID()]]]);
+        $this->assertStringContainsString('Computer used by test user', $output);
+
+        $output = $render(['filters' => ['active' => 1, 'users' => [$other_user->getID()]]]);
+        $this->assertStringNotContainsString('Computer used by test user', $output);
+        $this->assertStringContainsString('OtherUserRealname', $output);
+
+        // Users the viewer cannot see are ignored
+        $hidden_user = $this->createItem(User::class, [
+            'name'          => $this->getUniqueString(),
+            'realname'      => 'HiddenUserRealname',
+            '_profiles_id'  => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id'  => getItemByTypeName('Entity', '_test_child_2', true),
+            '_is_recursive' => 0,
+        ]);
+        $this->setEntity('_test_child_1', false);
+        $output = $render(['filters' => ['active' => 1, 'users' => [$hidden_user->getID()]]]);
+        $this->assertStringNotContainsString('HiddenUserRealname', $output);
+    }
+
+    public static function canUpdateOwnPasswordProvider(): iterable
+    {
+        yield 'Administrator can\'t update his own password without filling the current password' => [
+            'can_update_users' => true,
+            'input' => [
+                'password' => 'new password',
+                'password2' => 'new password',
+            ],
+            'expected' => false,
+            'expected_session_message' => 'You must input your current password.',
+        ];
+        yield 'Non administrator can\'t update his own password without filling the current password' => [
+            'can_update_users' => false,
+            'input' => [
+                'password' => 'new password',
+                'password2' => 'new password',
+            ],
+            'expected' => false,
+            'expected_session_message' => 'You must input your current password.',
+        ];
+
+        yield 'Administrator can update his own password if he fills the current password' => [
+            'can_update_users' => true,
+            'input' => [
+                'current_password' => 'password',
+                'password' => 'new password',
+                'password2' => 'new password',
+            ],
+            'expected' => true,
+        ];
+        yield 'Non administrator can update his own password if he fills the current password' => [
+            'can_update_users' => false,
+            'input' => [
+                'current_password' => 'password',
+                'password' => 'new password',
+                'password2' => 'new password',
+            ],
+            'expected' => true,
+        ];
+
+        yield 'Administrator can\'t update his own password if he fills an invalid current password' => [
+            'can_update_users' => true,
+            'input' => [
+                'current_password' => 'not_password',
+                'password' => 'new password',
+                'password2' => 'new password',
+            ],
+            'expected' => false,
+            'expected_session_message' => 'The current password does not match.',
+        ];
+        yield 'Non administrator can\'t update his own password if he fills an invalid current password' => [
+            'can_update_users' => false,
+            'input' => [
+                'current_password' => 'not_password',
+                'password' => 'new password',
+                'password2' => 'new password',
+            ],
+            'expected' => false,
+            'expected_session_message' => 'The current password does not match.',
+        ];
+    }
+
+    #[DataProvider('canUpdateOwnPasswordProvider')]
+    public function testCanUpdateOwnPassword(
+        bool $can_update_users,
+        array $input,
+        bool $expected,
+        ?string $expected_session_message = null,
+    ) {
+        // Act: create a user with the specified rights
+        $profile = $this->createItem(\Profile::class, [
+            'name' => 'My profile',
+            'interface' => 'central',
+        ]);
+        $this->addRightToProfile(
+            'My profile',
+            User::$rightname,
+            $can_update_users ? UPDATE : 0,
+        );
+        $user = $this->createItem(User::class, [
+            'name'          => "My user",
+            'password'      => 'password',
+            'password2'     => 'password',
+            'profiles_id'   => $profile->getID(),
+            '_profiles_id'  => $profile->getID(),
+            '_entities_id'  => $this->getTestRootEntity(only_id: true),
+            '_is_recursive' => true,
+        ], ['password', 'password2']);
+
+        // Act: try to update his own password
+        $this->login("My user");
+        $success = $user->update(['id' => $user->getID(), ...$input]);
+        $password_match = password_verify($input['password'], $user->fields['password']);
+
+        // Assert: the update behaved as expected
+        $this->assertEquals($expected, $success);
+        $this->assertEquals($expected, $password_match);
+        if ($expected_session_message !== null) {
+            $this->hasSessionMessageThatContains($expected_session_message, ERROR);
+        }
     }
 }

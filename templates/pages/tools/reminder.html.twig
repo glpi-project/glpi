@@ -100,7 +100,7 @@
                         end: item.fields['end']
                     }) %}
                 {% endif %}
-                <script>
+                <script nonce="{{ csp_nonce() }}">
                     function showPlan{{ rand }}() {
                         $('#plan{{ rand }}').hide();
                         {% do call('Ajax::updateItemJsCode', ['viewplan' ~ rand, config('root_doc') ~ '/ajax/planning.php', ajax_params]) %}

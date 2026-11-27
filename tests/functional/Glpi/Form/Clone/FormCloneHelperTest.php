@@ -62,6 +62,9 @@ use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\ITILFollowupField;
+use Glpi\Form\Destination\CommonITILField\ITILFollowupFieldConfig;
+use Glpi\Form\Destination\CommonITILField\ITILFollowupFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsField;
 use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsFieldConfig;
 use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsFieldStrategy;
@@ -1203,6 +1206,11 @@ final class FormCloneHelperTest extends DbTestCase
                 . $description_tag_provider->getTags($form)[0]->html
                 . $description_tag_provider->getTags($form)[1]->html
             ))->jsonSerialize(),
+            // Use answer data in the followup content
+            ITILFollowupField::getKey() => (new ITILFollowupFieldConfig(
+                strategy: ITILFollowupFieldStrategy::SPECIFIC_CONTENT,
+                specific_content: $answers_tag_provider->getTags($form)[0]->html,
+            ))->jsonSerialize(),
         ];
         $this->updateItem(
             $destination::class,
@@ -1263,6 +1271,40 @@ final class FormCloneHelperTest extends DbTestCase
         $this->assertStringContainsString(
             "data-form-tag-value=\"{$cloned_comment_2->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\CommentDescriptionTagProvider\"",
             $cloned_destination->getConfig()[ContentField::getKey()]['value'],
+        );
+        $this->assertStringContainsString(
+            "data-form-tag-value=\"{$cloned_question->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\AnswerTagProvider\"",
+            $cloned_destination->getConfig()[ITILFollowupField::getKey()][ITILFollowupFieldConfig::SPECIFIC_CONTENT],
+        );
+    }
+
+    public function testFollowupConfigWithoutContentIsClonedAsIs(): void
+    {
+        // Arrange: create a form with a followup config that has no content,
+        // like configs saved before the "specific content" strategy existed
+        // or saved with another strategy (the hidden editor is not submitted)
+        $form = $this->createForm(new FormBuilder("My form"));
+        $destinations = $form->getDestinations();
+        $destination = array_pop($destinations);
+        $legacy_config = [
+            ITILFollowupFieldConfig::STRATEGY => ITILFollowupFieldStrategy::NO_FOLLOWUP->value,
+        ];
+        $this->updateItem(
+            $destination::class,
+            $destination->getId(),
+            ['config' => [ITILFollowupField::getKey() => $legacy_config]],
+            ["config"],
+        );
+
+        // Act: clone form
+        $clone = Form::getById($form->clone());
+        $cloned_destinations = $clone->getDestinations();
+        $cloned_destination = array_pop($cloned_destinations);
+
+        // Assert: the followup config is unchanged
+        $this->assertEquals(
+            $legacy_config,
+            $cloned_destination->getConfig()[ITILFollowupField::getKey()],
         );
     }
 

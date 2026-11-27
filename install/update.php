@@ -35,6 +35,7 @@
 
 require_once(__DIR__ . '/../front/_check_webserver_config.php');
 
+use Glpi\Application\View\ScriptType;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Toolbox\VersionParser;
 
@@ -176,12 +177,10 @@ if (($_SESSION['can_process_update'] ?? false) === false) {
             echo '</div>';
             echo '</div>';
 
-            echo <<<HTML
-                <script defer type="module">
-                    import { update_database } from '/js/modules/GlpiInstall.js';
-                    update_database();
-                </script>
-            HTML;
+            echo Html::scriptBlock(<<<JAVASCRIPT
+                import { update_database } from '/js/modules/GlpiInstall.js';
+                update_database();
+            JAVASCRIPT, ScriptType::Module);
         }
     } else {
         echo "<h3>";

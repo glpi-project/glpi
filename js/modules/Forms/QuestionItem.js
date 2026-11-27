@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global getUUID */
+/* global getUUID, reExecuteTrustedScript */
 
 export class GlpiFormQuestionTypeItem {
     /**
@@ -107,6 +107,29 @@ export class GlpiFormQuestionTypeItem {
                 );
             });
         });
+
+        document.addEventListener('change', (e) => {
+            const input = e.target.closest('[data-glpi-form-question-item-multiple-toggle]');
+            if (input === null) {
+                return;
+            }
+
+            const question = $(input).closest('section[data-glpi-form-editor-question]');
+            if (question.find('[name="type"], [data-glpi-form-editor-original-name="type"]').val() !== this.#question_type) {
+                return;
+            }
+
+            const selects = question.find('div .items-dropdown');
+
+            // Toggle all selects visibility
+            selects.toggleClass('d-none');
+
+            // Disable hidden select
+            selects.find('select').prop('disabled', (i, v) => !v);
+
+            // Handle hidden input for multiple items
+            selects.find('input[type="hidden"]').prop('disabled', !input.checked);
+        });
     }
 
     #updateItemsIdDropdownID(question_details) {
@@ -125,7 +148,7 @@ export class GlpiFormQuestionTypeItem {
             script.text = script.text.replace(/rand:[0-9]+/g, `rand:'${id}'`);
 
             // Execute the script
-            $.globalEval(script.text);
+            reExecuteTrustedScript(script);
         });
     }
 }

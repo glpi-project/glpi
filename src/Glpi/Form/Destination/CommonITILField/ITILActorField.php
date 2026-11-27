@@ -319,14 +319,16 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
 
         // Add the actor ID
         $input[$actor_key][] = $itilactor['items_id'];
+        $actor_index = array_key_last($input[$actor_key]);
 
         // Initialize notification arrays if not exists
         $input[$notif_key]['use_notification'] ??= [];
         $input[$notif_key]['alternative_email'] ??= [];
 
-        // Add notification settings for this actor
-        $input[$notif_key]['use_notification'][] = $itilactor['use_notification'] ?? '1';
-        $input[$notif_key]['alternative_email'][] = $itilactor['alternative_email'] ?? '';
+        // Add notification settings for this actor, with the same key as the actor:
+        // actors already in the input (e.g. from the template) have no notification settings
+        $input[$notif_key]['use_notification'][$actor_index] = $itilactor['use_notification'] ?? '1';
+        $input[$notif_key]['alternative_email'][$actor_index] = $itilactor['alternative_email'] ?? '';
     }
 
     #[Override]

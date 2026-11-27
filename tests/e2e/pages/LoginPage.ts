@@ -100,7 +100,11 @@ export class LoginPage extends GlpiPage
     public async doGetAuthorizationCode(): Promise<string>
     {
         const current_url = this.page.url();
-        const response = await this.page.request.fetch(`${current_url}&accept=1`, {
+        // Submit the consent form as the browser would: the decision is only accepted by POST
+        const response = await this.page.request.post(current_url, {
+            form: {
+                accept: '',
+            },
             maxRedirects: 0,
         });
         const location = response.headers()['location'] ?? '';

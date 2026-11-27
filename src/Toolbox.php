@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use DirectoryTree\ImapEngine\MailboxInterface;
 use Glpi\Api\Deprecated\DeprecatedInterface;
 use Glpi\Console\Application;
 use Glpi\DBAL\QueryParam;
@@ -42,6 +43,8 @@ use Glpi\Exception\Database\StatementException;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Helpdesk\DefaultDataManager;
+use Glpi\Mail\Imap\ImapProtocol;
+use Glpi\Mail\Imap\Mailbox;
 use Glpi\Mail\Protocol\ProtocolInterface;
 use Glpi\Message\MessageType;
 use Glpi\OAuth\Server;
@@ -51,8 +54,6 @@ use Glpi\Rules\RulesManager;
 use Glpi\Toolbox\HttpClient;
 use Glpi\Toolbox\URL;
 use Glpi\Toolbox\VersionParser;
-use Laminas\Mail\Protocol\Imap;
-use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
 use Monolog\Logger;
 use Psr\Log\LogLevel;
@@ -579,24 +580,28 @@ class Toolbox
             throw new NotFoundHttpException();
         }
 
+        // Strip control chars: a CR/LF here would break the Content-disposition header and let
+        // the file be served inline.
+        $filename = preg_replace('/[\x00-\x1F\x7F]/', '', $filename);
+
         // if $mime is defined, ignore mime type by extension
         if ($mime === null && preg_match('/\.(...)$/', $path)) {
             $mime = self::getMime($path);
         }
+        // The stored mime may come from the client (a value set before it was filtered)
+        $mime = self::normalizeMimeType($mime);
 
         $can_be_inlined = false;
-        if ($mime !== null) {
-            if (
-                str_starts_with(strtolower($mime), 'image/')
-                && strtolower($mime) !== 'image/svg+xml'
-            ) {
-                // images files can be inlined
-                // except for svg (vector of attack, see https://github.com/glpi-project/glpi/issues/3873)
-                $can_be_inlined = true;
-            } elseif (strtolower($mime) === 'application/pdf') {
-                // PDF files can be inlined
-                $can_be_inlined = true;
-            }
+        if (
+            str_starts_with($mime, 'image/')
+            && $mime !== 'image/svg+xml'
+        ) {
+            // images files can be inlined
+            // except for svg (vector of attack, see https://github.com/glpi-project/glpi/issues/3873)
+            $can_be_inlined = true;
+        } elseif ($mime === 'application/pdf') {
+            // PDF files can be inlined
+            $can_be_inlined = true;
         }
         $attachment = $can_be_inlined === false ? ' attachment;' : '';
 
@@ -624,6 +629,8 @@ class Toolbox
             . rawurlencode($filename);
         $headers['Content-Disposition'] = $content_disposition;
         $headers['Content-type'] = $mime;
+        // Never let the browser sniff/override the declared type for a downloaded file.
+        $headers['X-Content-Type-Options'] = 'nosniff';
 
         // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
         // http://tools.ietf.org/html/rfc7232#section-3.3
@@ -657,6 +664,26 @@ class Toolbox
         );
     }
 
+
+    /**
+     * Keep only the lowercased `type/subtype` of a mime type, without parameters.
+     * Parameters (`image/svg+xml;charset=utf-8`) or control chars would bypass the inline check
+     * or break the `Content-type` header; an invalid value falls back to `application/octet-stream`.
+     */
+    private static function normalizeMimeType(?string $mime): string
+    {
+        if ($mime === null) {
+            return 'application/octet-stream';
+        }
+
+        $mime = strtolower(trim(explode(';', preg_replace('/[\x00-\x1F\x7F]/', '', $mime), 2)[0]));
+        if (preg_match('/^[a-z0-9_.+-]+\/[a-z0-9_.+-]+$/', $mime) !== 1) {
+            // We just validate the format, not the mime type validity.
+            return 'application/octet-stream';
+        }
+
+        return $mime;
+    }
 
     /** Converts an array of parameters into a query string to be appended to a URL.
      *
@@ -1486,7 +1513,8 @@ class Toolbox
      * @param bool      $forceport                  force compute port if not set
      * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
-     * @return array  parsed arguments (address, port, mailbox, type, ssl, tls, validate-cert
+     * @return array{address: string, port: int|string, mailbox: string, type: string, ssl: bool, tls: bool|string, validate-cert: bool|string, norsh: bool|string, secure: bool|string, debug: bool|string}
+     *                parsed arguments (address, port, mailbox, type, ssl, tls, validate-cert
      *                norsh, secure and debug) : options are empty if not set
      *                and options have boolean values if set
      **/
@@ -1622,12 +1650,14 @@ class Toolbox
      * For each returned element:
      *  - key is type used in connection string;
      *  - 'label' field is the label to display;
-     *  - 'protocol_class' field is the protocol class to use (see Laminas\Mail\Protocol\Imap);
-     *  - 'storage_class' field is the storage class to use (see Laminas\Mail\Storage\Imap).
+     *  - 'protocol' field is the protocol class or callable used to authenticate users
+     *    (see {@link \Glpi\Mail\Protocol\ProtocolInterface});
+     *  - 'mailbox' field is the mailbox class or callable used by mails receivers
+     *    (see {@link \DirectoryTree\ImapEngine\MailboxInterface}).
      *
      * @param bool  $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
-     * @return array
+     * @return array<string, array<string, mixed>>
      */
     public static function getMailServerProtocols(bool $allow_plugins_protocols = true): array
     {
@@ -1635,8 +1665,8 @@ class Toolbox
             'imap' => [
                 //TRANS: IMAP mail server protocol
                 'label'    => __('IMAP'),
-                'protocol' => Imap::class,
-                'storage'  => Laminas\Mail\Storage\Imap::class,
+                'protocol' => ImapProtocol::class,
+                'mailbox'  => Mailbox::class,
             ],
         ];
 
@@ -1658,7 +1688,7 @@ class Toolbox
                 if (
                     !array_key_exists('label', $additional_protocol)
                     || !array_key_exists('protocol', $additional_protocol)
-                    || !array_key_exists('storage', $additional_protocol)
+                    || !array_key_exists('mailbox', $additional_protocol)
                 ) {
                     trigger_error(
                         sprintf('Invalid specs for protocol "%s".', $key),
@@ -1681,63 +1711,64 @@ class Toolbox
     /**
      * Returns protocol instance for given mail server type.
      *
-     * Class should implements Glpi\Mail\Protocol\ProtocolInterface
-     * or should be \Laminas\Mail\Protocol\Imap for native protocols.
-     *
      * @param string    $protocol_type
      * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
-     * @return null|ProtocolInterface|Imap
+     * @return null|ProtocolInterface
      */
-    public static function getMailServerProtocolInstance(string $protocol_type, bool $allow_plugins_protocols = true)
+    public static function getMailServerProtocolInstance(string $protocol_type, bool $allow_plugins_protocols = true): ?ProtocolInterface
     {
         $protocols = self::getMailServerProtocols($allow_plugins_protocols);
         if (array_key_exists($protocol_type, $protocols)) {
             $protocol = $protocols[$protocol_type]['protocol'];
+            $instance = null;
             if (is_callable($protocol)) {
-                return call_user_func($protocol);
-            } elseif (
-                class_exists($protocol)
-                && (is_a($protocol, ProtocolInterface::class, true)
-                 || is_a($protocol, Imap::class, true))
-            ) {
-                return new $protocol();
-            } else {
-                trigger_error(
-                    sprintf('Invalid specs for protocol "%s".', $protocol_type),
-                    E_USER_WARNING
-                );
+                $instance = call_user_func($protocol);
+            } elseif (is_string($protocol) && class_exists($protocol) && is_a($protocol, ProtocolInterface::class, true)) {
+                $instance = new $protocol();
             }
+
+            if ($instance instanceof ProtocolInterface) {
+                return $instance;
+            }
+
+            trigger_error(
+                sprintf('Invalid specs for protocol "%s".', $protocol_type),
+                E_USER_WARNING
+            );
         }
         return null;
     }
 
     /**
-     * Returns storage instance for given mail server type.
-     *
-     * Class should extends \Laminas\Mail\Storage\AbstractStorage.
+     * Returns mailbox instance for given mail server type.
      *
      * @param string    $protocol_type
-     * @param array     $params                     Storage constructor params, as defined in AbstractStorage
+     * @param array<string, mixed> $config        Mailbox configuration, see {@link Mailbox::buildConfig()}
      * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
-     * @return null|AbstractStorage
+     * @return null|MailboxInterface
      */
-    public static function getMailServerStorageInstance(string $protocol_type, array $params, bool $allow_plugins_protocols = true): ?AbstractStorage
+    public static function getMailServerMailboxInstance(string $protocol_type, array $config, bool $allow_plugins_protocols = true): ?MailboxInterface
     {
         $protocols = self::getMailServerProtocols($allow_plugins_protocols);
         if (array_key_exists($protocol_type, $protocols)) {
-            $storage = $protocols[$protocol_type]['storage'];
-            if (is_callable($storage)) {
-                return call_user_func($storage, $params);
-            } elseif (class_exists($storage) && is_a($storage, AbstractStorage::class, true)) {
-                return new $storage($params);
-            } else {
-                trigger_error(
-                    sprintf('Invalid specs for protocol "%s".', $protocol_type),
-                    E_USER_WARNING
-                );
+            $mailbox = $protocols[$protocol_type]['mailbox'];
+            $instance = null;
+            if (is_callable($mailbox)) {
+                $instance = call_user_func($mailbox, $config);
+            } elseif (is_string($mailbox) && class_exists($mailbox) && is_a($mailbox, MailboxInterface::class, true)) {
+                $instance = new $mailbox($config);
             }
+
+            if ($instance instanceof MailboxInterface) {
+                return $instance;
+            }
+
+            trigger_error(
+                sprintf('Invalid specs for protocol "%s".', $protocol_type),
+                E_USER_WARNING
+            );
         }
         return null;
     }
@@ -2427,6 +2458,10 @@ class Toolbox
      * @param mixed $json the var to test
      *
      * @return bool
+     * @phpstan-return (
+     *     $json is float|int|numeric-string ? true :
+     *     ($json is string ? bool : false)
+     * )
      */
     public static function isJSON($json): bool
     {

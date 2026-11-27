@@ -80,7 +80,7 @@ abstract class AbstractFilter
      * @param string $table
      * @param mixed  $value
      *
-     * @return array
+     * @return array<string, mixed>
      */
     abstract public static function getCriteria(string $table, $value): array;
 
@@ -98,20 +98,30 @@ abstract class AbstractFilter
      * @param string $table
      * @param mixed  $value
      *
-     * @return array
+     * @return array{link?: 'AND'|'OR', field?: int, searchtype?: string, value?: mixed, ...}[]
      */
     abstract public static function getSearchCriteria(string $table, $value): array;
 
+    /**
+     * @return int The search option ID, or 0 if no matching search option exists.
+     */
     protected static function getSearchOptionID(string $table, string $name, string $tableToSearch): int
     {
-        $data = Search::getOptions(getItemTypeForTable($table), true);
-        $sort = [];
-        foreach ($data as $ref => $opt) {
-            if (isset($opt['field'])) {
-                $sort[$ref] = $opt['linkfield'] . "-" . $opt['table'];
+        $found = false;
+        if ($itemtype = getItemTypeForTable($table)) {
+            $data = Search::getOptions($itemtype, true);
+            $sort = [];
+            foreach ($data as $ref => $opt) {
+                if (isset($opt['field'])) {
+                    $sort[$ref] = $opt['linkfield'] . "-" . $opt['table'];
+                }
             }
+            $found = array_search($name . "-" . $tableToSearch, $sort);
         }
-        return array_search($name . "-" . $tableToSearch, $sort);
+        // Some filters can be applied to tables that have no matching search option
+        // (e.g. group filters on assets). Keep the historical behavior of returning 0
+        // instead of throwing, as it would break the dashboard cards.
+        return $found === false ? 0 : (int) $found;
     }
 
     /**
@@ -214,6 +224,15 @@ abstract class AbstractFilter
         return $html;
     }
 
+    /**
+     * @param string $label
+     * @param string $value
+     * @param string $fieldname
+     * @param string $itemtype
+     * @param array<mixed, mixed> $add_params
+     * @param string $function
+     * @return string
+     */
     protected static function displayList(
         string $label,
         string $value,
@@ -231,7 +250,6 @@ abstract class AbstractFilter
             'display_emptychoice' => false,
             'emptylabel'          => '',
             'placeholder'         => $label,
-            'on_change'           => "on_change_{$rand}()",
             'allowClear'          => true,
             'width'               => '',
         ] + ($value !== null ? ['value' => $value] : []) + $add_params);
@@ -245,6 +263,7 @@ abstract class AbstractFilter
 
                 $(dom_elem).closest('fieldset').toggleClass('filled', selected !== null);
             };
+            $('#dropdown_" . \jsescape($fieldname . $rand) . "').on('change', on_change_{$rand});
 
             $(function() {
              if ($('#dropdown_" . \jsescape($fieldname . $rand) . "').val()) on_change_{$rand}();
@@ -297,6 +316,11 @@ abstract class AbstractFilter
         return self::field($fieldname, $field, $label, count($values) > 0);
     }
 
+    /**
+     * @param string $field
+     * @param string[] $dates
+     * @return array<int, array<string, list<string>>>
+     */
     protected static function getDatesCriteria(string $field, array $dates): array
     {
         $begin    = strtotime($dates[0]);
@@ -312,6 +336,12 @@ abstract class AbstractFilter
         ];
     }
 
+    /**
+     * @param int $searchoption_id
+     * @param string[] $dates
+     * @param string $when
+     * @return array{link: 'AND'|'OR', field: int, searchtype: string, value: mixed, ...}
+     */
     protected static function getDatesSearchCriteria(int $searchoption_id, array $dates, string $when): array
     {
         if ($when == "begin") {

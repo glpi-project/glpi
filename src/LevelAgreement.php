@@ -241,6 +241,10 @@ abstract class LevelAgreement extends CommonDBChild
      */
     public function getNextActionForTicket(Ticket $ticket, int $type)
     {
+        if ($ticket->isNewItem()) {
+            return false;
+        }
+
         /** @var OlaLevel_Ticket|SlaLevel_Ticket $nextaction */
         $nextaction = getItemForItemtype(static::$levelticketclass);
         if (!$nextaction->getFromDBForTicket($ticket->fields["id"], $type)) {
@@ -280,7 +284,7 @@ abstract class LevelAgreement extends CommonDBChild
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div id="showLa{{ instID }}{{ rand }}"></div>
-                <script>
+                <script nonce="{{ csp_nonce() }}">
                     function viewAddEditLa{{ instID }}{{ rand }}(item_id = -1) {
                         $('#showLa{{ instID }}{{ rand }}').load("{{ config('root_doc') }}/ajax/viewsubitem.php", {
                             type: "{{ la.getType() }}",

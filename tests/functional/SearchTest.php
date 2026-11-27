@@ -50,6 +50,7 @@ use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Glpi\DBAL\Operator;
 use Glpi\DBAL\Parts\Select;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Form;
@@ -2063,6 +2064,25 @@ class SearchTest extends DbTestCase
                 'values' => [],
             ],
             ],
+
+            'identifier in condition' => [[
+                'itemtype'           => 'Project',
+                'table'              => \ProjectCost::getTable(),
+                'field'              => 'totalcost',
+                'linkfield'          => 'id',
+                'meta'               => false,
+                'meta_type'          => null,
+                'joinparams'         => [
+                    'jointype'          => 'child',
+                    'specific_itemtype' => 'ProjectCost',
+                    'condition'         => ['NEWTABLE.projects_id' => new QueryIdentifier('REFTABLE.id')],
+                ],
+                'sql' => "LEFT JOIN `glpi_projectcosts` AS `glpi_projectcosts_id_b38f47c1f4565c89cd093fce31833f33`
+                        ON (`glpi_projects`.`id` = `glpi_projectcosts_id_b38f47c1f4565c89cd093fce31833f33`.`projects_id`
+                        AND `glpi_projectcosts_id_b38f47c1f4565c89cd093fce31833f33`.`projects_id` = `glpi_projects`.`id`)",
+                'values' => [],
+            ],
+            ],
         ];
     }
 
@@ -2693,9 +2713,9 @@ class SearchTest extends DbTestCase
 
         // update the right of tech profile
         // to have only the right of display their own tickets and tickets with incoming status
-        \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
+        Session::callAsSystem(fn() => \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
             Ticket::class => (Ticket::READMY + Ticket::READNEWTICKET),
-        ]);
+        ]));
 
         // reload current profile to take into account the new rights
         $this->login('tech', 'tech');
@@ -4194,6 +4214,16 @@ class SearchTest extends DbTestCase
                 'expected_values'    => [Computer::class, Computer::class, ''],
             ];
 
+            // datatype=bool
+            yield [
+                'itemtype'          => \AuthLDAP::class,
+                'search_option'     => 30, // is_active
+                'value'             => $null_value,
+                'expected_and'      => "(((`glpi_authldaps`.`is_active` IS NULL)) OR (`glpi_authldaps`.`is_active` = ?))",
+                'expected_and_not'  => "(NOT ((((`glpi_authldaps`.`is_active` IS NULL)) OR (`glpi_authldaps`.`is_active` = ?)))",
+                'expected_values'    => [0],
+            ];
+
             // datatype=integer
             yield [
                 'itemtype'          => \AuthLDAP::class,
@@ -4201,13 +4231,8 @@ class SearchTest extends DbTestCase
                 'value'             => $null_value,
                 'expected_and'      => "(((`glpi_authldaps`.`port` IS NULL)) OR (`glpi_authldaps`.`port` = ?))",
                 'expected_and_not'  => "(NOT ((((`glpi_authldaps`.`port` IS NULL)) OR (`glpi_authldaps`.`port` = ?)))",
-                'expected_values'    => [''],
+                'expected_values'    => [0],
             ];
-            // log for both AND and AND NOT cases
-            /*if ($is_mariadb) {
-                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-            }*/
 
             // datatype=number
             yield [
@@ -4216,13 +4241,8 @@ class SearchTest extends DbTestCase
                 'value'             => $null_value,
                 'expected_and'      => "(((`glpi_authldaps`.`timeout` IS NULL)) OR (`glpi_authldaps`.`timeout` = ?))",
                 'expected_and_not'  => "(NOT ((((`glpi_authldaps`.`timeout` IS NULL)) OR (`glpi_authldaps`.`timeout` = ?)))",
-                'expected_values'    => [''],
+                'expected_values'    => [0],
             ];
-            // log for both AND and AND NOT cases
-            /*if ($is_mariadb) {
-                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-            }*/
 
             // datatype=number (usehaving=true)
             yield [
@@ -4231,7 +4251,7 @@ class SearchTest extends DbTestCase
                 'value'             => $null_value,
                 'expected_and'      => "(((`ITEM_Computer_115` IS NULL)) OR (`ITEM_Computer_115` = ?))",
                 'expected_and_not'  => "(NOT ((((`ITEM_Computer_115` IS NULL)) OR (`ITEM_Computer_115` = ?)))",
-                'expected_values'    => [Computer::class, Computer::class, Computer::class, ''],
+                'expected_values'    => [Computer::class, Computer::class, Computer::class, 0],
             ];
 
             // datatype=decimal
@@ -4241,11 +4261,8 @@ class SearchTest extends DbTestCase
                 'value'             => $null_value,
                 'expected_and'      => "(((`glpi_budgets`.`value` IS NULL)) OR (`glpi_budgets`.`value` = ?))",
                 'expected_and_not'  => "(NOT ((((`glpi_budgets`.`value` IS NULL)) OR (`glpi_budgets`.`value` = ?)))",
-                'expected_values'    => [''],
+                'expected_values'    => [0],
             ];
-            // log for both AND and AND NOT cases
-            /*$this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-            $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);*/
 
             // datatype=decimal (usehaving=true)
             yield [
@@ -4254,7 +4271,7 @@ class SearchTest extends DbTestCase
                 'value'             => $null_value,
                 'expected_and'      => "(((`ITEM_Contract_11` IS NULL)) OR (`ITEM_Contract_11` = ?))",
                 'expected_and_not'  => "(NOT ((((`ITEM_Contract_11` IS NULL)) OR (`ITEM_Contract_11` = ?)))",
-                'expected_values'    => [''],
+                'expected_values'    => [0],
             ];
 
             // datatype=count (usehaving=true)
@@ -4264,13 +4281,8 @@ class SearchTest extends DbTestCase
                 'value'             => $null_value,
                 'expected_and'      => "(((`ITEM_Ticket_27` IS NULL)) OR (`ITEM_Ticket_27` = ?))",
                 'expected_and_not'  => "(NOT ((((`ITEM_Ticket_27` IS NULL)) OR (`ITEM_Ticket_27` = ?)))",
-                'expected_values'    => ['1', Ticket::class, ''],
+                'expected_values'    => ['1', Ticket::class, 0],
             ];
-            // log for both AND and AND NOT cases
-            /*if ($is_mariadb) {
-                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-            }*/
 
             // datatype=mio (usehaving=true)
             yield [
@@ -4279,7 +4291,7 @@ class SearchTest extends DbTestCase
                 'value'             => $null_value,
                 'expected_and'      => "(((`ITEM_Computer_111` IS NULL)) OR (`ITEM_Computer_111` = ?))",
                 'expected_and_not'  => "(NOT ((((`ITEM_Computer_111` IS NULL)) OR (`ITEM_Computer_111` = ?)))",
-                'expected_values'    => [Computer::class, Computer::class, Computer::class, ''],
+                'expected_values'    => [Computer::class, Computer::class, Computer::class, 0],
             ];
 
             // datatype=progressbar (with computation)
@@ -4289,7 +4301,17 @@ class SearchTest extends DbTestCase
                 'value'             => $null_value,
                 'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') IS NULL OR LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') = ?)",
                 'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') IS NOT NULL AND LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') <> ?)",
-                'expected_values'    => [Computer::class, Computer::class, Computer::class, ''],
+                'expected_values'    => [Computer::class, Computer::class, Computer::class, 0],
+            ];
+
+            // datatype=progressbar
+            yield [
+                'itemtype'          => \ProjectTaskTemplate::class,
+                'search_option'     => 7, // percent_done
+                'value'             => $null_value,
+                'expected_and'      => "(((`glpi_projecttasktemplates`.`percent_done` IS NULL)) OR (`glpi_projecttasktemplates`.`percent_done` = ?))",
+                'expected_and_not'  => "(NOT ((((`glpi_projecttasktemplates`.`percent_done` IS NULL)) OR (`glpi_projecttasktemplates`.`percent_done` = ?)))",
+                'expected_values'    => [0],
             ];
 
             // datatype=timestamp
@@ -4299,13 +4321,8 @@ class SearchTest extends DbTestCase
                 'value'             => $null_value,
                 'expected_and'      => "(((`glpi_crontasks`.`frequency` IS NULL)) OR (`glpi_crontasks`.`frequency` = ?))",
                 'expected_and_not'  => "(NOT ((((`glpi_crontasks`.`frequency` IS NULL)) OR (`glpi_crontasks`.`frequency` = ?)))",
-                'expected_values'    => [''],
+                'expected_values'    => [0],
             ];
-            // log for both AND and AND NOT cases
-            /*if ($is_mariadb) {
-                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-            }*/
 
             // datatype=timestamp (usehaving=true)
             yield [
@@ -4314,7 +4331,7 @@ class SearchTest extends DbTestCase
                 'value'             => $null_value,
                 'expected_and'      => "(((`ITEM_Ticket_49` IS NULL)) OR (`ITEM_Ticket_49` = ?))",
                 'expected_and_not'  => "(NOT ((((`ITEM_Ticket_49` IS NULL)) OR (`ITEM_Ticket_49` = ?)))",
-                'expected_values'    => ['1', ''],
+                'expected_values'    => ['1', 0],
             ];
 
             // datatype=datetime
@@ -4332,9 +4349,9 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Ticket::class,
                 'search_option'     => 188, // next_escalation_level
                 'value'             => $null_value,
-                'expected_and'      => "(((`ITEM_Ticket_188` IS NULL)) OR (`ITEM_Ticket_188` = ?))",
-                'expected_and_not'  => "(NOT ((((`ITEM_Ticket_188` IS NULL)) OR (`ITEM_Ticket_188` = ?)))",
-                'expected_values'    => [0, 0, '1', ''],
+                'expected_and'      => "(`ITEM_Ticket_188` IS NULL)",
+                'expected_and_not'  => "(NOT (`ITEM_Ticket_188` IS NULL))",
+                'expected_values'    => [0, 0, '1'],
             ];
 
             // datatype=date
@@ -5001,6 +5018,52 @@ class SearchTest extends DbTestCase
         }
     }
 
+    public function testNullSearchOnCountMatchesZero(): void
+    {
+        $this->login();
+
+        $name = __FUNCTION__;
+        $without_followup = $this->createItem(Ticket::class, [
+            'name'        => $name,
+            'content'     => 'Ticket without followup',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $with_followup = $this->createItem(Ticket::class, [
+            'name'        => $name,
+            'content'     => 'Ticket with a followup',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $with_followup->getID(),
+            'content'  => 'A followup',
+        ]);
+
+        foreach (['AND' => $without_followup, 'AND NOT' => $with_followup] as $link => $expected) {
+            $data = $this->doSearch(Ticket::class, [
+                'criteria' => [
+                    [
+                        'field'      => 1, // name
+                        'searchtype' => 'contains',
+                        'value'      => '^' . $name . '$',
+                    ],
+                    [
+                        'link'       => $link,
+                        'field'      => 27, // number of followups
+                        'searchtype' => 'contains',
+                        'value'      => 'NULL',
+                    ],
+                ],
+            ]);
+
+            $this->assertSame(
+                [$expected->getID()],
+                array_column($data['data']['rows'], 'id'),
+                $link
+            );
+        }
+    }
+
     public function testContainsCriterion(): void
     {
         $provider = $this->containsCriterionProvider();
@@ -5115,7 +5178,6 @@ class SearchTest extends DbTestCase
                 'searchtype'       => 'equals',
                 'value'            => $value,
                 'expected_and'     => "{$ticket_date} LIKE ?",
-                // (((`glpi_tickets`.`date` IS NULL)) OR (`glpi_tickets`.`date` = ?))
                 'expected_and_not' => "(((NOT ({$ticket_date} LIKE ?))) OR ({$ticket_date} IS NULL))",
                 'expected_values'    => ['%' . $value . '%'],
             ];
@@ -5125,9 +5187,9 @@ class SearchTest extends DbTestCase
             'search_option'    => 15, // date
             'searchtype'       => 'equals',
             'value'            => 'NULL',
-            'expected_and'     => "((({$ticket_date} IS NULL)) OR ({$ticket_date} = ?))",
-            'expected_and_not' => "NOT (((({$ticket_date} IS NULL)) OR ({$ticket_date} = ?)))",
-            'expected_values'    => [''],
+            'expected_and'     => "AND ({$ticket_date} IS NULL) ORDER BY",
+            'expected_and_not' => "AND (NOT ({$ticket_date} IS NULL)) ORDER BY",
+            'expected_values'    => [],
         ];
     }
 
@@ -5954,7 +6016,8 @@ class SearchTest extends DbTestCase
                     'value' => '',
                 ],
             ],
-            'order' => 1,
+            'sort' => [2], // id
+            'order' => ['ASC'],
         ];
 
         $data = $this->doSearch(Ticket::class, $search_params);
@@ -8232,6 +8295,206 @@ class SearchTest extends DbTestCase
     }
 
     /**
+     * The deferred inner subquery must let the engine read the page through the sort index:
+     * the `id` tie-breaker follows the sort direction, and there is no GROUP BY when every join
+     * of the minimal FROM yields at most one row per item. A 1:N filter join keeps the GROUP BY.
+     */
+    public function testDeferredJoinInnerQueryUsesSortIndex()
+    {
+        $this->login();
+
+        $get_inner = function (array $params): string {
+            $data = \Search::prepareDatasForSearch(Computer::class, $params + ['reset' => 'reset'], [49]);
+            \Search::constructSQL($data);
+            $query = $data['sql']['search']->getQuery();
+            $this->assertSame(1, preg_match('/INNER JOIN \((.*)\) AS `deferred_page`/', $query, $matches), $query);
+            return $matches[1];
+        };
+
+        foreach (['ASC', 'DESC'] as $order) {
+            $inner = $get_inner([
+                'sort'     => [1], // name
+                'order'    => [$order],
+                'criteria' => [['field' => 'view', 'searchtype' => 'contains', 'value' => '']],
+            ]);
+            $this->assertStringContainsString(
+                "ORDER BY `glpi_computers`.`name` $order, `glpi_computers`.`id` $order LIMIT",
+                $inner
+            );
+            $this->assertStringContainsString('LEFT JOIN', $inner, '1:1 display joins are part of the minimal FROM');
+            $this->assertStringNotContainsString('GROUP BY', $inner);
+        }
+
+        // Option 49 ("Group in charge") is a 1:N join: filtering on it keeps it in the inner query.
+        $inner = $get_inner([
+            'sort'     => [1],
+            'order'    => ['DESC'],
+            'criteria' => [['field' => 49, 'searchtype' => 'contains', 'value' => 'whatever']],
+        ]);
+        $this->assertStringContainsString('GROUP BY `glpi_computers`.`id`', $inner);
+    }
+
+    /**
+     * Paging a descending sort over equal values must return every item exactly once, ordered
+     * by descending id within the ties.
+     */
+    public function testDeferredJoinPaginationWithTiesDescending()
+    {
+        $this->login();
+        $entity = (int) $_SESSION['glpiactive_entity'];
+
+        $token    = 'deferredties_' . mt_rand();
+        $computer = new Computer();
+        $created  = [];
+        for ($i = 0; $i < 5; $i++) {
+            $id = $computer->add(['name' => $token, 'entities_id' => $entity]);
+            $this->assertGreaterThan(0, $id);
+            $created[] = (int) $id;
+        }
+        rsort($created);
+
+        $base = [
+            'reset'    => 'reset',
+            'sort'     => [1], // name, equal for every computer
+            'order'    => ['DESC'],
+            'criteria' => [['field' => 1, 'searchtype' => 'contains', 'value' => $token]],
+        ];
+        $get_ids = static fn(array $d): array => array_values(
+            array_map('intval', array_column(array_column($d['data']['rows'], 'raw'), 'id'))
+        );
+
+        $ids = [];
+        foreach ([0, 2, 4] as $start) {
+            $page = \Search::getDatas(Computer::class, $base + ['start' => $start, 'list_limit' => 2], [49]);
+            $this->assertStringContainsString('deferred_page', $page['sql']['search']->getQuery());
+            $this->assertSame(5, $page['data']['totalcount']);
+            $ids = array_merge($ids, $get_ids($page));
+        }
+        $this->assertSame($created, $ids);
+    }
+
+    public function testDeferredJoinSortedOnLinkedTableColumn(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        // Computer name => location name
+        foreach ([1 => 'C', 2 => 'A', 3 => 'B'] as $i => $location_name) {
+            $location = $this->createItem(Location::class, [
+                'name'        => __FUNCTION__ . ' ' . $location_name,
+                'entities_id' => $entity_id,
+            ]);
+            $this->createItem(Computer::class, [
+                'name'         => __FUNCTION__ . ' ' . $i,
+                'entities_id'  => $entity_id,
+                'locations_id' => $location->getID(),
+            ]);
+        }
+
+        $name = __FUNCTION__;
+        $search = static fn(int $start, string $order): array => \Search::getDatas(
+            Computer::class,
+            [
+                'reset'      => 'reset',
+                'criteria'   => [['field' => 1, 'searchtype' => 'contains', 'value' => $name]],
+                'sort'       => [3], // location
+                'order'      => [$order],
+                'start'      => $start,
+                'list_limit' => 2,
+            ],
+            [49] // forcegroupby column: triggers the GROUP BY, hence the deferred join
+        );
+        $get_names = static fn(array $data): array => array_values(array_map(
+            static fn($row) => $row['Computer_1'][0]['name'],
+            $data['data']['rows']
+        ));
+
+        $data = $search(0, 'ASC');
+        $query = $data['sql']['search']->getQuery();
+        $this->assertSame(1, preg_match('/INNER JOIN \((.*)\) AS `deferred_page`/', $query, $matches), $query);
+        $this->assertStringContainsString('deferred_sorted', $matches[1]);
+        $this->assertStringNotContainsString('GROUP BY', $matches[1], 'only 1:1 joins in the inner query');
+        $this->assertSame(3, (int) $data['data']['totalcount']);
+        $this->assertSame([__FUNCTION__ . ' 2', __FUNCTION__ . ' 3'], $get_names($data));
+
+        $data = $search(2, 'ASC');
+        $this->assertSame(3, (int) $data['data']['totalcount']);
+        $this->assertSame([__FUNCTION__ . ' 1'], $get_names($data));
+
+        $data = $search(0, 'DESC');
+        $this->assertSame([__FUNCTION__ . ' 1', __FUNCTION__ . ' 3'], $get_names($data));
+    }
+
+    public static function deferredJoinSortedOnEachOptionProvider(): iterable
+    {
+        yield [Ticket::class];
+        yield [Computer::class];
+        yield [Software::class];
+    }
+
+    /**
+     * Every sortable option, in both directions, must return the matching item, whether the
+     * deferred join applies or not.
+     */
+    #[DataProvider('deferredJoinSortedOnEachOptionProvider')]
+    public function testDeferredJoinSortedOnEachOption(string $itemtype): void
+    {
+        $this->login();
+
+        $this->createItem($itemtype, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ] + ($itemtype === Ticket::class ? ['content' => __FUNCTION__] : []));
+
+        $deferred_count = 0;
+        foreach (SearchOption::getOptionsForItemtype($itemtype) as $id => $option) {
+            if (!is_int($id) || !is_array($option) || ($option['nosort'] ?? false)) {
+                continue;
+            }
+            foreach (['ASC', 'DESC'] as $order) {
+                $data = $this->doSearch(
+                    $itemtype,
+                    [
+                        'criteria' => [['field' => 1, 'searchtype' => 'contains', 'value' => __FUNCTION__]],
+                        'sort'     => [$id],
+                        'order'    => [$order],
+                    ],
+                    $itemtype === Ticket::class ? [] : [49]
+                );
+                $this->assertSame(1, (int) $data['data']['totalcount'], "Sort on option $id $order");
+                $this->assertCount(1, $data['data']['rows'], "Sort on option $id $order");
+                if (str_contains($data['sql']['search']->getQuery(), 'deferred_sorted')) {
+                    $deferred_count++;
+                }
+            }
+        }
+        $this->assertGreaterThan(0, $deferred_count);
+    }
+
+    /**
+     * The status of the linked problems (Ticket option 202) must be empty when the ticket has no
+     * linked problem.
+     */
+    public function testLinkedStatusWithoutLinkedItem(): void
+    {
+        $this->login();
+
+        $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        $data = $this->doSearch(
+            Ticket::class,
+            ['criteria' => [['field' => 1, 'searchtype' => 'contains', 'value' => __FUNCTION__]]],
+            [202]
+        );
+        $this->assertSame(1, (int) $data['data']['totalcount']);
+        $this->assertSame('', $data['data']['rows'][0]['Ticket_202']['displayname']);
+    }
+
+    /**
      * Requesting a page past the last one under an active SQL LIMIT (stale bookmark / edited URL
      * / API) must not error: it falls back to the first page, matching the pre-optimization
      * behaviour where the full result was fetched and the start clamped.
@@ -8261,6 +8524,39 @@ class SearchTest extends DbTestCase
         $this->assertSame(1, $data['data']['totalcount']);
         $ids = array_values(array_map('intval', array_column(array_column($data['data']['rows'], 'raw'), 'id')));
         $this->assertSame([$id], $ids);
+    }
+
+    public function testOrCriteriaDoNotBypassEntityRestriction(): void
+    {
+        $this->login();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Pending ticket in another entity',
+            'content'     => '',
+            'entities_id' => getItemByTypeName('Entity', '_test_child_2', true),
+        ]);
+        $this->updateItem(Ticket::class, $ticket->getID(), ['status' => \CommonITILObject::WAITING]);
+
+        $this->setEntity('_test_child_1', false);
+
+        $data = $this->doSearch(Ticket::class, [
+            'criteria' => [
+                [
+                    'field'      => 12,
+                    'searchtype' => 'equals',
+                    'value'      => 'process',
+                ],
+                [
+                    'link'       => 'OR',
+                    'field'      => 12,
+                    'searchtype' => 'equals',
+                    'value'      => \CommonITILObject::WAITING,
+                ],
+            ],
+        ]);
+
+        $this->assertNotContains($ticket->getID(), array_column($data['data']['rows'], 'id'));
+        $this->assertSame(0, $data['data']['totalcount']);
     }
 }
 

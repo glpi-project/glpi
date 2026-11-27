@@ -69,6 +69,8 @@ use function Safe\unlink;
 
 /**
  * Common DataBase Table Manager Class - Persistent Object
+ *
+ * @phpstan-type ItemtypeRights array<int, string|array{short: string, long: string}>
  */
 class CommonDBTM extends CommonGLPI
 {
@@ -2973,6 +2975,11 @@ class CommonDBTM extends CommonGLPI
             $this->fields['entities_id']  = Session::getActiveEntity();
         }
 
+        // `header_toolbar` contains raw HTML and must only be provided by code.
+        // Ignore it when the request carries it as $options is built from it.
+        if (isset($_GET['header_toolbar']) || isset($_POST['header_toolbar'])) {
+            $params['header_toolbar'] = [];
+        }
         $header_toolbar = $params['header_toolbar'];
         unset($params['header_toolbar']);
 
@@ -3054,12 +3061,7 @@ class CommonDBTM extends CommonGLPI
                 $this->input = $input;
             }
 
-            // check if private
-            $allowed = $this->isPrivate() && ($this->fields['users_id'] == Session::getLoginUserID());
-            // global check
-            if (!$allowed) {
-                $allowed = static::canCreate() && $this->canCreateItem();
-            }
+            $allowed = static::canCreate() && $this->canCreateItem();
 
             [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
 
@@ -3095,30 +3097,29 @@ class CommonDBTM extends CommonGLPI
             return true;
         }
 
-        $this_belongs_to_current_user = $this->isPrivate() && ($this->fields['users_id'] === Session::getLoginUserID());
         switch ($right) {
             case READ:
-                $allowed = $this_belongs_to_current_user || (static::canView() && $this->canViewItem());
+                $allowed = static::canView() && $this->canViewItem();
                 [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
                 break;
 
             case UPDATE:
-                $allowed = $this_belongs_to_current_user || (static::canUpdate() && $this->canUpdateItem());
+                $allowed = static::canUpdate() && $this->canUpdateItem();
                 [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
                 break;
 
             case DELETE:
-                $allowed = $this_belongs_to_current_user || (static::canDelete() && $this->canDeleteItem());
+                $allowed = static::canDelete() && $this->canDeleteItem();
                 [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
                 break;
 
             case PURGE:
-                $allowed = $this_belongs_to_current_user || (static::canPurge() && $this->canPurgeItem());
+                $allowed = static::canPurge() && $this->canPurgeItem();
                 [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
                 break;
 
             case CREATE:
-                $allowed = $this_belongs_to_current_user || (static::canCreate() && $this->canCreateItem());
+                $allowed = static::canCreate() && $this->canCreateItem();
                 [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
                 break;
 
@@ -4715,11 +4716,14 @@ class CommonDBTM extends CommonGLPI
                         $continue
                         && count($where)
                     ) {
-                        $entities = $fields['entities_id'];
-                        if ($fields['is_recursive']) {
-                            $entities = getSonsOf('glpi_entities', $fields['entities_id']);
+                        // User default entity is not an ownership entity, see $entities_id above
+                        if (!($this instanceof User)) {
+                            $entities = $fields['entities_id'];
+                            if ($fields['is_recursive']) {
+                                $entities = getSonsOf('glpi_entities', $fields['entities_id']);
+                            }
+                            $where[] = getEntitiesRestrictCriteria(static::getTable(), '', $entities);
                         }
-                        $where[] = getEntitiesRestrictCriteria(static::getTable(), '', $entities);
 
                         $tmp = clone $this;
                         if ($tmp->maybeTemplate()) {
@@ -5543,7 +5547,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param string $interface (default 'central')
      *
-     * @return array array of rights to display
+     * @return ItemtypeRights array of rights to display
      **/
     public function getRights($interface = 'central')
     {

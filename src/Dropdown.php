@@ -434,9 +434,9 @@ class Dropdown
 
             // Location icon
             if ($itemtype === 'Location' && Location::canView()) {
-                $location_icon = "<div role='button' class='btn btn-outline-secondary' onclick='showMapForLocation(this)'
+                $location_icon = "<button type='button' class='btn btn-outline-secondary' data-glpi-show-location-map
                                        data-fid='" . htmlescape($field_id) . "' title='" . __s('Display on map') . "' data-bs-toggle='tooltip' data-bs-placement='bottom'>";
-                $location_icon .= "<i class='ti ti-map' aria-hidden='true'></i></div>";
+                $location_icon .= "<i class='ti ti-map' aria-hidden='true'></i></button>";
                 $icon_array[] = $location_icon;
             }
 
@@ -1265,6 +1265,7 @@ HTML;
                     'SolutionTemplate' => null,
                     'ITILValidationTemplate' => null,
                     'RequestType' => null,
+                    'SlaStatus' => null,
                     'ITILFollowupTemplate' => null,
                     'ProjectState' => null,
                     'ProjectType' => null,
@@ -1487,7 +1488,7 @@ HTML;
     {
         Toolbox::deprecated(version: '12.0.0');
         $params = [
-            'on_change'             => "var _value = this.options[this.selectedIndex].value; if (_value != 0) {window.location.href=_value;}",
+            'on_change'             => '',
             'width'                 => '300px',
             'display_emptychoice'   => true,
         ];
@@ -1514,6 +1515,7 @@ HTML;
         echo "<div class='col-sm-11'>";
         Dropdown::showFromArray('dpmenu', $values, [
             'on_change'           => $params['on_change'],
+            'add_data_attributes' => $params['on_change'] === '' ? ['glpi-navigate-on-change' => ''] : '',
             'value'               => $selected,
             'display_emptychoice' => $params['display_emptychoice'],
             'width'               => $params['width'],
@@ -1923,7 +1925,16 @@ HTML;
 
         // We check $options as the caller will set $options['default_itemtype'] only if it needs a
         // default itemtype and the default value can be '' thus empty won't be valid !
-        if (array_key_exists('default_itemtype', $options)) {
+        if (array_key_exists('default_itemtype', $options) && empty($params['default_itemtype'])) {
+            // No itemtype to preselect: the server has no item dropdown to return for it,
+            // so both fields are reset in the page, without any request.
+            $out .= Html::scriptBlock("
+                $(function() {
+                    $('#" . jsescape($field_id) . "').val('').trigger('change.select2');
+                    $('#" . jsescape($show_id) . "').empty();
+                });
+            ");
+        } elseif (array_key_exists('default_itemtype', $options)) {
             $out .= Html::scriptBlock("
                 $(function() {
                     $('#" . jsescape($field_id) . "').trigger('setValue', '" . jsescape($params['default_itemtype']) . "');
@@ -2277,7 +2288,6 @@ HTML;
      *    - value               : integer / preselected value (default 0)
      *    - used                : array / Already used items ID: not to display in dropdown (default empty)
      *    - readonly            : boolean / used as a readonly item (default false)
-     *    - on_change           : string / value to transmit to "onChange"
      *    - multiple            : boolean / can select several values (default false)
      *    - size                : integer / number of rows for the select (default = 1)
      *    - display             : boolean / display or return string
@@ -2305,6 +2315,7 @@ HTML;
      * @return int|string
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
+     * @phpstan-return ($options is array{display?: true|1, ...} ? int : string)
      **/
     public static function showFromArray($name, array $elements, $options = [])
     {
@@ -2346,9 +2357,14 @@ HTML;
             }
         }
 
+        if (!empty($param['on_change'])) {
+            trigger_error('The `on_change` option of `Dropdown::showFromArray()` is not supported anymore and will be ignored.', E_USER_WARNING);
+        }
+
         $other_select_option = $name . '_other_value';
         if ($param['other'] !== false) {
-            $param['on_change'] .= "displayOtherSelectOptions(this, \"" . jsescape($other_select_option) . "\");";
+            $param['add_data_attributes'] = (is_array($param['add_data_attributes']) ? $param['add_data_attributes'] : [])
+                + ['glpi-other-option' => $other_select_option];
 
             // If $param['other'] is a string, then we must highlight "other" option
             if (is_string($param['other'])) {
@@ -2404,10 +2420,6 @@ HTML;
 
             if ($param['class']) {
                 $output .= ' class="' . htmlescape($param['class']) . '"';
-            }
-
-            if (!empty($param["on_change"])) {
-                $output .= " onChange='" . htmlescape($param["on_change"]) . "'";
             }
 
             if ((is_int($param["size"])) && ($param["size"] > 0)) {
@@ -2549,11 +2561,8 @@ HTML;
             $deselect = __s('None');
             $output  .= "<div class='invisible' id='selectallbuttons_" . htmlescape($field_id) . "'>";
             $output  .= "<div class='d-flex justify-content-around p-1'>";
-            $output  .= "<a class='btn btn-sm' "
-                      . "onclick=\"selectAll('" . htmlescape(jsescape($field_id)) . "');$('#" . htmlescape(jsescape($field_id)) . "').select2('close');\">$select"
-                     . "</a> ";
-            $output  .= "<a class='btn btn-sm' onclick=\"deselectAll('" . htmlescape(jsescape($field_id)) . "');\">$deselect"
-                     . "</a>";
+            $output  .= "<button type='button' class='btn btn-sm' data-glpi-select-all>$select</button> ";
+            $output  .= "<button type='button' class='btn btn-sm' data-glpi-deselect-all>$deselect</button>";
             $output  .= "</div></div>";
 
             $multichecksappend_varname = "multichecksappend" . preg_replace('/[^\w]/', '_', $field_id);
@@ -2561,7 +2570,13 @@ HTML;
                 var $multichecksappend_varname = false;
                 $('#" . jsescape($field_id) . "').on('select2:open', function(e) {
                     if (!$multichecksappend_varname) {
-                        $('#select2-" . jsescape($field_id) . "-results').parent().append($('#selectallbuttons_" . jsescape($field_id) . "').html());
+                        const buttons = $($('#selectallbuttons_" . jsescape($field_id) . "').html());
+                        buttons.find('[data-glpi-select-all]').on('click', () => {
+                            selectAll('" . jsescape($field_id) . "');
+                            $('#" . jsescape($field_id) . "').select2('close');
+                        });
+                        buttons.find('[data-glpi-deselect-all]').on('click', () => deselectAll('" . jsescape($field_id) . "'));
+                        $('#select2-" . jsescape($field_id) . "-results').parent().append(buttons);
                         $multichecksappend_varname = true;
                     }
                 });
@@ -2825,7 +2840,7 @@ HTML;
     /**
      * show dropdown to select list limit
      *
-     * @param string $onchange  Optional, for ajax (default '')
+     * @param string $onchange  Not supported anymore, it is ignored
      * @param bool $display
      * @param array<string, mixed> $options Additional options passed to Dropdown::showFromArray()
      *
@@ -2834,6 +2849,10 @@ HTML;
     public static function showListLimit($onchange = '', $display = true, array $options = [])
     {
         global $CFG_GLPI;
+
+        if ($onchange !== '') {
+            trigger_error('The `$onchange` parameter of `Dropdown::showListLimit()` is not supported anymore and will be ignored.', E_USER_WARNING);
+        }
 
         if (isset($_SESSION['glpilist_limit'])) {
             $list_limit = $_SESSION['glpilist_limit'];
@@ -2872,10 +2891,40 @@ HTML;
             'glpilist_limit',
             $values,
             array_merge([
-                'on_change' => $onchange,
                 'value'     => $list_limit,
                 'display'   => $display,
             ], $options)
+        );
+    }
+
+    /**
+     * Filter values whose label matches a search text, case-insensitively.
+     * Follows the dropdown SQL search: "contains" by default, `^` and `$` anchor the start and end.
+     *
+     * @param array<int|string, mixed> $values      Values to filter (key => label)
+     * @param string                   $search_text Search text
+     *
+     * @return array<int|string, mixed>
+     */
+    private static function filterValuesBySearchText(array $values, string $search_text): array
+    {
+        $search_text = trim($search_text);
+        if ($search_text === '' || $search_text === '^') {
+            return $values;
+        }
+
+        //Search may be a regex
+        $starts_with = str_starts_with($search_text, '^');
+        $ends_with   = str_ends_with($search_text, '$');
+        $search_text = trim(substr($search_text, $starts_with ? 1 : 0, $ends_with ? -1 : null));
+
+        // Ignore accents, as the SQL collation does
+        $remove_accents = static fn(string $value): string => (string) transliterator_transliterate('NFD; [:Nonspacing Mark:] Remove; NFC', $value);
+        $pattern = '/' . ($starts_with ? '^' : '') . preg_quote($remove_accents($search_text), '/') . ($ends_with ? '$' : '') . '/iu';
+
+        return array_filter(
+            $values,
+            static fn($label) => is_scalar($label) && preg_match($pattern, $remove_accents((string) $label))
         );
     }
 
@@ -2977,6 +3026,10 @@ HTML;
             $toadd = $post['toadd'];
         } else {
             $toadd = [];
+        }
+        // Keep only the added values matching the search, otherwise they are listed (and highlighted) first
+        if (!empty($post['searchText']) && is_array($toadd)) {
+            $toadd = self::filterValuesBySearchText($toadd, (string) $post['searchText']);
         }
 
         $ljoin = [];

@@ -157,6 +157,11 @@ class Notification extends CommonDBTM implements FilterableInterface
     public const OLD_ASSIGN_SUPPLIER                 = 47;
     // Notification to the member just added to a project task team
     public const NEW_TEAM_MEMBER                     = 48;
+    // Notification to the technician in charge of the contracts linked to the ticket
+    public const CONTRACT_TECH_IN_CHARGE             = 49;
+    // Notification to the group in charge of the contracts linked to the ticket
+    // 50 to 55 are skipped: already used as USER_TYPE recipients by the behaviors plugin
+    public const CONTRACT_TECH_GROUP_IN_CHARGE       = 56;
 
     // From CommonDBTM
     public bool $dohistory = true;
@@ -613,6 +618,35 @@ class Notification extends CommonDBTM implements FilterableInterface
                 NotificationTarget::class,
             ]
         );
+
+        $this->deleteRecallActions();
+    }
+
+    #[Override]
+    public function post_updateItem($history = true)
+    {
+        parent::post_updateItem($history);
+
+        // Escalation level actions are bound to the reminder event of the notification
+        if (in_array('event', $this->updates, true) || in_array('itemtype', $this->updates, true)) {
+            $this->deleteRecallActions();
+        }
+    }
+
+    /**
+     * Delete the escalation level actions sending only this notification.
+     */
+    private function deleteRecallActions(): void
+    {
+        $value = (string) $this->getID();
+        (new SlaLevelAction())->deleteByCriteria([
+            'field' => 'recall' . LevelAgreementLevel::NOTIFICATION_RECALL_SUFFIX,
+            'value' => $value,
+        ]);
+        (new OlaLevelAction())->deleteByCriteria([
+            'field' => 'recall_ola' . LevelAgreementLevel::NOTIFICATION_RECALL_SUFFIX,
+            'value' => $value,
+        ]);
     }
 
     /**

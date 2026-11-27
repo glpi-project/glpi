@@ -48,20 +48,17 @@ use Toolbox;
 use function Safe\json_decode;
 
 /**
- * @phpstan-type DashboardConfigDescription list<array{
+ * @phpstan-import-type DashboardItemFieldsDecoded from Item
+ * @phpstan-import-type DashboardRightFields from Right
+ * @phpstan-import-type DashboardConvertedRights from Right
+ * @phpstan-type DashboardFields array{
  *   key: string,
  *   name: string,
  *   context: string,
- *   items: list<array{
- *     x: int,
- *     y: int,
- *     width: int,
- *     height: int,
- *     gridstack_id: string,
- *     card_id: string,
- *     card_options: array{color: string, widgettype: string}
- *   }>
- * }>
+ *   users_id: int,
+ *   items: DashboardItemFieldsDecoded[],
+ *   rights: DashboardConvertedRights,
+ * }
  */
 class Dashboard extends CommonDBTM
 {
@@ -69,12 +66,13 @@ class Dashboard extends CommonDBTM
     protected string $key     = "";
     protected string $title   = "";
     protected bool $embed   = false;
-    /** @var ?array  */
+    /** @var ?DashboardItemFieldsDecoded[]  */
     protected ?array $items   = null;
-    /** @var ?array */
+    /** @var DashboardConvertedRights|null */
     protected ?array $rights  = null;
     protected string $filters  = "";
 
+    /** @var array<string, DashboardFields> */
     public static array $all_dashboards = [];
     public static string $rightname = 'dashboard';
 
@@ -118,7 +116,7 @@ class Dashboard extends CommonDBTM
             }
 
             if ($force || $this->rights === null) {
-                $this->rights = Right::getForDashboard($this->fields['id']);
+                $this->rights = self::convertRights(Right::getForDashboard($this->fields['id']));
             }
         }
 
@@ -149,7 +147,7 @@ class Dashboard extends CommonDBTM
         ]);
         if (count($iterator) == 1) {
             $this->fields = $iterator->current();
-            $this->key    = $ID;
+            $this->key    = (string) $ID;
             $this->post_getFromDB();
             return true;
         } elseif (count($iterator) > 1) {
@@ -234,8 +232,7 @@ class Dashboard extends CommonDBTM
         // check access rights defined using sharing feature
         $this->load();
 
-        $rights = self::convertRights($this->rights ?? []);
-        $result = self::checkRights($rights);
+        $result = self::checkRights($this->rights ?? []);
         Profiler::getInstance()->stop(__METHOD__);
         return $result;
     }
@@ -280,8 +277,8 @@ class Dashboard extends CommonDBTM
      *
      * @param string $title label of the dashboard, will be suglified to have a corresponding key
      * @param string $context of the dashboard, filter the dashboard collection by a key
-     * @param array $items cards for the dashboard
-     * @param array $rights for the dashboard
+     * @param DashboardItemFieldsDecoded[] $items cards for the dashboard
+     * @param DashboardConvertedRights $rights for the dashboard
      *
      * @return string
      */
@@ -332,12 +329,12 @@ class Dashboard extends CommonDBTM
         $this->getFromDB($this->key);
 
         //save items
-        if (!$skip_child && count($this->items) > 0) {
+        if (!$skip_child && $this->items !== null && count($this->items) > 0) {
             $this->saveItems($this->items);
         }
 
         //save rights
-        if (!$skip_child && count($this->rights) > 0) {
+        if (!$skip_child && $this->rights !== null && count($this->rights) > 0) {
             $this->saveRights($this->rights);
         }
     }
@@ -402,14 +399,7 @@ class Dashboard extends CommonDBTM
     /**
      * Save items in DB for the current dashboard
      *
-     * @param array $items cards of the dashboard, contains:
-     *    - gridstack_id: unique id of the card in the grid, usually build like card_id.uuidv4
-     *    - card_id: key of array return by getAllDasboardCards
-     *    - x: position in grid
-     *    - y: position in grid
-     *    - width: size in grid
-     *    - height: size in grid
-     *    - card_options, sub array, depends on the card, contains at least a key color
+     * @param DashboardItemFieldsDecoded[] $items cards of the dashboard
      *
      * @return void
      */
@@ -447,7 +437,7 @@ class Dashboard extends CommonDBTM
     /**
      * Save rights (share) in DB for the current dashboard
      *
-     * @param array $rights contains these data:
+     * @param DashboardConvertedRights $rights contains these data:
      * - 'users_id'    => [items_id]
      * - 'groups_id'   => [items_id]
      * - 'entities_id' => [items_id]
@@ -498,7 +488,7 @@ class Dashboard extends CommonDBTM
      * Clone current Dashboard.
      * (Clean gridstack_id-id in new one)
      *
-     * @return array with [title, key]
+     * @return array{title: string, key: string}
      */
     public function cloneCurrent(): array
     {
@@ -509,14 +499,13 @@ class Dashboard extends CommonDBTM
         $this->key = Toolbox::slugify($this->fields['name']) . '-' . Uuid::uuid4()->toString();
 
         // replace gridstack_id (with uuid V4) in the copy, to avoid cache issue
-        $this->items = array_map(function (array $item) {
-            $item['gridstack_id'] = $item['card_id'] . Uuid::uuid4();
+        if ($this->items !== null) {
+            $this->items = array_map(function (array $item) {
+                $item['gridstack_id'] = $item['card_id'] . Uuid::uuid4();
 
-            return $item;
-        }, $this->items);
-
-        // convert right to the good format
-        $this->rights = self::convertRights($this->rights);
+                return $item;
+            }, $this->items);
+        }
 
         $this->save();
 
@@ -532,7 +521,7 @@ class Dashboard extends CommonDBTM
     }
 
     /**
-     * @param array<string, mixed> $items
+     * @param DashboardItemFieldsDecoded[] $items
      */
     public function setItems(array $items): void
     {
@@ -540,7 +529,7 @@ class Dashboard extends CommonDBTM
     }
 
     /**
-     * @param array<int, array<string, mixed>> $rights
+     * @param DashboardConvertedRights $rights
      */
     public function setRights(array $rights): void
     {
@@ -554,7 +543,7 @@ class Dashboard extends CommonDBTM
      * @param bool   $check_rights use to remove rights checking (use in embed)
      * @param ?string $context only dashboard for given context
      *
-     * @return array dasboards
+     * @return array<string, DashboardFields> dasboards
      */
     public static function getAll(bool $force = false, bool $check_rights = true, ?string $context = 'core'): array
     {
@@ -572,6 +561,7 @@ class Dashboard extends CommonDBTM
                 $id  = $dashboard['id'];
 
                 $d_rights = array_filter($rights, static fn($right_line) => $right_line['dashboards_dashboards_id'] == $id);
+                $converted_rights = self::convertRights($d_rights);
                 $d_items = array_filter($items, static fn($i) => $i['dashboards_dashboards_id'] == $id);
                 $d_items = array_map(static function ($item) {
                     $item['card_options'] = importArrayFromDB($item['card_options']);
@@ -583,15 +573,16 @@ class Dashboard extends CommonDBTM
                 $dashboardItem = new self($key);
                 $dashboardItem->fields = $dashboard;
                 $dashboardItem->items  = $d_items;
-                $dashboardItem->rights = $d_rights;
+                $dashboardItem->rights = $converted_rights;
                 if ($check_rights && !$dashboardItem->canViewCurrent()) {
                     continue;
                 }
-                $dashboard['rights'] = self::convertRights($d_rights);
+                $dashboard['rights'] = $converted_rights;
 
                 $d_items = array_filter($items, static fn($item) => $item['dashboards_dashboards_id'] == $id);
                 $d_items = array_map(static function ($item) {
-                    $item['card_options'] = importArrayFromDB($item['card_options']);
+                    $options = importArrayFromDB($item['card_options']);
+                    $item['card_options'] = \is_array($options) ? Item::cleanCardOptions($options) : $options;
                     return $item;
                 }, $d_items);
                 $dashboard['items'] = $d_items;
@@ -630,9 +621,9 @@ class Dashboard extends CommonDBTM
      *   'groups_id'   => [...]
      * ]
      *
-     * @param array $raw_rights right from DB
+     * @param DashboardRightFields[] $raw_rights right from DB
      *
-     * @return array converter rights
+     * @return DashboardConvertedRights converted rights
      */
     public static function convertRights(array $raw_rights = []): array
     {
@@ -644,9 +635,10 @@ class Dashboard extends CommonDBTM
         ];
         foreach ($raw_rights as $right_line) {
             $fk = getForeignKeyFieldForItemType($right_line['itemtype']);
-            $rights[$fk][] = $right_line['items_id'];
+            $rights[$fk][] = (int) $right_line['items_id'];
         }
 
+        /** @var DashboardConvertedRights $rights */
         return $rights;
     }
 
@@ -654,7 +646,7 @@ class Dashboard extends CommonDBTM
     /**
      * Check a current set of rights
      *
-     * @param array $rights
+     * @param DashboardConvertedRights $rights
      *
      * @return bool
      */
@@ -689,7 +681,7 @@ class Dashboard extends CommonDBTM
     /**
      * Import dashboards from a variable
      *
-     * @param string|array $import json or php array representing the dashboards collection
+     * @param string|array<string, DashboardFields> $import json or php array representing the dashboards collection
      * [
      *    dashboard_key => [
      *       'title'  => '...',
@@ -701,9 +693,13 @@ class Dashboard extends CommonDBTM
      * ]
      *
      * @return bool
+     * @todo remove $import default value of null and make it mandatory
      */
     public static function importFromJson($import = null)
     {
+        if ($import === null) {
+            return false;
+        }
         if (!is_array($import)) {
             if (!Toolbox::isJSON($import)) {
                 return false;
@@ -773,10 +769,11 @@ class Dashboard extends CommonDBTM
     /**
      * Return default dashboards data.
      *
-     * @return DashboardConfigDescription
+     * @return list<DashboardFields>
      */
     public static function getDefaults(): array
     {
+        /** @var list<DashboardFields> $default_dashboards */
         $default_dashboards = [
             [
                 'key' => 'central',
@@ -1690,7 +1687,7 @@ class Dashboard extends CommonDBTM
 
         $more_dashboards = Plugin::doHookFunction(Hooks::DASHBOARD_DEFAULTS);
         if (is_array($more_dashboards)) {
-            /** @var DashboardConfigDescription $more_dashboards */
+            /** @var list<DashboardFields> $more_dashboards */
             $default_dashboards = array_merge($default_dashboards, $more_dashboards);
         }
 

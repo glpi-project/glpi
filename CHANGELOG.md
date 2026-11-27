@@ -8,8 +8,13 @@ The present file will list all changes made to the project; according to the
 ### Added
 - Documents, contracts and notes on cables.
 - Date variables (e.g. `{YEAR}`, `{MONTH_NAME+1}`, `{WEEK}` with `{YEAR_OF_WEEK}`) in the predefined title of recurrent tickets and changes, computed from the occurrence date.
+- "Impact" question type in forms, which can be used to define the impact of the created tickets, changes and problems.
+- Contract technician in charge and group in charge, usable as ticket notification recipients.
+- SLA and OLA escalation actions sending a single notification of the automatic reminder event.
+- SLA status dropdown on tickets, assignable by SLA escalation levels.
 
 ### Changes
+- Mails receivers now rely on the `directorytree/imapengine` library to connect to IMAP servers.
 
 ### Deprecated
 
@@ -22,8 +27,10 @@ The present file will list all changes made to the project; according to the
 #### Added
 
 #### Changes
+- `NotificationEvent::raiseEvent()` has a new optional `$notifications_id` parameter to send only one notification of the event.
 
 #### Deprecated
+- `toogle()` JavaScript function.
 
 #### Removed
 - `Session::getNewCSRFToken()`
@@ -38,8 +45,58 @@ The present file will list all changes made to the project; according to the
 - `Html::getConfirmationOnActionScript()`. Use the `data-glpi-confirm="<message>"` attribute instead.
 - `Html::link()`.
 - `confirmaction` option of `Html::submit()`. Confirmation is now handled through the `data-glpi-confirm` attribute, so no additional action can be run on confirmation.
+- `onclick` key of the `addbuttons` option of `CommonDBTM::showFormButtons()`.
+- `onclick` option of `Html::getCheckbox()`, `Html::showCheckbox()`, `Html::getMassiveActionCheckBox()` and `Html::showMassiveActionCheckBox()`.
+- `on_change` option of `Dropdown::showFromArray()` and of the methods relying on it. It is now ignored and triggers a warning.
+- `$onchange` parameter of `Dropdown::showListLimit()`. It is now ignored and triggers a warning.
+- `laminas/laminas-mail` and `laminas/laminas-mime` PHP libraries. Use `directorytree/imapengine` and `zbateson/mail-mime-parser` instead.
+- `Toolbox::getMailServerStorageInstance()`. Use `Toolbox::getMailServerMailboxInstance()` instead.
+- `/front/pluginimage.send.php` endpoint.
+- `fittext.js` JS library and its `fitText()` jQuery plugin.
 
-## [12.0.1] unreleased
+## [12.0.3] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [12.0.2] 2026-11-12
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [12.0.1] 2026-10-28
 
 ### Added
 
@@ -294,9 +351,55 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::stripslashes_deep()`
 
 
-## [11.0.12] unreleased
+## [11.0.14] unreleased
 
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+- Updating the password of the user you are logged in as through the legacy REST API or the High-Level API now requires supplying the current password in the `current_password` field.
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.13] 2026-11-12
+
+### Added
+
+### Changed
+- The session cookie name now includes the GLPI version. Users will have to log in again after each GLPI update, unless they use the "remember me" feature.
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+- `Auth::getRememberMeCookieName()` to get the "remember me" cookie name, which no longer derives from the session name.
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.12] 2026-10-28
+
+### Added
+- Georgian language
 
 ### Changed
 - The "Other financial and administrative information" report now includes the licenses that are not linked to any software, so its totals can change.

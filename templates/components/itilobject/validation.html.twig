@@ -65,7 +65,7 @@
 
 <div id="viewvalidation{{ tID }}{{ rand }}"></div>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
     function viewAddValidation{{ tID }}{{ rand }}() {
         var params = {
             type: '{{ get_class(validation)|e('js') }}',

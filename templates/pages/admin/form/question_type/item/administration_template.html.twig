@@ -93,7 +93,7 @@
 </div>
 
 {% if question == null %}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         import("/js/modules/Forms/QuestionItem.js").then((m) => {
             new m.GlpiFormQuestionTypeItem({{ question_type|json_encode|raw }}, '{{ constant('Dropdown::EMPTY_VALUE')|e('js') }}');
         });

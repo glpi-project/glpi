@@ -274,6 +274,68 @@ class PDUTest extends AbstractInventoryAsset
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>';
 
+    private const XML_PLUGS_CUSTOM_NAME = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <COMMENTS>RNX UPDU RN3214 (ICM firmware 2.4.1)</COMMENTS>
+        <CONTACT>admin@example.com</CONTACT>
+        <FIRMWARE>2.4.1</FIRMWARE>
+        <ID>0</ID>
+        <IPS>
+          <IP>192.0.2.50</IP>
+        </IPS>
+        <LOCATION>Datacenter A - Rack 01</LOCATION>
+        <MAC>00:1a:2b:3c:4d:5e</MAC>
+        <MANUFACTURER>RNX</MANUFACTURER>
+        <MODEL>UPDU</MODEL>
+        <NAME>pdu-rack-01</NAME>
+        <SERIAL>RNX2400123456</SERIAL>
+        <TYPE>PDU</TYPE>
+        <UPTIME>12 days, 03:45:12.00</UPTIME>
+      </INFO>
+      <PDU>
+        <PLUGS>
+          <CUSTOM_NAME>Web server 01</CUSTOM_NAME>
+          <NAME>A1</NAME>
+          <NUMBER>1</NUMBER>
+          <TYPE>C13</TYPE>
+        </PLUGS>
+        <PLUGS>
+          <CUSTOM_NAME>Database server 01</CUSTOM_NAME>
+          <NAME>A2</NAME>
+          <NUMBER>2</NUMBER>
+          <TYPE>C13</TYPE>
+        </PLUGS>
+        <PLUGS>
+          <CUSTOM_NAME>Core switch</CUSTOM_NAME>
+          <NAME>A3</NAME>
+          <NUMBER>3</NUMBER>
+          <TYPE>C19</TYPE>
+        </PLUGS>
+        <PLUGS>
+          <CUSTOM_NAME></CUSTOM_NAME>
+          <NAME>A4</NAME>
+          <NUMBER>4</NUMBER>
+          <TYPE>C19</TYPE>
+        </PLUGS>
+        <PLUGS>
+          <CUSTOM_NAME></CUSTOM_NAME>
+          <NAME>B10</NAME>
+          <NUMBER>10</NUMBER>
+          <TYPE>unknown</TYPE>
+        </PLUGS>
+        <TYPE>RN3214</TYPE>
+      </PDU>
+    </DEVICE>
+    <MODULEVERSION>4.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>pdu-rack-01-2026-11-24-12-00-00</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
     public static function assetProvider(): array
     {
         return [
@@ -462,6 +524,47 @@ class PDUTest extends AbstractInventoryAsset
         $this->assertSame(1, (int) $plugs_by_name['Server_Blade_01']['number']);
         $this->assertSame(2, (int) $plugs_by_name['Storage_SAN_Controller_B']['number']);
         $this->assertSame(3, (int) $plugs_by_name['Network_Switch_Core']['number']);
+    }
+
+    public function testEmptyCustomNameClearsPlugCustomName(): void
+    {
+        $xml_with_a4_custom_name = str_replace(
+            "<CUSTOM_NAME></CUSTOM_NAME>\n          <NAME>A4</NAME>",
+            "<CUSTOM_NAME>Backup server</CUSTOM_NAME>\n          <NAME>A4</NAME>",
+            self::XML_PLUGS_CUSTOM_NAME
+        );
+        $this->assertNotSame(self::XML_PLUGS_CUSTOM_NAME, $xml_with_a4_custom_name);
+
+        $pdus_id = $this->doInventory($xml_with_a4_custom_name, true)->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $pdus_id);
+
+        $plug = new \Plug();
+        $plug_criteria = ['itemtype_main' => \PDU::class, 'items_id_main' => $pdus_id];
+        $custom_names_by_plug = array_column($plug->find($plug_criteria), 'custom_name', 'name');
+        $this->assertSame(
+            [
+                'A1' => 'Web server 01',
+                'A2' => 'Database server 01',
+                'A3' => 'Core switch',
+                'A4' => 'Backup server',
+                'B10' => '',
+            ],
+            $custom_names_by_plug
+        );
+
+        $this->doInventory(self::XML_PLUGS_CUSTOM_NAME, true);
+
+        $custom_names_by_plug = array_column($plug->find($plug_criteria), 'custom_name', 'name');
+        $this->assertSame(
+            [
+                'A1' => 'Web server 01',
+                'A2' => 'Database server 01',
+                'A3' => 'Core switch',
+                'A4' => '',
+                'B10' => '',
+            ],
+            $custom_names_by_plug
+        );
     }
 
     public function testDynamicPlugsDeletedOnReInventoryWithNoPlugs(): void

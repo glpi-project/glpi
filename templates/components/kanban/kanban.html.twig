@@ -53,7 +53,7 @@
    </template>
 {% endfor %}
 
-<script>
+<script nonce="{{ csp_nonce() }}">
    $(function(){
       // Create Kanban
       window.Vue.createApp(window.Vue.components['Kanban/KanbanApp'].component, {

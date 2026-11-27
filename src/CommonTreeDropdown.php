@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Toolbox\SanitizedStringsDecoder;
 
 /**
  * CommonTreeDropdown Class
@@ -941,8 +942,8 @@ TWIG, $twig_params);
                 'SELECT' => 'id',
                 'FROM'   => $this->getTable(),
                 'WHERE'  => [
-                    'completename' => $input['completename'],
-                ],
+                    'completename' => (new SanitizedStringsDecoder())->getSearchableValues($input['completename'], true),
+                ] + static::getSystemSQLCriteria(),
             ];
             if ($this->isField('entities_id') && isset($input['entities_id'])) {
                 $criteria['WHERE'] += getEntitiesRestrictCriteria(
@@ -965,9 +966,9 @@ TWIG, $twig_params);
                 'SELECT' => 'id',
                 'FROM'   => $this->getTable(),
                 'WHERE'  => [
-                    'name'   => $input['name'],
+                    'name'   => (new SanitizedStringsDecoder())->getSearchableValues($input['name']),
                     $fk      => ($input[$fk] ?? 0),
-                ],
+                ] + static::getSystemSQLCriteria(),
             ];
             if ($this->isField('entities_id') && isset($input['entities_id'])) {
                 $criteria['WHERE'] += getEntitiesRestrictCriteria(

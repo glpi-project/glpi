@@ -38,17 +38,48 @@ namespace Glpi\Dashboard;
 use CommonDBChild;
 use Glpi\DBAL\QueryParam;
 
+/**
+ * @phpstan-type DashboardItemFields array{
+ *     id: int,
+ *     dashboards_dashboards_id: int,
+ *     gridstack_id: string,
+ *     card_id: string,
+ *     x: int,
+ *     y: int,
+ *     width: int,
+ *     height: int,
+ *     card_options: string|array<string, mixed>,
+ *     ...
+ * }
+ *
+ * @phpstan-type DashboardItemFieldsDecoded DashboardItemFields & array{ card_options: array<string, mixed>, ... }
+ */
 class Item extends CommonDBChild
 {
     public static string $itemtype = Dashboard::class;
     public static string $items_id = 'dashboards_dashboards_id';
 
     /**
+     * Remove card options that must neither be provided by the client nor stored,
+     * as they are computed server-side by the card provider.
+     *
+     * @param array<string, mixed> $card_options
+     *
+     * @return array<string, mixed>
+     */
+    public static function cleanCardOptions(array $card_options): array
+    {
+        unset($card_options['url'], $card_options['data']);
+
+        return $card_options;
+    }
+
+    /**
      * Return items for the provided dashboard
      *
      * @param int $dashboards_id
      *
-     * @return array the items
+     * @return DashboardItemFieldsDecoded[] the items
      */
     public static function getForDashboard(int $dashboards_id = 0): array
     {
@@ -64,7 +95,8 @@ class Item extends CommonDBChild
         $items = [];
         foreach ($di_iterator as $item) {
             unset($item['id']);
-            $item['card_options'] = importArrayFromDB($item['card_options']);
+            $options = importArrayFromDB($item['card_options']);
+            $item['card_options'] = \is_array($options) ? self::cleanCardOptions($options) : $options;
 
             // [x,y, width, height] may have been nulled in DB
             $item['x']      = (int) ($item['x'] ?? 0);
@@ -83,7 +115,7 @@ class Item extends CommonDBChild
      * Save items in DB for the provided dashboard
      *
      * @param int $dashboards_id id (not key) of the dashboard
-     * @param array $items cards of the dashboard, contains:
+     * @param DashboardItemFieldsDecoded[] $items cards of the dashboard, contains:
      *    - gridstack_id: unique id of the card in the grid, usually build like card_id.uuidv4
      *    - card_id: key of array return by getAllDasboardCards
      *    - x: position in grid
@@ -116,9 +148,13 @@ class Item extends CommonDBChild
             // card_options should be unescaped as they will be json_encoded after
             $card_options = $_REQUEST['items'][$item_key]['card_options'] ?? $item['card_options'] ?? [];
 
+            if (!\is_array($card_options)) {
+                $card_options = [];
+            }
+
             // clean
+            $card_options = self::cleanCardOptions($card_options);
             unset(
-                $card_options['force'],
                 $card_options['card_id'],
                 $card_options['gridstack_id']
             );

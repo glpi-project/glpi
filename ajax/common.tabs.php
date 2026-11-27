@@ -34,17 +34,10 @@
  */
 
 use Glpi\Debug\Profiler;
-
-global $CFG_GLPI;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
-
-// Session check is disabled for this script (see `\Glpi\Http\Firewall::computeStrategyForCoreLegacyScript()`)
-// to be able to adapt the checks depending on the request.
-if (!($CFG_GLPI["use_public_faq"] && str_ends_with($_GET["_target"], '/front/helpdesk.faq.php'))) {
-    Session::checkLoginUser();
-}
 
 if (!isset($_GET['_glpi_tab'])) {
     return;
@@ -75,11 +68,11 @@ if ($item = getItemForItemtype($_GET['_itemtype'])) {
         // No id if ruleCollection but check right
         if ($item instanceof RuleCollection) {
             if (!$item->canList()) {
-                return;
+                throw new AccessDeniedHttpException();
             }
         } elseif (!isset($_GET["id"]) || $item->isNewID($_GET["id"])) {
             if (!$item::canCreate()) {
-                return;
+                throw new AccessDeniedHttpException();
             }
             // This call was initially triggered by a call to `$item->can($ID, CREATE, $input)`
             // but checking the input at display time was blocking legitiame form displays (mainly for `CommonDBRelation`).
@@ -91,7 +84,7 @@ if ($item = getItemForItemtype($_GET['_itemtype'])) {
                 $item->initObjectOnCreation($_GET);
             }
         } elseif (!$item->can($_GET["id"], READ)) {
-            return;
+            throw new AccessDeniedHttpException();
         }
     }
 }
@@ -102,7 +95,7 @@ if (isset($_GET['_target'])) {
 
 Session::setActiveTab($_GET['_itemtype'], $_GET['_glpi_tab']);
 
-$notvalidoptions = ['_glpi_tab', '_itemtype', 'sort', 'order', 'withtemplate', 'formoptions'];
+$notvalidoptions = ['_glpi_tab', '_itemtype', 'sort', 'order', 'withtemplate', 'formoptions', 'header_toolbar'];
 $options         = $_GET;
 foreach ($notvalidoptions as $key) {
     if (isset($options[$key])) {

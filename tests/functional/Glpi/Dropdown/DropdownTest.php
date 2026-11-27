@@ -195,4 +195,23 @@ class DropdownTest extends DbTestCase
 
         $this->assertTrue((new $bar_classname())->getFromDB($bar_dropdown->getID()));
     }
+
+    public function testFindIdIsRestrictedToDefinition(): void
+    {
+        $foo_classname = $this->initDropdownDefinition()->getDropdownClassName();
+        $bar_classname = $this->initDropdownDefinition()->getDropdownClassName();
+
+        $foo_dropdown = $this->createItem($foo_classname, ['name' => 'Blue']);
+
+        // Searched by name, or by complete name
+        foreach ([['name' => 'Blue'], ['completename' => 'Blue']] as $input) {
+            $this->assertEquals(-1, (new $bar_classname())->findID($input));
+            $this->assertEquals($foo_dropdown->getID(), (new $foo_classname())->findID($input));
+        }
+
+        // The dropdown of another definition is not reused, a new one is created
+        $bar_dropdown_id = (new $bar_classname())->import(['name' => 'Blue']);
+        $this->assertGreaterThan(0, $bar_dropdown_id);
+        $this->assertNotEquals($foo_dropdown->getID(), $bar_dropdown_id);
+    }
 }

@@ -35,6 +35,8 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\Process\Process;
 
 /* Test for inc/notificationmailingsetting.class.php .class.php */
 
@@ -115,5 +117,30 @@ class NotificationMailingSettingTest extends DbTestCase
 
         //reset to defaults
         $CFG_GLPI['notifications_mailing'] = 0;
+    }
+
+    public static function sendmailPathProvider(): iterable
+    {
+        yield 'no sendmail path' => ['', false];
+        yield 'sendmail without supported flags' => ['/usr/local/bin/phpsendmail.php', false];
+        yield 'sendmail with -t flag' => ['/usr/sbin/sendmail -t -i', true];
+        yield 'sendmail with -bs flag' => ['/usr/sbin/sendmail -bs', true];
+    }
+
+    #[DataProvider('sendmailPathProvider')]
+    public function testIsMailFunctionAvailable(string $sendmail_path, bool $expected): void
+    {
+        // `sendmail_path` is a PHP_INI_SYSTEM directive, it can only be set when PHP starts.
+        $process = new Process([
+            PHP_BINARY,
+            '-d',
+            'sendmail_path=' . $sendmail_path,
+            '-r',
+            'require $argv[1]; var_export(\\NotificationMailingSetting::isMailFunctionAvailable());',
+            GLPI_ROOT . '/vendor/autoload.php',
+        ]);
+        $process->mustRun();
+
+        $this->assertSame(var_export($expected, true), $process->getOutput());
     }
 }

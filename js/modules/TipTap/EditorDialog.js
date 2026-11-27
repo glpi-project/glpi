@@ -54,9 +54,10 @@
  * @param {string} config.title
  * @param {string} config.confirmLabel
  * @param {function({close: function(): void}): void} config.onConfirm
+ * @param {function(): void} [config.onClose] - Called once the dialog is dismissed or confirmed.
  * @returns {EditorDialogHandle}
  */
-export function createEditorDialog({ editor, title, confirmLabel, onConfirm }) {
+export function createEditorDialog({ editor, title, confirmLabel, onConfirm, onClose = null }) {
     const uid = Math.random().toString(36).slice(2, 9);
 
     const overlay = document.createElement('div');
@@ -119,6 +120,7 @@ export function createEditorDialog({ editor, title, confirmLabel, onConfirm }) {
         clearTimeout(keydown_timer);
         document.removeEventListener('keydown', handleKeydown, true);
         overlay.remove();
+        onClose?.();
         editor.commands.focus();
     };
 

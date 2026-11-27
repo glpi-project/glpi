@@ -102,7 +102,7 @@
    </div>
 {% endif %}
 
-<script>
+<script nonce="{{ csp_nonce() }}">
    (($) => {
       $(".pswp-img{{ rand }}").on('click', 'figure .pswp-trigger', function(event) {
          event.preventDefault();

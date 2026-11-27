@@ -136,7 +136,7 @@
             {{ inputs.hidden('_in_modal', _request['_in_modal']|default('')) }}
             {{ inputs.submit('search', _x('button', 'Search'), 1) }}
         </div>
-        <script>
+        <script nonce="{{ csp_nonce() }}">
             $(() => {
                 $('input[name="interface"]').on('change', (e) => {
                     const chkbox = $(e.target);

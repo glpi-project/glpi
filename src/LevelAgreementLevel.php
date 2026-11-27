@@ -47,6 +47,11 @@ abstract class LevelAgreementLevel extends RuleTicket
     public static string $rightname            = 'slm';
 
     /**
+     * Suffix appended to a reminder event to build the action sending only the notification stored in its value.
+     */
+    public const NOTIFICATION_RECALL_SUFFIX = '_notification';
+
+    /**
      * LevelAgreement parent class.
      * Have to be redefined by concrete class.
      * @var class-string<LevelAgreement>
@@ -212,6 +217,29 @@ abstract class LevelAgreementLevel extends RuleTicket
         $actions['_groups_id_observer']['force_actions']  = ['append'];
 
         return $actions;
+    }
+
+    /**
+     * Get the action sending one ticket notification of the given reminder event, instead of all of them.
+     *
+     * @param string $event Reminder event (`recall` or `recall_ola`)
+     * @param string $label Label of the reminder action sending all the notifications of the event
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    protected function getNotificationRecallAction(string $event, string $label): array
+    {
+        return [
+            $event . self::NOTIFICATION_RECALL_SUFFIX => [
+                'name'          => sprintf(__('%1$s: %2$s'), $label, Notification::getTypeName(1)),
+                'type'          => 'dropdown',
+                'table'         => Notification::getTable(),
+                'condition'     => ['itemtype' => Ticket::class, 'event' => $event, 'is_active' => 1],
+                'entity_from_rule' => true,
+                'force_actions' => ['send'],
+                'permitseveral' => ['send'],
+            ],
+        ];
     }
 
     public function getCriterias()

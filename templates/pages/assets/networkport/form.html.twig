@@ -45,7 +45,7 @@
 
     {% if item.isNewID(item.getID()) %}
         {{ fields.sliderField('_add_several', 0, __('Add several ports')) }}
-        <script>
+        <script nonce="{{ csp_nonce() }}">
             (function() {
                 const checkbox = $('input[type="checkbox"][name="_add_several"]');
                 if (checkbox.length && !checkbox.data('handler-bound')) {

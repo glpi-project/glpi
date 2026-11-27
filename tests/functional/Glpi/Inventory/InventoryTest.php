@@ -9991,4 +9991,53 @@ JSON;
         $agent = $inventory->getAgent();
         $this->assertSame('', $agent->fields['tag']);
     }
+
+    public static function updateSourceOfExistingNetworkAssetProvider(): iterable
+    {
+        foreach (
+            [
+                'printer'           => [\Printer::class, 'printer_1.json', 'PHCVN191TG'],
+                'network equipment' => [\NetworkEquipment::class, 'networkequipment_1.json', 'SSI1912014B'],
+            ] as $label => [$itemtype, $fixture, $serial]
+        ) {
+            yield "$label created manually without update source" => [$itemtype, $fixture, $serial, null];
+            yield "$label created manually with another update source" => [$itemtype, $fixture, $serial, 'Manual source'];
+        }
+    }
+
+    #[DataProvider('updateSourceOfExistingNetworkAssetProvider')]
+    public function testNetworkInventoryUpdateSourceOfExistingAsset(
+        string $itemtype,
+        string $fixture,
+        string $serial,
+        ?string $initial_source
+    ): void {
+        $native_source = $this->getOrCreateNativeInventorySource();
+
+        $initial_source_id = 0;
+        if ($initial_source !== null) {
+            $initial_source_id = $this->createItem(\AutoUpdateSystem::class, ['name' => $initial_source])->getID();
+        }
+
+        //asset created manually, then matched by the network inventory on its serial number
+        $asset = $this->createItem($itemtype, [
+            'name'                 => 'manual asset 47633',
+            'serial'               => $serial,
+            'entities_id'          => 0,
+            'autoupdatesystems_id' => $initial_source_id,
+        ]);
+
+        $inventory = $this->doInventory(json_decode(file_get_contents(self::INV_FIXTURES . $fixture)));
+
+        $this->assertInstanceOf($itemtype, $inventory->getItem());
+        $this->assertSame($asset->getID(), $inventory->getItem()->getID());
+
+        $this->assertTrue($asset->getFromDB($asset->getID()));
+        $this->assertSame(1, $asset->fields['is_dynamic']);
+        $this->assertSame(
+            $native_source->getID(),
+            $asset->fields['autoupdatesystems_id'],
+            'Update source of the inventoried asset has not been set to "GLPI Native Inventory"'
+        );
+    }
 }

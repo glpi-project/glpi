@@ -48,6 +48,7 @@ use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeFile;
+use Glpi\Form\QuestionType\QuestionTypeImpact;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
@@ -200,6 +201,9 @@ final class VisibilityConditionHandlerTest extends AbstractConditionHandlerTest
             ],
             "QuestionTypeUrgency" => [
                 'type' => QuestionTypeUrgency::class,
+            ],
+            "QuestionTypeImpact" => [
+                'type' => QuestionTypeImpact::class,
             ],
             "QuestionTypeRequestType" => [
                 'type' => QuestionTypeRequestType::class,

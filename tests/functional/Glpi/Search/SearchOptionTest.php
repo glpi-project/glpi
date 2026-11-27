@@ -322,4 +322,38 @@ class SearchOptionTest extends DbTestCase
         $this->assertSame(__('greater than or equal to'), $actions['morethanorequal']);
         $this->assertSame(__('less than or equal to'), $actions['lessthanorequal']);
     }
+
+    public static function userJoinConditionProvider(): iterable
+    {
+        yield [\Ticket::class, 25]; // followups description
+        yield [\Ticket::class, 26]; // tasks description
+        yield [\KnowbaseItem::class, 89]; // is favorite
+        yield [\SavedSearch::class, 11]; // default
+    }
+
+    #[DataProvider('userJoinConditionProvider')]
+    public function testUserJoinConditionWithoutLoggedInUser(string $itemtype, int $option_id): void
+    {
+        // Search options may be built, then cached, while no user is logged in (e.g. in a CLI context)
+        $this->assertFalse(\Session::getLoginUserID());
+        SearchOption::clearSearchOptionCache($itemtype);
+        try {
+            $options = SearchOption::getOptionsForItemtype($itemtype);
+        } finally {
+            SearchOption::clearSearchOptionCache($itemtype);
+        }
+
+        $users_ids = [];
+        array_walk_recursive(
+            $options[$option_id]['joinparams']['condition'],
+            static function ($value, $key) use (&$users_ids) {
+                if ($key === 'NEWTABLE.users_id') {
+                    $users_ids[] = $value;
+                }
+            }
+        );
+
+        // `false` would be compared as an empty string to the integer `users_id` field
+        $this->assertSame([0], $users_ids);
+    }
 }

@@ -104,7 +104,7 @@ abstract class AbstractCommonITILFormDestinationType extends DbTestCase
     {
         // Ensure the type defined in the child class is a valid CommonDBTM class
         $target = $this->getTestedInstance()->getTarget();
-        $is_valid_class = is_a($target, CommonDBTM::class);
+        $is_valid_class = $target instanceof CommonDBTM;
 
         $this->assertTrue($is_valid_class);
     }

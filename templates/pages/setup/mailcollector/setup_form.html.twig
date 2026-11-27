@@ -208,7 +208,7 @@
         }
     ) }}
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         $(function() {
             // Track all fields used to establish the IMAP connection
             const connectionFields = [

@@ -69,4 +69,30 @@ test.describe('ITIL Followups', () => {
         await ticket.goto(id);
         await expect(ticket.getButton('Answer')).not.toBeAttached();
     });
+
+    test('Pending reasons visibility follows the pending switch on double click', async ({
+        profile,
+        page,
+        api,
+    }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const id = await api.createItem('Ticket', {
+            name: 'Ticket for pending switch',
+            content: '',
+            entities_id: getWorkerEntityId(),
+        });
+
+        const ticket = new TicketPage(page);
+        await ticket.goto(id);
+        await ticket.doOpenFollowupForm();
+
+        // The second click happens while the collapse transition is still running
+        await ticket.doDoubleClickFollowupPendingSwitch();
+        await expect(ticket.followup_pending_switch).not.toBeChecked();
+        await expect(ticket.followup_pending_reasons).toBeHidden();
+
+        await ticket.doClickFollowupPendingSwitch();
+        await expect(ticket.followup_pending_switch).toBeChecked();
+        await expect(ticket.followup_pending_reasons).toBeVisible();
+    });
 });

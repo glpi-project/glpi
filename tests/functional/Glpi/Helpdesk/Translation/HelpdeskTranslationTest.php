@@ -37,7 +37,9 @@ namespace tests\units\Glpi\Form;
 use Config;
 use Dropdown;
 use Entity;
+use Glpi\Debug\Profile;
 use Glpi\Helpdesk\HelpdeskTranslation;
+use Glpi\Helpdesk\Tile\ExternalPageTile;
 use Glpi\Helpdesk\Tile\GlpiPageTile;
 use Glpi\Helpdesk\Tile\Item_Tile;
 use Glpi\Helpdesk\Tile\TilesManager;
@@ -58,6 +60,103 @@ class HelpdeskTranslationTest extends DbTestCase
                 ['fr_FR' => '', 'es_ES' => '']
             )
         );
+    }
+
+    public function testGetTranslationsForHelpdesk(): void
+    {
+        global $DB;
+
+        $this->initHelpdeskWithTranslations();
+
+        // Orphan translation: entity row removed without the purge cleanup
+        $orphan_entity = $this->createItem(Entity::class, [
+            'name'        => 'Entity removed without purge',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->createItem(
+            HelpdeskTranslation::class,
+            [
+                'itemtype'     => Entity::class,
+                'items_id'     => $orphan_entity->getID(),
+                'language'     => 'fr_FR',
+                'key'          => Entity::TRANSLATION_KEY_CUSTOM_HELPDESK_HOME_TITLE,
+                'translations' => ['one' => 'orphan translation'],
+            ],
+            ['translations']
+        );
+        $DB->delete(Entity::getTable(), ['id' => $orphan_entity->getID()]);
+
+        $entity_id = getItemByTypeName(Entity::class, 'Test Root Entity', true);
+        $tile_id = array_key_first((new GlpiPageTile())->find(['title' => 'Test Tile']));
+
+        $translations = array_map(
+            fn(HelpdeskTranslation $translation) => sprintf(
+                '%s_%d_%s_%s',
+                $translation->fields['itemtype'],
+                $translation->fields['items_id'],
+                $translation->fields['language'],
+                $translation->fields['key']
+            ),
+            HelpdeskTranslation::getTranslationsForHelpdesk()
+        );
+
+        $this->assertEqualsCanonicalizing(
+            [
+                Entity::class . "_{$entity_id}_fr_FR_" . Entity::TRANSLATION_KEY_CUSTOM_HELPDESK_HOME_TITLE,
+                Entity::class . "_{$entity_id}_es_ES_" . Entity::TRANSLATION_KEY_CUSTOM_HELPDESK_HOME_TITLE,
+                GlpiPageTile::class . "_{$tile_id}_fr_FR_title",
+                GlpiPageTile::class . "_{$tile_id}_fr_FR_description",
+                GlpiPageTile::class . "_{$tile_id}_es_ES_title",
+                GlpiPageTile::class . "_{$tile_id}_es_ES_description",
+            ],
+            $translations
+        );
+    }
+
+    public function testListTranslationsHandlersSkipsEntitiesInheritingHelpdeskTitle(): void
+    {
+        $this->initHelpdeskWithTranslations();
+
+        $custom_entity_id = getItemByTypeName(Entity::class, 'Test Root Entity', true);
+        $inheriting_entity = $this->createItem(Entity::class, [
+            'name'        => 'Entity inheriting helpdesk title',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->assertEquals(Entity::CONFIG_PARENT, $inheriting_entity->fields['custom_helpdesk_home_title']);
+
+        $handlers = (new HelpdeskTranslation())->listTranslationsHandlers();
+
+        $this->assertArrayHasKey(sprintf('%s_%d', Entity::getType(), $custom_entity_id), $handlers);
+        $this->assertArrayNotHasKey(sprintf('%s_%d', Entity::getType(), $inheriting_entity->getID()), $handlers);
+    }
+
+    public function testQueriesCountDoesNotDependOnEntitiesCount(): void
+    {
+        $this->initHelpdeskWithTranslations();
+
+        $count_queries = function (): int {
+            $before = count(Profile::getCurrent()->getDebugInfo()['sql']['queries']);
+            HelpdeskTranslation::getTranslationsForHelpdesk();
+            (new HelpdeskTranslation())->listTranslationsHandlers();
+            return count(Profile::getCurrent()->getDebugInfo()['sql']['queries']) - $before;
+        };
+
+        $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
+        $queries_count = $count_queries();
+
+        $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+        for ($i = 0; $i < 10; $i++) {
+            $this->createItem(Entity::class, [
+                'name'        => "Entity inheriting helpdesk title $i",
+                'entities_id' => $this->getTestRootEntity(true),
+            ]);
+        }
+        // Refresh active entities so the new ones are in the restrict criteria
+        $this->login();
+
+        $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
+        $this->assertSame($queries_count, $count_queries());
+        $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
     }
 
     public function testGetTranslationForKey()
@@ -255,6 +354,62 @@ class HelpdeskTranslationTest extends DbTestCase
             0,
             'Handlers with empty original values and no existing translations should not be listed in the translation table'
         );
+    }
+
+    public function testTranslationTableEscapesItemNames(): void
+    {
+        // Arrange: create an entity and tiles whose names contain HTML
+        $this->login();
+        $tiles_manager = TilesManager::getInstance();
+        array_map(fn($tile) => $tiles_manager->deleteTile($tile), $tiles_manager->getAllTiles());
+
+        $payload = '<img src="x" onerror="alert(1)">';
+        $entity = $this->createItem(Entity::class, [
+            'name'                        => "Entity $payload",
+            'entities_id'                 => $this->getTestRootEntity(true),
+            'custom_helpdesk_home_title'  => Entity::HELPDESK_TITLE_CUSTOM,
+            '_custom_helpdesk_home_title' => 'Custom Helpdesk Title',
+        ]);
+        foreach ([GlpiPageTile::class, ExternalPageTile::class] as $rank => $tile_class) {
+            $tile = $this->createItem($tile_class, [
+                'title'       => "Tile $payload",
+                'description' => 'This is a test tile',
+                'url'         => 'https://glpi-project.org',
+            ], ['url']);
+            $this->createItem(Item_Tile::class, [
+                'itemtype_item' => Entity::class,
+                'items_id_item' => $entity->getID(),
+                'itemtype_tile' => $tile_class,
+                'items_id_tile' => $tile->getID(),
+                'rank'          => $rank,
+            ]);
+        }
+        $this->createItem(
+            HelpdeskTranslation::class,
+            [
+                'itemtype'     => Entity::class,
+                'items_id'     => $entity->getID(),
+                'language'     => 'fr_FR',
+                'key'          => Entity::TRANSLATION_KEY_CUSTOM_HELPDESK_HOME_TITLE,
+                'translations' => ['one' => 'custom_helpdesk_home_title in fr_FR'],
+            ],
+            ['translations']
+        );
+
+        // Act: render the translations tab
+        ob_start();
+        HelpdeskTranslation::displayTabContentForItem(new Config());
+        $content = ob_get_clean();
+        $crawler = new Crawler($content);
+
+        // Assert: the names are displayed as text, not interpreted as HTML
+        $this->assertCount(0, $crawler->filter('img[onerror]'));
+        $categories = $crawler
+            ->filter('#helpdesk-translation-modal-fr_FR [data-glpi-helpdesk-translations-subtitle-row]')
+            ->each(fn(Crawler $node) => $node->text());
+        $this->assertContains("Entities: Entity $payload", $categories);
+        $this->assertContains("GLPI page: Tile $payload", $categories);
+        $this->assertContains("External page: Tile $payload", $categories);
     }
 
     public function initHelpdeskWithTranslations(): void

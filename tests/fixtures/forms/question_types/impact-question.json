@@ -1,0 +1,98 @@
+{
+    "version": 1,
+    "forms": [
+        {
+            "id": 11,
+            "uuid": "6b4dde2c-4657-41b5-8977-83711b874aaf",
+            "name": "Form with impact question",
+            "header": null,
+            "description": null,
+            "entity_name": "Root entity",
+            "is_recursive": true,
+            "is_active": false,
+            "submit_button_visibility_strategy": "always_visible",
+            "illustration": "",
+            "submit_button_conditions": [],
+            "sections": [
+                {
+                    "id": 29,
+                    "uuid": "368df82d-d1d4-4a7b-8531-cb280b3ce967",
+                    "name": "First section",
+                    "description": null,
+                    "rank": 0,
+                    "visibility_strategy": "always_visible",
+                    "conditions": []
+                }
+            ],
+            "comments": [],
+            "questions": [
+                {
+                    "id": 144,
+                    "uuid": "74fbc536-7625-4d78-9cdb-b89141e0b4b4",
+                    "name": "My question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeImpact",
+                    "is_mandatory": false,
+                    "vertical_rank": 0,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": 0,
+                    "extra_data": null,
+                    "section_id": 29,
+                    "visibility_strategy": "always_visible",
+                    "validation_strategy": "no_validation",
+                    "conditions": [],
+                    "validation_conditions": []
+                },
+                {
+                    "id": 145,
+                    "uuid": "36a3c0c5-b1ab-4624-a2be-de5c643b44a5",
+                    "name": "Another question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "is_mandatory": false,
+                    "vertical_rank": 1,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 29,
+                    "visibility_strategy": "always_visible",
+                    "validation_strategy": "no_validation",
+                    "conditions": [],
+                    "validation_conditions": []
+                }
+            ],
+            "policies": [
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "config": {
+                        "user_ids": [
+                            "all"
+                        ],
+                        "group_ids": [],
+                        "profile_ids": []
+                    },
+                    "is_active": true
+                }
+            ],
+            "destinations": [
+                {
+                    "id": 47,
+                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "name": "Ticket",
+                    "config": [],
+                    "creation_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "translations": [],
+            "data_requirements": [
+                {
+                    "itemtype": "Entity",
+                    "name": "Root entity"
+                }
+            ],
+            "custom_types_requirements": [],
+            "plugin_requirements": []
+        }
+    ]
+}

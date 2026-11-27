@@ -71,7 +71,7 @@
          </button>
       </div>
 
-      <script>
+      <script nonce="{{ csp_nonce() }}">
           const add_custom_header = (name, value, readonly) => {
               const custom_header_fields_container = $('div.custom-header-fields');
               const template = $($('#custom-header-fields-template').html());

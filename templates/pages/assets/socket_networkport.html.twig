@@ -80,7 +80,7 @@
             field_class: 'col-12'
         }) }}
     </span>
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         // listener to remove socket selector and breadcrumb
         $(document).on('change', '#dropdown_itemtype{{ rand }}', () => {
             $('#show_front_asset_breadcrumb').empty();

@@ -34,10 +34,12 @@
 
 namespace tests\units;
 
+use Calendar;
 use CommonITILActor;
 use Contract;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Cache\SimpleCache;
 use Glpi\Controller\ServiceCatalog\IndexController;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Form\Category;
@@ -53,6 +55,7 @@ use NotificationTargetTicket;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Profile_User;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Ticket;
@@ -736,6 +739,80 @@ class EntityTest extends DbTestCase
         $this->assertTrue($entity->update(['id' => $grandchild_id] + $grandchild_values));
 
         $this->assertEquals($expected_result, call_user_func_array([Entity::class, 'getUsedConfig'], $params));
+    }
+
+    public function testGetUsedConfigDoesNotWriteCacheOnHit(): void
+    {
+        global $GLPI_CACHE;
+
+        $entities_id = getItemByTypeName('Entity', '_test_child_1', true);
+
+        $original_cache = $GLPI_CACHE;
+        $GLPI_CACHE = new class (new ArrayAdapter()) extends SimpleCache {
+            public int $set_multiple_calls = 0;
+
+            public function setMultiple($values, $ttl = null): bool
+            {
+                $this->set_multiple_calls++;
+                return parent::setMultiple($values, $ttl);
+            }
+        };
+
+        try {
+            $first_value = Entity::getUsedConfig('2fa_enforcement_strategy', $entities_id, '', 0);
+            $this->assertSame(1, $GLPI_CACHE->set_multiple_calls);
+
+            $this->assertSame($first_value, Entity::getUsedConfig('2fa_enforcement_strategy', $entities_id, '', 0));
+            $this->assertSame(1, $GLPI_CACHE->set_multiple_calls);
+        } finally {
+            $GLPI_CACHE = $original_cache;
+        }
+    }
+
+    public function testGetUsedConfigAfterEntityMove(): void
+    {
+        $this->login();
+
+        $root_id = getItemByTypeName('Entity', '_test_root_entity', true);
+        $calendar_a = $this->createItem(Calendar::class, ['name' => __FUNCTION__ . ' A']);
+        $calendar_b = $this->createItem(Calendar::class, ['name' => __FUNCTION__ . ' B']);
+
+        $parent_a = $this->createItem(Entity::class, [
+            'name'               => __FUNCTION__ . ' A',
+            'entities_id'        => $root_id,
+            'autoclose_delay' => 10,
+            'calendars_id'    => $calendar_a->getID(),
+        ]);
+        $parent_b = $this->createItem(Entity::class, [
+            'name'               => __FUNCTION__ . ' B',
+            'entities_id'        => $root_id,
+            'autoclose_delay' => 20,
+            'calendars_id'    => $calendar_b->getID(),
+        ]);
+        $moved = $this->createItem(Entity::class, [
+            'name'            => __FUNCTION__ . ' moved',
+            'entities_id'     => $parent_a->getID(),
+            'autoclose_delay' => Entity::CONFIG_PARENT,
+            'calendars_id'    => Entity::CONFIG_PARENT,
+        ], ['calendars_id']);
+        $child = $this->createItem(Entity::class, [
+            'name'            => __FUNCTION__ . ' child',
+            'entities_id'     => $moved->getID(),
+            'autoclose_delay' => Entity::CONFIG_PARENT,
+            'calendars_id'    => Entity::CONFIG_PARENT,
+        ], ['calendars_id']);
+
+        foreach ([$moved->getID(), $child->getID()] as $entities_id) {
+            $this->assertSame(10, Entity::getUsedConfig('autoclose_delay', $entities_id, '', Entity::CONFIG_NEVER));
+            $this->assertSame($calendar_a->getID(), Entity::getUsedConfig('calendars_strategy', $entities_id, 'calendars_id', 0));
+        }
+
+        $this->updateItem(Entity::class, $moved->getID(), ['entities_id' => $parent_b->getID()]);
+
+        foreach ([$moved->getID(), $child->getID()] as $entities_id) {
+            $this->assertSame(20, Entity::getUsedConfig('autoclose_delay', $entities_id, '', Entity::CONFIG_NEVER));
+            $this->assertSame($calendar_b->getID(), Entity::getUsedConfig('calendars_strategy', $entities_id, 'calendars_id', 0));
+        }
     }
 
     public static function getInheritedValueBadgeProvider(): iterable

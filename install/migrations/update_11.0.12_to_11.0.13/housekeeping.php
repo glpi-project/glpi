@@ -32,13 +32,20 @@
  * ---------------------------------------------------------------------
  */
 
-class PluginTesterFakeStorage extends Laminas\Mail\Storage\Imap
-{
-    public function __construct($params)
-    {
-    }
 
-    public function close()
-    {
-    }
-}
+/**
+ * @var Migration $migration
+ */
+
+$migration->addCrontask(
+    'Glpi\\System\\HousekeepingCron',
+    'housekeeping',
+    HOUR_TIMESTAMP,
+    param: 10000,
+    options: [
+        'state'   => 0, // CronTask::STATE_DISABLE
+        'mode'    => 2, // CronTask::MODE_EXTERNAL
+        'hourmin' => 0,
+        'hourmax' => 6,
+    ]
+);

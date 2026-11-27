@@ -57,6 +57,7 @@
          {{ include('components/user/link_with_tooltip.html.twig', {
             'users_id': users_id,
             'user_object': user_object,
+            'info_card': user_info_card ?? null,
             'enable_anonymization': anonym_user ?? false
          }, with_context = false) }}
       {% endset %}
@@ -77,6 +78,8 @@
          {% set creator_span %}
             {{ include('components/user/link_with_tooltip.html.twig', {
                'users_id': users_id,
+               'user_object': user_object ?? null,
+               'info_card': user_info_card ?? null,
                'enable_anonymization': anonym_user ?? false
             }, with_context = false) }}
          {% endset %}

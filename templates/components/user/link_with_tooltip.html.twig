@@ -34,10 +34,17 @@
 
 <span id="user_{{ rand }}" class="d-inline-flex align-items-center">
     <i class="ti ti-user me-1" aria-hidden="true"></i>
-    {{ get_item_link('User', users_id, {'enable_anonymization': enable_anonymization, 'tooltip': false}) }}
+    {% if user_object is defined and user_object is not null %}
+        {{ get_item_link(user_object, null, {'enable_anonymization': enable_anonymization, 'tooltip': false}) }}
+    {% else %}
+        {{ get_item_link('User', users_id, {'enable_anonymization': enable_anonymization, 'tooltip': false}) }}
+    {% endif %}
 </span>
 
-{% if not enable_anonymization %}
+{% if not enable_anonymization and info_card is defined and info_card is not null %}
+    {# Info card already rendered by the caller #}
+    {% do call('Html::showToolTip', [info_card, {'applyto': "user_" ~ rand}]) %}
+{% elseif not enable_anonymization %}
     {% set user = user_object ?? get_item('User', users_id) %}
     {% if user is not null and user.canView() %}
         {% set user_fields = user.fields %}

@@ -41,6 +41,7 @@ use Config;
 use Glpi\Config\ConfigContainer;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Session;
 use User;
 
 /* Test for inc/auth.class.php */
@@ -87,17 +88,17 @@ class AuthTest extends DbTestCase
     {
         $this->login('tech', 'tech');
         $this->removeRightFromProfile('Technician', Config::$rightname, READ | UPDATE);
-        \Session::reloadCurrentProfile();
+        Session::reloadCurrentProfile();
         $this->assertFalse(Auth::getMenuContent());
 
         // Update right alone must not expose the menu, as the target page only checks READ
         $this->addRightToProfile('Technician', Config::$rightname, UPDATE);
-        \Session::reloadCurrentProfile();
+        Session::reloadCurrentProfile();
         $this->assertFalse(Auth::getMenuContent());
 
         $this->removeRightFromProfile('Technician', Config::$rightname, UPDATE);
         $this->addRightToProfile('Technician', Config::$rightname, READ);
-        \Session::reloadCurrentProfile();
+        Session::reloadCurrentProfile();
         $menu = Auth::getMenuContent();
         $this->assertIsArray($menu);
         $this->assertArrayNotHasKey('add', $menu['options'][AuthLDAP::class]['links']);
@@ -106,7 +107,7 @@ class AuthTest extends DbTestCase
         $this->assertArrayNotHasKey('settings', $menu['options']);
 
         $this->addRightToProfile('Technician', Config::$rightname, UPDATE);
-        \Session::reloadCurrentProfile();
+        Session::reloadCurrentProfile();
         $menu = Auth::getMenuContent();
         $this->assertArrayHasKey('add', $menu['options'][AuthLDAP::class]['links']);
         $this->assertArrayHasKey('others', $menu['options']);
@@ -394,7 +395,7 @@ class AuthTest extends DbTestCase
 
         $CFG_GLPI['login_remember_time'] = 3600;
 
-        $cookie_name = session_name() . '_rememberme';
+        $cookie_name = Auth::getRememberMeCookieName();
         $user = getItemByTypeName(User::class, TU_USER);
         $this->assertnull($user->fields['last_login']);
 
@@ -416,6 +417,33 @@ class AuthTest extends DbTestCase
         $this->assertTrue((new Auth())->login('', ''));
 
         //Clean cookie
+        unset($_COOKIE[$cookie_name]);
+    }
+
+    /**
+     * Non-regression test: logging in again (e.g. OAuth SSO link) with "remember me"
+     * while a "remember me" cookie already exists must not reuse the cookie token UID.
+     */
+    public function testRememberMeLoginWithExistingCookie(): void
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['login_remember_time'] = 3600;
+
+        $cookie_name = Auth::getRememberMeCookieName();
+        $this->assertTrue((new Auth())->login(TU_USER, TU_PASS, true, true));
+        $first_cookie_value = $_COOKIE[$cookie_name];
+        $first_uid = explode(':', $first_cookie_value)[0];
+
+        $this->assertTrue((new Auth())->login(TU_USER, TU_PASS, true, true));
+        $second_uid = explode(':', $_COOKIE[$cookie_name])[0];
+        $this->assertNotSame($first_uid, $second_uid);
+        $this->assertSame($second_uid, Session::getLoginSessionUID());
+
+        // The replaced cookie must not be usable anymore
+        $_COOKIE[$cookie_name] = $first_cookie_value;
+        $this->assertFalse((new Auth())->login('', ''));
+
         unset($_COOKIE[$cookie_name]);
     }
 
@@ -444,7 +472,7 @@ class AuthTest extends DbTestCase
 
         $ssovariable_row = $DB->request([
             'FROM'  => 'glpi_ssovariables',
-            'WHERE' => ['name' => 'HTTP_AUTH_USER'],
+            'WHERE' => ['name' => 'REMOTE_USER'],
         ])->current();
         $this->assertNotEmpty($ssovariable_row);
 
@@ -454,13 +482,13 @@ class AuthTest extends DbTestCase
 
         // Simulate what the oauthsso plugin (or any external auth) does:
         // it sets the SSO server variable and calls login() with an empty login_name.
-        $_SERVER['HTTP_AUTH_USER'] = $username;
+        $_SERVER['REMOTE_USER'] = $username;
 
         $auth = new Auth();
         $logged_in = $auth->login('', '', false);
 
         $CFG_GLPI = $cfg_backup;
-        unset($_SERVER['HTTP_AUTH_USER']);
+        unset($_SERVER['REMOTE_USER']);
 
         $this->assertTrue($logged_in);
 
@@ -493,7 +521,7 @@ class AuthTest extends DbTestCase
 
         $ssovariable_row = $DB->request([
             'FROM'  => 'glpi_ssovariables',
-            'WHERE' => ['name' => 'HTTP_AUTH_USER'],
+            'WHERE' => ['name' => 'REMOTE_USER'],
         ])->current();
         $this->assertNotEmpty($ssovariable_row);
 
@@ -502,7 +530,7 @@ class AuthTest extends DbTestCase
         $CFG_GLPI['existing_auth_server_field_clean_domain'] = 0;
         $CFG_GLPI['is_users_auto_add'] = $auto_add ? 1 : 0;
 
-        $_SERVER['HTTP_AUTH_USER'] = $username;
+        $_SERVER['REMOTE_USER'] = $username;
 
         return $cfg_backup;
     }
@@ -531,7 +559,7 @@ class AuthTest extends DbTestCase
         $applied = $auth->applyValidatedLogin();
 
         $CFG_GLPI = $cfg_backup;
-        unset($_SERVER['HTTP_AUTH_USER']);
+        unset($_SERVER['REMOTE_USER']);
 
         $this->assertTrue($validated, implode(' ', $auth->getErrors()));
         $this->assertNull($user_id_after_validation, 'validateLogin() must not create the user');
@@ -563,7 +591,7 @@ class AuthTest extends DbTestCase
         $applied = $auth->applyValidatedLogin();
 
         $CFG_GLPI = $cfg_backup;
-        unset($_SERVER['HTTP_AUTH_USER']);
+        unset($_SERVER['REMOTE_USER']);
 
         $this->assertTrue($validated);
         $this->assertFalse($applied);
@@ -590,7 +618,7 @@ class AuthTest extends DbTestCase
         $_SERVER['SSL_CLIENT_S_DN'] = 'CN=Forged/Email=attacker@example.com/';
 
         try {
-            unset($_COOKIE[session_name() . '_rememberme']);
+            unset($_COOKIE[Auth::getRememberMeCookieName()]);
 
             // No verification performed at all: forged DN must not select X509.
             unset($_SERVER['SSL_CLIENT_VERIFY']);

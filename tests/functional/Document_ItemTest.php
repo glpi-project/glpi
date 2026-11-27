@@ -856,10 +856,8 @@ class Document_ItemTest extends DbTestCase
         // --- arrange : glpi user attaches a private and a public document to a ticket ---
         $this->login('glpi', 'glpi');
 
-        [$private_document, $public_document] = $this->createItems(\Document::class, [
-            ['name' => 'private document', 'filename' => 'private.xls'],
-            ['name' => 'public document', 'filename' => 'public.xls'],
-        ]);
+        $private_document = $this->createDocumentWithFilename(['name' => 'private document', 'filename' => 'private.xls']);
+        $public_document  = $this->createDocumentWithFilename(['name' => 'public document', 'filename' => 'public.xls']);
 
         $ticket = $this->createItem(\Ticket::class, [
             'name'    => 'New ticket',
@@ -917,7 +915,7 @@ class Document_ItemTest extends DbTestCase
 
         $this->login('glpi', 'glpi');
 
-        $document = $this->createItem(\Document::class, [
+        $document = $this->createDocumentWithFilename([
             'name'     => 'private document',
             'filename' => 'private.xls',
         ]);
@@ -961,10 +959,8 @@ class Document_ItemTest extends DbTestCase
         // --- arrange : a private link whose document is the browsed one ---
         $this->login('glpi', 'glpi');
 
-        [$browsed_document, $linked_document] = $this->createItems(\Document::class, [
-            ['name' => 'browsed document', 'filename' => 'browsed.xls'],
-            ['name' => 'privately linked document', 'filename' => 'linked.xls'],
-        ]);
+        $browsed_document = $this->createDocumentWithFilename(['name' => 'browsed document', 'filename' => 'browsed.xls']);
+        $linked_document  = $this->createDocumentWithFilename(['name' => 'privately linked document', 'filename' => 'linked.xls']);
 
         // `filepath` is derived from the upload, so it is set aside of the add(). Without it the
         // rendering emits a deprecation, which the test case treats as a failure.
@@ -1047,5 +1043,82 @@ class Document_ItemTest extends DbTestCase
         $_SESSION['glpiactiveprofile']['ticket'] = READ | UPDATE;
         $this->assertTrue($link->can($link_id, DELETE));
         $this->assertTrue($link->can($link_id, PURGE));
+    }
+
+    /**
+     * A user with no rights on a document must not be able to attach it to an
+     * item by setting `is_private` + `users_id` to themselves. The private flag
+     * only hides a link, it must not grant the right to create one.
+     *
+     * @see CommonDBTM::can()
+     */
+    public function testPrivateFlagDoesNotBypassCreateRights(): void
+    {
+        $this->login();
+
+        // KB article authored by someone else and not shared with the actor.
+        $kb_id = $this->createItem(\KnowbaseItem::class, [
+            'name'        => __FUNCTION__,
+            'answer'      => '<p>x</p>',
+            'entities_id' => $this->getTestRootEntity(true),
+            'users_id'    => getItemByTypeName('User', 'glpi', true),
+            'is_faq'      => 0,
+        ])->getID();
+
+        $doc_id = $this->createItem(\Document::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+
+        // Session with no rights at all on documents.
+        $this->login('normal', 'normal');
+        $_SESSION['glpiactiveprofile'][\Document::$rightname] = 0;
+
+        $base_input = [
+            'documents_id' => $doc_id,
+            'itemtype'     => \KnowbaseItem::class,
+            'items_id'     => $kb_id,
+        ];
+
+        // Baseline: creation is refused without any right on the article.
+        $this->assertFalse((new Document_Item())->can(-1, CREATE, $base_input));
+
+        // The forged `is_private` + `users_id` must NOT grant creation.
+        $private_input = $base_input + [
+            'is_private' => 1,
+            'users_id'   => \Session::getLoginUserID(),
+        ];
+        $this->assertFalse((new Document_Item())->can(-1, CREATE, $private_input));
+    }
+
+    /**
+     * Without the ownership shortcut, the owner of a private link must still be
+     * able to see it through the standard rights checks.
+     */
+    public function testPrivateDocumentLinkStillVisibleToItsOwner(): void
+    {
+        $this->login();
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $document = $this->createItem(\Document::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $owner_id = getItemByTypeName('User', 'normal', true);
+        $link = $this->createItem(Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \Computer::class,
+            'items_id'     => $computer->getID(),
+            'is_private'   => 1,
+            'users_id'     => $owner_id,
+        ]);
+
+        // The owner, without SEEPRIVATE, still sees the private link.
+        $this->login('normal', 'normal');
+        $_SESSION['glpiactiveprofile'][\Document::$rightname] = READ;
+        $_SESSION['glpiactiveprofile'][\Computer::$rightname] = READ;
+        $this->assertTrue($link->can($link->getID(), READ));
     }
 }

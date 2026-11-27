@@ -357,6 +357,49 @@ namespace tests\units {
         }
 
         /**
+         * The check of the active plugins done on each request detects a new version on disk.
+         */
+        public function testCheckStatesDetectsVersionChangeOfActivePlugin(): void
+        {
+            $directory = $this->getRandomPluginName();
+            $plugin = new class extends Plugin {
+                protected static function getPluginDirectories(): array
+                {
+                    // The test plugin, plus the real directories of the other active plugins.
+                    return [vfsStream::url('glpi/plugins'), ...parent::getPluginDirectories()];
+                }
+            };
+
+            $this->assertGreaterThan(0, (int) $plugin->add([
+                'directory' => $directory,
+                'name'      => 'Test plugin',
+                'version'   => '1.0',
+                'state'     => Plugin::ACTIVATED,
+            ]));
+            $this->createTestPluginFiles(
+                informations: ['name' => 'Test plugin', 'version' => '2.0'],
+                directory: $directory
+            );
+
+            $errors = [];
+            // PHPUnit won't let us expect errors so we need our own handler
+            set_error_handler(static function (int $errno, string $errstr) use (&$errors): bool {
+                $errors[] = $errstr;
+                return true;
+            }, E_USER_WARNING);
+            $plugin->checkStates();
+            restore_error_handler();
+
+            $this->assertContains(
+                'Plugin "' . $directory . '" version changed. It has been deactivated as its update process has to be launched.',
+                $errors
+            );
+            $this->assertTrue($plugin->getFromDBByCrit(['directory' => $directory]));
+            $this->assertSame(Plugin::NOTUPDATED, (int) $plugin->fields['state']);
+            $this->assertSame('2.0', $plugin->fields['version']);
+        }
+
+        /**
          * Test state checking on a valid directory corresponding to a known and NOT installed plugin
          * with a different version.
          * Should results in keeping plugin state to "NOTINSTALLED".
@@ -1087,6 +1130,50 @@ PHP
                     )
                 );
             }
+        }
+
+        /**
+         * A plugin present in several plugins directories must be booted only once, from the first directory
+         * where it is found.
+         */
+        #[RunInSeparateProcess]
+        public function testBootPluginsBootsPluginOnlyOnceWhenFoundInSeveralDirectories(): void
+        {
+            $directory = $this->getRandomPluginName();
+
+            vfsStream::setup('glpi', null, [
+                'marketplace' => [
+                    $directory => ['setup.php' => '<?php'],
+                ],
+                'plugins' => [
+                    $directory => ['setup.php' => '<?php'],
+                ],
+            ]);
+
+            $this->createItem(Plugin::class, [
+                'directory' => $directory,
+                'name'      => 'Test plugin',
+                'version'   => '1.0',
+                'state'     => Plugin::ACTIVATED,
+            ]);
+
+            $plugin = new class extends Plugin {
+                protected static function getPluginDirectories(): array
+                {
+                    return [
+                        vfsStream::url('glpi/marketplace'),
+                        vfsStream::url('glpi/plugins'),
+                        // keep real directories, to not deactivate the `tester` plugin
+                        ...GLPI_PLUGINS_DIRECTORIES,
+                    ];
+                }
+            };
+
+            $plugin->bootPlugins();
+
+            $activated_plugins = Plugin::getPlugins();
+            $this->assertCount(1, array_keys($activated_plugins, $directory, true));
+            $this->assertSame(array_values(array_unique($activated_plugins)), array_values($activated_plugins));
         }
 
         private function getPluginMock(array $options = [])

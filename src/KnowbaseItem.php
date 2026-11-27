@@ -64,6 +64,7 @@ use function Safe\preg_match;
 use function Safe\preg_match_all;
 use function Safe\preg_replace;
 use function Safe\preg_replace_callback;
+use function Safe\preg_split;
 
 /**
  * KnowbaseItem Class
@@ -949,6 +950,30 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     }
 
     /**
+     * Get the WHERE clause restricting articles to their visibility period
+     * (`begin_date` < NOW() < `end_date`, a null bound being open).
+     *
+     * @return array<int, array<string, mixed>> WHERE clause
+     */
+    public static function getVisibilityDateCriteria(): array
+    {
+        return [
+            [
+                'OR'  => [
+                    ['glpi_knowbaseitems.begin_date' => null],
+                    ['glpi_knowbaseitems.begin_date' => ['<', QueryFunction::now()]],
+                ],
+            ],
+            [
+                'OR'  => [
+                    ['glpi_knowbaseitems.end_date' => null],
+                    ['glpi_knowbaseitems.end_date' => ['>', QueryFunction::now()]],
+                ],
+            ],
+        ];
+    }
+
+    /**
      * Common JOIN clause used by getVisibilityCriteria* methods
      *
      * @param bool $forceall Force all join ?
@@ -1500,6 +1525,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         global $DB;
 
+        // Anonymous visitors of the public FAQ count once per session, not on every reload.
+        $is_anonymous = Session::getLoginUserID() === false;
+        if ($is_anonymous && isset($_SESSION['glpi_kb_viewed_ids'][$this->getID()])) {
+            return;
+        }
+
         // update counter view
         $DB->update(
             'glpi_knowbaseitems',
@@ -1510,6 +1541,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 'id' => $this->getID(),
             ]
         );
+
+        if ($is_anonymous) {
+            $_SESSION['glpi_kb_viewed_ids'][$this->getID()] = true;
+        }
     }
 
     /**
@@ -1530,6 +1565,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $default_options = [
             'display' => true,
             'mode' => "view",
+            // Shown inside the form of another item.
+            'embedded' => false,
         ];
         $options = array_merge($default_options, $options);
         $mode = $options['mode'];
@@ -1544,6 +1581,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             'actions' => [],
             'comment_anchor_max_length' => KnowbaseItem_Comment::MAX_ANCHOR_LENGTH,
         ];
+
+        if ($mode !== 'add') {
+            $params['legacy_heading_ids'] = $this->getLegacyHeadingIds($params['answer']);
+        }
+        if ($options['embedded'] && $mode === 'view') {
+            $params['article_url'] = Session::getCurrentInterface() === 'helpdesk'
+                ? $CFG_GLPI['root_doc'] . '/front/helpdesk.faq.php?id=' . $this->fields['id']
+                : self::getFormURLWithID($this->fields['id']);
+        }
 
         if ($mode === "edit" || $mode === "view") {
             $can_update = $this->can($this->fields['id'], UPDATE);
@@ -2392,20 +2438,7 @@ TWIG, $twig_params);
 
             case 'search':
                 // Publication window
-                $criteria['WHERE'][] = [
-                    [
-                        'OR'  => [
-                            ['glpi_knowbaseitems.begin_date'  => null],
-                            ['glpi_knowbaseitems.begin_date'  => ['<', QueryFunction::now()]],
-                        ],
-                    ],
-                    [
-                        'OR'  => [
-                            ['glpi_knowbaseitems.end_date'    => null],
-                            ['glpi_knowbaseitems.end_date'    => ['>', QueryFunction::now()]],
-                        ],
-                    ],
-                ];
+                $criteria['WHERE'][] = self::getVisibilityDateCriteria();
 
                 if (((string) $params["contains"]) !== '') {
                     $search = $params["contains"];
@@ -2509,19 +2542,7 @@ TWIG, $twig_params);
 
             case 'browse':
                 if (!Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
-                    // Add visibility date
-                    $criteria['WHERE'][] = [
-                        'OR'  => [
-                            ['glpi_knowbaseitems.begin_date' => null],
-                            ['glpi_knowbaseitems.begin_date' => ['<', QueryFunction::now()]],
-                        ],
-                    ];
-                    $criteria['WHERE'][] = [
-                        'OR'  => [
-                            ['glpi_knowbaseitems.end_date' => null],
-                            ['glpi_knowbaseitems.end_date' => ['>', QueryFunction::now()]],
-                        ],
-                    ];
+                    $criteria['WHERE'][] = self::getVisibilityDateCriteria();
                 }
 
                 // Sort on the title the reader sees: the translation if any, else the original.
@@ -2555,6 +2576,28 @@ TWIG, $twig_params);
 
         // Remove any whitespace from begin/end
         $search = preg_replace('/^[\p{Z}\h\v\r\n]+|[\p{Z}\h\v\r\n]+$/u', '', $search);
+        // Replace any other whitespace by a simple space
+        $search = preg_replace('/[\p{Z}\h\v\r\n]+/u', ' ', $search);
+
+        // Replace by a space all symbols located between two word chars, as MySQL fulltext index handles them as words separators
+        // (e.g. `base-de` is indexed as `base` and `de`).
+        // Outside of a quoted phrase, the resulting words are wrapped in double quotes to only match them as a phrase
+        // (e.g. `base-de` becomes `"base de"`, instead of `base* de*` that would match any word starting with `de`).
+        $inner_symbols = "[^{$word_chars}()\"* ]+";
+        $parts = preg_split('/("[^"]*")/u', $search, -1, PREG_SPLIT_DELIM_CAPTURE);
+        foreach ($parts as $i => $part) {
+            if ($i % 2 === 1) {
+                // Quoted phrase
+                $parts[$i] = preg_replace("/(?<=[{$word_chars}]){$inner_symbols}(?=[{$word_chars}])/u", ' ', $part);
+            } else {
+                $parts[$i] = preg_replace_callback(
+                    "/[{$word_chars}]+(?:{$inner_symbols}[{$word_chars}]+)+\**/u",
+                    fn(array $matches) => '"' . preg_replace("/{$inner_symbols}/u", ' ', rtrim($matches[0], '*')) . '"',
+                    $part
+                );
+            }
+        }
+        $search = implode('', $parts);
 
         // Remove all symbols except word chars, ponderation chars, parenthesis, quotes, wildcards and spaces.
         // @distance is not included, since it's unlikely a human will be using it through UI form
@@ -2945,18 +2988,7 @@ TWIG, $twig_params);
         ];
 
         // Add visibility date
-        $criteria['WHERE'][] = [
-            'OR'  => [
-                ['glpi_knowbaseitems.begin_date' => null],
-                ['glpi_knowbaseitems.begin_date' => ['<', QueryFunction::now()]],
-            ],
-        ];
-        $criteria['WHERE'][] = [
-            'OR'  => [
-                ['glpi_knowbaseitems.end_date'   => null],
-                ['glpi_knowbaseitems.end_date'   => ['>', QueryFunction::now()]],
-            ],
-        ];
+        $criteria['WHERE'][] = self::getVisibilityDateCriteria();
 
         if ($faq) { // FAQ
             $criteria['WHERE']['glpi_knowbaseitems.is_faq'] = 1;
@@ -3257,7 +3289,7 @@ TWIG, $twig_params);
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype'  => 'child',
-                'condition' => ['NEWTABLE.users_id' => Session::getLoginUserID()],
+                'condition' => ['NEWTABLE.users_id' => (int) Session::getLoginUserID()],
             ],
             'massiveaction'      => false,
         ];
@@ -3379,9 +3411,10 @@ TWIG, $twig_params);
     }
 
     /**
-     * Get KB answer with heading anchors. The HTML is returned raw — sanitization
+     * Get KB answer in the current language. The HTML is returned raw — sanitization
      * and display enrichments (lazy images, gallery, video iframes…) are applied
-     * by the `|enhanced_html` filter in the article templates.
+     * by the `|enhanced_html` filter in the article templates. Heading anchors
+     * are added client-side.
      *
      * @return string
      *
@@ -3389,30 +3422,36 @@ TWIG, $twig_params);
      */
     public function getAnswer()
     {
-        $answer = KnowbaseItemTranslation::getTranslatedValue($this, 'answer');
+        return KnowbaseItemTranslation::getTranslatedValue($this, 'answer');
+    }
 
-        $callback = static function ($matches) {
-            // 1 => tag name, 2 => existing attributes, 3 => title contents
-            $tpl = '<%tag%attrs id="%slug"><a href="#%slug">%icon</a>%title</%tag>';
+    /**
+     * The ids the server gave to the headings before, so that the links shared then still work.
+     *
+     * @param string $answer The answer, as {@see getAnswer()} gives it.
+     *
+     * @return array<string, string> Heading text, by id.
+     */
+    public function getLegacyHeadingIds(string $answer): array
+    {
+        // The pattern and the slugs of the server-side anchors, kept as they were.
+        preg_match_all('|<(h[1-6]{1})(.?[^>])?>(.+?)</h[1-6]{1}>|', $answer, $matches);
 
-            $title = str_replace(
-                ['%tag', '%attrs', '%slug', '%title', '%icon'],
-                [
-                    $matches[1],
-                    $matches[2],
-                    Toolbox::slugify($matches[3]),
-                    $matches[3],
-                    '<svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"/></svg>',
-                ],
-                $tpl
-            );
+        $ids = [];
+        foreach ($matches[3] as $title) {
+            $text = html_entity_decode(strip_tags($title), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            if (trim($text) === '') {
+                continue;
+            }
+            $id = Toolbox::slugify($title);
+            // A random fallback slug, different on each render: no link can match it.
+            if (str_starts_with($id, 'nok_')) {
+                continue;
+            }
+            $ids[$id] ??= $text;
+        }
 
-            return $title;
-        };
-        $pattern = '|<(h[1-6]{1})(.?[^>])?>(.+?)</h[1-6]{1}>|';
-        $answer = preg_replace_callback($pattern, $callback, $answer);
-
-        return $answer;
+        return $ids;
     }
 
     /**

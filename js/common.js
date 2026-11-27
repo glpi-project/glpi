@@ -152,6 +152,18 @@ function unMarkCheckboxes(container_id) {
     return true;
 }
 
+document.addEventListener('click', (e) => {
+    const mark_button = e.target.closest('[data-glpi-mark-checkboxes]');
+    if (mark_button !== null) {
+        markCheckboxes(mark_button.dataset.glpiMarkCheckboxes);
+    }
+
+    const unmark_button = e.target.closest('[data-glpi-unmark-checkboxes]');
+    if (unmark_button !== null) {
+        unMarkCheckboxes(unmark_button.dataset.glpiUnmarkCheckboxes);
+    }
+});
+
 
 /**
  * display "other" text input field in case of selecting "other" option
@@ -170,6 +182,10 @@ function displayOtherSelectOptions(select_object, other_option_name) {
     }
     return true;
 }
+
+$(document).on('change', '[data-glpi-other-option]', function() {
+    displayOtherSelectOptions(this, this.dataset.glpiOtherOption);
+});
 
 
 
@@ -290,7 +306,8 @@ function showHideDiv(id, img_name = '', img_src_close = '', img_src_open = '') {
  * @param img_name
  * @param img_src_yes
  * @param img_src_no
- * @todo Remove - Not useful and only used by templates/components/search/controls.html.twig and that doesn't even use the img params so it is litterally just changing an input's value between 0 and 1...
+ * @todo Remove - Not useful and no longer used by GLPI itself.
+ * @deprecated Will be removed in GLPI 14.
 **/
 function toogle(id, img_name, img_src_yes, img_src_no) {
     if (document.getElementById(id).value == '0') {
@@ -833,6 +850,13 @@ var showMapForLocation = function(elt) {
         }
     });
 };
+
+document.addEventListener('click', (e) => {
+    const button = e.target.closest('[data-glpi-show-location-map]');
+    if (button !== null) {
+        showMapForLocation(button);
+    }
+});
 
 var query = {};
 function markMatch (text, term) {
@@ -1599,6 +1623,17 @@ $(() => {
     $(document).on('change', '[data-glpi-reload-tab-on-change]', function(e) {
         reloadTab($(this).attr('data-glpi-reload-tab-on-change').replace('%value%', encodeURIComponent($(e.target).val() ?? '')));
     });
+    // Submit the field's form on change
+    $(document).on('change', '[data-glpi-submit-on-change]', function() {
+        this.form.submit();
+    });
+    // Navigate to the URL selected in the field, or to the attribute URL with `%value%` replaced by the field value
+    $(document).on('change', '[data-glpi-navigate-on-change]', function() {
+        if (this.value !== '' && this.value !== '0') {
+            const url = $(this).attr('data-glpi-navigate-on-change');
+            window.location.href = url !== '' ? url.replace('%value%', encodeURIComponent(this.value)) : this.value;
+        }
+    });
 });
 
 document.addEventListener('click', (e) => {
@@ -1729,6 +1764,39 @@ function copyDisclosablePasswordFieldToClipboard(item) {
     }
 }
 
+document.addEventListener('click', (e) => {
+    const toggle_button = e.target.closest('[data-glpi-toggle-password]');
+    if (toggle_button !== null) {
+        toggleDisclosablePasswordField(toggle_button, toggle_button.dataset.glpiTogglePassword);
+    }
+
+    const copy_button = e.target.closest('[data-glpi-copy-password]');
+    if (copy_button !== null) {
+        copyDisclosablePasswordFieldToClipboard(copy_button.dataset.glpiCopyPassword);
+    }
+
+    const image_clear_button = e.target.closest('[data-glpi-image-clear]');
+    if (image_clear_button !== null) {
+        const wrapper = $(image_clear_button).closest('.img-overlay-wrapper');
+        const blank_input = wrapper.find('input[name^="_blank_"]');
+        blank_input.val(blank_input.val() ? '' : true);
+
+        const gallery_item = wrapper.closest('.picture_gallery_item');
+        if (gallery_item.length) {
+            gallery_item.hide();
+            gallery_item.closest('.picture_gallery').siblings('.deletion_pending').removeClass('d-none');
+        } else {
+            wrapper.hide();
+        }
+    }
+});
+
+document.addEventListener('focusin', (e) => {
+    if (e.target.matches('[data-glpi-readonly-until-focus]')) {
+        e.target.removeAttribute('readonly');
+    }
+});
+
 /**
  * Convert an HTML table with static content to a basic sortable table
  * @param element_id The ID of the table to be converted
@@ -1817,6 +1885,25 @@ function waitForElement(selector) {
             subtree: true
         });
     });
+}
+
+/**
+ * Re-execute an inline script that was rendered by the server.
+ *
+ * Scripts that do not already carry the CSP nonce of the page are ignored (they
+ * were not emitted by GLPI and must never be executed, otherwise an
+ * injected script that was blocked by the CSP would be executed)
+ *
+ * @param {HTMLScriptElement} script
+ * @throws {Error} If the script lacks the page's CSP nonce
+ */
+function reExecuteTrustedScript(script) {
+    const nonce = CFG_GLPI.csp_nonce;
+    if (!nonce || script.nonce !== nonce) {
+        throw new Error('Script was not executed because it lacks the CSP nonce of the page.');
+    }
+
+    $.globalEval(script.text, { nonce: nonce });
 }
 
 /**
@@ -2264,3 +2351,51 @@ if (typeof module !== 'undefined' && module.exports) {
         tableToDetails,
     };
 }
+
+/**
+ * Add `X-Glpi-Csp-Nonce` to ajax requests (XMLHttpRequest and native fetch).
+ */
+(function () {
+    const nonce = CFG_GLPI.csp_nonce;
+    if (!nonce || window.glpi_csp_nonce_patched) {
+        return;
+    }
+
+    const header_name = 'X-Glpi-Csp-Nonce';
+
+    const isSameOrigin = (url) => {
+        try {
+            return new URL(String(url), window.location.href).origin === window.location.origin;
+        } catch {
+            // Invalid URL, let the native function handle the error.
+            return false;
+        }
+    };
+
+    // `XMLHttpRequest` requests (which is used by jQuery's `$.ajax()`, `$.get()`, ...)
+    const native_xhr_open = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function (method, url, ...args) {
+        native_xhr_open.call(this, method, url, ...args);
+        if (isSameOrigin(url)) {
+            // Never leak the nonce to another origin.
+            this.setRequestHeader(header_name, nonce);
+        }
+    };
+
+    // `fetch()` requests.
+    const native_fetch = window.fetch;
+    window.fetch = function (resource, options) {
+        const url = resource instanceof Request ? resource.url : resource;
+        if (!isSameOrigin(url)) {
+            // Never leak the nonce to another origin.
+            return native_fetch.call(this, resource, options);
+        }
+
+        const headers = new Headers(options?.headers ?? (resource instanceof Request ? resource.headers : undefined));
+        headers.set(header_name, nonce);
+        return native_fetch.call(this, resource, { ...options, headers: headers });
+    };
+
+    // Safety check to make sure this only run once.
+    window.glpi_csp_nonce_patched = true;
+})();

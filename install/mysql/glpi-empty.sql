@@ -1538,6 +1538,8 @@ CREATE TABLE `glpi_contracts` (
   `template_name` varchar(255) DEFAULT NULL,
   `is_template` tinyint NOT NULL DEFAULT '0',
   `states_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1553,6 +1555,8 @@ CREATE TABLE `glpi_contracts` (
   KEY `use_saturday` (`use_saturday`),
   KEY `alert` (`alert`),
   KEY `states_id` (`states_id`),
+  KEY `users_id_tech` (`users_id_tech`),
+  KEY `groups_id_tech` (`groups_id_tech`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -6892,6 +6896,21 @@ CREATE TABLE `glpi_slas` (
   KEY `slms_id` (`slms_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+### Dump table glpi_slastatuses
+
+DROP TABLE IF EXISTS `glpi_slastatuses`;
+CREATE TABLE `glpi_slastatuses` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 ### Dump table glpi_olas
 
 DROP TABLE IF EXISTS `glpi_olas`;
@@ -7527,6 +7546,7 @@ CREATE TABLE `glpi_tickets` (
   `slas_id_ttr` int unsigned NOT NULL DEFAULT '0',
   `slas_id_tto` int unsigned NOT NULL DEFAULT '0',
   `slalevels_id_ttr` int unsigned NOT NULL DEFAULT '0',
+  `slastatuses_id` int unsigned NOT NULL DEFAULT '0',
   `time_to_resolve` timestamp NULL DEFAULT NULL,
   `time_to_own` timestamp NULL DEFAULT NULL,
   `begin_waiting_date` timestamp NULL DEFAULT NULL,
@@ -7560,6 +7580,7 @@ CREATE TABLE `glpi_tickets` (
   KEY `time_to_resolve` (`time_to_resolve`),
   KEY `time_to_own` (`time_to_own`),
   KEY `slalevels_id_ttr` (`slalevels_id_ttr`),
+  KEY `slastatuses_id` (`slastatuses_id`),
   KEY `users_id_lastupdater` (`users_id_lastupdater`),
   KEY `type` (`type`),
   KEY `itilcategories_id` (`itilcategories_id`),
@@ -10355,6 +10376,13 @@ CREATE TABLE `glpi_assets_assets` (
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `last_inventory_update` timestamp NULL DEFAULT NULL,
+  `last_boot` timestamp NULL DEFAULT NULL,
+  `sysdescr` text,
+  `snmpcredentials_id` int unsigned NOT NULL DEFAULT '0',
+  `ram` int unsigned DEFAULT NULL,
+  `cpu` int NOT NULL DEFAULT '0',
+  `uptime` varchar(255) DEFAULT NULL,
+  `last_pages_counter` int NOT NULL DEFAULT '0',
   `custom_fields` json,
   PRIMARY KEY (`id`),
   KEY `assets_assetdefinitions_id` (`assets_assetdefinitions_id`),
@@ -10374,7 +10402,8 @@ CREATE TABLE `glpi_assets_assets` (
   KEY `is_dynamic` (`is_dynamic`),
   KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
   KEY `date_creation` (`date_creation`),
-  KEY `date_mod` (`date_mod`)
+  KEY `date_mod` (`date_mod`),
+  KEY `snmpcredentials_id` (`snmpcredentials_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_assets_assetmodels`;

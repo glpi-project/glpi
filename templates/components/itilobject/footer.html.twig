@@ -38,7 +38,7 @@
 {% if is_expanded %}
     {% set timeline_btns_cls = left_expanded_cls %}
     {% set form_btns_cls     = right_expanded_cls %}
-    {% set switch_btn_cls    = "ti ti-caret-right filled" %}
+    {% set switch_btn_cls    = "ti ti-caret-right-filled" %}
 {% endif %}
 
 <div class="mx-n2 mb-n2 itil-footer itil-footer p-0 border-top" id="itil-footer">
@@ -136,8 +136,7 @@
          <div class="form-buttons {{ form_btns_cls }} d-flex justify-content-between ms-auto ms-lg-0 my-n2 py-2 pe-3 card-footer border-top-0 position-relative">
             <span class="d-none d-lg-block ms-n3"
                   data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Toggle panels width') }}">
-               <button type="button" class="switch-panel-width btn btn-icon btn-ghost-secondary px-0"
-                       aria-label="{{ __('Toggle panels width') }}">
+               <button type="button" class="switch-panel-width btn btn-icon btn-ghost-secondary px-0" aria-label="{{ __('Toggle panels width') }}">
                   <i class="{{ switch_btn_cls }}" aria-hidden="true"></i>
                </button>
                <button type="button" class="collapse-panel btn btn-icon btn-ghost-secondary px-0 mr-1"
@@ -221,7 +220,7 @@
 {% set openfollowup = (_get['_openfollowup'] ?? false) %}
 {% set is_timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
 
-<script type="text/javascript">
+<script nonce="{{ csp_nonce() }}" type="text/javascript">
 
 (function(){
     {#

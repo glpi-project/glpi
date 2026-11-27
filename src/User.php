@@ -44,6 +44,7 @@ use Glpi\DBAL\QueryValue;
 use Glpi\Exception\AuthenticationFailedException;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Exception\PasswordTooWeakException;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
@@ -99,6 +100,11 @@ class User extends CommonDBTM implements TreeBrowseInterface
     public static string $rightname = 'user';
 
     private const DB_KEEPALIVE_INTERVAL = 30;
+
+    /**
+     * Prefix of the cache keys of checkDefaultPasswords() results.
+     */
+    private const DEFAULT_PASSWORDS_CACHE_KEY_PREFIX = 'user_default_passwords_';
 
     public static array $undisclosedFields = [
         'password',
@@ -392,14 +398,196 @@ class User extends CommonDBTM implements TreeBrowseInterface
     }
 
 
+    /**
+     * Get DB criteria for items linked to a user, directly or through groups.
+     *
+     * @param int  $users_id User ID
+     * @param bool $tech     false = used items, true = managed items
+     *
+     * @return array{field_user: 'users_id'|'users_id_tech', groups_ids: int[], criteria: array<string, mixed>}
+     */
+    private static function getItemsForUserCriteria(int $users_id, bool $tech): array
+    {
+        global $DB;
+
+        $field_user = $tech ? 'users_id_tech' : 'users_id';
+
+        $iterator = $DB->request([
+            'SELECT' => ['glpi_groups.id'],
+            'FROM'   => 'glpi_groups',
+            'LEFT JOIN' => [
+                'glpi_groups_users' => [
+                    'FKEY' => [
+                        'glpi_groups_users' => 'groups_id',
+                        'glpi_groups'       => 'id',
+                    ],
+                ],
+            ],
+            'WHERE' => ['glpi_groups_users.users_id' => $users_id],
+        ]);
+
+        $groups_ids = array_column(iterator_to_array($iterator), 'id');
+
+        $criteria = [$field_user => $users_id];
+
+        if (count($groups_ids) > 0) {
+            $criteria = [
+                'OR' => [
+                    $criteria,
+                    [
+                        Group_Item::getTable() . '.groups_id' => $groups_ids,
+                        Group_Item::getTable() . '.type'      => $tech
+                            ? Group_Item::GROUP_TYPE_TECH
+                            : Group_Item::GROUP_TYPE_NORMAL,
+                    ],
+                ],
+            ];
+        }
+
+        return [
+            'field_user' => $field_user,
+            'groups_ids' => $groups_ids,
+            'criteria'   => $criteria,
+        ];
+    }
+
+
+    /**
+     * Get shared query parameters for items linked to a user.
+     *
+     * @param CommonDBTM $item
+     * @param array{field_user: 'users_id'|'users_id_tech', groups_ids: int[], criteria: array<string, mixed>} $user_criteria
+     * @param int[]      $target_entities
+     *
+     * @return array<string, mixed>
+     */
+    private static function getItemsForUserQueryParams(
+        CommonDBTM $item,
+        array $user_criteria,
+        array $target_entities
+    ): array {
+        $table = $item::getTable();
+
+        $where = [$user_criteria['criteria']];
+
+        $system_criteria = $item::getSystemSQLCriteria();
+        if (count($system_criteria) > 0) {
+            $where[] = $system_criteria;
+        }
+
+        // Restrict to entities available to the current viewer and to the target user's entities.
+        $viewer_entity_criteria = getEntitiesRestrictCriteria($table, '', '', $item->maybeRecursive());
+        if (count($viewer_entity_criteria) > 0) {
+            $where[] = $viewer_entity_criteria;
+        }
+
+        $target_entity_criteria = getEntitiesRestrictCriteria($table, 'entities_id', $target_entities);
+        if (count($target_entity_criteria) > 0) {
+            $where[] = $target_entity_criteria;
+        }
+
+        if ($item instanceof AssignableItemInterface) {
+            $where[] = $item::getAssignableVisiblityCriteria();
+        }
+
+        if ($item->maybeTemplate()) {
+            $where[] = ['is_template' => 0];
+        }
+
+        if ($item->maybeDeleted()) {
+            $where[] = ['is_deleted' => 0];
+        }
+
+        return [
+            'FROM' => $table,
+            'LEFT JOIN' => [
+                Group_Item::getTable() => [
+                    'FKEY' => [
+                        $table => 'id',
+                        Group_Item::getTable() => 'items_id',
+                        [
+                            'AND' => [
+                                Group_Item::getTable() . '.itemtype' => $item::class,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'WHERE' => ['AND' => $where],
+        ];
+    }
+
+
+    /**
+     * Count items linked to a user.
+     *
+     * @param int  $users_id User ID
+     * @param bool $tech     false = used items, true = managed items
+     *
+     * @return int
+     */
+    public static function countItemsForUser(int $users_id, bool $tech): int
+    {
+        global $CFG_GLPI, $DB;
+
+        $user = new self();
+        if (!$user->getFromDB($users_id)) {
+            return 0;
+        }
+
+        $user_criteria = self::getItemsForUserCriteria($users_id, $tech);
+        $target_entities = $user->getEntities();
+        $count = 0;
+
+        foreach ($CFG_GLPI['assignable_types'] as $itemtype) {
+            if (!class_exists($itemtype)) {
+                continue;
+            }
+
+            $item = getItemForItemtype($itemtype);
+            if (!$item || !$item::canView()) {
+                continue;
+            }
+
+            $table = $itemtype::getTable();
+
+            if (!$DB->fieldExists($table, $user_criteria['field_user'])) {
+                continue;
+            }
+
+            $query = [
+                'SELECT' => [
+                    'COUNT DISTINCT' => "$table.id AS cpt",
+                ],
+            ] + self::getItemsForUserQueryParams(
+                $item,
+                $user_criteria,
+                $target_entities
+            );
+
+            $count += $DB->request($query)->current()['cpt'];
+        }
+
+        return $count;
+    }
+
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         switch ($item::class) {
             case self::class:
-                $ong    = [];
-                $ong[1] = self::createTabEntry(__('Used items'), 0, $item::class, 'ti ti-package');
-                $ong[2] = self::createTabEntry(__('Managed items'), 0, $item::class, 'ti ti-package');
+                $nb_used = 0;
+                $nb_managed = 0;
+
+                if ($_SESSION['glpishow_count_on_tabs']) {
+                    $nb_used = self::countItemsForUser($item->getID(), false);
+                    $nb_managed = self::countItemsForUser($item->getID(), true);
+                }
+
+                $ong = [];
+                $ong[1] = self::createTabEntry(__('Used items'), $nb_used, $item::class, 'ti ti-package');
+                $ong[2] = self::createTabEntry(__('Managed items'), $nb_managed, $item::class, 'ti ti-augmented-reality-2');
 
                 if (
                     $item->fields['authtype'] === Auth::LDAP
@@ -1024,8 +1212,11 @@ class User extends CommonDBTM implements TreeBrowseInterface
             unset($input['language']);
         }
 
+        // Reset tokens are written only by the password reset flow, which writes them directly.
+        unset($input['password_forget_token'], $input['password_forget_token_date']);
+
         $glpi_key = new GLPIKey();
-        foreach (['api_token', 'password_forget_token', 'personal_token'] as $token_field) {
+        foreach (['api_token', 'personal_token'] as $token_field) {
             if (
                 array_key_exists($token_field, $input)
                 && $input[$token_field] !== null
@@ -1127,6 +1318,25 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
     }
 
+    /**
+     * Strictly compare an input value with a stored field value.
+     * Booleans are handled as integers (DB representation); non-scalar input never matches.
+     * An empty stored value (NULL or '') matches an empty input (false, 0 or '').
+     */
+    private function isSameScalarValue(mixed $input_value, mixed $field_value): bool
+    {
+        if (!is_scalar($input_value)) {
+            return false;
+        }
+        if (is_bool($input_value)) {
+            $input_value = (int) $input_value;
+        }
+        if ($field_value === null || $field_value === '') {
+            return in_array((string) $input_value, ['', '0'], true);
+        }
+        return (string) $input_value === (string) $field_value;
+    }
+
 
     public function prepareInputForUpdate($input)
     {
@@ -1222,11 +1432,16 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     if (
                         isset($input['id'])
                         && $this->validatePassword($input["password"] ?? '', $password_errors)
-                        && (($input['id'] == Session::getLoginUserID())
-                        || $this->currentUserHaveMoreRightThan($input['id'])
-                        // Permit to change password with token and email
-                        || (isset($this->fields['password_forget_token']) && ($input['password_forget_token'] == $glpi_key->decrypt($this->fields['password_forget_token']))
-                           && (strtotime(Session::getCurrentTime()) < strtotime($this->fields['password_forget_token_date']))))
+                        // Compared as integers: a loose comparison would let a non-numeric value (e.g. a JSON `true`
+                        // sent through the API) match any logged-in user ID.
+                        && (
+                            (Session::getLoginUserID() !== false && (int) $input['id'] === (int) Session::getLoginUserID())
+                            || $this->currentUserHaveMoreRightThan($input['id'])
+                            // Permit to change password with token and email
+                            // The token must be a non-empty string compared strictly: a non-string value (e.g. a JSON `true`
+                            // sent through the API) would otherwise loosely match any token.
+                            || $this->hasValidPasswordResetInput($input)
+                        )
                     ) {
                         $input["password"]
                         = Auth::getPasswordHash($input["password"]);
@@ -1269,6 +1484,39 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
 
         if (
+            // User is updating his own password
+            isset($input["password"])
+            && (int) $input['id'] === Session::getLoginUserID()
+            // No need for the current password if the user is going through the password reset form.
+            && !$this->hasValidPasswordResetInput($input)
+        ) {
+            // Current password must be supplied
+            $current_password = $input['current_password'] ?? null;
+            if ($current_password === null || !is_string($current_password)) {
+                Session::addMessageAfterRedirect(
+                    __s('You must input your current password.'),
+                    false,
+                    ERROR
+                );
+                return false;
+            }
+
+            $stored_password_hash = $this->fields['password'];
+            if (!Auth::checkPassword($current_password, $stored_password_hash)) {
+                Session::addMessageAfterRedirect(
+                    __s('The current password does not match.'),
+                    false,
+                    ERROR
+                );
+                return false;
+            }
+        }
+        unset($input['current_password']);
+
+        // Reset tokens are written only by the password reset flow, which writes them directly.
+        unset($input['password_forget_token'], $input['password_forget_token_date']);
+
+        if (
             Session::getLoginUserID() !== false
             && ((int) $input['id']) !== Session::getLoginUserID()
         ) {
@@ -1279,7 +1527,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 'api_token',
                 '_reset_api_token',
                 '_regenerate_api_token',
-                'password_forget_token',
                 'personal_token',
                 '_reset_personal_token',
 
@@ -1289,8 +1536,12 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
                 // Prevent disabling another user account
                 'is_active',
+                'is_deleted',
                 'begin_date',
                 'end_date',
+
+                // Prevent changing the login, that is used to match the user with an external authentication source
+                'name',
 
                 // Prevent changing 2fa settings
                 '2fa',
@@ -1305,7 +1556,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     if (
                         isset($input[$input_key])
                         && !str_starts_with($input_key, '_') // virtual field
-                        && $input[$input_key] != $this->fields[$input_key]
+                        && !$this->isSameScalarValue($input[$input_key], $this->fields[$input_key])
                     ) {
                         $ignored_fields[] = $input_key;
                     }
@@ -1351,6 +1602,14 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 // blank password when authtype changes
                 $input['password'] = '';
             }
+        }
+
+        if (
+            Session::getLoginUserID() !== false // always allow update from backend routines
+            && !Session::haveRight(self::$rightname, self::UPDATEAUTHENT)
+        ) {
+            // prevent unexpected change of the authentication source and of the link with the directory entry
+            unset($input['auths_id'], $input['sync_field'], $input['user_dn'], $input['user_dn_hash']);
         }
 
         // Update User in the database
@@ -1510,7 +1769,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             );
         }
 
-        foreach (['api_token', 'password_forget_token', 'personal_token'] as $token_field) {
+        foreach (['api_token', 'personal_token'] as $token_field) {
             if (
                 array_key_exists($token_field, $input)
                 && $input[$token_field] !== null
@@ -1523,6 +1782,24 @@ class User extends CommonDBTM implements TreeBrowseInterface
         return $input;
     }
 
+    /** @param array<string, mixed> $input */
+    private function hasValidPasswordResetInput(array $input): bool
+    {
+        $glpi_key = new GLPIKey();
+
+        $token = $this->fields['password_forget_token'] ?? null;
+        $supplied_token = $input['password_forget_token'] ?? null;
+        $max_date = $this->fields['password_forget_token_date'] ?? null;
+
+        return is_string($token)
+            && $token !== ''
+            && is_string($supplied_token)
+            && $supplied_token !== ''
+            && hash_equals((string) $glpi_key->decrypt($token), $supplied_token)
+            && $max_date !== null
+            && strtotime(Session::getCurrentTime()) < strtotime($max_date)
+        ;
+    }
 
     public function post_updateItem($history = true)
     {
@@ -2226,7 +2503,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         $group_iterator = $DB->request([
                             'SELECT' => 'id',
                             'FROM'   => 'glpi_groups',
-                            'WHERE'  => ['ldap_group_dn' => $v[$i]['ou']],
+                            'WHERE'  => ['ldap_group_dn' => self::withLegacyHtmlEncodedVariants($v[$i]['ou'])],
                         ]);
 
                         foreach ($group_iterator as $group) {
@@ -2247,7 +2524,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     ) {
                         unset($v[$i][$field]['count']);
                         $lgroups = [];
-                        foreach ($v[$i][$field] as $lgroup) {
+                        foreach (self::withLegacyHtmlEncodedVariants($v[$i][$field]) as $lgroup) {
                             $lgroups[] = [
                                 new QueryExpression('? LIKE `ldap_value`', values: [$lgroup]),
                             ];
@@ -2270,6 +2547,33 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
     }
 
+
+    /**
+     * Add the GLPI 10.x HTML-encoded form of each LDAP value to the list.
+     *
+     * Databases migrated from GLPI 10.x may still contain values that were
+     * HTML-encoded on save (`&` stored as `&#38;`, `<` as `&#60;`, `>` as `&#62;`).
+     * They are decoded when read, but SQL comparisons run against the stored
+     * form, so an LDAP DN like `OU=R&D,...` would never match its group.
+     *
+     * @param array<int|string, mixed> $values Raw values read from LDAP
+     *
+     * @return array<int, mixed>
+     */
+    private static function withLegacyHtmlEncodedVariants(array $values): array
+    {
+        $variants = [];
+        foreach ($values as $value) {
+            $variants[] = $value;
+            if (is_string($value)) {
+                $encoded = str_replace(['&', '<', '>'], ['&#38;', '&#60;', '&#62;'], $value);
+                if ($encoded !== $value) {
+                    $variants[] = $encoded;
+                }
+            }
+        }
+        return $variants;
+    }
 
     /**
      * Function that tries to load the user membership from LDAP
@@ -2331,7 +2635,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 $iterator = $DB->request([
                     'SELECT' => 'id',
                     'FROM'   => 'glpi_groups',
-                    'WHERE'  => ['ldap_group_dn' => $result[$ldap_method["group_member_field"]]],
+                    'WHERE'  => ['ldap_group_dn' => self::withLegacyHtmlEncodedVariants($result[$ldap_method["group_member_field"]])],
                 ]);
 
                 foreach ($iterator as $group) {
@@ -2740,7 +3044,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 $this->fields['_ldap_conn']   = $ldap_connection;
                 //Hook to retrieve more information for ldap
                 $this->fields = Plugin::doHookFunction(Hooks::RETRIEVE_MORE_DATA_FROM_LDAP, $this->fields);
-                unset($this->fields['_ldap_result']);
+                unset($this->fields['_ldap_result'], $this->fields['_ldap_conn']);
             }
 
             return true;
@@ -3141,15 +3445,15 @@ HTML;
         $profiles = [];
         $groups = [];
 
-        if (!empty($ID)) {
+        if (!$this->isNewItem()) {
             if ($higherrights || $ismyself) {
                 $profiles = Dropdown::getDropdownArrayNames(
                     'glpi_profiles',
-                    Profile_User::getUserProfiles($this->fields['id'])
+                    Profile_User::getUserProfiles($this->getID())
                 );
             }
             if ($higherrights) {
-                foreach (Group_User::getUserGroups($this->fields['id']) as $group) {
+                foreach (Group_User::getUserGroups($this->getID()) as $group) {
                     $groups[$group['id']] = $group['completename'];
                 }
             }
@@ -5093,6 +5397,9 @@ HTML;
 
         $start       = intval($_GET["start"] ?? 0);
         $get_filters   = $_GET["filters"] ?? [];
+        if (!is_array($get_filters)) {
+            $get_filters = [];
+        }
 
         $sortable_columns = ['type', 'entity', 'name', 'serial', 'otherserial', 'states', 'group', 'users'];
         $sort = $_GET['sort'] ?? 'name';
@@ -5145,74 +5452,43 @@ HTML;
             'users'       => [],
         ];
 
-        if ($tech) {
-            $field_user  = 'users_id_tech';
-        } else {
-            $field_user  = 'users_id';
-        }
+        $user_criteria = self::getItemsForUserCriteria($ID, $tech);
+        $field_user = $user_criteria['field_user'];
 
-        $groups      = [];
-
-        $iterator = $DB->request([
-            'SELECT'    => [
-                'glpi_groups.id',
-                'glpi_groups.name',
-            ],
-            'FROM'      => 'glpi_groups',
-            'LEFT JOIN' => [
-                'glpi_groups_users' => [
-                    'FKEY' => [
-                        'glpi_groups_users'  => 'groups_id',
-                        'glpi_groups'        => 'id',
-                    ],
-                ],
-            ],
-            'WHERE'     => ['glpi_groups_users.users_id' => $ID],
-        ]);
         $number = 0;
 
-        $criteria = [
-            $field_user => $ID,
-        ];
-        if ($iterator->count() > 0) {
-            $groups_ids = [];
-            foreach ($iterator as $data) {
-                $groups_ids[] = $data['id'];
-                $groups[$data["id"]] = $data["name"];
-            }
-            $criteria = [
-                'OR' => [
-                    $criteria,
-                    [
-                        Group_Item::getTable() . '.groups_id' => $groups_ids,
-                        Group_Item::getTable() . '.type' => $tech ? Group_Item::GROUP_TYPE_TECH : Group_Item::GROUP_TYPE_NORMAL,
-                    ],
-                ],
-            ];
-        }
+        $is_filtered = count($get_filters) > 0;
 
+        // Names caches for displayed rows; groups and users filters use AJAX dropdowns as these tables can be huge
         $group_choices = [];
-        foreach (getAllDataFromTable('glpi_groups') as $g_id => $row) {
-            $group_choices[$g_id] = $row['completename'];
-        }
-        asort($group_choices);
-
         $user_choices = [];
-        foreach (self::getSqlSearchResult(false, 'all') as $row) {
-            $user_choices[$row['id']] = formatUserName($row['id'], $row['name'], $row['realname'], $row['firstname']);
-        }
 
         $array_filters_choices = [
             'type'     => $type_choices,
             'entity'   => $entity_choices,
             'states'   => $state_choices,
-            'group'    => $group_choices,
-            'users'    => $user_choices,
         ];
 
         foreach ($get_filters as $f => $value) {
             if (!empty($value)) {
-                if (isset($array_filters_choices[$f])) {
+                if (in_array($f, ['group', 'users'], true)) {
+                    foreach ((array) $value as $v) {
+                        if (!is_numeric($v) || (int) $v <= 0) {
+                            continue;
+                        }
+                        // Selected users names are displayed in the dropdown, do not disclose users the viewer cannot see
+                        if ($f === 'users') {
+                            $selected_user = new self();
+                            if (
+                                !$selected_user->getFromDB((int) $v)
+                                || !Session::haveAccessToOneOfEntities($selected_user->getEntities())
+                            ) {
+                                continue;
+                            }
+                        }
+                        $filters[$f][] = (int) $v;
+                    }
+                } elseif (isset($array_filters_choices[$f])) {
                     foreach ((array) $value as $v) {
                         if (isset($array_filters_choices[$f][$v])) {
                             $filters[$f][] = $v;
@@ -5273,43 +5549,24 @@ HTML;
 
                 $target_entities = count($filters['entity']) > 0 ? $filters['entity'] : $this->getEntities();
 
-                $where = ['entities_id' => $target_entities] + $criteria + $item::getSystemSQLCriteria();
-                if (count($item_criteria) > 0) {
-                    $where[] = $item_criteria;
-                }
-
-                $iterator_params = [
-                    'SELECT'  => [
-                        "$itemtable.*",
-                        QueryFunction::groupConcat(
-                            expression: new QueryIdentifier($relation_table . '.groups_id'),
-                            distinct: true,
-                            alias: 'groups_ids'
-                        ),
-                        new QueryExpression(new QueryValue($itemtype), 'itemtype'),
-                    ],
-                    'FROM'    => $itemtable,
-                    'LEFT JOIN' => [
-                        Group_Item::getTable() => [
-                            'FKEY' => [
-                                $itemtable => 'id',
-                                Group_Item::getTable() => 'items_id', [
-                                    'AND' => [
-                                        Group_Item::getTable() . '.itemtype' => $itemtype,
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ],
-                    'WHERE'   => $where,
-                    'GROUPBY' => "$itemtable.id",
+                $iterator_params = self::getItemsForUserQueryParams(
+                    $item,
+                    $user_criteria,
+                    $target_entities
+                );
+                $iterator_params['SELECT'] = [
+                    "$itemtable.*",
+                    QueryFunction::groupConcat(
+                        expression: new QueryIdentifier($relation_table . '.groups_id'),
+                        distinct: true,
+                        alias: 'groups_ids'
+                    ),
+                    new QueryExpression(new QueryValue($itemtype), 'itemtype'),
                 ];
+                $iterator_params['GROUPBY'] = "$itemtable.id";
 
-                if ($item->maybeTemplate()) {
-                    $iterator_params['WHERE']['is_template'] = 0;
-                }
-                if ($item->maybeDeleted()) {
-                    $iterator_params['WHERE']['is_deleted'] = 0;
+                if (count($item_criteria) > 0) {
+                    $iterator_params['WHERE']['AND'][] = $item_criteria;
                 }
 
                 $item_iterator = $DB->request($iterator_params);
@@ -5356,7 +5613,7 @@ HTML;
                             ? ($state_choices[$data['states_id']] ?? Dropdown::getDropdownName("glpi_states", $data['states_id'], false, true, false, ''))
                             : '',
                         'group'         => implode('<br>', array_filter($group_names)),
-                        'users'         => $user_id > 0 ? ($user_choices[$user_id] ?? '') : '',
+                        'users'         => $user_id > 0 ? $user_choices[$user_id] : '',
                     ];
                     $number++;
                 }
@@ -5396,22 +5653,24 @@ HTML;
                 ],
                 'group'         => [
                     'label'            => Group::getTypeName(Session::getPluralNumber()),
-                    'filter_formatter' => 'array',
+                    'filter_formatter' => 'dropdown',
+                    'filter_itemtype'  => Group::class,
+                    'filter_params'    => ['addicon' => false, 'comments' => false],
                 ],
                 'users'         => [
                     'label'            => self::getTypeName(Session::getPluralNumber()),
-                    'filter_formatter' => 'array',
+                    'filter_formatter' => 'dropdown',
+                    'filter_itemtype'  => self::class,
+                    'filter_params'    => ['right' => 'all'],
                 ],
             ],
             'columns_values'        => [
                 'type'      => $type_choices,
                 'entity'    => $entity_choices,
                 'states'    => $state_choices,
-                'group'     => $group_choices,
-                'users'     => $user_choices,
             ],
-            'filters' => $filters,
-            'additional_params'     => http_build_query(['filters' => $filters]),
+            'filters' => $is_filtered ? $filters : [],
+            'additional_params'     => $is_filtered ? http_build_query(['filters' => $filters]) : '',
             'formatters' => [
                 'name'   => 'raw_html',
                 'group'  => 'raw_html',
@@ -5474,14 +5733,23 @@ HTML;
                         'method' => AuthLDAP::IDENTIFIER_EMAIL,
                         'value'  => $email,
                     ];
+                    $refused = false;
                     $res = AuthLDAP::ldapImportUserByServerId(
                         $params,
                         AuthLDAP::ACTION_IMPORT,
-                        $ldap
+                        $ldap,
+                        false,
+                        false,
+                        $refused
                     );
 
                     if (isset($res['id'])) {
                         return $res['id'];
+                    }
+                    if ($refused) {
+                        // The user exists in LDAP but its import has been refused,
+                        // do not try other servers nor create it from its email.
+                        return 0;
                     }
                 }
             }
@@ -6239,7 +6507,7 @@ HTML;
      */
     public static function checkDefaultPasswords()
     {
-        global $DB;
+        global $DB, $GLPI_CACHE;
 
         $passwords = ['glpi'      => 'glpi',
             'tech'      => 'tech',
@@ -6248,7 +6516,7 @@ HTML;
         ];
         $default_password_set = [];
 
-        $users = $DB->request([
+        $users = iterator_to_array($DB->request([
             'SELECT' => ['name', 'password'],
             'FROM' => self::getTable(),
             'WHERE' => [
@@ -6256,12 +6524,22 @@ HTML;
                 'is_deleted' => 0,
                 'name'       => array_keys($passwords),
             ],
-        ]);
+            'ORDER' => ['name'],
+        ]), false);
+
+        // Verifying a password is slow by design: keep the result for as long as the password hashes stay the same.
+        $cache_key = self::DEFAULT_PASSWORDS_CACHE_KEY_PREFIX . sha1(json_encode($users));
+        $cached = $GLPI_CACHE->get($cache_key);
+        if (is_array($cached)) {
+            return $cached;
+        }
+
         foreach ($users as $data) {
             if (Auth::checkPassword($passwords[strtolower($data['name'])], $data['password'])) {
                 $default_password_set[] = $data['name'];
             }
         }
+        $GLPI_CACHE->set($cache_key, $default_password_set, DAY_TIMESTAMP);
 
         return $default_password_set;
     }
@@ -6474,9 +6752,9 @@ HTML;
     public static function showSwitchLangForm()
     {
         $params = [
-            'value'     => Session::getLanguage(),
-            'display'   => false,
-            'on_change' => 'this.form.submit()',
+            'value'               => Session::getLanguage(),
+            'display'             => false,
+            'add_data_attributes' => ['glpi-submit-on-change' => ''],
         ];
 
         $out = "<form method='post' name='switchlang' action='" . htmlescape(User::getFormURL()) . "' autocomplete='off'>";
@@ -7034,7 +7312,7 @@ HTML;
             && ($anon = $this->getAnonymizedName()) !== null
         ) {
             // if anonymized name active, return only the anonymized name
-            return $anon;
+            return htmlescape($anon);
         }
 
         return $this->getLink($options);

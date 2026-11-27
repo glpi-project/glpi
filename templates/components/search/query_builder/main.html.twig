@@ -64,7 +64,7 @@
    <div id="searchcriteria{{ rand }}" class="{{ main_block_class }}">
       {# init criteria count #}
       {% set nbsearchcountvar = "nbcriteria" ~ normalized_itemtype ~ random() %}
-      <script>
+      <script nonce="{{ csp_nonce() }}">
          let {{ nbsearchcountvar }} = {{ criteria is empty ? 0 : max(criteria|keys) + 1 }};
       </script>
       <div class="list-group list-group-flush list-group-hoverable criteria-list pt-2" id="criteriatable{{ normalized_itemtype }}{{ random() }}">
@@ -154,7 +154,7 @@
 
       {# TODO JS could probably be moved to a JS file #}
       {% set ajax_url = config('root_doc') ~ "/ajax/search.php" %}
-      <script>
+      <script nonce="{{ csp_nonce() }}">
          $('#addsearchcriteria{{ rand }}').on('click', function(event) {
              event.preventDefault();
              $.post("{{ ajax_url }}", {

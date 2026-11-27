@@ -94,7 +94,8 @@ final class FakeProvider extends Provider
 
     /**
      * @param string|null $itemtype
-     * @return int|array|null
+     * @return int|array<string, int>|null
+     * @phpstan-return ($itemtype is null ? array<string, int> : (int|null))
      */
     private static function getItemCount(?string $itemtype = null)
     {
@@ -145,6 +146,9 @@ final class FakeProvider extends Provider
 
     public static function bigNumberItem(?CommonDBTM $item = null, array $params = []): array
     {
+        if ($item === null) {
+            throw new InvalidArgumentException("Item must be provided");
+        }
         return [
             'number' => self::getItemCount($item::class) ?? 1500,
             'url'    => '#',
@@ -189,13 +193,17 @@ final class FakeProvider extends Provider
                     'color'  => '#555555',
                 ],
             ],
-            'label' => $params['label'],
-            'icon'  => $params['icon'],
+            'label' => $params['label'] ?? '',
+            'icon'  => $params['icon'] ?? '',
         ];
     }
 
     public static function nbTicketsGeneric(string $case = "", array $params = []): array
     {
+        if (!in_array($case, ['notold', 'late', 'waiting_validation', 'incoming', 'waiting', 'assigned', 'planned', 'solved', 'closed'], true)) {
+            throw new InvalidArgumentException("Invalid case: $case");
+        }
+
         $number = match ($case) {
             'notold' => 646,
             'late' => 2,
@@ -206,7 +214,6 @@ final class FakeProvider extends Provider
             'planned' => 4,
             'solved' => 78,
             'closed' => 14550,
-            default => throw new InvalidArgumentException("Invalid case: $case"),
         };
 
         $label = match ($case) {
@@ -219,7 +226,6 @@ final class FakeProvider extends Provider
             'planned' => __("Planned tickets"),
             'solved' => __("Solved tickets"),
             'closed' => __("Closed tickets"),
-            default => throw new InvalidArgumentException("Invalid case: $case"),
         };
 
         $icon = match ($case) {
@@ -232,7 +238,6 @@ final class FakeProvider extends Provider
             'planned' => 'ti ti-calendar',
             'solved' => 'ti ti-checkbox',
             'closed' => 'ti ti-archive',
-            default => throw new InvalidArgumentException("Invalid case: $case"),
         };
 
         return [
@@ -448,6 +453,32 @@ final class FakeProvider extends Provider
         ];
     }
 
+    public static function ticketsByGroupAndStatus(array $params = []): array
+    {
+        return [
+            'data'  => [
+                'labels' => [
+                    _x('fake_data', 'Support level 1'),
+                    _x('fake_data', 'Support level 2'),
+                    _x('fake_data', 'Network team'),
+                    _x('fake_data', 'Workstations team'),
+                ],
+                'series' => [
+                    [
+                        'name' => __('Opened'),
+                        'data' => [48, 23, 12, 31],
+                    ],
+                    [
+                        'name' => __('Closed'),
+                        'data' => [214, 97, 45, 132],
+                    ],
+                ],
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
+        ];
+    }
+
     public static function ticketsByRequesterGroupAndStatus(array $params = []): array
     {
         return [
@@ -521,6 +552,24 @@ final class FakeProvider extends Provider
             ],
             'label' => $params['label'] ?? '',
             'icon'  => User::getIcon(),
+        ];
+    }
+
+    public static function ticketsByStatus(array $params = []): array
+    {
+        $data = [];
+        foreach (Ticket::getAllStatusArray() as $status => $label) {
+            $data[] = [
+                'number' => self::getObscureNumberForString('status' . $status, 200),
+                'label'  => $label,
+                'url'    => '',
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
         ];
     }
 
@@ -630,6 +679,13 @@ final class FakeProvider extends Provider
 
     public static function nbItemByFk(?CommonDBTM $item = null, ?CommonDBTM $fk_item = null, array $params = []): array
     {
+        if ($item === null) {
+            throw new InvalidArgumentException("Item must be provided");
+        }
+        if ($fk_item === null) {
+            throw new InvalidArgumentException("FK Item must be provided");
+        }
+
         $item_counts = self::getItemCount();
         $number_fk = $item_counts[$fk_item::class] ?? 20;
         $number = $item_counts[$item::class] ?? 1500;
@@ -651,8 +707,52 @@ final class FakeProvider extends Provider
 
         return [
             'data'  => $data,
-            'label' => $params['label'],
+            'label' => $params['label'] ?? '',
             'icon'  => $fk_item::getIcon(),
+        ];
+    }
+
+    public static function computersByOperatingSystem(array $params = []): array
+    {
+        $data = [];
+        foreach (['Microsoft Windows 11' => 2600, 'Microsoft Windows 10' => 1500, 'Ubuntu' => 600, 'macOS' => 400] as $os => $number) {
+            $data[] = [
+                'number' => $number,
+                'label'  => $os,
+                'url'    => '',
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'] ?? '',
+            'icon'  => Computer::getIcon(),
+        ];
+    }
+
+    public static function computersByAge(array $params = []): array
+    {
+        $data = [];
+        foreach (
+            [
+                __('< 1 year')  => 1100,
+                __('1-3 years') => 2100,
+                __('3-5 years') => 1400,
+                __('> 5 years') => 600,
+                __('Undefined') => 200,
+            ] as $label => $number
+        ) {
+            $data[] = [
+                'number' => $number,
+                'label'  => $label,
+                'url'    => '',
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'] ?? '',
+            'icon'  => Computer::getIcon(),
         ];
     }
 
@@ -677,6 +777,9 @@ final class FakeProvider extends Provider
     public static function articleListItem(?CommonDBTM $item = null, array $params = []): array
     {
         $data = [];
+        if ($item === null) {
+            throw new InvalidArgumentException("Item must be provided");
+        }
         for ($i = 0; $i < 5; $i++) {
             $days_ago = self::getObscureNumberForString($i . $item::class, 30);
             $date = date("Y-m-d", strtotime("-$days_ago days"));
@@ -866,7 +969,7 @@ final class FakeProvider extends Provider
         return [
             'data'        => array_reverse($data),
             'distributed' => false,
-            'label'       => $params['label'],
+            'label'       => $params['label'] ?? '',
             'icon'        => Ticket::getIcon(),
         ];
     }
@@ -929,7 +1032,7 @@ final class FakeProvider extends Provider
                 'labels' => $date_labels,
                 'series' => array_values($series),
             ],
-            'label' => $params['label'],
+            'label' => $params['label'] ?? '',
             'icon'  => Ticket::getIcon(),
         ];
     }
@@ -985,7 +1088,7 @@ final class FakeProvider extends Provider
 
         return [
             'data'  => $data,
-            'label' => $params['label'],
+            'label' => $params['label'] ?? '',
             'icon'  => Ticket::getIcon(),
         ];
     }
@@ -1119,7 +1222,7 @@ final class FakeProvider extends Provider
 
         return [
             'data'  => $data,
-            'label' => $params['label'],
+            'label' => $params['label'] ?? '',
             'icon'  => Ticket::getIcon(),
         ];
     }

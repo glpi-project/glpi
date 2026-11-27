@@ -97,6 +97,10 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      * Is a hardware found in getHardwareData / getFromDBwithData : hardware link to the job
      */
     public int $computerfound = 0;
+    /**
+     * Whether the current update is performed by an SLA escalation level; set server side only, never from input.
+     */
+    public bool $is_sla_level_update = false;
 
     // Request type
     public const INCIDENT_TYPE = 1;
@@ -944,6 +948,20 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
+    /**
+     * @param array<string, mixed> $input
+     * @return array<string, mixed>
+     */
+    #[Override]
+    public function prepareInputForClone($input)
+    {
+        $input = parent::prepareInputForClone($input);
+        // The status reflects the escalation history of the source ticket
+        unset($input['slastatuses_id']);
+
+        return $input;
+    }
+
     public function prepareInputForUpdate($input)
     {
         $this->failsWithOlaRemovedFields($input);
@@ -1032,6 +1050,10 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             foreach ([SLM::TTR, SLM::TTO] as $slmType) {
                 [$dateField, $slaField] = SLA::getFieldNames($slmType);
                 unset($input[$dateField], $input[$slaField]);
+            }
+            if (!$this->is_sla_level_update) {
+                // Escalation levels may run in the session of a user without this right
+                unset($input['slastatuses_id']);
             }
         }
 
@@ -1526,6 +1548,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 [$dateField, $slaField] = SLA::getFieldNames($slmType);
                 unset($input[$dateField], $input[$slaField]);
             }
+            unset($input['slastatuses_id']);
         }
 
         // Set default contract if not specified
@@ -2520,6 +2543,15 @@ JAVASCRIPT;
         ];
 
         $tab[] = [
+            'id'                 => '199',
+            'table'              => SlaStatus::getTable(),
+            'field'              => 'name',
+            'name'               => SlaStatus::getTypeName(1),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown',
+        ];
+
+        $tab[] = [
             'id'                 => '155',
             'table'              => $this->getTable(),
             'field'              => 'time_to_own',
@@ -3218,7 +3250,6 @@ JAVASCRIPT;
      * @param array  $options  Array of options:
      *    - value     : integer / preselected value (default 0)
      *    - toadd     : array / array of specific values to add at the beginning
-     *    - on_change : string / value to transmit to "onChange"
      *    - display   : boolean / display or get string (default true)
      *
      * @return string id of the select
@@ -3503,6 +3534,7 @@ JAVASCRIPT;
             '_actors'                   => [],
             '_contracts_id'             => 0,
             'externalid'                => '',
+            'slastatuses_id'            => 0,
         ];
     }
 
@@ -5516,7 +5548,7 @@ JAVASCRIPT;
 
             $due_time = $safe_get_strtime($ola_data['due_time']);
             $key = $due_time . '_ola_' . $ola_data['olas_id'] . '_due_time';
-            $label = __('OLA') . ' ' . OLA::getOneTypeName($ola_data['type']) . ' ' . $ola_data['name'] . ' ' . __('due time');
+            $label = htmlescape(__('OLA') . ' ' . OLA::getOneTypeName($ola_data['type']) . ' ' . $ola_data['name'] . ' ' . __('due time'));
             $label .= '<a href="' . htmlescape($ola->getLinkURL()) . '"><i class="ti ti-stopwatch slt" title="' . htmlescape($ola->getName()) . '"></i></a>';
 
             $dates_olas[$key] = [

@@ -121,7 +121,7 @@
       ',': ','
    }, __('CSV delimiter'), field_options) }}
 
-   <script>
+   <script nonce="{{ csp_nonce() }}">
        function getThemeRules() {
            // Calculate list of relevant CSS rules only once
            if (window._theme_rules === undefined) {

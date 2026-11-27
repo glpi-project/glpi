@@ -293,7 +293,7 @@ abstract class ITILTemplateField extends CommonDBChild
                         </div>
                         {% if date_variables_label is not null %}
                             <div id="date_variables_help{{ rand }}" class="alert alert-info mt-2 d-none">{{ date_variables_label }}</div>
-                            <script>
+                            <script nonce="{{ csp_nonce() }}">
                                 $('#dropdown_num{{ rand }}').on('change', function () {
                                     $('#date_variables_help{{ rand }}').toggleClass('d-none', $(this).val() !== '{{ name_field_num }}');
                                 });

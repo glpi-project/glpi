@@ -671,6 +671,7 @@ $RELATION = [
     'glpi_groups' => [
         '_glpi_changes_groups'       => 'groups_id',
         'glpi_changetasks'           => 'groups_id_tech',
+        'glpi_contracts'             => 'groups_id_tech',
         'glpi_groups'                => 'groups_id',
         '_glpi_groups_items'         => 'groups_id',
         '_glpi_groups_knowbaseitems' => 'groups_id',
@@ -1220,12 +1221,17 @@ $RELATION = [
         ],
     ],
 
+    'glpi_slastatuses' => [
+        'glpi_tickets' => 'slastatuses_id',
+    ],
+
     'glpi_slms' => [
         '_glpi_olas' => 'slms_id',
         '_glpi_slas' => 'slms_id',
     ],
 
     'glpi_snmpcredentials' => [
+        'glpi_assets_assets'     => 'snmpcredentials_id',
         'glpi_networkequipments' => 'snmpcredentials_id',
         'glpi_pdus'              => 'snmpcredentials_id',
         'glpi_printers'          => 'snmpcredentials_id',
@@ -1460,6 +1466,7 @@ $RELATION = [
             'users_id_tech',
             'users_id',
         ],
+        'glpi_contracts'                => 'users_id_tech',
         'glpi_contractcosts' => [
             'users_id',
             'users_id_lastupdater',

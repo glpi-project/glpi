@@ -557,7 +557,7 @@ class Search
         $select_criteria = SQLProvider::getDefaultSelectCriteria($itemtype);
         $select_string = '';
         foreach ($select_criteria as $criteria) {
-            if (is_a($criteria, QueryExpression::class)) {
+            if ($criteria instanceof QueryExpression) {
                 $select_string .= $criteria->getValue() . ', ';
             } else {
                 $select_string .= $criteria . ', ';
@@ -588,7 +588,7 @@ class Search
         $select_string = '';
         $select_values = [];
         foreach ($select_criteria as $criteria) {
-            if (is_a($criteria, QueryExpression::class)) {
+            if ($criteria instanceof QueryExpression) {
                 $select_string .= $criteria->getValue() . ', ';
                 $select_values = array_merge($select_values, $criteria->getParams());
             } else {

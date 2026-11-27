@@ -1104,6 +1104,15 @@ final class SQLProvider implements SearchProviderInterface
 
             case KnowbaseItem::class:
                 $criteria = KnowbaseItem::getVisibilityCriteria(false)['WHERE'];
+                // Hide articles outside their visibility period, except to KB admins and to their author
+                if (!Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN)) {
+                    $date_criteria = KnowbaseItem::getVisibilityDateCriteria();
+                    // No author exemption when anonymous: `false` would match articles of purged users (users_id = 0)
+                    $users_id = Session::getLoginUserID();
+                    $criteria[] = $users_id === false
+                        ? $date_criteria
+                        : ['OR' => [['glpi_knowbaseitems.users_id' => $users_id], $date_criteria]];
+                }
                 break;
 
             case Form::class:
@@ -1442,7 +1451,7 @@ final class SQLProvider implements SearchProviderInterface
             if ($SEARCH === []) {
                 return;
             }
-            if (is_a($value, QueryExpression::class)) {
+            if ($value instanceof QueryExpression) {
                 $values = $value->getParams();
                 $search_str = '';
                 $iterator = new DBmysqlIterator(null);
@@ -1922,7 +1931,7 @@ final class SQLProvider implements SearchProviderInterface
                                 return self::getDateTimeRangeCriteria("$table.$field", $boundaries, $nott);
                             }
 
-                            return self::getTextCriteria($table . '.' . $field, $val, $nott, Operator::NONE);
+                            return self::getTextCriteria($table . '.' . $field, $val, $nott, Operator::NONE, null);
                         }
                     }
                     if ($searchtype === 'lessthan') {
@@ -2231,7 +2240,7 @@ final class SQLProvider implements SearchProviderInterface
 
                         if (is_array($value)) {
                             $new_criteria[$new_key] = $replace_placeholders($value);
-                        } elseif (is_a($value, QueryExpression::class)) {
+                        } elseif ($value instanceof QueryExpression) {
                             $value_string = $value->getValue();
                             $new_value = strtr($value_string, $placeholders);
                             $new_criteria[$new_key] = new QueryExpression($new_value, values: $value->getParams());
@@ -2417,7 +2426,15 @@ final class SQLProvider implements SearchProviderInterface
             }
         }
 
-        return [self::getTextCriteria($tocompute, $val, $nott, Operator::NONE)];
+        return [
+            self::getTextCriteria(
+                $tocompute,
+                $val,
+                $nott,
+                Operator::NONE,
+                self::getEmptyValue($searchopt[$ID]['datatype'] ?? null)
+            ),
+        ];
     }
 
     /**
@@ -3061,7 +3078,7 @@ final class SQLProvider implements SearchProviderInterface
                 $add_link = 'AND';
                 if (is_array($additional_criteria)) {
                     $first_criteria = reset($additional_criteria) ?? '';
-                    if (is_string($first_criteria) || is_a($first_criteria, QueryExpression::class)) {
+                    if (is_string($first_criteria) || $first_criteria instanceof QueryExpression) {
                         $first_criteria = trim($first_criteria);
                         // If the first criteria starts with AND or OR, use it as a link operator
                         if (preg_match('/^(AND|OR)\s+/', $first_criteria, $matches)) {
@@ -3096,10 +3113,12 @@ final class SQLProvider implements SearchProviderInterface
                     $replaced_key = (string) $new_key !== (string) $key;
                     if (is_array($value)) {
                         $new_criteria[$new_key] = $replace_placeholders($value);
-                    } elseif (is_a($value, QueryExpression::class)) {
+                    } elseif ($value instanceof QueryExpression) {
                         $value_string = $value->getValue();
                         $new_value = strtr($value_string, $placeholders);
                         $new_criteria[$new_key] = new QueryExpression($new_value, values: $value->getParams());
+                    } elseif ($value instanceof QueryIdentifier) {
+                        $new_criteria[$new_key] = new QueryExpression(strtr($value->getValue(), $placeholders));
                     } elseif ($value !== null) {
                         $new_criteria[$new_key] = strtr($value, $placeholders);
                     } else {
@@ -4331,7 +4350,15 @@ final class SQLProvider implements SearchProviderInterface
             }
         }
 
-        return [self::getTextCriteria($NAME, $val, $NOT, Operator::NONE)];
+        return [
+            self::getTextCriteria(
+                $NAME,
+                $val,
+                $NOT,
+                Operator::NONE,
+                self::getEmptyValue($searchopt[$ID]['datatype'] ?? null)
+            ),
+        ];
     }
 
 
@@ -4613,6 +4640,8 @@ final class SQLProvider implements SearchProviderInterface
      * Inner-subquery ORDER BY: bare main-table column per sort field + trailing `id` for stable
      * paging. The outer ORDER BY can't be reused (it uses the `ITEM_x` SELECT aliases, absent
      * here); canUseDeferredJoin() guarantees each sort field is a plain column, so this is valid.
+     * The `id` follows the direction of the last sort field: a mixed `col DESC, id ASC` prevents
+     * the engine from reading the page through the `col` index and makes it sort every row.
      *
      * @param array<int|string, mixed> $sort_fields
      * @param array<int|string, mixed> $searchopt
@@ -4630,14 +4659,54 @@ final class SQLProvider implements SearchProviderInterface
             $order      = (($sort_field['order'] ?? 'ASC') === 'ASC') ? 'ASC' : 'DESC';
             $criteria[] = $DB::quoteName("{$itemtable}.{$searchopt[$ID]['field']}") . ' ' . $order;
         }
-        $criteria[] = $DB::quoteName("{$itemtable}.id") . ' ASC';
+        $criteria[] = $DB::quoteName("{$itemtable}.id") . ' ' . self::getTieBreakerOrder($sort_fields);
 
         return ' ORDER BY ' . implode(', ', $criteria);
     }
 
     /**
-     * Inner subquery resolving the page of main-table IDs alone (no display 1:N joins), grouped
-     * by id with ORDER BY + LIMIT. getParams() order: minimal-FROM, then WHERE.
+     * Direction of the `id` tie-breaker: the direction of the last sort field.
+     *
+     * @param array<int|string, mixed> $sort_fields
+     */
+    private static function getTieBreakerOrder(array $sort_fields): string
+    {
+        $last = end($sort_fields);
+        return (is_array($last) && ($last['order'] ?? 'ASC') !== 'ASC') ? 'DESC' : 'ASC';
+    }
+
+    /**
+     * Whether every join of the given FROM clause yields at most one row per item, i.e. is a
+     * plain `LEFT JOIN` from a main-table column to the `id` of the joined table. Anything else
+     * (default join, 1:N join, extra join condition) is considered as possibly multiplying rows.
+     */
+    private static function hasOnlyOneToOneJoins(string $itemtable, string $from): bool
+    {
+        $from_main = trim(self::buildFrom($itemtable));
+        $joins     = trim($from);
+        if (!str_starts_with($joins, $from_main)) {
+            return false;
+        }
+        $joins = ltrim(substr($joins, strlen($from_main)));
+
+        while ($joins !== '') {
+            if (
+                !preg_match('/^LEFT JOIN `(\w+)`(?: AS `(\w+)`)? ON \(`(\w+)`\.`\w+` = `(\w+)`\.`id`\)\s*/', $joins, $matches)
+                || $matches[3] !== $itemtable
+                || $matches[4] !== ($matches[2] !== '' ? $matches[2] : $matches[1])
+            ) {
+                return false;
+            }
+            $joins = substr($joins, strlen($matches[0]));
+        }
+        return true;
+    }
+
+    /**
+     * Inner subquery resolving the page of main-table IDs alone (no display 1:N joins), with
+     * ORDER BY + LIMIT. It is grouped by id only when a join may multiply rows: MySQL does not
+     * optimise the GROUP BY away and then sorts every matching row instead of reading the sort
+     * index. getParams() order: minimal-FROM, then WHERE.
      *
      * @param array{query: string, params: array<int, mixed>} $minimal_from
      * @param array<int, mixed>                                $WHERE_VALUES
@@ -4653,7 +4722,7 @@ final class SQLProvider implements SearchProviderInterface
         $query = 'SELECT `' . $itemtable . '`.`id`'
             . $minimal_from['query']
             . $WHERE
-            . ' GROUP BY `' . $itemtable . '`.`id`'
+            . (self::hasOnlyOneToOneJoins($itemtable, $minimal_from['query']) ? '' : ' GROUP BY `' . $itemtable . '`.`id`')
             . $inner_order
             . $LIMIT;
 
@@ -4684,9 +4753,96 @@ final class SQLProvider implements SearchProviderInterface
     }
 
     /**
+     * Whether the search option is a column of a table linked by a foreign key of the main table
+     * (standard join on the linked table id): such a join yields at most one row per item.
+     *
+     * @param class-string<CommonDBTM>  $itemtype
+     * @param array<string, mixed>      $opt
+     */
+    private static function isLinkedTableSortOption(string $itemtype, array $opt, string $itemtable): bool
+    {
+        return isset($opt['table'], $opt['field'])
+            && $opt['table'] !== $itemtable
+            && !empty($opt['linkfield'])
+            && !Search::isVirtualField($opt['linkfield'])
+            && empty($opt['forcegroupby'])
+            && empty($opt['usehaving'])
+            && empty($opt['nosort'])
+            && !isset($opt['computation'])
+            && empty($opt['nosql'])
+            && !isset($opt['joinparams']['beforejoin'])
+            && ($opt['joinparams']['jointype'] ?? 'standard') === 'standard'
+            // Plugins may define their own joins and order expressions
+            && isPluginItemType($itemtype) === false
+            && !str_starts_with($opt['table'], 'glpi_plugin_');
+    }
+
+    /**
+     * Inner subquery of the deferred join when sorting on columns of linked tables: the sort
+     * columns are selected (the outer ORDER BY relies on their `ITEM_x` aliases), then only the
+     * ids are kept. Null when it cannot be built safely.
+     *
+     * @param class-string<CommonDBTM>                         $itemtype
+     * @param array{query: string, params: array<int, mixed>} $minimal_from
+     * @param array<int, mixed>                                $where_values
+     * @param array<int|string, mixed>                         $sort_fields
+     */
+    private static function buildDeferredInnerQueryWithSortColumns(
+        string $itemtype,
+        string $itemtable,
+        array $minimal_from,
+        string $where,
+        array $where_values,
+        array $sort_fields,
+        string $order,
+        string $limit
+    ): ?Select {
+        // A derived table cannot contain duplicated column names, whereas some search options
+        // select the same aliased column twice.
+        $columns = ['id' => '`' . $itemtable . '`.`id` AS `id`'];
+        foreach ($sort_fields as $sort_field) {
+            $criteria = self::getSelectCriteria($itemtype, (int) $sort_field['searchopt_id']);
+            if (!is_array($criteria)) {
+                return null;
+            }
+            foreach ($criteria as $criterion) {
+                if ($criterion instanceof QueryExpression) {
+                    if ($criterion->getParams() !== []) {
+                        return null;
+                    }
+                    $criterion = $criterion->getValue();
+                }
+                $expression = (string) $criterion;
+                if (!preg_match('/\sAS\s+`?([^`\s]+)`?$/i', $expression, $matches)) {
+                    return null;
+                }
+                $columns[$matches[1]] ??= $expression;
+            }
+        }
+        // Every table referenced by the sort must be joined in the minimal FROM.
+        if (!self::minimalFromCoversWhere($minimal_from['query'], implode(' ', $columns) . $order)) {
+            return null;
+        }
+
+        $query = 'SELECT `id` FROM ('
+            . 'SELECT ' . implode(', ', $columns)
+            . $minimal_from['query']
+            . $where
+            . (self::hasOnlyOneToOneJoins($itemtable, $minimal_from['query']) ? '' : ' GROUP BY `' . $itemtable . '`.`id`')
+            . $order . ', `' . $itemtable . '`.`id` ' . self::getTieBreakerOrder($sort_fields)
+            . $limit
+            . ') AS `deferred_sorted`';
+
+        return (new Select())
+            ->setQuery($query)
+            ->setParams(array_merge($minimal_from['params'], $where_values));
+    }
+
+    /**
      * Whether deferred-join pagination is safe: grouped, limited, ordered, non-union search with
      * no meta/`view`/`all` criterion, no HAVING, and every sort field a plain main-table column
-     * (so the page can be resolved and ordered from the main table alone). HAVING / 1:N-aggregate
+     * or a column of a table linked by a foreign key of the main table (so the page can be
+     * resolved and ordered from the minimal FROM alone). HAVING / 1:N-aggregate
      * sorts are excluded on purpose — the aggregate must be computed over the whole relation
      * anyway, so deferral buys little. Otherwise the normal query is emitted.
      *
@@ -4732,6 +4888,11 @@ final class SQLProvider implements SearchProviderInterface
                 return false;
             }
             $opt = $searchopt[$ID];
+            // Columns of a table linked by a foreign key of the main table are joined in the
+            // minimal FROM (1:1 join), so the inner subquery can sort on them too.
+            if (self::isLinkedTableSortOption($data['itemtype'], $opt, $itemtable)) {
+                continue;
+            }
             // Only plain main-table columns are orderable in the inner subquery.
             if (
                 $opt['table'] !== $itemtable
@@ -5008,10 +5169,10 @@ final class SQLProvider implements SearchProviderInterface
         // If there are search items
         if (count($data['search']['criteria'])) {
             $main_where = self::constructCriteriaSQL($data['search']['criteria'], $data, $searchopt);
-            if ($WHERE !== '' && $main_where->getQuery() !== '') {
-                $WHERE .= ' AND ';
+            if ($main_where->getQuery() !== '') {
+                // Group the criteria so that their OR links do not bypass the restrictions above
+                $WHERE .= ($WHERE !== '' ? ' AND ' : '') . '(' . $main_where->getQuery() . ')';
             }
-            $WHERE  .= $main_where->getQuery();
             $WHERE_VALUES = array_merge($WHERE_VALUES, $main_where->getParams());
             $main_having = self::constructCriteriaSQL($data['search']['criteria'], $data, $searchopt, true);
             $HAVING = $main_having->getQuery();
@@ -5474,25 +5635,46 @@ final class SQLProvider implements SearchProviderInterface
                 );
             }
 
+            $inner = null;
             if ($can_defer && $minimal_from !== null) {
+                $sorts_on_linked_table = false;
+                foreach ($sort_fields as $sort_field) {
+                    if (self::isLinkedTableSortOption($data['itemtype'], $searchopt[$sort_field['searchopt_id']], $itemtable)) {
+                        $sorts_on_linked_table = true;
+                        break;
+                    }
+                }
                 // Two-phase: inner subquery picks the page of ids (no display 1:N joins), outer
                 // query attaches the display joins to just those ids.
-                $inner = self::buildDeferredInnerQuery(
-                    $itemtable,
-                    $minimal_from,
-                    $WHERE,
-                    $WHERE_VALUES,
-                    self::buildInnerOrderBy($itemtable, $sort_fields, $searchopt),
-                    $LIMIT
-                );
+                $inner = $sorts_on_linked_table
+                    ? self::buildDeferredInnerQueryWithSortColumns(
+                        $data['itemtype'],
+                        $itemtable,
+                        $minimal_from,
+                        $WHERE,
+                        $WHERE_VALUES,
+                        $sort_fields,
+                        $ORDER,
+                        $LIMIT
+                    )
+                    : self::buildDeferredInnerQuery(
+                        $itemtable,
+                        $minimal_from,
+                        $WHERE,
+                        $WHERE_VALUES,
+                        self::buildInnerOrderBy($itemtable, $sort_fields, $searchopt),
+                        $LIMIT
+                    );
+            }
 
+            if ($inner !== null) {
                 $QUERY = $SELECT
                     . " FROM `" . $itemtable . "`"
                     . " INNER JOIN (" . $inner->getQuery() . ") AS `deferred_page`"
                     . " ON `" . $itemtable . "`.`id` = `deferred_page`.`id` "
                     . $FROM_JOINS
                     . $GROUPBY
-                    . $ORDER;
+                    . $ORDER . ', `' . $itemtable . '`.`id` ' . self::getTieBreakerOrder($sort_fields);
                 // Param order matches the `?` order: outer SELECT, inner subquery (its WHERE
                 // included), then outer display joins — inner WHERE BEFORE the joins here.
                 $QUERY_VALUES = array_merge($SELECT_VALUES, $inner->getParams(), $FROM_JOINS_VALUES);
@@ -5958,7 +6140,7 @@ final class SQLProvider implements SearchProviderInterface
         $DBread->execution_time = true;
         $stmt = $DBread->prepare($data['sql']['search']->getQuery());
         $DBread->executeStatement($stmt, $data['sql']['search']->getParams());
-        $result = $stmt->get_result();
+        $result = $DBread->getStatementResult($stmt);
 
         if ($result) {
             $data['data']['execution_time'] = $DBread->execution_time;
@@ -5982,7 +6164,7 @@ final class SQLProvider implements SearchProviderInterface
                 foreach ($data['sql']['count'] as $sqlcount) {
                     $stmt = $DBread->prepare($sqlcount->getQuery());
                     $DBread->executeStatement($stmt, $sqlcount->getParams());
-                    if ($sqlcount_result = $stmt->get_result()) {
+                    if ($sqlcount_result = $DBread->getStatementResult($stmt)) {
                         $data['data']['totalcount'] += $DBread->result($sqlcount_result, 0, 0);
                     }
                 }
@@ -6004,7 +6186,7 @@ final class SQLProvider implements SearchProviderInterface
                     self::constructSQL($data);
                     $stmt = $DBread->prepare($data['sql']['search']->getQuery());
                     $DBread->executeStatement($stmt, $data['sql']['search']->getParams());
-                    if ($rebuilt_result = $stmt->get_result()) {
+                    if ($rebuilt_result = $DBread->getStatementResult($stmt)) {
                         $result = $rebuilt_result;
                     }
                 }
@@ -6277,17 +6459,40 @@ final class SQLProvider implements SearchProviderInterface
     }
 
     /**
+     * Get the value matching an empty field of given datatype, in addition to `NULL`.
+     *
+     * Only text columns can store an empty string; comparing other columns to `''` produces SQL warnings.
+     * Numeric columns were matching `0`, as the server casts `''` to `0`: this is kept explicitly.
+     * Date columns have no empty value.
+     */
+    private static function getEmptyValue(?string $datatype): string|int|null
+    {
+        return match ($datatype) {
+            'bool', 'integer', 'number', 'decimal', 'count', 'mio', 'percentage', 'timestamp', 'progressbar' => 0,
+            'date', 'datetime', 'date_delay' => null,
+            default => '',
+        };
+    }
+
+    /**
      * Create SQL search condition
      *
      * @param string|QueryExpression $field Name (should **NOT** be ` protected)
      * @param string|int|null        $val   Value to search
      * @param bool                   $not   Is a negative search ? (false by default)
      * @param Operator               $link  With previous criteria (default 'AND')
+     * @param string|int|null        $empty_value Value also matched by a `NULL` search, `null` to only match `NULL`,
+     *                                            see self::getEmptyValue().
      *
      * @return array<string|int, mixed>
      */
-    public static function getTextCriteria(string|QueryExpression $field, string|int|null $val, bool $not = false, Operator $link = Operator::AND): array
-    {
+    public static function getTextCriteria(
+        string|QueryExpression $field,
+        string|int|null $val,
+        bool $not = false,
+        Operator $link = Operator::AND,
+        string|int|null $empty_value = ''
+    ): array {
         if (!is_string($field)) {
             //This case seems often not realistic; but let's keep for backward compatibility
             // Collect the values bound to the placeholders produced by makeTextCriteria(),
@@ -6298,11 +6503,14 @@ final class SQLProvider implements SearchProviderInterface
             if ($search_val != null) {
                 // makeTextSearch() produces a `LIKE ?` placeholder
                 $values[] = $search_val;
-            } elseif (strtolower((string) ($val ?? 'null')) === 'null') {
+            } elseif ($empty_value !== null && strtolower((string) ($val ?? 'null')) === 'null') {
                 // makeTextCriteria() produces an `= ?`/`<> ?` placeholder for the NULL case
-                $values[] = '';
+                $values[] = $empty_value;
             }
-            $qexpr = new QueryExpression(self::makeTextCriteria($field, $val, $not, $link->value), values: $values);
+            $qexpr = new QueryExpression(
+                self::makeTextCriteria($field, $val, $not, $link->value, $empty_value !== null),
+                values: $values
+            );
             return [$qexpr];
         }
         $field = str_replace('`', '', $field);
@@ -6313,11 +6521,11 @@ final class SQLProvider implements SearchProviderInterface
             $criteria = [$field => ['LIKE', $search_val]];
         }
 
-        if (strtolower((string) ($val ?? 'null')) == 'null') {
+        if ($empty_value !== null && strtolower((string) ($val ?? 'null')) == 'null') {
             $criteria = [
                 'OR' => [
                     [$criteria],
-                    [$field => ''],
+                    [$field => $empty_value],
                 ],
             ];
         }
@@ -6352,31 +6560,17 @@ final class SQLProvider implements SearchProviderInterface
      * @param string|int|null $val    Value to search
      * @param bool $not    Is a negative search ? (false by default)
      * @param string  $link   With previous criteria (default 'AND')
+     * @param bool    $match_empty_value Whether a `NULL` search also matches the empty value,
+     *                                   bound to the added placeholder, see self::getTextCriteria().
      *
      * @return string Search SQL string
      **/
-    public static function makeTextCriteria($field, $val, $not = false, $link = 'AND')
+    public static function makeTextCriteria($field, $val, $not = false, $link = 'AND', bool $match_empty_value = true)
     {
 
         $sql = $field . self::makeTextSearch($val, $not);
 
-        if (strtolower((string) ($val ?? 'null')) == "null") {
-            // FIXME
-            // `OR field = ''` condition is not supposed to be relevant, and can sometimes result in SQL performances issues/warnings/errors,
-            // when following datatype are used:
-            //  - integer
-            //  - number
-            //  - decimal
-            //  - count
-            //  - mio
-            //  - percentage
-            //  - timestamp
-            //  - datetime
-            //  - date_delay
-            //
-            // Removing this condition requires, at least, to use the `int`/`float`/`double`/`timestamp`/`date` types in DB,
-            // to ensure that the `''` value will not be stored in DB.
-
+        if ($match_empty_value && strtolower((string) ($val ?? 'null')) == "null") {
             if ($not) {
                 $sql .= " AND $field <> ?";
             } else {
@@ -7294,7 +7488,7 @@ final class SQLProvider implements SearchProviderInterface
                             ($ticket_status == Ticket::SOLVED)
                             || ($ticket_status == Ticket::CLOSED)
                         ) {
-                            $out .= $ola_name . ' : ' . htmlescape(Html::convDateTime($due_time)) . '</br>';
+                            $out .= htmlescape($ola_name) . ' : ' . htmlescape(Html::convDateTime($due_time)) . '</br>';
                             continue;
                         }
 
@@ -7302,7 +7496,7 @@ final class SQLProvider implements SearchProviderInterface
                         // - ola completed (end_time is set)
                         // - search option without progress bar
                         if ($ola_end_time || in_array($orig_id, [180, 185])) {
-                            $out .= $ola_name . ' : ' . htmlescape(Html::convDateTime($due_time)) . '</br>';
+                            $out .= htmlescape($ola_name) . ' : ' . htmlescape(Html::convDateTime($due_time)) . '</br>';
                             continue;
                         }
 
@@ -7402,18 +7596,27 @@ final class SQLProvider implements SearchProviderInterface
                     return \htmlescape($tmp->getDescription($data[$ID][0]['name']));
 
                 case 'glpi_changes.status':
+                    if ($data[$ID][0]['name'] === null) {
+                        return '';
+                    }
                     $status = Change::getStatus($data[$ID][0]['name']);
                     return "<span class='text-nowrap'>"
                         . Change::getStatusIcon($data[$ID][0]['name'], false) . "&nbsp;" . \htmlescape($status)
                         . "</span>";
 
                 case 'glpi_problems.status':
+                    if ($data[$ID][0]['name'] === null) {
+                        return '';
+                    }
                     $status = Problem::getStatus($data[$ID][0]['name']);
                     return "<span class='text-nowrap'>"
                         . Problem::getStatusIcon($data[$ID][0]['name'], false) . "&nbsp;" . \htmlescape($status)
                         . "</span>";
 
                 case 'glpi_tickets.status':
+                    if ($data[$ID][0]['name'] === null) {
+                        return '';
+                    }
                     $status = Ticket::getStatus($data[$ID][0]['name']);
                     return "<span class='text-nowrap'>"
                         . Ticket::getStatusIcon($data[$ID][0]['name'], false) . "&nbsp;" . \htmlescape($status)
@@ -7968,7 +8171,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $out .= $separate;
                             }
                             $count_display++;
-                            $out .= $so['toadd'][$data[$ID][$k]['name']] ?? Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit);
+                            $out .= $so['toadd'][$data[$ID][$k]['name']] ?? Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit, $so['decimals'] ?? 0);
                         }
                     }
                     $out = "<span class='text-nowrap'>" . \htmlescape($out) . "</span>";
