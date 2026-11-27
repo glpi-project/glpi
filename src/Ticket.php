@@ -1240,8 +1240,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
         // Suspended levels: keep the pending level as is, but schedule the first level of a newly associated OLA
         // (not for a closed ticket: its pending level is removed, as its OLA may no longer be recomputed)
-        $suspended = !$this->isClosed()
-            && ($this->isDeleted() || in_array($this->fields['status'], static::getReopenableStatusArray()));
+        $suspended = $this->areOlaLevelsSuspended();
         if ($first_level || !$suspended) {
             $level_ticket = new OlaLevel_Ticket();
             $ola_levels_todo = $this->getOlaLevelsToDoCriteria((int) $olas_id);
@@ -1261,8 +1260,19 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             }
         }
 
-        // also run for suspended levels: doLevelForTicket() removes the levels of a closed ticket
-        OlaLevel_Ticket::replayForTicket($this->getID(), $ola->fields['type'], (int) $olas_id);
+        if (!$suspended) {
+            OlaLevel_Ticket::replayForTicket($this->getID(), $ola->fields['type'], (int) $olas_id);
+        }
+    }
+
+    /**
+     * Are the OLA levels of this ticket suspended (ticket in the trash or waiting, solution not validated, ...)?
+     * The pending level is kept and rescheduled when the ticket is resumed.
+     */
+    public function areOlaLevelsSuspended(): bool
+    {
+        return !$this->isClosed()
+            && ($this->isDeleted() || in_array($this->fields['status'], static::getReopenableStatusArray()));
     }
 
     /**

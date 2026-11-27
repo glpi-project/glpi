@@ -181,7 +181,7 @@ class OlaLevel_Ticket extends CommonDBTM
             return;
         }
 
-        if ($ticket->isDeleted() || in_array($ticket->fields['status'], Ticket::getReopenableStatusArray())) {
+        if ($ticket->areOlaLevelsSuspended()) {
             // no deletion : levels are suspended (trash, waiting, solution not validated, ...), the level is rescheduled when the ticket is resumed
 
             return;
