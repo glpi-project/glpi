@@ -713,4 +713,44 @@ class StatTest extends DbTestCase
 
         return $locations_id;
     }
+
+    public static function spreadsheetOutputProvider(): iterable
+    {
+        yield [\Search::CSV_OUTPUT];
+        yield [\Search::ODS_OUTPUT];
+        yield [\Search::XLSX_OUTPUT];
+    }
+
+    #[DataProvider('spreadsheetOutputProvider')]
+    public function testShowTableSpreadsheetExport(int $output_type): void
+    {
+        $this->login();
+
+        $tech_id = getItemByTypeName(\User::class, 'tech', true);
+        $this->createItem(\Ticket::class, [
+            'name'              => 'Ticket for stat export',
+            'content'           => '',
+            'entities_id'       => $this->getTestRootEntity(true),
+            '_users_id_assign'  => $tech_id,
+        ]);
+
+        $date1 = date('Y-m-d', strtotime('-1 day'));
+        $date2 = date('Y-m-d', strtotime('+1 day'));
+        $items = \Stat::getItems(\Ticket::class, $date1, $date2, 'technician');
+        $this->assertNotEmpty($items);
+
+        $_GET['display_type'] = $output_type;
+        ob_start();
+        try {
+            \Stat::showTable(\Ticket::class, 'technician', $date1, $date2, 0, $items);
+        } finally {
+            $output = ob_get_clean();
+            unset($_GET['display_type']);
+        }
+
+        $this->assertNotEmpty($output);
+        if ($output_type === \Search::CSV_OUTPUT) {
+            $this->assertStringContainsString('tech', $output);
+        }
+    }
 }
