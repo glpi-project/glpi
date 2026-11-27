@@ -161,8 +161,13 @@ final class ResourcesChecker
     private function shouldCheckResources(): bool
     {
         // The file is special and will be executed before the autoload script
-        // is loaded, thus we must require the needed file manually.
+        // is loaded, thus we must require the needed files manually.
         require_once($this->root_dir . '/src/Glpi/Application/Environment.php');
-        return Environment::get()->shouldExpectResourcesToChange($this->root_dir);
+        require_once($this->root_dir . '/src/Glpi/Application/GitCheckout.php');
+
+        // On a git checkout, a `git pull` may update the dependencies or the locales definitions
+        // without them being installed/compiled.
+        return Environment::get()->shouldExpectResourcesToChange($this->root_dir)
+            || GitCheckout::isGitCheckout($this->root_dir);
     }
 }

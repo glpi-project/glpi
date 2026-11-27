@@ -5744,18 +5744,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Asset/CustomFieldType/NumberType.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Binary operation "\\." between 0\\|0\\.0\\|array\\{\\}\\|string\\|false and \'translations\' results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Binary operation "\\." between 0\\|0\\.0\\|array\\{\\}\\|string\\|false and string results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Cache\\\\CacheManager\\:\\:getKnownContexts\\(\\) should return array\\<string\\> but returns array\\<int, int\\|string\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,

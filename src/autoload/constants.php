@@ -1,5 +1,7 @@
 <?php
 
+use Glpi\Application\GitCheckout;
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -50,9 +52,14 @@ define(
 );
 
 $version_file = sprintf('%s/version/%s', GLPI_ROOT, preg_replace('/^(\d+\.\d+\.\d+)(-.*)?$/', '$1', GLPI_VERSION));
+// On an instance running from a git checkout, the source code can change without `GLPI_VERSION` being changed.
+// The current revision is then appended, to get a distinct cache directory for each revision.
+$git_revision = GitCheckout::getRevision(GLPI_ROOT);
 define(
     "GLPI_FILES_VERSION",
-    GLPI_VERSION . (is_readable($version_file) ? '-' . hash_file('CRC32c', $version_file) : '')
+    GLPI_VERSION
+        . (is_readable($version_file) ? '-' . hash_file('CRC32c', $version_file) : '')
+        . ($git_revision !== null ? '-' . substr($git_revision, 0, 12) : '')
 );
 
 define('GLPI_MIN_PHP', '8.3'); // Must also be changed in top of public/index.php
