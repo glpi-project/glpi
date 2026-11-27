@@ -639,4 +639,35 @@ class PlanningTest extends DbTestCase
             $this->assertSame(strtotime($dates['begin']) + HOUR_TIMESTAMP, strtotime($dates['end']));
         }
     }
+
+    public function testShowEventDatesFormDefaultRecall(): void
+    {
+        $this->login();
+
+        // Recalls depend on notifications and on the automatic action, force them to be available
+        $_SESSION['glpiplanningreminder_isavailable'] = 1;
+
+        ob_start();
+        \Planning::showEventDatesForm([
+            'itemtype' => \PlanningExternalEvent::class,
+            'items_id' => 0,
+            'begin'    => '2026-09-15 09:00:00',
+            'end'      => '2026-09-15 10:30:00',
+        ]);
+        $output = ob_get_clean();
+
+        $this->assertSame(
+            1,
+            preg_match('/<select[^>]*name=["\']_planningrecall\[before_time\]["\'][^>]*>(.*?)<\/select>/s', $output, $matches),
+            'Recall dropdown not found'
+        );
+
+        // No recall must be created unless the user asks for one
+        $this->assertSame(
+            1,
+            preg_match('/<option value=["\']([^"\']*)["\'][^>]*selected/', $matches[1], $selected),
+            'No selected recall value'
+        );
+        $this->assertSame((string) \Entity::CONFIG_NEVER, $selected[1]);
+    }
 }
