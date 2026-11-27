@@ -94,6 +94,19 @@ class HttpClientTest extends GLPITestCase
         $this->assertSame('proxied', $response->getContent());
     }
 
+    public function testNoProxyCannotBypassProxyWhenResolvedThroughProxy(): void
+    {
+        $this->setProxy($this->startFakeProxy());
+
+        // Without the proxy, the request would be sent directly to 127.0.0.1 without private networks check.
+        $response = (new HttpClient(resolve_through_proxy: true))->get('http://glpi-test.invalid/', [
+            'no_proxy' => '*',
+            'resolve'  => ['glpi-test.invalid' => '127.0.0.1'],
+        ]);
+
+        $this->assertSame('proxied', $response->getContent());
+    }
+
     public function testStreamUnresolvableHostThroughProxy(): void
     {
         $this->setProxy($this->startFakeProxy());

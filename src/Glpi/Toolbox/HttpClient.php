@@ -37,6 +37,7 @@ namespace Glpi\Toolbox;
 use CommonGLPI;
 use GLPIKey;
 use Safe\Exceptions\NetworkException;
+use Safe\Exceptions\SocketsException;
 use Safe\Exceptions\UrlException;
 use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Component\HttpClient\Exception\RedirectionException;
@@ -55,6 +56,7 @@ use Symfony\Contracts\HttpClient\ResponseStreamInterface;
 
 use function Safe\dns_get_record;
 use function Safe\parse_url;
+use function Safe\socket_addrinfo_lookup;
 
 final class HttpClient
 {
@@ -73,6 +75,7 @@ final class HttpClient
      * @param bool $resolve_through_proxy Send requests to hosts that the GLPI server cannot resolve to the proxy,
      *                                    without checking them against private networks.
      *                                    Must be used only for URLs configured by administrators.
+     *                                    Relative URIs (resolved against `base_uri`) are not concerned.
      */
     public function __construct(
         ?string $context = null,
@@ -169,6 +172,8 @@ final class HttpClient
             // Redirections are not followed, as their target would not be checked either.
             $client = $this->unfiltered_proxy_client;
             $options['max_redirects'] = 0;
+            // An empty string (not null) also overrides the `NO_PROXY` environment variable, so the proxy is always used.
+            $options['no_proxy'] = '';
         }
 
         $response = $client->request($method, $uri, $options);
@@ -258,6 +263,17 @@ final class HttpClient
         $host = trim($host, '[]');
         if ($host === '' || filter_var($host, FILTER_VALIDATE_IP) !== false || gethostbynamel($host) !== false) {
             return true;
+        }
+
+        // Same IPv6 system resolver lookup (e.g. `/etc/hosts`) as `NoPrivateNetworkHttpClient`.
+        if (extension_loaded('sockets')) {
+            try {
+                if (@socket_addrinfo_lookup($host, null, ['ai_socktype' => SOCK_STREAM, 'ai_family' => AF_INET6]) !== []) {
+                    return true;
+                }
+            } catch (SocketsException) {
+                // Not resolvable through the system IPv6 resolver, fallback to DNS.
+            }
         }
 
         try {
