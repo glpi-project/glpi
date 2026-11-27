@@ -1135,7 +1135,8 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
     public static function getDefaultSearchRequest(): array
     {
         return [
-            'sort' => 0,
+            'sort'                      => 0,
+            'disable_order_by_fallback' => true,
         ];
     }
 
