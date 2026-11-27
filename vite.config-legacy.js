@@ -168,7 +168,9 @@ const legacyEntryPoints = getLegacyEntryPoints();
 const getPostCSSPluginsForEntry = (entry) => {
     const pluginsForEntry = [];
     if (entry.endsWith('tabler.scss')) {
-        pluginsForEntry.push(postcssRTLCSS());
+        pluginsForEntry.push(postcssRTLCSS({
+            mode: 'override',
+        }));
     }
     return pluginsForEntry;
 };
