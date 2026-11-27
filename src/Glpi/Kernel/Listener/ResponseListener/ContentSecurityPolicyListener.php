@@ -99,7 +99,7 @@ final class ContentSecurityPolicyListener implements EventSubscriberInterface
 
         $policy = [
             "base-uri 'self'",
-            "script-src 'nonce-$nonce' 'unsafe-eval'",
+            "script-src 'nonce-$nonce' 'unsafe-eval' 'strict-dynamic'",
             "object-src 'none'",
             "worker-src 'self' blob:",
         ];

@@ -733,11 +733,7 @@ TWIG,
         // load log filters everywhere
         Html::requireJs('log_filters');
 
-        if ($_SESSION['glpiisrtl'] ?? false) {
-            $tpl_vars['css_files'][] = ['path' => 'lib/tabler.rtl.css'];
-        } else {
-            $tpl_vars['css_files'][] = ['path' => 'lib/tabler.css'];
-        }
+        $tpl_vars['css_files'][] = ['path' => 'lib/tabler.css'];
         $tpl_vars['css_files'][] = ['path' => 'css/glpi.scss'];
         $tpl_vars['css_files'][] = ['path' => 'css/core_palettes.scss'];
 
@@ -748,7 +744,12 @@ TWIG,
 
         $tpl_vars['js_files'][] = ['path' => 'lib/base.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/webkit_fix.js'];
-        $tpl_vars['js_modules'][] = ['path' => 'build/vue/app.js'];
+        // Vue entrypoint needs no version param because the chunks already have the hash in the name
+        // The entrypoint itself should rarely change but devs could also always use HMR
+        if (FrontEnd::isViteDevServerRunning()) {
+            $tpl_vars['js_modules'][] = ['path' => FrontEnd::getViteDevServerClient(), 'options' => ['no_version' => true]];
+        }
+        $tpl_vars['js_modules'][] = ['path' => FrontEnd::getViteVueEntrypoint(), 'options' => ['no_version' => true]];
         $tpl_vars['js_files'][] = ['path' => 'js/common_ajax_controller.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/common.js'];
 
@@ -3048,8 +3049,7 @@ JS;
         }
         $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/tinymce/skins/ui/oxide/content.css', ['force_no_version' => true]));
         $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/base.css', ['force_no_version' => true]));
-        $tabler_path = ($_SESSION['glpiisrtl'] ?? false) ? 'lib/tabler.rtl.css' : 'lib/tabler.css';
-        $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css($tabler_path, ['force_no_version' => true]));
+        $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/tabler.css', ['force_no_version' => true]));
         $content_css .= ',' . implode(',', array_map(static fn($path) => preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true])), $content_css_paths));
         // Fix & encoding so it can be loaded as expected in debug mode
         $content_css = str_replace('&amp;', '&', $content_css);
@@ -5411,7 +5411,6 @@ JS);
                     }
                 }
                 break;
-
             case 'fileupload':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/jquery-file-upload.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/fileupload.js';
@@ -5605,6 +5604,12 @@ JS);
     final public static function getPrefixedUrl(string $url): string
     {
         global $CFG_GLPI;
+
+        // ignore if already an absolute URL
+        if (filter_var($url, FILTER_VALIDATE_URL)) {
+            return $url;
+        }
+
         $prefix = $CFG_GLPI['root_doc'];
 
         // Prevent double `/` between prefix and path.
