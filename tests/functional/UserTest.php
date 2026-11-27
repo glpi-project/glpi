@@ -66,6 +66,25 @@ class UserTest extends DbTestCase
         $this->login();
 
         $user_id = (int) getItemByTypeName('User', 'normal', true);
+        $user = new User();
+        $this->assertTrue($user->getFromDB($user_id));
+
+        $old_get = $_GET;
+        $render_items = function (bool $tech) use ($user, $old_get): string {
+            $_GET = [];
+            $buffer_level = ob_get_level();
+            ob_start();
+            try {
+                $user->showItems($tech);
+                return ob_get_clean();
+            } finally {
+                while (ob_get_level() > $buffer_level) {
+                    ob_end_clean();
+                }
+                $_GET = $old_get;
+            }
+        };
+
         $scope_entity_id = (int) $this->getTestRootEntity(true);
         $group = $this->createItem(
             Group::class,
@@ -101,12 +120,23 @@ class UserTest extends DbTestCase
             $entity_managed_before = User::countItemsForUser($user_id, true);
             $_SESSION['glpiactiveentities'] = [0, $scope_entity_id];
 
-            // Capture the READ_OWNED baseline before creating assets linked only to another user.
+            // Capture visibility baselines before creating assets linked only to another user.
             $_SESSION['glpiactiveprofile']['computer'] = READ_OWNED;
             $owned_used_before = User::countItemsForUser($user_id, false);
             $owned_managed_before = User::countItemsForUser($user_id, true);
 
+            $_SESSION['glpiactiveprofile']['computer'] = READ_ASSIGNED;
+            $assigned_used_before = User::countItemsForUser($user_id, false);
+            $assigned_managed_before = User::countItemsForUser($user_id, true);
+            $_SESSION['glpiactiveprofile']['computer'] = $old_computer_right;
+
+            $direct_name = $this->getUniqueString();
+            $group_used_name = $this->getUniqueString();
+            $group_managed_name = $this->getUniqueString();
+            $root_name = $this->getUniqueString();
+
             $computer_data = [
+                'name'           => $direct_name,
                 'users_id'       => $user_id,
                 'users_id_tech'  => $user_id,
                 'groups_id'      => [$group->getID()],
@@ -123,6 +153,7 @@ class UserTest extends DbTestCase
             $this->createItem(
                 Computer::class,
                 [
+                    'name'           => $group_used_name,
                     'users_id'       => 0,
                     'users_id_tech'  => 0,
                     'groups_id'      => [$group->getID()],
@@ -134,6 +165,7 @@ class UserTest extends DbTestCase
             $this->createItem(
                 Computer::class,
                 [
+                    'name'           => $group_managed_name,
                     'users_id'       => 0,
                     'users_id_tech'  => 0,
                     'groups_id'      => [],
@@ -142,24 +174,57 @@ class UserTest extends DbTestCase
             );
 
             // READ_OWNED must not count assets linked only to another user's groups.
+            $_SESSION['glpiactiveprofile']['computer'] = READ_OWNED;
             $this->assertSame($owned_used_before, User::countItemsForUser($user_id, false));
             $this->assertSame($owned_managed_before, User::countItemsForUser($user_id, true));
+
+            $owned_used_output = $render_items(false);
+            $owned_managed_output = $render_items(true);
+            foreach ([$direct_name, $group_used_name, $group_managed_name] as $name) {
+                $this->assertStringNotContainsString($name, $owned_used_output);
+                $this->assertStringNotContainsString($name, $owned_managed_output);
+            }
+
+            // READ_ASSIGNED must apply the same visibility rules to both item lists and counters.
+            $_SESSION['glpiactiveprofile']['computer'] = READ_ASSIGNED;
+            $this->assertSame($assigned_used_before, User::countItemsForUser($user_id, false));
+            $this->assertSame($assigned_managed_before, User::countItemsForUser($user_id, true));
+
+            $assigned_used_output = $render_items(false);
+            $assigned_managed_output = $render_items(true);
+            foreach ([$direct_name, $group_used_name, $group_managed_name] as $name) {
+                $this->assertStringNotContainsString($name, $assigned_used_output);
+                $this->assertStringNotContainsString($name, $assigned_managed_output);
+            }
 
             // Group-only assignments are included with full rights, while direct + group links are not duplicated.
             $_SESSION['glpiactiveprofile']['computer'] = $old_computer_right;
             $this->assertSame($used_before + 2, User::countItemsForUser($user_id, false));
             $this->assertSame($managed_before + 2, User::countItemsForUser($user_id, true));
 
+            $used_output = $render_items(false);
+            $managed_output = $render_items(true);
+            $this->assertStringContainsString($direct_name, $used_output);
+            $this->assertStringContainsString($group_used_name, $used_output);
+            $this->assertStringNotContainsString($group_managed_name, $used_output);
+            $this->assertStringContainsString($direct_name, $managed_output);
+            $this->assertStringContainsString($group_managed_name, $managed_output);
+            $this->assertStringNotContainsString($group_used_name, $managed_output);
+            $this->assertSame(1, substr_count($used_output, $direct_name));
+            $this->assertSame(1, substr_count($managed_output, $direct_name));
+
             // Add an item in root to check that the target user's entity scope is respected.
             $this->createItem(
                 Computer::class,
-                ['entities_id' => 0] + $computer_data + $this->getMinimalCreationInput(Computer::class)
+                ['entities_id' => 0, 'name' => $root_name] + $computer_data + $this->getMinimalCreationInput(Computer::class)
             );
 
-            // The root entity is excluded when only the test entity is active.
+            // The root entity is excluded from both the count and the item list when only the test entity is active.
             $_SESSION['glpiactiveentities'] = [$scope_entity_id];
             $this->assertSame($entity_used_before + 2, User::countItemsForUser($user_id, false));
             $this->assertSame($entity_managed_before + 2, User::countItemsForUser($user_id, true));
+            $this->assertStringNotContainsString($root_name, $render_items(false));
+            $this->assertStringNotContainsString($root_name, $render_items(true));
         } finally {
             $_SESSION['glpiactiveprofile']['computer'] = $old_computer_right;
             if ($had_active_entities) {
