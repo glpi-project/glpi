@@ -303,4 +303,25 @@ enum Environment: string
             self::E2E => true,
         };
     }
+
+    public function shouldEnableTestResources(): bool
+    {
+        return match ($this) {
+            default   => false,
+            self::TESTING => true,
+            self::E2E => true,
+        };
+    }
+
+    /**
+     * Should the users be warned about the plugins that are not compatible with the Content Security Policy?
+     */
+    public function shouldWarnAboutCspIncompatiblePlugins(): bool
+    {
+        // Disabled in production for now, to give plugins maintainers more time to make their plugins compatible.
+        return match ($this) {
+            default          => true,
+            self::PRODUCTION => false,
+        };
+    }
 }

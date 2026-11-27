@@ -119,7 +119,7 @@
    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
 </form>
 
-<script type="text/javascript">
+<script nonce="{{ csp_nonce() }}" type="text/javascript">
 $(function() {
    $(document).on("click", ".switch-panel-width", function() {
        if ($('#itil-object-container').hasClass('right-collapsed')) {

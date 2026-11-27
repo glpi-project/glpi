@@ -33,7 +33,7 @@
 <div class="card border-top-0 rounded-0 search-as-map">
    <div id="map_container" class="card-body px-0">
       <small class="text-muted p-1">{{ __('Search results for localized items only') }}</small>
-      <script>
+      <script nonce="{{ csp_nonce() }}">
           $(function() {
               const map = initMap($('#map_container'), 'map', 'full');
               _loadMap(map, '{{ itemtype|e('js') }}');

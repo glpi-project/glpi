@@ -446,7 +446,7 @@ JS);
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             {# jQuery doesn't allow slide animation on table elements, we need to apply the animation to each cells content and then remove the padding to get the desired "slide" animation #}
-            <script>
+            <script nonce="{{ csp_nonce() }}">
                 function impactListUp(target) {
                     target.removeClass("ti-caret-down-filled");
                     target.addClass("ti-caret-up-filled");
@@ -1636,7 +1636,7 @@ HTML;
         // Bind the backend values to the client and start the network
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-            <script defer>
+            <script nonce="{{ csp_nonce() }}" defer>
                 {% autoescape 'js' %}
                     GLPIImpact.prepareNetwork($("#network_container"), {
                         'default' : '{{ default }}',

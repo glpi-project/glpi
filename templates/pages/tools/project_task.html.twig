@@ -267,7 +267,7 @@
         }
     ) }}
 
-    <script type="module">
+    <script nonce="{{ csp_nonce() }}" type="module">
         const form = $('#{{ form_id }}');
         function projecttasktemplate_update(value) {
             $.ajax({

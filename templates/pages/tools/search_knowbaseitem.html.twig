@@ -131,7 +131,7 @@
           }
        }
     </style>
-    <script type="module">
+    <script nonce="{{ csp_nonce() }}" type="module">
         function showLoading() {
             const loading_overlay = $('#{{ container_id }}').find('div.spinner-overlay');
             if (loading_overlay.length === 0) {

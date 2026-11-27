@@ -180,7 +180,7 @@
                               'icon_label': true,
                               'rand': rand,
                               'additional_attributes': {
-                                'onchange': 'toggleTimelinePrivate(this.checked, this)',
+                                'data-glpi-timeline-private-toggle': '',
                                 'data-testid': 'private-switch',
                               }
                            }
@@ -267,7 +267,7 @@
 
                   {% if subitem.can(subitem.fields['id'], constant('PURGE')) %}
                      <button class="btn btn-outline-danger me-2" type="submit" name="purge"
-                             onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');">
+                             data-glpi-confirm="{{ __('Confirm the final deletion?') }}">
                         <i class="ti ti-trash"></i>
                         <span>{{ _x('button', 'Delete permanently') }}</span>
                      </button>
@@ -280,7 +280,7 @@
          </form>
       </div>
 
-      <script type="text/javascript">
+      <script nonce="{{ csp_nonce() }}" type="text/javascript">
          function itilfollowuptemplate_update{{ rand }}(value) {
             $.ajax({
                url: `${CFG_GLPI.root_doc}/ajax/itilfollowup.php`,

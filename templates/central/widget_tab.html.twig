@@ -57,7 +57,7 @@
       'grid_items': grid_items,
    }, with_context = false) }}
 
-   <script>
+   <script nonce="{{ csp_nonce() }}">
    $(function () {
       $('#home-dashboard{{ rand }} .lazy-widget').each(function() {
          const this_obj = $(this);

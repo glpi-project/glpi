@@ -10,6 +10,7 @@ The present file will list all changes made to the project; according to the
 ### Changed
 
 ### Deprecated
+- Support of `javascript:` values for the `add_link` parameter of `components/tab/addlink_block.html.twig`.
 
 ### Removed
 
@@ -21,6 +22,19 @@ The present file will list all changes made to the project; according to the
 - Updating the password of the user you are logged in as through the legacy REST API or the High-Level API now requires supplying the current password in the `current_password` field.
 
 #### Deprecated
+- `Html::printCleanArray()`. Use Symfony `dump()` or `dd()` functions instead.
+- `showHideDiv()` JavaScript function.
+- `toogle()` JavaScript function.
+- `Html::addConfirmationOnAction()`. Use the `data-glpi-confirm="<message>"` attribute instead.
+- `Html::getConfirmationOnActionScript()`. Use the `data-glpi-confirm="<message>"` attribute instead.
+- `Html::link()`.
+- `confirmaction` option of `Html::submit()`. Confirmation is now handled through the `data-glpi-confirm` attribute, so no additional action can be run on confirmation.
+- `onclick` key of the `addbuttons` option of `CommonDBTM::showFormButtons()`.
+- `onclick` option of `Html::getCheckbox()`, `Html::showCheckbox()`, `Html::getMassiveActionCheckBox()` and `Html::showMassiveActionCheckBox()`.
+- `on_change` option of `Dropdown::showFromArray()` and of the methods relying on it.
+- `$onchange` parameter of `Dropdown::showListLimit()`.
+- `force` option of `Glpi\Dashboard\Grid::getCardHtml()`. It has no effect when the Content-Security-Policy is enabled.
+- `cache` key of dashboard cards definitions. It has no effect when the Content-Security-Policy is enabled.
 
 #### Removed
 

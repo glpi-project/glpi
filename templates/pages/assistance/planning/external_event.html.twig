@@ -59,7 +59,7 @@
         ) }}
 
         {{ _self.null_field(params) }}
-        <script>
+        <script nonce="{{ csp_nonce() }}">
             function template_update{{ rand }}(value) {
                 $.ajax({
                     url: "{{ path('ajax/planning.php')|e('js') }}",

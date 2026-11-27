@@ -44,6 +44,7 @@ use Glpi\Debug\Profiler;
 use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Plugin\Hooks;
+use Glpi\Security\ContentSecurityPolicy\CspState;
 use Html;
 use Item_Devices;
 use Location;
@@ -450,7 +451,7 @@ HTML;
                                         <i class="ti ti-presentation-off"></i>
                                         <span>{{ messages['disable_demo_msg'] }}</span>
                                     </button>
-                                    <script>
+                                    <script nonce="{{ csp_nonce() }}">
                                         $('button.disable-dashboard-demo').on('click', function() {
                                             $.post(CFG_GLPI.root_doc + '/ajax/dashboard.php', {
                                                 action: 'disable_placeholders'
@@ -468,7 +469,8 @@ TWIG, $params);
         }
 
         $ajax_cards = GLPI_AJAX_DASHBOARD;
-        $cache_key  = sha1($_SESSION['glpiactiveentities_string'] ?? "");
+        // Cards are not cached by the browser when the CSP is enabled, as cached contents would contain outdated nonces.
+        $cache_key  = CspState::isEnabled() ? '' : sha1($_SESSION['glpiactiveentities_string'] ?? "");
 
         $twig_params = [
             'mini' => $mini,
@@ -525,7 +527,7 @@ TWIG, $params);
                     </div>
                 </div>
             {% endif %}
-            <script type="module">
+            <script nonce="{{ csp_nonce() }}" type="module">
                 import('/js/modules/Dashboard/Dashboard.js').then((m) => {
                     new m.GLPIDashboard({{ js_params|json_encode|raw }});
                 });
@@ -1168,22 +1170,23 @@ HTML;
      * @param string $card_id identifier return by @see self::getAllDasboardCards
      * @param array $card_options contains these keys:
      * - array 'args':
-     *    - string 'gridstack_id' unique identifier of the card in the grid, used to return html by cache
-     *    - bool 'force' if true, cache will be bypassed
+     *    - string 'gridstack_id' unique identifier of the card in the grid
+     *    - bool 'force' (deprecated) if true, cache will be bypassed; ignored when the Content-Security-Policy is enabled
      *    - bool 'embed' is the dashboard emebeded or not
      *
      * @return string html of the card
      */
     public function getCardHtml(string $card_id = "", array $card_options = []): string
     {
-        global $GLPI_CACHE;
-
         if (\is_array($card_options['args'] ?? null)) {
             $card_options['args'] = Item::cleanCardOptions($card_options['args']);
         }
 
         $start = microtime(true);
 
+        if (\array_key_exists('force', $card_options['args'] ?? []) || \array_key_exists('force', $card_options)) {
+            Toolbox::deprecated('The `force` option of `Glpi\\Dashboard\\Grid::getCardHtml()` is deprecated.');
+        }
         $force = ($card_options['args']['force'] ?? $card_options['force'] ?? false);
 
         // retrieve card
@@ -1206,9 +1209,16 @@ HTML;
             }
             $card = $cards[$card_id];
 
-            $use_cache = !$force
+            if (\array_key_exists('cache', $card)) {
+                Toolbox::deprecated(sprintf('The `cache` key of dashboard cards definitions is deprecated (found in `%s` card).', $card_id));
+            }
+
+            $use_cache = !CspState::isEnabled()
+                && !$force
                 && Environment::get()->shouldForceExtraBrowserCache()
-                && (!isset($card['cache']) || $card['cache'] == true);
+                && (!isset($card['cache']) || $card['cache'] == true)
+                // the ticket counter cards may contain user-specific data and must not be cached
+                && !($card['args']['params']['validation_check_user'] ?? false);
             $cache_age = 40;
 
             if ($use_cache) {
@@ -1545,7 +1555,6 @@ HTML;
                             'validation_check_user' => true,
                         ],
                     ],
-                    'cache'      => false,
                     'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
                 ];
 

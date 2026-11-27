@@ -102,7 +102,7 @@
         <button name="open_data_helper" type="button" class="btn btn-icon btn-ghost-secondary" title="{{ __('Open helper form') }}">
             <i class="ti ti-pencil"></i>
         </button>
-        <script>
+        <script nonce="{{ csp_nonce() }}">
             $(() => {
                 $('#data{{ rand }}, #dropdown_domainrecordtypes_id{{ rand }}').change(() => {
                     $('#data_obj{{ rand }}').val(''); // empty "data_obj" value if "data" or "record type" changed

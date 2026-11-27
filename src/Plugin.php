@@ -37,6 +37,7 @@
  * Based on cacti plugin system
  */
 use Composer\Autoload\ClassLoader;
+use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
@@ -47,6 +48,7 @@ use Glpi\Exception\SessionExpiredException;
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
 use Glpi\Plugin\Hooks;
+use Glpi\Security\ContentSecurityPolicy\CspState;
 use Glpi\Toolbox\VersionParser;
 use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -1264,7 +1266,7 @@ class Plugin extends CommonDBTM
                                 mb_strtolower(_x('button', 'Enable')),
                                 ['id' => $ID],
                                 '',
-                                'class="pointer"'
+                                'class="pointer btn-as-link" ' . self::getCspConfirmationAttribute([$this->fields['directory']])
                             ),
                             __s('Do you want to %activate_link it?')
                         );
@@ -2888,7 +2890,8 @@ class Plugin extends CommonDBTM
                             ['action' => 'activate'],
                             _x('button', 'Enable'),
                             ['id' => $ID],
-                            'ti-toggle-left-filled fs-2x disabled'
+                            'ti-toggle-left-filled fs-2x disabled',
+                            self::getCspConfirmationAttribute([$directory])
                         ) . '&nbsp;';
                     }
                 }
@@ -3197,6 +3200,37 @@ class Plugin extends CommonDBTM
         return $actions;
     }
 
+    /**
+     * Get the HTML attribute that triggers a confirmation before the activation of the given plugins,
+     * if their activation would disable the Content Security Policy.
+     *
+     * @param array<string> $plugin_keys
+     */
+    private static function getCspConfirmationAttribute(array $plugin_keys): string
+    {
+        $message = self::getCspConfirmationMessage($plugin_keys);
+        if ($message === null) {
+            return '';
+        }
+
+        return \sprintf('data-glpi-csp-confirm="%s"', \htmlescape($message));
+    }
+
+    /**
+     * Get the message used to ask for a confirmation before the activation of the given plugins,
+     * or null if no confirmation is required.
+     *
+     * @param array<string> $plugin_keys
+     */
+    private static function getCspConfirmationMessage(array $plugin_keys): ?string
+    {
+        if (!Environment::get()->shouldWarnAboutCspIncompatiblePlugins()) {
+            return null;
+        }
+
+        return CspState::getActivationConfirmationMessage($plugin_keys);
+    }
+
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
         switch ($ma->getAction()) {
@@ -3217,11 +3251,26 @@ class Plugin extends CommonDBTM
                 echo "</td></tr></table>";
                 return true;
             case 'enable':
+                $plugin = new self();
+                $directories = [];
+                foreach (\array_keys($ma->getItems()[self::class] ?? []) as $id) {
+                    if (
+                        $plugin->getFromDB($id)
+                        && $plugin->isInstalled($plugin->fields['directory'])
+                        && !$plugin->isActivated($plugin->fields['directory'])
+                    ) {
+                        $directories[] = $plugin->fields['directory'];
+                    }
+                }
+                $submit_options = ['name' => 'enable'];
+                $csp_confirmation = self::getCspConfirmationMessage($directories);
+                if ($csp_confirmation !== null) {
+                    $submit_options['data-glpi-csp-confirm'] = $csp_confirmation;
+                }
+
                 echo "<table class='mx-auto'><tr>";
                 echo "<td>" . __s('This will only affect plugins already installed') . "</td><td colspan='3'>";
-                echo Html::submit(_x('button', 'Enable'), [
-                    'name'      => 'enable',
-                ]);
+                echo Html::submit(_x('button', 'Enable'), $submit_options);
                 echo "</td></tr></table>";
                 return true;
             case 'disable':

@@ -47,7 +47,7 @@ test('Can attach a video to a ticket and download it', async ({ profile, page })
     await ticket.getTextbox('Title').fill(`Video ticket ${randomUUID()}`);
     await ticket.getRichTextByLabel('Description').fill('See attached video');
     await ticket.doAddFileToUploadArea(VIDEO, page.getByRole('main'));
-    await ticket.getButton('Add').click();
+    await ticket.add_button.click();
     await page.waitForURL(/ticket\.form\.php\?id=\d+/);
 
     // eslint-disable-next-line playwright/no-raw-locators -- PhotoSwipe has no accessible roles

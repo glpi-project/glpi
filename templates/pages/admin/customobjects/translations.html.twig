@@ -123,7 +123,7 @@
     {% endif %}
 </div>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
     $(() => {
         $('#TranslationModal{{ rand }} select[name="language"]').on('change', function() {
             const field_selection = $('#TranslationModal{{ rand }} select[name="field"]').val();

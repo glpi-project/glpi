@@ -207,7 +207,6 @@ abstract class LevelAgreement extends CommonDBChild
             'definition_time',
             $possible_values,
             ['value'     => $this->fields["definition_time"],
-                'on_change' => 'appearhideendofworking()',
             ]
         );
 
@@ -226,6 +225,7 @@ abstract class LevelAgreement extends CommonDBChild
                 }
             }
             appearhideendofworking();
+            $('#dropdown_definition_time$rand').on('change', appearhideendofworking);
 JAVASCRIPT
         );
 
@@ -355,7 +355,7 @@ JAVASCRIPT
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div id="showLa{{ instID }}{{ rand }}"></div>
-                <script>
+                <script nonce="{{ csp_nonce() }}">
                     function viewAddEditLa{{ instID }}{{ rand }}(item_id = -1) {
                         $('#showLa{{ instID }}{{ rand }}').load("{{ config('root_doc') }}/ajax/viewsubitem.php", {
                             type: "{{ la.getType() }}",
@@ -368,10 +368,13 @@ JAVASCRIPT
                         $('#levelagreement{{ instID }}').on('click', 'tbody tr', function () {
                             viewAddEditLa{{ instID }}{{ rand }}($(this).data('id'));
                         });
+                        document.getElementById('new_la{{ instID }}{{ rand }}').addEventListener('click', () => {
+                            viewAddEditLa{{ instID }}{{ rand }}();
+                        });
                     });
                 </script>
                 <div class="text-center mb-3">
-                    <button name="new_la" type="button" class="btn btn-primary" onclick="viewAddEditLa{{ instID }}{{ rand }}();">{{ btn_msg }}</button>
+                    <button id="new_la{{ instID }}{{ rand }}" name="new_la" type="button" class="btn btn-primary">{{ btn_msg }}</button>
                 </div>
 TWIG, $twig_params);
         }

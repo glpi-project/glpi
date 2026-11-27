@@ -258,7 +258,7 @@ class QuestionTypeDateTime extends AbstractQuestionType implements FormQuestionD
             </div>
 
             {% if question == null %}
-                <script>
+                <script nonce="{{ csp_nonce() }}">
                     import("/js/modules/Forms/QuestionDateTime.js").then((m) => {
                         new m.GlpiFormQuestionTypeDateTime({{ placeholders|json_encode|raw }});
                     });

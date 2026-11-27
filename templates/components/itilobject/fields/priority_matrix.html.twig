@@ -115,7 +115,7 @@
    })
 ) }}
 
-<script type="text/javascript">
+<script nonce="{{ csp_nonce() }}" type="text/javascript">
 $(function() {
    $('#dropdown_urgency{{ field_options.rand }}, #dropdown_impact{{ field_options.rand }}').on('change.select2', function (e) {
       $.ajax({

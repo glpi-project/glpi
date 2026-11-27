@@ -46,7 +46,10 @@
         id="{{ button_id }}"
 {% endif %}
 {% if add_link starts with 'javascript:' %}
+    {% do call('Toolbox::deprecatedCspIncompatibleUsage', ['Support of `javascript:` values for the `add_link` parameter of `components/tab/addlink_block.html.twig` is deprecated.']) %}
+    {% if not call('Glpi\\Security\\ContentSecurityPolicy\\CspState::isEnabled') %}
         onclick="{{ add_link }}"
+    {% endif %}
 {% else %}
         href="{{ add_link }}"
 {% endif %}

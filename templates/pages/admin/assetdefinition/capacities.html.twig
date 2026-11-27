@@ -174,7 +174,7 @@
         </div>
     </div>
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         $(document).ready(function() {
             $('#mainformtable button[type="submit"]').on('click', { is_from_modal: false }, function(event, data) {
                 data = data || event.data;

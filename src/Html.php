@@ -35,6 +35,7 @@
 
 use donatj\UserAgent\UserAgentParser;
 use Glpi\Application\Environment;
+use Glpi\Application\View\ScriptType;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
@@ -52,6 +53,8 @@ use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Inventory\Inventory;
 use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
+use Glpi\Security\ContentSecurityPolicy\CspState;
+use Glpi\Security\ContentSecurityPolicy\NonceContext;
 use Glpi\System\Log\LogViewer;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\URL;
@@ -673,9 +676,17 @@ class Html
      *                                     (default '')
      *
      * @return string
+     *
+     * @deprecated 11.0.14 Use the `data-glpi-confirm="<message>"` attribute instead.
      **/
     public static function addConfirmationOnAction($string, $additionalactions = '')
     {
+        Toolbox::deprecatedCspIncompatibleUsage('`Html::addConfirmationOnAction()` is deprecated. Use the `data-glpi-confirm="<message>"` attribute instead.');
+
+        if (CspState::isEnabled()) {
+            return '';
+        }
+
         return "onclick=\"" . htmlescape(Html::getConfirmationOnActionScript($string, $additionalactions)) . "\"";
     }
 
@@ -690,9 +701,16 @@ class Html
      *                                     (default '')
      *
      * @return string confirmation script
+     *
+     * @deprecated 11.0.14 Use the `data-glpi-confirm="<message>"` attribute instead.
      **/
     public static function getConfirmationOnActionScript($string, $additionalactions = '')
     {
+        Toolbox::deprecatedCspIncompatibleUsage('`Html::getConfirmationOnActionScript()` is deprecated. Use the `data-glpi-confirm="<message>"` attribute instead.');
+
+        if (CspState::isEnabled()) {
+            return '';
+        }
 
         if (!is_array($string)) {
             $string = [$string];
@@ -2113,9 +2131,8 @@ TWIG,
         }
 
         $out  = "<input title='" . __s('Check all as') . "' type='checkbox' class='form-check-input massive_action_checkbox'
-                      title='" . __s('Check all as') . "'
                       name='_checkall_$rand' id='checkall_$rand'
-                      onclick= \"if ( checkAsCheckboxes(this, '" . htmlescape(jsescape($container_id)) . "', '.massive_action_checkbox')) {return true;}\">";
+                      data-glpi-check-all='" . htmlescape($container_id) . "'>";
 
         // permit to shift select checkboxes
         $out .= Html::scriptBlock("\$(function() {\$('#" . jsescape($container_id) . " input[type=\"checkbox\"]').shiftSelectable();});");
@@ -2195,6 +2212,7 @@ TWIG,
      *    - zero_on_empty do we send 0 on submit when it is not checked ?
      *    - specific_tags HTML5 tags to add
      *    - criterion     the criterion for massive checkbox
+     *    - onclick       (deprecated) JavaScript code to run on click
      *
      * @return string  the HTML code for the checkbox
      **/
@@ -2230,18 +2248,16 @@ TWIG,
 
         $out .= "<input type='checkbox' class='form-check-input " . htmlescape($params['class']) . "' title=\"" . htmlescape($params['title']) . "\" ";
         if (isset($params['onclick'])) {
-            $out .= " onclick='" . htmlescape($params['onclick']) . "'";
+            Toolbox::deprecatedCspIncompatibleUsage('The `onclick` option of `Html::getCheckbox()` is deprecated.');
+            if (!CspState::isEnabled()) {
+                $out .= " onclick='" . htmlescape($params['onclick']) . "'";
+            }
         }
 
         foreach (['id', 'name', 'title', 'value'] as $field) {
             if (!empty($params[$field])) {
                 $out .= " $field='" . htmlescape($params[$field]) . "'";
             }
-        }
-
-        $criterion = self::getCriterionForMassiveCheckboxes($params['criterion']);
-        if (!empty($criterion)) {
-            $out .= " onClick='massiveUpdateCheckbox(\"" . htmlescape(jsescape($criterion)) . "\", this)'";
         }
 
         if (!empty($params['massive_tags'])) {
@@ -2269,8 +2285,18 @@ TWIG,
 
         $out .= ">";
 
+        $criterion = self::getCriterionForMassiveCheckboxes($params['criterion']);
         if (!empty($criterion)) {
-            $out .= Html::scriptBlock("\$(function() {\$('" . jsescape($criterion) . "').shiftSelectable();});");
+            $id = jsescape($params['id']);
+            $criterion = jsescape($criterion);
+            $out .= Html::scriptBlock(<<<JAVASCRIPT
+                $(function() {
+                    $("$criterion").shiftSelectable();
+                });
+                document.getElementById("$id").addEventListener("click", (e) => {
+                    massiveUpdateCheckbox("$criterion", e.currentTarget);
+                });
+            JAVASCRIPT);
         }
 
         return $out;
@@ -2534,20 +2560,29 @@ TWIG,
                     ]
                 );
             }
-            $out .= "<a role=\"button\" title='" . __s('Massive actions') . "'
+            $button_id = 'massiveaction_button_' . mt_rand();
+            $out .= "<button id=\"$button_id\" type=\"button\" title='" . __s('Massive actions') . "'
                      data-bs-toggle='tooltip' data-bs-placement='" . ($p['ontop'] ? "bottom" : "top") . "'
                      class='" . htmlescape($p['action_button_classes']) . "' ";
-            if (is_array($p['confirm']) || strlen($p['confirm'])) {
-                $out .= self::addConfirmationOnAction($p['confirm'], "modal_massiveaction_window$identifier.show();");
-            } else {
-                $out .= "onclick='modal_massiveaction_window$identifier.show();'";
+
+            if (is_array($p['confirm'])) {
+                $p['confirm'] = implode("\n", $p['confirm']);
             }
-            $out .= " href='#modal_massaction_content$identifier' title=\"" . htmlescape($p['title']) . "\">";
+            if (strlen($p['confirm'])) {
+                $out .= sprintf(' data-glpi-confirm="%s"', htmlescape($p['confirm']));
+            }
+            $out .= ">";
             if ($p['display_arrow']) {
                 $out .= "<i class='ti ti-corner-left-" . ($p['ontop'] ? 'down' : 'up') . " mt-1' style='margin-left: -2px;'></i>";
             }
             $out .= "<span>" . htmlescape($p['title']) . "</span>";
-            $out .= "</a>";
+            $out .= "</button>";
+
+            $out .= Html::scriptBlock(<<<JAVASCRIPT
+                document.getElementById("$button_id").addEventListener("click", () => {
+                    modal_massiveaction_window$identifier.show();
+                });
+            JAVASCRIPT);
 
             if (
                 !$p['ontop']
@@ -3569,25 +3604,19 @@ JS;
 
         $pluginsjs = json_encode(array_values($plugins));
 
-        $language_RFC5646    = str_replace('_', '-', $_SESSION['glpilanguage']);      // convert to RFC5646 format (fr_FR -> fr-FR)
-        $language_regionless = preg_replace('/_.*$/', '', $_SESSION['glpilanguage']); // fallback to regionless locale (fr_FR -> fr)
-        $expected_languages  = [$language_RFC5646, $language_regionless];
-        if (array_key_exists($language_regionless, $CFG_GLPI['main_languages'])) {
-            $expected_languages[] = str_replace('_', '-', $CFG_GLPI['main_languages'][$language_regionless]); // fallback to main language (fr_CA -> fr_FR)
-        }
+        $language = self::getTinymceLanguage();
         $language_opts = '';
-        foreach ($expected_languages as $language) {
-            if (str_starts_with($language, 'en')) {
-                // No need to hit filesystem for english, this is the default language and there is no translation files
-                // for it.
-                continue;
-            }
-            if (file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs8/$language.js")) {
+        if ($language !== null) {
+            if (CspState::isEnabled()) {
+                // Note: "language_url" is not set here because tinymce doesn't have an option
+                // to supply the CSP nonce to be used for the script found at that url.
+                // This mean we must load the script ourselves in the "case tinymce" of self::requireJs().
+                $language_opts = json_encode(['language' => $language]);
+            } else {
                 $language_opts = json_encode([
                     'language' => $language,
                     'language_url' => $CFG_GLPI['root_doc'] . '/lib/tinymce-i18n/langs8/' . $language . '.js',
                 ]);
-                break;
             }
         }
 
@@ -3824,6 +3853,33 @@ JS;
     }
 
     /**
+     * Get the TinyMCE language matching the session language, or null if none is available.
+     */
+    private static function getTinymceLanguage(): ?string
+    {
+        global $CFG_GLPI;
+
+        $language_RFC5646    = str_replace('_', '-', $_SESSION['glpilanguage']);      // convert to RFC5646 format (fr_FR -> fr-FR)
+        $language_regionless = preg_replace('/_.*$/', '', $_SESSION['glpilanguage']); // fallback to regionless locale (fr_FR -> fr)
+        $expected_languages  = [$language_RFC5646, $language_regionless];
+        if (array_key_exists($language_regionless, $CFG_GLPI['main_languages'])) {
+            $expected_languages[] = str_replace('_', '-', $CFG_GLPI['main_languages'][$language_regionless]); // fallback to main language (fr_CA -> fr_FR)
+        }
+        foreach ($expected_languages as $language) {
+            if (str_starts_with($language, 'en')) {
+                // No need to hit filesystem for english, this is the default language and there is no translation files
+                // for it.
+                continue;
+            }
+            if (file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs8/$language.js")) {
+                return $language;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Activate autocompletion for user templates in rich text editor.
      *
      * @param string $selector Selector of the textarea to activate autocompletion for
@@ -3970,10 +4026,12 @@ JAVASCRIPT
 
         // Back and fast backward button
         if (!$start == 0) {
-            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=0" . htmlescape(jsescape($additional_params)) . "\");'>
-                     <i class='ti ti-chevrons-left' data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Start') . "\"></i></a></th>";
-            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$back" . htmlescape(jsescape($additional_params)) . "\");'>
-                     <i class='ti ti-chevron-left' data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Previous') . "\"></i></a></th>";
+            $out .= "<th class='left'><button type='button' class='btn btn-sm btn-icon btn-ghost-secondary' data-glpi-reload-tab='" . htmlescape("start=0" . $additional_params) . "'
+                     data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Start') . "\">
+                     <i class='ti ti-chevrons-left' aria-hidden='true'></i></button></th>";
+            $out .= "<th class='left'><button type='button' class='btn btn-sm btn-icon btn-ghost-secondary' data-glpi-reload-tab='" . htmlescape("start=$back" . $additional_params) . "'
+                     data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Previous') . "\">
+                     <i class='ti ti-chevron-left' aria-hidden='true'></i></button></th>";
         }
 
         $out .= "<td width='50%' class='tab_bg_2'>";
@@ -3992,10 +4050,12 @@ JAVASCRIPT
 
         // Forward and fast forward button
         if ($forward < $numrows) {
-            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$forward" . htmlescape(jsescape($additional_params)) . "\");'>
-                     <i class='ti ti-chevron-right' data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Next') . "\"></i></a></th>";
-            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$end" . htmlescape(jsescape($additional_params)) . "\");'>
-                     <i class='ti ti-chevrons-right' data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('End') . "\"></i></a></th>";
+            $out .= "<th class='right'><button type='button' class='btn btn-sm btn-icon btn-ghost-secondary' data-glpi-reload-tab='" . htmlescape("start=$forward" . $additional_params) . "'
+                     data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Next') . "\">
+                     <i class='ti ti-chevron-right' aria-hidden='true'></i></button></th>";
+            $out .= "<th class='right'><button type='button' class='btn btn-sm btn-icon btn-ghost-secondary' data-glpi-reload-tab='" . htmlescape("start=$end" . $additional_params) . "'
+                     data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('End') . "\">
+                     <i class='ti ti-chevrons-right' aria-hidden='true'></i></button></th>";
         }
 
         // End pager
@@ -4019,9 +4079,16 @@ JAVASCRIPT
      * @param bool $jsexpand  Expand using JS ?
      *
      * @return void
+     *
+     * @deprecated 11.0.14 Use Symfony's `dump()` or `dd()` functions instead.
      **/
     public static function printCleanArray($tab, $pad = 0, $jsexpand = false)
     {
+        Toolbox::deprecatedCspIncompatibleUsage('`Html::printCleanArray()` is deprecated. Use Symfony\'s `dump()` or `dd()` functions instead.');
+
+        if (CspState::isEnabled()) {
+            return;
+        }
 
         if (count($tab)) {
             echo "<table class='array-debug table table-striped'>";
@@ -4251,11 +4318,17 @@ JAVASCRIPT
         if ($action) {
             $out .= "<form method='POST' action=\"" . htmlescape($action) . "\">";
             $out .= "<span class='responsive_hidden'>" . __s('Display (number of items)') . "</span>&nbsp;";
-            $out .= Dropdown::showListLimit("submit()", false);
+            $out .= Dropdown::showListLimit('', false, [
+                'add_data_attributes' => ['glpi-submit-on-change' => ''],
+            ]);
         } else {
             $out .= "<form method='POST' action =''>\n";
             $out .= "<span class='responsive_hidden'>" . __s('Display (number of items)') . "</span>&nbsp;";
-            $out .= Dropdown::showListLimit("reloadTab(\"glpilist_limit=\"+this.value+\"" . jsescape($additional_params) . "\")", false);
+            $out .= Dropdown::showListLimit('', false, [
+                'add_data_attributes' => [
+                    'glpi-reload-tab-on-change' => 'glpilist_limit=%value%' . $additional_params,
+                ],
+            ]);
         }
         $out .= Html::closeForm(false);
 
@@ -4328,7 +4401,7 @@ JAVASCRIPT
             $button[$btname] = $btname;
         }
         $fields          = array_merge($button, $fields);
-        $link = "<a ";
+        $link = "<button type='button'";
 
         if (!empty($btoption)) {
             $link .= ' ' . $btoption . ' ';
@@ -4338,15 +4411,17 @@ JAVASCRIPT
             if (empty($btimage)) {
                 $link .= " class='btn btn-primary' ";
             } else {
-                $link .= " class='pointer' ";
+                $link .= " class='pointer btn-as-link' ";
             }
         }
-        $action  = " submitGetLink('" . jsescape($action) . "', " . json_encode($fields) . ");";
+        $link .= ' data-glpi-submit-get-link="' . htmlescape($action) . '"';
+        $link .= ' data-glpi-submit-get-link-fields="' . htmlescape(json_encode($fields)) . '"';
 
-        if (is_array($confirm) || strlen($confirm)) {
-            $link .= self::addConfirmationOnAction($confirm, $action);
-        } else {
-            $link .= " onclick=\"" . htmlescape($action) . "\" ";
+        if (is_array($confirm)) {
+            $confirm = implode("\n", $confirm);
+        }
+        if (strlen($confirm)) {
+            $link .= sprintf(' data-glpi-confirm="%s"', htmlescape($confirm));
         }
 
         // Ensure $btlabel is properly escaped
@@ -4364,7 +4439,7 @@ JAVASCRIPT
                 $link .= "<img src='$btimage' title='$btlabel' alt='$btlabel' class='pointer'>";
             }
         }
-        $link .= "</a>";
+        $link .= "</button>";
 
         return $link;
     }
@@ -4820,10 +4895,15 @@ JS;
      *     - `confirmaction` optional action to do on confirmation
      * @return string an `a` element.
      *
-     * @TODO Deprecate this method in GLPI 11.1, it is not used anymore in GLPI itself.
+     * @deprecated 11.0.14
      **/
     public static function link($text, $url, $options = [])
     {
+        Toolbox::deprecatedCspIncompatibleUsage('`Html::link()` is deprecated.');
+
+        if (CspState::isEnabled()) {
+            return '';
+        }
 
         if (isset($options['confirm'])) {
             if (!empty($options['confirm'])) {
@@ -4977,7 +5057,8 @@ JS;
      * @param array  $options  Array of options.
      *     - image : will use a submit image input
      *     - `confirm` JavaScript confirmation message.
-     *     - `confirmaction` optional action to do on confirmation
+     *     - `confirmaction` optional action to do on confirmation (deprecated since 11.0.14,
+     *                       ignored when the Content-Security-Policy is enforced)
      *
      * @return string A HTML submit button
      **/
@@ -4996,19 +5077,28 @@ JS;
         if (!isset($options['class'])) {
             $options['class'] = 'btn';
         }
+        $confirm_action = '';
+        if (isset($options['confirmaction'])) {
+            Toolbox::deprecatedCspIncompatibleUsage('The `confirmaction` option of `Html::submit()` is deprecated. Confirmation is now handled through the `data-glpi-confirm` attribute.');
+            if (!CspState::isEnabled()) {
+                $confirm_action = $options['confirmaction'];
+            }
+            unset($options['confirmaction']);
+        }
         if (isset($options['confirm'])) {
             if (!empty($options['confirm'])) {
-                $confirmAction  = '';
-                if (isset($options['confirmaction'])) {
-                    if (!empty($options['confirmaction'])) {
-                        $confirmAction = $options['confirmaction'];
+                if (!empty($confirm_action)) {
+                    // Legacy behavior, kept until the `confirmaction` option is removed.
+                    $options['onclick'] = Html::getConfirmationOnActionScript( // @phpstan-ignore staticMethod.deprecated
+                        $options['confirm'],
+                        $confirm_action
+                    );
+                } else {
+                    if (is_array($options['confirm'])) {
+                        $options['confirm'] = implode("\n", $options['confirm']);
                     }
-                    unset($options['confirmaction']);
+                    $options['data-glpi-confirm'] = $options['confirm'];
                 }
-                $options['onclick'] = Html::getConfirmationOnActionScript(
-                    $options['confirm'],
-                    $confirmAction
-                );
             }
             unset($options['confirm']);
         }
@@ -5079,7 +5169,6 @@ JS;
               id="progress{$rand}"
               data-progressid="progress{$rand}"
               data-append-percent="{$append_percent}"
-              onchange="updateProgress('progress{$rand}')"
               max="{$max}"
               value="{$value}"
               title="{$tooltip}" data-bs-toggle="tooltip">
@@ -5151,11 +5240,14 @@ HTML;
      * @psalm-taint-escape html
      * @psalm-taint-escape has_quotes
      */
-    public static function scriptBlock($script)
+    public static function scriptBlock($script, ScriptType $type = ScriptType::Javascript)
     {
-        $script = "\n" . '//<![CDATA[' . "\n\n" . $script . "\n\n" . '//]]>' . "\n";
-
-        return sprintf('<script type="text/javascript">%s</script>', $script);
+        return sprintf(
+            '<script type="%s"%s>%s</script>',
+            htmlescape($type->value),
+            self::getCspNonceAttribute(),
+            $script,
+        );
     }
 
 
@@ -5195,7 +5287,25 @@ HTML;
         // Convert filesystem path to URL path (fix issues with Windows directory separator)
         $url = str_replace(DIRECTORY_SEPARATOR, '/', $url);
 
-        return sprintf('<script type="%s" src="%s"></script>', htmlescape($type), htmlescape($url));
+        return sprintf(
+            '<script type="%s" src="%s"%s></script>',
+            htmlescape($type),
+            htmlescape($url),
+            self::getCspNonceAttribute(),
+        );
+    }
+
+    /**
+     * Get the CSP `nonce` attribute (with a leading space) to add to `<script>` tags,
+     * or an empty string if the CSP is not enabled.
+     */
+    private static function getCspNonceAttribute(): string
+    {
+        if (!CspState::isEnabled()) {
+            return '';
+        }
+
+        return sprintf(' nonce="%s"', htmlescape(NonceContext::getServiceInstance()->getNonce()));
     }
 
 
@@ -5620,17 +5730,12 @@ JS;
                 $display .= Html::hidden($name, ['value' => $tag['name']]);
 
                 // show button to delete the upload
-                $getEditor = 'null';
-                if ($p['editor_id'] != '') {
-                    $getEditor = "tinymce.get('" . jsescape($p['editor_id']) . "')";
-                }
-                $textTag = json_encode($tag['tag']);
-                $domItems = json_encode([
-                    0 => $upload['id'],
-                    1 => $upload['id'] . '2',
-                ]);
-                $deleteUpload = "deleteImagePasted({$domItems}, {$textTag}, {$getEditor})";
-                $display .= '<button class="btn btn-icon btn-sm btn-link ti ti-circle-x" onclick="' . htmlescape($deleteUpload) . '"></span>';
+                $display .= '<button type="button" class="btn btn-icon btn-sm btn-link ti ti-circle-x"'
+                    . ' title="' . htmlescape(__('Delete')) . '" aria-label="' . htmlescape(__('Delete')) . '"'
+                    . ' data-glpi-fileupload-remove'
+                    . ' data-upload-id="' . htmlescape($upload['id']) . '"'
+                    . ' data-tag="' . htmlescape($tag['tag']) . '"'
+                    . ' data-editor-id="' . htmlescape($p['editor_id']) . '"></button>';
 
                 $display .= "</p>";
             }
@@ -6017,6 +6122,12 @@ JS);
                 break;
             case 'tinymce':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/tinymce.js';
+                $tinymce_language = CspState::isEnabled() ? self::getTinymceLanguage() : null;
+                if ($tinymce_language !== null) {
+                    // When the CSP is enabled, the language file cannot be loaded by tinymce itself
+                    // (see `self::initEditorSystem()`).
+                    $_SESSION['glpi_js_toload'][$name][] = "lib/tinymce-i18n/langs8/$tinymce_language.js";
+                }
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/FormTags.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/UserMention.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/ContentTemplatesParameters.js';

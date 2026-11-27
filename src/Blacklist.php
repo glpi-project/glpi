@@ -197,7 +197,7 @@ class Blacklist extends CommonDropdown
      * @param array  $options possible options:
      *    - value       : integer / preselected value (default 0)
      *    - toadd       : array / array of specific values to add at the beginning
-     *    - on_change   : string / value to transmit to "onChange"
+     *    - on_change   : string / value to transmit to "onChange" (deprecated, ignored when the CSP is enabled)
      *    - display
      *
      * @return string ID of the select

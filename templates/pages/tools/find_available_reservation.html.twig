@@ -43,7 +43,10 @@
             type: 'button',
             text: _x('button', 'Cancel'),
             btn_class: 'btn-outline-secondary',
-            onclick: "$('#viewresasearch').toggleClass('d-none');$('#makesearch').toggleClass('d-none')"
+            add_attribs: {
+                'data-bs-toggle': 'collapse',
+                'data-bs-target': '.resa-search-toggle',
+            }
         }
     }
 } %}
@@ -75,7 +78,7 @@
                     {{ fields.htmlField('', date_end_field, __('End date'), {
                         add_field_class: 'date_end_field d-none'
                     }) }}
-                    <script>
+                    <script nonce="{{ csp_nonce() }}">
                         $(() => {
                             $('select[name="reserve[_duration]"]').on('change', (e) => {
                                 const value = $(e.target).val();

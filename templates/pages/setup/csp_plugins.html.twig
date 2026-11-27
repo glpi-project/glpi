@@ -1,0 +1,132 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "layout/page_without_tabs.html.twig" %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
+
+{# This page is intentionally not translated: it is mostly intended to plugin developers. #}
+
+{% set title = 'Content Security Policy (CSP) and plugins' %}
+{% set menu = ["config", "plugin"] %}
+
+{% block content_title %}
+    {{ title }}
+{% endblock %}
+
+{% block content_body %}
+<div class="card">
+    <div class="card-body">
+        {% if plugins is not empty %}
+            {{ alerts.alert_warning(
+                'Send this page to your plugin maintainers.',
+                'Only they can make their plugins compatible. Until then, you can either keep the plugin and run GLPI without the CSP, or disable the plugin to enable the CSP.'
+            ) }}
+        {% endif %}
+
+        <p>
+            GLPI includes a Content Security Policy (CSP) that blocks injected scripts, the main way cross-site scripting (XSS) attacks work.
+        </p>
+        <p>
+            Some code that plugins commonly use is also blocked by it.
+            To avoid breaking such plugins, the CSP is only enabled when all active plugins declare that they are compatible with it.
+        </p>
+
+        {% if plugins is empty %}
+            <div class="alert alert-success mb-0">
+                <i class="ti ti-shield-check me-2"></i>
+                All active plugins are compatible with the CSP: it is enabled.
+            </div>
+        {% else %}
+            <h2 class="h3 mt-4">Incompatible plugins on this instance</h2>
+            <div class="table-responsive">
+                <table class="table table-hover table-card">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Version</th>
+                            <th>Author</th>
+                            <th>Homepage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for plugin in plugins %}
+                            <tr>
+                                <td>{{ plugin.name }}</td>
+                                <td>{{ plugin.version }}</td>
+                                <td>{{ plugin.author }}</td>
+                                <td>
+                                    {% if plugin.homepage is not empty %}
+                                        <a href="{{ plugin.homepage }}" target="_blank" rel="noopener noreferrer">
+                                            {{ plugin.homepage }}
+                                            <i class="ti ti-external-link"></i>
+                                        </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        {% endif %}
+
+        <h2 class="h3 mt-4">Instructions for plugin developers</h2>
+        {% verbatim %}
+        <ol>
+            <li class="mb-2">
+                <strong>Inline <code>&lt;script&gt;</code> tags must carry the page's nonce.</strong>
+                <code>Html::scriptBlock()</code> and <code>Html::script()</code> add it automatically.
+                In Twig templates, write <code>&lt;script nonce="{{ csp_nonce() }}"&gt;</code>.
+            </li>
+            <li class="mb-2">
+                <strong>No inline event handlers</strong> (<code>onclick="…"</code>, <code>onchange="…"</code>, etc.).
+                Attach listeners from a script instead, or use GLPI's <code>data-glpi-*</code> attributes.
+                For example, <code>data-glpi-confirm="&lt;message&gt;"</code> replaces <code>Html::addConfirmationOnAction()</code>.
+            </li>
+            <li class="mb-2">
+                <strong>No <code>javascript:</code> URLs</strong> in <code>href</code> or <code>action</code> attributes.
+            </li>
+            <li class="mb-2">
+                <strong>Use <code>reExecuteTrustedScript(script)</code> instead of <code>$.globalEval()</code>.</strong>
+            </li>
+            <li class="mb-2">
+                <strong>Deprecated methods and options</strong> become no-ops when the CSP is enabled, and GLPI logs a warning each time they are used.
+                Fix any deprecation warnings that GLPI logs for your plugin.
+            </li>
+            <li class="mb-2">
+                <strong>Declare compatibility</strong> by adding <code>'csp_compliant' =&gt; true</code> to the array returned by <code>plugin_version_&lt;plugin&gt;()</code>.
+            </li>
+        </ol>
+        {% endverbatim %}
+    </div>
+</div>
+{% endblock %}

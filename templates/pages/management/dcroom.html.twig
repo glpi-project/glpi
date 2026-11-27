@@ -37,7 +37,7 @@
     {{ fields.dropdownField('Datacenter', 'datacenters_id', item.fields['datacenters_id'], 'Datacenter'|itemtype_name, {
         rand: rand
     }) }}
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         $(() => {
             $(`#dropdown_datacenters_id{{ rand }}`).on('change', (e) => {
                 const val = e.target.value;

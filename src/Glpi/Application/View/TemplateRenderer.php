@@ -36,6 +36,7 @@ namespace Glpi\Application\View;
 
 use Glpi\Application\Environment as GLPIEnvironment;
 use Glpi\Application\View\Extension\ConfigExtension;
+use Glpi\Application\View\Extension\ContentSecurityPolicyExtension;
 use Glpi\Application\View\Extension\DataHelpersExtension;
 use Glpi\Application\View\Extension\DocumentExtension;
 use Glpi\Application\View\Extension\FrontEndAssetsExtension;
@@ -108,6 +109,7 @@ class TemplateRenderer
         $this->environment->addExtension(new StringExtension());
         // GLPI extensions
         $this->environment->addExtension(new ConfigExtension());
+        $this->environment->addExtension(new ContentSecurityPolicyExtension());
         $this->environment->addExtension(new SecurityExtension());
         $this->environment->addExtension(new DataHelpersExtension());
         $this->environment->addExtension(new DocumentExtension());

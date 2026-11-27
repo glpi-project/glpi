@@ -161,7 +161,7 @@
     {% endif %}
 </div>
 
-<script>
+<script nonce="{{ csp_nonce() }}">
     import("/js/modules/Forms/DestinationAccordionController.js").then(function (module) {
         const accordionController = new module.GlpiFormDestinationAccordionController();
 
