@@ -82,9 +82,11 @@ final class SessionVariables implements EventSubscriberInterface
             Session::setActiveTab($request->query->get('itemtype'), $request->query->get('glpi_tab'));
         }
 
-        // Override list-limit if choosen
+        // Override list-limit if choosen (may be in query params or in POST data)
         if ($request->query->get('glpilist_limit')) {
             $_SESSION['glpilist_limit'] = $request->query->get('glpilist_limit');
+        } elseif ($request->request->get('glpilist_limit')) {
+            $_SESSION['glpilist_limit'] = $request->request->get('glpilist_limit');
         }
 
         // Manage forced profile / entity.
