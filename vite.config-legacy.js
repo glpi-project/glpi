@@ -133,6 +133,20 @@ const copyFilePlugin = {
     }
 };
 
+const forceUMDGlobalPlugin = {
+    name: 'force-umd-global',
+    enforce: 'pre',
+    transform(code, id) {
+        if (id.includes('leaflet-spin')) {
+            return {
+                code: code.replace(/typeof exports === 'object'/g, 'false'),
+                map: null,
+            };
+        }
+        return null;
+    },
+};
+
 function getLegacyEntryPoints() {
     const entryPoints = [];
     for (const ext of ['.js', '.scss']) {
@@ -163,7 +177,7 @@ export default defineConfig(async ({ mode }) => {
     const importMetaUrlPolyfillVariableName = '__import_meta_url__';
 
     const legacyConfigs = legacyEntryPoints.map((entry) => {
-        return {
+        const config = {
             base: './',
             build: {
                 assetsInlineLimit: 0,
@@ -206,9 +220,17 @@ export default defineConfig(async ({ mode }) => {
             publicDir: false,
             plugins: plugins,
             resolve: {
-                alias: {
-                    './vendor/jquery.ui.widget': 'node_modules/jquery-ui/ui/widget.js',
-                }
+                alias: [
+                    {
+                        find: './vendor/jquery.ui.widget',
+                        replacement: 'node_modules/jquery-ui/ui/widget.js',
+                    },
+                    {
+                        find: /^leaflet$/,
+                        replacement: path.resolve(__dirname, 'node_modules/leaflet/dist/leaflet-src.js'),
+                    }
+                ],
+                dedupe: ['leaflet'],
             },
             css: {
                 lightningcss: {
@@ -234,6 +256,14 @@ export default defineConfig(async ({ mode }) => {
                 }
             }
         };
+
+        if (entry.endsWith('leaflet.js')) {
+            config.optimizeDeps ??= {};
+            config.optimizeDeps.include = ['leaflet', 'spin.js', 'leaflet-spin'];
+            config.plugins.push(forceUMDGlobalPlugin);
+        }
+
+        return config;
     });
 
     // Manually clear the output directory before building, since we are doing multiple builds with emptyOutDir: false
