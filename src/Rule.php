@@ -937,7 +937,10 @@ class Rule extends CommonDBTM
                     'text' => _x('button', 'Test'),
                     'icon' => 'ti ti-stethoscope',
                     'type' => 'button',
-                    'onclick' => "$('#ruletestmodal').modal('show');",
+                    'add_attribs' => [
+                        'data-bs-toggle' => 'modal',
+                        'data-bs-target' => '#ruletestmodal',
+                    ],
                 ],
             ];
         }
@@ -1112,7 +1115,7 @@ class Rule extends CommonDBTM
                 {% if can_add_new_action %}
                     <div class="center mt-1 mb-3">
                         <button type="button" name="add_action" class="btn btn-primary"><i class="ti ti-plus" aria-hidden="true"></i><span>{{ btn_label }}</span></button>
-                        <script>
+                        <script nonce="{{ csp_nonce() }}">
                             $('button[name="add_action"]').on('click', () => {
                                 $('#viewaction{{ rules_id }}{{ rand }}').load('{{ path('ajax/viewsubitem.php')|e('js') }}', {{ ajax_params|json_encode|raw }});
                             });
@@ -1231,7 +1234,7 @@ TWIG, $twig_params);
                 <div id="viewcriteria{{ rules_id }}{{ rand }}"></div>
                 <div class="center mt-1 mb-3">
                     <button type="button" name="add_criterion" class="btn btn-primary"><i class="ti ti-plus" aria-hidden="true"></i><span>{{ btn_label }}</span></button>
-                    <script>
+                    <script nonce="{{ csp_nonce() }}">
                         $('button[name="add_criterion"]').on('click', () => {
                             $('#viewcriteria{{ rules_id }}{{ rand }}').load('{{ path('ajax/viewsubitem.php')|e('js') }}', {{ ajax_params|json_encode|raw }});
                         });

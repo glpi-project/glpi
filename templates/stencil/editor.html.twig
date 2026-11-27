@@ -161,7 +161,7 @@
         {% endfor %}
     {% endif %}
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         new StencilEditor(document.getElementById('#stencil-editor-{{ rand }}'), {{ rand }}, {{ zones|json_encode(constant('JSON_FORCE_OBJECT'))|raw }});
     </script>
 </div>

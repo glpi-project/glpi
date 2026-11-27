@@ -145,8 +145,8 @@ class NetworkAlias extends FQDNLabel
         }
 
         $content = htmlescape(self::getTypeName());
-        if (isset($options['column_links'][$column_name])) {
-            $content = "<a href='" . htmlescape($options['column_links'][$column_name]) . "'>$content</a>";
+        if (isset($options['column_reload_params'][$column_name])) {
+            $content = "<button type='button' class='btn-as-link' data-glpi-reload-tab='" . htmlescape($options['column_reload_params'][$column_name]) . "'>$content</button>";
         }
         $this_header = $base->addHeader($column_name, $content, $super, $father);
         $this_header->setItemType('NetworkAlias');
@@ -247,31 +247,17 @@ class NetworkAlias extends FQDNLabel
         }
 
         if ($canedit) {
-            echo Html::scriptBlock(
-                "function viewAddAlias$rand() {"
-                . Ajax::updateItemJsCode(
-                    "viewnetworkalias$rand",
-                    $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                    [
-                        'type'            => self::class,
-                        'parenttype'      => 'NetworkName',
-                        'networknames_id' => $ID,
-                        'id'              => -1,
-                    ],
-                    display: false
-                )
-                . "};"
-            );
-
-            TemplateRenderer::getInstance()->display(
-                'components/tab/addlink_block.html.twig',
-                [
-                    'add_link' => 'javascript:viewAddAlias' . $rand . '();',
-                    'button_label' => __('Add a network alias'),
-                ]
-            );
+            TemplateRenderer::getInstance()->display('components/form/viewsubitem.html.twig', [
+                'type'                  => self::class,
+                'parenttype'            => NetworkName::class,
+                'items_id'              => 'networknames_id',
+                'id'                    => $ID,
+                'rand'                  => $rand,
+                'subitem_container_id'  => 'viewnetworkalias' . $rand,
+                'cancreate'             => true,
+                'add_new_label'         => __('Add a network alias'),
+            ]);
         }
-        echo "<div id='viewnetworkalias$rand'></div>";
 
         echo "<div class='spaced'>";
         if ($canedit && $number) {
@@ -303,7 +289,7 @@ class NetworkAlias extends FQDNLabel
             $id = (int) $data['id'];
 
             $showviewjs = ($canedit
-                        ? "style='cursor:pointer' onClick=\"viewEditAlias" . $id . "$rand();\""
+                        ? "style='cursor:pointer' data-view-alias='" . $id . "$rand'"
                         : '');
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
@@ -330,6 +316,11 @@ class NetworkAlias extends FQDNLabel
                     display: false
                 );
                 $js .= "};";
+                $js .= "$(() => {";
+                $js .= "document.querySelectorAll('[data-view-alias=\"" . $id . "$rand\"]').forEach((cell) => {";
+                $js .= "cell.addEventListener('click', () => viewEditAlias" . $id . "$rand());";
+                $js .= "});";
+                $js .= "});";
                 echo Html::scriptBlock($js);
             }
             echo "<a href='" . htmlescape(static::getFormURLWithID($id)) . "'>" . htmlescape($name) . "</a>";
@@ -396,10 +387,10 @@ class NetworkAlias extends FQDNLabel
 
             echo "<table class='tab_cadre_fixe'><tr>";
 
-            echo "<th><a href='javascript:reloadTab(\"order=alias\");'>" . htmlescape(self::getTypeName(1))
-              . "</a></th>"; // Alias
-            echo "<th><a href='javascript:reloadTab(\"order=realname\");'>" . __s("Computer's name")
-              . "</a></th>";
+            echo "<th><button type='button' class='btn-as-link' data-glpi-reload-tab='order=alias'>" . htmlescape(self::getTypeName(1))
+              . "</button></th>"; // Alias
+            echo "<th><button type='button' class='btn-as-link' data-glpi-reload-tab='order=realname'>" . __s("Computer's name")
+              . "</button></th>";
             echo "<th>" . __s('Comments') . "</th>";
             echo "</tr>";
 

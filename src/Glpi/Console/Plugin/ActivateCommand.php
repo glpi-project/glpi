@@ -35,6 +35,8 @@
 
 namespace Glpi\Console\Plugin;
 
+use Glpi\Application\Environment;
+use Glpi\Security\ContentSecurityPolicy\CspState;
 use Plugin;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -89,6 +91,9 @@ class ActivateCommand extends AbstractPluginCommand
                 continue;
             }
 
+            $will_disable_csp = Environment::get()->shouldWarnAboutCspIncompatiblePlugins()
+                && CspState::getPluginsThatWouldDisableCsp([$directory]) !== [];
+
             if (!$plugin->activate($plugin->fields['id'])) {
                 $this->output->writeln(
                     '<error>' . sprintf(__('Plugin "%s" activation failed.'), $directory) . '</error>',
@@ -103,6 +108,16 @@ class ActivateCommand extends AbstractPluginCommand
                 '<info>' . sprintf(__('Plugin "%1$s" has been activated.'), $directory) . '</info>',
                 OutputInterface::VERBOSITY_NORMAL
             );
+
+            if ($will_disable_csp) {
+                $output->writeln(
+                    '<comment>' . sprintf(
+                        __('Plugin "%s" is not compatible with the Content Security Policy (CSP), which protects GLPI against cross-site scripting (XSS) attacks. The CSP is now disabled.'),
+                        $directory
+                    ) . '</comment>',
+                    OutputInterface::VERBOSITY_QUIET
+                );
+            }
         }
 
         if ($failed) {

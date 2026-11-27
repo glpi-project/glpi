@@ -329,19 +329,21 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
             {# remove button - la association #}
         {% if options.can_assign %}
             <i id="delete_button_{{ assign_la_id }}" class="ti ti-trash ms-1" role="button"
-               onclick="delete_date_{{ options.rand }}(event)"
                title="{{ _x('button', 'Delete permanently') }}"
                data-bs-toggle="tooltip" data-bs-placement="top"></i>
         {% endif %}
 
             {# javascript for remove button #}
-            <script type="text/javascript">
+            <script nonce="{{ csp_nonce() }}" type="text/javascript">
                 function delete_date_{{ options.rand }}(e) {
                     e.preventDefault();
 
                     $("#ola_row_{{ options.rand }}").remove();
                     $('#delete_button_{{ assign_la_id }}').tooltip('hide')
                 }
+                document.getElementById('delete_button_{{ assign_la_id }}')?.addEventListener('click', (e) => {
+                    delete_date_{{ options.rand }}(e);
+                });
             </script>
 
         {# hidden input field to preserve olas on update #}
@@ -398,14 +400,13 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
 
             {# remove button - la association #}
             {% if options.can_assign %}
-                <i class="ti ti-trash ms-1" role="button"
-                   onclick="delete_date_{{ options.rand }}(event)"
+                <i id="delete_button_{{ assign_la_id }}" class="ti ti-trash ms-1" role="button"
                    title="{{ _x('button', 'Delete permanently') }}"
                    data-bs-toggle="tooltip" data-bs-placement="top"></i>
             {% endif %}
 
             {# javascript for remove button #}
-            <script type="text/javascript">
+            <script nonce="{{ csp_nonce() }}" type="text/javascript">
                 function delete_date_{{ options.rand }}(e) {
                     e.preventDefault();
 
@@ -423,6 +424,9 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
                         'delete_date': delete_date
                     });
                 }
+                document.getElementById('delete_button_{{ assign_la_id }}')?.addEventListener('click', (e) => {
+                    delete_date_{{ options.rand }}(e);
+                });
             </script>
         {% endif %}
     </div>
@@ -476,7 +480,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
         }|merge(options)
     ) }}
 
-    <script type="text/javascript">
+    <script nonce="{{ csp_nonce() }}" type="text/javascript">
         function toggleAssignLA_{{ assign_la_id }}() {
             // hide button clicked
             $("#button_{{ assign_la_id }}").hide();
@@ -533,7 +537,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
         }) }}
     {% endset %}
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         document.getElementById('{{ button_id|e('js') }}').addEventListener('click', () => {
             const html = '{{ dropdown_tpl|e('js') }}';
             const container = document.createElement('div');

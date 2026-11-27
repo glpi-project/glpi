@@ -250,7 +250,6 @@ abstract class AbstractFilter
             'display_emptychoice' => false,
             'emptylabel'          => '',
             'placeholder'         => $label,
-            'on_change'           => "on_change_{$rand}()",
             'allowClear'          => true,
             'width'               => '',
         ] + ($value !== null ? ['value' => $value] : []) + $add_params);
@@ -264,6 +263,7 @@ abstract class AbstractFilter
 
                 $(dom_elem).closest('fieldset').toggleClass('filled', selected !== null);
             };
+            $('#dropdown_" . \jsescape($fieldname . $rand) . "').on('change', on_change_{$rand});
 
             $(function() {
              if ($('#dropdown_" . \jsescape($fieldname . $rand) . "').val()) on_change_{$rand}();

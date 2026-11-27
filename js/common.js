@@ -42,6 +42,7 @@
 /* global glpi_toast_info, glpi_toast_warning, glpi_toast_error */
 /* global _ */
 /* global uploaded_images, removeFailedUploadImage */
+/* global reloadTab */
 
 var timeoutglobalvar;
 
@@ -151,6 +152,18 @@ function unMarkCheckboxes(container_id) {
     return true;
 }
 
+document.addEventListener('click', (e) => {
+    const mark_button = e.target.closest('[data-glpi-mark-checkboxes]');
+    if (mark_button !== null) {
+        markCheckboxes(mark_button.dataset.glpiMarkCheckboxes);
+    }
+
+    const unmark_button = e.target.closest('[data-glpi-unmark-checkboxes]');
+    if (unmark_button !== null) {
+        unMarkCheckboxes(unmark_button.dataset.glpiUnmarkCheckboxes);
+    }
+});
+
 
 /**
  * display "other" text input field in case of selecting "other" option
@@ -170,6 +183,10 @@ function displayOtherSelectOptions(select_object, other_option_name) {
     return true;
 }
 
+$(document).on('change', '[data-glpi-other-option]', function() {
+    displayOtherSelectOptions(this, this.dataset.glpiOtherOption);
+});
+
 
 
 
@@ -188,6 +205,13 @@ function checkAsCheckboxes(reference, container_id, checkboxes_selector = 'input
 
     return true;
 }
+
+document.addEventListener('click', (e) => {
+    const element = e.target.closest('[data-glpi-check-all]');
+    if (element) {
+        checkAsCheckboxes(element, element.dataset.glpiCheckAll, '.massive_action_checkbox');
+    }
+}, true);
 
 /**
  * Permit to use Shift key on a group of checkboxes
@@ -237,6 +261,7 @@ $.fn.shiftSelectable = function() {
  * @param img_src_close    url of the close img
  * @param img_src_open     url of the open img
  * @todo Remove - Not very useful and only used by plugins since the removal of the old debug toolbar.
+ * @deprecated Will be removed in GLPI 14.
 **/
 function showHideDiv(id, img_name = '', img_src_close = '', img_src_open = '') {
     var _elt = $('#' + id);
@@ -281,7 +306,8 @@ function showHideDiv(id, img_name = '', img_src_close = '', img_src_open = '') {
  * @param img_name
  * @param img_src_yes
  * @param img_src_no
- * @todo Remove - Not useful and only used by templates/components/search/controls.html.twig and that doesn't even use the img params so it is litterally just changing an input's value between 0 and 1...
+ * @todo Remove - Not useful and no longer used by GLPI itself.
+ * @deprecated Will be removed in GLPI 14.
 **/
 function toogle(id, img_name, img_src_yes, img_src_no) {
     if (document.getElementById(id).value == '0') {
@@ -364,6 +390,18 @@ function submitGetLink(target, fields) {
     myForm.submit();
     document.body.removeChild(myForm);
 }
+
+document.addEventListener('click', (e) => {
+    const element = e.target.closest('[data-glpi-submit-get-link]');
+    if (element === null || e.defaultPrevented) {
+        return;
+    }
+    e.preventDefault();
+    submitGetLink(
+        element.dataset.glpiSubmitGetLink,
+        JSON.parse(element.dataset.glpiSubmitGetLinkFields ?? '{}')
+    );
+});
 
 
 /**
@@ -813,6 +851,13 @@ var showMapForLocation = function(elt) {
     });
 };
 
+document.addEventListener('click', (e) => {
+    const button = e.target.closest('[data-glpi-show-location-map]');
+    if (button !== null) {
+        showMapForLocation(button);
+    }
+});
+
 var query = {};
 function markMatch (text, term) {
     // Find where the match is
@@ -1100,6 +1145,10 @@ function updateProgress(progressid) {
         }
     });
 }
+
+$(document).on('change', '[data-progressid]', function () {
+    updateProgress(this.dataset.progressid);
+});
 
 // fullscreen api
 function GoInFullscreen(element) {
@@ -1570,7 +1619,91 @@ $(() => {
             glpi_toast_info(__("Copied to clipboard"));
         }
     });
+
+    // Reload the active tab with the given query parameters
+    $(document).on('click', '[data-glpi-reload-tab]', function() {
+        reloadTab($(this).attr('data-glpi-reload-tab'));
+    });
+    // Same on change, with `%value%` replaced by the field value (attribute may be on an ancestor)
+    $(document).on('change', '[data-glpi-reload-tab-on-change]', function(e) {
+        reloadTab($(this).attr('data-glpi-reload-tab-on-change').replace('%value%', encodeURIComponent($(e.target).val() ?? '')));
+    });
+    // Submit the field's form on change
+    $(document).on('change', '[data-glpi-submit-on-change]', function() {
+        this.form.submit();
+    });
+    // Navigate to the URL selected in the field, or to the attribute URL with `%value%` replaced by the field value
+    $(document).on('change', '[data-glpi-navigate-on-change]', function() {
+        if (this.value !== '' && this.value !== '0') {
+            const url = $(this).attr('data-glpi-navigate-on-change');
+            window.location.href = url !== '' ? url.replace('%value%', encodeURIComponent(this.value)) : this.value;
+        }
+    });
 });
+
+document.addEventListener('click', (e) => {
+    const element = e.target.closest('[data-glpi-confirm]');
+    if (element && !confirm(element.dataset.glpiConfirm)) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+}, true);
+
+/**
+ * Ask for a confirmation before an action that would disable the Content Security Policy
+ * (e.g. the activation of an incompatible plugin).
+ * The `data-glpi-csp-confirm` attribute contains the plain text confirmation message.
+ */
+document.addEventListener('click', (e) => {
+    const element = e.target.closest('[data-glpi-csp-confirm]');
+    if (!element) {
+        return;
+    }
+
+    if (element.dataset.glpiCspConfirmed === 'true') {
+        // Action has been confirmed, let the event be handled normally.
+        delete element.dataset.glpiCspConfirmed;
+        return;
+    }
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const help_url = `${CFG_GLPI.root_doc}/CSP/Plugins`;
+    glpi_html_dialog({
+        title: __('Warning'),
+        body: `
+            <p>${_.escape(element.dataset.glpiCspConfirm)}</p>
+            <p>
+                <a href="${_.escape(help_url)}" target="_blank">
+                    ${_.escape(__('How to make a plugin compatible with the CSP'))}
+                </a>
+            </p>
+        `,
+        buttons: [
+            {
+                label: _.escape(_x('button', 'Cancel')),
+                class: 'btn-ghost-secondary',
+            },
+            {
+                label: _.escape(_x('button', 'Enable')),
+                class: 'btn-primary',
+                click: () => {
+                    // Opening the dialog closes and removes any other modal (see `glpi_close_all_dialogs()`).
+                    // If the element was in a modal (e.g. a massive action form), its form must be put back into
+                    // the document, or the browser will refuse to submit it.
+                    if (!element.isConnected && element.form instanceof HTMLFormElement) {
+                        element.form.hidden = true;
+                        document.body.append(element.form);
+                    }
+
+                    element.dataset.glpiCspConfirmed = 'true';
+                    element.click();
+                },
+            },
+        ],
+    });
+}, true);
 
 /**
  * Strip html tags from a string
@@ -1676,6 +1809,39 @@ function copyDisclosablePasswordFieldToClipboard(item) {
     }
 }
 
+document.addEventListener('click', (e) => {
+    const toggle_button = e.target.closest('[data-glpi-toggle-password]');
+    if (toggle_button !== null) {
+        toggleDisclosablePasswordField(toggle_button, toggle_button.dataset.glpiTogglePassword);
+    }
+
+    const copy_button = e.target.closest('[data-glpi-copy-password]');
+    if (copy_button !== null) {
+        copyDisclosablePasswordFieldToClipboard(copy_button.dataset.glpiCopyPassword);
+    }
+
+    const image_clear_button = e.target.closest('[data-glpi-image-clear]');
+    if (image_clear_button !== null) {
+        const wrapper = $(image_clear_button).closest('.img-overlay-wrapper');
+        const blank_input = wrapper.find('input[name^="_blank_"]');
+        blank_input.val(blank_input.val() ? '' : true);
+
+        const gallery_item = wrapper.closest('.picture_gallery_item');
+        if (gallery_item.length) {
+            gallery_item.hide();
+            gallery_item.closest('.picture_gallery').siblings('.deletion_pending').removeClass('d-none');
+        } else {
+            wrapper.hide();
+        }
+    }
+});
+
+document.addEventListener('focusin', (e) => {
+    if (e.target.matches('[data-glpi-readonly-until-focus]')) {
+        e.target.removeAttribute('readonly');
+    }
+});
+
 /**
  * Convert an HTML table with static content to a basic sortable table
  * @param element_id The ID of the table to be converted
@@ -1764,6 +1930,31 @@ function waitForElement(selector) {
             subtree: true
         });
     });
+}
+
+/**
+ * Re-execute an inline script that was rendered by the server.
+ *
+ * Scripts that do not already carry the CSP nonce of the page are ignored (they
+ * were not emitted by GLPI and must never be executed, otherwise an
+ * injected script that was blocked by the CSP would be executed)
+ *
+ * @param {HTMLScriptElement} script
+ * @throws {Error} If the script lacks the page's CSP nonce
+ */
+function reExecuteTrustedScript(script) {
+    const nonce = CFG_GLPI.csp_nonce;
+    if (!nonce) {
+        // The CSP is not enabled, the nonce is not available.
+        $.globalEval(script.text);
+        return;
+    }
+
+    if (script.nonce !== nonce) {
+        throw new Error('Script was not executed because it lacks the CSP nonce of the page.');
+    }
+
+    $.globalEval(script.text, { nonce: nonce });
 }
 
 /**
@@ -2212,3 +2403,51 @@ if (typeof module !== 'undefined' && module.exports) {
         tableToDetails,
     };
 }
+
+/**
+ * Add `X-Glpi-Csp-Nonce` to ajax requests (XMLHttpRequest and native fetch).
+ */
+(function () {
+    const nonce = CFG_GLPI.csp_nonce;
+    if (!nonce || window.glpi_csp_nonce_patched) {
+        return;
+    }
+
+    const header_name = 'X-Glpi-Csp-Nonce';
+
+    const isSameOrigin = (url) => {
+        try {
+            return new URL(String(url), window.location.href).origin === window.location.origin;
+        } catch {
+            // Invalid URL, let the native function handle the error.
+            return false;
+        }
+    };
+
+    // `XMLHttpRequest` requests (which is used by jQuery's `$.ajax()`, `$.get()`, ...)
+    const native_xhr_open = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function (method, url, ...args) {
+        native_xhr_open.call(this, method, url, ...args);
+        if (isSameOrigin(url)) {
+            // Never leak the nonce to another origin.
+            this.setRequestHeader(header_name, nonce);
+        }
+    };
+
+    // `fetch()` requests.
+    const native_fetch = window.fetch;
+    window.fetch = function (resource, options) {
+        const url = resource instanceof Request ? resource.url : resource;
+        if (!isSameOrigin(url)) {
+            // Never leak the nonce to another origin.
+            return native_fetch.call(this, resource, options);
+        }
+
+        const headers = new Headers(options?.headers ?? (resource instanceof Request ? resource.headers : undefined));
+        headers.set(header_name, nonce);
+        return native_fetch.call(this, resource, { ...options, headers: headers });
+    };
+
+    // Safety check to make sure this only run once.
+    window.glpi_csp_nonce_patched = true;
+})();

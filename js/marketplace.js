@@ -77,6 +77,12 @@ $(document).ready(function() {
                     buttons.html(html);
                     displayAjaxMessageAfterRedirect();
                     addTooltips();
+
+                    // Changing the active plugins may change the CSP state, and therefore the
+                    // CSP confirmation of the other plugins' enable buttons: re-render them all.
+                    if (['enable_plugin', 'disable_plugin', 'uninstall_plugin', 'update_plugin'].includes(action)) {
+                        refreshPlugins(current_page);
+                    }
                 }
             });
         };

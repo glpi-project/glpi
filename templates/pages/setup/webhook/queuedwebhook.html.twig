@@ -81,7 +81,7 @@
         }) }}
     {% endif %}
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         $(() => {
             $('button[name="send"]').click((e) => {
                 const btn = $(e.target);

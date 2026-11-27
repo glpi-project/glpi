@@ -48,7 +48,7 @@
                     <span class="visually-hidden">{{ _x('button', 'Dissociate') }}</span>
                 </i>
             </button>
-            <script>
+            <script nonce="{{ csp_nonce() }}">
                 $('button[name="unaffect_networkname"]').on('click', () => {
                     $.post(
                         '{{ path('ajax/networkname.php') }}',

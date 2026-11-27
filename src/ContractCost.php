@@ -316,48 +316,16 @@ class ContractCost extends CommonDBChild
             $canedit
             && ($withtemplate != 2)
         ) {
-            $twig_params = [
-                'item' => $contract,
-                'rand' => $rand,
-            ];
-            // language=Twig
-            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <div id="viewsubitem{{ rand }}" class="mb-3"></div>
-                <script>
-                    function showCost{{ rand }}(subitems_id, btn) {
-                        // Hide the triggering button
-                        if (typeof btn !== undefined) {
-                            $(btn).hide();
-                        }
-                        $.ajax({
-                            url: '{{ config('root_doc') }}/ajax/viewsubitem.php',
-                            method: 'POST',
-                            data: {
-                                type: 'ContractCost',
-                                parenttype: '{{ item.getType()|e('js') }}',
-                                contracts_id: {{ item.getID() }},
-                                id: subitems_id
-                            },
-                            success: (data) => {
-                                $('#viewsubitem{{ rand }}').html(data);
-                            }
-                        });
-                    }
-                    $(() => {
-                        $('#contractcostlist{{ rand }} tbody tr').on('click', function() {
-                            showCost{{ rand }}($(this).attr('data-id'));
-                        });
-                    });
-                </script>
-TWIG, $twig_params);
-            TemplateRenderer::getInstance()->display(
-                'components/tab/addlink_block.html.twig',
-                [
-                    'add_link' => 'javascript:showCost' . $rand . '(-1, this);',
-                    'button_label' => __('Add a new cost'),
-                ]
-            );
-
+            TemplateRenderer::getInstance()->display('components/form/viewsubitem.html.twig', [
+                'type'          => self::class,
+                'parenttype'    => $contract::class,
+                'items_id'      => 'contracts_id',
+                'id'            => $ID,
+                'rand'          => $rand,
+                'datatable_id'  => 'contractcostlist' . $rand,
+                'cancreate'     => true,
+                'add_new_label' => __('Add a new cost'),
+            ]);
         }
 
         $entries = [];

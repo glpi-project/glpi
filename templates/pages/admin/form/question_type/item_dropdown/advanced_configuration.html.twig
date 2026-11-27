@@ -109,7 +109,7 @@
         ) }}
 
         {% if question is null %}
-            <script>
+            <script nonce="{{ csp_nonce() }}">
                 import("/js/modules/Forms/ItemDropdownAdvancedConfig.js").then((m) => {
                     new m.GlpiFormItemDropdownAdvancedConfig();
                 });

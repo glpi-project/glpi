@@ -88,7 +88,7 @@
             <button type="button" class="btn btn-outline-secondary"
                  aria-label="{{ __('Show password') }}" title="{{ __('Show password') }}"
                  data-show-label="{{ __('Show password') }}" data-hide-label="{{ __('Hide password') }}"
-                 onclick="toggleDisclosablePasswordField(this, '{{ options.id|e('js') }}')">
+                 data-glpi-toggle-password="{{ options.id }}">
                 <i class="ti ti-eye disclose" aria-hidden="true"></i>
             </button>
         {% endif %}
@@ -96,7 +96,7 @@
         {% if options.is_copyable %}
             <button type="button" class="btn btn-outline-secondary"
                  aria-label="{{ __('Click to copy to clipboard') }}" title="{{ __('Click to copy to clipboard') }}"
-                 onclick="copyDisclosablePasswordFieldToClipboard('{{ options.id|e('js') }}')">
+                 data-glpi-copy-password="{{ options.id }}">
                 <i class="ti ti-clipboard-copy disclose" aria-hidden="true"></i>
             </button>
         {% endif %}
@@ -183,7 +183,7 @@
         }),
     })) }}
     <span id="{{ describedby }}" class="visually-hidden">{{ __('Expected format: a hexadecimal color code, for example #FF0000.') }}</span>
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         $(function () {
             $("#{{ options.id|e('css')|e('js') }}").spectrum({
                 showInput: true,
@@ -336,7 +336,7 @@
             {% set format_hint = call('Toolbox::getDateFormat', ['php']) %}
         {% endif %}
         {# While the page is loading, flatpickr is not there yet. In a content received from an AJAX request it is, and a jQuery ready callback would only run after the content is painted. #}
-        <script>
+        <script nonce="{{ csp_nonce() }}">
             (function(init) {
                 if (document.readyState === 'loading') {
                     $(init);
@@ -490,7 +490,7 @@
         ]) %}
    {% endif %}
    {% if options.enable_form_tags %}
-        <script>
+        <script nonce="{{ csp_nonce() }}">
             $(function() {
                 const form_tags = new GLPI.RichText.FormTags(
                     tinymce.get('{{ options.id|e('js') }}'),
@@ -502,7 +502,7 @@
     {% endif %}
 
     {% if options.mention_options.enabled|default(false) and config('use_notifications') %}
-        <script>
+        <script nonce="{{ csp_nonce() }}">
             $(function() {
                 const user_mention = new GLPI.RichText.UserMention(
                     tinymce.get('{{ options.id|e('js') }}'),

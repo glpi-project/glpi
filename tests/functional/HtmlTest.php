@@ -34,6 +34,10 @@
 
 namespace tests\units;
 
+use Glpi\Application\View\ScriptType;
+use Glpi\Security\ContentSecurityPolicy\CspState;
+use Glpi\Security\ContentSecurityPolicy\NonceContext;
+use Glpi\Tests\CspTesterTrait;
 use Glpi\Tests\DbTestCase;
 use Glpi\Toolbox\FrontEnd;
 use GlpiPlugin\Tester\MyPsr4Class;
@@ -54,6 +58,8 @@ use function Safe\unlink;
 
 class HtmlTest extends DbTestCase
 {
+    use CspTesterTrait;
+
     public function testConvDate()
     {
         $this->assertNull(Html::convDate(null));
@@ -532,7 +538,8 @@ class HtmlTest extends DbTestCase
         $dir = str_replace(realpath(GLPI_ROOT), '', realpath(GLPI_TMP_DIR));
         $version_key = FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $base_expected = '<script type="text/javascript" src="'
-         . $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . $version_key . '"></script>';
+         . $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . $version_key . '"'
+         . ' nonce="' . NonceContext::getServiceInstance()->getNonce() . '"></script>';
 
         //create test files
         foreach ($fake_files as $fake_file) {
@@ -602,6 +609,40 @@ class HtmlTest extends DbTestCase
         foreach ($fake_files as $fake_file) {
             unlink(GLPI_TMP_DIR . '/' . $fake_file);
         }
+    }
+
+    public static function scriptBlockProvider(): iterable
+    {
+        yield 'default type' => [
+            'type'     => null,
+            'expected' => '<script type="text/javascript" nonce="{nonce}">console.log("test");</script>',
+        ];
+        yield 'javascript' => [
+            'type'     => ScriptType::Javascript,
+            'expected' => '<script type="text/javascript" nonce="{nonce}">console.log("test");</script>',
+        ];
+        yield 'module' => [
+            'type'     => ScriptType::Module,
+            'expected' => '<script type="module" nonce="{nonce}">console.log("test");</script>',
+        ];
+        yield 'importmap' => [
+            'type'     => ScriptType::ImportMap,
+            'expected' => '<script type="importmap" nonce="{nonce}">console.log("test");</script>',
+        ];
+    }
+
+    #[DataProvider('scriptBlockProvider')]
+    public function testScriptBlock(?ScriptType $type, string $expected): void
+    {
+        $nonce = NonceContext::getServiceInstance()->getNonce();
+        $expected = \str_replace('{nonce}', \htmlescape($nonce), $expected);
+
+        $script = 'console.log("test");';
+        $result = $type === null
+            ? Html::scriptBlock($script)
+            : Html::scriptBlock($script, $type);
+
+        $this->assertSame($expected, $result);
     }
 
     public function testManageRefreshPage()
@@ -752,17 +793,23 @@ class HtmlTest extends DbTestCase
 
     public function testAddConfirmationOnAction()
     {
+        // Inline handlers are not generated when the CSP is enabled.
+        $this->assertTrue(CspState::isEnabled());
+        $this->assertSame('', @Html::addConfirmationOnAction('Are U\' OK?'));
+
+        $this->disableCsp();
+
         $string = 'Are U\' OK?';
         $expected = 'onclick="if (window.confirm(&quot;Are U&amp;#039; OK?&quot;)){ ;return true;} else { return false;}"';
-        $this->assertSame($expected, Html::addConfirmationOnAction($string));
+        $this->assertSame($expected, @Html::addConfirmationOnAction($string));
 
         $strings = ['Are you', 'OK?'];
         $expected = 'onclick="if (window.confirm(&quot;Are you\nOK?&quot;)){ ;return true;} else { return false;}"';
-        $this->assertSame($expected, Html::addConfirmationOnAction($strings));
+        $this->assertSame($expected, @Html::addConfirmationOnAction($strings));
 
         $actions = '$("#mydiv").focus();';
         $expected = 'onclick="if (window.confirm(&quot;Are U&amp;#039; OK?&quot;)){ $(&quot;#mydiv&quot;).focus();return true;} else { return false;}"';
-        $this->assertSame($expected, Html::addConfirmationOnAction($string, $actions));
+        $this->assertSame($expected, @Html::addConfirmationOnAction($string, $actions));
     }
 
     public function testCleanId()
@@ -799,6 +846,12 @@ class HtmlTest extends DbTestCase
 
     public function testLink()
     {
+        // Links are not generated anymore when the CSP is enabled, as they may contain inline handlers.
+        $this->assertTrue(CspState::isEnabled());
+        $this->assertSame('', @Html::link('My link', 'mylink.php'));
+
+        $this->disableCsp();
+
         $text = 'My link';
         $url = 'mylink.php';
 

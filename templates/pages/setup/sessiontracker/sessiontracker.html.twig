@@ -209,7 +209,7 @@
         </div>
     </section>
 
-    <script type="module">
+    <script nonce="{{ csp_nonce() }}" type="module">
         const user_filter = document.getElementById('{{ user_filter_id|e('js') }}');
         const status_filter = document.getElementById('dropdown_{{ status_filter_id|e('js') }}');
         const type_filter = document.getElementById('dropdown_{{ type_filter_id|e('js') }}');

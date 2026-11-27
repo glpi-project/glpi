@@ -92,6 +92,11 @@ class GLPITestCase extends TestCase
     private ?ConfigContainer $config_copy = null;
     private array $superglobals_copy = [];
 
+    /**
+     * @var array<string>
+     */
+    private array $active_plugins_copy = [];
+
     private TestHandler $log_handler;
 
     public function setUp(): void
@@ -511,6 +516,9 @@ class GLPITestCase extends TestCase
             // its data in an array property, copied by value on clone).
             $this->config_copy = clone $CFG_GLPI;
         }
+
+        // Active plugins
+        $this->active_plugins_copy = Plugin::getPlugins();
     }
 
     /**
@@ -543,6 +551,7 @@ class GLPITestCase extends TestCase
 
         // Statics values
         Log::$use_queue = false;
+        (new ReflectionProperty(Plugin::class, 'activated_plugins'))->setValue(null, $this->active_plugins_copy);
         CommonDBTM::clearSearchOptionCache();
         SearchOption::clearSearchOptionCache();
         Dropdown::resetItemtypesStaticCache();

@@ -75,7 +75,7 @@
                             icon: comment_id ? 'ti ti-device-floppy' : 'ti ti-message-circle'
                         }) }}
                     </div>
-                    <script>
+                    <script nonce="{{ csp_nonce() }}">
                         $(`#kbcomment_form{{ rand }}`).on('click', 'button[name="cancel"]', (e) => {
                             const btn = $(e.currentTarget);
                             btn.closest('.comment').find('.displayed_content').show();

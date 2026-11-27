@@ -155,7 +155,7 @@
                 rand: c_rand
             } + inheritable_params) }}
             <div id="inquest_config{{ config_suffix }}_extra"></div>
-            <script type="module">
+            <script nonce="{{ csp_nonce() }}" type="module">
                 const refresh_param_rows = () => {
                     const rate_dropdown = $('select[name="inquest_rate{{ config_suffix }}"]');
                     const config_dropdown = $('select[name="inquest_config{{ config_suffix }}"]');

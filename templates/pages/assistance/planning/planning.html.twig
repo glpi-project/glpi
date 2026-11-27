@@ -31,6 +31,6 @@
  #}
 
 <div id="planning_container"></div>
-<script type="module">
+<script nonce="{{ csp_nonce() }}" type="module">
     window.Vue.createApp(window.Vue.components['Planning/PlanningView'].component, {{ (options + {planning_config: session('glpi_plannings')})|json_encode|raw }}).mount('#planning_container');
 </script>

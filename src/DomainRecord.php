@@ -499,7 +499,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
                             <i class="ti ti-plus" aria-hidden="true"></i>
                             <span>{{ add_new_btn_msg }}</span>
                         </button>
-                        <script>
+                        <script nonce="{{ csp_nonce() }}">
                             $('#add_new_record_btn{{ rand }}').on('click', function() {
                                 $('#new_record_form').removeClass('d-none');
                                 $(this).addClass('d-none');

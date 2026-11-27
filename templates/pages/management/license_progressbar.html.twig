@@ -118,7 +118,7 @@
 
     <i class="{{ selected_context.icon }}" aria-hidden="true"></i>
 
-    <script>
+    <script nonce="{{ csp_nonce() }}">
         document.addEventListener('DOMContentLoaded', function () {
             const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
             popoverTriggerList.map(function (popoverTriggerEl) {

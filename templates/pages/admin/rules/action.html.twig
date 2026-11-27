@@ -64,7 +64,7 @@
             }
         ]) %}
         {% if item.fields['field'] is defined and item.fields['field'] is not empty %}
-            <script type="text/javascript">
+            <script nonce="{{ csp_nonce() }}" type="text/javascript">
                 $(() => {
                     {% do call(['Ajax', 'updateItemJsCode'], [
                         'action_span',

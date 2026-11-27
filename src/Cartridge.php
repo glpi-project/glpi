@@ -1132,7 +1132,7 @@ TWIG, $twig_params);
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             <div id="viewcartridge"></div>
-            <script>
+            <script nonce="{{ csp_nonce() }}">
                 function viewEditCartridge(cart_id) {
                     $('#viewcartridge').load(
                         '{{ path('ajax/viewsubitem.php') }}',

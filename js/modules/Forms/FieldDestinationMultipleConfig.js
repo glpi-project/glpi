@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global getUUID, setupAjaxDropdown, setupAdaptDropdown */
+/* global getUUID, setupAjaxDropdown, setupAdaptDropdown, reExecuteTrustedScript */
 
 export class GlpiFormFieldDestinationMultipleConfig {
     /** @type {jQuery<HTMLElement>} */
@@ -205,7 +205,7 @@ export class GlpiFormFieldDestinationMultipleConfig {
                 script.text = script.text.replace(/rand:[0-9]+/g, `rand:'${id}'`);
 
                 // Execute the script
-                $.globalEval(script.text);
+                reExecuteTrustedScript(script);
             });
         });
     }
