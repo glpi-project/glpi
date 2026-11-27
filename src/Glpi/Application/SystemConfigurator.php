@@ -37,8 +37,10 @@ namespace Glpi\Application;
 use Glpi\Altcha\AltchaManager;
 use Glpi\Error\ErrorHandler;
 use Glpi\Log\AccessLogHandler;
+use Glpi\Log\ConsoleCommandRedactionProcessor;
 use Glpi\Log\ErrorLogHandler;
 use Monolog\Logger;
+use Monolog\Processor\PsrLogMessageProcessor;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Safe\Exceptions\InfoException;
@@ -356,6 +358,10 @@ final class SystemConfigurator
         $PHPLOGGER = new Logger('glpi');
         $PHPLOGGER->pushHandler(new ErrorLogHandler());
         $PHPLOGGER->pushHandler(new AccessLogHandler());
+        // Pushing processors actually adds them to the start of the processors array so they are executed in reverse order.
+        // Here, the redaction processor is executed before the PSR log message processor to ensure that sensitive data is redacted before being interpolated into the log message.
+        $PHPLOGGER->pushProcessor(new PsrLogMessageProcessor());
+        $PHPLOGGER->pushProcessor(new ConsoleCommandRedactionProcessor());
 
         $this->logger = $PHPLOGGER;
     }
