@@ -1821,6 +1821,7 @@ HTML;
      *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
      *    - display_emptychoice : display empty choice, cannot be used when "multiple" option set to true (default true)
      *    - used                : array / Already used items ID: not to display in dropdown (default empty)
+     *    - condition           : array / Conditions to apply on items, indexed by itemtype (default empty)
      *    - display             : true : display directly, false return the html
      *
      * @return int|string randomized value used to generate HTML IDs or html contents
@@ -1842,6 +1843,7 @@ HTML;
             'emptylabel'                            => self::EMPTY_VALUE,
             'display_emptychoice'                   => true,
             'used'                                  => [],
+            'condition'                             => [],
             'ajax_page'                             => $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
             'display'                               => true,
             'rand'                                  => mt_rand(),
@@ -1890,6 +1892,11 @@ HTML;
         // manage condition
         if ($params['onlyglobal']) {
             $p_ajax['condition'] = static::addNewCondition(['is_global' => 1]);
+        } elseif ($params['condition']) {
+            $p_ajax['condition'] = array_map(
+                static fn(array $condition) => static::addNewCondition($condition),
+                $params['condition']
+            );
         }
         if ($params['used']) {
             $p_ajax['used'] = $params['used'];
