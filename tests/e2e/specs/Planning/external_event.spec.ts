@@ -50,6 +50,25 @@ test.describe('External event', () => {
         await expect(event_page.plan_end_input).toHaveValue(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:00$/);
     });
 
+    test('End date follows a start date typed in the past', async ({ page, profile }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const event_page = new ExternalEventPage(page);
+
+        await event_page.goto();
+        await expect(event_page.plan_begin_input).toHaveValue(/^\d{4}-\d{2}-\d{2} /);
+
+        // The new end date is lower than the previous start date, it must not be rejected by the end date picker
+        await event_page.doTypeStartDate('2020-01-15');
+        await expect(event_page.plan_begin_input).toHaveValue(/^2020-01-15 /);
+        await expect(event_page.end_date_input).toHaveValue('2020-01-15');
+        await expect(event_page.plan_end_input).toHaveValue(/^2020-01-15 /);
+
+        // Typing an end time must keep the end date, even when the event is not in the current year
+        await event_page.end_time_input.fill('15:00');
+        await event_page.end_time_input.press('Tab');
+        await expect(event_page.plan_end_input).toHaveValue('2020-01-15 15:00:00');
+    });
+
     test('Accessibility - Form', async ({ page, profile }) => {
         await profile.set(Profiles.SuperAdmin);
 

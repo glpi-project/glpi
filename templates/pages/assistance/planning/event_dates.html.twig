@@ -173,7 +173,8 @@
 
     function setEnd(end) {
         end_date.setDate(end, false);
-        end_time.setDate(end, false);
+        // Only the time is given, a time picker fails to handle typed values once it has been moved to another year
+        end_time.setDate(end_time.formatDate(end, 'H:i'), false);
     }
 
     let duration = combine(end_date, end_time) - combine(begin_date, begin_time);
@@ -187,6 +188,9 @@
         const begin   = combine(begin_date, begin_time);
         let end       = combine(end_date, end_time);
 
+        // Must be done before moving the end, a date lower than the previous minimum would be rejected by the picker
+        end_date.set('minDate', begin_date.selectedDates[0] ?? null);
+
         if (keep_duration) {
             end = all_day
                 ? addDays(begin, Math.max(0, Math.round(duration / DAY)))
@@ -197,7 +201,6 @@
             setEnd(end);
         }
         duration = end - begin;
-        end_date.set('minDate', begin_date.selectedDates[0] ?? null);
 
         begin_input.value = begin_date.formatDate(begin, 'Y-m-d H:i:S');
         end_input.value   = begin_date.formatDate(all_day ? addDays(end, 1) : end, 'Y-m-d H:i:S');

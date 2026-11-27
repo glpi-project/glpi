@@ -39,6 +39,8 @@ export class ExternalEventPage extends GlpiPage
     public readonly title_input: Locator;
     public readonly all_day_radio: Locator;
     public readonly time_slot_radio: Locator;
+    public readonly start_date_input: Locator;
+    public readonly end_date_input: Locator;
     public readonly start_time_input: Locator;
     public readonly end_time_input: Locator;
     public readonly plan_begin_input: Locator;
@@ -52,6 +54,8 @@ export class ExternalEventPage extends GlpiPage
         this.title_input      = this.form.getByLabel('Title', { exact: true });
         this.all_day_radio    = this.form.getByRole('radio', { name: 'All day' });
         this.time_slot_radio  = this.form.getByRole('radio', { name: 'Time slot' });
+        this.start_date_input = this.form.getByRole('textbox', { name: 'Start date' });
+        this.end_date_input   = this.form.getByRole('textbox', { name: 'End date' });
         this.start_time_input = this.form.getByRole('textbox', { name: 'Start time' });
         this.end_time_input   = this.form.getByRole('textbox', { name: 'End time' });
         // Submitted values are stored in hidden inputs
@@ -66,5 +70,12 @@ export class ExternalEventPage extends GlpiPage
             url += `?id=${id}`;
         }
         await this.page.goto(url);
+    }
+
+    public async doTypeStartDate(date: string): Promise<void>
+    {
+        await this.start_date_input.fill(date);
+        // The typed value is taken into account when the picker is closed
+        await this.title_input.click();
     }
 }
