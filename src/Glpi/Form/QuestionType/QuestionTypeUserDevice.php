@@ -44,6 +44,7 @@ use Glpi\Form\Condition\ConditionHandler\UserDevicesConditionHandler;
 use Glpi\Form\Condition\ConditionValueTransformerInterface;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
+use Glpi\Form\ValidationResult;
 use InvalidArgumentException;
 use Override;
 use Safe\Exceptions\JsonException;
@@ -54,8 +55,29 @@ use function Safe\preg_match;
 
 final class QuestionTypeUserDevice extends AbstractQuestionType implements
     UsedAsCriteriaInterface,
-    ConditionValueTransformerInterface
+    ConditionValueTransformerInterface,
+    QuestionTypeValidationInterface
 {
+    #[Override]
+    public function validateAnswer(Question $question, mixed $answer): ValidationResult
+    {
+        $result = new ValidationResult();
+
+        // Only the devices proposed to the user can be selected
+        $my_devices = [];
+        foreach (CommonItilObject_Item::getMyDevices((int) Session::getLoginUserID(), Session::getActiveEntities()) as $group) {
+            $my_devices = array_merge($my_devices, array_keys($group));
+        }
+        foreach (is_array($answer) ? $answer : [$answer] as $device) {
+            if (!in_array($device, $my_devices, true)) {
+                $result->addError($question, __('Unexpected value'));
+                break;
+            }
+        }
+
+        return $result;
+    }
+
     #[Override]
     public function validateExtraDataInput(array $input): bool
     {
