@@ -32,12 +32,12 @@
  */
 
 .tab-content {
-    border-top-left-radius: 0;
+    border-start-start-radius: 0;
 }
 
 .card-tabs {
     #tabspanel {
-        border-right: 1px solid var(--glpi-tabs-border-color);
+        border-inline-end: 1px solid var(--glpi-tabs-border-color);
     }
 
     #tabspanel.nav-tabs {
@@ -45,11 +45,11 @@
             background: var(--glpi-tabs-bg);
             color: var(--glpi-tabs-fg);
             border-color: var(--glpi-tabs-border-color);
-            border-right-width: 0;
+            border-inline-end-width: 0;
 
             &.active {
-                border-right: 1px solid transparent !important;
-                margin-right : -1px; // Hack for border overlap
+                border-inline-end: 1px solid transparent !important;
+                margin-inline-end : -1px; // Hack for border overlap
                 background: var(--glpi-tabs-active-bg);
                 color: var(--glpi-tabs-active-fg);
                 border-color: var(--glpi-tabs-active-border-color);
@@ -61,7 +61,7 @@
             }
 
             .badge {
-                margin-left: 5px;
+                margin-inline-start: 5px;
             }
         }
     }
@@ -70,39 +70,39 @@
             #tabspanel.nav-tabs {
                 .nav-link {
                     /* 1. VISIBILITY: Fix bottom border and remove overlap gap */
-                    border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
-                    margin-bottom: 0 !important;
+                    border-block-end: 1px solid var(--glpi-tabs-border-color) !important;
+                    margin-block-end: 0 !important;
 
                     /* 2. LAYOUT: Remove top border (prevents double lines) */
-                    border-top: 0 !important;
+                    border-block-start: 0 !important;
 
                     /* 3. CORNER FIX: Flatten the right side to attach to the panel */
-                    border-top-right-radius: 0 !important;
-                    border-bottom-right-radius: 0 !important;
+                    border-start-end-radius: 0 !important;
+                    border-end-end-radius: 0 !important;
 
                     /* 4. ACTIVE STATE: Restore the thick left border */
                     &.active {
                         /* We force the width and style to ensure it appears */
-                        border-left-width: 5px !important;
-                        border-left-style: solid !important;
+                        border-inline-start-width: 5px !important;
+                        border-inline-start-style: solid !important;
 
                         /* We explicitly inherit the color to ensure it stays Blue (or your theme color) */
-                        border-left-color: var(--glpi-tabs-active-border-color) !important;
+                        border-inline-start-color: var(--glpi-tabs-active-border-color) !important;
 
                         /* Ensure the right side remains open */
-                        border-right-color: transparent !important;
+                        border-inline-end-color: transparent !important;
                     }
                 }
 
                 /* 5. FIRST ITEM: Restore top border to close the list */
                 .nav-item:first-child .nav-link {
-                    border-top: 1px solid var(--glpi-tabs-border-color) !important;
-                    border-top-left-radius: 4px;
+                    border-block-start: 1px solid var(--glpi-tabs-border-color) !important;
+                    border-start-start-radius: 4px;
                 }
 
                 /* 6. LAST ITEM: Flatten bottom-right corner */
                 .nav-item:last-child .nav-link {
-                    border-bottom-right-radius: 0 !important;
+                    border-end-end-radius: 0 !important;
                 }
             }
     }
@@ -110,19 +110,19 @@
     &.horizontal {
         #tabspanel.nav-tabs {
             .nav-link {
-                border-bottom-width: 1px;
-                border-bottom-style: solid;
+                border-block-end-width: 1px;
+                border-block-end-style: solid;
 
                 &:last-of-type {
-                    border-right-width: 1px;
+                    border-inline-end-width: 1px;
 
                     &.active {
-                        border-right-color: var(--glpi-tabs-border-color) !important;
+                        border-inline-end-color: var(--glpi-tabs-border-color) !important;
                     }
                 }
 
                 &.active {
-                    border-bottom-color: transparent !important;
+                    border-block-end-color: transparent !important;
                 }
             }
         }

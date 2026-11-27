@@ -45,8 +45,7 @@
     }
 
     .tab-content .tab-pane:first-of-type .main-header {
-        border-bottom: 1px solid $hc-border-color;
-        border-top: 1px solid $hc-border-color;
+        border-block: 1px solid $hc-border-color;
         box-sizing: border-box;
         border-collapse: collapse;
     }
@@ -106,24 +105,24 @@
     .card-tabs {
         &:not(.horizontal) {
             .nav-tabs {
-                border-bottom: 1px solid $hc-border-color-contrast;
+                border-block-end: 1px solid $hc-border-color-contrast;
                 padding: 0;
             }
         }
 
         .nav-tabs li {
             border-color: $hc-border-color-contrast;
-            border-bottom: 0;
+            border-block-end: 0;
             box-sizing: border-box;
             border-collapse: collapse;
         }
 
         &.vertical .nav-tabs li {
             border-color: $hc-border-color-contrast;
-            border-bottom: 0;
+            border-block-end: 0;
             box-sizing: border-box;
             border-collapse: collapse;
-            border-right-width: 1px !important;
+            border-inline-end-width: 1px !important;
             margin: 0;
             width: 99%;
 
@@ -176,7 +175,7 @@
     .subheader .box {
         background-color: var(--tblr-light);
         border: 2px solid var(--tblr-dark);
-        margin-right: 2px;
+        margin-inline-end: 2px;
     }
 
     .form-switch {

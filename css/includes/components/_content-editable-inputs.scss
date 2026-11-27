@@ -48,7 +48,7 @@ $inline-input-padding: 2px 4px;
     font-weight: var(--tblr-font-weight-medium);
     border: 0;
     padding: $inline-input-padding;
-    margin-bottom: 1.1rem;
+    margin-block-end: 1.1rem;
     background-color: transparent;
     box-shadow: none;
 }
@@ -60,7 +60,7 @@ $inline-input-padding: 2px 4px;
     font-weight: var(--tblr-font-weight-medium);
     border: 0;
     padding: $inline-input-padding;
-    margin-bottom: 1rem;
+    margin-block-end: 1rem;
     background-color: transparent;
     color: inherit;
     box-shadow: none;
@@ -81,7 +81,7 @@ $inline-input-padding: 2px 4px;
     // Small left padding to match our content-editable inputs padding
     .tox-toolbar__primary {
         .tox-toolbar__group:first-child {
-            padding-left: 2px !important;
+            padding-inline-start: 2px !important;
         }
     }
 
@@ -115,14 +115,14 @@ form:not(.disable-focus) {
             height: 48px !important; // Need to set a fixed height for transition
             overflow: visible;
             transition: height 0.25s ease !important;
-            margin-top: 1rem !important;
+            margin-block-start: 1rem !important;
             padding: 4px !important;
         }
 
         // Partial revert of margin change in this case as we want to keep the
         // natural margin while the toolbar is visible
         .tox-sidebar-wrap {
-            margin-bottom: -5px;
+            margin-block-end: -5px;
         }
     }
 }
@@ -134,7 +134,7 @@ form:not(.disable-focus) {
 
     // Remove margin after final paragraph
     p:last-child {
-        margin-bottom: 0 !important;
+        margin-block-end: 0 !important;
     }
 
     // Show correct cursor on tinymce's placeholders

@@ -46,7 +46,7 @@
         }
 
         &:not(.main-header) {
-            border-top: 1px solid var(--glpi-form-header-border-color);
+            border-block-start: 1px solid var(--glpi-form-header-border-color);
         }
 
         .badge {
@@ -62,10 +62,10 @@
             left: 0.5rem;
         }
 
-        // remove margin-left is small screen
+        // remove margin-inline-start is small screen
         @include media-breakpoint-down(sm) {
             .badge {
-                margin-left: 0 !important;
+                margin-inline-start: 0 !important;
             }
         }
     }
@@ -90,7 +90,7 @@
 }
 
 #page > .asset {
-    margin-top: 15px; // Fix top of form when embedded in iframe (Usually positioned properly because of .tab-content)
+    margin-block-start: 15px; // Fix top of form when embedded in iframe (Usually positioned properly because of .tab-content)
 }
 
 .navigationheader {
@@ -123,8 +123,8 @@
     }
 
     .main-header {
-        padding-top: 0;
-        padding-bottom: 0;
+        padding-block-start: 0;
+        padding-block-end: 0;
         order: 2;
 
         .ribbon {
@@ -158,9 +158,9 @@
         .main-header {
             width: 100%;
             order: 3;
-            margin-top: 0 !important;
-            padding-left: 0 !important;
-            padding-right: 0 !important;
+            margin-block-start: 0 !important;
+            padding-inline-start: 0 !important;
+            padding-inline-end: 0 !important;
         }
     }
 }

@@ -48,8 +48,8 @@
     --wb-active-border-color: var(--tblr-border-color);
 
     .browser_tree {
-        padding-right: 10px;
-        padding-left: 2px;
+        padding-inline-end: 10px;
+        padding-inline-start: 2px;
 
         .browser-tree-container {
             overflow-x: hidden;
@@ -58,7 +58,7 @@
 
         .browser_tree_search {
             width: 100%;
-            margin-bottom: 5px;
+            margin-block-end: 5px;
             padding: 10px 5px;
             border-radius: 0;
             box-sizing: border-box;
@@ -67,7 +67,7 @@
 
     .browser_items {
         width: 100%;
-        margin-left: 5px;
+        margin-inline-start: 5px;
 
         .tab_cadre_pager {
             width: 100%;

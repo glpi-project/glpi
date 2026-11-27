@@ -53,7 +53,7 @@ body {
     }
 
     .flatpickr-calendar.hasTime .flatpickr-time {
-        border-top: 1px solid var(--glpi-flatpickr-border-color);
+        border-block-start: 1px solid var(--glpi-flatpickr-border-color);
     }
 
     .flatpickr-calendar.arrowTop::before {
@@ -243,8 +243,8 @@ body {
     }
 
     .flatpickr input.form-control {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
+        border-start-end-radius: 0;
+        border-end-end-radius: 0;
     }
 }
 /* stylelint-enable property-no-vendor-prefix */

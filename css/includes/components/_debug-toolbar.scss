@@ -43,7 +43,7 @@ body.debug-active:not(.debug-folded) {
     }
 
     .tab-pane:not([id^="tab-Ticket_main"]) {
-        margin-bottom: 50px;
+        margin-block-end: 50px;
     }
 
     .itil-object {

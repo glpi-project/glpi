@@ -33,7 +33,7 @@
 
 .saved-searches-panel {
     border-color: color-mix(in srgb, var(--tblr-secondary), transparent 70%);
-    border-left-width: 0;
+    border-inline-start-width: 0;
     border-radius: unset;
     position: fixed;
     top: var(--glpi-contextbar-height);
@@ -48,7 +48,7 @@
         position: sticky;
         top: 0;
         left: 0;
-        border-left-width: 1px;
+        border-inline-start-width: 1px;
         height: calc(100vh - var(--glpi-contextbar-height) - var(--glpi-content-margin));
         min-width: 320px;
 
@@ -87,7 +87,7 @@
                 }
 
                 .default-ctrl {
-                    padding-right: 0;
+                    padding-inline-end: 0;
                 }
 
                 .badge {
@@ -139,9 +139,9 @@ body.horizontal-layout {
         line-height: 20px;
         bottom: 0;
         left: 0 !important;
-        margin-top: 0 !important;
-        padding-bottom: 20px;
-        margin-left: 0 !important;
+        margin-block-start: 0 !important;
+        padding-block-end: 20px;
+        margin-inline-start: 0 !important;
         z-index: $zindex-fixed;
         display: flex !important;
 
@@ -190,7 +190,7 @@ body.horizontal-layout {
             font-family: tabler-icons, sans-serif;
             font-weight: 900;
             color: var(--tblr-secondary);
-            margin-left: -1rem;
+            margin-inline-start: -1rem;
             width: 1rem;
         }
     }

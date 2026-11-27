@@ -113,7 +113,7 @@
 
 #viewgraph table.outbound {
     width: 400px;
-    margin-bottom: 20px;
+    margin-block-end: 20px;
 }
 
 div#viewgraph table.outbound td div {
@@ -131,7 +131,7 @@ ul.indexes {
     text-align: center;
     font-size: 0.7em;
     color: silver;
-    float: left;
+    float: inline-start;
 }
 
 .cell_add {
@@ -145,7 +145,7 @@ ul.indexes {
         content: "\2b";
         left: 45%;
         color: grey;
-        top: 3px;
+        inset-block-start: 3px;
         font: var(--fa-font-solid);
         font-size: 1em;
         position: absolute;
@@ -160,7 +160,7 @@ ul.indexes {
 .grid-room {
     box-sizing: content-box;
     margin: 10px 0 10px 10px;
-    float: left;
+    float: inline-start;
     position: relative;
 
     *,
@@ -199,11 +199,11 @@ ul.indexes {
         .cell_add {
             height: var(--dcroom-grid-cellh);
             width: var(--dcroom-grid-cellw);
-            float: left;
+            float: inline-start;
 
             &::after {
-                left: calc(50% - 5px);
-                top: calc(50% - 6px);
+                inset-inline-start: calc(50% - 5px);
+                inset-block-start: calc(50% - 6px);
             }
         }
     }
@@ -256,7 +256,7 @@ ul.indexes {
         }
 
         .grid-stack-item-content {
-            padding-top: 4px;
+            padding-block-start: 4px;
         }
 
         &.lock-bottom {
@@ -271,7 +271,7 @@ ul.indexes {
         text-align: center;
         font-size: 0.7em;
         color: var(--tblr-body-color);
-        float: left;
+        float: inline-start;
 
         &.indexes-x {
             grid-column: 2;
@@ -280,7 +280,7 @@ ul.indexes {
             height: 15px;
 
             li {
-                float: left;
+                float: inline-start;
                 width: var(--dcroom-grid-cellw);
                 height: 15px;
             }
@@ -390,15 +390,15 @@ ul.indexes {
         &.fa {
             color: var(--tblr-body-color);
             position: absolute;
-            right: 0;
-            top: 0;
+            inset-inline-end: 0;
+            inset-block-start: 0;
             padding: 0.5em;
 
             &:link {
                 color: var(--tblr-body-color);
                 position: absolute;
-                right: 0;
-                top: 0;
+                inset-inline-end: 0;
+                inset-block-start: 0;
                 padding: 0.5em;
             }
         }
@@ -406,8 +406,8 @@ ul.indexes {
         .fa {
             color: var(--tblr-body-color);
             position: absolute;
-            right: 0;
-            top: 0;
+            inset-inline-end: 0;
+            inset-block-start: 0;
             padding: 0.5em;
         }
 
@@ -428,7 +428,7 @@ ul.indexes {
         }
 
         td {
-            border-left: 1px solid var(--tblr-border-color);
+            border-inline-start: 1px solid var(--tblr-border-color);
 
             div {
                 border: none !important;
@@ -463,22 +463,22 @@ ul.indexes {
 }
 
 .racks_col {
-    margin-left: 2px;
-    float: left;
+    margin-inline-start: 2px;
+    float: inline-start;
     position: relative;
 
     &:not(:last-child) {
-        margin-right: 40px;
+        margin-inline-end: 40px;
     }
 }
 
 .rack_side {
-    float: left;
+    float: inline-start;
     text-align: center;
     background: var(--tblr-body-bg);
     border: 1px solid var(--tblr-border-color);
     color: var(--tblr-body-color);
-    padding-top: 18px;
+    padding-block-start: 18px;
 }
 
 .racks_col h2 {
@@ -510,7 +510,7 @@ ul.indexes {
         );
     z-index: 1;
     border: 1px solid var(--tblr-border-color);
-    float: left;
+    float: inline-start;
 
     *,
     ::before,
@@ -521,7 +521,7 @@ ul.indexes {
     .racks_add {
         .cell_add {
             height: 20px;
-            margin-bottom: 1px;
+            margin-block-end: 1px;
             width: 100%;
         }
     }
@@ -533,13 +533,13 @@ ul.indexes {
 }
 
 .side_pdus_float {
-    float: left;
+    float: inline-start;
     min-height: 100%;
     width: 20px;
 }
 
 .side_pdus.side_pdus_nofloat {
-    clear: left;
+    clear: inline-start;
     margin: 0 2px 2px;
 }
 
@@ -634,7 +634,7 @@ ul.indexes {
 }
 
 .grid-stack-item .item_rack_icon {
-    float: left;
+    float: inline-start;
     opacity: 0.6;
     padding: 3px 0 0 2px;
     font-size: 14px;
@@ -651,7 +651,7 @@ ul.indexes {
 
     label {
         font-weight: bold;
-        margin-right: 3px;
+        margin-inline-end: 3px;
     }
 }
 
@@ -664,7 +664,7 @@ ul.indexes {
 .racks_row ul.indexes li {
     height: 20px;
     width: 20px;
-    margin-bottom: 1px;
+    margin-block-end: 1px;
     box-sizing: border-box;
     line-height: 20px;
 }
@@ -676,7 +676,7 @@ ul.indexes {
     color: var(--tblr-secondary);
     text-align: left;
     font-size: 11px;
-    margin-bottom: 20px;
+    margin-block-end: 20px;
 }
 
 .rack_side_block_content {

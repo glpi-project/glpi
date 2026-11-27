@@ -271,7 +271,7 @@
 
 <style scoped>
     div.left-panel {
-        border-right: 1px solid #808080;
+        border-inline-end: 1px solid #808080;
         min-width: 100px;
         flex: 0 0 v-bind(left_panel_flexbasis);
     }
@@ -279,8 +279,8 @@
         cursor: col-resize;
         width: 10px;
         z-index: 1030;
-        margin-left: -0.5rem;
-        margin-right: -0.25rem;
+        margin-inline-start: -0.5rem;
+        margin-inline-end: -0.25rem;
     }
     #debug-requests-table thead tr th {
         cursor: pointer;

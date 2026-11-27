@@ -33,9 +33,8 @@
 // Remove padding as we have a custom illustration as a background that should
 // be displayed in full width.
 .page-body {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    margin-top: 0 !important;
+    padding-inline: 0 !important;
+    margin-block-start: 0 !important;
 }
 
 header {
@@ -63,14 +62,14 @@ header {
 
 // Adjust nav styles to match our white background.
 .home-tickets-tabs {
-    border-bottom-color: white !important;
+    border-block-end-color: white !important;
 
     .active {
         background-color: white !important;
     }
 
     .nav-link {
-        border-bottom-color: white !important;
+        border-block-end-color: white !important;
     }
 }
 
@@ -80,7 +79,7 @@ header {
     }
 
     .search-card {
-        border-top-left-radius: 0;
+        border-start-start-radius: 0;
     }
 }
 
@@ -113,8 +112,8 @@ header {
     position: relative;
 
     .search-banner-content {
-        padding-top:170px;
-        padding-bottom:80px;
+        padding-block-start: 170px;
+        padding-block-end: 80px;
     }
 
     .scene {
@@ -137,7 +136,7 @@ header {
         }
 
         img {
-            margin-top: auto;
+            margin-block-start: auto;
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
@@ -198,8 +197,8 @@ header {
     box-shadow:var(--tblr-box-shadow-input);
     border-radius: var(--tblr-border-radius);
     border:var(--tblr-border-width) solid var(--tblr-border-color);
-    border-top-left-radius: 0 !important;
-    border-top-right-radius: 0 !important;
+    border-start-start-radius: 0 !important;
+    border-start-end-radius: 0 !important;
     border-top: 0 !important;
 
     // Must be greater than .search-overlay.
@@ -210,7 +209,7 @@ header {
 {
     // Remove the last paragraph margin on rich text content.
     p:last-of-type {
-        margin-bottom: 0 !important;
+        margin-block-end: 0 !important;
     }
 }
 
@@ -219,36 +218,34 @@ header {
 }
 
 .remove-bottom-border-radius{
-    border-bottom-left-radius: 0 !important;
-    border-bottom-right-radius: 0 !important;
+    border-end-start-radius: 0 !important;
+    border-end-end-radius: 0 !important;
 }
 
 .tiles-banner {
     background: var(--glpi-helpdesk-tiles-section-bg);
-    padding-top:70px;
-    padding-bottom:70px;
+    padding-block: 70px;
 }
 
 .tickets-banner {
     background: var(--glpi-helpdesk-tabs-section-bg);
-    padding-top:70px;
-    padding-bottom:70px;
+    padding-block: 70px;
     flex-grow: 1;
 }
 
 // Specific style for the tabs
 #tabspanel {
-    border-right: 0 !important;
-    border-bottom: 1px solid transparent;
+    border-inline-end: 0 !important;
+    border-block-end: 1px solid transparent;
 
     .nav-link {
-        border-bottom: 0 !important;
-        border-bottom-color: unset !important;
+        border-block-end: 0 !important;
+        border-block-end-color: unset !important;
     }
 }
 
 .tab-content {
-    border-top-right-radius: 0 !important;
+    border-start-end-radius: 0 !important;
     border: 0 !important;
 }
 
@@ -260,8 +257,8 @@ header {
 
 .home-ticket-list {
     .search-card {
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
+        border-start-start-radius: 0;
+        border-start-end-radius: 0;
     }
 
     td {
@@ -270,15 +267,14 @@ header {
     }
 
     .card-footer {
-        border-top: 0;
-        padding-top: 16px;
-        padding-bottom: 8px;
+        border-block-start: 0;
+        padding-block-start: 16px;
+        padding-block-end: 8px;
     }
 
     .search-results {
         // Prevent double border issues
-        border-left: 0 !important;
-        border-right: 0 !important;
+        border-inline: 0 !important;
     }
 }
 
@@ -287,7 +283,7 @@ header {
 }
 
 .dashboard {
-    margin-top: 10px;
+    margin-block-start: 10px;
 
     .filter-dashboard {
         // This action is not accessible on the helpdesk
@@ -296,14 +292,14 @@ header {
 
     .change-dashboard {
         // Small adjustment to make sur it aligns with others UI elements specific to this page
-        margin-left: 4px;
+        margin-inline-start: 4px;
     }
 }
 
 #tabspanel {
-    border-bottom: 1px solid var(--tblr-border-color) !important;
+    border-block-end: 1px solid var(--tblr-border-color) !important;
 
     a.active {
-        border-bottom: 1px solid var(--tblr-border-color) !important;
+        border-block-end: 1px solid var(--tblr-border-color) !important;
     }
 }

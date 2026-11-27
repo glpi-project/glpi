@@ -489,8 +489,8 @@
     }
     .debug-toolbar-widgets .debug-toolbar-widget {
         &.active, &:hover, &[active="true"] {
-            border-top: 3px solid var(--tblr-primary) !important;
-            margin-top : -3px;
+            border-block-start: 3px solid var(--tblr-primary) !important;
+            margin-block-start : -3px;
         }
 
         button {
@@ -516,6 +516,6 @@
         letter-spacing: .04em;
         line-height   : 1rem;
         color         : var(--tblr-muted);
-        margin-bottom : .25rem;
+        margin-block-end : .25rem;
     }
 </style>

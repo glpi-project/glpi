@@ -149,6 +149,6 @@
     }
 
     ul:not(.dropdown-menu) {
-        border-left: 1px dashed #D4D4D4;
+        border-inline-start: 1px dashed #D4D4D4;
     }
 </style>

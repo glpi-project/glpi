@@ -148,7 +148,7 @@
 // Push the altcha logo away from the checkbox label in order to make the label
 // feel more connected to its left side checkbox rather than its right side logo.
 .altcha-checkbox-wrap {
-    margin-right: 0.4rem !important;
+    margin-inline-end: 0.4rem !important;
 }
 
 @media(prefers-reduced-motion) {
@@ -171,7 +171,7 @@ body.in_modal {
     }
 
     .page-body {
-        margin-bottom: 0;
+        margin-block-end: 0;
     }
 
     .footer {
@@ -251,7 +251,7 @@ body.in_modal {
         margin-inline-start: 0;
 
         & + * {
-            margin-left: 0.25rem;
+            margin-inline-start: 0.25rem;
         }
     }
 
@@ -263,7 +263,7 @@ body.in_modal {
         i.fab,
         i.fa-brands,
         i.ti {
-            margin-right: 0;
+            margin-inline-end: 0;
 
             &:not(.ti) {
                 line-height: 1.5em;
@@ -275,7 +275,7 @@ body.in_modal {
                 height: 1.65em;
                 line-height: 1.2em;
                 width: 1.8em;
-                margin-top: -2px;
+                margin-block-start: -2px;
                 font-size: 0.8em;
 
                 @include media-breakpoint-down(sm) {
@@ -437,7 +437,7 @@ table {
 
     .fancytree-expander,
     .fancytree-icon {
-        margin-top: 5px;
+        margin-block-start: 5px;
     }
 
     .fancytree-folder {
@@ -620,7 +620,7 @@ body pre {
 .remove-last-tinymce-margin {
     // Remove annoying margin from tinymce's last paragraph
     p:last-child {
-        margin-bottom: 0;
+        margin-block-end: 0;
     }
 }
 
@@ -684,7 +684,7 @@ body pre {
 // Temporary tabler fix, to remove once https://github.com/tabler/tabler/issues/2271 is fixed.
 html {
     @include media-breakpoint-up(lg) {
-        margin-left: 0 !important;
+        margin-inline-start: 0 !important;
     }
 }
 

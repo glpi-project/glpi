@@ -91,16 +91,18 @@
 
     .content {
         font-weight: normal;
-        padding: 0 7px 0 2px;
+        padding: 0;
+        padding-inline-end: 7px;
+        padding-inline-start: 2px;
         overflow: hidden;
         text-overflow: ellipsis;
         margin: 0;
         display: block;
 
         .event-description {
-            border-top: 1px solid rgba(0, 0, 0, 0.2);
-            margin-top: 2px;
-            padding-top: 2px;
+            border-block-start: 1px solid rgba(0, 0, 0, 0.2);
+            margin-block-start: 2px;
+            padding-block-start: 2px;
 
             p {
                 margin: 0;
@@ -111,10 +113,10 @@
     .event_type {
         background-color: v-bind(type_color);
         position: absolute;
-        width: 7px;
-        bottom: 0;
-        top: 0;
-        right: 0;
+        inline-size: 7px;
+        inset-block-end: 0;
+        inset-block-start: 0;
+        inset-inline-end: 0;
         margin-block: -1px;
     }
 </style>

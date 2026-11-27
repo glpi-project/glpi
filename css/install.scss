@@ -84,8 +84,7 @@ a {
 }
 
 p {
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-inline: 20px;
 }
 
 .tab_check {
@@ -101,7 +100,7 @@ p {
 
 .tab_check td {
     font-size: 12px;
-    border-bottom: 1px solid #bbb;
+    border-block-end: 1px solid #bbb;
 }
 
 .tab_check td i.fas,

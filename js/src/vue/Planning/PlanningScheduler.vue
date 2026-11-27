@@ -212,7 +212,7 @@
     }
 
     :deep(.end-of-day) {
-        border-right: 1px solid var(--tblr-body-color) !important;
+        border-inline-end: 1px solid var(--tblr-body-color) !important;
     }
 
     :deep(.fc-event-past .event_type) {

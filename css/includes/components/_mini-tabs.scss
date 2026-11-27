@@ -73,14 +73,14 @@
         opacity: 0.5;
         cursor: pointer;
         position: relative;
-        padding-left: 20px;
+        padding-inline-start: 20px;
         margin: 15px 5px;
         float: left;
 
         &::before {
             content: "\f204";
-            left: 0;
-            top: 0;
+            inset-inline-start: 0;
+            inset-block-start: 0;
             font: var(--fa-font-solid);
             font-size: 15px;
             position: absolute;
