@@ -412,6 +412,8 @@ abstract class CommonITILRecurrent extends CommonDropdown
      * @param int            $create_before  Anticipated creation delay in seconds.
      * @param int|null       $calendars_id   ID of the calendar to use to restrict creation to working hours,
      *                                       or 0 / null for no calendar.
+     * @param int|null       $min_time       Timestamp before which the next creation date cannot be,
+     *                                       in addition to the current time.
      *
      * @return string  Next creation date in 'Y-m-d H:i:s' format.
      */
@@ -420,9 +422,13 @@ abstract class CommonITILRecurrent extends CommonDropdown
         ?string $end_date,
         $periodicity,
         ?int $create_before,
-        ?int $calendars_id
+        ?int $calendars_id,
+        ?int $min_time = null
     ): string {
         $now = strtotime(Session::getCurrentTime());
+        if ($min_time !== null) {
+            $now = max($now, $min_time);
+        }
         $periodicity_pattern = '/([0-9]+)(MONTH|YEAR)/';
 
         if ($begin_date === null || DateTime::createFromFormat('Y-m-d H:i:s', $begin_date) === false) {
@@ -711,7 +717,12 @@ abstract class CommonITILRecurrent extends CommonDropdown
             Log::HISTORY_LOG_SIMPLE_MESSAGE
         );
 
-        // Compute next creation date
+        // Compute next creation date.
+        // It must be strictly after the current one, otherwise the item would be created again
+        // on next cron run when the PHP clock is behind the database clock.
+        $min_time = !empty($this->fields['next_creation_date'])
+            ? strtotime($this->fields['next_creation_date']) + 1
+            : null;
         $input = [
             'id'                 => $this->getId(),
             'next_creation_date' => $this->computeNextCreationDate(
@@ -719,7 +730,8 @@ abstract class CommonITILRecurrent extends CommonDropdown
                 $this->fields['end_date'],
                 $this->fields['periodicity'],
                 $this->fields['create_before'],
-                $this->fields['calendars_id']
+                $this->fields['calendars_id'],
+                $min_time
             ),
         ];
         $this->update($input);
