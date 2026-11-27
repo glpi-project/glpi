@@ -37,6 +37,8 @@ namespace Glpi\Log;
 use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
 
+use function Safe\preg_match_all;
+
 final class ConsoleCommandRedactionProcessor implements ProcessorInterface
 {
     public function __invoke(LogRecord $record)
