@@ -925,6 +925,23 @@ class NotificationTargetTest extends DbTestCase
         }
     }
 
+    public function testUpdateTargetsWithAllRecipientsRemoved(): void
+    {
+        $this->login();
+        $notifications_id = $this->getPasswordForgetNotificationId();
+        $this->assertTrue(count(getAllDataFromTable(NotificationTarget::getTable(), ['notifications_id' => $notifications_id])) > 0);
+
+        // An emptied multiple dropdown is submitted as an empty string
+        NotificationTarget::updateTargets([
+            'itemtype'         => User::class,
+            'notifications_id' => $notifications_id,
+            '_targets'         => '',
+            '_exclusions'      => '',
+        ]);
+
+        $this->assertCount(0, getAllDataFromTable(NotificationTarget::getTable(), ['notifications_id' => $notifications_id]));
+    }
+
     public function testUpdateRecipientsFormWithoutNotificationRight(): void
     {
         // --- arrange ---
