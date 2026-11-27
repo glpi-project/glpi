@@ -52,6 +52,29 @@ class DBTest extends GLPITestCase
         $this->assertFalse($instance->tableExists('fakeTable'));
     }
 
+    public function testSslConnectionIsNeverPlaintext()
+    {
+        // SSL enabled without any key, certificate, CA, CA path nor cipher.
+        $instance = new class extends \DB {
+            public $dbssl = true;
+
+            public function getConnectError(): ?string
+            {
+                return $this->dbh->connect_error;
+            }
+        };
+
+        if (!$instance->connected) {
+            // SSL is not available (server without SSL support, Unix socket, ...):
+            // the connection must fail rather than fall back to plaintext.
+            $this->assertNotEmpty($instance->getConnectError());
+            return;
+        }
+
+        $cipher = $instance->doQuery("SHOW SESSION STATUS LIKE 'Ssl_cipher'")->fetch_row()[1];
+        $this->assertNotEmpty($cipher, 'The connection is not encrypted.');
+    }
+
     public function testFieldExists()
     {
         $instance = new \DB();

@@ -324,15 +324,19 @@ abstract class AbstractConfigureCommand extends AbstractCommand
 
         mysqli_report(MYSQLI_REPORT_OFF);
         $mysqli = new mysqli();
+        // `ssl_set()` alone only enables SSL when at least one of its parameters is set,
+        // `MYSQLI_CLIENT_SSL` must be passed to `real_connect()` to enforce it.
+        $flags = 0;
         if ($db_ssl) {
+            $flags = MYSQLI_CLIENT_SSL;
             $mysqli->ssl_set($db_ssl_key, $db_ssl_cert, $db_ssl_ca, $db_ssl_capath, $db_ssl_cipher);
         }
         if (intval($db_port) > 0) {
             // Network port
-            @$mysqli->real_connect($db_host, $db_user, $db_pass, null, $db_port);
+            @$mysqli->real_connect($db_host, $db_user, $db_pass, null, $db_port, null, $flags);
         } else {
             // Unix Domain Socket
-            @$mysqli->real_connect($db_host, $db_user, $db_pass, null, 0, $db_port);
+            @$mysqli->real_connect($db_host, $db_user, $db_pass, null, 0, $db_port, $flags);
         }
 
         if (0 !== $mysqli->connect_errno) {
