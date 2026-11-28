@@ -579,4 +579,172 @@ class PlanningTest extends DbTestCase
             $this->hasNoSessionMessages([WARNING]);
         }
     }
+
+    public function testPlanningFilterInfoProvidesSessionUserPersonalToken()
+    {
+        $this->login();
+
+        $session_users_id = \Session::getLoginUserID();
+        $session_user_token = \User::getToken($session_users_id, 'personal_token');
+
+        $filter_info = \Planning::getPlanningFilterInfo(
+            'user_' . $session_users_id,
+            [
+                'type'    => 'user',
+                'display' => true,
+            ],
+            [
+                'token' => $session_user_token,
+            ]
+        );
+
+        // The filter of the session user carries its personal token.
+        $this->assertSame($session_user_token, $filter_info['token']);
+        $user = new \User();
+        $this->assertTrue($user->getFromDB($session_users_id));
+        $this->assertSame(
+            (new \GLPIKey())->decrypt($user->fields['personal_token']),
+            $filter_info['token']
+        );
+    }
+
+    public function testPlanningFilterInfoDoesNotUsePersonalTokenOfFilteredUser()
+    {
+        $this->login();
+
+        $session_user_token = \User::getToken(\Session::getLoginUserID(), 'personal_token');
+
+        // Create another user, used as the filter actor, with its own personal token.
+        $other_user = $this->createItem(\User::class, ['name' => 'planningfiltereduser']);
+        $other_user_token = \User::getToken($other_user->getID(), 'personal_token');
+        $this->assertNotSame($session_user_token, $other_user_token);
+
+        $filter_info = \Planning::getPlanningFilterInfo(
+            'user_' . $other_user->getID(),
+            [
+                'type'    => 'user',
+                'display' => true,
+            ],
+            [
+                'token' => $session_user_token,
+            ]
+        );
+
+        // The value exposed in the filter payload is the one of the session user,
+        // never the one of the user the filter is displaying.
+        $this->assertSame($session_user_token, $filter_info['token']);
+        $this->assertNotSame($other_user_token, $filter_info['token']);
+    }
+
+    public function testPlanningFilterInfoTokenOnlyProvidedForExportableFilters()
+    {
+        $this->login();
+
+        // Event filters do not display export buttons: they must not receive the token.
+        $filter_info = \Planning::getPlanningFilterInfo(
+            'NotPlanned',
+            [
+                'type'    => 'event_filter',
+                'display' => true,
+            ],
+            [
+                'token' => 'session_token_value',
+            ]
+        );
+        $this->assertNull($filter_info['token']);
+
+        // External calendars do not display export buttons either.
+        $filter_info = \Planning::getPlanningFilterInfo(
+            'external_1',
+            [
+                'type'    => 'external',
+                'name'    => 'External calendar',
+                'display' => true,
+            ],
+            [
+                'token' => 'session_token_value',
+            ]
+        );
+        $this->assertNull($filter_info['token']);
+    }
+
+    public function testPlanningFilterInfoPropagatesPersonalTokenToChildFilters()
+    {
+        $this->login();
+
+        $session_user_token = \User::getToken(\Session::getLoginUserID(), 'personal_token');
+
+        $group = $this->createItem(\Group::class, ['name' => 'planningchildgroup']);
+        $users_id = \Session::getLoginUserID();
+        $group_users_filter_info = \Planning::getPlanningFilterInfo(
+            'group_' . $group->getID() . '_users',
+            [
+                'type'    => 'group_users',
+                'display' => true,
+                'users'   => [
+                    'user_' . $users_id => [
+                        'type'    => 'user',
+                        'display' => true,
+                    ],
+                ],
+            ],
+            [
+                'token' => $session_user_token,
+            ]
+        );
+
+        // The group_users container does not display export buttons, it does not carry the token.
+        $this->assertNull($group_users_filter_info['token']);
+        // Sub-filters, that display export buttons, inherit the session user personal token.
+        $this->assertArrayHasKey('user_' . $users_id, $group_users_filter_info['child_filters']);
+        $this->assertSame(
+            $session_user_token,
+            $group_users_filter_info['child_filters']['user_' . $users_id]['token']
+        );
+    }
+
+    public function testShowPlanningGeneratesPersonalTokenAndIncludesItInFiltersPayload()
+    {
+        $this->login();
+        $users_id = \Session::getLoginUserID();
+
+        // Ensure the session user has no personal token yet.
+        $this->updateItem(\User::class, $users_id, ['personal_token' => null, 'personal_token_date' => null]);
+        $user = new \User();
+        $this->assertTrue($user->getFromDB($users_id));
+        $this->assertEmpty($user->fields['personal_token']);
+
+        $session_backup = $_SESSION['glpi_plannings'] ?? null;
+        $session_existed = isset($_SESSION['glpi_plannings']);
+
+        try {
+            // Explicitly configure an exportable user filter for the session user, so the
+            // personal token generation and its inclusion in the filters payload do not rely
+            // on the current planning session state.
+            $_SESSION['glpi_plannings']['filters'] = [
+                'user_' . $users_id => [
+                    'type'    => 'user',
+                    'display' => true,
+                ],
+            ];
+            $_SESSION['glpi_plannings']['plannings'] = [];
+
+            ob_start();
+            \Planning::showPlanning();
+            $output = ob_get_clean();
+
+            // The missing personal token has been generated and it is embedded in the filters
+            // payload sent to the Vue planning application.
+            $this->assertTrue($user->getFromDB($users_id));
+            $this->assertNotEmpty($user->fields['personal_token']);
+            $personal_token = (new \GLPIKey())->decrypt($user->fields['personal_token']);
+            $this->assertSame(1, substr_count($output, sprintf('"token":"%s"', $personal_token)));
+        } finally {
+            if ($session_existed) {
+                $_SESSION['glpi_plannings'] = $session_backup;
+            } else {
+                unset($_SESSION['glpi_plannings']);
+            }
+        }
+    }
 }
