@@ -121,4 +121,55 @@ class QueuedWebhookTest extends DbTestCase
         $this->assertTrue($queuedWebhook3->getFromDB($queuedWebhook3->getID()));
         $this->assertTrue($queuedWebhook4->getFromDB($queuedWebhook4->getID()));
     }
+
+    public function testSendByIdWithErrorResponse(): void
+    {
+        // Local HTTP server answering any request with an error status.
+        $router = GLPI_TMP_DIR . '/webhook_router_' . mt_rand() . '.php';
+        file_put_contents($router, '<?php http_response_code(401); echo "Unauthorized";');
+        $socket = stream_socket_server('tcp://127.0.0.1:0');
+        $this->assertNotFalse($socket);
+        $port = (int) substr(strrchr(stream_socket_get_name($socket, false), ':'), 1);
+        fclose($socket);
+        $server = proc_open(
+            [PHP_BINARY, '-S', '127.0.0.1:' . $port, $router],
+            [['pipe', 'r'], ['file', '/dev/null', 'w'], ['file', '/dev/null', 'w']],
+            $pipes
+        );
+        $this->assertIsResource($server);
+
+        try {
+            $ready = false;
+            for ($i = 0; $i < 50 && !$ready; $i++) {
+                $fp = @fsockopen('127.0.0.1', $port);
+                if ($fp !== false) {
+                    fclose($fp);
+                    $ready = true;
+                } else {
+                    usleep(100000);
+                }
+            }
+            $this->assertTrue($ready, 'Local HTTP server did not start');
+
+            $webhook = $this->createItem(Webhook::class, [
+                'name' => 'webhook',
+            ]);
+            $queued_webhook = $this->createItem(QueuedWebhook::class, [
+                'webhooks_id' => $webhook->getID(),
+                'url'         => 'http://127.0.0.1:' . $port . '/',
+                'headers'     => '[]',
+                'body'        => '{}',
+            ]);
+
+            $this->assertTrue(QueuedWebhook::sendById($queued_webhook->getID()));
+
+            $this->assertTrue($queued_webhook->getFromDB($queued_webhook->getID()));
+            $this->assertEquals(1, $queued_webhook->fields['sent_try']);
+            $this->assertEquals(401, $queued_webhook->fields['last_status_code']);
+        } finally {
+            proc_terminate($server);
+            proc_close($server);
+            unlink($router);
+        }
+    }
 }

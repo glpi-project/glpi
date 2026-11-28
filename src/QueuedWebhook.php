@@ -288,10 +288,10 @@ class QueuedWebhook extends CommonDBChild
         if ($response !== null) {
             $input['last_status_code'] = $response->getStatusCode();
             if (GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING && $queued_webhook->fields['save_response_body']) {
-                $input['response_body'] = $response->getContent();
+                $input['response_body'] = $response->getContent(false);
             } else {
                 // Save to property that won't be saved in DB, but can still be available to plugins
-                $input['_response_body'] = $response->getContent();
+                $input['_response_body'] = $response->getContent(false);
             }
 
             if ($webhook->fields['log_in_item_history']) {
