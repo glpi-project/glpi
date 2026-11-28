@@ -39,6 +39,7 @@ use Glpi\Api\HL\Controller\CustomAssetController;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
+use Group_Item;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class CustomAssetControllerTest extends HLAPITestCase
@@ -91,6 +92,78 @@ class CustomAssetControllerTest extends HLAPITestCase
                 ->isOK()
                 ->jsonContent(function ($content) use ($expected) {
                     $this->checkSimpleContentExpect($content, $expected);
+                });
+        });
+    }
+
+    public static function computedFieldFilterProvider(): array
+    {
+        return [
+            // Two computed comparisons joined by OR.
+            ['custom_fields.teststring=="Test String A",custom_fields.teststring=="Test String B"', 2],
+            // Two computed comparisons joined by AND.
+            ['custom_fields.teststring=like=*String*;custom_fields.teststring!="Test String B"', 1],
+            // A single computed comparison wrapped in a group.
+            ['(custom_fields.teststring=="Test String A")', 1],
+            // A regular field OR a computed field (cannot be expressed by splitting WHERE/HAVING).
+            ['name=="TestB",custom_fields.teststring=="Test String A"', 2],
+            // A regular field AND a computed field.
+            ['name=="TestA";custom_fields.teststring=="Test String A"', 1],
+        ];
+    }
+
+    #[DataProvider('computedFieldFilterProvider')]
+    public function testComputedFieldFilters(string $filter, int $expected_count): void
+    {
+        $this->login();
+        $request = new Request('GET', '/Assets/Custom/Test01');
+        $request->setParameter('filter', $filter);
+        $this->api->call($request, function ($call) use ($expected_count) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($expected_count) {
+                    $this->assertCount($expected_count, $content);
+                });
+        });
+    }
+
+    public static function computedAndMultiGroupFilterProvider(): array
+    {
+        return [
+            ['group.name=="_test_group_2";custom_fields.teststring=="Test String A"', 1],
+            ['group.name=="_test_group_3";custom_fields.teststring=="Test String A"', 0],
+            ['group.name=="_test_group_2",custom_fields.teststring=="Test String B"', 2],
+        ];
+    }
+
+    #[DataProvider('computedAndMultiGroupFilterProvider')]
+    public function testComputedAndMultiGroupFilters(string $filter, int $expected_count): void
+    {
+        global $DB;
+
+        $asset_id = getItemByTypeName('Glpi\\CustomAsset\\Test01Asset', 'TestA', true);
+        $itemtype = 'Glpi\\CustomAsset\\Test01Asset';
+        $DB->delete('glpi_groups_items', [
+            'itemtype' => $itemtype,
+            'items_id' => $asset_id,
+        ]);
+        foreach (['_test_group_1', '_test_group_2'] as $group_name) {
+            $DB->insert('glpi_groups_items', [
+                'itemtype' => $itemtype,
+                'items_id' => $asset_id,
+                'groups_id' => getItemByTypeName('Group', $group_name, true),
+                'type' => Group_Item::GROUP_TYPE_NORMAL,
+            ]);
+        }
+
+        $this->login();
+        $request = new Request('GET', '/Assets/Custom/Test01');
+        $request->setParameter('filter', $filter);
+        $this->api->call($request, function ($call) use ($expected_count) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($expected_count) {
+                    $this->assertCount($expected_count, $content);
                 });
         });
     }
