@@ -327,7 +327,7 @@ abstract class CommonDBVisible extends CommonDBTM
     /**
      * Get dropdown parameters from showVisibility method
      *
-     * @return array{type: string, right: string, entity?: int, is_recursive?: bool}
+     * @return array{type: string, right: string, entity?: int, is_recursive?: bool, used: array{User: list<int|string>, Entity: list<int|string>}}
      */
     protected function getShowVisibilityDropdownParams()
     {
@@ -341,6 +341,10 @@ abstract class CommonDBVisible extends CommonDBTM
         if (isset($this->fields['is_recursive'])) {
             $params['is_recursive'] = $this->fields['is_recursive'];
         }
+        $params['used'] = [
+            'User'   => array_keys($this->users),
+            'Entity' => array_keys($this->entities),
+        ];
         return $params;
     }
 }

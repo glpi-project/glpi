@@ -35,6 +35,7 @@
 namespace Glpi\Controller\Knowbase;
 
 use CommonDBTM;
+use Dropdown;
 use Entity;
 use Entity_KnowbaseItem;
 use Glpi\Controller\AbstractController;
@@ -93,12 +94,10 @@ final class PermissionDropdownController extends AbstractController
                 'aria_label' => Group::getTypeName(1),
             ],
             Entity::class => [
-                'value'       => $_SESSION['glpiactive_entity'],
-                'name'        => 'entities_id',
-                'entity'      => $request->request->get('entity', -1),
-                'entity_sons' => $request->request->getBoolean('is_recursive'),
-                'width'       => '100%',
-                'aria_label'  => Entity::getTypeName(1),
+                'value'      => $_SESSION['glpiactive_entity'],
+                'name'       => 'entities_id',
+                'width'      => '100%',
+                'aria_label' => Entity::getTypeName(1),
             ],
             Profile::class => [
                 'name'      => 'profiles_id',
@@ -137,10 +136,11 @@ final class PermissionDropdownController extends AbstractController
             $dropdown_options['used'] = $used;
 
             // Dropdown::show keeps the preselected value selectable even when it
-            // is listed in `used`. Clear the default (active entity) when it is
-            // already a target so it gets excluded like the others.
+            // is listed in `used`. Fall back to an explicit `-1` empty choice
+            // (since `0` is the root entity ID) so the active entity gets excluded.
             if (in_array((int) $dropdown_options['value'], $used, true)) {
-                $dropdown_options['value'] = '';
+                $dropdown_options['toadd'] = [-1 => Dropdown::EMPTY_VALUE];
+                $dropdown_options['value'] = -1;
             }
         }
 

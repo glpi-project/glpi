@@ -34,18 +34,26 @@
 
 namespace test\units;
 
+use Dropdown;
 use Entity;
+use Entity_KnowbaseItem;
+use Glpi\Controller\Knowbase\AddPermissionController;
+use Glpi\Controller\Knowbase\PermissionDropdownController;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profile as DebugProfile;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Knowbase\EditorAction;
 use Glpi\Knowbase\EditorActionType;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\Tests\DbTestCase;
+use Group;
+use Group_KnowbaseItem;
 use InvalidArgumentException;
 use KnowbaseItem;
 use KnowbaseItem_Comment;
 use KnowbaseItem_KnowbaseItem;
+use KnowbaseItem_Profile;
 use KnowbaseItem_User;
 use KnowbaseItemTranslation;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -57,6 +65,7 @@ use Psr\Log\LogLevel;
 use RuntimeException;
 use Session;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\Request;
 use User;
 
 use function Safe\file_get_contents;
@@ -134,7 +143,7 @@ class KnowbaseItemTest extends DbTestCase
         );
 
         //add an entity
-        $kbe = new \Entity_KnowbaseItem();
+        $kbe = new Entity_KnowbaseItem();
         $this->assertGreaterThan(
             0,
             (int) $kbe->add([
@@ -144,14 +153,14 @@ class KnowbaseItemTest extends DbTestCase
         );
 
         //add a group
-        $group = new \Group();
+        $group = new Group();
         $this->assertGreaterThan(
             0,
             (int) $group->add([
                 'name'   => 'KB group',
             ])
         );
-        $kbg = new \Group_KnowbaseItem();
+        $kbg = new Group_KnowbaseItem();
         $this->assertGreaterThan(
             0,
             (int) $kbg->add([
@@ -162,7 +171,7 @@ class KnowbaseItemTest extends DbTestCase
 
         //add a profile
         $profiles_id = getItemByTypeName('Profile', 'Admin', true);
-        $kbp = new \KnowbaseItem_Profile();
+        $kbp = new KnowbaseItem_Profile();
         $this->assertGreaterThan(
             0,
             (int) $kbp->add([
@@ -187,9 +196,9 @@ class KnowbaseItemTest extends DbTestCase
             $comment->getTable(),
             \KnowbaseItem_Revision::getTable(),
             KnowbaseItem_User::getTable(),
-            \Entity_KnowbaseItem::getTable(),
-            \Group_KnowbaseItem::getTable(),
-            \KnowbaseItem_Profile::getTable(),
+            Entity_KnowbaseItem::getTable(),
+            Group_KnowbaseItem::getTable(),
+            KnowbaseItem_Profile::getTable(),
             \KnowbaseItem_Item::getTable(),
         ];
 
@@ -905,7 +914,7 @@ HTML,
                 'begin_date'  => $dates['begin_date'],
                 'end_date'    => $dates['end_date'],
             ]);
-            $this->createItem(\Entity_KnowbaseItem::class, [
+            $this->createItem(Entity_KnowbaseItem::class, [
                 'knowbaseitems_id' => $articles[$key]->getID(),
                 'entities_id'      => $entity,
                 'is_recursive'     => 1,
@@ -1134,7 +1143,7 @@ HTML,
             'entities_id' => $entity,
             '_parents'    => [$parent->getID()],
         ]);
-        $this->createItem(\Entity_KnowbaseItem::class, [
+        $this->createItem(Entity_KnowbaseItem::class, [
             'knowbaseitems_id' => $parent->getID(),
             'entities_id'      => $entity,
             'is_recursive'     => 1,
@@ -1190,13 +1199,13 @@ HTML,
                 'begin_date'  => $dates['begin_date'],
                 'end_date'    => $dates['end_date'],
             ]);
-            $this->createItem(\Entity_KnowbaseItem::class, [
+            $this->createItem(Entity_KnowbaseItem::class, [
                 'knowbaseitems_id' => $children[$key]->getID(),
                 'entities_id'      => $entity,
                 'is_recursive'     => 1,
             ]);
         }
-        $this->createItem(\Entity_KnowbaseItem::class, [
+        $this->createItem(Entity_KnowbaseItem::class, [
             'knowbaseitems_id' => $parent->getID(),
             'entities_id'      => $entity,
             'is_recursive'     => 1,
@@ -1236,7 +1245,7 @@ HTML,
             '_parents'    => [$parent->getID()],
         ]);
         foreach ([$parent->getID(), $child->getID()] as $article_id) {
-            $this->createItem(\Entity_KnowbaseItem::class, [
+            $this->createItem(Entity_KnowbaseItem::class, [
                 'knowbaseitems_id' => $article_id,
                 'entities_id'      => $entity,
                 'is_recursive'     => 1,
@@ -1283,7 +1292,7 @@ HTML,
             'entities_id' => $entity,
             '_parents'    => [$mid->getID()],
         ]);
-        $this->createItem(\Entity_KnowbaseItem::class, [
+        $this->createItem(Entity_KnowbaseItem::class, [
             'knowbaseitems_id' => $grandchild->getID(),
             'entities_id'      => $entity,
             'is_recursive'     => 1,
@@ -1599,7 +1608,7 @@ HTML,
             'entities_id' => $entity,
             '_parents'    => [$mid2->getID()],
         ]);
-        $this->createItem(\Entity_KnowbaseItem::class, [
+        $this->createItem(Entity_KnowbaseItem::class, [
             'knowbaseitems_id' => $leaf->getID(),
             'entities_id'      => $entity,
             'is_recursive'     => 1,
@@ -1651,7 +1660,7 @@ HTML,
             'entities_id' => $entity,
             '_parents'    => [$branch1->getID(), $branch2->getID()],
         ]);
-        $this->createItem(\Entity_KnowbaseItem::class, [
+        $this->createItem(Entity_KnowbaseItem::class, [
             'knowbaseitems_id' => $leaf->getID(),
             'entities_id'      => $entity,
             'is_recursive'     => 1,
@@ -1693,7 +1702,7 @@ HTML,
             'entities_id' => $entity,
             'end_date'    => date('Y-m-d H:i:s', strtotime('-1 year')),
         ]);
-        $this->createItem(\Entity_KnowbaseItem::class, [
+        $this->createItem(Entity_KnowbaseItem::class, [
             'knowbaseitems_id' => $mid->getID(),
             'entities_id'      => $entity,
             'is_recursive'     => 1,
@@ -1706,7 +1715,7 @@ HTML,
             'entities_id' => $entity,
             '_parents'    => [$mid->getID()],
         ]);
-        $this->createItem(\Entity_KnowbaseItem::class, [
+        $this->createItem(Entity_KnowbaseItem::class, [
             'knowbaseitems_id' => $leaf->getID(),
             'entities_id'      => $entity,
             'is_recursive'     => 1,
@@ -1981,7 +1990,7 @@ HTML,
         ]);
 
         // Target group
-        $group = new \Group();
+        $group = new Group();
         $postonly_group = (int) $group->add([
             'name' => 'Post-only group',
             'entities_id' => getItemByTypeName("Entity", "_test_root_entity", true),
@@ -2309,7 +2318,7 @@ HTML,
                 '_visibility' => [
                     'entities_id' => -1,
                     'is_recursive' => 1,
-                    '_type' => \Group::class,
+                    '_type' => Group::class,
                     'groups_id' => $group_a,
                 ],
             ],
@@ -2323,7 +2332,7 @@ HTML,
                 '_visibility' => [
                     'entities_id' => -1,
                     'is_recursive' => 1,
-                    '_type' => \Group::class,
+                    '_type' => Group::class,
                     'groups_id' => $group_b,
                 ],
             ],
@@ -2520,7 +2529,7 @@ HTML,
             '_visibility'  => [
                 'entities_id'  => -1,
                 'is_recursive' => 1,
-                '_type'        => \Group::class,
+                '_type'        => Group::class,
                 'groups_id'    => $parent_group->getID(),
             ],
         ]);
@@ -2559,7 +2568,7 @@ HTML,
                 'name'  => 'Test kb clone',
             ])
         );
-        $kbentity = new \Entity_KnowbaseItem();
+        $kbentity = new Entity_KnowbaseItem();
         $this->assertGreaterThan(
             0,
             $kbentity->add([
@@ -2636,7 +2645,7 @@ HTML,
 
         //check relations
         $relations = [
-            \Entity_KnowbaseItem::class => 1,
+            Entity_KnowbaseItem::class => 1,
             \KnowbaseItem_Item::class => 1,
         ];
 
@@ -2876,7 +2885,7 @@ HTML,
                 'answer'   => $name,
                 'is_faq'   => true,
             ] + $fields, ['begin_date', 'end_date']);
-            $this->createItem(\Entity_KnowbaseItem::class, [
+            $this->createItem(Entity_KnowbaseItem::class, [
                 'knowbaseitems_id' => $kb_item->getID(),
                 'entities_id'      => 0,
                 'is_recursive'     => 1,
@@ -2914,7 +2923,7 @@ HTML,
                 'answer' => $name,
                 'is_faq' => true,
             ] + $fields, ['end_date']);
-            $this->createItem(\Entity_KnowbaseItem::class, [
+            $this->createItem(Entity_KnowbaseItem::class, [
                 'knowbaseitems_id' => $kb_item->getID(),
                 'entities_id'      => 0,
                 'is_recursive'     => 1,
@@ -3149,7 +3158,7 @@ HTML,
         $parent = new KnowbaseItem();
         $parent_id = (int) $parent->add(['name' => 'Section', 'answer' => '', 'users_id' => $glpi_user]);
         // grant the parent to the user's active entity
-        (new \Entity_KnowbaseItem())->add([
+        (new Entity_KnowbaseItem())->add([
             'knowbaseitems_id' => $parent_id, 'entities_id' => $entity, 'is_recursive' => 1,
         ]);
 
@@ -3164,7 +3173,7 @@ HTML,
         $this->assertContains($child_id, $visible_ids, 'child visible via ancestor');
 
         // remove the parent grant -> child no longer visible
-        $ekb = new \Entity_KnowbaseItem();
+        $ekb = new Entity_KnowbaseItem();
         $ekb->getFromDBByCrit(['knowbaseitems_id' => $parent_id]);
         $ekb->delete(['id' => $ekb->getID()], true);
 
@@ -4382,7 +4391,7 @@ HTML,
             'users_id'    => $glpi_user,
             'entities_id' => $entity,
         ]);
-        $this->createItem(\Entity_KnowbaseItem::class, [
+        $this->createItem(Entity_KnowbaseItem::class, [
             'knowbaseitems_id' => $shared->getID(),
             'entities_id'      => $entity,
             'is_recursive'     => 1,
@@ -4463,7 +4472,7 @@ HTML,
         ]);
         // All the anonymous branch checks on its own.
         foreach ([$faq, $not_faq] as $item) {
-            $this->createItem(\Entity_KnowbaseItem::class, [
+            $this->createItem(Entity_KnowbaseItem::class, [
                 'knowbaseitems_id' => $item->getID(),
                 'entities_id'      => 0,
                 'is_recursive'     => 1,
@@ -4505,7 +4514,7 @@ HTML,
                 'begin_date' => $begin === null ? null : date('Y-m-d H:i:s', strtotime($begin)),
                 'end_date'   => $end === null ? null : date('Y-m-d H:i:s', strtotime($end)),
             ]);
-            $this->createItem(\Entity_KnowbaseItem::class, [
+            $this->createItem(Entity_KnowbaseItem::class, [
                 'knowbaseitems_id' => $articles[$key]->getID(),
                 'entities_id'      => 0,
                 'is_recursive'     => 1,
@@ -4561,7 +4570,7 @@ HTML,
             'users_id'    => $glpi_user,
             'entities_id' => $entity,
         ]);
-        $this->createItem(\Entity_KnowbaseItem::class, [
+        $this->createItem(Entity_KnowbaseItem::class, [
             'knowbaseitems_id' => $article->getID(),
             'entities_id'      => $entity,
             'is_recursive'     => 1,
@@ -4667,7 +4676,7 @@ HTML,
             'is_faq'   => 0,
             'users_id' => $glpi_user,
         ]);
-        $this->createItem(\Entity_KnowbaseItem::class, [
+        $this->createItem(Entity_KnowbaseItem::class, [
             'knowbaseitems_id' => $not_faq->getID(),
             'entities_id'      => 0,
             'is_recursive'     => 1,
@@ -4839,7 +4848,7 @@ HTML,
             'entities_id'  => $this->getTestRootEntity(only_id: true),
             'illustration' => 'antivirus',
         ]);
-        $this->createItem(\Entity_KnowbaseItem::class, [
+        $this->createItem(Entity_KnowbaseItem::class, [
             'knowbaseitems_id' => $article->getID(),
             'entities_id'      => 0,
             'is_recursive'     => 1,
@@ -4917,5 +4926,179 @@ HTML,
         $this->renderArticle($id);
         $this->renderArticle($id);
         $this->assertSame($initial + 3, $views());
+    }
+
+    public function testGetShowVisibilityDropdownParams(): void
+    {
+        $this->login();
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'KB visibility dropdown params ' . $this->getUniqueString(),
+            'answer'       => 'Content',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+
+        $users_id = getItemByTypeName('User', 'glpi', true);
+        $group = $this->createItem(Group::class, [
+            'name'        => 'Group visibility ' . $this->getUniqueString(),
+            'entities_id' => 0,
+        ]);
+        $profiles_id = getItemByTypeName('Profile', 'Admin', true);
+
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'users_id'         => $users_id,
+        ]);
+        $this->createItem(Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'entities_id'      => 0,
+            'is_recursive'     => 0,
+        ]);
+        $this->createItem(Group_KnowbaseItem::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'groups_id'        => $group->getID(),
+            'entities_id'      => 0,
+        ]);
+        $this->createItem(KnowbaseItem_Profile::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'profiles_id'      => $profiles_id,
+            'entities_id'      => 0,
+        ]);
+
+        $this->assertTrue($kb->getFromDB($kb->getID()));
+
+        $params = $this->callPrivateMethod($kb, 'getShowVisibilityDropdownParams');
+        $this->assertSame([
+            'User'   => [$users_id],
+            'Entity' => [0],
+        ], $params['used']);
+    }
+
+    public function testAddWithEntityVisibilityEmptyChoice(): void
+    {
+        $this->login();
+
+        $kb_empty = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'KB entity empty choice ' . $this->getUniqueString(),
+            'answer'      => 'Content',
+            '_visibility' => [
+                '_type'        => 'Entity',
+                'entities_id'  => -1,
+                'is_recursive' => 0,
+            ],
+        ]);
+        $this->assertSame([], Entity_KnowbaseItem::getEntities($kb_empty->getID()));
+
+        $kb_root = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'KB root entity ' . $this->getUniqueString(),
+            'answer'      => 'Content',
+            '_visibility' => [
+                '_type'        => 'Entity',
+                'entities_id'  => 0,
+                'is_recursive' => 0,
+            ],
+        ]);
+        $entities = Entity_KnowbaseItem::getEntities($kb_root->getID());
+        $this->assertArrayHasKey(0, $entities);
+        $this->assertCount(1, $entities[0]);
+    }
+
+    public function testEntityDropdownEmptyChoiceAndRootEntityExclusion(): void
+    {
+        $this->login();
+        $this->setEntity(0, true);
+
+        // When Root entity (0) is not in 'used', both -1 ('-----') and 0 are selectable.
+        $unused_result = Dropdown::getDropdownValue([
+            'itemtype'            => Entity::class,
+            'display_emptychoice' => false,
+            'toadd'               => [-1 => Dropdown::EMPTY_VALUE],
+            'used'                => [],
+            'page'                => 1,
+            'page_limit'          => 50,
+            '_idor_token'         => Session::getNewIDORToken(Entity::class),
+        ], false);
+
+        $this->assertIsArray($unused_result);
+        $unused_selectable_ids = array_column(
+            array_filter(
+                $unused_result['results'],
+                static fn(array $entry): bool => !($entry['disabled'] ?? false)
+            ),
+            'id'
+        );
+        $this->assertContains(-1, $unused_selectable_ids);
+        $this->assertContains(0, $unused_selectable_ids);
+
+        // When Root entity (0) is in 'used', it may still appear as a disabled tree
+        // header for child entities, but must not be selectable, while -1 remains selectable.
+        $result = Dropdown::getDropdownValue([
+            'itemtype'            => Entity::class,
+            'display_emptychoice' => false,
+            'toadd'               => [-1 => Dropdown::EMPTY_VALUE],
+            'used'                => [0],
+            'page'                => 1,
+            'page_limit'          => 50,
+            '_idor_token'         => Session::getNewIDORToken(Entity::class),
+        ], false);
+
+        $this->assertIsArray($result);
+        $selectable_ids = array_column(
+            array_filter(
+                $result['results'],
+                static fn(array $entry): bool => !($entry['disabled'] ?? false)
+            ),
+            'id'
+        );
+        $this->assertContains(-1, $selectable_ids);
+        $this->assertNotContains(0, $selectable_ids);
+    }
+
+    public function testPermissionDropdownAndAddEntityValidation(): void
+    {
+        $this->login();
+        $this->setEntity(0, true);
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'KB permission controller ' . $this->getUniqueString(),
+            'answer'       => 'Content',
+            'entities_id'  => 0,
+            'is_recursive' => 0,
+        ]);
+
+        // Add Root entity (0) via AddPermissionController
+        $add_request = Request::create('/Knowbase/AddPermission', 'POST', [
+            'knowbaseitems_id' => $kb->getID(),
+            '_type'            => Entity::class,
+            'entities_id'      => 0,
+            'is_recursive'     => 0,
+        ]);
+        $add_response = (new AddPermissionController())->__invoke($add_request);
+        $this->assertSame(200, $add_response->getStatusCode());
+        $this->assertArrayHasKey(0, Entity_KnowbaseItem::getEntities($kb->getID()));
+
+        // PermissionDropdownController should fall back to -1 empty choice (not '' -> 0)
+        // when the active entity (0) is already in 'used'
+        $dropdown_request = Request::create('/Knowbase/PermissionDropdown', 'POST', [
+            'type'             => Entity::class,
+            'right'            => 'knowbase',
+            'knowbaseitems_id' => $kb->getID(),
+        ]);
+        $dropdown_html = (new PermissionDropdownController())->__invoke($dropdown_request)->getContent();
+        $this->assertIsString($dropdown_html);
+        $this->assertStringContainsString(Dropdown::EMPTY_VALUE, $dropdown_html);
+        $this->assertStringContainsString('"-1":"' . Dropdown::EMPTY_VALUE . '"', $dropdown_html);
+        $this->assertStringContainsString('"used":[0]', $dropdown_html);
+
+        // Submitting entities_id = -1 for Entity::class must be rejected
+        $invalid_request = Request::create('/Knowbase/AddPermission', 'POST', [
+            'knowbaseitems_id' => $kb->getID(),
+            '_type'            => Entity::class,
+            'entities_id'      => -1,
+            'is_recursive'     => 0,
+        ]);
+        $this->expectException(BadRequestHttpException::class);
+        (new AddPermissionController())->__invoke($invalid_request);
     }
 }

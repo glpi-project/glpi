@@ -60,14 +60,16 @@ if (
         case 'User':
             $params = [
                 'right' => isset($_POST['allusers']) ? 'all' : $_POST['right'],
-                'name' => $prefix . 'users_id' . $suffix,
+                'name'  => $prefix . 'users_id' . $suffix,
+                'used'  => $_POST['used']['User'] ?? [],
             ];
             User::dropdown($params);
             $display = true;
             break;
 
         case 'Group':
-            $params             = ['rand' => $rand,
+            $params             = [
+                'rand' => $rand,
                 'name' => $prefix . 'groups_id' . $suffix,
             ];
             $params['toupdate'] = ['value_fieldname'
@@ -87,10 +89,10 @@ if (
 
         case 'Entity':
             Entity::dropdown([
-                'value'       => $_SESSION['glpiactive_entity'],
-                'name'        => $prefix . 'entities_id' . $suffix,
-                'entity'      => $_POST['entity'] ?? -1,
-                'entity_sons' => $_POST['is_recursive'] ?? false,
+                'toadd' => [-1 => Dropdown::EMPTY_VALUE],
+                'value' => -1,
+                'name'  => $prefix . 'entities_id' . $suffix,
+                'used'  => $_POST['used']['Entity'] ?? [],
             ]);
             echo '<div class="ms-3">' . __s('Child entities') . '</div>';
             Dropdown::showYesNo($prefix . 'is_recursive' . $suffix);
