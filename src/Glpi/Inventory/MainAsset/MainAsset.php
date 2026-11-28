@@ -480,6 +480,10 @@ abstract class MainAsset extends InventoryAsset
             $input['name'] = '';
         }
 
+        if (isset($input['domain'])) {
+            $input['domains_id'] = $input['domain'];
+        }
+
         if (isset($this->extra_data[NetworkCard::class])) {
             $blacklist = new Blacklist();
             foreach ($this->extra_data[NetworkCard::class] as $networkcard) {

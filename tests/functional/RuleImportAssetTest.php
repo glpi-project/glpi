@@ -1198,6 +1198,181 @@ class RuleImportAssetTest extends DbTestCase
         $this->assertSame('Computer', $this->itemtype);
     }
 
+    public function testUpdateComputerByDomain()
+    {
+        $this->addAssetRule(
+            "Computer update (by domain)",
+            [
+                [
+                    'condition' => 0,
+                    'criteria'  => 'itemtype',
+                    'pattern'   => 'Computer',
+                ],
+                [
+                    'condition' => \RuleImportAsset::PATTERN_FIND,
+                    'criteria'  => 'domains_id',
+                    'pattern'   => '1',
+                ],
+                [
+                    'condition' => \RuleImportAsset::PATTERN_EXISTS,
+                    'criteria'  => 'domains_id',
+                    'pattern'   => '1',
+                ],
+            ],
+            [
+                'action_type' => 'assign',
+                'field'       => '_inventory',
+                'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
+            ]
+        );
+
+        $computer = $this->createItem(\Computer::class, [
+            'entities_id' => 0,
+            'name'        => 'pc-11',
+        ]);
+        $domain = $this->createItem(\Domain::class, [
+            'entities_id' => 0,
+            'name'        => 'test.local',
+        ]);
+        $this->createItem(\Domain_Item::class, [
+            'domains_id' => $domain->getID(),
+            'itemtype'   => 'Computer',
+            'items_id'   => $computer->getID(),
+        ]);
+
+        $input = [
+            'itemtype'    => 'Computer',
+            'name'        => 'pc-12',
+            'domains_id'  => 'test.local',
+            'entities_id' => 0,
+        ];
+        $ruleCollection = new \RuleImportAssetCollection();
+        $rule = new \RuleImportAsset();
+
+        $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
+
+        $this->assertArrayHasKey('_ruleid', $data);
+        $this->assertTrue($rule->getFromDB((int) $data['_ruleid']));
+        $this->assertSame("Computer update (by domain)", $rule->fields['name']);
+        $this->assertSame($computer->getID(), $this->items_id);
+        $this->assertSame('Computer', $this->itemtype);
+    }
+
+    public function testUpdateComputerByDomainIgnoresRemovedDomain()
+    {
+        $this->addAssetRule(
+            "Computer update (by domain)",
+            [
+                [
+                    'condition' => 0,
+                    'criteria'  => 'itemtype',
+                    'pattern'   => 'Computer',
+                ],
+                [
+                    'condition' => \RuleImportAsset::PATTERN_FIND,
+                    'criteria'  => 'domains_id',
+                    'pattern'   => '1',
+                ],
+                [
+                    'condition' => \RuleImportAsset::PATTERN_EXISTS,
+                    'criteria'  => 'domains_id',
+                    'pattern'   => '1',
+                ],
+            ],
+            [
+                'action_type' => 'assign',
+                'field'       => '_inventory',
+                'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
+            ]
+        );
+
+        $computer = $this->createItem(\Computer::class, [
+            'entities_id' => 0,
+            'name'        => 'pc-11',
+        ]);
+        $domain = $this->createItem(\Domain::class, [
+            'entities_id' => 0,
+            'name'        => 'test.local',
+        ]);
+        $domain_item = $this->createItem(\Domain_Item::class, [
+            'domains_id' => $domain->getID(),
+            'itemtype'   => 'Computer',
+            'items_id'   => $computer->getID(),
+        ]);
+        $this->updateItem(\Domain_Item::class, $domain_item->getID(), ['is_deleted' => 1]);
+
+        $input = [
+            'itemtype'    => 'Computer',
+            'name'        => 'pc-12',
+            'domains_id'  => 'test.local',
+            'entities_id' => 0,
+        ];
+        $ruleCollection = new \RuleImportAssetCollection();
+
+        $ruleCollection->processAllRules($input, [], ['class' => $this]);
+
+        $this->assertNotSame($computer->getID(), $this->items_id);
+    }
+
+    public function testUpdateComputerWithEmptyDomain()
+    {
+        $this->addAssetRule(
+            "Computer update (empty domain)",
+            [
+                [
+                    'condition' => 0,
+                    'criteria'  => 'itemtype',
+                    'pattern'   => 'Computer',
+                ],
+                [
+                    'condition' => \RuleImportAsset::PATTERN_FIND,
+                    'criteria'  => 'name',
+                    'pattern'   => '1',
+                ],
+                [
+                    'condition' => \RuleImportAsset::PATTERN_IS_EMPTY,
+                    'criteria'  => 'domains_id',
+                    'pattern'   => '1',
+                ],
+            ],
+            [
+                'action_type' => 'assign',
+                'field'       => '_inventory',
+                'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
+            ]
+        );
+
+        $with_domain = $this->createItem(\Computer::class, [
+            'entities_id' => 0,
+            'name'        => 'pc-11',
+        ]);
+        $without_domain = $this->createItem(\Computer::class, [
+            'entities_id' => 0,
+            'name'        => 'pc-11',
+        ]);
+        $domain = $this->createItem(\Domain::class, [
+            'entities_id' => 0,
+            'name'        => 'test.local',
+        ]);
+        $this->createItem(\Domain_Item::class, [
+            'domains_id' => $domain->getID(),
+            'itemtype'   => 'Computer',
+            'items_id'   => $with_domain->getID(),
+        ]);
+
+        $input = [
+            'itemtype'    => 'Computer',
+            'name'        => 'pc-11',
+            'domains_id'  => 'test.local',
+            'entities_id' => 0,
+        ];
+        $ruleCollection = new \RuleImportAssetCollection();
+
+        $ruleCollection->processAllRules($input, [], ['class' => $this]);
+
+        $this->assertSame($without_domain->getID(), $this->items_id);
+    }
+
     public function testReconciliateWithAssetTemplate()
     {
 
