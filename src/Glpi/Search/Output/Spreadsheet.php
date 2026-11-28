@@ -331,6 +331,22 @@ abstract class Spreadsheet extends ExportSearchOutput
                                 );
                                 break;
 
+                            case "regexp":
+                                $titlecontain = sprintf(
+                                    __('%1$s ~ %2$s'),
+                                    $titlecontain,
+                                    $valuename
+                                );
+                                break;
+
+                            case "notregexp":
+                                $titlecontain = sprintf(
+                                    __('%1$s !~ %2$s'),
+                                    $titlecontain,
+                                    $valuename
+                                );
+                                break;
+
                             case "under":
                                 $titlecontain = sprintf(
                                     __('%1$s %2$s'),
@@ -485,6 +501,22 @@ abstract class Spreadsheet extends ExportSearchOutput
                                 __('%1$s <> %2$s'),
                                 $titlecontain2,
                                 '%' . $metacriteria['value'] . '%'
+                            );
+                            break;
+
+                        case "regexp":
+                            $titlecontain2 = sprintf(
+                                __('%1$s ~ %2$s'),
+                                $titlecontain2,
+                                $metacriteria['value']
+                            );
+                            break;
+
+                        case "notregexp":
+                            $titlecontain2 = sprintf(
+                                __('%1$s !~ %2$s'),
+                                $titlecontain2,
+                                $metacriteria['value']
                             );
                             break;
 

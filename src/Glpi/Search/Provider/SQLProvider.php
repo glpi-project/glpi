@@ -107,6 +107,7 @@ use Reminder;
 use Reservation;
 use ReservationItem;
 use RSSFeed;
+use Safe\Exceptions\PcreException;
 use SavedSearch;
 use Search;
 use Session;
@@ -133,6 +134,8 @@ use function Safe\strtotime;
  */
 final class SQLProvider implements SearchProviderInterface
 {
+    public const MAX_REGEXP_LENGTH = 512;
+
     public static function prepareData(array &$data, array $options = []): array
     {
         self::constructSQL($data);
@@ -1217,6 +1220,13 @@ final class SQLProvider implements SearchProviderInterface
             ];
         }
 
+        $is_regexp_search = in_array($searchtype, ['regexp', 'notregexp'], true);
+        if ($is_regexp_search && !self::isValidRegexp((string) $val)) {
+            return [ // Invalid or unsafe regular expression
+                new QueryExpression('false'),
+            ];
+        }
+
         $inittable = $table;
         $addtable  = '';
         $is_fkey_composite_on_self = getTableNameForForeignKeyField($opt["linkfield"]) === $table
@@ -1245,7 +1255,7 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         // Hack to allow search by ID on every sub-table
-        if (preg_match('/^\$\$\$\$([0-9]+)$/', $val, $regs)) {
+        if (!$is_regexp_search && preg_match('/^\$\$\$\$([0-9]+)$/', $val, $regs)) {
             $criteria = [
                 'OR' => [
                     $table . ".id" => [$nott ? "<>" : "=", $regs[1]],
@@ -1338,6 +1348,19 @@ final class SQLProvider implements SearchProviderInterface
                     $subquery_operator = $nott ? "NOT IN" : "IN";
                 } else {
                     $SEARCH = [$nott ? "NOT LIKE" : "LIKE", self::makeTextSearchValue($val)];
+                }
+                break;
+
+            case "notregexp":
+                $nott = !$nott;
+                // no break
+            case "regexp":
+                if ($should_use_subquery) {
+                    $use_subquery_on_text_search = true;
+                    $SEARCH = ['REGEXP', $val];
+                    $subquery_operator = $nott ? "NOT IN" : "IN";
+                } else {
+                    $SEARCH = [$nott ? 'NOT REGEXP' : 'REGEXP', $val];
                 }
                 break;
 
@@ -1510,6 +1533,9 @@ final class SQLProvider implements SearchProviderInterface
 
                         return $criteria;
                     }
+                    if ($is_regexp_search) {
+                        return self::getRegexpCriteria($table . '.' . $field, (string) $val, $nott, Operator::NONE);
+                    }
                     return self::getTextCriteria($table . '.' . $field, $val, $nott, Operator::NONE);
                 }
                 if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
@@ -1541,7 +1567,7 @@ final class SQLProvider implements SearchProviderInterface
                         $bj        = $opt["joinparams"]["beforejoin"];
                         $linktable = $bj['table'] . '_' . Search::computeComplexJoinID($bj['joinparams']) . $addmeta;
 
-                        if ($val === '^$') {
+                        if (!$is_regexp_search && $val === '^$') {
                             return [
                                 'OR' => [
                                     "$linktable.users_id" => null,
@@ -1550,12 +1576,14 @@ final class SQLProvider implements SearchProviderInterface
                             ];
                         }
 
-                        $text_criteria = self::getTextCriteria(
-                            "$linktable.alternative_email",
-                            $val,
-                            $nott,
-                            $link_operator
-                        );
+                        $text_criteria = $is_regexp_search
+                            ? self::getRegexpCriteria("$linktable.alternative_email", (string) $val, $nott, $link_operator)
+                            : self::getTextCriteria(
+                                "$linktable.alternative_email",
+                                $val,
+                                $nott,
+                                $link_operator
+                            );
                     }
                 }
                 if ($use_subquery_on_text_search) {
@@ -1574,7 +1602,9 @@ final class SQLProvider implements SearchProviderInterface
                         ],
                     ];
                     $subquery_specific_username_anonymous = [
-                        'alternative_email' => ['LIKE', self::makeTextSearchValue($val)],
+                        'alternative_email' => $is_regexp_search
+                            ? ['REGEXP', $val]
+                            : ['LIKE', self::makeTextSearchValue($val)],
                     ];
                     break;
                 } else {
@@ -1672,7 +1702,7 @@ final class SQLProvider implements SearchProviderInterface
                 break;
 
             case "glpi_ipaddresses.name":
-                if (preg_match("/^\s*([<>])([=]*)[[:space:]]*([0-9\.]+)/", $val, $regs)) {
+                if (!$is_regexp_search && preg_match("/^\s*([<>])([=]*)[[:space:]]*([0-9\.]+)/", $val, $regs)) {
                     if ($nott) {
                         if ($regs[1] == '<') {
                             $regs[1] = '>';
@@ -2415,6 +2445,23 @@ final class SQLProvider implements SearchProviderInterface
             }
             return $criteria;
         }
+        if ($is_regexp_search) {
+            if ($transitemtype = getItemTypeForTable($inittable)) {
+                if (Session::haveTranslations($transitemtype, $field)) {
+                    return [
+                        'OR' => [
+                            self::getRegexpCriteria($tocompute, (string) $val, $nott, Operator::NONE),
+                            self::getRegexpCriteria($tocomputetrans, (string) $val, $nott, Operator::NONE),
+                        ],
+                    ];
+                }
+            }
+
+            return [
+                self::getRegexpCriteria($tocompute, (string) $val, $nott, Operator::NONE),
+            ];
+        }
+
         if ($transitemtype = getItemTypeForTable($inittable)) {
             if (Session::haveTranslations($transitemtype, $field)) {
                 return [
@@ -4241,8 +4288,15 @@ final class SQLProvider implements SearchProviderInterface
             }
         }
 
-        if (in_array($searchtype, ["notequals", "notcontains"])) {
+        if (in_array($searchtype, ["notequals", "notcontains", "notregexp"])) {
             $NOT = !$NOT;
+        }
+
+        $is_regexp_search = in_array($searchtype, ['regexp', 'notregexp'], true);
+        if ($is_regexp_search && !self::isValidRegexp($val)) {
+            return [
+                new QueryExpression('false'),
+            ];
         }
 
         // Preformat items
@@ -4348,6 +4402,12 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     break;
             }
+        }
+
+        if ($is_regexp_search) {
+            return [
+                self::getRegexpCriteria($NAME, $val, $NOT, Operator::NONE),
+            ];
         }
 
         return [
@@ -5834,20 +5894,21 @@ final class SQLProvider implements SearchProviderInterface
                 $NOT        = false;
                 $globallink = Operator::AND;
                 if (isset($criterion['link'])) {
+                    $is_negated_text_search = in_array($criterion['searchtype'], ['notcontains', 'notregexp'], true);
                     switch ($criterion['link']) {
                         case "AND":
-                            $LINK       = ($criterion['searchtype'] == 'notcontains') ? Operator::AND : Operator::OR;
+                            $LINK       = $is_negated_text_search ? Operator::AND : Operator::OR;
                             break;
                         case "AND NOT":
-                            $LINK       = ($criterion['searchtype'] == 'notcontains') ? Operator::OR : Operator::AND;
+                            $LINK       = $is_negated_text_search ? Operator::OR : Operator::AND;
                             $NOT        = true;
                             break;
                         case "OR":
-                            $LINK       = ($criterion['searchtype'] == 'notcontains') ? Operator::AND : Operator::OR;
+                            $LINK       = $is_negated_text_search ? Operator::AND : Operator::OR;
                             $globallink = Operator::OR;
                             break;
                         case "OR NOT":
-                            $LINK       = ($criterion['searchtype'] == 'notcontains') ? Operator::OR : Operator::AND;
+                            $LINK       = $is_negated_text_search ? Operator::OR : Operator::AND;
                             $NOT        = true;
                             $globallink = Operator::OR;
                             break;
@@ -6472,6 +6533,97 @@ final class SQLProvider implements SearchProviderInterface
             'date', 'datetime', 'date_delay' => null,
             default => '',
         };
+    }
+
+    /**
+     * Validate a user-supplied regular expression before passing it to SQL REGEXP.
+     * Rejects empty patterns, overly long patterns, null bytes, obvious nested quantifiers (ReDoS),
+     * and syntactically invalid patterns.
+     */
+    public static function isValidRegexp(string $pattern): bool
+    {
+        if ($pattern === '' || strlen($pattern) > self::MAX_REGEXP_LENGTH) {
+            return false;
+        }
+        if (str_contains($pattern, "\0")) {
+            return false;
+        }
+
+        // Reject obvious nested quantifiers such as (a+)+, (.*)*, ([0-9]+){2,}
+        if (preg_match('/\((?:[^()\\\\]|\\\\.)*(?<!\\\\)(?:[+*]|\{\d+,?\d*\})(?:[^()\\\\]|\\\\.)*\)\s*(?:[+*]|\{\d+,?\d*\})/', $pattern) === 1) {
+            return false;
+        }
+
+        $escaped = preg_replace('/(?<!\\\\)((?:\\\\\\\\)*)\//', '$1\\/', $pattern);
+        $flags = mb_check_encoding($pattern, 'UTF-8') ? 'u' : '';
+        set_error_handler(static fn(): bool => true);
+        try {
+            preg_match('/' . $escaped . '/' . $flags, '');
+            return true;
+        } catch (PcreException) {
+            return false;
+        } finally {
+            restore_error_handler();
+        }
+    }
+
+    /**
+     * Build SQL criteria for regular expression search.
+     *
+     * @return array<string|int, mixed>
+     */
+    public static function getRegexpCriteria(
+        string|QueryExpression $field,
+        string $val,
+        bool $not = false,
+        Operator $link = Operator::AND
+    ): array {
+        if (!self::isValidRegexp($val)) {
+            $criteria = [new QueryExpression('false')];
+            if ($link !== Operator::NONE) {
+                return [$link->value => $criteria];
+            }
+            return $criteria;
+        }
+
+        if (!is_string($field)) {
+            if ($not) {
+                $values = array_merge($field->getParams(), [$val], $field->getParams());
+                $criteria = [
+                    // @phpstan-ignore glpi.forbidNonLiteralSqlExpression
+                    new QueryExpression("($field NOT REGEXP ? OR $field IS NULL)", values: $values),
+                ];
+            } else {
+                $values = array_merge($field->getParams(), [$val]);
+                $criteria = [
+                    // @phpstan-ignore glpi.forbidNonLiteralSqlExpression
+                    new QueryExpression("$field REGEXP ?", values: $values),
+                ];
+            }
+            if ($link !== Operator::NONE) {
+                return [$link->value => $criteria];
+            }
+            return $criteria;
+        }
+
+        $field = str_replace('`', '', $field);
+        if ($not) {
+            $criteria = [
+                'OR' => [
+                    [$field => ['NOT REGEXP', $val]],
+                    [$field => null],
+                ],
+            ];
+        } else {
+            $criteria = [$field => ['REGEXP', $val]];
+        }
+
+        if ($link !== Operator::NONE) {
+            $criteria = [
+                $link->value => $criteria,
+            ];
+        }
+        return $criteria;
     }
 
     /**
