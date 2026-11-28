@@ -5007,6 +5007,7 @@ HTML,
     public function testEntityDropdownEmptyChoiceAndRootEntityExclusion(): void
     {
         $this->login();
+        $this->setEntity(0, true);
 
         // When Root entity (0) is not in 'used', both -1 ('-----') and 0 are selectable.
         $unused_result = Dropdown::getDropdownValue([
