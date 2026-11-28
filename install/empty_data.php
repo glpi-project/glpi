@@ -1053,6 +1053,18 @@ $empty_data_builder = new class {
                 'logs_lifetime' => 30,
                 'hourmin' => 0,
                 'hourmax' => 24,
+            ], [
+                'id' => 54,
+                'itemtype' => ITILUnreadMessage::class,
+                'name' => 'cleanoldmessages',
+                'frequency' => DAY_TIMESTAMP,
+                'param' => null,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_EXTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ],
         ];
 

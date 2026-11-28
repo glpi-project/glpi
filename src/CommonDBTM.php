@@ -1118,6 +1118,8 @@ class CommonDBTM extends CommonGLPI
             $note->cleanDBonItemDelete(static::class, $this->fields['id']);
         }
 
+        ITILUnreadMessage::cleanForItem($this);
+
         if (in_array(static::class, $CFG_GLPI['ticket_types'], true)) {
             // Clean ticket open against the item
             $job         = new Ticket();
