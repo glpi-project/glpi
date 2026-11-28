@@ -3047,10 +3047,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     case "email2":
                     case "email3":
                     case "email4":
-                        // Manage multivaluable fields
-                        if (!preg_match('/count/', $value)) {
-                            $this->fields["_emails"][] = $value;
-                        }
+                        $this->fields["_emails"][] = $value;
                         // Only get them once if duplicated
                         $this->fields["_emails"] = array_unique($this->fields["_emails"]);
                         break;

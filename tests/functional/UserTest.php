@@ -2849,6 +2849,44 @@ class UserTest extends DbTestCase
         );
     }
 
+    public static function ssoEmailsProvider(): iterable
+    {
+        yield 'first email contains count' => [
+            ['accounting@example.com'],
+            ['accounting@example.com'],
+        ];
+
+        yield 'later email contains count and is duplicated' => [
+            ['alice@example.com', 'accounting@example.com', 'accounting@example.com'],
+            ['alice@example.com', 'accounting@example.com'],
+        ];
+    }
+
+    #[DataProvider('ssoEmailsProvider')]
+    public function testGetFromSSOPreservesEmailAddresses(array $emails, array $expected_emails): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $user = $this->createItem(User::class, [
+            'name'     => $this->getUniqueString(),
+            'authtype' => \Auth::EXTERNAL,
+        ]);
+
+        foreach ($emails as $index => $email) {
+            $slot = $index + 1;
+            $server_key = "HTTP_SSO_TEST_EMAIL{$slot}";
+            $CFG_GLPI["email{$slot}_ssofield"] = $server_key;
+            $_SERVER[$server_key] = $email;
+        }
+
+        $sso_user = new User();
+        $sso_user->fields['name'] = $user->fields['name'];
+
+        $this->assertTrue($sso_user->getFromSSO());
+        $this->assertEqualsCanonicalizing($expected_emails, $sso_user->fields['_emails']);
+    }
+
     // Test rule rights apply when user logs in from SSO
     public function testGetFromSSOAndRightRules()
     {
