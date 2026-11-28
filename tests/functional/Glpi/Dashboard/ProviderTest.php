@@ -729,6 +729,67 @@ class ProviderTest extends DbTestCase
         $this->assertEquals(\Ticket::class, $result['itemtype']);
     }
 
+    public function testNbTicketsGenericLateSearchUrl()
+    {
+        global $DB;
+
+        $this->login();
+
+        $sla_late_ticket = $this->createItem(\Ticket::class, [
+            'name'        => "test dashboard card late tickets SLA",
+            'content'     => 'foo',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->assertTrue(
+            $DB->update(
+                \Ticket::getTable(),
+                [
+                    'date'            => '2021-01-01 00:00',
+                    'time_to_resolve' => '2021-01-02 00:00',
+                ],
+                [
+                    'id' => $sla_late_ticket->getID(),
+                ]
+            )
+        );
+
+        $ola_late_ticket = $this->createItem(\Ticket::class, [
+            'name'        => "test dashboard card late tickets OLA",
+            'content'     => 'foo',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->assertTrue(
+            $DB->insert(
+                \Item_Ola::getTable(),
+                [
+                    'itemtype' => \Ticket::class,
+                    'items_id' => $ola_late_ticket->getID(),
+                    'olas_id'  => 1,
+                    'ola_type' => \SLM::TTR,
+                    'is_late'  => 1,
+                ]
+            )
+        );
+
+        $this->createItem(\Ticket::class, [
+            'name'        => "test dashboard card late tickets on time",
+            'content'     => 'foo',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $result = Provider::nbTicketsGeneric('late');
+        $this->assertEquals(2, $result['number']);
+
+        $search = \Search::getDatas(\Ticket::class, [
+            'criteria' => $result['s_criteria'],
+        ]);
+        $this->assertEquals(2, $search['data']['totalcount']);
+        $this->assertEqualsCanonicalizing(
+            [$sla_late_ticket->getID(), $ola_late_ticket->getID()],
+            array_column($search['data']['rows'], 'id')
+        );
+    }
+
 
     public static function itemFKProvider()
     {
