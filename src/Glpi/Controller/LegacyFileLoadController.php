@@ -40,7 +40,9 @@ use RuntimeException;
 use Safe\Exceptions\OutcontrolException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
+use function Safe\ob_end_clean;
 use function Safe\ob_get_clean;
 use function Safe\ob_start;
 
@@ -61,7 +63,16 @@ final class LegacyFileLoadController implements PublicService
         }
 
         ob_start();
-        $response = require($target_file);
+        $buffer_level = ob_get_level();
+        try {
+            $response = require($target_file);
+        } catch (Throwable $throwable) {
+            // Partial output must not leak into the response built from the exception (e.g. a redirect).
+            while (ob_get_level() >= $buffer_level) {
+                ob_end_clean();
+            }
+            throw $throwable;
+        }
         try {
             $content = ob_get_clean();
         } catch (OutcontrolException) {
