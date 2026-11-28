@@ -183,7 +183,12 @@ class Item_DeviceSimcard extends Item_Devices implements AssignableItemInterface
     {
         return 'serial';
     }
-
+    
+    public function useDeletedToLockIfDynamic()
+    {
+        return false;
+    }
+    
     public function getImportCriteria(): array
     {
         return [

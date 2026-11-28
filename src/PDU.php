@@ -75,7 +75,12 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
     {
         return _n('PDU', 'PDUs', $nb);
     }
-
+    
+    public function useDeletedToLockIfDynamic()
+    {
+        return false;
+    }
+  
     public static function getSectorizedDetails(): array
     {
         return ['assets', self::class];
