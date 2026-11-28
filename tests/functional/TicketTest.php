@@ -2385,6 +2385,79 @@ class TicketTest extends DbTestCase
         );
     }
 
+    public function testRequesterWithoutUpdateRightCanUpdateObservers(): void
+    {
+        $this->login();
+
+        $tech_id   = getItemByTypeName(User::class, 'tech', true);
+        $normal_id = getItemByTypeName(User::class, 'normal', true);
+        $group_id  = getItemByTypeName(Group::class, '_test_group_1', true);
+
+        $requester_actor = ['itemtype' => User::class, 'items_id' => $tech_id, 'use_notification' => 1, 'alternative_email' => ''];
+        $group_actor     = ['itemtype' => Group::class, 'items_id' => $group_id];
+        $observer_actor  = ['itemtype' => User::class, 'items_id' => $normal_id, 'use_notification' => 1, 'alternative_email' => ''];
+
+        // Ticket without followup nor task, created with an observer group
+        $ticket = $this->createItem(Ticket::class, [
+            'name'                => 'Requester without update right',
+            'content'             => 'Observers can be updated by the requester',
+            '_users_id_requester' => $tech_id,
+            '_groups_id_observer' => $group_id,
+        ]);
+
+        // Same ticket, with a followup
+        $ticket_with_followup = $this->createItem(Ticket::class, [
+            'name'                => 'Requester without update right, with a followup',
+            'content'             => 'Observers cannot be updated by the requester anymore',
+            '_users_id_requester' => $tech_id,
+            '_groups_id_observer' => $group_id,
+        ]);
+        $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_with_followup->getID(),
+            'content'  => 'A followup',
+        ]);
+
+        // Remove UPDATE right from the tech profile
+        $this->changeTechRights(['ticket' => 168967 & ~UPDATE]);
+        $this->assertFalse(Session::haveRight(Ticket::$rightname, UPDATE));
+
+        $update_input = [
+            '_actors' => [
+                'requester' => [$requester_actor],
+                'observer'  => [$group_actor, $observer_actor],
+            ],
+        ];
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertTrue($ticket->canUpdateItem());
+        $this->assertTrue($ticket->update(['id' => $ticket->getID()] + $update_input));
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertTrue($ticket->isUser(CommonITILActor::OBSERVER, $normal_id));
+        $this->assertTrue($ticket->isGroup(CommonITILActor::OBSERVER, $group_id));
+        $this->assertTrue($ticket->isUser(CommonITILActor::REQUESTER, $tech_id));
+
+        // Observer can also be removed
+        $this->assertTrue($ticket->update([
+            'id'      => $ticket->getID(),
+            '_actors' => [
+                'requester' => [$requester_actor],
+                'observer'  => [$group_actor],
+            ],
+        ]));
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertFalse($ticket->isUser(CommonITILActor::OBSERVER, $normal_id));
+        $this->assertTrue($ticket->isGroup(CommonITILActor::OBSERVER, $group_id));
+
+        // Once a followup exists, the requester can no longer update actors
+        $this->assertTrue($ticket_with_followup->getFromDB($ticket_with_followup->getID()));
+        $this->assertFalse($ticket_with_followup->canUpdateItem());
+        $ticket_with_followup->update(['id' => $ticket_with_followup->getID()] + $update_input);
+        $this->assertTrue($ticket_with_followup->getFromDB($ticket_with_followup->getID()));
+        $this->assertFalse($ticket_with_followup->isUser(CommonITILActor::OBSERVER, $normal_id));
+        $this->assertTrue($ticket_with_followup->isGroup(CommonITILActor::OBSERVER, $group_id));
+    }
+
     public function testUpdateFollowup()
     {
         $uid = getItemByTypeName('User', 'tech', true);
