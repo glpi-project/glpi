@@ -80,8 +80,7 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
     {
         return false;
     }
-
-    
+  
     public static function getSectorizedDetails(): array
     {
         return ['assets', self::class];
