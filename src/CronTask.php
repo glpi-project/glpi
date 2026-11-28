@@ -296,6 +296,14 @@ class CronTask extends CommonDBTM
         if ($DB->getAffectedRows() > 0) {
             $this->timer  = microtime(true);
             $this->volume = 0;
+
+            // Keep the in-memory last run aligned with the value just persisted, as it is used to compute the next run
+            $this->fields['lastrun'] = $DB->request([
+                'SELECT' => ['lastrun'],
+                'FROM'   => self::getTable(),
+                'WHERE'  => ['id' => $this->fields['id']],
+            ])->current()['lastrun'];
+
             $log = new CronTaskLog();
             // No gettext for log
             $txt = sprintf(
