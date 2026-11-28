@@ -45,6 +45,7 @@ use Glpi\Api\HL\RSQL\RSQLException;
 use Glpi\Api\HL\Schemas;
 use Glpi\Api\HL\Search;
 use Glpi\Api\HL\Search\SearchContext;
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
@@ -482,6 +483,36 @@ class DefaultResolvers
         }
 
         $search->addRSQLCriteria($criteria, fn(SearchContext $context, array $properties) => $this->resolveSchemaFromProperties($context, $properties));
+
+        // Computed properties filtered on are evaluated in HAVING, which can only reference selected aliases.
+        // Make sure they are selected even if not explicitly requested.
+        if (!empty($criteria['HAVING'])) {
+            global $DB;
+            $having_sql = implode(' ', array_map(
+                static fn($expr) => $expr instanceof QueryExpression ? $expr->getValue() : '',
+                $criteria['HAVING']
+            ));
+            $select_sql = implode(' ', array_map(
+                static fn($expr) => $expr instanceof QueryExpression ? $expr->getValue() : '',
+                $criteria['SELECT']
+            ));
+            foreach ($search->getContext()->getFlattenedProperties() as $prop_name => $prop) {
+                if (!isset($prop['computation'])) {
+                    continue;
+                }
+                $alias = str_replace('.', chr(0x1F), $prop_name);
+                if (
+                    !str_contains($having_sql, $alias)
+                    || str_contains($select_sql, ' AS ' . $DB::quoteName($alias))
+                ) {
+                    continue;
+                }
+                $select = $search->getSelectCriteriaForProperty($prop_name);
+                if ($select !== null) {
+                    $criteria['SELECT'][] = $select;
+                }
+            }
+        }
         $search->addJoinsCriteria($criteria);
 
         if ($request_params['id'] ?? null) {
@@ -512,6 +543,7 @@ class DefaultResolvers
     private function getCountCriteriaFromCriteria(array $criteria): array
     {
         $count_criteria = $criteria;
+        unset($count_criteria['START'], $count_criteria['LIMIT']);
         if (!array_key_exists('HAVING', $count_criteria) || empty($count_criteria['HAVING'])) {
             $table_alias = '_';
             unset($count_criteria['GROUPBY'], $count_criteria['ORDERBY']);
