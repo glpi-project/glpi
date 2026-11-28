@@ -52,7 +52,9 @@
 
     {{ fields.dropdownYesNo('is_default', item.fields['is_default'], __('Default server')) }}
     {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active')) }}
-    {{ fields.textField('host', item.fields['host'], __('Server')) }}
+    {{ fields.textField('host', item.fields['host'], __('Server'), {
+        helper: __('If LDAPS is desired, use the ldaps:// protocol in the host and set the correct port (usually 636).'),
+    }) }}
     {{ fields.numberField('port', item.fields['port'], __('Port (default=389)'), {'min': 1, 'max': 65535}) }}
     {{ fields.textareaField('comment', item.fields['comment'], __('Comments')) }}
     {{ fields.nullField() }}
