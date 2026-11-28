@@ -1820,12 +1820,23 @@ EOT,
     #[RouteVersion(introduced: '2.0')]
     #[Doc\CreateRoute(
         schema_name: '{itemtype}',
-        description: 'Create a new new Ticket, Change or Problem'
+        description: 'Create a new Ticket, Change or Problem. For tickets, an optional Idempotency-Key header enables safe retries for 24 hours.'
     )]
     public function createItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return ResourceAccessor::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
+        $key = strcasecmp($itemtype, Ticket::class) === 0 && $request->hasHeader('Idempotency-Key')
+            ? $request->getHeaderLine('Idempotency-Key')
+            : null;
+        if ($key !== null && explode(';', $request->getHeaderLine('Content-Type'), 2)[0] !== 'application/json') {
+            return new JSONResponse(self::getErrorResponseBody(self::ERROR_INVALID_PARAMETER, _x('api', 'Idempotency-Key requires a JSON request')), 400);
+        }
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema($itemtype, $this->getAPIVersion($request)),
+            $request->getParameters() + ['itemtype' => $itemtype],
+            [self::class, 'getItem'],
+            ticket_idempotency_key: $key,
+        );
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'])]

@@ -46,6 +46,56 @@ use TicketValidation;
 
 class ITILControllerTest extends HLAPITestCase
 {
+    public function testTicketCreationReplaysTheSameKey(): void
+    {
+        $this->login();
+        $request = new Request('POST', '/Assistance/Ticket', [
+            'Idempotency-Key' => 'ticket-replay-test',
+            'Content-Type' => 'application/json',
+        ], '{"name":"Retryable ticket","content":"Synthetic test"}');
+
+        $first = null;
+        $this->api->withVersion('2.3.0')->call($request, function ($call) use (&$first) {
+            $call->response
+                ->status(fn($status) => $this->assertSame(201, $status))
+                ->jsonContent(function (array $body) use (&$first) {
+                    $first = $body;
+                });
+        });
+        $this->assertArrayHasKey('id', $first);
+
+        $this->login();
+        $retry = new Request('POST', '/Assistance/Ticket', [
+            'Idempotency-Key' => 'ticket-replay-test',
+            'Content-Type' => 'application/json',
+        ], '{"content":"Synthetic test","name":"Retryable ticket"}');
+        $this->api->withVersion('3.0.0')->call($retry, function ($call) use ($first) {
+            $call->response
+                ->status(fn($status) => $this->assertSame(201, $status))
+                ->headers(fn($headers) => $this->assertSame($first['href'], $headers['Location']))
+                ->jsonContent(fn($body) => $this->assertSame($first, $body));
+        });
+
+        $changed = new Request('POST', '/Assistance/Ticket', [
+            'Idempotency-Key' => 'ticket-replay-test',
+            'Content-Type' => 'application/json',
+        ], '{"name":"Different ticket","content":"Synthetic test"}');
+        $this->api->call($changed, function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertSame(409, $status))
+                ->jsonContent(fn($body) => $this->assertSame('ERROR_IDEMPOTENCY_CONFLICT', $body['status']));
+        });
+
+        $unkeyed = new Request('POST', '/Assistance/Ticket', [
+            'Content-Type' => 'application/json',
+        ], '{"name":"Retryable ticket","content":"Synthetic test"}');
+        $this->api->call($unkeyed, function ($call) use ($first) {
+            $call->response
+                ->status(fn($status) => $this->assertSame(201, $status))
+                ->jsonContent(fn($body) => $this->assertNotSame($first['id'], $body['id']));
+        });
+    }
+
     public function testCreateGetUpdateDelete()
     {
         $this->login();
