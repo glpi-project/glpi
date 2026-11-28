@@ -119,4 +119,30 @@ abstract class AbstractQuestionTypeSelectableTest extends DbTestCase
     {
         $this->assertSame($expected, $this->getQuestionType()->convertDefaultValue($raw_data));
     }
+
+    public static function convertExtraDataProvider(): iterable
+    {
+        yield 'json array of values' => [
+            'raw_data' => ['values' => json_encode(['Option 1', 'Option 2'])],
+            'expected' => [1 => 'Option 1', 2 => 'Option 2'],
+        ];
+
+        yield 'no values key' => [
+            'raw_data' => [],
+            'expected' => [],
+        ];
+
+        // Formcreator stored a single value without wrapping it in a json array.
+        yield 'single scalar value' => [
+            'raw_data' => ['values' => '1'],
+            'expected' => [1 => '1'],
+        ];
+    }
+
+    #[DataProvider('convertExtraDataProvider')]
+    public function testConvertExtraData(array $raw_data, array $expected): void
+    {
+        $extra_data = $this->getQuestionType()->convertExtraData($raw_data);
+        $this->assertSame($expected, $extra_data['options']);
+    }
 }
