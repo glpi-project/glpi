@@ -659,11 +659,37 @@ class Item_SoftwareLicense extends CommonDBRelation
                 ]
             );
 
-            $p = ['idtable'            => '__VALUE__',
+            $used = [];
+            $iterator = $DB->request([
+                'SELECT' => ['itemtype', 'items_id'],
+                'FROM'   => self::getTable(),
+                'WHERE'  => [
+                    'softwarelicenses_id' => $searchID,
+                    'is_deleted'          => 0,
+                ],
+            ]);
+            foreach ($iterator as $data) {
+                $used[$data['itemtype']][$data['items_id']] = $data['items_id'];
+            }
+
+            $iterator = $DB->request([
+                'SELECT' => ['users_id'],
+                'FROM'   => SoftwareLicense_User::getTable(),
+                'WHERE'  => [
+                    'softwarelicenses_id' => $searchID,
+                ],
+            ]);
+            foreach ($iterator as $data) {
+                $used['User'][$data['users_id']] = $data['users_id'];
+            }
+
+            $p = [
+                'idtable'            => '__VALUE__',
                 'rand'                  => $rand,
                 'name'                  => "items_id",
                 'width'                 => 'unset',
-                'entity_restrict'    => $entity_restrict,
+                'entity_restrict'       => $entity_restrict,
+                'used'                  => $used,
             ];
 
             Ajax::updateItemOnSelectEvent(
