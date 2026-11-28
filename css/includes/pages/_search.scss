@@ -49,6 +49,30 @@
     }
 }
 
+.search-horizontal-scroll {
+    .btn {
+        position: fixed;
+        z-index: $zindex-sticky + 3;
+        width: 14px;
+        min-width: 0;
+        height: 32px;
+        min-height: 0;
+        padding: 0;
+        border: 0;
+        border-radius: 4px;
+        box-shadow: 0 1px 4px rgb(0, 0, 0, 15%);
+        transform: translateY(-50%);
+
+        .ti {
+            font-size: 16px;
+        }
+
+        &:disabled {
+            opacity: 0.4;
+        }
+    }
+}
+
 .search_page {
     @include media-breakpoint-up(lg) {
         display: flex;
