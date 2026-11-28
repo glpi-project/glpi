@@ -41,6 +41,7 @@ import { GlpiKnowbaseTableOfContentsController } from "/js/modules/Knowbase/Tabl
 import { GlpiKnowbaseServiceCatalogPanelController } from "/js/modules/Knowbase/ServiceCatalogPanelController.js";
 import { highlightComments } from "/js/modules/Knowbase/CommentHighlighter.js";
 import { ReadModeSelectionBubble } from "/js/modules/Knowbase/ReadModeSelectionBubble.js";
+import { watchMermaidBlocks } from "/js/modules/Mermaid/MermaidRenderer.js";
 import {
     EditorActionType,
     extractParamsFromDataset,
@@ -190,6 +191,11 @@ export class GlpiKnowbaseArticleController
         this.#initEditor();
         if (mode !== "add") {
             this.#initTableOfContents();
+        }
+
+        const content_element = this.#container.querySelector('#kb-tiptap-editor');
+        if (content_element) {
+            watchMermaidBlocks(content_element);
         }
         this.#initDiffListeners();
         this.#initIllustrationPicker();
