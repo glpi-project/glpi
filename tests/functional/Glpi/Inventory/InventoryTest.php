@@ -3693,7 +3693,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $this->assertSame($expected_eq, $row, print_r($row, true) . print_r($expected_eq, true));
 
             //check network ports
-            $expected_count = ($first ? 4 : 1);
+            $expected_count = ($first ? 3 : 1);
             $ports_iterator = $DB->request([
                 'FROM'   => \NetworkPort::getTable(),
                 'WHERE'  => [
@@ -3722,7 +3722,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ];
 
             $ips = [
-                'Management' => [
+                'Virtual Interface' => [
                     '1.1.1.1',
                     '10.65.0.184',
                     '10.65.0.192',
@@ -3814,11 +3814,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 ]);
 
                 //$this->assertCount(count($ips[$port['name']] ?? ['one' => 'one']), $ip_iterator);
-                if ($port['mac'] == '58:ac:78:59:45:fb') {
-                    foreach ($ip_iterator as $ip) {
-                        $this->assertIsArray($ips[$port['name']]);
-                        $this->assertTrue(in_array($ip['name'], $ips[$port['name']]));
-                    }
+                if ($first && isset($ips[$port['name']])) {
+                    $port_ips = array_column(iterator_to_array($ip_iterator, false), 'name');
+                    sort($port_ips);
+                    $this->assertSame($ips[$port['name']], $port_ips);
                 }
             }
 
